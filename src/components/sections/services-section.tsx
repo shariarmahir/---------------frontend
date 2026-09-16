@@ -40,8 +40,10 @@ export function ServicesSection() {
               <Card className="h-full border-black/5 transition-shadow duration-300 hover:shadow-xl hover:shadow-primary/10">
                 <CardHeader>
                   {Icon && <Icon className="h-7 w-7 text-primary" />}
-                  <CardTitle className="font-heading text-base">
-                    {service.title}
+                  <CardTitle>
+                    <h3 className="font-heading text-base text-primary">
+                      {service.title}
+                    </h3>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-sm text-slate-600">
