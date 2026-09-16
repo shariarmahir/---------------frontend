@@ -74,7 +74,12 @@ export function ImpactSection() {
                 <XAxis dataKey="region" stroke="#64748b" fontSize={12} />
                 <YAxis stroke="#64748b" fontSize={12} />
                 <Tooltip />
-                <Bar dataKey="peopleReached" fill="#FF9100" radius={[4, 4, 0, 0]} />
+                <Bar
+                  dataKey="peopleReached"
+                  name="People Reached"
+                  fill="#FF9100"
+                  radius={[4, 4, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
