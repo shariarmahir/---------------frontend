@@ -18,6 +18,13 @@ export function HeroSection() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    // Intentional: hasWebGL()/isMobile are real browser-only capability
+    // checks that must run post-mount to avoid a server/client hydration
+    // mismatch. Moving this into a lazy useState initializer (the fix the
+    // rule implicitly wants) was tried and reverted in Task 7 because it
+    // reads `window` during hydration itself and produces a genuine
+    // "Hydration failed" error — strictly worse than this lint finding.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setWebglSupported(hasWebGL());
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
