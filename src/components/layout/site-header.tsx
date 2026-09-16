@@ -8,6 +8,7 @@ import {
   SheetContent,
   SheetTrigger,
   SheetTitle,
+  SheetClose,
 } from "@/components/ui/sheet";
 
 const NAV_LINKS = [
@@ -57,20 +58,25 @@ export function SiteHeader() {
             <SheetTitle className="font-heading text-primary">Menu</SheetTitle>
             <nav className="mt-8 flex flex-col gap-4">
               {NAV_LINKS.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="text-base font-medium text-slate-700 hover:text-primary"
-                >
-                  {link.label}
-                </a>
+                <SheetClose asChild key={link.href}>
+                  <a
+                    href={link.href}
+                    className="text-base font-medium text-slate-700 hover:text-primary"
+                  >
+                    {link.label}
+                  </a>
+                </SheetClose>
               ))}
-              <Button asChild variant="outline">
-                <Link href="/login">Sign In</Link>
-              </Button>
-              <Button asChild className="bg-title text-white hover:bg-title/90">
-                <Link href="#download">Download App</Link>
-              </Button>
+              <SheetClose asChild>
+                <Button asChild variant="outline">
+                  <Link href="/login">Sign In</Link>
+                </Button>
+              </SheetClose>
+              <SheetClose asChild>
+                <Button asChild className="bg-title text-white hover:bg-title/90">
+                  <Link href="#download">Download App</Link>
+                </Button>
+              </SheetClose>
             </nav>
           </SheetContent>
         </Sheet>
