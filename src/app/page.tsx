@@ -3,6 +3,7 @@ import { HeroSection } from "@/components/sections/hero-section";
 import { MissionSection } from "@/components/sections/mission-section";
 import { ImpactSection } from "@/components/sections/impact-section";
 import { ServicesSection } from "@/components/sections/services-section";
+import { TeamSection } from "@/components/sections/team-section";
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
       <MissionSection />
       <ImpactSection />
       <ServicesSection />
+      <TeamSection />
     </main>
   );
 }
