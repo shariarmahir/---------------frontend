@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Poppins, Inter, Noto_Sans_Bengali } from "next/font/google";
+import { Manrope, Inter, Noto_Sans_Bengali } from "next/font/google";
 import "./globals.css";
 
-const poppins = Poppins({
+const manrope = Manrope({
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
-  variable: "--font-poppins",
+  weight: ["600", "700", "800"],
+  variable: "--font-manrope",
   display: "swap",
 });
 
@@ -23,18 +23,28 @@ const notoBengali = Noto_Sans_Bengali({
 });
 
 export const metadata: Metadata = {
-  title: "Kandari Lab | কাণ্ডারী-ল্যাব",
+  title: "Kandari-Lab | কাণ্ডারী-ল্যাব",
   description:
-    "Kandari Lab is building solutions for Bangladesh — connecting talent, opportunity, and impact.",
+    "Sovereign deep-tech innovation infrastructure engineered for Bangladesh — clinical AI, biosensing wearables, semiconductors, and mechatronics.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${poppins.variable} ${inter.variable} ${notoBengali.variable} h-full antialiased`}
+      className={`${manrope.variable} ${inter.variable} ${notoBengali.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans antialiased">
+      <head>
+        {/* Material Symbols has no next/font/google export; the App Router
+            root layout applies this to every route, so the page-font rule
+            does not apply. */}
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
+        />
+      </head>
+      <body className="min-h-full flex flex-col bg-background font-sans text-body-md text-foreground antialiased">
         {children}
       </body>
     </html>

@@ -1,65 +1,94 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
-import { Button } from "@/components/ui/button";
-import { hasWebGL } from "@/lib/webgl";
-
-const HeroScene = dynamic(
-  () => import("./hero-scene").then((mod) => mod.HeroScene),
-  { ssr: false },
-);
+import { Icon } from "@/components/ui/icon";
+import { RadarLattice } from "./radar-lattice";
+import { NAZRUL_MOTTO } from "@/data/navigation";
+import { heroProofPoints } from "@/data/telemetry";
+import { cn } from "@/lib/utils";
 
 export function HeroSection() {
-  // Both flags must start out matching the server-rendered markup (no
-  // window access during SSR) and only pick up the real browser values
-  // after mount, otherwise React logs a hydration mismatch.
-  const [webglSupported, setWebglSupported] = useState<boolean | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    // Intentional: hasWebGL()/isMobile are real browser-only capability
-    // checks that must run post-mount to avoid a server/client hydration
-    // mismatch. Moving this into a lazy useState initializer (the fix the
-    // rule implicitly wants) was tried and reverted in Task 7 because it
-    // reads `window` during hydration itself and produces a genuine
-    // "Hydration failed" error — strictly worse than this lint finding.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setWebglSupported(hasWebGL());
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
   return (
-    <section className="relative aspect-[16/6] w-full overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-slate-900 min-h-[420px]">
-      {webglSupported && (
-        <div className="absolute inset-0">
-          <HeroScene particleCount={isMobile ? 40 : 120} />
-        </div>
-      )}
+    <section
+      id="overview-mission"
+      className="relative w-full overflow-hidden border-b border-border bg-slate-50/50 py-space-xl"
+    >
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:24px_24px] opacity-40" />
+      <div className="pointer-events-none absolute -top-32 left-1/4 size-96 rounded-full bg-emerald-100/50 blur-[120px]" />
+      <div className="pointer-events-none absolute top-1/3 -right-24 size-80 rounded-full bg-orange-100/60 blur-[120px]" />
 
-      <div className="relative z-10 mx-auto flex h-full max-w-7xl flex-col items-start justify-center gap-5 px-4 sm:px-6 lg:px-8">
-        <h1 className="font-heading text-3xl font-extrabold text-title drop-shadow-sm sm:text-4xl md:text-5xl lg:text-6xl max-w-2xl">
-          Charting Bangladesh&apos;s Next Chapter
-        </h1>
-        <p className="max-w-xl text-base text-white/90 sm:text-lg">
-          Kandari Lab connects talent, training, and opportunity to build a
-          more prosperous Bangladesh — one Kandari at a time.
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <Button size="lg" className="bg-title text-white hover:bg-title/90" asChild>
-            <a href="#download">Download App</a>
-          </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="border-white bg-transparent text-white hover:bg-white/10 hover:text-white"
-            asChild
-          >
-            <a href="#mission">Explore Kandari</a>
-          </Button>
+      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-gutter px-gutter lg:grid-cols-12">
+        <div className="z-10 flex flex-col gap-space-md lg:col-span-7">
+          <div className="flex w-fit items-center gap-space-sm rounded-full border border-border bg-white px-space-md py-1.5 shadow-xs">
+            <span className="size-2.5 rounded-full bg-crimson shadow-[0_0_8px_rgba(218,41,28,0.4)]" />
+            <p className="font-display text-headline-sm font-bold tracking-wide text-signal">
+              {NAZRUL_MOTTO}
+            </p>
+            <span className="hidden font-label-sm text-label-sm uppercase tracking-widest text-slate-500 sm:inline">
+              KAZI NAZRUL ISLAM
+            </span>
+          </div>
+
+          <h1 className="font-display text-display-mobile leading-[1.05] tracking-tight text-slate-900 sm:text-display">
+            Solving Bangladesh,
+            <br />
+            <span className="font-extrabold text-title drop-shadow-sm">
+              Pixel by Pixel.
+            </span>
+          </h1>
+
+          <p className="max-w-2xl font-body-lg text-body-lg leading-relaxed text-slate-600">
+            From semiconductor lithography design to sovereign bio-telemetry
+            wearables and multi-dialect Bengali emergency artificial
+            intelligence. Engineering sovereign national infrastructure to
+            transform 180 million lives.
+          </p>
+
+          <div className="flex flex-wrap items-center gap-space-md pt-space-xs">
+            <a
+              href="#swasti"
+              className="inline-flex items-center gap-space-sm rounded-lg bg-title px-space-lg py-3.5 font-display text-label-md font-bold text-white shadow-md transition-all hover:scale-[1.02] hover:bg-signal active:scale-[0.98]"
+            >
+              <Icon name="download" className="text-[20px]" filled />
+              <span>Download SWASTI App</span>
+              <span className="rounded-sm bg-white/20 px-space-xs py-0.5 font-code-telemetry text-label-sm font-semibold text-white">
+                v2.4.1
+              </span>
+            </a>
+            <a
+              href="#rnd-innovations"
+              className="inline-flex items-center gap-space-sm rounded-lg border border-border bg-white px-space-lg py-3.5 font-display text-label-md font-semibold text-slate-800 shadow-xs transition-all hover:bg-slate-50"
+            >
+              <Icon name="biotech" className="text-[20px] text-primary" />
+              <span>Explore R&amp;D Pipeline</span>
+              <Icon name="arrow_forward" className="text-[18px] text-primary" />
+            </a>
+          </div>
+
+          <div className="grid grid-cols-1 gap-space-sm pt-space-md sm:grid-cols-3">
+            {heroProofPoints.map((point) => (
+              <div
+                key={point.label}
+                className="rounded-lg border border-border bg-white p-space-sm shadow-xs"
+              >
+                <span className="block font-label-sm text-label-sm uppercase text-slate-500">
+                  {point.label}
+                </span>
+                <span
+                  className={cn(
+                    "mt-0.5 block font-display text-headline-sm font-bold",
+                    point.tone === "primary" ? "text-primary" : "text-signal",
+                  )}
+                >
+                  {point.value}
+                </span>
+                <span className="block font-body-sm text-body-sm text-slate-600">
+                  {point.caption}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative flex items-center justify-center lg:col-span-5">
+          <RadarLattice />
         </div>
       </div>
     </section>

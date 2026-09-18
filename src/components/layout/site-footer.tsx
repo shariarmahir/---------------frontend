@@ -1,130 +1,102 @@
-const FOOTER_LINKS = [
-  {
-    heading: "Company",
-    links: [
-      { label: "About", href: "#" },
-      { label: "Mission", href: "#mission" },
-      { label: "Careers", href: "#" },
-    ],
-  },
-  {
-    heading: "Resources",
-    links: [
-      { label: "Services", href: "#services" },
-      { label: "Team", href: "#team" },
-      { label: "Community", href: "#community" },
-    ],
-  },
-  {
-    heading: "Legal",
-    links: [
-      { label: "Privacy Policy", href: "#" },
-      { label: "Terms of Service", href: "#" },
-    ],
-  },
-];
+import { Icon } from "@/components/ui/icon";
+import { corePipelines, footerTelemetry } from "@/data/footer";
+import { NAZRUL_MOTTO } from "@/data/navigation";
+import { cn } from "@/lib/utils";
 
-function LinkedinIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.125 2.062 2.062 0 0 1 0 4.125zM7.114 20.452H3.558V9h3.556v11.452z" />
-    </svg>
-  );
-}
-
-function TwitterIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-    </svg>
-  );
-}
-
-function FacebookIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M13.5 21.75v-8.1h2.72l.41-3.15h-3.13V8.49c0-.91.25-1.53 1.56-1.53h1.67V4.14c-.29-.04-1.28-.13-2.44-.13-2.42 0-4.07 1.47-4.07 4.17v2.32H7.5v3.15h2.72v8.1z" />
-    </svg>
-  );
-}
-
-const SOCIAL_LINKS = [
-  { label: "LinkedIn", href: "#", Icon: LinkedinIcon },
-  { label: "Twitter / X", href: "#", Icon: TwitterIcon },
-  { label: "Facebook", href: "#", Icon: FacebookIcon },
-];
+const TONE_TEXT = {
+  primary: "text-primary",
+  signal: "text-signal",
+  crimson: "text-crimson",
+} as const;
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-black/5 bg-white py-12">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-10 text-center sm:grid-cols-2 sm:text-left lg:grid-cols-4">
-          <div className="flex flex-col items-center gap-3 sm:items-start">
-            <p className="font-heading text-lg font-bold text-primary">
-              কাণ্ডারী-ল্যাব
-            </p>
-            <p className="text-sm text-slate-500">
-              Building opportunity for every Kandari in Bangladesh.
-            </p>
-            <div className="flex items-center gap-4 text-slate-400">
-              {SOCIAL_LINKS.map(({ label, href, Icon }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={label}
-                  className="transition-colors hover:text-primary"
-                >
-                  <Icon className="h-5 w-5" />
-                </a>
-              ))}
-            </div>
-            <div className="text-sm text-slate-500">
-              <p>hello@kandarilab.com</p>
-              <p>Dhaka, Bangladesh</p>
-            </div>
-          </div>
-
-          {FOOTER_LINKS.map((column) => (
-            <div key={column.heading} className="flex flex-col items-center gap-3 sm:items-start">
-              <h3 className="font-heading text-sm font-semibold text-title">
-                {column.heading}
-              </h3>
-              <ul className="flex flex-col items-center gap-2 sm:items-start">
-                {column.links.map((link) => (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="text-sm text-slate-500 transition-colors hover:text-primary"
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
+    <footer className="w-full border-t border-border bg-background">
+      <div className="w-full border-b border-border bg-slate-100/70 px-gutter py-space-md">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-space-md">
+          {footerTelemetry.map((item) => (
+            <div key={item.label} className="flex items-center gap-space-sm">
+              <span
+                className={cn(
+                  "font-label-sm text-label-sm font-bold uppercase tracking-wider",
+                  TONE_TEXT[item.tone],
+                )}
+              >
+                {item.label}
+              </span>
+              <span className="h-4 w-px bg-slate-300" />
+              <span className="font-code-telemetry text-code-telemetry font-semibold text-slate-800">
+                {item.value}
+              </span>
             </div>
           ))}
         </div>
+      </div>
 
-        <p className="mt-10 border-t border-black/5 pt-6 text-center text-xs text-slate-400">
-          © {new Date().getFullYear()} Kandari Lab. All rights reserved.
-        </p>
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-gutter px-gutter py-space-xl md:grid-cols-12">
+        <div className="flex flex-col gap-space-md md:col-span-5">
+          <div className="flex items-center gap-space-sm">
+            <span className="flex size-8 items-center justify-center rounded-md bg-primary font-display text-label-sm font-extrabold text-primary-foreground">
+              ক
+            </span>
+            <span className="font-display text-headline-sm font-bold text-primary">
+              কাণ্ডারী-ল্যাব
+            </span>
+            <span className="rounded-sm border border-emerald-200 bg-emerald-100 px-space-xs py-0.5 font-label-sm text-label-sm font-bold text-emerald-800">
+              R&amp;D HQ
+            </span>
+          </div>
+          <p className="max-w-md font-body-md text-body-md leading-relaxed text-slate-600">
+            Sovereign deep-tech innovation infrastructure engineered for
+            Bangladesh. Dhaka Frontier Lab, Tejgaon Industrial Framework,
+            Dhaka-1208, Bangladesh.
+          </p>
+          <p className="font-label-sm text-label-sm font-bold italic text-primary">
+            {NAZRUL_MOTTO}
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-space-sm md:col-span-4">
+          <h2 className="font-display text-label-md font-bold uppercase tracking-wider text-slate-900">
+            Core Sovereign Pipelines
+          </h2>
+          <ul className="flex flex-col gap-space-xs font-body-sm text-body-sm font-medium text-slate-600">
+            {corePipelines.map((pipeline) => (
+              <li
+                key={pipeline}
+                className="cursor-pointer transition-colors hover:text-primary"
+              >
+                {pipeline}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="flex flex-col gap-space-sm md:col-span-3">
+          <h2 className="font-display text-label-md font-bold uppercase tracking-wider text-slate-900">
+            Integrity &amp; Protocol
+          </h2>
+          <p className="font-body-sm text-body-sm leading-relaxed text-slate-600">
+            Frontier intelligence aligned with rigorous institutional parameters
+            and mathematical sovereign reliability.
+          </p>
+          <div className="flex items-center gap-space-xs font-code-telemetry text-code-telemetry font-semibold text-primary">
+            <Icon name="verified_user" className="text-[16px]" />
+            <span>ISO-Compliant Deep Tech Node</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="w-full border-t border-border bg-white px-gutter py-space-md">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-space-sm sm:flex-row">
+          <p className="font-body-sm text-body-sm text-slate-500">
+            © {new Date().getFullYear()} Kandari-Lab (কাণ্ডারী-ল্যাব). Sovereign
+            Deep Tech Initiative Bangladesh.
+          </p>
+          <p className="font-body-sm text-body-sm text-slate-500">
+            Architected under leadership of Mahir Shariar Mahin.
+          </p>
+        </div>
       </div>
     </footer>
   );

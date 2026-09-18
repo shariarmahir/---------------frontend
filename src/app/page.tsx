@@ -1,25 +1,29 @@
-import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { SiteHeader } from "@/components/layout/site-header";
+import { FlagshipsSection } from "@/components/sections/flagships-section";
 import { HeroSection } from "@/components/sections/hero-section";
-import { MissionSection } from "@/components/sections/mission-section";
-import { ImpactSection } from "@/components/sections/impact-section";
-import { ServicesSection } from "@/components/sections/services-section";
-import { TeamSection } from "@/components/sections/team-section";
-import { TestimonialsSection } from "@/components/sections/testimonials-section";
-import { DownloadCtaSection } from "@/components/sections/download-cta-section";
+import { LeadershipSection } from "@/components/sections/leadership-section";
+import { MetricsSection } from "@/components/sections/metrics-section";
+import { NodeTerminalSection } from "@/components/sections/node-terminal-section";
+import { PixelThesisSection } from "@/components/sections/pixel-thesis-section";
+import { ResearchSection } from "@/components/sections/research-section";
+import { TelemetryTicker } from "@/components/sections/telemetry-ticker";
 
 export default function Home() {
   return (
-    <main>
+    <>
       <SiteHeader />
-      <HeroSection />
-      <MissionSection />
-      <ImpactSection />
-      <ServicesSection />
-      <TeamSection />
-      <TestimonialsSection />
-      <DownloadCtaSection />
+      <main className="w-full bg-background pt-20">
+        <TelemetryTicker />
+        <HeroSection />
+        <PixelThesisSection />
+        <FlagshipsSection />
+        <MetricsSection />
+        <ResearchSection />
+        <LeadershipSection />
+        <NodeTerminalSection />
+      </main>
       <SiteFooter />
-    </main>
+    </>
   );
 }
