@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { AiSearch } from "@/components/ui/ai-search";
 import { BangladeshButton } from "@/components/ui/bangladesh-button";
 import { Icon } from "@/components/ui/icon";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -14,40 +15,38 @@ export function SiteHeader() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-white/95 shadow-sm backdrop-blur-xl">
       <div className="mx-auto flex h-16 w-full max-w-[1920px] items-center justify-between gap-space-sm px-gutter-mobile sm:gap-space-md sm:px-gutter lg:h-20">
-        <div className="flex min-w-0 items-center gap-space-sm sm:gap-space-md">
+        <div className="flex shrink-0 items-center gap-space-sm">
           <Link href="/" className="flex shrink-0 items-center gap-space-sm">
             <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary font-display text-label-md font-extrabold text-primary-foreground">
               ক
             </span>
-            <span className="hidden font-display text-headline-sm font-bold tracking-tight whitespace-nowrap text-primary sm:inline">
+            <span className="hidden font-display text-headline-sm font-bold tracking-tight whitespace-nowrap text-primary sm:inline lg:hidden xl:inline">
               কাণ্ডারী-ল্যাব
             </span>
           </Link>
           <BangladeshButton />
-          <div className="hidden items-center rounded-sm border border-border bg-muted px-space-sm py-space-xs xl:flex">
-            <span className="font-label-sm text-label-sm text-slate-700">
-              {NAZRUL_MOTTO}
-            </span>
-          </div>
         </div>
 
-        <nav className="hidden items-center gap-space-xs rounded-lg border border-border bg-slate-50 p-space-xs lg:flex">
+        <nav className="hidden shrink-0 items-center gap-0.5 rounded-lg border border-border bg-slate-50 p-space-xs lg:flex">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
               onClick={() => setActiveHref(link.href)}
               className={cn(
-                "rounded-sm px-space-md py-space-xs font-label-md text-label-md transition-colors",
+                "rounded-sm px-space-sm py-space-xs font-label-md text-label-md whitespace-nowrap transition-colors xl:px-space-md",
                 activeHref === link.href
                   ? "bg-primary text-primary-foreground shadow-xs"
                   : "text-slate-700 hover:bg-slate-100 hover:text-primary",
               )}
             >
-              {link.label}
+              <span className="2xl:hidden">{link.shortLabel}</span>
+              <span className="hidden 2xl:inline">{link.label}</span>
             </a>
           ))}
         </nav>
+
+        <AiSearch className="hidden w-40 shrink-0 lg:flex xl:w-56 2xl:w-72" />
 
         <div className="flex shrink-0 items-center gap-space-sm">
           <div className="hidden items-center gap-space-xs rounded-sm border border-emerald-200 bg-emerald-50 px-space-sm py-space-xs xl:flex">
@@ -60,8 +59,8 @@ export function SiteHeader() {
             href="#swasti"
             className="inline-flex shrink-0 items-center justify-center rounded-lg bg-title px-space-sm py-2 font-display text-label-md font-bold whitespace-nowrap text-white shadow-sm transition-colors hover:bg-signal sm:px-space-md"
           >
-            <span className="sm:hidden">SWASTI</span>
-            <span className="hidden sm:inline">Download SWASTI App</span>
+            <span className="xl:hidden">SWASTI</span>
+            <span className="hidden xl:inline">Download SWASTI App</span>
           </a>
           <Link
             href="/login"
@@ -82,7 +81,8 @@ export function SiteHeader() {
               <SheetTitle className="font-display text-headline-sm text-primary">
                 কাণ্ডারী-ল্যাব
               </SheetTitle>
-              <nav className="mt-space-lg flex flex-col gap-space-xs">
+              <AiSearch className="mt-space-md w-full" />
+              <nav className="mt-space-md flex flex-col gap-space-xs">
                 {navLinks.map((link) => (
                   <SheetClose asChild key={link.href}>
                     <a
