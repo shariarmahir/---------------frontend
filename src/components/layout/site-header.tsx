@@ -13,13 +13,13 @@ export function SiteHeader() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-white/95 shadow-sm backdrop-blur-xl">
-      <div className="flex h-20 w-full items-center justify-between gap-space-md px-gutter">
-        <div className="flex items-center gap-space-md">
-          <Link href="/" className="flex items-center gap-space-sm">
-            <span className="flex size-9 items-center justify-center rounded-md bg-primary font-display text-label-md font-extrabold text-primary-foreground">
+      <div className="mx-auto flex h-16 w-full max-w-[1920px] items-center justify-between gap-space-sm px-gutter-mobile sm:gap-space-md sm:px-gutter lg:h-20">
+        <div className="flex min-w-0 items-center gap-space-sm sm:gap-space-md">
+          <Link href="/" className="flex shrink-0 items-center gap-space-sm">
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary font-display text-label-md font-extrabold text-primary-foreground">
               ক
             </span>
-            <span className="font-display text-headline-sm font-bold tracking-tight text-primary">
+            <span className="hidden font-display text-headline-sm font-bold tracking-tight whitespace-nowrap text-primary sm:inline">
               কাণ্ডারী-ল্যাব
             </span>
           </Link>
@@ -49,23 +49,24 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-space-sm">
-          <div className="hidden items-center gap-space-xs rounded-sm border border-emerald-200 bg-emerald-50 px-space-sm py-space-xs sm:flex">
+        <div className="flex shrink-0 items-center gap-space-sm">
+          <div className="hidden items-center gap-space-xs rounded-sm border border-emerald-200 bg-emerald-50 px-space-sm py-space-xs xl:flex">
             <span className="size-2 animate-pulse rounded-full bg-primary" />
-            <span className="font-code-telemetry text-code-telemetry font-semibold text-emerald-800">
+            <span className="font-code-telemetry text-code-telemetry font-semibold whitespace-nowrap text-emerald-800">
               BD GRID: 99.98%
             </span>
           </div>
           <a
             href="#swasti"
-            className="inline-flex items-center justify-center rounded-lg bg-title px-space-md py-2 font-display text-label-md font-bold text-white shadow-sm transition-colors hover:bg-signal"
+            className="inline-flex shrink-0 items-center justify-center rounded-lg bg-title px-space-sm py-2 font-display text-label-md font-bold whitespace-nowrap text-white shadow-sm transition-colors hover:bg-signal sm:px-space-md"
           >
-            Download SWASTI App
+            <span className="sm:hidden">SWASTI</span>
+            <span className="hidden sm:inline">Download SWASTI App</span>
           </a>
           <Link
             href="/login"
             aria-label="Kandari member portal"
-            className="flex size-8 items-center justify-center rounded-full bg-emerald-800 text-white shadow-xs transition-colors hover:bg-primary"
+            className="hidden size-8 shrink-0 items-center justify-center rounded-full bg-emerald-800 text-white shadow-xs transition-colors hover:bg-primary sm:flex"
           >
             <Icon name="person" className="text-[18px]" />
           </Link>
@@ -94,6 +95,15 @@ export function SiteHeader() {
                   </SheetClose>
                 ))}
               </nav>
+              <SheetClose asChild>
+                <Link
+                  href="/login"
+                  className="mt-space-sm flex items-center justify-center gap-space-xs rounded-sm bg-emerald-800 px-space-md py-space-sm font-label-md text-label-md font-bold text-white transition-colors hover:bg-primary sm:hidden"
+                >
+                  <Icon name="person" className="text-[18px]" />
+                  Kandari Member Portal
+                </Link>
+              </SheetClose>
               <SheetClose asChild>
                 <BangladeshButton className="mt-space-lg w-full justify-center" />
               </SheetClose>

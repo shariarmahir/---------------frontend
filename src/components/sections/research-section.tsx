@@ -31,7 +31,7 @@ export function ResearchSection() {
           </a>
         </div>
 
-        <div className="grid grid-cols-1 gap-gutter md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-gutter sm:grid-cols-2 lg:grid-cols-3">
           {researchInitiatives.map((initiative) => (
             <article
               key={initiative.title}

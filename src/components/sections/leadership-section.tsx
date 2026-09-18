@@ -34,7 +34,7 @@ export function LeadershipSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-gutter md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-gutter sm:grid-cols-2 lg:grid-cols-3">
           {executives.map((executive) => (
             <article
               key={executive.name}
@@ -119,7 +119,7 @@ export function LeadershipSection() {
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-space-lg rounded-2xl border border-border bg-gradient-to-r from-emerald-50 via-white to-orange-50 p-space-lg shadow-md lg:flex-row">
+        <div className="flex flex-col items-center justify-between gap-space-lg rounded-2xl border border-border bg-linear-to-r from-emerald-50 via-white to-orange-50 p-space-lg shadow-md lg:flex-row">
           <div className="flex max-w-2xl flex-col gap-space-xs">
             <div className="flex w-fit items-center gap-space-xs rounded-sm bg-title px-space-sm py-0.5 font-code-telemetry text-label-sm font-bold text-white shadow-xs">
               <Icon name="school" className="text-[16px]" />

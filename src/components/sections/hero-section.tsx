@@ -8,16 +8,16 @@ export function HeroSection() {
   return (
     <section
       id="overview-mission"
-      className="relative w-full overflow-hidden border-b border-border bg-slate-50/50 py-space-xl"
+      className="relative flex w-full items-center overflow-hidden border-b border-border bg-slate-50/50 py-space-xl lg:aspect-[16/6] lg:py-0"
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:24px_24px] opacity-40" />
       <div className="pointer-events-none absolute -top-32 left-1/4 size-96 rounded-full bg-emerald-100/50 blur-[120px]" />
       <div className="pointer-events-none absolute top-1/3 -right-24 size-80 rounded-full bg-orange-100/60 blur-[120px]" />
 
-      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-gutter px-gutter lg:grid-cols-12">
+      <div className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-gutter px-gutter lg:grid-cols-12">
         <div className="z-10 flex flex-col gap-space-md lg:col-span-7">
-          <div className="flex w-fit items-center gap-space-sm rounded-full border border-border bg-white px-space-md py-1.5 shadow-xs">
-            <span className="size-2.5 rounded-full bg-crimson shadow-[0_0_8px_rgba(218,41,28,0.4)]" />
+          <div className="flex w-fit max-w-full items-start gap-space-sm rounded-2xl border border-border bg-white px-space-md py-1.5 shadow-xs sm:items-center sm:rounded-full">
+            <span className="mt-2 size-2.5 shrink-0 rounded-full bg-crimson shadow-[0_0_8px_rgba(218,41,28,0.4)] sm:mt-0" />
             <p className="font-display text-headline-sm font-bold tracking-wide text-signal">
               {NAZRUL_MOTTO}
             </p>

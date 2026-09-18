@@ -32,6 +32,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      // Browser extensions inject attributes onto <html> before hydration.
+      suppressHydrationWarning
       className={`${manrope.variable} ${inter.variable} ${notoBengali.variable} h-full antialiased`}
     >
       <head>
@@ -44,7 +46,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
         />
       </head>
-      <body className="min-h-full flex flex-col bg-background font-sans text-body-md text-foreground antialiased">
+      <body
+        suppressHydrationWarning
+        className="min-h-full flex flex-col bg-background font-sans text-body-md text-foreground antialiased"
+      >
         {children}
       </body>
     </html>

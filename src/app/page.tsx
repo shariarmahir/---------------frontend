@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <>
       <SiteHeader />
-      <main className="w-full bg-background pt-20">
+      <main className="w-full bg-background pt-16 lg:pt-20">
         <TelemetryTicker />
         <HeroSection />
         <PixelThesisSection />
