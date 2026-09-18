@@ -8,7 +8,7 @@ export function HeroSection() {
   return (
     <section
       id="overview-mission"
-      className="relative flex w-full items-center overflow-hidden border-b border-border bg-slate-50/50 py-space-xl lg:aspect-[16/6] lg:py-0"
+      className="relative flex w-full items-center overflow-hidden border-b border-border bg-slate-50/50 py-space-xl lg:min-h-[min(calc(100vw*6/16),calc(100vh-114px))] lg:py-space-xl"
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:24px_24px] opacity-40" />
       <div className="pointer-events-none absolute -top-32 left-1/4 size-96 rounded-full bg-emerald-100/50 blur-[120px]" />
