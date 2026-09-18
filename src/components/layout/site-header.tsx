@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { BangladeshButton } from "@/components/ui/bangladesh-button";
 import { Icon } from "@/components/ui/icon";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { NAZRUL_MOTTO, navLinks } from "@/data/navigation";
@@ -22,6 +23,7 @@ export function SiteHeader() {
               কাণ্ডারী-ল্যাব
             </span>
           </Link>
+          <BangladeshButton />
           <div className="hidden items-center rounded-sm border border-border bg-muted px-space-sm py-space-xs xl:flex">
             <span className="font-label-sm text-label-sm text-slate-700">
               {NAZRUL_MOTTO}
@@ -92,6 +94,9 @@ export function SiteHeader() {
                   </SheetClose>
                 ))}
               </nav>
+              <SheetClose asChild>
+                <BangladeshButton className="mt-space-lg w-full justify-center" />
+              </SheetClose>
               <p className="mt-space-lg font-label-sm text-label-sm text-primary">
                 {NAZRUL_MOTTO}
               </p>
