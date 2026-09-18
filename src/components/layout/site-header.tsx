@@ -5,6 +5,7 @@ import { useState } from "react";
 import { AiSearch } from "@/components/ui/ai-search";
 import { BangladeshButton } from "@/components/ui/bangladesh-button";
 import { Icon } from "@/components/ui/icon";
+import { NavIndicators } from "@/components/ui/nav-indicators";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { NAZRUL_MOTTO, navLinks } from "@/data/navigation";
 import { cn } from "@/lib/utils";
@@ -15,7 +16,7 @@ export function SiteHeader() {
   return (
     <header className="fixed top-0 right-0 left-0 z-50 border-b border-border bg-white/95 shadow-sm backdrop-blur-xl">
       {/* Row 1 — identity, sovereign status, primary conversion. */}
-      <div className="mx-auto flex h-14 w-full max-w-[1920px] items-center justify-between gap-space-sm px-gutter-mobile sm:gap-space-md sm:px-gutter lg:h-16">
+      <div className="mx-auto flex h-auto min-h-16 w-full max-w-[1920px] items-center justify-between gap-space-sm py-1.5 px-gutter-mobile sm:gap-space-md sm:px-gutter lg:min-h-20 lg:py-2">
         <div className="flex min-w-0 items-center gap-space-sm sm:gap-space-md">
           <Link href="/" className="flex min-w-0 shrink-0 items-center gap-space-sm">
             <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-primary font-display text-label-md font-extrabold text-primary-foreground shadow-xs">
@@ -27,6 +28,9 @@ export function SiteHeader() {
           </Link>
           <BangladeshButton />
         </div>
+
+        {/* Live national indicators fill the open centre of the top row. */}
+        <NavIndicators className="hidden min-w-0 justify-center lg:flex" />
 
         <div className="flex shrink-0 items-center gap-space-sm">
           <div className="hidden items-center gap-space-xs rounded-sm border border-emerald-200 bg-emerald-50 px-space-sm py-space-xs lg:flex">
@@ -43,7 +47,7 @@ export function SiteHeader() {
             <span className="hidden sm:inline lg:hidden xl:inline">
               Download SWASTI App
             </span>
-            <span className="sm:hidden lg:inline xl:hidden">SWASTI</span>
+            <span className="hidden sm:hidden lg:inline xl:hidden">SWASTI</span>
           </a>
           <Link
             href="/login"
@@ -118,7 +122,7 @@ export function SiteHeader() {
                 <span className="hidden xl:inline">{link.label}</span>
                 <span
                   className={cn(
-                    "absolute inset-x-space-sm -bottom-px h-[3px] rounded-t-sm bg-linear-to-r from-primary via-title to-crimson transition-all duration-300",
+                    "absolute inset-x-space-sm -bottom-px h-[3px] rounded-t-sm bg-title transition-all duration-300",
                     activeHref === link.href ? "scale-x-100" : "scale-x-0",
                   )}
                 />

@@ -12,6 +12,11 @@ export const navLinks: NavLink[] = [
     shortLabel: "Overview",
   },
   {
+    href: "#national-index",
+    label: "National Index",
+    shortLabel: "Index",
+  },
+  {
     href: "#kandari-member-portal",
     label: "Kandari Member Portal",
     shortLabel: "Portal",
