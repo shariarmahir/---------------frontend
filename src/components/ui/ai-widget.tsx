@@ -53,7 +53,13 @@ export function AiWidget() {
   }, [open]);
 
   return (
-    <div ref={panelRef} className="fixed right-4 bottom-4 z-40 lg:right-6 lg:bottom-6">
+    // z-30: below the header (z-40) and the Sheet overlay (z-50). The
+    // launcher sits bottom-right and the header top, so they do not overlap
+    // today, but an explicit rung keeps the stack unambiguous.
+    <div
+      ref={panelRef}
+      className="fixed right-4 bottom-4 z-30 lg:right-6 lg:bottom-6"
+    >
       {/* Panel. */}
       <div
         id="ai-widget-panel"

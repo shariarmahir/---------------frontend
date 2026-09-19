@@ -1,38 +1,18 @@
 import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils";
 
-/** Today's date as "১৯ সেপ্টেম্বর" in Bengali digits and month name. */
-function todayBengali(): string {
-  const BN_DIGITS = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
-  const BN_MONTHS = [
-    "জানুয়ারি",
-    "ফেব্রুয়ারি",
-    "মার্চ",
-    "এপ্রিল",
-    "মে",
-    "জুন",
-    "জুলাই",
-    "আগস্ট",
-    "সেপ্টেম্বর",
-    "অক্টোবর",
-    "নভেম্বর",
-    "ডিসেম্বর",
-  ];
-  const now = new Date();
-  const day = String(now.getDate())
-    .split("")
-    .map((d) => BN_DIGITS[Number(d)])
-    .join("");
-  return `${day} ${BN_MONTHS[now.getMonth()]}`;
-}
-
 /**
- * Primary national CTA — "বাংলাদেশের-রোগ".
+ * Primary national CTA — "বাংলাদেশের প্রধান বাস্তব সমস্যা".
  *
- * No card chrome — the two-tone wordmark carries the identity directly on
- * the navbar surface: বাংলাদেশের in bottle green, রোগ in crimson, so the
- * diagnosis reads in the colour of the condition. The subtitle line shows
- * today's date and swaps to the national risk readout on hover.
+ * No card chrome: the two-tone wordmark carries the identity directly on the
+ * navbar surface. The sentence reads in bottle green up to the final word,
+ * and "সমস্যা" lands in crimson — the problem named in the colour of the
+ * problem.
+ *
+ * No date and no risk readout. Both were decorative, and both forced this to
+ * be a client component reading a clock, which is a hydration hazard for a
+ * subtitle nobody acts on. Without them the component is static and renders
+ * on the server.
  */
 export function BangladeshButton({
   href = "/amar-bangladesh",
@@ -42,7 +22,7 @@ export function BangladeshButton({
   return (
     <a
       href={href}
-      aria-label="বাংলাদেশের-রোগ — জাতীয় সূচক"
+      aria-label="বাংলাদেশের প্রধান বাস্তব সমস্যা — জাতীয় সূচক"
       {...props}
       className={cn(
         "group relative inline-flex shrink-0 items-center gap-space-xs rounded-lg px-space-xs py-1",
@@ -57,16 +37,11 @@ export function BangladeshButton({
         <span className="relative size-1.5 rounded-full bg-crimson shadow-[0_0_6px_rgba(218,41,28,0.7)]" />
       </span>
 
-      <span className="relative flex flex-col leading-tight">
-        <span className="font-display text-label-md font-extrabold tracking-tight whitespace-nowrap sm:text-headline-sm">
-          <span className="text-primary">বাংলাদেশের</span>
-          <span className="text-slate-500">-</span>
-          <span className="text-crimson">রোগ</span>
-        </span>
-        <span className="font-code-telemetry text-label-xs font-bold tracking-widest whitespace-nowrap text-slate-500 uppercase transition-colors duration-300 group-hover:text-crimson">
-          <span className="group-hover:hidden">{todayBengali()}</span>
-          <span className="hidden group-hover:inline">⚠ RISK: ELEVATED</span>
-        </span>
+      {/* One line, so the button shares the navbar's baseline with every
+          other control in the row. */}
+      <span className="font-display text-label-md font-extrabold tracking-tight whitespace-nowrap">
+        <span className="text-primary">বাংলাদেশের প্রধান বাস্তব </span>
+        <span className="text-crimson">সমস্যা</span>
       </span>
     </a>
   );

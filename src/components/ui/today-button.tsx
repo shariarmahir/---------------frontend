@@ -4,9 +4,9 @@ import { cn } from "@/lib/utils";
 /**
  * "আজকের বাংলাদেশ" — today's national readout.
  *
- * Previously the placeholder text of the AI search input; it is now its own
- * destination, because reading today's state and asking a question are two
- * different intents that were sharing one control.
+ * Routes to /ajker-bangladesh, the national news index. Reading what is
+ * being reported today and asking a question are two different intents, so
+ * they are two different controls.
  *
  * `w-fit` matters: the button sits in a flex row beside the logo, where a
  * bare `inline-flex` gets stretched by the parent and the pill runs on past
@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 export function TodayButton({ className }: { className?: string }) {
   return (
     <a
-      href="#national-index"
+      href="/ajker-bangladesh"
       className={cn(
         "group relative isolate inline-flex w-fit shrink-0 items-center gap-space-xs",
         "overflow-hidden rounded-full border border-border bg-white",

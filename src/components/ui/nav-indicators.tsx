@@ -78,7 +78,9 @@ export function NavIndicators({ className }: { className?: string }) {
           active.unit ? ` ${active.unit}` : ""
         }${active.delta ? `, ${active.delta}` : ""}. View the national index.`}
         className={cn(
-          "group relative block h-11 w-60 shrink-0 overflow-hidden xl:w-[17rem] 2xl:w-[18.5rem]",
+          // h-10 against the 64px row: a 44px card left too little air above
+          // and below and was what forced row 1 past the reference height.
+          "group relative block h-10 w-60 shrink-0 overflow-hidden xl:w-[17rem] 2xl:w-[18.5rem]",
           "rounded-lg border border-slate-200/80 bg-slate-50/60",
           "transition-colors duration-300 hover:border-slate-300 hover:bg-white",
           "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:outline-none",

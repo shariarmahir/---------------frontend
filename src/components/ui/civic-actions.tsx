@@ -1,20 +1,30 @@
+"use client";
+
+import { useState } from "react";
+import { RecordDialog } from "@/components/record/record-dialog";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 
 /**
  * The two civic-action entry points that sit beside the logo.
  *
- * `Record` opens the daily citizen submission — the evidence side. `প্রতিবাদ`
- * is the protest register — the response side. They are deliberately a pair:
- * one records a problem, the other raises it, so they share a shape and
+ * `Record` opens the evidence recorder — the evidence side. `প্রতিবাদ` opens
+ * the complaint centre — the response side. They are deliberately a pair:
+ * one captures a problem, the other raises it, so they share a shape and
  * differ only in weight.
  */
 export function CivicActions({ className }: { className?: string }) {
+  const [recordOpen, setRecordOpen] = useState(false);
+
   return (
     <div className={cn("items-center gap-space-xs", className)}>
-      {/* Record — outlined, the quieter of the two. */}
-      <a
-        href="#daily-judgment"
+      {/* Record — outlined, the quieter of the two. A button rather than a
+          link: it opens the recorder over the current page instead of
+          navigating away, so evidence can be captured without losing what
+          the user was looking at. */}
+      <button
+        type="button"
+        onClick={() => setRecordOpen(true)}
         className={cn(
           "group inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-emerald-300 bg-white",
           "px-space-sm py-1.5 font-sans text-[0.8125rem] font-semibold tracking-normal whitespace-nowrap text-primary",
@@ -29,14 +39,13 @@ export function CivicActions({ className }: { className?: string }) {
           filled
         />
         Record
-      </a>
+      </button>
 
-      {/* প্রতিবাদ — filled crimson, the louder call. No protest section
-          exists yet, so this lands on the national index where the failing
-          indicators are, rather than on a dead anchor.
-          TODO: retarget once a dedicated protest register ships. */}
+      {/* প্রতিবাদ — filled crimson, the louder call. Opens the complaint
+          centre: categories mapped to the authority that handles them, the
+          nearest police station, and the public complaint record. */}
       <a
-        href="#national-index"
+        href="/protibad"
         className={cn(
           "group inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-crimson",
           "px-space-sm py-1.5 font-sans text-[0.8125rem] font-semibold tracking-normal whitespace-nowrap text-white",
@@ -52,6 +61,8 @@ export function CivicActions({ className }: { className?: string }) {
         />
         প্রতিবাদ
       </a>
+
+      <RecordDialog open={recordOpen} onOpenChange={setRecordOpen} />
     </div>
   );
 }
