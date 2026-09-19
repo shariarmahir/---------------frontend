@@ -11,7 +11,7 @@ import { AmarRegister } from "@/components/amar/amar-register";
 import { AmarRoadmap } from "@/components/amar/amar-roadmap";
 
 export const metadata: Metadata = {
-  title: "আমার বাংলাদেশ | National Issue Dossier — কাণ্ডারী-ল্যাব",
+  title: "বাংলাদেশের-রোগ | National Issue Dossier — কাণ্ডারী-ল্যাব",
   description:
     "A structural diagnosis of 32 national issues with measured evidence, causal analysis, loss projection to 2050, and a staged reform architecture.",
 };
@@ -20,7 +20,7 @@ export default function AmarBangladeshPage() {
   return (
     <>
       <SiteHeader />
-      <main className="w-full bg-surface pt-16.5 lg:pt-34.25">
+      <main className="w-full bg-surface pt-header lg:pt-header-lg">
         <AmarHero />
         <AmarBaseline />
         <AmarPriorityBreaks />

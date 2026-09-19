@@ -1,5 +1,6 @@
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
+import { AiWidget } from "@/components/ui/ai-widget";
 import { FlagshipsSection } from "@/components/sections/flagships-section";
 import { HeroSection } from "@/components/sections/hero-section";
 import { LeadershipSection } from "@/components/sections/leadership-section";
@@ -14,7 +15,7 @@ export default function Home() {
   return (
     <>
       <SiteHeader />
-      <main className="w-full bg-background pt-[66px] lg:pt-[137px]">
+      <main className="w-full bg-background pt-header lg:pt-header-lg">
         <TelemetryTicker />
         <HeroSection />
         <NationalIndexSection />
@@ -26,6 +27,8 @@ export default function Home() {
         <NodeTerminalSection />
       </main>
       <SiteFooter />
+      {/* Floating AI assistant — home screen only. */}
+      <AiWidget />
     </>
   );
 }

@@ -27,12 +27,12 @@ function todayBengali(): string {
 }
 
 /**
- * Primary national CTA — "আমার বাংলাদেশ".
+ * Primary national CTA — "বাংলাদেশের-রোগ".
  *
  * No card chrome — the two-tone wordmark carries the identity directly on
- * the navbar surface: আমার in crimson, বাংলাদেশ in bottle green. The
- * subtitle line shows today's date and swaps to the national risk readout
- * on hover.
+ * the navbar surface: বাংলাদেশের in bottle green, রোগ in crimson, so the
+ * diagnosis reads in the colour of the condition. The subtitle line shows
+ * today's date and swaps to the national risk readout on hover.
  */
 export function BangladeshButton({
   href = "/amar-bangladesh",
@@ -42,7 +42,7 @@ export function BangladeshButton({
   return (
     <a
       href={href}
-      aria-label="আমার বাংলাদেশ — জাতীয় সূচক"
+      aria-label="বাংলাদেশের-রোগ — জাতীয় সূচক"
       {...props}
       className={cn(
         "group relative inline-flex shrink-0 items-center gap-space-xs rounded-lg px-space-xs py-1",
@@ -59,8 +59,9 @@ export function BangladeshButton({
 
       <span className="relative flex flex-col leading-tight">
         <span className="font-display text-label-md font-extrabold tracking-tight whitespace-nowrap sm:text-headline-sm">
-          <span className="text-crimson">আমার </span>
-          <span className="text-primary">বাংলাদেশ</span>
+          <span className="text-primary">বাংলাদেশের</span>
+          <span className="text-slate-400">-</span>
+          <span className="text-crimson">রোগ</span>
         </span>
         <span className="font-code-telemetry text-[0.55rem] font-bold tracking-widest whitespace-nowrap text-slate-500 uppercase transition-colors duration-300 group-hover:text-crimson">
           <span className="group-hover:hidden">{todayBengali()}</span>

@@ -54,7 +54,7 @@ export const nationalStats: NationalStat[] = [
     value: "1",
     unit: "worst AQI",
     caption: "Dhaka AQI 189 — hazardous for sensitive groups",
-    delta: "+3 places worse",
+    delta: "+3",
     deltaDirection: "up",
     upIsGood: false,
     tone: "critical",

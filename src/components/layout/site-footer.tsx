@@ -1,3 +1,5 @@
+import Image from "next/image";
+import { BrandWordmark } from "@/components/ui/brand-wordmark";
 import { Icon } from "@/components/ui/icon";
 import { corePipelines, footerTelemetry } from "@/data/footer";
 import { NAZRUL_MOTTO } from "@/data/navigation";
@@ -36,12 +38,17 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-gutter px-gutter py-space-xl md:grid-cols-12">
         <div className="flex flex-col gap-space-md md:col-span-5">
           <div className="flex items-center gap-space-sm">
-            <span className="flex size-8 items-center justify-center rounded-md bg-primary font-display text-label-sm font-extrabold text-primary-foreground">
-              ক
-            </span>
-            <span className="font-display text-headline-sm font-bold text-primary">
-              কাণ্ডারী-ল্যাব
-            </span>
+            <Image
+              src="/logo/logo.png"
+              alt=""
+              aria-hidden
+              width={1277}
+              height={832}
+              className="h-10 w-auto shrink-0 object-contain"
+            />
+            {/* Same lockup as the header. */}
+            <BrandWordmark status="critical" className="text-[1.22rem]" />
+            <span className="sr-only">কাণ্ডারী-ল্যাব</span>
             <span className="rounded-sm border border-emerald-200 bg-emerald-100 px-space-xs py-0.5 font-label-sm text-label-sm font-bold text-emerald-800">
               R&amp;D HQ
             </span>

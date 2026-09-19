@@ -93,8 +93,9 @@ export function AmarHero() {
 
             <h1 className="font-display font-extrabold tracking-tight">
               <span className="block text-[clamp(1.75rem,5.2vw,4rem)] leading-[1.05]">
-                <span className="text-tertiary">আমার </span>
-                <span className="text-deep">বাংলাদেশ</span>
+                <span className="text-deep">বাংলাদেশের</span>
+                <span className="text-on-surface-variant">-</span>
+                <span className="text-tertiary">রোগ</span>
               </span>
               <span className="block text-[clamp(0.95rem,2vw,1.6rem)] leading-tight font-bold text-on-surface">
                 Every Problem Measured. Every Loss Calculated.

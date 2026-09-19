@@ -84,6 +84,12 @@
   --spacing-space-2xl: 4rem;
   --spacing-margin-lg: 3rem;
 
+  /* Fixed-header height — single source of truth for the content offset and
+     anchor scroll margin. Mobile is row 1 (3.5rem) + border; desktop adds
+     row 2 (3.25rem) + its border. Keep in sync with site-header.tsx. */
+  --spacing-header: calc(3.5rem + 1px);
+  --spacing-header-lg: calc(4.5rem + 3.25rem + 2px);
+
   --color-title: var(--title);
   --color-signal: var(--signal);
   --color-crimson: var(--crimson);
@@ -194,7 +200,7 @@
     @apply font-sans scroll-smooth;
   }
   section[id] {
-    @apply scroll-mt-16.5 lg:scroll-mt-34.25;
+    @apply scroll-mt-header lg:scroll-mt-header-lg;
   }
 }
 
@@ -202,6 +208,47 @@
   scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/* Live-signal dots trailing the `ল্যাব` line of the wordmark. */
+@keyframes brand-dot {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0) scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-0.06em) scale(1.15);
+  }
+}
+
+@utility animate-brand-dot {
+  animation: brand-dot 1.6s ease-in-out infinite;
+}
+
+/* Entrance for each auto-rotating navbar indicator. Only the active card is
+   mounted, so this plays alone — no two readings overlap. */
+@keyframes nav-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.35rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility animate-nav-card-in {
+  animation: nav-card-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-brand-dot,
+  .animate-nav-card-in {
+    animation: none !important;
   }
 }
 
