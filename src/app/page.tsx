@@ -9,14 +9,12 @@ import { MetricsSection } from "@/components/sections/metrics-section";
 import { NodeTerminalSection } from "@/components/sections/node-terminal-section";
 import { PixelThesisSection } from "@/components/sections/pixel-thesis-section";
 import { ResearchSection } from "@/components/sections/research-section";
-import { TelemetryTicker } from "@/components/sections/telemetry-ticker";
 
 export default function Home() {
   return (
     <>
       <SiteHeader />
       <main className="w-full bg-background pt-header lg:pt-header-lg">
-        <TelemetryTicker />
         <HeroSection />
         <NationalIndexSection />
         <PixelThesisSection />

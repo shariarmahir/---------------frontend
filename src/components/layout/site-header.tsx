@@ -24,6 +24,34 @@ export function SiteHeader() {
 
   return (
     <header className="fixed top-0 right-0 left-0 z-50 border-b border-border bg-white/95 shadow-sm backdrop-blur-xl">
+      {/* Utility strip — the thin top line of the reference header. Holds
+          the live national status that previously sat in a separate band
+          below the header, so the bar reads as one unit. Desktop only;
+          mobile has no room for a third row. */}
+      <div className="hidden border-b border-border/70 bg-slate-50 lg:block">
+        <div className="mx-auto flex h-7 w-full max-w-[1920px] items-center justify-between gap-space-md px-gutter font-sans text-[0.75rem] text-slate-600">
+          <span className="flex items-center gap-space-xs">
+            <span className="size-1.5 animate-pulse rounded-full bg-primary" />
+            <span className="font-semibold text-primary">
+              Bangladesh National Telemetry Lattice
+            </span>
+            <span className="text-slate-400">·</span>
+            <span>NODE-64 ACTIVE</span>
+          </span>
+
+          <span className="flex items-center gap-space-md">
+            <span className="hidden xl:inline">
+              Golden 2-Hours Critical Response Protocol:{" "}
+              <span className="font-semibold text-primary">ONLINE</span>
+            </span>
+            <span className="flex items-center gap-space-xs">
+              <span className="size-1.5 rounded-full bg-primary" />
+              BD GRID: <span className="font-semibold">99.98%</span>
+            </span>
+          </span>
+        </div>
+      </div>
+
       {/* Row 1 — identity, AI ask, sovereign status, primary conversion.
           A three-column grid keeps the search optically centred: the outer
           columns share the leftover space equally, so the centre never drifts
@@ -32,7 +60,7 @@ export function SiteHeader() {
         className={cn(
           "mx-auto w-full max-w-[1920px] px-gutter-mobile sm:px-gutter",
           "flex min-h-14 items-center justify-between gap-space-sm py-1.5",
-          "sm:gap-space-md lg:grid lg:min-h-18 lg:grid-cols-[1fr_auto_1fr] lg:gap-gutter",
+          "sm:gap-space-md lg:grid lg:min-h-16 lg:grid-cols-[1fr_auto_1fr] lg:gap-gutter",
         )}
       >
         {/* Left — logo lockup, then today's readout. The gap between them is
@@ -86,16 +114,9 @@ export function SiteHeader() {
 
         {/* Right — status, conversion, account, mobile menu. */}
         <div className="flex shrink-0 items-center justify-end gap-space-xs sm:gap-space-sm">
-          <div className="hidden items-center gap-space-xs rounded-sm border border-emerald-200 bg-emerald-50 px-space-sm py-space-xs xl:flex">
-            <span className="size-2 animate-pulse rounded-full bg-primary" />
-            <span className="font-code-telemetry text-code-telemetry font-semibold whitespace-nowrap text-emerald-800">
-              BD GRID: 99.98%
-            </span>
-          </div>
-
           <a
             href="#swasti"
-            className="inline-flex shrink-0 items-center gap-space-xs rounded-lg bg-title px-space-sm py-2 font-display text-label-md font-bold whitespace-nowrap text-slate-900 shadow-sm transition-colors hover:bg-signal sm:px-space-md"
+            className="inline-flex shrink-0 items-center gap-space-xs rounded-lg bg-title px-space-md py-2 font-sans text-[0.875rem] font-semibold tracking-normal whitespace-nowrap text-slate-900 shadow-sm transition-colors hover:bg-signal"
           >
             <Icon name="download" className="text-[18px]" filled />
             <span className="hidden sm:inline lg:hidden 2xl:inline">
@@ -163,31 +184,30 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {/* Row 2 — civic actions, section navigation, national button.
-          Desktop only; mobile uses the sheet. The nav is the flexible column,
-          so it absorbs the squeeze before either fixed-width edge does. */}
-      <div className="hidden border-t border-border/70 bg-linear-to-r from-emerald-50/60 via-white to-orange-50/50 lg:block">
-        <div className="mx-auto flex h-13 w-full max-w-[1920px] items-center gap-space-sm px-gutter xl:gap-space-md">
-          <CivicActions className="flex shrink-0" />
-
-          <nav className="flex min-w-0 flex-1 items-center justify-center gap-0.5 xl:gap-space-xs">
+      {/* Row 2 — section navigation, left-aligned under the logo as in the
+          reference, with the civic actions and national button held to the
+          right edge. Nav type is 13px here: a navigation row reads as
+          secondary to the main bar, so it should not match its size. */}
+      <div className="hidden border-t border-border/70 bg-white lg:block">
+        <div className="mx-auto flex h-12 w-full max-w-[1920px] items-center gap-space-md px-gutter">
+          <nav className="flex min-w-0 items-center gap-space-xs xl:gap-space-sm">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={() => setActiveHref(link.href)}
                 className={cn(
-                  "relative shrink-0 rounded-sm px-space-xs py-1.5 font-label-md text-label-md whitespace-nowrap transition-colors xl:px-space-sm 2xl:px-space-md",
+                  "relative shrink-0 px-space-xs py-3 font-sans text-[0.8125rem] font-medium tracking-normal whitespace-nowrap transition-colors",
                   activeHref === link.href
-                    ? "text-primary"
+                    ? "text-slate-900"
                     : "text-slate-600 hover:text-primary",
                 )}
               >
-                <span className="2xl:hidden">{link.shortLabel}</span>
-                <span className="hidden 2xl:inline">{link.label}</span>
+                <span className="xl:hidden">{link.shortLabel}</span>
+                <span className="hidden xl:inline">{link.label}</span>
                 <span
                   className={cn(
-                    "absolute inset-x-space-xs -bottom-px h-[3px] rounded-t-sm bg-title transition-all duration-300 xl:inset-x-space-sm",
+                    "absolute inset-x-space-xs bottom-0 h-[2px] rounded-t-sm bg-title transition-all duration-300",
                     activeHref === link.href ? "scale-x-100" : "scale-x-0",
                   )}
                 />
@@ -195,7 +215,12 @@ export function SiteHeader() {
             ))}
           </nav>
 
-          <BangladeshButton className="shrink-0" />
+          {/* Right edge: civic actions, then the national button. */}
+          <div className="ml-auto flex shrink-0 items-center gap-space-sm">
+            <CivicActions className="flex shrink-0" />
+            <span aria-hidden className="h-6 w-px shrink-0 bg-border" />
+            <BangladeshButton className="shrink-0" />
+          </div>
         </div>
       </div>
     </header>

@@ -17,7 +17,7 @@ export function CivicActions({ className }: { className?: string }) {
         href="#daily-judgment"
         className={cn(
           "group inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-emerald-300 bg-white",
-          "px-space-sm py-1.5 font-display text-label-md font-bold whitespace-nowrap text-primary",
+          "px-space-sm py-1.5 font-sans text-[0.8125rem] font-semibold tracking-normal whitespace-nowrap text-primary",
           "shadow-xs transition-all duration-300",
           "hover:-translate-y-px hover:border-primary hover:bg-emerald-50 hover:shadow-sm",
           "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none",
@@ -39,7 +39,7 @@ export function CivicActions({ className }: { className?: string }) {
         href="#national-index"
         className={cn(
           "group inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-crimson",
-          "px-space-sm py-1.5 font-display text-label-md font-bold whitespace-nowrap text-white",
+          "px-space-sm py-1.5 font-sans text-[0.8125rem] font-semibold tracking-normal whitespace-nowrap text-white",
           "shadow-sm transition-all duration-300",
           "hover:-translate-y-px hover:bg-red-700 hover:shadow-md",
           "focus-visible:ring-2 focus-visible:ring-crimson focus-visible:ring-offset-2 focus-visible:outline-none",
