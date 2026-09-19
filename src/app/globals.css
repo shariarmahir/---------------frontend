@@ -80,10 +80,32 @@
   --spacing-gutter-mobile: 0.75rem;
   --spacing-margin: 3rem;
   --spacing-margin-mobile: 1rem;
+  --spacing-gutter-lg: 2rem;
+  --spacing-space-2xl: 4rem;
+  --spacing-margin-lg: 3rem;
 
   --color-title: var(--title);
   --color-signal: var(--signal);
   --color-crimson: var(--crimson);
+
+  /* Sovereign Frontier surface system — green-tinted canvas per DESIGN.md. */
+  --color-surface: var(--surface);
+  --color-surface-dim: var(--surface-dim);
+  --color-surface-lowest: var(--surface-lowest);
+  --color-surface-low: var(--surface-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-high: var(--surface-high);
+  --color-surface-highest: var(--surface-highest);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
+  --color-deep: var(--deep);
+  --color-deep-container: var(--deep-container);
+  --color-on-deep-container: var(--on-deep-container);
+  --color-tertiary: var(--tertiary);
+  --color-secondary-fixed: var(--secondary-fixed);
+  --color-on-secondary-fixed: var(--on-secondary-fixed);
   --color-chart-5: var(--chart-5);
   --color-chart-4: var(--chart-4);
   --color-chart-3: var(--chart-3);
@@ -140,6 +162,25 @@
   --chart-4: #e65100;
   --chart-5: #64748b;
   --radius: 0.375rem;
+
+  /* Sovereign Frontier surface system (DESIGN.md). */
+  --surface: #f1fcf6;
+  --surface-dim: #d1ddd7;
+  --surface-lowest: #ffffff;
+  --surface-low: #ebf6f1;
+  --surface-container: #e5f0eb;
+  --surface-high: #dfebe5;
+  --surface-highest: #dae5e0;
+  --on-surface: #141e1a;
+  --on-surface-variant: #3f4943;
+  --outline: #6f7a72;
+  --outline-variant: #bec9c1;
+  --deep: #004d34;
+  --deep-container: #006747;
+  --on-deep-container: #8fe2ba;
+  --tertiary: #8b0001;
+  --secondary-fixed: #ffdcc1;
+  --on-secondary-fixed: #2e1500;
 }
 
 @layer base {
@@ -153,7 +194,7 @@
     @apply font-sans scroll-smooth;
   }
   section[id] {
-    @apply scroll-mt-[66px] lg:scroll-mt-[130px];
+    @apply scroll-mt-16.5 lg:scroll-mt-34.25;
   }
 }
 

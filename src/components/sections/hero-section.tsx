@@ -8,7 +8,7 @@ export function HeroSection() {
   return (
     <section
       id="overview-mission"
-      className="relative flex w-full items-center overflow-hidden border-b border-border bg-linear-to-b from-white via-emerald-50/30 to-white py-space-xl lg:min-h-[min(calc(100vw*6/16),calc(100vh-130px))] lg:py-space-xl"
+      className="relative flex w-full items-center overflow-hidden border-b border-border bg-linear-to-b from-white via-emerald-50/30 to-white py-space-xl lg:min-h-[min(calc(100vw*6/16),calc(100vh-137px))] lg:py-space-xl"
     >
       <BangladeshBackdrop />
       <div className="pointer-events-none absolute -top-32 left-1/4 size-96 rounded-full bg-emerald-100/40 blur-[120px]" />

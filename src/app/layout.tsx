@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Manrope, Inter, Noto_Sans_Bengali } from "next/font/google";
 import "./globals.css";
 
@@ -26,6 +26,12 @@ export const metadata: Metadata = {
   title: "Kandari-Lab | কাণ্ডারী-ল্যাব",
   description:
     "Sovereign deep-tech innovation infrastructure engineered for Bangladesh — clinical AI, biosensing wearables, semiconductors, and mechatronics.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

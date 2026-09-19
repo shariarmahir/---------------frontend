@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <>
       <SiteHeader />
-      <main className="w-full bg-background pt-[66px] lg:pt-[130px]">
+      <main className="w-full bg-background pt-[66px] lg:pt-[137px]">
         <TelemetryTicker />
         <HeroSection />
         <NationalIndexSection />

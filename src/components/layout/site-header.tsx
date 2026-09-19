@@ -26,11 +26,12 @@ export function SiteHeader() {
               কাণ্ডারী-ল্যাব
             </span>
           </Link>
-          <BangladeshButton />
+          {/* Mobile keeps the national button here; desktop moves it to row 2. */}
+          <BangladeshButton className="lg:hidden" />
         </div>
 
-        {/* Live national indicators fill the open centre of the top row. */}
-        <NavIndicators className="hidden min-w-0 justify-center lg:flex" />
+        {/* AI ask takes the open centre of the top row. */}
+        <AiSearch className="hidden w-56 shrink-0 lg:flex xl:w-72 2xl:w-96" />
 
         <div className="flex shrink-0 items-center gap-space-sm">
           <div className="hidden items-center gap-space-xs rounded-sm border border-emerald-200 bg-emerald-50 px-space-sm py-space-xs lg:flex">
@@ -102,9 +103,12 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {/* Row 2 — section navigation and AI ask. Desktop only; mobile uses the sheet. */}
+      {/* Row 2 — live indicators, section navigation, national button.
+          Desktop only; mobile uses the sheet. */}
       <div className="hidden border-t border-border/70 bg-linear-to-r from-emerald-50/60 via-white to-orange-50/50 lg:block">
-        <div className="mx-auto flex h-12 w-full max-w-[1920px] items-center justify-between gap-space-md px-gutter">
+        <div className="mx-auto flex h-14 w-full max-w-[1920px] items-center justify-between gap-space-md px-gutter">
+          <NavIndicators className="flex shrink-0" />
+
           <nav className="flex min-w-0 items-center gap-space-xs">
             {navLinks.map((link) => (
               <a
@@ -130,7 +134,7 @@ export function SiteHeader() {
             ))}
           </nav>
 
-          <AiSearch className="w-56 shrink-0 xl:w-72 2xl:w-96" />
+          <BangladeshButton className="shrink-0" />
         </div>
       </div>
     </header>
