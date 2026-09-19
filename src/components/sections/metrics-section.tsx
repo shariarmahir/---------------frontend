@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 const TONE_TEXT = {
   primary: "text-primary",
-  signal: "text-signal",
+  signal: "text-signal-text",
   crimson: "text-crimson",
   slate: "text-slate-900",
 } as const;
@@ -31,8 +31,8 @@ export function MetricsSection() {
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-space-xl px-gutter">
         <div className="mx-auto flex max-w-2xl flex-col items-center gap-space-xs text-center">
-          <span className="font-code-telemetry text-label-sm font-bold uppercase text-signal">
-            QUANTIFIABLE NATIONAL TELEMETRY
+          <span className="font-code-telemetry text-label-sm font-bold tracking-wider text-signal-text">
+            Quantifiable National Telemetry
           </span>
           <h2 className="font-display text-headline-lg-mobile font-bold tracking-tight text-slate-900 sm:text-headline-lg">
             Systemic Transformation Metrics
@@ -50,7 +50,7 @@ export function MetricsSection() {
               className="flex flex-col justify-between rounded-2xl border border-border bg-slate-50 p-space-lg shadow-xs transition-all hover:shadow-md"
             >
               <div className="flex items-center justify-between text-slate-500">
-                <span className="font-label-sm text-label-sm font-bold uppercase">
+                <span className="font-label-sm text-label-sm font-bold tracking-wider">
                   {metric.label}
                 </span>
                 <Icon

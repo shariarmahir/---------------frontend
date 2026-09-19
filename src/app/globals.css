@@ -62,10 +62,17 @@
   --text-label-md--line-height: 1.25rem;
   --text-label-md--letter-spacing: 0.02em;
   --text-label-md--font-weight: 600;
-  --text-label-sm: 0.6875rem;
-  --text-label-sm--line-height: 1rem;
+  --text-label-sm: 0.75rem;
+  --text-label-sm--line-height: 1.0625rem;
   --text-label-sm--letter-spacing: 0.05em;
   --text-label-sm--font-weight: 600;
+  /* Smallest permitted step — 12px, the readability floor. Use this for
+     micro-labels (sources, units, meta) instead of an arbitrary text-[…]
+     value, which is what fragmented the scale in the first place. */
+  --text-label-xs: 0.75rem;
+  --text-label-xs--line-height: 1rem;
+  --text-label-xs--letter-spacing: 0.04em;
+  --text-label-xs--font-weight: 600;
   --text-code-telemetry: 0.8125rem;
   --text-code-telemetry--line-height: 1.25rem;
   --text-code-telemetry--letter-spacing: -0.01em;
@@ -92,6 +99,7 @@
 
   --color-title: var(--title);
   --color-signal: var(--signal);
+  --color-signal-text: var(--signal-text);
   --color-crimson: var(--crimson);
 
   /* Sovereign Frontier surface system — green-tinted canvas per DESIGN.md. */
@@ -157,6 +165,10 @@
   --accent-foreground: #ffffff;
   --title: #ff9100;
   --signal: #e65100;
+  /* Text-only orange. #e65100 is 3.62:1 on the page surface, below the 4.5:1
+     AA minimum for small copy; this darker step is 4.95:1. The lighter
+     --signal is kept for fills, where white text sits on top. */
+  --signal-text: #c2410c;
   --crimson: #da291c;
   --destructive: #ba1a1a;
   --border: #e2e8f0;

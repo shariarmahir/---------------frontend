@@ -32,7 +32,7 @@ const area = (key: "unchecked" | "withReform") =>
 
 const TONE = {
   low: "bg-surface-container text-deep-container",
-  central: "bg-secondary-fixed text-signal",
+  central: "bg-secondary-fixed text-signal-text",
   high: "bg-tertiary/10 text-tertiary",
 } as const;
 
@@ -70,7 +70,7 @@ export function AmarLossProjection() {
 
         <div className="grid grid-cols-1 gap-gutter lg:grid-cols-12">
           {/* Chart. */}
-          <figure className="flex flex-col gap-space-md rounded-xl bg-surface-lowest p-space-lg shadow-xs lg:col-span-8">
+          <figure className="flex flex-col gap-space-md rounded-lg bg-surface-lowest p-space-lg shadow-xs lg:col-span-8">
             <figcaption className="flex flex-wrap items-center justify-between gap-space-sm">
               <span className="font-display text-headline-sm font-bold text-on-surface">
                 Environmental burden, 2026–2050
@@ -224,13 +224,13 @@ export function AmarLossProjection() {
                 ${last.withReform}B
               </strong>{" "}
               with reform — an annual gap of{" "}
-              <strong className="text-signal">${last.gap}B</strong>.
+              <strong className="text-signal-text">${last.gap}B</strong>.
             </p>
           </figure>
 
           {/* Scenarios + calculation rules. */}
           <div className="flex flex-col gap-gutter lg:col-span-4">
-            <div className="flex flex-col gap-space-md rounded-xl bg-surface-lowest p-space-lg shadow-xs">
+            <div className="flex flex-col gap-space-md rounded-lg bg-surface-lowest p-space-lg shadow-xs">
               <h3 className="font-display text-headline-sm font-bold text-on-surface">
                 Avoided-burden scenarios
               </h3>
@@ -268,7 +268,7 @@ export function AmarLossProjection() {
               </ul>
             </div>
 
-            <div className="flex flex-col gap-space-sm rounded-xl border border-outline-variant/30 bg-on-surface p-space-lg shadow-xs">
+            <div className="flex flex-col gap-space-sm rounded-lg border border-outline-variant/30 bg-on-surface p-space-lg shadow-xs">
               <span className="flex items-center gap-space-xs font-code-telemetry text-label-sm font-bold uppercase text-on-deep-container">
                 <Icon name="functions" className="text-[16px]" />
                 Calculation rules
@@ -276,7 +276,7 @@ export function AmarLossProjection() {
               {Object.values(CALC_RULES).map((rule) => (
                 <code
                   key={rule}
-                  className="block rounded-md bg-on-surface/80 px-space-sm py-space-xs font-code-telemetry text-[0.7rem] leading-relaxed text-surface"
+                  className="block rounded-lg bg-on-surface/80 px-space-sm py-space-xs font-code-telemetry text-label-xs leading-relaxed text-surface"
                 >
                   {rule}
                 </code>

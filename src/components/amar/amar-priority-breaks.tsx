@@ -32,12 +32,12 @@ export function AmarPriorityBreaks() {
           {priorityBreaks.map((item) => (
             <article
               key={item.id}
-              className="grid grid-cols-1 gap-gutter rounded-xl bg-surface-lowest p-space-lg shadow-xs transition-all hover:shadow-md lg:grid-cols-12"
+              className="grid grid-cols-1 gap-gutter rounded-lg bg-surface-lowest p-space-lg shadow-xs transition-all hover:shadow-md lg:grid-cols-12"
             >
               {/* Headline metric. */}
               <div className="flex flex-col gap-space-sm lg:col-span-4">
                 <div className="flex items-center gap-space-sm">
-                  <span className="flex size-11 shrink-0 items-center justify-center rounded-xl border bg-tertiary/10 text-tertiary">
+                  <span className="flex size-11 shrink-0 items-center justify-center rounded-lg border bg-tertiary/10 text-tertiary">
                     <Icon name={item.icon} className="text-[22px]" />
                   </span>
                   <span className="font-code-telemetry text-label-sm font-bold text-outline">
@@ -82,7 +82,7 @@ export function AmarPriorityBreaks() {
                   ))}
                 </dl>
 
-                <span className="font-code-telemetry text-[0.6rem] uppercase tracking-wide text-outline">
+                <span className="font-code-telemetry text-label-xs tracking-wide text-outline">
                   {item.source}
                 </span>
               </div>

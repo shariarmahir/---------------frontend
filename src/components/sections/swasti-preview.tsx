@@ -35,7 +35,7 @@ export function SwastiPreview() {
         <div className="flex flex-col gap-space-xs rounded-lg border border-border bg-slate-50 p-space-sm">
           <div className="flex items-center justify-between font-label-sm text-label-sm font-medium text-slate-600">
             <span>ভয়েস ইনপুট: চট্টগ্রাম আঞ্চলিক ডায়ালেক্ট</span>
-            <span className="font-code-telemetry font-bold text-signal">
+            <span className="font-code-telemetry font-bold text-signal-text">
               98.4% Confidence
             </span>
           </div>
@@ -51,22 +51,22 @@ export function SwastiPreview() {
               strokeWidth="2.5"
             />
           </svg>
-          <span className="font-body-sm text-body-sm font-medium italic text-slate-800">
+          <span className="font-body-sm text-body-sm font-medium italic text-slate-900">
             &ldquo;বুকখান বহুত ভারী ভারী ঠেকেদ্দে, নিশ্বাস লইতে কষ্ট অর...&rdquo;
           </span>
         </div>
 
         <div className="flex flex-col gap-space-xs rounded-lg border border-red-200 bg-red-50 p-space-sm">
-          <div className="flex items-center gap-space-xs font-code-telemetry text-label-sm font-bold text-crimson">
+          <div className="flex items-center gap-space-xs font-code-telemetry text-label-sm font-bold text-red-700">
             <Icon name="verified" className="text-[16px]" />
-            <span>PRELIMINARY ASSESSMENT: CARDIAC ISCHEMIA RISK</span>
+            <span>Preliminary assessment: cardiac ischemia risk</span>
           </div>
-          <p className="font-body-sm text-body-sm text-slate-800">
+          <p className="font-body-sm text-body-sm text-slate-900">
             Dispatching ambulance beacon to nearby Thana Health Complex (3.8 km
             away). Oxygen reservoir protocol triggered.
           </p>
           <div className="flex items-center justify-between pt-space-xs">
-            <span className="font-code-telemetry text-label-sm font-bold text-signal">
+            <span className="font-code-telemetry text-label-sm font-bold text-signal-text">
               ETA: 11 MINS
             </span>
             <span className="rounded-sm bg-crimson px-space-xs py-0.5 font-label-sm text-label-sm font-bold text-white">

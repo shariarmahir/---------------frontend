@@ -8,8 +8,11 @@ export function TelemetryTicker() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-space-lg font-code-telemetry text-code-telemetry text-slate-600">
         <div className="flex shrink-0 items-center gap-space-sm">
           <span className="inline-block size-2 animate-ping rounded-full bg-primary" />
-          <span className="font-bold tracking-wider text-primary">
-            BANGLADESH NATIONAL TELEMETRY LATTICE
+          {/* Sentence case: a 37-character all-caps run reads slower than
+              the same words in mixed case. Caps are kept for the short
+              status chip beside it, where they act as a label. */}
+          <span className="font-bold tracking-wide text-primary">
+            Bangladesh National Telemetry Lattice
           </span>
           <span className="rounded-sm border border-emerald-200 bg-emerald-100 px-2 py-0.5 font-label-sm text-label-sm text-emerald-800">
             NODE-64 ACTIVE
@@ -26,11 +29,11 @@ export function TelemetryTicker() {
                   reading.tone === "primary" ? "text-primary" : "text-title",
                 )}
               />
-              <span className="font-semibold text-slate-800">{reading.label}</span>
+              <span className="font-semibold text-slate-900">{reading.label}</span>
               <span
                 className={cn(
                   "font-code-telemetry font-bold",
-                  reading.tone === "primary" ? "text-primary" : "text-signal",
+                  reading.tone === "primary" ? "text-primary" : "text-signal-text",
                 )}
               >
                 {reading.value}

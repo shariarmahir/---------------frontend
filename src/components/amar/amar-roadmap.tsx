@@ -37,12 +37,12 @@ export function AmarRoadmap() {
           {reformStages.map((stage, i) => (
             <article
               key={stage.id}
-              className="group relative flex flex-col gap-space-md rounded-xl bg-surface-low p-space-lg shadow-xs transition-all hover:-translate-y-1 hover:shadow-md"
+              className="group relative flex flex-col gap-space-md rounded-lg bg-surface-low p-space-lg shadow-xs transition-all hover:-translate-y-1 hover:shadow-md"
             >
               <span className="absolute top-0 left-space-lg h-1 w-16 rounded-b-sm bg-title" />
 
               <div className="flex items-center gap-space-sm pt-space-xs">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl border bg-surface-container text-deep-container">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-lg border bg-surface-container text-deep-container">
                   <Icon
                     name={stage.icon}
                     className="text-[20px] transition-transform group-hover:scale-110"
@@ -94,7 +94,7 @@ export function AmarRoadmap() {
           <p className="font-label-sm text-label-sm text-outline lg:hidden">
             Swipe the table sideways to see every column →
           </p>
-          <div className="overflow-x-auto rounded-xl border border-outline-variant/30 shadow-xs">
+          <div className="overflow-x-auto rounded-lg border border-outline-variant/30 shadow-xs">
             <table className="w-full min-w-[56rem] border-collapse text-left">
               <caption className="sr-only">
                 Monitoring dashboard with baseline, 24-month target and red flag
@@ -167,7 +167,7 @@ export function AmarRoadmap() {
 
         {/* Closing argument. */}
         <div className="grid grid-cols-1 gap-gutter lg:grid-cols-2">
-          <div className="flex flex-col gap-space-sm rounded-xl bg-surface-low p-space-lg shadow-xs">
+          <div className="flex flex-col gap-space-sm rounded-lg bg-surface-low p-space-lg shadow-xs">
             <span className="flex items-center gap-space-xs font-code-telemetry text-label-sm font-bold uppercase text-deep-container">
               <Icon name="lightbulb" className="text-[18px]" />
               The credible route
@@ -177,7 +177,7 @@ export function AmarRoadmap() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-space-sm rounded-xl bg-surface-container/60 p-space-lg shadow-xs">
+          <div className="flex flex-col gap-space-sm rounded-lg bg-surface-container/60 p-space-lg shadow-xs">
             <span className="flex items-center gap-space-xs font-code-telemetry text-label-sm font-bold uppercase text-deep-container">
               <Icon name="verified" className="text-[18px]" />
               Proof it is possible

@@ -18,7 +18,7 @@ export function HeroSection() {
         <div className="z-10 flex flex-col gap-space-md lg:col-span-8">
           <div className="flex w-fit max-w-full items-start gap-space-sm rounded-2xl border border-border bg-white px-space-md py-1.5 shadow-xs sm:items-center sm:rounded-full">
             <span className="mt-2 size-2.5 shrink-0 rounded-full bg-crimson shadow-[0_0_8px_rgba(218,41,28,0.4)] sm:mt-0" />
-            <p className="font-display text-headline-sm font-bold tracking-wide text-signal">
+            <p className="font-display text-headline-sm font-bold tracking-wide text-signal-text">
               {NAZRUL_MOTTO}
             </p>
             <span className="hidden font-label-sm text-label-sm uppercase tracking-widest text-slate-500 sm:inline">
@@ -44,17 +44,17 @@ export function HeroSection() {
           <div className="flex flex-wrap items-center gap-space-md pt-space-xs">
             <a
               href="#swasti"
-              className="inline-flex items-center gap-space-sm rounded-lg bg-title px-space-lg py-3.5 font-display text-label-md font-bold text-white shadow-md transition-all hover:scale-[1.02] hover:bg-signal active:scale-[0.98]"
+              className="inline-flex items-center gap-space-sm rounded-lg bg-title px-space-lg py-3.5 font-display text-label-md font-bold text-slate-900 shadow-md transition-all hover:scale-[1.02] hover:bg-signal active:scale-[0.98]"
             >
               <Icon name="download" className="text-[20px]" filled />
               <span>Download SWASTI App</span>
-              <span className="rounded-sm bg-white/20 px-space-xs py-0.5 font-code-telemetry text-label-sm font-semibold text-white">
+              <span className="rounded-sm bg-slate-900/15 px-space-xs py-0.5 font-code-telemetry text-label-sm font-semibold text-slate-900">
                 v2.4.1
               </span>
             </a>
             <a
               href="#rnd-innovations"
-              className="inline-flex items-center gap-space-sm rounded-lg border border-border bg-white px-space-lg py-3.5 font-display text-label-md font-semibold text-slate-800 shadow-xs transition-all hover:bg-slate-50"
+              className="inline-flex items-center gap-space-sm rounded-lg border border-border bg-white px-space-lg py-3.5 font-display text-label-md font-semibold text-slate-900 shadow-xs transition-all hover:bg-slate-50"
             >
               <Icon name="biotech" className="text-[20px] text-primary" />
               <span>Explore R&amp;D Pipeline</span>
@@ -74,7 +74,7 @@ export function HeroSection() {
                 <span
                   className={cn(
                     "mt-0.5 block font-display text-headline-sm font-bold",
-                    point.tone === "primary" ? "text-primary" : "text-signal",
+                    point.tone === "primary" ? "text-primary" : "text-signal-text",
                   )}
                 >
                   {point.value}

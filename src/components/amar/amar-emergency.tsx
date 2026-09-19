@@ -36,7 +36,7 @@ export function AmarEmergency() {
             <article
               key={cat.id}
               className={cn(
-                "group relative flex flex-col gap-space-sm overflow-hidden rounded-xl p-space-md shadow-xs transition-all hover:-translate-y-1 hover:shadow-md",
+                "group relative flex flex-col gap-space-sm overflow-hidden rounded-lg p-space-md shadow-xs transition-all hover:-translate-y-1 hover:shadow-md",
                 cat.tone === "critical"
                   ? "bg-tertiary/10/50"
                   : "bg-secondary-fixed/50",
@@ -45,8 +45,8 @@ export function AmarEmergency() {
               <div className="flex items-start justify-between gap-space-sm">
                 <span
                   className={cn(
-                    "flex size-11 shrink-0 items-center justify-center rounded-xl border bg-surface-lowest shadow-xs",
-                    cat.tone === "critical" ? "text-tertiary" : "text-signal",
+                    "flex size-11 shrink-0 items-center justify-center rounded-lg border bg-surface-lowest shadow-xs",
+                    cat.tone === "critical" ? "text-tertiary" : "text-signal-text",
                   )}
                 >
                   <Icon
@@ -56,7 +56,7 @@ export function AmarEmergency() {
                 </span>
                 <span
                   className={cn(
-                    "rounded-full px-space-sm py-0.5 font-code-telemetry text-[0.6rem] font-bold uppercase",
+                    "rounded-full px-space-sm py-0.5 font-code-telemetry text-label-xs font-bold uppercase",
                     cat.tone === "critical"
                       ? "bg-tertiary text-white"
                       : "bg-signal text-white",

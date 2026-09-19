@@ -20,7 +20,7 @@ export const impactMetrics: ImpactMetric[] = [
     tone: "primary",
   },
   {
-    label: "ACUTE TRIAGE EFFICIENCY",
+    label: "Acute Triage Efficiency",
     icon: "timer",
     value: "78%",
     title: "Golden 2-Hrs Detection",
@@ -40,7 +40,7 @@ export const impactMetrics: ImpactMetric[] = [
     tone: "slate",
   },
   {
-    label: "DEEP-TECH SOVEREIGN JOBS",
+    label: "Deep-Tech Sovereign Jobs",
     icon: "engineering",
     value: "1,200+",
     title: "High-Skill Engineering Careers",

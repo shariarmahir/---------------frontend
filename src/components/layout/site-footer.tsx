@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 const TONE_TEXT = {
   primary: "text-primary",
-  signal: "text-signal",
+  signal: "text-signal-text",
   crimson: "text-crimson",
 } as const;
 
@@ -20,14 +20,14 @@ export function SiteFooter() {
             <div key={item.label} className="flex items-center gap-space-sm">
               <span
                 className={cn(
-                  "font-label-sm text-label-sm font-bold uppercase tracking-wider",
+                  "font-label-sm text-label-sm font-bold tracking-wider",
                   TONE_TEXT[item.tone],
                 )}
               >
                 {item.label}
               </span>
               <span className="h-4 w-px bg-slate-300" />
-              <span className="font-code-telemetry text-code-telemetry font-semibold text-slate-800">
+              <span className="font-code-telemetry text-code-telemetry font-semibold text-slate-900">
                 {item.value}
               </span>
             </div>
@@ -58,13 +58,15 @@ export function SiteFooter() {
             Bangladesh. Dhaka Frontier Lab, Tejgaon Industrial Framework,
             Dhaka-1208, Bangladesh.
           </p>
-          <p className="font-label-sm text-label-sm font-bold italic text-primary">
+          {/* A Nazrul quotation, not a label — set at body size so the
+              Bengali is comfortably legible. */}
+          <p className="font-body-md text-body-md font-bold italic text-primary">
             {NAZRUL_MOTTO}
           </p>
         </div>
 
         <div className="flex flex-col gap-space-sm md:col-span-4">
-          <h2 className="font-display text-label-md font-bold uppercase tracking-wider text-slate-900">
+          <h2 className="font-display text-headline-sm font-bold tracking-tight text-slate-900">
             Core Sovereign Pipelines
           </h2>
           <ul className="flex flex-col gap-space-xs font-body-sm text-body-sm font-medium text-slate-600">
@@ -80,7 +82,7 @@ export function SiteFooter() {
         </div>
 
         <div className="flex flex-col gap-space-sm md:col-span-3">
-          <h2 className="font-display text-label-md font-bold uppercase tracking-wider text-slate-900">
+          <h2 className="font-display text-headline-sm font-bold tracking-tight text-slate-900">
             Integrity &amp; Protocol
           </h2>
           <p className="font-body-sm text-body-sm leading-relaxed text-slate-600">

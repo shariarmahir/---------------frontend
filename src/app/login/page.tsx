@@ -19,7 +19,7 @@ export default function LoginPage() {
       </p>
       <Link
         href="/"
-        className="rounded-lg bg-title px-space-lg py-3 font-display text-label-md font-bold text-white shadow-sm transition-colors hover:bg-signal"
+        className="rounded-lg bg-title px-space-lg py-3 font-display text-label-md font-bold text-slate-900 shadow-sm transition-colors hover:bg-signal"
       >
         Back to Command Overview
       </Link>

@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 const TONE_TEXT = {
   good: "text-deep-container",
-  watch: "text-signal",
+  watch: "text-signal-text",
   bad: "text-tertiary",
 } as const;
 
@@ -43,7 +43,7 @@ export function AmarBaseline() {
           {baselineStats.map((stat) => (
             <article
               key={stat.id}
-              className="group flex flex-col gap-space-xs rounded-xl bg-surface-low p-space-md shadow-xs transition-all hover:-translate-y-1 hover:shadow-md"
+              className="group flex flex-col gap-space-xs rounded-lg bg-surface-low p-space-md shadow-xs transition-all hover:-translate-y-1 hover:shadow-md"
             >
               <Icon
                 name={stat.icon}
@@ -86,7 +86,7 @@ export function AmarBaseline() {
               <p className="font-body-sm text-body-sm leading-snug text-on-surface-variant">
                 {stat.note}
               </p>
-              <span className="mt-auto font-code-telemetry text-[0.6rem] uppercase tracking-wide text-outline">
+              <span className="mt-auto font-code-telemetry text-label-xs tracking-wide text-outline">
                 {stat.source}
               </span>
             </article>
@@ -94,7 +94,7 @@ export function AmarBaseline() {
         </div>
 
         {/* Evidence discipline. */}
-        <div className="grid grid-cols-1 gap-space-md rounded-xl bg-surface-low p-space-lg md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-space-md rounded-lg bg-surface-low p-space-lg md:grid-cols-3">
           {evidenceRules.map((rule) => (
             <div key={rule.rule} className="flex gap-space-sm">
               <Icon

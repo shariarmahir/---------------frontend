@@ -53,7 +53,7 @@ export function NodeTerminalSection() {
           <button
             type="button"
             onClick={queryNode}
-            className="h-10 rounded-lg bg-emerald-700 px-space-md font-label-md text-label-md font-bold text-white shadow-xs transition-colors hover:bg-emerald-800"
+            className="h-10 rounded-lg bg-primary px-space-md font-label-md text-label-md font-bold text-white shadow-xs transition-colors hover:bg-emerald-800"
           >
             Query Node
           </button>

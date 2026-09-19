@@ -11,8 +11,8 @@ export function ResearchSection() {
       <div className="mx-auto flex max-w-7xl flex-col gap-space-xl px-gutter">
         <div className="flex flex-col justify-between gap-space-md md:flex-row md:items-end">
           <div className="flex max-w-2xl flex-col gap-space-xs">
-            <span className="font-code-telemetry text-label-sm font-bold uppercase text-primary">
-              FRONTIER DEEP-TECH HORIZONS
+            <span className="font-code-telemetry text-label-sm font-bold tracking-wider text-primary">
+              Frontier Deep-Tech Horizons
             </span>
             <h2 className="font-display text-headline-lg-mobile font-bold tracking-tight text-slate-900 sm:text-headline-lg">
               Advanced R&amp;D Initiatives
@@ -67,7 +67,7 @@ export function ResearchSection() {
                       <dd
                         className={cn(
                           "text-right font-bold",
-                          spec.tone === "primary" ? "text-primary" : "text-signal",
+                          spec.tone === "primary" ? "text-primary" : "text-signal-text",
                         )}
                       >
                         {spec.value}

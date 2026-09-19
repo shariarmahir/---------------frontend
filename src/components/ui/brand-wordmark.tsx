@@ -12,7 +12,7 @@ export type BrandStatus = "stable" | "watch" | "critical";
 /** `ল্যাব` colour per status — green steady, orange watch, red critical. */
 const STATUS_TEXT: Record<BrandStatus, string> = {
   stable: "text-primary",
-  watch: "text-signal",
+  watch: "text-signal-text",
   critical: "text-crimson",
 };
 

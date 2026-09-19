@@ -76,7 +76,7 @@ export function AiWidget() {
             type="button"
             onClick={() => setOpen(false)}
             aria-label="Close AI Ask"
-            className="flex size-7 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-white hover:text-slate-800"
+            className="flex size-7 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-white hover:text-slate-900"
           >
             <Icon name="close" className="text-[16px]" />
           </button>
@@ -101,14 +101,14 @@ export function AiWidget() {
               className={cn(
                 "h-10 w-full rounded-lg border border-border bg-slate-50 pr-10 pl-space-sm",
                 "font-sans text-body-sm text-slate-900 transition-all outline-none",
-                "placeholder:text-slate-400",
+                "placeholder:text-slate-500",
                 "focus:border-primary focus:bg-white focus:shadow-[0_0_0_3px_rgba(0,103,71,0.12)]",
               )}
             />
             <button
               type="submit"
               aria-label="Ask"
-              className="absolute right-1 flex size-8 items-center justify-center rounded-md bg-primary text-white transition-colors hover:bg-emerald-800"
+              className="absolute right-1 flex size-8 items-center justify-center rounded-lg bg-primary text-white transition-colors hover:bg-emerald-800"
             >
               <Icon name="search" className="text-[16px]" />
             </button>

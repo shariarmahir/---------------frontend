@@ -5,13 +5,13 @@ import { cn } from "@/lib/utils";
 const AVATAR_TONE = {
   primary: "bg-emerald-700 text-white",
   emerald: "border border-emerald-200 bg-emerald-100 text-primary",
-  signal: "border border-orange-200 bg-orange-100 text-signal",
+  signal: "border border-orange-200 bg-orange-100 text-signal-text",
 } as const;
 
 const ROLE_TONE = {
   primary: "text-primary",
-  emerald: "text-signal",
-  signal: "text-signal",
+  emerald: "text-signal-text",
+  signal: "text-signal-text",
 } as const;
 
 export function LeadershipSection() {
@@ -22,7 +22,7 @@ export function LeadershipSection() {
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-space-xl px-gutter">
         <div className="mx-auto flex max-w-2xl flex-col items-center gap-space-xs text-center">
-          <span className="font-code-telemetry text-label-sm font-bold uppercase text-primary">
+          <span className="font-code-telemetry text-label-sm font-bold tracking-wider text-primary">
             THE SCIENTIFIC CORPS
           </span>
           <h2 className="font-display text-headline-lg-mobile font-bold tracking-tight text-slate-900 sm:text-headline-lg">
@@ -67,7 +67,7 @@ export function LeadershipSection() {
                 </div>
               </div>
 
-              <blockquote className="font-body-sm text-body-sm italic leading-relaxed text-slate-700">
+              <blockquote className="font-body-sm text-body-sm italic leading-relaxed text-slate-900">
                 &ldquo;{executive.quote}&rdquo;
               </blockquote>
 
@@ -121,9 +121,9 @@ export function LeadershipSection() {
 
         <div className="flex flex-col items-center justify-between gap-space-lg rounded-2xl border border-border bg-linear-to-r from-emerald-50 via-white to-orange-50 p-space-lg shadow-md lg:flex-row">
           <div className="flex max-w-2xl flex-col gap-space-xs">
-            <div className="flex w-fit items-center gap-space-xs rounded-sm bg-title px-space-sm py-0.5 font-code-telemetry text-label-sm font-bold text-white shadow-xs">
+            <div className="flex w-fit items-center gap-space-xs rounded-sm bg-title px-space-sm py-0.5 font-code-telemetry text-label-sm font-bold text-slate-900 shadow-xs">
               <Icon name="school" className="text-[16px]" />
-              <span>COHORT 2025 APPOINTMENTS OPEN</span>
+              <span>Cohort 2025 Appointments Open</span>
             </div>
             <h3 className="font-display text-headline-md font-bold text-slate-900">
               Join the Kandari R&amp;D Fellowships
@@ -137,13 +137,13 @@ export function LeadershipSection() {
           <div className="flex shrink-0 flex-wrap items-center gap-space-md">
             <a
               href="/login"
-              className="rounded-lg bg-title px-space-lg py-3 font-display text-label-md font-bold text-white shadow-sm transition-colors hover:bg-signal"
+              className="rounded-lg bg-title px-space-lg py-3 font-display text-label-md font-bold text-slate-900 shadow-sm transition-colors hover:bg-signal"
             >
               Apply for Fellowship
             </a>
             <a
               href="#rnd-innovations"
-              className="rounded-lg border border-border bg-white px-space-md py-3 font-label-md text-label-md font-semibold text-slate-800 shadow-xs transition-colors hover:bg-slate-50"
+              className="rounded-lg border border-border bg-white px-space-md py-3 font-label-md text-label-md font-semibold text-slate-900 shadow-xs transition-colors hover:bg-slate-50"
             >
               Curriculum Details
             </a>

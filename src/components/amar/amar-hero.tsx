@@ -8,7 +8,7 @@ import { REPORT_META } from "@/data/amar-bangladesh";
 const TICKER = [
   { value: "17.6%", label: "GDP lost to pollution", tone: "text-tertiary" },
   { value: "272k", label: "Deaths / year", tone: "text-tertiary" },
-  { value: "24/100", label: "Corruption index", tone: "text-signal" },
+  { value: "24/100", label: "Corruption index", tone: "text-signal-text" },
 ];
 
 /**
@@ -84,7 +84,7 @@ export function AmarHero() {
             <div className="inline-flex w-fit items-center gap-space-xs rounded-full bg-secondary-fixed px-space-sm py-1 text-on-secondary-fixed">
               <Icon
                 name="radar"
-                className="text-[clamp(0.7rem,1vw,0.9rem)] text-signal"
+                className="text-[clamp(0.7rem,1vw,0.9rem)] text-signal-text"
               />
               <span className="font-label-sm text-[clamp(0.6rem,0.85vw,0.7rem)] tracking-wide">
                 NATIONAL DOSSIER · {REPORT_META.sourcePoints} POINTS
@@ -124,7 +124,7 @@ export function AmarHero() {
             <div className="flex flex-wrap items-center gap-[0.6vw]">
               <a
                 href="#priority-breaks"
-                className="flex items-center gap-1.5 rounded-lg bg-title px-[1.4vw] py-[0.9vh] font-display text-[clamp(0.7rem,1vw,0.875rem)] font-semibold whitespace-nowrap text-on-surface shadow-md transition-all hover:bg-signal hover:text-white active:scale-95"
+                className="flex items-center gap-1.5 rounded-lg bg-title px-[1.4vw] py-[0.9vh] font-display text-[clamp(0.7rem,1vw,0.875rem)] font-semibold whitespace-nowrap text-on-surface shadow-md transition-all hover:bg-signal active:scale-95"
               >
                 <Icon
                   name="troubleshoot"

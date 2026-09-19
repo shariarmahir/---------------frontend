@@ -151,7 +151,7 @@ export function DailyJudgmentForm() {
 
       {/* Mood scale. */}
       <fieldset className="flex flex-col gap-space-sm">
-        <legend className="font-label-md text-label-md font-semibold text-slate-800">
+        <legend className="font-label-md text-label-md font-semibold text-slate-900">
           1. How was your day?
         </legend>
         <div className="flex flex-wrap gap-space-xs">
@@ -172,13 +172,13 @@ export function DailyJudgmentForm() {
                 name={m.icon}
                 className={cn(
                   "text-[24px]",
-                  mood === m.value ? "text-primary" : "text-slate-400",
+                  mood === m.value ? "text-primary" : "text-slate-500",
                 )}
               />
-              <span className="font-display text-body-sm font-semibold text-slate-800">
+              <span className="font-display text-body-sm font-semibold text-slate-900">
                 {m.label}
               </span>
-              <span className="font-label-sm text-[0.65rem] text-slate-500">
+              <span className="font-label-sm text-label-xs text-slate-500">
                 {m.en}
               </span>
             </button>
@@ -188,7 +188,7 @@ export function DailyJudgmentForm() {
 
       {/* Improvement areas. */}
       <fieldset className="flex flex-col gap-space-sm">
-        <legend className="font-label-md text-label-md font-semibold text-slate-800">
+        <legend className="font-label-md text-label-md font-semibold text-slate-900">
           2. What can the government fix within 2 days?
         </legend>
         <div className="flex flex-wrap gap-space-xs">
@@ -204,7 +204,7 @@ export function DailyJudgmentForm() {
                   "inline-flex items-center gap-1 rounded-full border px-space-sm py-1 font-label-sm text-label-sm transition-all",
                   active
                     ? "border-crimson bg-crimson text-white shadow-sm"
-                    : "border-border bg-white text-slate-700 hover:border-crimson/40 hover:text-crimson",
+                    : "border-border bg-white text-slate-900 hover:border-crimson/40 hover:text-crimson",
                 )}
               >
                 <Icon name={area.icon} className="text-[14px]" />
@@ -220,7 +220,7 @@ export function DailyJudgmentForm() {
       <div className="flex flex-col gap-space-xs">
         <label
           htmlFor="daily-note"
-          className="font-label-md text-label-md font-semibold text-slate-800"
+          className="font-label-md text-label-md font-semibold text-slate-900"
         >
           3. Short description
         </label>
@@ -231,9 +231,9 @@ export function DailyJudgmentForm() {
           onChange={(e) => setNote(e.target.value)}
           rows={3}
           placeholder="আজ কী সমস্যায় পড়েছেন? সংক্ষেপে লিখুন…"
-          className="w-full resize-none rounded-lg border border-border bg-white px-space-sm py-space-sm font-sans text-body-sm text-slate-900 shadow-xs outline-none transition-all placeholder:text-slate-400 focus:border-primary focus:shadow-[0_0_0_3px_rgba(0,103,71,0.12)]"
+          className="w-full resize-none rounded-lg border border-border bg-white px-space-sm py-space-sm font-sans text-body-sm text-slate-900 shadow-xs outline-none transition-all placeholder:text-slate-500 focus:border-primary focus:shadow-[0_0_0_3px_rgba(0,103,71,0.12)]"
         />
-        <span className="self-end font-code-telemetry text-[0.65rem] text-slate-400">
+        <span className="self-end font-code-telemetry text-label-xs text-slate-500">
           {note.length}/{MAX_CHARS}
         </span>
       </div>
@@ -250,7 +250,7 @@ export function DailyJudgmentForm() {
 
       <button
         type="submit"
-        className="mt-auto inline-flex items-center justify-center gap-space-sm rounded-lg bg-title px-space-lg py-3 font-display text-label-md font-bold text-white shadow-sm transition-all hover:scale-[1.01] hover:bg-signal active:scale-[0.99]"
+        className="mt-auto inline-flex items-center justify-center gap-space-sm rounded-lg bg-title px-space-lg py-3 font-display text-label-md font-bold text-slate-900 shadow-sm transition-all hover:scale-[1.01] hover:bg-signal active:scale-[0.99]"
       >
         <Icon name="send" className="text-[18px]" />
         Submit Today&apos;s Judgment

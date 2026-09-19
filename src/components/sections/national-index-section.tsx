@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 
 const TONE_TEXT: Record<RiskTone, string> = {
   stable: "text-primary",
-  watch: "text-signal",
+  watch: "text-signal-text",
   critical: "text-crimson",
 };
 
@@ -23,7 +23,7 @@ const TONE_BAR: Record<RiskTone, string> = {
 
 const TONE_CHIP: Record<RiskTone, string> = {
   stable: "border-emerald-200 bg-emerald-50 text-primary",
-  watch: "border-orange-200 bg-orange-50 text-signal",
+  watch: "border-orange-200 bg-orange-50 text-signal-text",
   critical: "border-red-200 bg-red-50 text-crimson",
 };
 
@@ -35,8 +35,8 @@ export function NationalIndexSection() {
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-space-xl px-gutter">
         <div className="mx-auto flex max-w-3xl flex-col items-center gap-space-xs text-center">
-          <span className="font-code-telemetry text-label-sm font-bold uppercase text-primary">
-            NATIONAL SOVEREIGN INDEX
+          <span className="font-code-telemetry text-label-sm font-bold tracking-wider text-primary">
+            National Sovereign Index
           </span>
           <h2 className="font-display text-headline-lg-mobile font-bold tracking-tight text-slate-900 sm:text-headline-lg">
             আমরা কাণ্ডারী — Judge Our Own Bangladesh
@@ -67,7 +67,7 @@ export function NationalIndexSection() {
                 {stat.delta ? (
                   <span
                     className={cn(
-                      "flex items-center gap-0.5 rounded-sm px-1.5 py-0.5 font-code-telemetry text-[0.65rem] font-bold",
+                      "flex items-center gap-0.5 rounded-sm px-1.5 py-0.5 font-code-telemetry text-label-xs font-bold",
                       (stat.deltaDirection === "up") === Boolean(stat.upIsGood)
                         ? "bg-emerald-50 text-primary"
                         : "bg-red-50 text-crimson",
@@ -127,7 +127,7 @@ export function NationalIndexSection() {
               <p className="font-body-sm text-body-sm leading-relaxed text-slate-600">
                 {stat.caption}
               </p>
-              <span className="mt-auto font-code-telemetry text-[0.6rem] uppercase tracking-wide text-slate-400">
+              <span className="mt-auto font-code-telemetry text-label-xs tracking-wide text-slate-500">
                 {stat.source}
               </span>
             </article>
@@ -168,7 +168,7 @@ export function NationalIndexSection() {
               {economicRisks.map((risk) => (
                 <li key={risk.id} className="flex flex-col gap-1">
                   <div className="flex items-center justify-between gap-space-sm">
-                    <span className="font-label-md text-label-md font-semibold text-slate-800">
+                    <span className="font-label-md text-label-md font-semibold text-slate-900">
                       {risk.label}{" "}
                       <span className="font-display text-body-sm text-slate-500">
                         {risk.banglaLabel}

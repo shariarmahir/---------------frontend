@@ -12,7 +12,7 @@ export const executives: Executive[] = [
   {
     initials: "MM",
     name: "Mahir Shariar Mahin",
-    role: "CHIEF EXECUTIVE OFFICER & FOUNDER",
+    role: "Chief Executive Officer & Founder",
     discipline: "Deep-Tech Architect & Systems Engineer",
     quote:
       "We are not here to assemble cheap consumer gadgets. Kandari exists to give Bangladesh sovereign mathematical and physical autonomy.",
@@ -22,7 +22,7 @@ export const executives: Executive[] = [
   {
     initials: "SA",
     name: "Sadman bin Arif",
-    role: "CHIEF OPERATING OFFICER",
+    role: "Chief Operating Officer",
     discipline: "Supply Chain & Rural Grid Scaling",
     quote:
       "Operationalizing 45,000 smart pharmacies means mastering reverse-logistics down to the most remote riverine Char regions.",
@@ -32,7 +32,7 @@ export const executives: Executive[] = [
   {
     initials: "NS",
     name: "Nabeel Shadad",
-    role: "CHIEF MARKETING OFFICER",
+    role: "Chief Marketing Officer",
     discipline: "Ecosystem Growth & Institutional Trust",
     quote:
       "Translating ultra-complex AI models into an intuitive interface that an elderly villager in Kurigram can command instinctively.",

@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 
 const STATUS_CHIP: Record<EvidenceStatus, string> = {
   verified: "bg-surface-container text-deep-container",
-  plausible: "bg-secondary-fixed text-signal",
+  plausible: "bg-secondary-fixed text-signal-text",
   unverified: "bg-surface-container text-on-surface-variant",
 };
 
@@ -114,7 +114,7 @@ export function AmarRegister() {
             <div
               key={key}
               className={cn(
-                "flex items-center gap-space-md rounded-xl p-space-md shadow-xs",
+                "flex items-center gap-space-md rounded-lg p-space-md shadow-xs",
                 STATUS_CHIP[key],
               )}
             >
@@ -186,7 +186,7 @@ export function AmarRegister() {
         <p className="font-label-sm text-label-sm text-outline lg:hidden">
           Swipe the table sideways to see every column →
         </p>
-        <div className="overflow-x-auto rounded-xl bg-surface-lowest shadow-sm">
+        <div className="overflow-x-auto rounded-lg bg-surface-lowest shadow-sm">
           <table className="w-full min-w-[52rem] border-collapse text-left">
             <caption className="sr-only">
               The 32 source points with research interpretation, evidence status
@@ -245,7 +245,7 @@ export function AmarRegister() {
                     <span className="block font-display text-label-md font-semibold text-on-surface">
                       {p.topic}
                     </span>
-                    <span className="mt-0.5 inline-block rounded-sm bg-surface-container px-1.5 py-0.5 font-code-telemetry text-[0.6rem] uppercase text-outline">
+                    <span className="mt-0.5 inline-block rounded-sm bg-surface-container px-1.5 py-0.5 font-code-telemetry text-label-xs text-outline">
                       {p.theme}
                     </span>
                   </td>
@@ -258,7 +258,7 @@ export function AmarRegister() {
                   <td className="px-space-md py-space-md align-top">
                     <span
                       className={cn(
-                        "inline-block rounded-full border px-space-sm py-0.5 font-code-telemetry text-[0.62rem] font-bold whitespace-nowrap uppercase",
+                        "inline-block rounded-full border px-space-sm py-0.5 font-code-telemetry text-label-xs font-bold whitespace-nowrap uppercase",
                         STATUS_CHIP[p.status],
                       )}
                     >
@@ -268,7 +268,7 @@ export function AmarRegister() {
                   <td className="px-space-md py-space-md align-top">
                     <span
                       className={cn(
-                        "inline-block rounded-full px-space-sm py-0.5 font-code-telemetry text-[0.62rem] font-bold whitespace-nowrap uppercase",
+                        "inline-block rounded-full px-space-sm py-0.5 font-code-telemetry text-label-xs font-bold whitespace-nowrap uppercase",
                         URGENCY_CHIP[p.urgency],
                       )}
                     >
@@ -296,8 +296,8 @@ export function AmarRegister() {
         </p>
 
         {/* Claims the evidence could not support. */}
-        <div className="flex flex-col gap-space-sm rounded-xl border bg-secondary-fixed/60 p-space-lg">
-          <span className="flex items-center gap-space-xs font-code-telemetry text-label-sm font-bold uppercase text-signal">
+        <div className="flex flex-col gap-space-sm rounded-lg border bg-secondary-fixed/60 p-space-lg">
+          <span className="flex items-center gap-space-xs font-code-telemetry text-label-sm font-bold uppercase text-signal-text">
             <Icon name="report" className="text-[18px]" />
             Claims the evidence could not support
           </span>
@@ -315,7 +315,7 @@ export function AmarRegister() {
               >
                 <Icon
                   name="close"
-                  className="mt-0.5 shrink-0 text-[14px] text-signal"
+                  className="mt-0.5 shrink-0 text-[14px] text-signal-text"
                 />
                 {claim}
               </li>

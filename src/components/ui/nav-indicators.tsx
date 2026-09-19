@@ -7,14 +7,14 @@ import { cn } from "@/lib/utils";
 
 const TONE_TEXT: Record<RiskTone, string> = {
   stable: "text-primary",
-  watch: "text-signal",
+  watch: "text-signal-text",
   critical: "text-crimson",
 };
 
 /** Icon plate — a tinted disc carrying the severity colour. */
 const TONE_PLATE: Record<RiskTone, string> = {
   stable: "bg-primary/10 text-primary",
-  watch: "bg-signal/10 text-signal",
+  watch: "bg-signal/10 text-signal-text",
   critical: "bg-crimson/10 text-crimson",
 };
 
@@ -70,7 +70,7 @@ export function NavIndicators({ className }: { className?: string }) {
     >
       {/* Fixed size so the header never reflows as the indicator changes.
           Centred in row 1, so it is sized to hold the longest reading
-          ("UNHYGIENIC CITY RANK") without truncating. */}
+          ("Workforce Productivity") without truncating. */}
       <a
         href="#national-index"
         aria-live="polite"
@@ -114,7 +114,7 @@ export function NavIndicators({ className }: { className?: string }) {
             {/* Two text rows, min-w-0 throughout so truncation works instead
                 of overflowing the card. */}
             <span className="flex min-w-0 flex-1 flex-col justify-center">
-              <span className="truncate font-label-sm text-[0.55rem] leading-[1.3] font-bold tracking-wide text-slate-500 uppercase">
+              <span className="truncate font-label-sm text-label-xs leading-[1.3] font-bold tracking-wide text-slate-500">
                 {stat.label}
               </span>
 
@@ -128,7 +128,7 @@ export function NavIndicators({ className }: { className?: string }) {
                   {stat.value}
                 </span>
                 {stat.unit ? (
-                  <span className="truncate font-code-telemetry text-[0.55rem] text-slate-500">
+                  <span className="truncate font-code-telemetry text-label-xs text-slate-500">
                     {stat.unit}
                   </span>
                 ) : null}
@@ -137,7 +137,7 @@ export function NavIndicators({ className }: { className?: string }) {
                   <span
                     className={cn(
                       "ml-auto flex shrink-0 items-center gap-0.5",
-                      "font-code-telemetry text-[0.55rem] font-bold whitespace-nowrap",
+                      "font-code-telemetry text-label-xs font-bold whitespace-nowrap",
                       // Colour by whether the movement is good news for this
                       // metric, not by its direction.
                       (stat.deltaDirection === "up") === Boolean(stat.upIsGood)
@@ -151,7 +151,10 @@ export function NavIndicators({ className }: { className?: string }) {
                           ? "arrow_upward"
                           : "arrow_downward"
                       }
-                      className="text-[10px]"
+                      // Glyph size, not body copy — the 12px readability
+                      // floor does not apply to a directional arrow.
+                      aria-hidden
+                      className="text-[12px]"
                     />
                     {stat.delta}
                   </span>

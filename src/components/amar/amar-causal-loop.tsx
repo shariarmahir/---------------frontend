@@ -30,7 +30,7 @@ export function AmarCausalLoop() {
         </div>
 
         {/* The loop. */}
-        <div className="relative rounded-xl bg-surface-low p-space-lg">
+        <div className="relative rounded-lg bg-surface-low p-space-lg">
           <ol className="grid grid-cols-1 gap-space-md sm:grid-cols-2 lg:grid-cols-6">
             {causalChain.map((node, i) => (
               <li
@@ -46,7 +46,7 @@ export function AmarCausalLoop() {
                     <span className="hidden h-px flex-1 bg-linear-to-r from-primary/50 to-primary/10 lg:block" />
                   ) : null}
                 </div>
-                <Icon name={node.icon} className="text-[20px] text-signal" />
+                <Icon name={node.icon} className="text-[20px] text-signal-text" />
                 <span className="font-display text-label-md font-bold text-on-surface">
                   {node.label}
                 </span>
@@ -77,7 +77,7 @@ export function AmarCausalLoop() {
         <p className="font-label-sm text-label-sm text-outline lg:hidden">
           Swipe the table sideways to see every column →
         </p>
-        <div className="overflow-x-auto rounded-xl border border-outline-variant/30 shadow-xs">
+        <div className="overflow-x-auto rounded-lg border border-outline-variant/30 shadow-xs">
           <table className="w-full min-w-[56rem] border-collapse text-left">
             <caption className="sr-only">
               Causal graph nodes with mechanism, indicator set and significance

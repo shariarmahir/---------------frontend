@@ -15,8 +15,8 @@ export function FlagshipsSection() {
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-space-xl px-gutter">
         <div className="mx-auto flex max-w-3xl flex-col items-center gap-space-xs text-center">
-          <span className="rounded-sm border border-emerald-200 bg-emerald-100 px-space-sm py-1 font-code-telemetry text-label-sm font-bold uppercase text-emerald-900">
-            ACTIVE DEEP-TECH HARDWARE &amp; SOFTWARE SUITE
+          <span className="rounded-sm border border-emerald-200 bg-emerald-100 px-space-sm py-1 font-code-telemetry text-label-sm font-bold tracking-wider text-emerald-800">
+            Active Deep-Tech Hardware &amp; Software Suite
           </span>
           <h2 className="font-display text-headline-lg-mobile font-bold tracking-tight text-slate-900 sm:text-headline-lg">
             Pioneering Vanguard Deployments
@@ -31,7 +31,7 @@ export function FlagshipsSection() {
         <article className="grid grid-cols-1 items-center gap-gutter rounded-2xl border border-border bg-white p-space-lg shadow-md lg:grid-cols-12">
           <div className="flex flex-col gap-space-md lg:col-span-6">
             <div className="flex flex-wrap items-center gap-space-sm">
-              <span className="rounded-md bg-title px-space-sm py-1 font-display text-label-sm font-bold text-white shadow-xs">
+              <span className="rounded-lg bg-title px-space-sm py-1 font-display text-label-sm font-bold text-slate-900 shadow-xs">
                 SUPER-APP PLATFORM
               </span>
               <span className="font-code-telemetry text-code-telemetry font-bold text-primary">
@@ -76,14 +76,14 @@ export function FlagshipsSection() {
             <div className="flex flex-wrap items-center gap-space-md pt-space-sm">
               <a
                 href="#download"
-                className="inline-flex items-center gap-space-sm rounded-lg bg-title px-space-md py-space-sm font-display text-label-md font-bold text-white shadow-sm transition-all hover:bg-signal"
+                className="inline-flex items-center gap-space-sm rounded-lg bg-title px-space-md py-space-sm font-display text-label-md font-bold text-slate-900 shadow-sm transition-all hover:bg-signal"
               >
                 <Icon name="android" className="text-[20px]" />
                 <span>Google Play</span>
               </a>
               <a
                 href="#download"
-                className="inline-flex items-center gap-space-sm rounded-lg border border-border bg-muted px-space-md py-space-sm font-display text-label-md font-bold text-slate-800 shadow-xs transition-all hover:bg-slate-200"
+                className="inline-flex items-center gap-space-sm rounded-lg border border-border bg-white px-space-md py-space-sm font-display text-label-md font-bold text-slate-900 shadow-xs transition-all hover:bg-slate-50"
               >
                 <Icon name="phone_iphone" className="text-[20px]" />
                 <span>Apple App Store</span>
@@ -106,7 +106,7 @@ export function FlagshipsSection() {
                 <span className="rounded-sm border border-emerald-200 bg-emerald-100 px-space-sm py-1 font-display text-label-sm font-bold text-emerald-800">
                   SOVEREIGN HARDWARE
                 </span>
-                <span className="font-code-telemetry text-code-telemetry font-bold text-signal">
+                <span className="font-code-telemetry text-code-telemetry font-bold text-signal-text">
                   BENGALI WEARABLE
                 </span>
               </div>
@@ -145,13 +145,13 @@ export function FlagshipsSection() {
             </div>
 
             <div className="mt-space-lg flex flex-wrap items-center justify-between gap-space-sm border-t border-border pt-space-md">
-              <span className="font-code-telemetry text-code-telemetry text-slate-700">
+              <span className="font-code-telemetry text-code-telemetry text-slate-900">
                 Target Unit Cost:{" "}
-                <strong className="font-bold text-signal">BDT 1,850</strong>
+                <strong className="font-bold text-signal-text">BDT 1,850</strong>
               </span>
               <a
                 href="#rnd-innovations"
-                className="rounded-lg border border-border bg-muted px-space-md py-space-xs font-label-md text-label-md font-semibold text-slate-800 transition-colors hover:bg-slate-200"
+                className="rounded-lg border border-border bg-white px-space-md py-space-xs font-label-md text-label-md font-semibold text-slate-900 transition-colors hover:bg-slate-50"
               >
                 View Hardware Whitepaper
               </a>
@@ -207,7 +207,7 @@ export function FlagshipsSection() {
             </div>
 
             <div className="mt-space-lg flex flex-wrap items-center justify-between gap-space-sm border-t border-border pt-space-md">
-              <span className="font-code-telemetry text-code-telemetry text-slate-700">
+              <span className="font-code-telemetry text-code-telemetry text-slate-900">
                 Pilot Cohort:{" "}
                 <strong className="font-bold text-primary">
                   120 Union Parishads Active
@@ -215,7 +215,7 @@ export function FlagshipsSection() {
               </span>
               <a
                 href="#kandari-member-portal"
-                className="rounded-lg border border-border bg-muted px-space-md py-space-xs font-label-md text-label-md font-semibold text-slate-800 transition-colors hover:bg-slate-200"
+                className="rounded-lg border border-border bg-white px-space-md py-space-xs font-label-md text-label-md font-semibold text-slate-900 transition-colors hover:bg-slate-50"
               >
                 Join Pharmacy Pilot
               </a>

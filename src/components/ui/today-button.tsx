@@ -19,7 +19,7 @@ export function TodayButton({ className }: { className?: string }) {
       className={cn(
         "group inline-flex w-fit shrink-0 items-center gap-space-xs rounded-full",
         "border border-border bg-white py-1.5 pr-space-md pl-1.5",
-        "font-display text-label-md font-bold whitespace-nowrap text-slate-700",
+        "font-display text-label-md font-bold whitespace-nowrap text-slate-900",
         "shadow-xs transition-all duration-300",
         "hover:-translate-y-px hover:border-primary/40 hover:text-primary hover:shadow-sm",
         "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none",

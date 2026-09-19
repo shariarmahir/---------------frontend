@@ -60,10 +60,10 @@ export function BangladeshButton({
       <span className="relative flex flex-col leading-tight">
         <span className="font-display text-label-md font-extrabold tracking-tight whitespace-nowrap sm:text-headline-sm">
           <span className="text-primary">বাংলাদেশের</span>
-          <span className="text-slate-400">-</span>
+          <span className="text-slate-500">-</span>
           <span className="text-crimson">রোগ</span>
         </span>
-        <span className="font-code-telemetry text-[0.55rem] font-bold tracking-widest whitespace-nowrap text-slate-500 uppercase transition-colors duration-300 group-hover:text-crimson">
+        <span className="font-code-telemetry text-label-xs font-bold tracking-widest whitespace-nowrap text-slate-500 uppercase transition-colors duration-300 group-hover:text-crimson">
           <span className="group-hover:hidden">{todayBengali()}</span>
           <span className="hidden group-hover:inline">⚠ RISK: ELEVATED</span>
         </span>

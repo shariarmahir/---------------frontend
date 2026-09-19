@@ -95,7 +95,7 @@ export function SiteHeader() {
 
           <a
             href="#swasti"
-            className="inline-flex shrink-0 items-center gap-space-xs rounded-lg bg-title px-space-sm py-2 font-display text-label-md font-bold whitespace-nowrap text-white shadow-sm transition-colors hover:bg-signal sm:px-space-md"
+            className="inline-flex shrink-0 items-center gap-space-xs rounded-lg bg-title px-space-sm py-2 font-display text-label-md font-bold whitespace-nowrap text-slate-900 shadow-sm transition-colors hover:bg-signal sm:px-space-md"
           >
             <Icon name="download" className="text-[18px]" filled />
             <span className="hidden sm:inline lg:hidden 2xl:inline">
@@ -107,7 +107,7 @@ export function SiteHeader() {
           <Link
             href="/login"
             aria-label="Kandari member portal"
-            className="hidden size-9 shrink-0 items-center justify-center rounded-full bg-emerald-800 text-white shadow-xs transition-colors hover:bg-primary sm:flex"
+            className="hidden size-9 shrink-0 items-center justify-center rounded-full bg-primary text-white shadow-xs transition-colors hover:bg-emerald-800 sm:flex"
           >
             <Icon name="person" className="text-[18px]" />
           </Link>
@@ -115,7 +115,7 @@ export function SiteHeader() {
           <Sheet>
             <SheetTrigger
               aria-label="Open navigation menu"
-              className="flex size-9 shrink-0 items-center justify-center rounded-md border border-border text-slate-700 transition-colors hover:bg-slate-100 lg:hidden"
+              className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-border text-slate-900 transition-colors hover:bg-slate-100 lg:hidden"
             >
               <Icon name="menu" className="text-[20px]" />
             </SheetTrigger>
@@ -136,7 +136,7 @@ export function SiteHeader() {
                     <a
                       href={link.href}
                       onClick={() => setActiveHref(link.href)}
-                      className="rounded-sm border border-border bg-slate-50 px-space-md py-space-sm font-label-md text-label-md text-slate-700 transition-colors hover:border-emerald-300 hover:text-primary"
+                      className="rounded-sm border border-border bg-slate-50 px-space-md py-space-sm font-label-md text-label-md text-slate-900 transition-colors hover:border-emerald-300 hover:text-primary"
                     >
                       {link.label}
                     </a>
@@ -146,7 +146,7 @@ export function SiteHeader() {
               <SheetClose asChild>
                 <Link
                   href="/login"
-                  className="mt-space-sm flex items-center justify-center gap-space-xs rounded-sm bg-emerald-800 px-space-md py-space-sm font-label-md text-label-md font-bold text-white transition-colors hover:bg-primary sm:hidden"
+                  className="mt-space-sm flex items-center justify-center gap-space-xs rounded-lg bg-primary px-space-md py-space-sm font-label-md text-label-md font-bold text-white transition-colors hover:bg-emerald-800 sm:hidden"
                 >
                   <Icon name="person" className="text-[18px]" />
                   Kandari Member Portal
