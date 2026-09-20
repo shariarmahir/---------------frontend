@@ -9,6 +9,7 @@ import { AmarLossProjection } from "@/components/amar/amar-loss-projection";
 import { AmarPriorityBreaks } from "@/components/amar/amar-priority-breaks";
 import { AmarRegister } from "@/components/amar/amar-register";
 import { AmarRoadmap } from "@/components/amar/amar-roadmap";
+import { NationalIndexSection } from "@/components/sections/national-index-section";
 
 export const metadata: Metadata = {
   title: "বাংলাদেশের-রোগ | National Issue Dossier — কাণ্ডারী-ল্যাব",
@@ -22,6 +23,11 @@ export default function AmarBangladeshPage() {
       <SiteHeader />
       <main className="w-full bg-surface pt-header lg:pt-header-lg">
         <AmarHero />
+        {/* The national index sits directly under the hero: it is the
+            headline reading of where the country stands, and the dossier
+            sections below it are the breakdown of why. Moved here from the
+            home page, where it duplicated the hero's job. */}
+        <NationalIndexSection />
         <AmarBaseline />
         <AmarPriorityBreaks />
         <AmarCausalLoop />

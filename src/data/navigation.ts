@@ -12,7 +12,10 @@ export const navLinks: NavLink[] = [
     shortLabel: "Overview",
   },
   {
-    href: "#national-index",
+    // A full path, not a bare "#national-index" anchor: the section now
+    // lives on the issue dossier, so the fragment alone would resolve to
+    // nothing on the home page and the link would silently do nothing.
+    href: "/amar-bangladesh#national-index",
     label: "National Index",
     shortLabel: "Index",
   },
