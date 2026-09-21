@@ -65,7 +65,7 @@ export function HeroSection() {
 
         {/* Content. */}
         <div className="absolute inset-0 flex items-center">
-          <div className="mx-auto flex w-full max-w-7xl flex-col items-start gap-4 px-4 sm:px-6 lg:gap-5 lg:px-8">
+          <div className="mx-auto flex w-full max-w-7xl flex-col items-start gap-4 px-gutter-x lg:gap-5">
             <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 font-mono text-[10px] font-bold tracking-widest text-amber-300 uppercase backdrop-blur-sm sm:text-[11px]">
               <span
                 aria-hidden

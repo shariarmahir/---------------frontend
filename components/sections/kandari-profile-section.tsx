@@ -54,9 +54,9 @@ export function KandariProfileSection() {
   return (
     <section
       id="kandari-profile"
-      className="relative overflow-hidden py-16 sm:py-24"
+      className="relative overflow-hidden py-section-y"
     >
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-gutter-x">
         <div className="relative overflow-hidden rounded-3xl border border-emerald-200/90 shadow-2xl">
           {/* Photographic backdrop, shown clear — no green wash. Only a
               light neutral scrim remains, which the white copy needs to

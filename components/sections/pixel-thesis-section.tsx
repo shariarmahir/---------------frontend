@@ -75,9 +75,9 @@ export function PixelThesisSection() {
   return (
     <section
       id="pixel-map"
-      className="relative border-y border-slate-200/80 bg-white py-16"
+      className="relative border-y border-slate-200/80 bg-white py-section-y"
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-gutter-x">
         <div className="mb-12 flex max-w-3xl flex-col gap-2">
           <div className="inline-flex items-center gap-2">
             <span className="rounded border border-orange-200 bg-orange-50 px-2.5 py-1 font-mono text-xs font-bold tracking-wider text-signal-orange uppercase">

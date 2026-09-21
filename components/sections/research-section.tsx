@@ -46,7 +46,7 @@ export function ResearchSection() {
   return (
     <section
       id="rd-labs"
-      className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8"
+      className="mx-auto max-w-7xl px-gutter-x py-section-y"
     >
       <div className="mb-12 flex flex-col gap-2">
         <span className="w-fit rounded border border-orange-200 bg-orange-50 px-2.5 py-1 font-mono text-xs font-bold tracking-wider text-signal-orange uppercase">

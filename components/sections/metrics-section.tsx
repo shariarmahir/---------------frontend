@@ -5,9 +5,9 @@ export function MetricsSection() {
   return (
     <section
       id="rural-network"
-      className="border-y border-slate-200 bg-mint-subtle/70 py-16 sm:py-24"
+      className="border-y border-slate-200 bg-mint-subtle/70 py-section-y"
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-gutter-x">
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">
           {/* Pharmacy panel. */}
           <div className="relative lg:col-span-6">

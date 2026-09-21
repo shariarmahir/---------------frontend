@@ -147,6 +147,28 @@
   --spacing-space-2xl: 4rem;
   --spacing-margin-lg: 3rem;
 
+  /* Fluid section rhythm — one token instead of a py-16/sm:py-24/lg:py-32
+     breakpoint ladder. clamp() interpolates continuously, so spacing never
+     jumps at a breakpoint and never scales past the cap on ultrawide.
+     All stops land on the 8px grid at the ends.
+
+       section-y     48px → 160px   standard band
+       section-y-sm  32px →  80px   tight band (dense/secondary sections)
+       section-y-lg  64px → 200px   the page's few hero-weight moments
+
+     Each preferred term is solved to hit the target at both ends rather
+     than guessed: slope = (max−min)/(1440−390), intercept = min − slope×390.
+     That puts section-y at 48px on a 390px phone, ~88px at 768, ~116px at
+     1024, and the full 160px from 1440 up — the desktop band the spec
+     calls for, capped so ultrawide never keeps growing. */
+  --spacing-section-y: clamp(3rem, 10.67vw + 0.4rem, 10rem);
+  --spacing-section-y-sm: clamp(2rem, 4.57vw + 0.885rem, 5rem);
+  --spacing-section-y-lg: clamp(4rem, 12.95vw + 0.845rem, 12.5rem);
+
+  /* Horizontal gutters, matched to the same approach so the page has one
+     consistent inset at every width. 16px → 32px. */
+  --spacing-gutter-x: clamp(1rem, 1.52vw + 0.629rem, 2rem);
+
   /* Fixed-header offset — single source of truth for content padding and
      anchor scroll margin. The header is a floating card, so this covers the
      wrapper's inset padding plus the card itself: mobile is the two visible

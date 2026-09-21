@@ -40,9 +40,9 @@ export function NodeTerminalSection() {
   return (
     <section
       id="innovation"
-      className="border-y border-slate-200 bg-white py-16 sm:py-24"
+      className="border-y border-slate-200 bg-white py-section-y"
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-gutter-x">
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-12">
           {/* Narrative. */}
           <div className="space-y-5 lg:col-span-5">
