@@ -1,110 +1,169 @@
 import Image from "next/image";
-import { BrandWordmark } from "@/components/ui/brand-wordmark";
-import { Icon } from "@/components/ui/icon";
-import { corePipelines, footerTelemetry } from "@/data/footer";
+import Link from "next/link";
 import { NAZRUL_MOTTO } from "@/data/navigation";
-import { cn } from "@/lib/utils";
 
-const TONE_TEXT = {
-  primary: "text-primary",
-  signal: "text-signal-text",
-  crimson: "text-crimson",
-} as const;
+const ECOSYSTEM_LINKS = [
+  { label: "SWASTI Bio-Telemetry", href: "/#swasti-section" },
+  { label: "Aponjon Care Assist", href: "/#flagship" },
+  { label: "Smart Pharmacy Grid", href: "/#rural-network" },
+  { label: "64-District Pixel Map", href: "/#pixel-map" },
+];
+
+const ARCHITECTURE_LINKS = [
+  { label: "Semiconductor & Fab Labs", href: "/#rd-labs" },
+  { label: "Open Innovation Hub", href: "/#innovation" },
+  { label: "Research Fellows & Team", href: "/#leadership" },
+  { label: "National Talent Network", href: "/#kandari-profile" },
+];
 
 export function SiteFooter() {
   return (
-    <footer className="w-full border-t border-border bg-background">
-      <div className="w-full border-b border-border bg-slate-100/70 px-gutter py-space-md">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-space-md">
-          {footerTelemetry.map((item) => (
-            <div key={item.label} className="flex items-center gap-space-sm">
-              <span
-                className={cn(
-                  "font-label-sm text-label-sm font-bold tracking-wider",
-                  TONE_TEXT[item.tone],
-                )}
-              >
-                {item.label}
+    <footer className="relative z-20 border-t border-slate-200 bg-white">
+      <div className="mx-auto max-w-7xl px-4 pt-16 pb-12 sm:px-6 lg:px-8">
+        {/* Manifesto box. */}
+        <div className="relative mb-12 overflow-hidden rounded-2xl border border-emerald-100 bg-mint-subtle p-6 shadow-sm">
+          <div className="absolute top-0 left-0 h-full w-2 bg-national-crimson" />
+
+          <div className="flex flex-col justify-between gap-4 pl-2 md:flex-row md:items-center">
+            <div className="space-y-1">
+              <span className="block font-mono text-xs font-bold tracking-wider text-signal-orange uppercase">
+                [ 10 // National mission manifesto // BD-CORE ]
               </span>
-              <span className="h-4 w-px bg-slate-300" />
-              <span className="font-code-telemetry text-code-telemetry font-semibold text-slate-900">
-                {item.value}
+              <p className="font-grotesk text-xl font-bold text-text-primary italic sm:text-2xl">
+                {NAZRUL_MOTTO}
+              </p>
+            </div>
+
+            <div className="text-left md:text-right">
+              <span className="block font-mono text-xs text-text-muted uppercase">
+                Target Deployment Field
+              </span>
+              <span className="font-grotesk text-base font-bold tracking-wider text-bd-green uppercase">
+                64 Districts // Sovereign healthcare &amp; robotics
               </span>
             </div>
-          ))}
+          </div>
         </div>
-      </div>
 
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-gutter px-gutter py-space-xl md:grid-cols-12">
-        <div className="flex flex-col gap-space-md md:col-span-5">
-          <div className="flex items-center gap-space-sm">
-            <Image
-              src="/logo/logo.png"
-              alt=""
-              aria-hidden
-              width={1277}
-              height={832}
-              className="h-10 w-auto shrink-0 object-contain"
-            />
-            {/* Same lockup as the header. */}
-            <BrandWordmark status="critical" className="text-[1.22rem]" />
-            <span className="sr-only">কাণ্ডারী-ল্যাব</span>
-            <span className="rounded-sm border border-emerald-200 bg-emerald-100 px-space-xs py-0.5 font-label-sm text-label-sm font-bold text-emerald-800">
-              R&amp;D HQ
+        {/* Link columns. */}
+        <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-5">
+          {/* Brand. */}
+          <div className="space-y-4 lg:col-span-2">
+            <Link href="/" className="flex items-center gap-3">
+              <Image
+                src="/logo/logo.png"
+                alt=""
+                aria-hidden
+                width={1277}
+                height={832}
+                className="h-8 w-auto shrink-0 object-contain"
+              />
+              <span className="font-grotesk text-lg font-bold text-text-primary">
+                Kandari-Lab
+              </span>
+            </Link>
+
+            <p className="max-w-sm font-sans text-sm leading-relaxed text-text-secondary">
+              Bangladesh&apos;s pioneering deep-tech nerve-center engineering
+              autonomous robotics, AI bio-diagnostics, IoT cleanroom
+              fabrication, and rapid response healthcare systems for the Golden
+              Two Hours across all 64 districts.
+            </p>
+
+            <div className="flex items-center gap-2 font-mono text-xs text-text-muted">
+              <span className="size-2 animate-pulse rounded-full bg-bd-green" />
+              <span>CLEANROOM GRID: OPERATIONAL [REV 2025.04]</span>
+            </div>
+          </div>
+
+          {/* Ecosystem. */}
+          <div className="space-y-3">
+            <span className="block font-grotesk text-xs font-bold tracking-wider text-signal-orange uppercase">
+              Deep-Tech Ecosystem
+            </span>
+            <ul className="space-y-2 font-sans text-sm">
+              {ECOSYSTEM_LINKS.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="text-text-secondary transition-colors hover:text-bd-green"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Open architecture. */}
+          <div className="space-y-3">
+            <span className="block font-grotesk text-xs font-bold tracking-wider text-signal-orange uppercase">
+              Open Architecture
+            </span>
+            <ul className="space-y-2 font-sans text-sm">
+              {ARCHITECTURE_LINKS.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="text-text-secondary transition-colors hover:text-bd-green"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Telemetry bulletin. */}
+          <div className="space-y-3">
+            <span className="block font-grotesk text-xs font-bold tracking-wider text-signal-orange uppercase">
+              Telemetry Bulletin
+            </span>
+            <p className="font-sans text-xs leading-relaxed text-text-muted">
+              Subscribe to research releases, clinical trial telemetry, and
+              microchip blueprints.
+            </p>
+
+            <form className="space-y-2">
+              <div className="flex">
+                <label htmlFor="bulletin-email" className="sr-only">
+                  Email address
+                </label>
+                <input
+                  id="bulletin-email"
+                  type="email"
+                  placeholder="user@domain.bd"
+                  className="w-full rounded-l-lg border border-slate-300 bg-slate-50 px-3 py-2 font-mono text-xs text-text-primary focus:ring-1 focus:ring-bd-green focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  className="shrink-0 rounded-r-lg bg-bd-green px-3 py-2 font-mono text-xs font-bold text-white uppercase transition-colors hover:bg-bd-green-dark"
+                >
+                  Sync
+                </button>
+              </div>
+              <span className="block font-mono text-[10px] text-text-muted">
+                NO SPAM // CIPHER PROTECTED
+              </span>
+            </form>
+          </div>
+        </div>
+
+        {/* Bottom credits. `pb-16` on the row keeps the last line clear of
+            the floating AI widget, which is pinned over this corner. */}
+        <div className="flex flex-col items-center justify-between gap-3 border-t border-slate-200 pt-6 pb-16 font-mono text-xs text-text-muted sm:flex-row sm:pb-14">
+          <div>
+            © {new Date().getFullYear()} Kandari-Lab (কাণ্ডারী-ল্যাব). All
+            Sovereign Hardware &amp; IP Reserved. Dhaka, Bangladesh.
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <span className="font-semibold text-bd-green">
+              LOCATION: DHAKA [23.8103° N, 90.4125° E]
+            </span>
+            <span className="font-semibold text-signal-orange">
+              SYS STATUS: NOMINAL
             </span>
           </div>
-          <p className="max-w-md font-body-md text-body-md leading-relaxed text-slate-600">
-            Sovereign deep-tech innovation infrastructure engineered for
-            Bangladesh. Dhaka Frontier Lab, Tejgaon Industrial Framework,
-            Dhaka-1208, Bangladesh.
-          </p>
-          {/* A Nazrul quotation, not a label — set at body size so the
-              Bengali is comfortably legible. */}
-          <p className="font-body-md text-body-md font-bold italic text-primary">
-            {NAZRUL_MOTTO}
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-space-sm md:col-span-4">
-          <h2 className="font-display text-headline-sm font-bold tracking-tight text-slate-900">
-            Core Sovereign Pipelines
-          </h2>
-          <ul className="flex flex-col gap-space-xs font-body-sm text-body-sm font-medium text-slate-600">
-            {corePipelines.map((pipeline) => (
-              <li
-                key={pipeline}
-                className="cursor-pointer transition-colors hover:text-primary"
-              >
-                {pipeline}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="flex flex-col gap-space-sm md:col-span-3">
-          <h2 className="font-display text-headline-sm font-bold tracking-tight text-slate-900">
-            Integrity &amp; Protocol
-          </h2>
-          <p className="font-body-sm text-body-sm leading-relaxed text-slate-600">
-            Frontier intelligence aligned with rigorous institutional parameters
-            and mathematical sovereign reliability.
-          </p>
-          <div className="flex items-center gap-space-xs font-code-telemetry text-code-telemetry font-semibold text-primary">
-            <Icon name="verified_user" className="text-[16px]" />
-            <span>ISO-Compliant Deep Tech Node</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="w-full border-t border-border bg-white px-gutter py-space-md">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-space-sm sm:flex-row">
-          <p className="font-body-sm text-body-sm text-slate-500">
-            © {new Date().getFullYear()} Kandari-Lab (কাণ্ডারী-ল্যাব). Sovereign
-            Deep Tech Initiative Bangladesh.
-          </p>
-          <p className="font-body-sm text-body-sm text-slate-500">
-            Architected under leadership of Mahir Shariar Mahin.
-          </p>
         </div>
       </div>
     </footer>

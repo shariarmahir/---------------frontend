@@ -1,154 +1,166 @@
 import { Icon } from "@/components/ui/icon";
-import { executives, researchLeads } from "@/data/leadership";
-import { cn } from "@/lib/utils";
 
-const AVATAR_TONE = {
-  primary: "bg-emerald-700 text-white",
-  emerald: "border border-emerald-200 bg-emerald-100 text-primary",
-  signal: "border border-orange-200 bg-orange-100 text-signal-text",
-} as const;
+const EXECUTIVES = [
+  {
+    tag: "[ Chief Executive Officer ]",
+    tagClass: "text-signal-orange",
+    name: "Mahir Shariar Mahin",
+    role: "Founder & Team Leader",
+    roleClass: "text-bd-green",
+    blurb:
+      "Spearheading native deep-tech roadmaps, hardware prototyping, and national clinical integration protocols.",
+    division: "DIV: HARDWARE ARCH & STRATEGY",
+    hoverBorder: "hover:border-signal-orange/60",
+  },
+  {
+    tag: "[ Chief Operating Officer ]",
+    tagClass: "text-bd-green",
+    name: "Sadman bin Arif",
+    role: "Executive Governance",
+    roleClass: "text-text-muted",
+    blurb:
+      "Orchestrating 64-district smart pharmacy scaling, government telemetry compliance, and supply chain logistics.",
+    division: "DIV: FIELD OPERATIONS & SUPPLY",
+    hoverBorder: "hover:border-bd-green/60",
+  },
+  {
+    tag: "[ Chief Marketing Officer ]",
+    tagClass: "text-teal-700",
+    name: "Nabeel Shadad",
+    role: "Strategic Expansion",
+    roleClass: "text-text-muted",
+    blurb:
+      "Leading international hardware partnerships, medical institutional adoption, and public narrative momentum.",
+    division: "DIV: PARTNERSHIPS & ECOSYSTEM",
+    hoverBorder: "hover:border-teal-500/60",
+  },
+];
 
-const ROLE_TONE = {
-  primary: "text-primary",
-  emerald: "text-signal-text",
-  signal: "text-signal-text",
-} as const;
+const LEADS = [
+  {
+    tag: "[ Idea & Creative Leads ]",
+    tagClass: "text-signal-orange",
+    title: "Concept & Clinical User Empathy",
+    people: "Istiake Ahmed, Safia Mubassara Ruzba, Jamil Hossan",
+    note: "User empathy, ergonomic medical casing, product semantics.",
+  },
+  {
+    tag: "[ IoT & Hardware Architecture ]",
+    tagClass: "text-bd-green",
+    title: "Sensors & Embedded Systems",
+    people: "Janassor Ahmed, Sharul Bhuiya, Safia Mubassara Ruzba",
+    note: "Micro-soldering, LiDAR circuits, low-power telemetry & antenna RF.",
+  },
+  {
+    tag: "[ AI & Software Systems ]",
+    tagClass: "text-teal-700",
+    title: "Fullstack, AI & SWASTI Mobile",
+    people: "Luban Ahmed, Shabbin Ahmed",
+    note: "Bengali RAG models, Flutter app core, real-time WebSockets & CNNs.",
+  },
+];
 
 export function LeadershipSection() {
   return (
     <section
-      id="founder-vision"
-      className="w-full border-b border-border bg-white py-space-xl"
+      id="leadership"
+      className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8"
     >
-      <div className="mx-auto flex max-w-7xl flex-col gap-space-xl px-gutter">
-        <div className="mx-auto flex max-w-2xl flex-col items-center gap-space-xs text-center">
-          <span className="font-code-telemetry text-label-sm font-bold tracking-wider text-primary">
-            THE SCIENTIFIC CORPS
-          </span>
-          <h2 className="font-display text-headline-lg-mobile font-bold tracking-tight text-slate-900 sm:text-headline-lg">
-            Executive Leadership &amp; Principal Scientists
-          </h2>
-          <p className="font-body-md text-body-md text-slate-600">
-            Driven by obsessive Bangladeshi engineers, roboticists, and clinical
-            researchers committed to national self-reliance.
-          </p>
-        </div>
+      <div className="mb-12 flex flex-col gap-2">
+        <span className="w-fit rounded border border-orange-200 bg-orange-50 px-2.5 py-1 font-mono text-xs font-bold tracking-wider text-signal-orange uppercase">
+          [ 08 // Core architects &amp; governance ]
+        </span>
+        <h2 className="font-grotesk text-2xl font-bold tracking-tight text-text-primary uppercase sm:text-3xl lg:text-4xl">
+          Foundership &amp; Engineering Command
+        </h2>
+        <p className="max-w-2xl font-sans text-base text-text-secondary">
+          Led by home-grown researchers, robotics specialists, and software
+          architects determined to establish national hardware sovereignty.
+        </p>
+      </div>
 
-        <div className="grid grid-cols-1 gap-gutter sm:grid-cols-2 lg:grid-cols-3">
-          {executives.map((executive) => (
-            <article
-              key={executive.name}
-              className="flex flex-col gap-space-md rounded-2xl border border-border bg-slate-50 p-space-md shadow-xs transition-all hover:border-emerald-300 hover:bg-emerald-50/20"
+      {/* Executive row. */}
+      <div className="-m-3 mb-6 flex flex-wrap">
+        {EXECUTIVES.map((exec) => (
+          <div key={exec.name} className="flex w-full p-3 sm:w-1/3">
+            <div
+              className={`flex w-full flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-elevated ${exec.hoverBorder}`}
             >
-              <div className="flex items-center gap-space-md">
-                <div
-                  className={cn(
-                    "flex size-16 shrink-0 items-center justify-center rounded-full font-display text-headline-md font-bold shadow-xs",
-                    AVATAR_TONE[executive.tone],
-                  )}
+              <div>
+                <span
+                  className={`mb-1 block font-mono text-xs font-bold uppercase ${exec.tagClass}`}
                 >
-                  {executive.initials}
-                </div>
-                <div>
-                  <h3 className="font-display text-headline-sm font-bold text-slate-900">
-                    {executive.name}
-                  </h3>
-                  <span
-                    className={cn(
-                      "block font-code-telemetry text-label-sm font-bold",
-                      ROLE_TONE[executive.tone],
-                    )}
-                  >
-                    {executive.role}
-                  </span>
-                  <span className="block font-body-sm text-body-sm text-slate-600">
-                    {executive.discipline}
-                  </span>
-                </div>
-              </div>
-
-              <blockquote className="font-body-sm text-body-sm italic leading-relaxed text-slate-900">
-                &ldquo;{executive.quote}&rdquo;
-              </blockquote>
-
-              <div className="flex flex-wrap items-center gap-space-sm pt-space-xs font-label-sm text-label-sm text-slate-500">
-                <span className="flex items-center gap-1 font-medium">
-                  <Icon name="verified" className="text-[16px] text-primary" />
-                  {executive.tags[0]}
+                  {exec.tag}
                 </span>
-                <span>•</span>
-                <span className="font-medium">{executive.tags[1]}</span>
+                <h3 className="font-grotesk text-xl font-bold text-text-primary">
+                  {exec.name}
+                </h3>
+                <p
+                  className={`mt-1 font-mono text-xs font-semibold uppercase ${exec.roleClass}`}
+                >
+                  {exec.role}
+                </p>
+                <p className="mt-3 font-sans text-sm leading-relaxed text-text-secondary">
+                  {exec.blurb}
+                </p>
               </div>
-            </article>
-          ))}
-        </div>
 
-        <div className="flex flex-col gap-space-md rounded-2xl border border-border bg-slate-50 p-space-lg shadow-xs">
-          <div className="flex flex-wrap items-center justify-between gap-space-sm">
-            <div>
-              <h3 className="font-display text-headline-sm font-bold text-slate-900">
-                Principal R&amp;D Engineering Leads
-              </h3>
-              <p className="font-body-sm text-body-sm text-slate-600">
-                The technical minds engineering our firmware, algorithms, and
-                mechatronic chassis.
-              </p>
+              <div className="mt-6 border-t border-slate-100 pt-3 font-mono text-[11px] text-text-muted">
+                {exec.division}
+              </div>
             </div>
-            <span className="rounded-sm border border-border bg-white px-space-sm py-1 font-code-telemetry text-label-sm font-bold text-primary shadow-xs">
-              DIVISION LEADS
-            </span>
           </div>
+        ))}
+      </div>
 
-          <div className="grid grid-cols-2 gap-space-sm sm:grid-cols-3 lg:grid-cols-5">
-            {researchLeads.map((lead) => (
-              <div
-                key={lead.name}
-                className="flex flex-col gap-space-xs rounded-lg border border-border bg-white p-space-sm shadow-xs"
+      {/* Functional leads. */}
+      <div className="-m-3 flex flex-wrap">
+        {LEADS.map((lead) => (
+          <div key={lead.tag} className="flex w-full p-3 md:w-1/3">
+            <div className="w-full space-y-2 rounded-2xl border border-emerald-100 bg-mint-subtle p-5 shadow-xs">
+              <span
+                className={`block font-mono text-xs font-bold uppercase ${lead.tagClass}`}
               >
-                <span className="font-display text-label-md font-bold text-slate-900">
-                  {lead.name}
-                </span>
-                <span className="font-code-telemetry text-label-sm font-semibold text-primary">
-                  {lead.role}
-                </span>
-                <span className="font-body-sm text-body-sm text-slate-600">
-                  {lead.focus}
-                </span>
+                {lead.tag}
+              </span>
+              <h4 className="font-grotesk text-base font-bold text-text-primary">
+                {lead.title}
+              </h4>
+              <p className="font-sans text-sm font-medium text-text-secondary">
+                {lead.people}
+              </p>
+              <div className="pt-2 font-mono text-xs text-text-muted">
+                {lead.note}
               </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex flex-col items-center justify-between gap-space-lg rounded-2xl border border-border bg-linear-to-r from-emerald-50 via-white to-orange-50 p-space-lg shadow-md lg:flex-row">
-          <div className="flex max-w-2xl flex-col gap-space-xs">
-            <div className="flex w-fit items-center gap-space-xs rounded-sm bg-title px-space-sm py-0.5 font-code-telemetry text-label-sm font-bold text-slate-900 shadow-xs">
-              <Icon name="school" className="text-[16px]" />
-              <span>Cohort 2025 Appointments Open</span>
             </div>
-            <h3 className="font-display text-headline-md font-bold text-slate-900">
-              Join the Kandari R&amp;D Fellowships
-            </h3>
-            <p className="font-body-md text-body-md leading-relaxed text-slate-600">
-              A prestigious 2.5-month high-impact paid engineering fellowship.
-              Work on physical hardware, cleanroom silicon design, or
-              multi-dialect medical LLMs in Dhaka.
+          </div>
+        ))}
+      </div>
+
+      {/* Fellowship banner. */}
+      <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:flex-row sm:p-6">
+        <div className="flex items-center gap-4">
+          <Icon
+            name="school"
+            className="shrink-0 text-3xl text-signal-orange"
+          />
+          <div>
+            <span className="block font-grotesk text-sm font-bold text-text-primary uppercase sm:text-base">
+              R&amp;D Fellowship Cohort
+            </span>
+            <p className="font-sans text-xs text-text-secondary sm:text-sm">
+              4–5 Research Fellows &amp; Paid Innovation Interns engaged in
+              active cleanroom silicon trials.
             </p>
           </div>
-          <div className="flex shrink-0 flex-wrap items-center gap-space-md">
-            <a
-              href="/login"
-              className="rounded-lg bg-title px-space-lg py-3 font-display text-label-md font-bold text-slate-900 shadow-sm transition-colors hover:bg-signal"
-            >
-              Apply for Fellowship
-            </a>
-            <a
-              href="#rnd-innovations"
-              className="rounded-lg border border-border bg-white px-space-md py-3 font-label-md text-label-md font-semibold text-slate-900 shadow-xs transition-colors hover:bg-slate-50"
-            >
-              Curriculum Details
-            </a>
-          </div>
         </div>
+
+        <a
+          href="/login"
+          className="shrink-0 rounded-xl bg-bd-green px-5 py-2.5 font-mono text-xs font-bold text-white uppercase shadow-sm transition-colors hover:bg-bd-green-dark"
+        >
+          Apply for Fellowship
+        </a>
       </div>
     </section>
   );

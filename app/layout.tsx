@@ -1,11 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope, Inter, Noto_Sans_Bengali } from "next/font/google";
+import {
+  Sora,
+  Inter,
+  Hind_Siliguri,
+  JetBrains_Mono,
+} from "next/font/google";
 import "./globals.css";
 
-const manrope = Manrope({
+// Gilroy is a commercial font with no next/font/google entry and no local
+// files in this project; Sora is the closest free geometric-sans match for
+// headings, matching Gilroy's rounded, confident letterforms.
+const sora = Sora({
   subsets: ["latin"],
-  weight: ["600", "700", "800"],
-  variable: "--font-manrope",
+  weight: ["500", "600", "700", "800"],
+  variable: "--font-sora",
   display: "swap",
 });
 
@@ -15,11 +23,23 @@ const inter = Inter({
   display: "swap",
 });
 
-const notoBengali = Noto_Sans_Bengali({
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-mono",
+  display: "swap",
+});
+
+const hindSiliguri = Hind_Siliguri({
   subsets: ["bengali"],
-  weight: ["400", "600", "700"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-bengali",
   display: "swap",
+  // Bengali only renders as a same-stack fallback for mixed-script text
+  // (see globals.css font stacks), so it isn't guaranteed to be used on
+  // every route. Preloading it unconditionally triggers "preloaded but
+  // not used" warnings on pages with no Bengali glyphs.
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -40,7 +60,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       // Browser extensions inject attributes onto <html> before hydration.
       suppressHydrationWarning
-      className={`${manrope.variable} ${inter.variable} ${notoBengali.variable} h-full antialiased`}
+      className={`${sora.variable} ${inter.variable} ${jetbrainsMono.variable} ${hindSiliguri.variable} h-full antialiased`}
     >
       <head>
         {/* Material Symbols has no next/font/google export; the App Router

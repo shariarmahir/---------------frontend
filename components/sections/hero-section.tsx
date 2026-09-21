@@ -1,104 +1,146 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Icon } from "@/components/ui/icon";
-import { BangladeshBackdrop } from "./bangladesh-backdrop";
-import { NAZRUL_MOTTO } from "@/data/navigation";
-import { heroProofPoints } from "@/data/telemetry";
-import { cn } from "@/lib/utils";
+import { heroPhotos } from "@/data/hero-gallery";
+
+/** The four headline proof points, shown in the bar under the hero. */
+const HERO_STATS = [
+  { label: "Citizens Monitored", value: "4.8M+" },
+  { label: "Critical Triage", value: "< 120 MIN" },
+  { label: "Bengali Data Engine", value: "10-CRORE" },
+  { label: "Sovereign Architecture", value: "100%" },
+];
+
+const SLIDE_MS = 6000;
 
 export function HeroSection() {
-  // Cinematic band, matching the reference proportion: the hero is a wide
-  // strip (~3.9:1) rather than a tall section, so the stats row below it
-  // stays close to the fold. min-h keeps it usable when the copy needs more
-  // room than the ratio allows.
+  const [index, setIndex] = useState(0);
+
+  // Auto-shuffle. Resets whenever `index` changes, so a manual dot click
+  // restarts the dwell rather than cutting it short.
+  useEffect(() => {
+    const id = setTimeout(
+      () => setIndex((i) => (i + 1) % heroPhotos.length),
+      SLIDE_MS,
+    );
+    return () => clearTimeout(id);
+  }, [index]);
+
   return (
-    <>
-      <section
-        id="overview-mission"
-        className="relative flex w-full items-center overflow-hidden border-b border-border bg-linear-to-b from-white via-emerald-50/30 to-white py-space-lg lg:aspect-[39/10] lg:max-h-[34rem] lg:min-h-[26rem] lg:py-0"
-      >
-        <BangladeshBackdrop />
-        <div className="pointer-events-none absolute -top-32 left-1/4 size-96 rounded-full bg-emerald-100/40 blur-[120px]" />
-        <div className="pointer-events-none absolute top-1/3 -right-24 size-80 rounded-full bg-orange-100/50 blur-[120px]" />
+    <section id="overview-mission" className="relative w-full">
+      {/* Cinematic band. The source photos are ~1.5 wide, so a strict 16:6
+          (2.67) would crop away nearly half their height; 16:8 on desktop
+          keeps far more of each frame while still reading as a wide hero.
+          Phones get a taller box so the headline has room. */}
+      <div className="relative aspect-4/5 w-full overflow-hidden bg-slate-950 sm:aspect-3/2 lg:aspect-16/8">
+        {heroPhotos.map((photo, i) => (
+          <Image
+            key={photo.src}
+            src={photo.src}
+            alt={i === index ? photo.alt : ""}
+            aria-hidden={i !== index}
+            fill
+            // All ten are stacked above the fold and any one of them can be
+            // the visible slide, so each must load eagerly — but only the
+            // first gets a preload link, to avoid ten competing preloads.
+            priority={i === 0}
+            loading="eager"
+            sizes="100vw"
+            quality={90}
+            // Per-photo focal point: `cover` still trims to fill the band,
+            // but this steers the crop away from faces and subjects.
+            style={{ objectPosition: photo.focus ?? "50% 50%" }}
+            className={`object-cover transition-opacity duration-1000 ease-in-out ${
+              i === index ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        ))}
 
-        <div className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-gutter px-gutter lg:grid-cols-12">
-          <div className="z-10 flex flex-col gap-space-md lg:col-span-8">
-            <div className="flex w-fit max-w-full items-start gap-space-sm rounded-2xl border border-border bg-white px-space-md py-1.5 shadow-xs sm:items-center sm:rounded-full">
-              <span className="mt-2 size-2.5 shrink-0 rounded-full bg-crimson shadow-[0_0_8px_rgba(218,41,28,0.4)] sm:mt-0" />
-              <p className="font-display text-headline-sm font-bold tracking-wide text-signal-text">
-                {NAZRUL_MOTTO}
-              </p>
-              <span className="hidden font-label-sm text-label-sm uppercase tracking-widest text-slate-500 sm:inline">
-                KAZI NAZRUL ISLAM
-              </span>
-            </div>
+        {/* Scrim — dark enough on the left for white text to clear AA at
+            every photo, fading out to the right so the image stays visible. */}
+        <div className="absolute inset-0 bg-linear-to-r from-slate-950/95 via-slate-950/70 to-slate-950/30" />
+        <div className="absolute inset-0 bg-linear-to-t from-slate-950/60 via-transparent to-slate-950/20" />
 
-            <h1 className="font-display text-display-mobile leading-[1.05] tracking-tight text-slate-900 sm:text-display">
-              Solving Bangladesh,
-              <br />
-              <span className="font-extrabold text-title drop-shadow-sm">
-                Pixel by Pixel.
+        {/* Content. */}
+        <div className="absolute inset-0 flex items-center">
+          <div className="mx-auto flex w-full max-w-7xl flex-col items-start gap-4 px-4 sm:px-6 lg:gap-5 lg:px-8">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 font-mono text-[10px] font-bold tracking-widest text-amber-300 uppercase backdrop-blur-sm sm:text-[11px]">
+              <span
+                aria-hidden
+                className="flex h-3 w-[1.15rem] shrink-0 items-center justify-center rounded-xs bg-bd-green"
+              >
+                <span className="size-1.5 rounded-full bg-national-crimson" />
               </span>
+              Bangladesh&apos;s first deep-tech ecosystem
+            </span>
+
+            <h1 className="max-w-3xl font-grotesk text-3xl leading-[1.08] font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+              Pioneering Bangladesh&apos;s{" "}
+              <span className="text-signal-orange">Real-Time Future</span>
             </h1>
 
-            <p className="max-w-2xl font-body-lg text-body-lg leading-relaxed text-slate-600">
-              From semiconductor lithography design to sovereign bio-telemetry
-              wearables and multi-dialect Bengali emergency artificial
-              intelligence. Engineering sovereign national infrastructure to
-              transform 180 million lives.
+            <p className="max-w-xl font-sans text-sm leading-relaxed text-slate-200 sm:text-base lg:text-lg">
+              Native semiconductor innovation, IoT robotics and life-saving
+              healthcare infrastructure — engineered across all 64 districts.
             </p>
 
-            <div className="flex flex-wrap items-center gap-space-md pt-space-xs">
+            <div className="flex flex-wrap items-center gap-3 pt-1">
               <a
-                href="#swasti"
-                className="inline-flex items-center gap-space-sm rounded-lg bg-title px-space-lg py-3.5 font-display text-label-md font-bold text-slate-900 shadow-md transition-all hover:scale-[1.02] hover:bg-signal active:scale-[0.98]"
+                href="#swasti-section"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-signal-orange px-5 py-3 font-grotesk text-xs font-bold text-slate-950 uppercase shadow-glow-orange transition-all hover:-translate-y-0.5 hover:bg-amber-400 sm:px-6 sm:text-sm"
               >
-                <Icon name="download" className="text-[20px]" filled />
-                <span>Download SWASTI App</span>
-                <span className="rounded-sm bg-slate-900/15 px-space-xs py-0.5 font-code-telemetry text-label-sm font-semibold text-slate-900">
-                  v2.4.1
-                </span>
+                <Icon name="download" className="text-lg" />
+                Download SWASTI
               </a>
               <a
-                href="#rnd-innovations"
-                className="inline-flex items-center gap-space-sm rounded-lg border border-border bg-white px-space-lg py-3.5 font-display text-label-md font-semibold text-slate-900 shadow-xs transition-all hover:bg-slate-50"
+                href="#kandari-profile"
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/25 bg-white/10 px-5 py-3 font-grotesk text-xs font-semibold text-white backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:bg-white/20 sm:px-6 sm:text-sm"
               >
-                <Icon name="biotech" className="text-[20px] text-primary" />
-                <span>Explore R&amp;D Pipeline</span>
-                <Icon
-                  name="arrow_forward"
-                  className="text-[18px] text-primary"
-                />
+                Explore Kandari R&amp;D
               </a>
             </div>
           </div>
         </div>
-      </section>
 
-      {/* Stats band — a separate full-width strip beneath the hero, as in
-          the reference, so the hero stays a clean cinematic band. */}
-      <div className="w-full border-b border-border bg-white">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 divide-y divide-border px-gutter sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-          {heroProofPoints.map((point) => (
-            <div
-              key={point.label}
-              className="flex flex-col items-center gap-0.5 px-space-sm py-space-md text-center"
-            >
-              <span className="font-label-sm text-label-sm tracking-wider text-slate-500 uppercase">
-                {point.label}
-              </span>
-              <span
-                className={cn(
-                  "font-display text-headline-sm font-bold",
-                  point.tone === "primary"
-                    ? "text-primary"
-                    : "text-signal-text",
-                )}
-              >
-                {point.value}
-              </span>
-            </div>
+        {/* Slide indicators, bottom-right. */}
+        <div className="absolute right-4 bottom-4 flex items-center gap-1.5 sm:right-6 sm:bottom-5 lg:right-8">
+          {heroPhotos.map((photo, i) => (
+            <button
+              key={photo.src}
+              type="button"
+              onClick={() => setIndex(i)}
+              aria-label={`স্লাইড ${i + 1}`}
+              aria-current={i === index ? "true" : undefined}
+              className={`h-1 rounded-full transition-all duration-300 ${
+                i === index
+                  ? "w-7 bg-signal-orange"
+                  : "w-3.5 bg-white/40 hover:bg-white/70"
+              }`}
+            />
           ))}
         </div>
       </div>
-    </>
+
+      {/* Stats bar. */}
+      <div className="w-full border-b border-slate-200 bg-white">
+        <dl className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-slate-200 lg:grid-cols-4">
+          {HERO_STATS.map((stat) => (
+            <div
+              key={stat.label}
+              className="flex flex-col items-center gap-1 px-4 py-4 text-center max-lg:nth-[2n+1]:border-l-0 max-lg:nth-[n+3]:border-t max-lg:nth-[n+3]:border-slate-200 lg:py-5"
+            >
+              <dt className="font-mono text-[10px] font-medium tracking-widest text-text-muted uppercase sm:text-[11px]">
+                {stat.label}
+              </dt>
+              <dd className="font-grotesk text-lg font-bold text-bd-green sm:text-xl">
+                {stat.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
   );
 }

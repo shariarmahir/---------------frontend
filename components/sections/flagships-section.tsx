@@ -1,226 +1,266 @@
+import Image from "next/image";
 import { Icon } from "@/components/ui/icon";
-import { SwastiPreview } from "./swasti-preview";
-import {
-  aponjonSensors,
-  pharmacyCapabilities,
-  swastiFeatures,
-} from "@/data/flagships";
-import { cn } from "@/lib/utils";
+
+const APONJON_FEATURES = [
+  { title: "✓ BIO-IMPEDANCE", note: "Sub-dermal vascular track" },
+  { title: "✓ 7-DAY BATTERY", note: "Ultra-low power Nordic SoC" },
+  { title: "✓ OFFLINE AI CHIP", note: "Edge inference on device" },
+  { title: "✓ IP68 RESILIENT", note: "Monsoon & dust certified" },
+];
+
+const SWASTI_BULLETS = [
+  {
+    lead: "Dialect-aware Bengali voice interaction:",
+    rest: "Tailored specifically for rural elders & low-literacy citizens across 64 districts.",
+  },
+  {
+    lead: "Real-time synchronization:",
+    rest: "Seamlessly pairs with Aponjon hardware band and rural smart pharmacy diagnostic kiosks.",
+  },
+  {
+    lead: "Instant digital prescription & cold-chain delivery:",
+    rest: "Direct link to specialized doctors and rapid emergency ambulance dispatch.",
+  },
+];
+
+const SWASTI_HIGHLIGHTS = [
+  {
+    title: "5-STEP RISK ANALYSIS",
+    note: "Hemodynamic CNN diagnostic pass & automated triage.",
+    wrap: "bg-mint-subtle border-emerald-100",
+    titleClass: "text-bd-green",
+  },
+  {
+    title: "GOLDEN 2-HR ALERT",
+    note: "Autonomous pre-stroke & cardiac anomaly detection.",
+    wrap: "bg-orange-50/70 border-orange-200/80",
+    titleClass: "text-signal-orange",
+  },
+  {
+    title: "OFFLINE BENGALI RAG",
+    note: "On-device medical guidance without cloud dependence.",
+    wrap: "bg-slate-50 border-slate-200",
+    titleClass: "text-text-primary",
+  },
+];
 
 export function FlagshipsSection() {
   return (
     <section
-      id="swasti"
-      className="w-full border-b border-border bg-slate-50/60 py-space-xl"
+      id="flagship"
+      className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8"
     >
-      <div className="mx-auto flex max-w-7xl flex-col gap-space-xl px-gutter">
-        <div className="mx-auto flex max-w-3xl flex-col items-center gap-space-xs text-center">
-          <span className="rounded-sm border border-emerald-200 bg-emerald-100 px-space-sm py-1 font-code-telemetry text-label-sm font-bold tracking-wider text-emerald-800">
-            Active Deep-Tech Hardware &amp; Software Suite
-          </span>
-          <h2 className="font-display text-headline-lg-mobile font-bold tracking-tight text-slate-900 sm:text-headline-lg">
-            Pioneering Vanguard Deployments
-          </h2>
-          <p className="font-body-md text-body-md leading-relaxed text-slate-600">
-            Engineered inside our Tejgaon facilities, deployed directly into
-            sub-districts and rural primary healthcare centers across all 8
-            administrative divisions.
+      <div className="mb-12 flex flex-col gap-2">
+        <span className="w-fit rounded border border-orange-200 bg-orange-50 px-2.5 py-1 font-mono text-xs font-bold tracking-wider text-signal-orange uppercase">
+          [ 04 // Flagship hardware &amp; software deployment ]
+        </span>
+        <h2 className="font-grotesk text-2xl font-bold tracking-tight text-text-primary uppercase sm:text-3xl lg:text-4xl">
+          Sovereign Healthcare Deep-Tech
+        </h2>
+        <p className="max-w-2xl font-sans text-base text-text-secondary">
+          Designed, engineered, and clinically verified inside Bangladesh to
+          eliminate diagnostic bottlenecks before emergency hospital transit.
+        </p>
+      </div>
+
+      {/* Product 1 — Aponjon wearable. */}
+      <div className="mb-12 grid grid-cols-1 items-center gap-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-elevated sm:p-8 lg:grid-cols-12 lg:p-10">
+        <div className="space-y-5 lg:col-span-6">
+          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 font-mono text-xs font-bold text-bd-green uppercase">
+            Clinical wearable // Native HW
+          </div>
+
+          <h3 className="font-grotesk text-2xl font-bold text-text-primary uppercase sm:text-3xl">
+            আপনজন — Aponjon Wearable AI Neuro-Device
+          </h3>
+
+          <p className="font-sans text-base leading-relaxed text-text-secondary">
+            An ultra-affordable medical smart neuro-band designed specifically
+            for Bangladesh. Collects continuous real-time ECG, EMG, SpO2, body
+            temperature, glucose trends, and daily stress/energy scores
+            calibrated to South Asian physiology.
           </p>
+
+          <div className="rounded-xl border-y border-r border-l-4 border-red-200 border-l-national-crimson bg-red-50/70 p-4 shadow-xs">
+            <span className="block font-mono text-xs font-bold tracking-wider text-national-crimson uppercase">
+              [ Protocol: The Golden Two Hours ]
+            </span>
+            <p className="mt-1 font-sans text-xs font-medium text-text-primary sm:text-sm">
+              Autonomous risk-factor detection ensuring critical
+              cardio-pulmonary patients receive urgent triage within the crucial
+              two-hour window before permanent organ failure occurs.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 pt-2 font-mono text-xs">
+            {APONJON_FEATURES.map((feature) => (
+              <div
+                key={feature.title}
+                className="rounded-xl border border-slate-200 bg-slate-50 p-3"
+              >
+                <span className="block text-sm font-bold text-text-primary">
+                  {feature.title}
+                </span>
+                <span className="text-text-muted">{feature.note}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="pt-2">
+            <a
+              href="#kandari-profile"
+              className="inline-flex items-center gap-2 rounded-xl bg-bd-green-light px-5 py-2.5 font-mono text-xs font-bold text-bd-green uppercase transition-all hover:bg-bd-green hover:text-white"
+            >
+              <span>Read Hardware Whitepaper</span>
+              <Icon name="arrow_forward" className="text-sm" />
+            </a>
+          </div>
         </div>
 
-        <article className="grid grid-cols-1 items-center gap-gutter rounded-2xl border border-border bg-white p-space-lg shadow-md lg:grid-cols-12">
-          <div className="flex flex-col gap-space-md lg:col-span-6">
-            <div className="flex flex-wrap items-center gap-space-sm">
-              <span className="rounded-lg bg-title px-space-sm py-1 font-display text-label-sm font-bold text-slate-900 shadow-xs">
-                SUPER-APP PLATFORM
+        {/* Device panel — schematic rendering of the band. */}
+        <div className="lg:col-span-6">
+          <div className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-md">
+            {/* 4:3 matches the source's 1.34 ratio almost exactly, so the
+                photograph is shown essentially uncropped. */}
+            <div className="relative aspect-4/3 overflow-hidden">
+              <Image
+                src="/sections/device.png"
+                alt="আপনজন AI নিউরো ব্যান্ড পরা এক নারীর কব্জি থেকে পালস, SpO₂ ও স্ট্রেস রিডিং ভেসে উঠছে; পেছনে হেলথকেয়ার সেন্টারে একজন চিকিৎসক"
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                quality={90}
+                className="object-cover"
+              />
+
+              {/* Live readout pinned over the render. */}
+              <span className="absolute top-3 left-3 flex items-center gap-1.5 rounded-lg bg-slate-950/80 px-2.5 py-1 font-mono text-[10px] font-bold tracking-wide text-emerald-200 shadow-md backdrop-blur-sm">
+                <span className="size-1.5 animate-pulse rounded-full bg-emerald-300" />
+                APONJON · 72 BPM
               </span>
-              <span className="font-code-telemetry text-code-telemetry font-bold text-primary">
-                স্বস্তি - SWASTI AI HEALTH
+
+              <span className="absolute right-3 bottom-3 flex gap-1.5 font-mono text-[9px] text-white">
+                {["ECG", "SpO₂", "EMG"].map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded border border-white/25 bg-slate-950/70 px-2 py-0.5 backdrop-blur-sm"
+                  >
+                    {tag}
+                  </span>
+                ))}
               </span>
             </div>
-            <h3 className="font-display text-headline-lg-mobile font-bold leading-tight text-slate-900 sm:text-headline-lg">
-              SWASTI (স্বস্তি): Clinical Diagnostic AI &amp; Emergency Super App
+
+            <div className="flex items-center justify-between border-t border-slate-200 bg-white p-3.5 font-mono text-xs">
+              <span className="font-bold text-signal-orange uppercase">
+                SPEC: HW-REV 3.2 // CLINIC VALIDATED
+              </span>
+              <span className="rounded border border-emerald-200 bg-emerald-50 px-2 py-0.5 font-bold text-bd-green">
+                ACCURACY: 98.8%
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Product 2 — SWASTI super app. */}
+      <div
+        id="swasti-section"
+        className="grid grid-cols-1 items-center gap-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-elevated sm:p-8 lg:grid-cols-12 lg:gap-12 lg:p-10"
+      >
+        <div className="flex items-center justify-center lg:col-span-5">
+          <div className="group relative w-full max-w-[360px] rounded-3xl border border-emerald-100 bg-linear-to-b from-emerald-50/80 via-white to-slate-100 p-3 shadow-xl">
+            {/* 3:4 matches the source's 0.75 ratio exactly — no crop. The
+                render already includes the handset and a hand, so it needs
+                no drawn phone chrome around it. */}
+            <div className="relative aspect-3/4 overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
+              <Image
+                src="/sections/mobileapp.png"
+                alt="SWASTI স্বস্তি অ্যাপের হোম স্ক্রিন — হার্ট রেট ৭৪ BPM, SpO₂ ৯৮%, রক্তচাপ ১২০/৮০ ও দ্রুত অ্যাকশন বোতাম"
+                fill
+                sizes="(min-width: 1024px) 30vw, 90vw"
+                quality={90}
+                className="object-cover"
+              />
+            </div>
+
+            <div className="mt-3 flex items-center justify-between rounded-xl border border-slate-200 bg-white/90 px-2 py-1.5 font-mono text-[11px] backdrop-blur-md">
+              <span className="flex items-center gap-1.5 font-bold text-bd-green">
+                <span className="size-2 animate-ping rounded-full bg-bd-green" />
+                SWASTI v2.4 LIGHT ENGINE
+              </span>
+              <span className="font-bold text-signal-orange">
+                STABLE // PLAYSTORE
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-5 lg:col-span-7">
+          <div className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-3 py-1 font-mono text-xs font-bold text-signal-orange uppercase">
+            Clinical AI platform // Bengali NLP
+          </div>
+
+          <div>
+            <h3 className="font-grotesk text-2xl font-bold tracking-tight text-text-primary uppercase sm:text-3xl lg:text-4xl">
+              SWASTI — স্বস্তি Super App
             </h3>
-            <p className="font-body-md text-body-md leading-relaxed text-slate-600">
-              The world&rsquo;s first clinical emergency ecosystem specifically
-              fine-tuned on indigenous Bangladeshi healthcare dynamics.
-              Featuring multi-dialect Bengali voice recognition (Chatgaya,
-              Sylheti, Noakhailla, Rangpuri) for universal triage accessibility.
+            <p className="mt-1 font-grotesk text-sm font-semibold text-bd-green sm:text-base">
+              স্বদেশী স্বাস্থ্য প্ল্যাটফর্ম • এআই ডায়াগনস্টিক ও টেলিমেডিসিন
+              নেটওয়ার্ক
             </p>
-
-            <div className="grid grid-cols-1 gap-space-sm pt-space-xs sm:grid-cols-2">
-              {swastiFeatures.map((feature) => (
-                <div
-                  key={feature.title}
-                  className="flex items-start gap-space-xs rounded-lg border border-border bg-slate-50 p-space-sm shadow-xs"
-                >
-                  <Icon
-                    name={feature.icon}
-                    className={cn(
-                      "text-[20px]",
-                      feature.tone === "primary" ? "text-primary" : "text-title",
-                    )}
-                  />
-                  <div>
-                    <span className="block font-label-md text-label-md font-bold text-slate-900">
-                      {feature.title}
-                    </span>
-                    <span className="block font-body-sm text-body-sm text-slate-600">
-                      {feature.description}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="flex flex-wrap items-center gap-space-md pt-space-sm">
-              <a
-                href="#download"
-                className="inline-flex items-center gap-space-sm rounded-lg bg-title px-space-md py-space-sm font-display text-label-md font-bold text-slate-900 shadow-sm transition-all hover:bg-signal"
-              >
-                <Icon name="android" className="text-[20px]" />
-                <span>Google Play</span>
-              </a>
-              <a
-                href="#download"
-                className="inline-flex items-center gap-space-sm rounded-lg border border-border bg-white px-space-md py-space-sm font-display text-label-md font-bold text-slate-900 shadow-xs transition-all hover:bg-slate-50"
-              >
-                <Icon name="phone_iphone" className="text-[20px]" />
-                <span>Apple App Store</span>
-              </a>
-              <span className="font-code-telemetry text-code-telemetry font-medium text-slate-500">
-                Free for all citizens
-              </span>
-            </div>
           </div>
 
-          <div className="flex justify-center lg:col-span-6">
-            <SwastiPreview />
+          <p className="font-sans text-base leading-relaxed text-text-secondary">
+            The national unified health interface integrating automated risk
+            factor analysis inside every citizen&apos;s profile. Features a
+            built-in Voice Assistant bot with native Bengali dialect support,
+            RAG-based clinical AI agents, and CNN diagnostic models accessible
+            from any basic smartphone.
+          </p>
+
+          <ul className="space-y-3 font-sans text-sm text-text-secondary">
+            {SWASTI_BULLETS.map((bullet) => (
+              <li key={bullet.lead} className="flex items-start gap-2.5">
+                <Icon
+                  name="check_circle"
+                  className="mt-0.5 shrink-0 text-xl text-bd-green"
+                />
+                <span>
+                  <strong className="text-text-primary">{bullet.lead}</strong>{" "}
+                  {bullet.rest}
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="grid grid-cols-1 gap-3 pt-2 font-mono text-xs sm:grid-cols-3">
+            {SWASTI_HIGHLIGHTS.map((item) => (
+              <div
+                key={item.title}
+                className={`rounded-xl border p-3 shadow-xs ${item.wrap}`}
+              >
+                <span className={`mb-1 block font-bold ${item.titleClass}`}>
+                  {item.title}
+                </span>
+                <span className="text-[11px] text-text-muted">
+                  {item.note}
+                </span>
+              </div>
+            ))}
           </div>
-        </article>
 
-        <div className="grid grid-cols-1 gap-gutter lg:grid-cols-2">
-          <article className="flex flex-col justify-between rounded-2xl border border-border bg-white p-space-lg shadow-md">
-            <div className="flex flex-col gap-space-md">
-              <div className="flex flex-wrap items-center justify-between gap-space-sm">
-                <span className="rounded-sm border border-emerald-200 bg-emerald-100 px-space-sm py-1 font-display text-label-sm font-bold text-emerald-800">
-                  SOVEREIGN HARDWARE
-                </span>
-                <span className="font-code-telemetry text-code-telemetry font-bold text-signal-text">
-                  BENGALI WEARABLE
-                </span>
-              </div>
-              <h3 className="font-display text-headline-md font-bold text-slate-900">
-                আপনজন - Aponjon: Neuro &amp; Biosensing AI Wearable
-              </h3>
-              <p className="font-body-md text-body-md leading-relaxed text-slate-600">
-                An affordable, clinical-grade medical wearable engineered
-                specifically for the physiological and financial context of 180
-                million Bangladeshi citizens. Direct hardware pairing with the
-                SWASTI sovereign health cloud.
-              </p>
-
-              <div className="grid grid-cols-2 gap-space-xs pt-space-xs sm:grid-cols-3">
-                {aponjonSensors.map((sensor) => (
-                  <div
-                    key={sensor.title}
-                    className="rounded-lg border border-border bg-slate-50 p-space-sm"
-                  >
-                    <Icon
-                      name={sensor.icon}
-                      className={cn(
-                        "text-[20px]",
-                        sensor.tone === "primary" ? "text-primary" : "text-title",
-                      )}
-                    />
-                    <span className="mt-1 block font-label-md text-label-md font-bold text-slate-900">
-                      {sensor.title}
-                    </span>
-                    <span className="block font-body-sm text-body-sm text-slate-600">
-                      {sensor.description}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-space-lg flex flex-wrap items-center justify-between gap-space-sm border-t border-border pt-space-md">
-              <span className="font-code-telemetry text-code-telemetry text-slate-900">
-                Target Unit Cost:{" "}
-                <strong className="font-bold text-signal-text">BDT 1,850</strong>
-              </span>
-              <a
-                href="#rnd-innovations"
-                className="rounded-lg border border-border bg-white px-space-md py-space-xs font-label-md text-label-md font-semibold text-slate-900 transition-colors hover:bg-slate-50"
-              >
-                View Hardware Whitepaper
-              </a>
-            </div>
-          </article>
-
-          <article className="flex flex-col justify-between rounded-2xl border border-border bg-white p-space-lg shadow-md">
-            <div className="flex flex-col gap-space-md">
-              <div className="flex flex-wrap items-center justify-between gap-space-sm">
-                <span className="rounded-sm border border-orange-200 bg-orange-100 px-space-sm py-1 font-display text-label-sm font-bold text-orange-900">
-                  RURAL B2B ECOSYSTEM
-                </span>
-                <span className="font-code-telemetry text-code-telemetry font-bold text-primary">
-                  45,000+ VILLAGE NODES
-                </span>
-              </div>
-              <h3 className="font-display text-headline-md font-bold text-slate-900">
-                One Village, One Smart Pharmacy (এক গ্রাম, এক স্মার্ট ফার্মেসি)
-              </h3>
-              <p className="font-body-md text-body-md leading-relaxed text-slate-600">
-                In Bangladesh, the village pharmacy is the real frontline
-                hospital. We convert these 45,000+ local retail hubs into
-                decentralized AI diagnostic outposts equipped with Kandari
-                telemetry tablets and immediate tele-specialist links.
-              </p>
-
-              <div className="flex flex-col gap-space-sm pt-space-xs">
-                {pharmacyCapabilities.map((capability) => (
-                  <div
-                    key={capability.title}
-                    className="flex items-center gap-space-sm rounded-lg border border-border bg-slate-50 p-space-sm"
-                  >
-                    <Icon
-                      name={capability.icon}
-                      className={cn(
-                        "text-[24px]",
-                        capability.tone === "primary"
-                          ? "text-primary"
-                          : "text-title",
-                      )}
-                    />
-                    <div className="flex flex-col">
-                      <span className="font-label-md text-label-md font-bold text-slate-900">
-                        {capability.title}
-                      </span>
-                      <span className="font-body-sm text-body-sm text-slate-600">
-                        {capability.description}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-space-lg flex flex-wrap items-center justify-between gap-space-sm border-t border-border pt-space-md">
-              <span className="font-code-telemetry text-code-telemetry text-slate-900">
-                Pilot Cohort:{" "}
-                <strong className="font-bold text-primary">
-                  120 Union Parishads Active
-                </strong>
-              </span>
-              <a
-                href="#kandari-member-portal"
-                className="rounded-lg border border-border bg-white px-space-md py-space-xs font-label-md text-label-md font-semibold text-slate-900 transition-colors hover:bg-slate-50"
-              >
-                Join Pharmacy Pilot
-              </a>
-            </div>
-          </article>
+          <div className="flex flex-wrap items-center gap-3 pt-3">
+            <a
+              href="#kandari-profile"
+              className="inline-flex items-center gap-2 rounded-xl bg-signal-orange px-6 py-3.5 font-grotesk text-xs font-bold text-white uppercase shadow-glow-orange transition-all hover:-translate-y-0.5 hover:bg-amber-600 sm:text-sm"
+            >
+              <Icon name="download" className="text-lg" />
+              Download SWASTI App APK / Play Store
+            </a>
+            <span className="rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 font-mono text-xs font-bold text-bd-green">
+              FREE NATIONAL CITIZEN ACCESS
+            </span>
+          </div>
         </div>
       </div>
     </section>

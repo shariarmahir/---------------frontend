@@ -1,96 +1,116 @@
+import Image from "next/image";
 import { Icon } from "@/components/ui/icon";
-import { impactMetrics } from "@/data/metrics";
-import { cn } from "@/lib/utils";
-
-const TONE_TEXT = {
-  primary: "text-primary",
-  signal: "text-signal-text",
-  crimson: "text-crimson",
-  slate: "text-slate-900",
-} as const;
-
-const TONE_ICON = {
-  primary: "text-primary",
-  signal: "text-title",
-  crimson: "text-crimson",
-  slate: "text-primary",
-} as const;
-
-const TONE_BAR = {
-  primary: "bg-primary",
-  signal: "bg-title",
-  crimson: "bg-crimson",
-  slate: "bg-primary",
-} as const;
 
 export function MetricsSection() {
   return (
     <section
-      id="impact"
-      className="w-full border-b border-border bg-white py-space-xl"
+      id="rural-network"
+      className="border-y border-slate-200 bg-mint-subtle/70 py-16 sm:py-24"
     >
-      <div className="mx-auto flex max-w-7xl flex-col gap-space-xl px-gutter">
-        <div className="mx-auto flex max-w-2xl flex-col items-center gap-space-xs text-center">
-          <span className="font-code-telemetry text-label-sm font-bold tracking-wider text-signal-text">
-            Quantifiable National Telemetry
-          </span>
-          <h2 className="font-display text-headline-lg-mobile font-bold tracking-tight text-slate-900 sm:text-headline-lg">
-            Systemic Transformation Metrics
-          </h2>
-          <p className="font-body-md text-body-md text-slate-600">
-            Empirical impact benchmarks monitored round-the-clock across our
-            decentralized data mesh.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 gap-gutter sm:grid-cols-2 lg:grid-cols-4">
-          {impactMetrics.map((metric) => (
-            <article
-              key={metric.label}
-              className="flex flex-col justify-between rounded-2xl border border-border bg-slate-50 p-space-lg shadow-xs transition-all hover:shadow-md"
-            >
-              <div className="flex items-center justify-between text-slate-500">
-                <span className="font-label-sm text-label-sm font-bold tracking-wider">
-                  {metric.label}
-                </span>
-                <Icon
-                  name={metric.icon}
-                  className={cn("text-[20px]", TONE_ICON[metric.tone])}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">
+          {/* Pharmacy panel. */}
+          <div className="relative lg:col-span-6">
+            <div className="group overflow-hidden rounded-2xl border border-emerald-200/80 bg-white p-2 shadow-elevated">
+              {/* 4:3 matches the source's 1.34 ratio, so the pharmacy
+                  interior is shown essentially uncropped. */}
+              <div className="relative aspect-4/3 overflow-hidden rounded-xl">
+                <Image
+                  src="/sections/smartpharmacy.png"
+                  alt="গ্রামীণ স্মার্ট ফার্মেসিতে স্বস্তি ইউনিফর্ম পরা একজন স্বাস্থ্যকর্মী এক প্রবীণ রোগীর রক্তচাপ মাপছেন; পাশে টেলিমেডিসিন স্ক্রিনে চিকিৎসক ও তাকভর্তি ওষুধ"
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  quality={90}
+                  className="object-cover"
                 />
+
+                <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full border border-emerald-200 bg-white/95 px-3 py-1 font-mono text-xs font-bold text-bd-green shadow-sm backdrop-blur-md">
+                  <span className="size-2 animate-pulse rounded-full bg-bd-green" />
+                  LIVE PILOT: MANIKGANJ UNION #3
+                </div>
+
+                {/* Capability tags the schematic used to carry. */}
+                <div className="absolute right-3 bottom-3 left-3 flex flex-wrap gap-1.5 font-mono text-[9px] text-white">
+                  {["DIAG KIOSK", "TELE-LINK", "COLD CHAIN", "SOLAR CELL"].map(
+                    (tag) => (
+                      <span
+                        key={tag}
+                        className="rounded border border-white/25 bg-slate-950/70 px-2 py-0.5 whitespace-nowrap backdrop-blur-sm"
+                      >
+                        ◦ {tag}
+                      </span>
+                    ),
+                  )}
+                </div>
               </div>
 
-              <div className="my-space-md">
-                <span
-                  className={cn(
-                    "font-display text-display-mobile font-extrabold tracking-tight xl:text-display",
-                    TONE_TEXT[metric.tone],
-                  )}
-                >
-                  {metric.value}
+              <div className="flex items-center justify-between p-3 font-mono text-xs text-text-muted">
+                <span>SOLAR MICRO-CLINIC MODEL</span>
+                <span className="font-bold text-bd-green">
+                  100% CLEAN POWER RUNTIME
                 </span>
-                <span className="mt-1 block font-display text-label-md font-bold text-slate-900">
-                  {metric.title}
-                </span>
-                <p className="mt-1 font-body-sm text-body-sm text-slate-600">
-                  {metric.description}
+              </div>
+            </div>
+          </div>
+
+          {/* Narrative. */}
+          <div className="space-y-5 lg:col-span-6">
+            <span className="inline-block rounded border border-emerald-200 bg-emerald-50 px-2.5 py-1 font-mono text-xs font-bold tracking-wider text-bd-green uppercase">
+              [ 05 // Infrastructure pilot // Rural pharmacy grid ]
+            </span>
+
+            <h2 className="font-grotesk text-2xl font-bold tracking-tight text-text-primary uppercase sm:text-3xl lg:text-4xl">
+              &lsquo;One Village, One Medical Healthcare Center&rsquo; — Rural
+              Pharmacy Grid
+            </h2>
+
+            <p className="font-sans text-base leading-relaxed text-text-secondary">
+              In remote upazilas, the local drug store is the de facto hospital.
+              Kandari-Lab upgrades this existing community touchpoint:
+              transforming traditional retail pharmacies into solar-powered,
+              AI-connected diagnostic clinics equipped with Aponjon hardware,
+              automated tele-consultation, and SWASTI digital records.
+            </p>
+
+            <div className="grid grid-cols-1 gap-4 pt-2 sm:grid-cols-2">
+              <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
+                <div className="mb-1 flex items-center gap-2 font-grotesk text-sm font-bold text-signal-orange uppercase">
+                  <Icon name="solar_power" className="text-xl" />
+                  Solar Powered Grid
+                </div>
+                <p className="font-sans text-xs leading-relaxed text-text-muted">
+                  Uninterrupted 24/7 cold-chain &amp; telemetry during rural
+                  grid shedding.
                 </p>
               </div>
 
-              <div
-                role="progressbar"
-                aria-valuenow={metric.progress}
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-label={`${metric.title} progress`}
-                className="h-2 w-full overflow-hidden rounded-full bg-slate-200"
-              >
-                <div
-                  className={cn("h-full rounded-full", TONE_BAR[metric.tone])}
-                  style={{ width: `${metric.progress}%` }}
-                />
+              <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
+                <div className="mb-1 flex items-center gap-2 font-grotesk text-sm font-bold text-bd-green uppercase">
+                  <Icon name="switch_video" className="text-xl" />
+                  Tele-Consultation
+                </div>
+                <p className="font-sans text-xs leading-relaxed text-text-muted">
+                  Sub-second encrypted video connection directly to Dhaka
+                  specialized doctors.
+                </p>
               </div>
-            </article>
-          ))}
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white p-3.5 font-mono text-xs">
+              <span>
+                TARGET PHASE 1:{" "}
+                <strong className="text-text-primary">1,200 PHARMACIES</strong>
+              </span>
+              <span>
+                TIMELINE:{" "}
+                <strong className="text-signal-orange">Q3–Q4 2025</strong>
+              </span>
+              <span>
+                COVERAGE:{" "}
+                <strong className="text-bd-green">ALL 8 DIVISIONS</strong>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
