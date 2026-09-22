@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { ProfileSidebar } from "@/components/profile/profile-sidebar";
 import { ProfileAside } from "@/components/profile/profile-aside";
 import {
@@ -11,22 +9,10 @@ import {
   ProfileTopBar,
 } from "@/components/profile/profile-header";
 import { ProfilePost, WhoToFollow } from "@/components/profile/profile-post";
-import { hasSession } from "@/lib/session";
+import { useSessionGate } from "@/lib/session";
 
 export default function ProfilePage() {
-  const router = useRouter();
-  // Undefined until the effect runs — localStorage is unavailable during
-  // render, so the gate cannot be decided on the server.
-  const [signedIn, setSignedIn] = useState<boolean>();
-
-  useEffect(() => {
-    if (hasSession()) {
-      setSignedIn(true);
-    } else {
-      setSignedIn(false);
-      router.replace("/login");
-    }
-  }, [router]);
+  const signedIn = useSessionGate();
 
   if (!signedIn) {
     return (

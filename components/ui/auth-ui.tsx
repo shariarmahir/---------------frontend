@@ -186,9 +186,15 @@ function SignInForm() {
 }
 
 function SignUpForm() {
+  const router = useRouter();
+
+  // No enrolment backend exists yet (see lib/session.ts) — this starts the
+  // same mock session as sign-in so the rest of the portal stays reachable,
+  // rather than a submit button that silently does nothing.
   const handleSignUp = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("UI: Sign Up form submitted");
+    startSession();
+    router.push("/profile");
   };
 
   return (

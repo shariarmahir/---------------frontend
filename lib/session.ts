@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useSyncExternalStore } from "react";
+import { useRouter } from "next/navigation";
 import { MOCK_EMAIL, MOCK_PASSWORD, SESSION_KEY } from "@/data/profile";
 
 /**
@@ -38,4 +40,39 @@ export function endSession(): void {
   } catch {
     // Nothing to clear if storage is unavailable.
   }
+}
+
+// No cross-tab/storage-event sync is needed — the gate only reads the flag
+// once per mount — so the subscription is a no-op that never notifies.
+function subscribeSession(): () => void {
+  return () => {};
+}
+
+/** Server has no localStorage, so the session state is unknown until hydration. */
+function getServerSession(): undefined {
+  return undefined;
+}
+
+/**
+ * Gate for client-only routes that require the mock session.
+ *
+ * `useSyncExternalStore` is what lets this read `hasSession()` (a
+ * `window`-only external source) without the client's first render
+ * diverging from the server's — the server snapshot is `undefined` and the
+ * real value appears only once hydration resolves it. The `useEffect`
+ * handles the one true side effect, redirecting away when signed out.
+ */
+export function useSessionGate(): boolean | undefined {
+  const router = useRouter();
+  const signedIn = useSyncExternalStore(
+    subscribeSession,
+    hasSession,
+    getServerSession,
+  );
+
+  useEffect(() => {
+    if (signedIn === false) router.replace("/login");
+  }, [signedIn, router]);
+
+  return signedIn;
 }

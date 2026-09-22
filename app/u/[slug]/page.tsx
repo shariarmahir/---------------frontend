@@ -1,13 +1,13 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
-import { notFound, useRouter } from "next/navigation";
+import { use } from "react";
+import { notFound } from "next/navigation";
 import { ProfileSidebar } from "@/components/profile/profile-sidebar";
 import { ProfileAside } from "@/components/profile/profile-aside";
 import { MemberHero, MemberTopBar } from "@/components/profile/member-hero";
 import { MemberFeed } from "@/components/profile/member-posts";
 import { mehek } from "@/data/member";
-import { hasSession } from "@/lib/session";
+import { useSessionGate } from "@/lib/session";
 
 /** Members reachable at /u/<slug>. Only Mehek exists so far. */
 const MEMBERS = { [mehek.slug]: mehek };
@@ -18,19 +18,9 @@ export default function MemberPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
-  const router = useRouter();
-  const [signedIn, setSignedIn] = useState<boolean>();
+  const signedIn = useSessionGate();
 
   const member = MEMBERS[slug];
-
-  useEffect(() => {
-    if (hasSession()) {
-      setSignedIn(true);
-    } else {
-      setSignedIn(false);
-      router.replace("/login");
-    }
-  }, [router]);
 
   if (!member) notFound();
 
