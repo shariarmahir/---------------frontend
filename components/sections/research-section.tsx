@@ -46,9 +46,9 @@ export function ResearchSection() {
   return (
     <section
       id="rd-labs"
-      className="mx-auto max-w-7xl px-gutter-x py-section-y"
+      className="section-band mx-auto max-w-7xl px-gutter-x"
     >
-      <div className="mb-12 flex flex-col gap-2">
+      <div className="mb-10 flex flex-col gap-2">
         <span className="w-fit rounded border border-orange-200 bg-orange-50 px-2.5 py-1 font-mono text-xs font-bold tracking-wider text-signal-orange uppercase">
           [ 06 // Kandari autonomous lab division ]
         </span>

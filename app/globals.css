@@ -147,23 +147,25 @@
   --spacing-space-2xl: 4rem;
   --spacing-margin-lg: 3rem;
 
-  /* Fluid section rhythm — one token instead of a py-16/sm:py-24/lg:py-32
-     breakpoint ladder. clamp() interpolates continuously, so spacing never
-     jumps at a breakpoint and never scales past the cap on ultrawide.
-     All stops land on the 8px grid at the ends.
+  /* Section rhythm — the gap between two adjacent sections, as ONE
+     interval rather than two.
 
-       section-y     48px → 160px   standard band
-       section-y-sm  32px →  80px   tight band (dense/secondary sections)
-       section-y-lg  64px → 200px   the page's few hero-weight moments
+     Symmetric section padding is the trap here: every section paying both
+     a top and a bottom means each seam is the sum of its neighbours'
+     (160px + 160px = 320px of dead air on desktop). The `section-band`
+     utilities below spend exactly one of these per seam instead.
 
-     Each preferred term is solved to hit the target at both ends rather
-     than guessed: slope = (max−min)/(1440−390), intercept = min − slope×390.
-     That puts section-y at 48px on a 390px phone, ~88px at 768, ~116px at
-     1024, and the full 160px from 1440 up — the desktop band the spec
-     calls for, capped so ultrawide never keeps growing. */
-  --spacing-section-y: clamp(3rem, 10.67vw + 0.4rem, 10rem);
-  --spacing-section-y-sm: clamp(2rem, 4.57vw + 0.885rem, 5rem);
-  --spacing-section-y-lg: clamp(4rem, 12.95vw + 0.845rem, 12.5rem);
+     clamp() interpolates continuously, so spacing never jumps at a
+     breakpoint and never keeps growing on ultrawide. Each preferred term
+     is solved to hit both ends rather than guessed:
+     slope = (max−min)/(1440−390), intercept = min − slope×390.
+
+       seam        36px → 88px   between two plain bands
+       seam-band   44px → 104px  inside a tinted or bordered band, whose
+                                 visible surface absorbs the extra room
+                                 where a plain band would read as loose */
+  --spacing-seam: clamp(2.25rem, 4.57vw + 1.135rem, 5.5rem);
+  --spacing-seam-band: clamp(2.75rem, 5.33vw + 1.45rem, 6.5rem);
 
   /* Horizontal gutters, matched to the same approach so the page has one
      consistent inset at every width. 16px → 32px. */
@@ -312,6 +314,35 @@
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+/* Section rhythm — one interval per seam, not two.
+   Each band pays only its top interval, so the gap between any two
+   sections is exactly `--spacing-seam` rather than the sum of a bottom
+   and a top. The last band in a run closes the page with a matching
+   bottom, and a band that opens directly under the hero drops its top
+   (the hero's own edge already provides the break). */
+@utility section-band {
+  padding-top: var(--spacing-seam);
+
+  &:last-child {
+    padding-bottom: var(--spacing-seam);
+  }
+}
+
+/* Tinted or bordered variant. Because the surface is visible, this
+   padding reads as the band's own inset rather than as a gap, so it
+   pays both sides — its border is the boundary and cannot borrow the
+   neighbour's interval. */
+@utility section-band-tinted {
+  padding-block: var(--spacing-seam-band);
+}
+
+/* A plain band directly after a tinted one drops its top interval: the
+   tinted band's own bottom inset already separates them. Without this
+   the two stack (136px + 112px = 248px of dead air). */
+.section-band-tinted + .section-band {
+  padding-top: 0;
 }
 
 /* Newsprint backdrop for the "আজকের বাংলাদেশ" button: ruled lines drifting

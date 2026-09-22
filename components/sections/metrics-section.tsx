@@ -5,7 +5,7 @@ export function MetricsSection() {
   return (
     <section
       id="rural-network"
-      className="border-y border-slate-200 bg-mint-subtle/70 py-section-y"
+      className="section-band-tinted border-y border-slate-200 bg-mint-subtle/70"
     >
       <div className="mx-auto max-w-7xl px-gutter-x">
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">

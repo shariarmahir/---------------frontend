@@ -54,7 +54,7 @@ export function KandariProfileSection() {
   return (
     <section
       id="kandari-profile"
-      className="relative overflow-hidden py-section-y"
+      className="section-band relative overflow-hidden"
     >
       <div className="relative mx-auto max-w-7xl px-gutter-x">
         <div className="relative overflow-hidden rounded-3xl border border-emerald-200/90 shadow-2xl">
