@@ -55,10 +55,6 @@ export function MetricsSection() {
 
           {/* Narrative. */}
           <div className="space-y-5 lg:col-span-6">
-            <span className="inline-block rounded border border-emerald-200 bg-emerald-50 px-2.5 py-1 font-mono text-xs font-bold tracking-wider text-bd-green uppercase">
-              [ 05 // Infrastructure pilot // Rural pharmacy grid ]
-            </span>
-
             <h2 className="font-grotesk text-2xl font-bold tracking-tight text-text-primary uppercase sm:text-3xl lg:text-4xl">
               &lsquo;One Village, One Medical Healthcare Center&rsquo; — Rural
               Pharmacy Grid

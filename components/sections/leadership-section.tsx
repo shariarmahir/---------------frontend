@@ -67,9 +67,6 @@ export function LeadershipSection() {
       className="section-band mx-auto max-w-7xl px-gutter-x"
     >
       <div className="mb-10 flex flex-col gap-2">
-        <span className="w-fit rounded border border-orange-200 bg-orange-50 px-2.5 py-1 font-mono text-xs font-bold tracking-wider text-signal-orange uppercase">
-          [ 08 // Core architects &amp; governance ]
-        </span>
         <h2 className="font-grotesk text-2xl font-bold tracking-tight text-text-primary uppercase sm:text-3xl lg:text-4xl">
           Foundership &amp; Engineering Command
         </h2>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import { CategoryScroller } from "@/components/news/category-scroller";
 import { NewsCard } from "@/components/news/news-card";
@@ -13,8 +13,40 @@ import { cn } from "@/lib/utils";
  * Filtering happens client-side over the placeholder set. Once the
  * aggregation API exists this becomes a query parameter instead.
  */
+/**
+ * Hash views the section nav links to, mapped onto the feed's own
+ * categories. `crime-accused` and `crime-place` are the intended cuts by
+ * accused person and by incident location; the placeholder records carry
+ * neither field yet, so for now all three resolve to the crime set rather
+ * than to an empty feed that would look broken.
+ */
+const HASH_VIEWS: Record<string, NewsCategory> = {
+  crime: "crime",
+  "crime-accused": "crime",
+  "crime-place": "crime",
+};
+
+function viewFromHash(): NewsCategory | null {
+  if (typeof window === "undefined") return null;
+  const view = window.location.hash.match(/^#feed=(.+)$/)?.[1];
+  return view ? (HASH_VIEWS[view] ?? null) : null;
+}
+
 export function NewsFeed() {
   const [active, setActive] = useState<NewsCategory | "all">("all");
+
+  // The section nav drives the filter through the hash, so the same link
+  // works from another page as well as from this one. `hashchange` covers
+  // clicks made while already here, where no navigation occurs.
+  useEffect(() => {
+    const sync = () => {
+      const view = viewFromHash();
+      if (view) setActive(view);
+    };
+    sync();
+    window.addEventListener("hashchange", sync);
+    return () => window.removeEventListener("hashchange", sync);
+  }, []);
 
   const items = useMemo(
     () =>

@@ -22,13 +22,8 @@ export function SiteFooter() {
       <div className="mx-auto max-w-7xl px-4 pt-16 pb-12 sm:px-6 lg:px-8">
         {/* Manifesto box. */}
         <div className="relative mb-12 overflow-hidden rounded-2xl border border-emerald-100 bg-mint-subtle p-6 shadow-sm">
-          <div className="absolute top-0 left-0 h-full w-2 bg-national-crimson" />
-
-          <div className="flex flex-col justify-between gap-4 pl-2 md:flex-row md:items-center">
+          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
             <div className="space-y-1">
-              <span className="block font-mono text-xs font-bold tracking-wider text-signal-orange uppercase">
-                [ 10 // National mission manifesto // BD-CORE ]
-              </span>
               <p className="font-grotesk text-xl font-bold text-text-primary italic sm:text-2xl">
                 {NAZRUL_MOTTO}
               </p>

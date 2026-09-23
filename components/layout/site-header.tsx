@@ -2,9 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { RecordDialog } from "@/components/record/record-dialog";
 import { Icon } from "@/components/ui/icon";
+import { NavIndicators } from "@/components/ui/nav-indicators";
 import {
   Sheet,
   SheetClose,
@@ -12,18 +14,73 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { NAZRUL_MOTTO, navLinks } from "@/data/navigation";
+import { NAZRUL_MOTTO, navLinksFor, type NavLink } from "@/data/navigation";
 import { cn } from "@/lib/utils";
 
+/**
+ * A nav label with one word lifted into the alert colour.
+ *
+ * Split rather than `dangerouslySetInnerHTML`: the label is data, and the
+ * accent is presentation, so the two stay separate. The accent is purely
+ * visual, so the text still reads as one string to assistive tech.
+ */
+function NavLabel({ link }: { link: NavLink }) {
+  if (!link.accentWord || !link.label.includes(link.accentWord)) {
+    return <span>{link.label}</span>;
+  }
+  const [before, ...after] = link.label.split(link.accentWord);
+  return (
+    <span>
+      {before}
+      <span className="text-national-crimson">{link.accentWord}</span>
+      {after.join(link.accentWord)}
+    </span>
+  );
+}
+
+/**
+ * The nav link matching a pathname, or null for links that only point at
+ * in-page anchors.
+ *
+ * Longest path first: "/ajker-oporadh" is a prefix of "/ajker-oporadhi",
+ * so scanning in declaration order would match the crime index while the
+ * reader is on the offender index and light up the wrong tab.
+ */
+function matchNavHref(pathname: string, links: NavLink[]): string | null {
+  const best = links
+    .map((link) => ({ link, path: link.href.split("#")[0] }))
+    .filter(({ path }) => path !== "" && pathname === path)
+    .sort((a, b) => b.path.length - a.path.length)[0];
+  return best?.link.href ?? null;
+}
+
 export function SiteHeader() {
-  const [activeHref, setActiveHref] = useState(navLinks[0].href);
+  // The section nav is per-page: the home sections do not exist on the
+  // news index, so linking to them there would scroll nowhere.
+  const pathname = usePathname();
+  const navLinks = navLinksFor(pathname);
+
+  // Which link the current page corresponds to, recomputed each render
+  // so client-side navigation between two nav pages moves the highlight.
+  const pathHref = matchNavHref(pathname, navLinks);
+
+  // In-page anchor clicks (Mission, Products…) track their own
+  // highlight. Storing the pathname alongside the clicked href lets a
+  // route change discard it during render, without an effect — which
+  // also keeps this clear of `react-hooks/set-state-in-effect`.
+  const [clicked, setClicked] = useState<{ href: string; path: string } | null>(
+    null,
+  );
+  const clickedHref = clicked?.path === pathname ? clicked.href : null;
+  const activeHref = clickedHref ?? pathHref ?? navLinks[0].href;
+  const setActiveHref = (href: string) => setClicked({ href, path: pathname });
   const [recordOpen, setRecordOpen] = useState(false);
 
   return (
     // The card floats inset from the page edges, so the fixed wrapper is the
     // full-width track and the <header> inside it is the card. Padding here
     // rather than on the card keeps the rounded corners clear of the viewport.
-    <div className="fixed inset-x-0 top-0 z-40 px-3 py-3 sm:px-6 sm:py-4">
+    <div className="fixed inset-x-0 top-0 z-40 px-3 py-2 sm:px-6 sm:py-2.5">
       <header
         className={cn(
           "glass-surface-ultra mx-auto w-full max-w-[1360px] overflow-hidden",
@@ -32,7 +89,7 @@ export function SiteHeader() {
         )}
       >
         {/* ── Level 1 — lattice telemetry strip ───────────────────────── */}
-        <div className="border-b border-slate-100/90 bg-white/75 px-4 py-2 font-mono text-[11px] tracking-tight text-slate-600 sm:px-6 lg:px-8">
+        <div className="border-b border-slate-100/90 bg-white/75 px-4 py-1.5 font-mono text-[11px] tracking-tight text-slate-600 sm:px-6 lg:px-8">
           {/* Single row that scrolls rather than wraps. Wrapping turned this
               into a three-line block on phones, which pushed the brand row
               off-screen — the strip is ambient telemetry, so overflow is a
@@ -97,7 +154,7 @@ export function SiteHeader() {
         </div>
 
         {/* ── Level 2 — brand, live metric, conversion ────────────────── */}
-        <div className="bg-white/70 px-4 py-3.5 backdrop-blur-md sm:px-6 lg:px-8">
+        <div className="bg-white/70 px-4 py-2 backdrop-blur-md sm:px-6 lg:px-8">
           <div className="flex items-center justify-between gap-3 sm:gap-4">
             {/* Left cluster — emblem, wordmark, today's pill. `min-w-0` so it
                 yields to the action cluster instead of pushing it off the
@@ -182,60 +239,10 @@ export function SiteHeader() {
               </Link>
             </div>
 
-            {/* Centre-right — workforce productivity readout. */}
-            <Link
-              href="/amar-bangladesh#national-index"
-              className="hidden items-center space-x-3.5 rounded-2xl border border-slate-200/90 bg-linear-to-b from-white to-slate-50/80 px-4 py-2 shadow-elevation-flat transition-all duration-200 hover:border-slate-300 hover:shadow-md lg:flex"
-            >
-              <div className="relative flex size-9 items-center justify-center rounded-xl border border-orange-200/70 bg-orange-50/80 text-bdorange-600 shadow-2xs">
-                <svg
-                  aria-hidden
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  className="size-5 text-bdorange-600"
-                >
-                  <path
-                    d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-
-              <div className="flex flex-col">
-                <span className="text-[10.5px] font-bold tracking-tight text-slate-500 uppercase">
-                  WORKFORCE PRODUCTIVITY
-                </span>
-                <div className="flex items-baseline space-x-1">
-                  <span className="font-mono text-xl leading-none font-extrabold tracking-tight text-slate-900">
-                    61.4
-                  </span>
-                  <span className="font-mono text-xs font-semibold text-slate-400">
-                    %
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-center rounded-lg border border-emerald-200/60 border-l-slate-200/80 bg-emerald-50/90 px-2.5 py-1 pl-2 font-mono text-xs font-bold text-emerald-700 shadow-2xs">
-                <svg
-                  aria-hidden
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  className="mr-0.5 size-3.5 text-emerald-600"
-                >
-                  <path
-                    d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <span>+0.8%</span>
-              </div>
-            </Link>
+            {/* Centre — the live national readout, auto-rotating. `shrink-0`
+                so it keeps its full width and the two side clusters absorb
+                any shortfall instead of squeezing the reading. */}
+            <NavIndicators className="hidden shrink-0 lg:flex" />
 
             {/* Right cluster — tribute line, account, mobile menu. */}
             <div className="flex shrink-0 items-center space-x-2 sm:space-x-3">
@@ -245,12 +252,12 @@ export function SiteHeader() {
                   as "primary action" on a memorial line. */}
               <Link
                 href="/jibaner-joygan"
-                className="hidden shrink-0 flex-col items-center justify-center rounded-xl border border-primary/30 px-3 py-1.5 text-center leading-tight transition-colors duration-200 hover:bg-emerald-50 min-[400px]:flex sm:px-4 sm:py-2"
+                className="hidden h-10 shrink-0 flex-col items-center justify-center rounded-xl border border-primary/30 px-3 text-center leading-tight transition-colors duration-200 hover:bg-emerald-50 min-[400px]:flex sm:px-4"
               >
-                <span className="font-bengali text-xs font-semibold whitespace-nowrap text-primary sm:text-sm">
+                <span className="font-bengali text-[11px] font-semibold whitespace-nowrap text-primary sm:text-xs">
                   ফাঁসির মঞ্চে গেয়ে গেল যারা
                 </span>
-                <span className="font-bengali text-xs font-semibold whitespace-nowrap text-primary sm:text-sm">
+                <span className="font-bengali text-[11px] font-semibold whitespace-nowrap text-primary sm:text-xs">
                   জীবনের জয়গান
                 </span>
               </Link>
@@ -301,7 +308,7 @@ export function SiteHeader() {
                           onClick={() => setActiveHref(link.href)}
                           className="rounded-lg border border-slate-200 bg-slate-50 px-space-md py-space-sm text-sm font-medium text-slate-900 transition-colors hover:border-emerald-300 hover:text-bdgreen-900"
                         >
-                          {link.label}
+                          <NavLabel link={link} />
                         </a>
                       </SheetClose>
                     ))}
@@ -365,7 +372,7 @@ export function SiteHeader() {
         {/* ── Level 3 — section navigation + civic actions ────────────── */}
         <nav className="no-scrollbar hidden overflow-x-auto border-t border-slate-200/80 bg-white/85 px-4 py-1 backdrop-blur-md sm:px-6 lg:block lg:px-8">
           <div className="flex min-w-max items-center justify-between gap-6">
-            <ul className="flex items-center space-x-1 py-1 lg:space-x-1.5">
+            <ul className="flex items-center space-x-1 lg:space-x-1.5">
               {navLinks.map((link) => {
                 const isActive = activeHref === link.href;
                 return (
@@ -374,17 +381,17 @@ export function SiteHeader() {
                       href={link.href}
                       onClick={() => setActiveHref(link.href)}
                       className={cn(
-                        "relative flex items-center rounded-lg px-3 py-2 text-sm transition-all duration-150",
+                        "relative flex items-center rounded-lg px-3 py-1.5 text-sm transition-all duration-150",
                         isActive
                           ? "bg-slate-100/80 px-3.5 font-bold text-slate-900"
                           : "font-medium text-slate-600 hover:bg-slate-100/60 hover:text-slate-900",
                       )}
                     >
-                      <span>{link.label}</span>
+                      <NavLabel link={link} />
 
-                      {/* The member portal carries an ID tag in the
-                          reference; keep it on that link only. */}
-                      {link.href === "#kandari-member-portal" ? (
+                      {/* The membership link carries an ID tag; keep it on
+                          that one link only. */}
+                      {link.href === "#kandari-profile" ? (
                         <span className="ml-1.5 rounded border border-slate-200 bg-slate-100 px-1.5 py-0.5 font-mono text-[9.5px] font-bold text-slate-600 uppercase transition-colors group-hover:bg-emerald-50 group-hover:text-emerald-700">
                           ID
                         </span>
@@ -400,7 +407,7 @@ export function SiteHeader() {
             </ul>
 
             {/* Right — record, protest, national issue tracker. */}
-            <div className="flex items-center space-x-2.5 py-1 sm:space-x-3">
+            <div className="flex items-center space-x-2.5 sm:space-x-3">
               <button
                 type="button"
                 onClick={() => setRecordOpen(true)}

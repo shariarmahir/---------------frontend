@@ -51,9 +51,6 @@ export function FlagshipsSection() {
       className="section-band mx-auto max-w-7xl px-gutter-x"
     >
       <div className="mb-10 flex flex-col gap-2">
-        <span className="w-fit rounded border border-orange-200 bg-orange-50 px-2.5 py-1 font-mono text-xs font-bold tracking-wider text-signal-orange uppercase">
-          [ 04 // Flagship hardware &amp; software deployment ]
-        </span>
         <h2 className="font-grotesk text-2xl font-bold tracking-tight text-text-primary uppercase sm:text-3xl lg:text-4xl">
           Sovereign Healthcare Deep-Tech
         </h2>
@@ -81,7 +78,7 @@ export function FlagshipsSection() {
             calibrated to South Asian physiology.
           </p>
 
-          <div className="rounded-xl border-y border-r border-l-4 border-red-200 border-l-national-crimson bg-red-50/70 p-4 shadow-xs">
+          <div className="rounded-xl border border-red-200 bg-red-50/70 p-4 shadow-xs">
             <span className="block font-mono text-xs font-bold tracking-wider text-national-crimson uppercase">
               [ Protocol: The Golden Two Hours ]
             </span>

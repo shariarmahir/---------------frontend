@@ -2,10 +2,22 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { heroPhotos } from "@/data/hero-gallery";
 
-/** The four headline proof points, shown in the bar under the hero. */
+/**
+ * Meta row above the headline — the three facts that qualify the claim
+ * before it is made. Kept to three: a fourth turns a line of context into
+ * a stat bar, which is a different (and noisier) component.
+ */
+const META = [
+  "৬৪ districts",
+  "Semiconductor · IoT · AI",
+  "SWASTI & আপনজন shipping",
+];
+
+/** The four proof points, in the rule below the hero band. */
 const HERO_STATS = [
   { label: "Citizens Monitored", value: "4.8M+" },
   { label: "Critical Triage", value: "< 120 MIN" },
@@ -15,11 +27,24 @@ const HERO_STATS = [
 
 const SLIDE_MS = 6000;
 
+/**
+ * Hero.
+ *
+ * The photographs are the field; the claim sits over them on the left,
+ * with the right half left open so the image is never fully covered. That
+ * is the reference's two-column balance, but the right column here is the
+ * photograph itself rather than a drawn mark.
+ *
+ * Ratio (per CLAUDE.md §4.3): 16:6 from lg up, as specified. Below that
+ * the letterbox is abandoned — at 390px a 2.67:1 band is 146px tall, which
+ * cannot hold a headline, a meta row and two links without shrinking the
+ * type past legibility. Mobile takes a portrait-friendly ratio instead.
+ */
 export function HeroSection() {
   const [index, setIndex] = useState(0);
 
-  // Auto-shuffle. Resets whenever `index` changes, so a manual dot click
-  // restarts the dwell rather than cutting it short.
+  // Auto-shuffle. Resets whenever `index` changes, so the dwell restarts
+  // after a manual dot click rather than being cut short.
   useEffect(() => {
     const id = setTimeout(
       () => setIndex((i) => (i + 1) % heroPhotos.length),
@@ -29,12 +54,13 @@ export function HeroSection() {
   }, [index]);
 
   return (
-    <section id="overview-mission" className="relative w-full">
-      {/* Cinematic band. The source photos are ~1.5 wide, so a strict 16:6
-          (2.67) would crop away nearly half their height; 16:8 on desktop
-          keeps far more of each frame while still reading as a wide hero.
-          Phones get a taller box so the headline has room. */}
-      <div className="relative aspect-4/5 w-full overflow-hidden bg-slate-950 sm:aspect-3/2 lg:aspect-16/8">
+    <section
+      id="overview-mission"
+      className="relative w-full border-b border-slate-200/80"
+    >
+      {/* The ratio band. 4:5 on phones so the photograph still reads as a
+          scene, 3:2 at sm, and the specified 16:6 from lg. */}
+      <div className="relative aspect-4/5 w-full overflow-hidden bg-slate-950 sm:aspect-3/2 lg:aspect-16/6">
         {heroPhotos.map((photo, i) => (
           <Image
             key={photo.src}
@@ -42,9 +68,9 @@ export function HeroSection() {
             alt={i === index ? photo.alt : ""}
             aria-hidden={i !== index}
             fill
-            // All ten are stacked above the fold and any one of them can be
-            // the visible slide, so each must load eagerly — but only the
-            // first gets a preload link, to avoid ten competing preloads.
+            // All ten stack above the fold and any one can be the visible
+            // slide, so each loads eagerly — but only the first gets a
+            // preload link, to avoid ten competing preloads.
             priority={i === 0}
             loading="eager"
             sizes="100vw"
@@ -58,48 +84,75 @@ export function HeroSection() {
           />
         ))}
 
-        {/* Scrim — dark enough on the left for white text to clear AA at
-            every photo, fading out to the right so the image stays visible. */}
-        <div className="absolute inset-0 bg-linear-to-r from-slate-950/95 via-slate-950/70 to-slate-950/30" />
-        <div className="absolute inset-0 bg-linear-to-t from-slate-950/60 via-transparent to-slate-950/20" />
+        {/* Scrim. Dark enough on the left for white text to clear AA over
+            any of the ten frames, fading out to the right so the image
+            stays visible — that open right half is what keeps the
+            two-column balance without a drawn mark in it. */}
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-linear-to-r from-slate-950/95 via-slate-950/70 to-slate-950/25"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-linear-to-t from-slate-950/70 via-transparent to-slate-950/25"
+        />
 
-        {/* Content. */}
+        {/* ── Claim ─────────────────────────────────────────────── */}
         <div className="absolute inset-0 flex items-center">
-          <div className="mx-auto flex w-full max-w-7xl flex-col items-start gap-4 px-gutter-x lg:gap-5">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 font-mono text-[10px] font-bold tracking-widest text-amber-300 uppercase backdrop-blur-sm sm:text-[11px]">
-              <span
-                aria-hidden
-                className="flex h-3 w-[1.15rem] shrink-0 items-center justify-center rounded-xs bg-bd-green"
-              >
-                <span className="size-1.5 rounded-full bg-national-crimson" />
-              </span>
-              Bangladesh&apos;s first deep-tech ecosystem
-            </span>
+          <div className="mx-auto flex w-full max-w-7xl flex-col items-start gap-space-md px-gutter-x lg:gap-space-lg">
+            {/* Meta row. Dot separators are decorative, so they are hidden
+                from the accessibility tree and the items read as a list. */}
+            <ul className="flex flex-wrap items-center gap-x-space-sm gap-y-1 font-sans text-label-xs text-slate-300">
+              {META.map((item, i) => (
+                <li key={item} className="flex items-center gap-x-space-sm">
+                  {i > 0 ? (
+                    <span aria-hidden className="text-slate-500">
+                      ·
+                    </span>
+                  ) : null}
+                  {item}
+                </li>
+              ))}
+            </ul>
 
-            <h1 className="max-w-3xl font-grotesk text-3xl leading-[1.08] font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-              Pioneering Bangladesh&apos;s{" "}
-              <span className="text-signal-orange">Real-Time Future</span>
+            {/* `text-pretty` not `text-balance`: balance re-flows the first
+                line to match the second and fights the explicit break
+                below. The <br /> holds the reference's two-line shape from
+                lg up, where there is width for it. */}
+            <h1 className="max-w-[20ch] text-pretty font-grotesk text-3xl leading-[1.1] font-bold tracking-tight text-white sm:text-4xl lg:max-w-none lg:text-[2.75rem] lg:leading-[1.08] xl:text-[3.25rem]">
+              Sovereign deep-tech,
+              <br className="hidden lg:inline" />{" "}
+              <span className="text-signal-orange">built in Bangladesh.</span>
             </h1>
 
-            <p className="max-w-xl font-sans text-sm leading-relaxed text-slate-200 sm:text-base lg:text-lg">
-              Native semiconductor innovation, IoT robotics and life-saving
-              healthcare infrastructure — engineered across all 64 districts.
+            <p className="max-w-[46ch] font-sans text-body-md leading-relaxed text-slate-200 lg:text-body-lg">
+              Native semiconductors, clinical wearables and rural telemetry —
+              engineered for the Golden Two Hours, across all 64 districts.
             </p>
 
-            <div className="flex flex-wrap items-center gap-3 pt-1">
-              <a
-                href="#swasti-section"
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-signal-orange px-5 py-3 font-grotesk text-xs font-bold text-slate-950 uppercase shadow-glow-orange transition-all hover:-translate-y-0.5 hover:bg-amber-400 sm:px-6 sm:text-sm"
+            {/* Link row. Icon plate + label, matching the reference's quiet
+                treatment: these are routes into the work, not conversion
+                buttons, so they carry no fill. */}
+            <div className="flex flex-wrap items-center gap-x-space-lg gap-y-space-sm pt-space-xs">
+              <Link
+                href="#flagship"
+                className="group inline-flex items-center gap-space-sm rounded-lg font-sans text-label-md font-semibold text-white transition-colors hover:text-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange/50 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 focus-visible:outline-none"
               >
-                <Icon name="download" className="text-lg" />
-                Download SWASTI
-              </a>
-              <a
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-white/25 bg-white/10 text-signal-orange backdrop-blur-sm transition-colors group-hover:border-signal-orange/50 group-hover:bg-white/15">
+                  <Icon name="monitor_heart" className="text-[18px]" />
+                </span>
+                Explore the hardware
+              </Link>
+
+              <Link
                 href="#kandari-profile"
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/25 bg-white/10 px-5 py-3 font-grotesk text-xs font-semibold text-white backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:bg-white/20 sm:px-6 sm:text-sm"
+                className="group inline-flex items-center gap-space-sm rounded-lg font-sans text-label-md font-semibold text-white transition-colors hover:text-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 focus-visible:outline-none"
               >
-                Explore Kandari R&amp;D
-              </a>
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-white/25 bg-white/10 text-emerald-300 backdrop-blur-sm transition-colors group-hover:border-emerald-300/50 group-hover:bg-white/15">
+                  <Icon name="person_add" className="text-[18px]" />
+                </span>
+                Join Kandari Profile
+              </Link>
             </div>
           </div>
         </div>
@@ -123,15 +176,17 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Stats bar. */}
-      <div className="w-full border-b border-slate-200 bg-white">
-        <dl className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-slate-200 lg:grid-cols-4">
+      {/* Proof rule. Two columns on phones so the values stay large enough
+          to read; four from lg. `divide-*` rather than borders per cell so
+          the outer edges stay clean. */}
+      <div className="w-full border-t border-slate-200/80 bg-white">
+        <dl className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-slate-200/80 lg:grid-cols-4">
           {HERO_STATS.map((stat) => (
             <div
               key={stat.label}
-              className="flex flex-col items-center gap-1 px-4 py-4 text-center max-lg:nth-[2n+1]:border-l-0 max-lg:nth-[n+3]:border-t max-lg:nth-[n+3]:border-slate-200 lg:py-5"
+              className="flex flex-col items-center gap-1 px-space-sm py-space-md text-center max-lg:nth-[2n+1]:border-l-0 max-lg:nth-[n+3]:border-t max-lg:nth-[n+3]:border-slate-200/80"
             >
-              <dt className="font-mono text-[10px] font-medium tracking-widest text-text-muted uppercase sm:text-[11px]">
+              <dt className="font-mono text-label-xs font-medium tracking-widest text-text-muted uppercase">
                 {stat.label}
               </dt>
               <dd className="font-grotesk text-lg font-bold text-bd-green sm:text-xl">

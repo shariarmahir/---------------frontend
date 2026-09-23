@@ -46,10 +46,6 @@ export function NodeTerminalSection() {
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-12">
           {/* Narrative. */}
           <div className="space-y-5 lg:col-span-5">
-            <span className="inline-block rounded border border-orange-200 bg-orange-50 px-2.5 py-1 font-mono text-xs font-bold tracking-wider text-signal-orange uppercase">
-              [ 07 // Democratized R&amp;D // Open source ]
-            </span>
-
             <h2 className="font-grotesk text-2xl font-bold tracking-tight text-text-primary uppercase sm:text-3xl lg:text-4xl">
               The Bangladesh Innovation Drive
             </h2>

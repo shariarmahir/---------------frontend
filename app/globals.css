@@ -160,12 +160,15 @@
      is solved to hit both ends rather than guessed:
      slope = (max−min)/(1440−390), intercept = min − slope×390.
 
-       seam        36px → 88px   between two plain bands
-       seam-band   44px → 104px  inside a tinted or bordered band, whose
-                                 visible surface absorbs the extra room
-                                 where a plain band would read as loose */
-  --spacing-seam: clamp(2.25rem, 4.57vw + 1.135rem, 5.5rem);
-  --spacing-seam-band: clamp(2.75rem, 5.33vw + 1.45rem, 6.5rem);
+     Each band pays one of these on each side, so the visible gap at a
+     seam is the sum of two — about 56px on a phone, 112px on desktop.
+
+       seam        28px → 56px   a plain band's own inset
+       seam-band   34px → 68px   a tinted or bordered band, whose visible
+                                 surface absorbs a little more room where
+                                 a plain band would just read as loose */
+  --spacing-seam: clamp(1.75rem, 2.29vw + 0.857rem, 3.5rem);
+  --spacing-seam-band: clamp(2.125rem, 2.79vw + 1.036rem, 4.25rem);
 
   /* Horizontal gutters, matched to the same approach so the page has one
      consistent inset at every width. 16px → 32px. */
@@ -174,12 +177,12 @@
   /* Fixed-header offset — single source of truth for content padding and
      anchor scroll margin. The header is a floating card, so this covers the
      wrapper's inset padding plus the card itself: mobile is the two visible
-     levels (~160px) over a 0.75rem inset, desktop adds the nav row (~189px)
-     over a 1rem inset. Measured from the rendered card, not derived.
+     levels (~117px) over a 0.5rem inset, desktop adds the nav row (~152px)
+     over a 0.625rem inset. Measured from the rendered card, not derived.
      Keep in sync with site-header.tsx — if a level's height changes there
      and this does not, every page gains a gap or hides content under it. */
-  --spacing-header: 9rem;
-  --spacing-header-lg: 13.75rem;
+  --spacing-header: 7.75rem;
+  --spacing-header-lg: 11rem;
 
   --color-title: var(--title);
   --color-signal: var(--signal);
@@ -316,33 +319,28 @@
   }
 }
 
-/* Section rhythm — one interval per seam, not two.
-   Each band pays only its top interval, so the gap between any two
-   sections is exactly `--spacing-seam` rather than the sum of a bottom
-   and a top. The last band in a run closes the page with a matching
-   bottom, and a band that opens directly under the hero drops its top
-   (the hero's own edge already provides the break). */
-@utility section-band {
-  padding-top: var(--spacing-seam);
+/* Section rhythm.
 
-  &:last-child {
-    padding-bottom: var(--spacing-seam);
-  }
+   Every band pays BOTH a top and a bottom inset, because each one is
+   doing a different job: the top separates this section's heading from
+   whatever precedes it, and the bottom keeps its own last row off its
+   own edge. A tinted band's padding in particular sits *inside* its
+   border, so it can never stand in for the next section's top inset —
+   dropping that top is what pushes a heading flush against the border
+   above it.
+
+   The seam between two bands is therefore bottom + top. Both tokens are
+   sized as halves of the intended gap so the pair lands on it, instead
+   of each paying a full interval and doubling (the 320px bands). */
+@utility section-band {
+  padding-block: var(--spacing-seam);
 }
 
-/* Tinted or bordered variant. Because the surface is visible, this
-   padding reads as the band's own inset rather than as a gap, so it
-   pays both sides — its border is the boundary and cannot borrow the
-   neighbour's interval. */
+/* Tinted or bordered variant: a visible surface earns a little more
+   inner room, since here the padding reads as the band's own inset
+   rather than as a gap between two things. */
 @utility section-band-tinted {
   padding-block: var(--spacing-seam-band);
-}
-
-/* A plain band directly after a tinted one drops its top interval: the
-   tinted band's own bottom inset already separates them. Without this
-   the two stack (136px + 112px = 248px of dead air). */
-.section-band-tinted + .section-band {
-  padding-top: 0;
 }
 
 /* Newsprint backdrop for the "আজকের বাংলাদেশ" button: ruled lines drifting

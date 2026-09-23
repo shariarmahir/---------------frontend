@@ -79,13 +79,6 @@ export function PixelThesisSection() {
     >
       <div className="mx-auto max-w-7xl px-gutter-x">
         <div className="mb-10 flex max-w-3xl flex-col gap-2">
-          <div className="inline-flex items-center gap-2">
-            <span className="rounded border border-orange-200 bg-orange-50 px-2.5 py-1 font-mono text-xs font-bold tracking-wider text-signal-orange uppercase">
-              [ 03 // Methodology: Pixel-Map Vision ]
-            </span>
-            <span className="h-px w-12 bg-slate-300" />
-          </div>
-
           <h2 className="font-grotesk text-2xl font-bold tracking-tight text-text-primary uppercase sm:text-3xl lg:text-4xl">
             The Pixel-Map Framework: Solving Bangladesh Pixel by Pixel
           </h2>
