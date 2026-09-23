@@ -10,7 +10,8 @@ interface Pillar {
   footLabel: string;
   footValue: string;
   footClass: string;
-  hoverBorder: string;
+  /** Brand colour the glass hover is mixed from (a CSS colour value). */
+  accent: string;
   /** Only pillar 01 carries a status dot beside its value. */
   statusDot?: boolean;
 }
@@ -27,7 +28,7 @@ const PILLARS: Pillar[] = [
     footLabel: "SYS STATUS",
     footValue: "OPERATIONAL",
     footClass: "text-bd-green",
-    hoverBorder: "hover:border-bd-green/50",
+    accent: "var(--color-bd-green)",
     statusDot: true,
   },
   {
@@ -41,7 +42,7 @@ const PILLARS: Pillar[] = [
     footLabel: "GRID REACH",
     footValue: "64 DISTRICTS",
     footClass: "text-signal-orange",
-    hoverBorder: "hover:border-signal-orange/50",
+    accent: "var(--color-signal-orange)",
   },
   {
     badge: "PIXEL 03 // VISION",
@@ -54,7 +55,7 @@ const PILLARS: Pillar[] = [
     footLabel: "DETECTION RAD",
     footValue: "2.0 METERS",
     footClass: "text-teal-700",
-    hoverBorder: "hover:border-teal-500/50",
+    accent: "var(--color-teal-600)",
   },
   {
     badge: "PIXEL 04 // BIO-CYCLE",
@@ -67,7 +68,7 @@ const PILLARS: Pillar[] = [
     footLabel: "CYCLE RATE",
     footValue: "48 HR TRANSIT",
     footClass: "text-emerald-800",
-    hoverBorder: "hover:border-emerald-600/50",
+    accent: "var(--color-emerald-600)",
   },
 ];
 
@@ -100,7 +101,8 @@ export function PixelThesisSection() {
               className="flex w-full p-3 sm:w-1/2 lg:w-1/4"
             >
               <div
-                className={`group flex w-full flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-elevated ${pillar.hoverBorder}`}
+                className={`group flex w-full flex-col justify-between glass-card rounded-2xl border border-slate-200 bg-white p-6 shadow-sm`}
+              style={{ "--card-accent": pillar.accent } as React.CSSProperties}
               >
                 <div>
                   <div className="mb-4 flex items-center justify-between">

@@ -12,7 +12,7 @@ const LABS = [
     footLabel: "LATENCY PROFILE",
     footValue: "11 MILLISECONDS",
     footClass: "text-teal-700",
-    hoverBorder: "hover:border-teal-500",
+    accent: "var(--color-teal-600)",
   },
   {
     icon: "recycling",
@@ -25,7 +25,7 @@ const LABS = [
     footLabel: "SOIL RATING",
     footValue: "GRADE-A BIO SOIL",
     footClass: "text-bd-green",
-    hoverBorder: "hover:border-bd-green",
+    accent: "var(--color-bd-green)",
   },
   {
     icon: "developer_board",
@@ -38,7 +38,7 @@ const LABS = [
     footLabel: "ARCH STACK",
     footValue: "RISC-V NATIVE / 28NM",
     footClass: "text-signal-orange",
-    hoverBorder: "hover:border-signal-orange",
+    accent: "var(--color-signal-orange)",
   },
 ];
 
@@ -63,7 +63,8 @@ export function ResearchSection() {
         {LABS.map((lab) => (
           <div key={lab.badge} className="flex w-full p-3 md:w-1/3">
             <div
-              className={`group flex w-full flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-elevated ${lab.hoverBorder}`}
+              className={`group flex w-full flex-col justify-between glass-card rounded-2xl border border-slate-200 bg-white p-6 shadow-sm`}
+              style={{ "--card-accent": lab.accent } as React.CSSProperties}
             >
               <div>
                 <div className="mb-4 flex items-center justify-between">

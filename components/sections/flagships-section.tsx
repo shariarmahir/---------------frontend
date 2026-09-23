@@ -29,18 +29,21 @@ const SWASTI_HIGHLIGHTS = [
     note: "Hemodynamic CNN diagnostic pass & automated triage.",
     wrap: "bg-mint-subtle border-emerald-100",
     titleClass: "text-bd-green",
+    accent: "var(--color-bd-green)",
   },
   {
     title: "GOLDEN 2-HR ALERT",
     note: "Autonomous pre-stroke & cardiac anomaly detection.",
     wrap: "bg-orange-50/70 border-orange-200/80",
     titleClass: "text-signal-orange",
+    accent: "var(--color-signal-orange)",
   },
   {
     title: "OFFLINE BENGALI RAG",
     note: "On-device medical guidance without cloud dependence.",
     wrap: "bg-slate-50 border-slate-200",
     titleClass: "text-text-primary",
+    accent: "var(--color-slate-600)",
   },
 ];
 
@@ -63,9 +66,6 @@ export function FlagshipsSection() {
       {/* Product 1 — Aponjon wearable. */}
       <div className="mb-12 grid grid-cols-1 items-center gap-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-elevated sm:p-8 lg:grid-cols-12 lg:p-10">
         <div className="space-y-5 lg:col-span-6">
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 font-mono text-xs font-bold text-bd-green uppercase">
-            Clinical wearable // Native HW
-          </div>
 
           <h3 className="font-grotesk text-2xl font-bold text-text-primary uppercase sm:text-3xl">
             আপনজন — Aponjon Wearable AI Neuro-Device
@@ -116,7 +116,7 @@ export function FlagshipsSection() {
 
         {/* Device panel — schematic rendering of the band. */}
         <div className="lg:col-span-6">
-          <div className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-md">
+          <div className="group relative overflow-hidden rounded-2xl shadow-md">
             {/* 4:3 matches the source's 1.34 ratio almost exactly, so the
                 photograph is shown essentially uncropped. */}
             <div className="relative aspect-4/3 overflow-hidden">
@@ -146,15 +146,6 @@ export function FlagshipsSection() {
                 ))}
               </span>
             </div>
-
-            <div className="flex items-center justify-between border-t border-slate-200 bg-white p-3.5 font-mono text-xs">
-              <span className="font-bold text-signal-orange uppercase">
-                SPEC: HW-REV 3.2 // CLINIC VALIDATED
-              </span>
-              <span className="rounded border border-emerald-200 bg-emerald-50 px-2 py-0.5 font-bold text-bd-green">
-                ACCURACY: 98.8%
-              </span>
-            </div>
           </div>
         </div>
       </div>
@@ -165,11 +156,11 @@ export function FlagshipsSection() {
         className="grid grid-cols-1 items-center gap-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-elevated sm:p-8 lg:grid-cols-12 lg:gap-12 lg:p-10"
       >
         <div className="flex items-center justify-center lg:col-span-5">
-          <div className="group relative w-full max-w-[360px] rounded-3xl border border-emerald-100 bg-linear-to-b from-emerald-50/80 via-white to-slate-100 p-3 shadow-xl">
+          <div className="group relative w-full max-w-[360px]">
             {/* 3:4 matches the source's 0.75 ratio exactly — no crop. The
                 render already includes the handset and a hand, so it needs
-                no drawn phone chrome around it. */}
-            <div className="relative aspect-3/4 overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
+                no drawn phone chrome or padded frame around it. */}
+            <div className="relative aspect-3/4 overflow-hidden rounded-2xl shadow-xl">
               <Image
                 src="/sections/mobileapp.png"
                 alt="SWASTI স্বস্তি অ্যাপের হোম স্ক্রিন — হার্ট রেট ৭৪ BPM, SpO₂ ৯৮%, রক্তচাপ ১২০/৮০ ও দ্রুত অ্যাকশন বোতাম"
@@ -179,23 +170,10 @@ export function FlagshipsSection() {
                 className="object-cover"
               />
             </div>
-
-            <div className="mt-3 flex items-center justify-between rounded-xl border border-slate-200 bg-white/90 px-2 py-1.5 font-mono text-[11px] backdrop-blur-md">
-              <span className="flex items-center gap-1.5 font-bold text-bd-green">
-                <span className="size-2 animate-ping rounded-full bg-bd-green" />
-                SWASTI v2.4 LIGHT ENGINE
-              </span>
-              <span className="font-bold text-signal-orange">
-                STABLE // PLAYSTORE
-              </span>
-            </div>
           </div>
         </div>
 
         <div className="space-y-5 lg:col-span-7">
-          <div className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-3 py-1 font-mono text-xs font-bold text-signal-orange uppercase">
-            Clinical AI platform // Bengali NLP
-          </div>
 
           <div>
             <h3 className="font-grotesk text-2xl font-bold tracking-tight text-text-primary uppercase sm:text-3xl lg:text-4xl">
@@ -234,7 +212,8 @@ export function FlagshipsSection() {
             {SWASTI_HIGHLIGHTS.map((item) => (
               <div
                 key={item.title}
-                className={`rounded-xl border p-3 shadow-xs ${item.wrap}`}
+                className={`glass-card rounded-xl border p-3 shadow-xs ${item.wrap}`}
+                style={{ "--card-accent": item.accent } as React.CSSProperties}
               >
                 <span className={`mb-1 block font-bold ${item.titleClass}`}>
                   {item.title}

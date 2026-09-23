@@ -11,10 +11,10 @@ export function MetricsSection() {
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">
           {/* Pharmacy panel. */}
           <div className="relative lg:col-span-6">
-            <div className="group overflow-hidden rounded-2xl border border-emerald-200/80 bg-white p-2 shadow-elevated">
+            <div className="group overflow-hidden rounded-2xl shadow-elevated">
               {/* 4:3 matches the source's 1.34 ratio, so the pharmacy
                   interior is shown essentially uncropped. */}
-              <div className="relative aspect-4/3 overflow-hidden rounded-xl">
+              <div className="relative aspect-4/3 overflow-hidden">
                 <Image
                   src="/sections/smartpharmacy.png"
                   alt="গ্রামীণ স্মার্ট ফার্মেসিতে স্বস্তি ইউনিফর্ম পরা একজন স্বাস্থ্যকর্মী এক প্রবীণ রোগীর রক্তচাপ মাপছেন; পাশে টেলিমেডিসিন স্ক্রিনে চিকিৎসক ও তাকভর্তি ওষুধ"
@@ -43,13 +43,6 @@ export function MetricsSection() {
                   )}
                 </div>
               </div>
-
-              <div className="flex items-center justify-between p-3 font-mono text-xs text-text-muted">
-                <span>SOLAR MICRO-CLINIC MODEL</span>
-                <span className="font-bold text-bd-green">
-                  100% CLEAN POWER RUNTIME
-                </span>
-              </div>
             </div>
           </div>
 
@@ -69,7 +62,10 @@ export function MetricsSection() {
             </p>
 
             <div className="grid grid-cols-1 gap-4 pt-2 sm:grid-cols-2">
-              <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
+              <div
+                className="glass-card rounded-xl border border-slate-200 bg-white p-4 shadow-xs"
+                style={{ "--card-accent": "var(--color-signal-orange)" } as React.CSSProperties}
+              >
                 <div className="mb-1 flex items-center gap-2 font-grotesk text-sm font-bold text-signal-orange uppercase">
                   <Icon name="solar_power" className="text-xl" />
                   Solar Powered Grid
@@ -80,7 +76,10 @@ export function MetricsSection() {
                 </p>
               </div>
 
-              <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-xs">
+              <div
+                className="glass-card rounded-xl border border-slate-200 bg-white p-4 shadow-xs"
+                style={{ "--card-accent": "var(--color-bd-green)" } as React.CSSProperties}
+              >
                 <div className="mb-1 flex items-center gap-2 font-grotesk text-sm font-bold text-bd-green uppercase">
                   <Icon name="switch_video" className="text-xl" />
                   Tele-Consultation

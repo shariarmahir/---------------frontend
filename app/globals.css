@@ -462,6 +462,88 @@
   }
 }
 
+/* Glass hover for content cards.
+   One behaviour, tinted per card: each card sets `--card-accent` to its own
+   brand colour and the layers below are all mixed from it, so a green card
+   glows green and an orange card glows orange without a class per colour.
+
+   Layering: `isolation: isolate` makes the card its own stacking context,
+   so the two `z-index: -1` pseudo-elements paint above the card's white
+   background but beneath its text. The tint never sits over the copy, which
+   keeps body contrast exactly what it is at rest.
+
+     ::before  the glass tint: a diagonal wash plus a corner bloom, faded in
+     ::after   the specular sheen: a light streak that sweeps across once */
+@utility glass-card {
+  --card-accent: var(--color-bd-green);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 320ms cubic-bezier(0.22, 1, 0.36, 1);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(
+        120% 90% at 100% 0%,
+        color-mix(in oklab, var(--card-accent) 18%, transparent) 0%,
+        transparent 60%
+      ),
+      linear-gradient(
+        140deg,
+        color-mix(in oklab, var(--card-accent) 12%, transparent) 0%,
+        color-mix(in oklab, var(--card-accent) 4%, transparent) 45%,
+        rgb(255 255 255 / 0) 75%
+      );
+    opacity: 0;
+    transition: opacity 420ms cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      115deg,
+      rgb(255 255 255 / 0) 30%,
+      rgb(255 255 255 / 0.7) 48%,
+      rgb(255 255 255 / 0) 66%
+    );
+    transform: translateX(-110%);
+    pointer-events: none;
+  }
+
+  /* Keyboard users get the same response as pointer users. */
+  &:hover,
+  &:focus-within {
+    transform: translateY(-4px);
+    border-color: color-mix(in oklab, var(--card-accent) 45%, transparent);
+    box-shadow:
+      0 1px 2px rgb(7 32 22 / 0.05),
+      0 16px 32px -14px color-mix(in oklab, var(--card-accent) 45%, transparent);
+  }
+
+  &:hover::before,
+  &:focus-within::before {
+    opacity: 1;
+  }
+
+  &:hover::after,
+  &:focus-within::after {
+    transform: translateX(110%);
+    transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
 @utility active-tab-glow {
   background: linear-gradient(90deg, #ea580c 0%, #f97316 50%, #f59e0b 100%);
   box-shadow: 0 2px 8px rgb(234 88 12 / 0.45);
@@ -498,6 +580,20 @@
 
   .btn-shimmer::after {
     transition: none !important;
+  }
+
+  /* Keep the tint and border (they carry no motion), drop the lift and
+     the sweeping sheen. */
+  .glass-card,
+  .glass-card::after {
+    transition: none !important;
+  }
+  .glass-card:hover,
+  .glass-card:focus-within {
+    transform: none !important;
+  }
+  .glass-card::after {
+    display: none;
   }
 }
 

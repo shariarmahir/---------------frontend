@@ -165,39 +165,60 @@ export function SiteHeader() {
                 title="Kandari-Lab Homepage"
                 className="group flex min-w-0 items-center space-x-3 select-none focus:outline-none"
               >
-                {/* Sovereign emblem — the Kandari-Lab logo mark itself, no
-                    tile or background behind it. Height matches the
-                    wordmark so the two read as one lockup. */}
+                {/* Sovereign emblem — a detailed illustrated mark (2000×2000
+                    source), not a simple wordmark icon. At the old 36–44px
+                    it read as an indistinct smudge, so it runs taller than
+                    the wordmark here to keep its linework legible; the two
+                    no longer share one height, by necessity of the art. */}
                 <Image
                   src="/logo/logo.png"
                   alt=""
                   aria-hidden
-                  width={1277}
-                  height={832}
+                  width={2000}
+                  height={2000}
+                  sizes="(min-width: 640px) 56px, 44px"
                   priority
-                  className="h-9 w-auto shrink-0 object-contain transition-transform duration-200 group-hover:scale-105 sm:h-11"
+                  className="h-11 w-auto shrink-0 object-contain transition-transform duration-200 group-hover:scale-105 sm:h-14"
                 />
 
                 {/* Wordmark. */}
                 {/* The brand name never truncates — it shrinks a step on
                     phones and the tagline drops instead. */}
                 <div className="flex shrink-0 flex-col">
-                  <div className="flex items-center space-x-1 leading-none">
-                    <span className="font-bengali text-xl font-black tracking-tight text-bdorange-600 transition-colors group-hover:text-bdorange-700 sm:text-2xl">
+                  <div className="flex items-center space-x-1.5 leading-none">
+                    <span className="font-bengali text-xl font-black tracking-tight text-signal-orange transition-colors group-hover:text-bdorange-600 sm:text-2xl">
                       কাণ্ডারী
                     </span>
-                    <span className="font-bengali text-xl font-black tracking-tight text-bdorange-600 transition-colors group-hover:text-bdorange-700 sm:text-2xl">
+                    <span className="font-bengali text-xl font-black tracking-tight text-signal-orange transition-colors group-hover:text-bdorange-600 sm:text-2xl">
                       ল্যাব
                     </span>
-                    <span className="font-sans text-xl leading-none font-black text-bdorange-600 sm:text-2xl">
-                      .
+                    {/* The trailing dot, as a live "beeping" node rather
+                        than a period glyph: a solid green core with a
+                        radar-pulse ring expanding behind it, matching the
+                        node-identity indicator in the telemetry strip
+                        above. `radar-indicator` already respects
+                        prefers-reduced-motion. */}
+                    <span
+                      aria-hidden
+                      className="relative ml-0.5 inline-flex size-2 shrink-0 items-center justify-center sm:size-2.5"
+                    >
+                      <span className="radar-indicator absolute inline-flex size-full rounded-full bg-emerald-500 opacity-75" />
+                      <span className="relative inline-flex size-1.5 rounded-full bg-emerald-600 ring-2 ring-emerald-100 sm:size-2" />
                     </span>
                   </div>
-                  <div className="mt-0.5 hidden items-center space-x-1 min-[400px]:flex">
-                    <span className="font-mono text-[9px] leading-none font-bold tracking-[0.22em] text-slate-600 uppercase">
-                      SOVEREIGN TECH
+                  {/* Tagline. Previously 11px; nudged up 2px to
+                      13px rather than matched to the wordmark's
+                      24px, which read as a competing second brand
+                      line instead of a supporting caption. "লড়তে"
+                      carries the crimson emphasis per CLAUDE.md
+                      §4.1 (alert colour, used sparingly); the rest
+                      is bottle green, the brand's "trust" colour. */}
+                  <div className="mt-0.5 hidden items-center min-[400px]:flex">
+                    <span className="font-bengali text-[13px] leading-none font-bold tracking-tight text-bd-green">
+                      গড়তে হলে{" "}
+                      <span className="text-national-crimson">লড়তে</span>{" "}
+                      হবে
                     </span>
-                    <span className="inline-block size-1.5 shrink-0 rounded-full bg-bdorange-500" />
                   </div>
                 </div>
               </Link>

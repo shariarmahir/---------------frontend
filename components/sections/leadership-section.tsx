@@ -10,7 +10,7 @@ const EXECUTIVES = [
     blurb:
       "Spearheading native deep-tech roadmaps, hardware prototyping, and national clinical integration protocols.",
     division: "DIV: HARDWARE ARCH & STRATEGY",
-    hoverBorder: "hover:border-signal-orange/60",
+    accent: "var(--color-signal-orange)",
   },
   {
     tag: "[ Chief Operating Officer ]",
@@ -21,7 +21,7 @@ const EXECUTIVES = [
     blurb:
       "Orchestrating 64-district smart pharmacy scaling, government telemetry compliance, and supply chain logistics.",
     division: "DIV: FIELD OPERATIONS & SUPPLY",
-    hoverBorder: "hover:border-bd-green/60",
+    accent: "var(--color-bd-green)",
   },
   {
     tag: "[ Chief Marketing Officer ]",
@@ -32,7 +32,7 @@ const EXECUTIVES = [
     blurb:
       "Leading international hardware partnerships, medical institutional adoption, and public narrative momentum.",
     division: "DIV: PARTNERSHIPS & ECOSYSTEM",
-    hoverBorder: "hover:border-teal-500/60",
+    accent: "var(--color-teal-600)",
   },
 ];
 
@@ -81,7 +81,8 @@ export function LeadershipSection() {
         {EXECUTIVES.map((exec) => (
           <div key={exec.name} className="flex w-full p-3 sm:w-1/3">
             <div
-              className={`flex w-full flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-elevated ${exec.hoverBorder}`}
+              className={`flex w-full flex-col justify-between glass-card rounded-2xl border border-slate-200 bg-white p-6 shadow-sm`}
+              style={{ "--card-accent": exec.accent } as React.CSSProperties}
             >
               <div>
                 <span
