@@ -158,7 +158,7 @@ export function SiteHeader() {
                   src="/logo/logo.png"
                   alt=""
                   aria-hidden
-                  width={2000}
+                  width={1432}
                   height={2000}
                   sizes="(min-width: 640px) 56px, 44px"
                   priority

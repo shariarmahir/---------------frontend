@@ -37,8 +37,8 @@ export const navLinks: NavLink[] = [
     shortLabel: "Index",
   },
   {
-    // "Sovereign Healthcare Deep-Tech" — the Aponjon band and SWASTI app.
-    href: "#flagship",
+    // The product overview page; each product has its own detail route.
+    href: "/products",
     label: "Products",
     shortLabel: "Products",
   },
@@ -101,6 +101,22 @@ export const newsNavLinks: NavLink[] = [
 ];
 
 /**
+ * Navigation for the product pages.
+ *
+ * The home nav's bare anchors ("#rd-labs") resolve to nothing here, so
+ * this set links the products to each other and root-anchors the two
+ * home sections worth reaching from a product page.
+ */
+export const productNavLinks: NavLink[] = [
+  { href: "/products", label: "All Products", shortLabel: "All" },
+  { href: "/products/aponjon", label: "Aponjon", shortLabel: "Aponjon" },
+  { href: "/products/swasti", label: "SWASTI", shortLabel: "SWASTI" },
+  { href: "/products/smart-pharmacy", label: "Smart Pharmacy", shortLabel: "Pharmacy" },
+  { href: "/#rd-labs", label: "Research", shortLabel: "R&D" },
+  { href: "/#kandari-profile", label: "Join", shortLabel: "Join" },
+];
+
+/**
  * The nav set for a given pathname. Home's set is the default.
  *
  * The news index and the crime index share one nav, so moving between
@@ -113,6 +129,9 @@ export function navLinksFor(pathname: string): NavLink[] {
     "/ajker-oporadh",
     "/ajker-oporadhi",
   ];
+  if (pathname === "/products" || pathname.startsWith("/products/")) {
+    return productNavLinks;
+  }
   return newsScreens.some((p) => pathname.startsWith(p))
     ? newsNavLinks
     : navLinks;
