@@ -569,6 +569,46 @@
   animation: radar-pulse 2.4s cubic-bezier(0.24, 0, 0.38, 1) infinite;
 }
 
+/* Header announcement rotator (news-ticker.tsx). Keyframes rather than
+   transitions: a transition added in the same frame as the value change
+   was measured starting late in Chrome, leaving the slot blank for up to
+   2s. An animation starts the moment its class lands. Idle items rest
+   below the slot, invisible. */
+@keyframes news-rotator-in {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes news-rotator-out {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+.news-rotator-item {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+.news-rotator-item.is-active {
+  animation: news-rotator-in 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.news-rotator-item.is-leaving {
+  animation: news-rotator-out 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-brand-dot,
   .animate-nav-card-in,
@@ -580,6 +620,16 @@
 
   .btn-shimmer::after {
     transition: none !important;
+  }
+
+  /* Announcements still rotate, but swap in place without sliding. */
+  .news-rotator-item.is-active,
+  .news-rotator-item.is-leaving {
+    animation: none !important;
+  }
+  .news-rotator-item.is-active {
+    transform: none;
+    opacity: 1;
   }
 
   /* Keep the tint and border (they carry no motion), drop the lift and

@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { NewsTicker } from "@/components/layout/news-ticker";
 import { RecordDialog } from "@/components/record/record-dialog";
 import { Icon } from "@/components/ui/icon";
 import { NavIndicators } from "@/components/ui/nav-indicators";
@@ -90,31 +91,14 @@ export function SiteHeader() {
       >
         {/* ── Level 1 — lattice telemetry strip ───────────────────────── */}
         <div className="border-b border-slate-100/90 bg-white/75 px-4 py-1.5 font-mono text-[11px] tracking-tight text-slate-600 sm:px-6 lg:px-8">
-          {/* Single row that scrolls rather than wraps. Wrapping turned this
-              into a three-line block on phones, which pushed the brand row
-              off-screen — the strip is ambient telemetry, so overflow is a
-              better trade than height. */}
-          <div className="no-scrollbar flex items-center justify-between gap-x-4 gap-y-2 overflow-x-auto max-lg:min-w-max">
-            {/* Node identity. */}
-            <div className="flex items-center space-x-2.5">
-              <span className="relative flex size-2.5 items-center justify-center">
-                <span className="radar-indicator absolute inline-flex size-full rounded-full bg-emerald-500 opacity-75" />
-                <span className="relative inline-flex size-2 rounded-full bg-emerald-600 ring-2 ring-emerald-100" />
-              </span>
-
-              <div className="flex items-center space-x-2">
-                <span className="flex items-center gap-1.5 font-sans text-xs font-semibold tracking-tight text-bdgreen-900">
-                  • Bangladesh National Telemetry Lattice
-                </span>
-                <span className="inline-flex items-center space-x-1 rounded-md border border-slate-200/90 bg-slate-100/90 px-2 py-0.5 font-mono text-[10px] font-semibold text-slate-700 transition-colors hover:bg-slate-200/80">
-                  <span className="inline-block size-1 rounded-full bg-emerald-500" />
-                  <span>NODE-64 ACTIVE</span>
-                </span>
-              </div>
-            </div>
+          {/* Single row: the ticker takes whatever width the readouts leave.
+              Below md the readouts step aside so the ticker has room to be
+              read — a marquee squeezed to 100px is just motion. */}
+          <div className="flex items-center justify-between gap-x-4">
+            <NewsTicker />
 
             {/* Protocol + grid readouts. */}
-            <div className="flex items-center space-x-4 font-mono text-xs">
+            <div className="hidden shrink-0 items-center space-x-4 font-mono text-xs md:flex">
               <div className="hidden items-center space-x-1.5 border-r border-slate-200/70 pr-4 font-sans text-[10px] text-slate-600 xl:flex">
                 <span className="mr-1 inline-flex h-3 items-end gap-0.5">
                   <span className="h-1.5 w-0.5 rounded-xs bg-emerald-500" />
