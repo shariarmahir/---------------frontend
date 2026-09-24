@@ -49,8 +49,8 @@ export const navLinks: NavLink[] = [
     shortLabel: "R&D",
   },
   {
-    // "Foundership & Engineering Command".
-    href: "#leadership",
+    // The team page (orbit, founder, crew directory and profiles).
+    href: "/team",
     label: "Team",
     shortLabel: "Team",
   },
@@ -98,6 +98,19 @@ export const productNavLinks: NavLink[] = [
 ];
 
 /**
+ * Navigation for /team and each /team/[slug] profile. Full "/team#…" paths
+ * so the same set works from a profile page too.
+ */
+export const teamNavLinks: NavLink[] = [
+  { href: "/team", label: "All Team", shortLabel: "Team" },
+  { href: "/team#founder", label: "Founder", shortLabel: "Founder" },
+  { href: "/team#members", label: "Members", shortLabel: "Members" },
+  { href: "/team#fellowship", label: "R&D Fellowship", shortLabel: "R&D" },
+  { href: "/products", label: "Products", shortLabel: "Products" },
+  { href: "/#kandari-profile", label: "Join", shortLabel: "Join" },
+];
+
+/**
  * The nav set for a given pathname. Home's set is the default.
  *
  * The story page and the news index share one nav, so moving between them
@@ -110,6 +123,9 @@ export function navLinksFor(pathname: string): NavLink[] {
   }
   if (pathname === "/bangladesh" || pathname.startsWith("/ajker-bangladesh")) {
     return bangladeshNavLinks;
+  }
+  if (pathname === "/team" || pathname.startsWith("/team/")) {
+    return teamNavLinks;
   }
   return navLinks;
 }

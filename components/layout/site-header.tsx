@@ -210,8 +210,12 @@ export function SiteHeader() {
               <div className="hidden h-8 w-px bg-linear-to-b from-transparent via-slate-200 to-transparent sm:block" />
 
               {/* আমার বাংলাদেশ — the country story page (/bangladesh). */}
+              {/* No prefetch: prefetching /bangladesh preloads its carousel
+                  stylesheet on every page, which then sits unused and
+                  raises a console "preloaded but not used" warning. */}
               <Link
                 href="/bangladesh"
+                prefetch={false}
                 title="আমার বাংলাদেশ — Bangladesh story, nature, history & culture"
                 className="frosted-pill-bangladesh group hidden cursor-pointer items-center space-x-2.5 rounded-full px-3.5 py-1.5 transition-all duration-200 select-none md:flex"
               >
@@ -307,6 +311,7 @@ export function SiteHeader() {
                   <SheetClose asChild>
                     <Link
                       href="/bangladesh"
+                      prefetch={false}
                       className="frosted-pill-bangladesh mt-space-md flex items-center justify-center gap-2 rounded-full px-3.5 py-2 font-bengali text-sm font-bold text-slate-800"
                     >
                       <Image

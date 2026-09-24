@@ -676,7 +676,191 @@
   animation: news-rotator-out 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* ── Team orbit (components/ui/solar-system.tsx) ────────────────────────
+   Adapted from VengeanceUI's Solar System: a plane tilted in 3D, members
+   riding circular orbits on it, and each member card counter-rotated so it
+   always faces the viewer. Pure CSS — no WebGL (CLAUDE.md §6). Radii and
+   the plane size are custom properties so one set of keyframes serves
+   every breakpoint. */
+.orbit-stage {
+  --r-inner: 80px;
+  --r-mid: 124px;
+  --r-outer: 168px;
+  --plane: 360px;
+  --tilt-x: 58deg;
+  --tilt-y: -8deg;
+  perspective: 1600px;
+}
+@media (width >= 40rem) {
+  .orbit-stage {
+    --r-inner: 110px;
+    --r-mid: 178px;
+    --r-outer: 246px;
+    --plane: 580px;
+  }
+}
+@media (width >= 64rem) {
+  .orbit-stage {
+    --r-inner: 160px;
+    --r-mid: 258px;
+    --r-outer: 356px;
+    --plane: 820px;
+  }
+}
+@media (width >= 80rem) {
+  .orbit-stage {
+    --r-inner: 175px;
+    --r-mid: 285px;
+    --r-outer: 395px;
+    --plane: 940px;
+  }
+}
+
+.orbit-plane {
+  width: var(--plane);
+  height: var(--plane);
+  transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transform-style: preserve-3d;
+}
+
+/* Undoes the plane's tilt, so the core and cards face the viewer. */
+.orbit-face {
+  transform: translate(-50%, -50%) rotateY(calc(var(--tilt-y) * -1))
+    rotateX(calc(var(--tilt-x) * -1));
+}
+
+@keyframes orbit-move {
+  from {
+    transform: rotateZ(0deg) translateX(var(--orbit-radius));
+  }
+  to {
+    transform: rotateZ(-360deg) translateX(var(--orbit-radius));
+  }
+}
+@keyframes orbit-billboard {
+  from {
+    transform: translate(-50%, -50%) rotateZ(0deg)
+      rotateY(calc(var(--tilt-y) * -1)) rotateX(calc(var(--tilt-x) * -1));
+  }
+  to {
+    transform: translate(-50%, -50%) rotateZ(360deg)
+      rotateY(calc(var(--tilt-y) * -1)) rotateX(calc(var(--tilt-x) * -1));
+  }
+}
+
+.orbit-arm {
+  transform-style: preserve-3d;
+  animation: orbit-move var(--orbit-duration) linear infinite;
+  animation-delay: var(--orbit-delay);
+}
+.orbit-card {
+  animation: orbit-billboard var(--orbit-duration) linear infinite;
+  animation-delay: var(--orbit-delay);
+}
+
+/* Hovering or focusing any member stops the whole system, so the card
+   under the pointer holds still long enough to click. */
+.orbit-plane:has(.orbit-card:hover, .orbit-card:focus-visible) :is(.orbit-arm, .orbit-card, .orbit-pulse) {
+  animation-play-state: paused;
+}
+
+/* The signal: a spark leaving the founder and running out to a member. */
+@keyframes orbit-signal {
+  0% {
+    transform: translateX(0) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(var(--orbit-radius)) scale(1);
+    opacity: 0;
+  }
+}
+.orbit-pulse {
+  animation: orbit-signal 2.8s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+  animation-delay: var(--pulse-delay);
+}
+
+/* Brain waves: rings broadcast outward across the plane from the core. */
+@keyframes orbit-wave {
+  from {
+    transform: translate(-50%, -50%) scale(0.12);
+    opacity: 0.7;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+.orbit-wave {
+  animation: orbit-wave 5.4s cubic-bezier(0.2, 0.6, 0.35, 1) infinite;
+}
+
+@keyframes orbit-core-glow {
+  from {
+    transform: scale(0.92);
+    opacity: 0.55;
+  }
+  to {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+}
+.orbit-core-glow {
+  animation: orbit-core-glow 3.2s ease-in-out infinite alternate;
+}
+
+/* Neural brain behind the orbit (components/team/neural-brain.tsx):
+   nodes twinkle, and sparks run along a subset of the links
+   (pathLength = 100, so the dash maths is unit-free). */
+@keyframes neural-twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.neural-node {
+  animation: neural-twinkle 4s ease-in-out infinite;
+}
+
+@keyframes neural-spark {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.neural-spark {
+  stroke-dasharray: 6 94;
+  animation: neural-spark 3.6s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  /* Team orbit: members rest in place, signals and waves stop. */
+  .orbit-arm,
+  .orbit-card,
+  .orbit-pulse,
+  .orbit-wave,
+  .orbit-core-glow,
+  .neural-node,
+  .neural-spark {
+    animation-play-state: paused !important;
+  }
+  .orbit-pulse,
+  .orbit-wave,
+  .neural-spark {
+    visibility: hidden;
+  }
+
   .animate-brand-dot,
   .animate-nav-card-in,
   .animate-newsprint,

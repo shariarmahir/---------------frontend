@@ -12,7 +12,7 @@ const ECOSYSTEM_LINKS = [
 const ARCHITECTURE_LINKS = [
   { label: "Semiconductor & Fab Labs", href: "/#rd-labs" },
   { label: "Open Innovation Hub", href: "/#innovation" },
-  { label: "Research Fellows & Team", href: "/#leadership" },
+  { label: "Research Fellows & Team", href: "/team" },
   { label: "National Talent Network", href: "/#kandari-profile" },
 ];
 
