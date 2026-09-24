@@ -63,41 +63,22 @@ export const navLinks: NavLink[] = [
 ];
 
 /**
- * Navigation for আজকের বাংলাদেশ, the national news index.
+ * Navigation for "বাংলাদেশ" — the country story page — and the news index.
  *
- * The home nav's sections do not exist on this page, so it carries its own
- * set. Each link drives the feed's category filter through the hash, which
- * `NewsFeed` reads on mount and on `hashchange`.
- *
- * `অপরাধী` and `অপরাধের স্থান` resolve to the same crime set as `অপরাধ`
- * for now: the placeholder records carry a category but not an accused
- * person or an incident location, so there is nothing yet to group them
- * by. They are listed because they are the intended cuts — when the
- * aggregation API supplies those fields, only the `view` value changes.
+ * Every href is a full "/bangladesh#…" path rather than a bare anchor, so
+ * the same set works from the news index as well: from there it navigates
+ * to the story page, and on the story page it is an in-page jump. Each
+ * fragment matches a section id in components/bangladesh.
  */
-export const newsNavLinks: NavLink[] = [
-  {
-    // The daily incident index.
-    href: "/ajker-oporadh",
-    label: "আজকের অপরাধ",
-    shortLabel: "অপরাধ",
-    accentWord: "অপরাধ",
-  },
-  {
-    // The offender index: anonymised offence patterns plus the public
-    // conviction registry. Note this is NOT a watchlist of people — see
-    // the header comment in data/offender-index.ts for why.
-    href: "/ajker-oporadhi",
-    label: "আজকের অপরাধী",
-    shortLabel: "অপরাধী",
-    accentWord: "অপরাধ",
-  },
-  {
-    href: "/ajker-bangladesh#feed=crime-place",
-    label: "আজকের অপরাধের স্থান",
-    shortLabel: "অপরাধের স্থান",
-    accentWord: "অপরাধ",
-  },
+export const bangladeshNavLinks: NavLink[] = [
+  { href: "/bangladesh#history", label: "ইতিহাস", shortLabel: "ইতিহাস" },
+  { href: "/bangladesh#map", label: "মানচিত্র", shortLabel: "মানচিত্র" },
+  { href: "/bangladesh#nature", label: "প্রকৃতি", shortLabel: "প্রকৃতি" },
+  { href: "/bangladesh#seasons", label: "ষড়ঋতু", shortLabel: "ঋতু" },
+  { href: "/bangladesh#culture", label: "সংস্কৃতি", shortLabel: "সংস্কৃতি" },
+  { href: "/bangladesh#icons", label: "গুণীজন", shortLabel: "গুণীজন" },
+  { href: "/bangladesh#growth", label: "অগ্রযাত্রা", shortLabel: "অগ্রযাত্রা" },
+  { href: "/bangladesh#memories", label: "স্মৃতি", shortLabel: "স্মৃতি" },
 ];
 
 /**
@@ -119,22 +100,18 @@ export const productNavLinks: NavLink[] = [
 /**
  * The nav set for a given pathname. Home's set is the default.
  *
- * The news index and the crime index share one nav, so moving between
- * them keeps the same three categories in place rather than swapping the
- * bar out underneath the reader.
+ * The story page and the news index share one nav, so moving between them
+ * keeps the same categories in place rather than swapping the bar out
+ * underneath the reader.
  */
 export function navLinksFor(pathname: string): NavLink[] {
-  const newsScreens = [
-    "/ajker-bangladesh",
-    "/ajker-oporadh",
-    "/ajker-oporadhi",
-  ];
   if (pathname === "/products" || pathname.startsWith("/products/")) {
     return productNavLinks;
   }
-  return newsScreens.some((p) => pathname.startsWith(p))
-    ? newsNavLinks
-    : navLinks;
+  if (pathname === "/bangladesh" || pathname.startsWith("/ajker-bangladesh")) {
+    return bangladeshNavLinks;
+  }
+  return navLinks;
 }
 
 export const NAZRUL_MOTTO = "‘কে আছ জোয়ান? হও আগুয়ান। হাঁকিছে ভবিষ্যৎ।’";

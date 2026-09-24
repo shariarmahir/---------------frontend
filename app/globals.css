@@ -569,6 +569,60 @@
   animation: radar-pulse 2.4s cubic-bezier(0.24, 0, 0.38, 1) infinite;
 }
 
+/* ── Bangladesh story page (components/bangladesh) ──────────────────────
+   Scroll-driven, CSS only: content rises in as it enters the viewport.
+   Inside @supports so a browser without view timelines simply shows
+   everything at rest — nothing is ever hidden waiting for JavaScript. */
+@keyframes story-rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Chart lines and map outlines draw themselves (pathLength="1"). */
+@keyframes story-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .story-reveal {
+    animation: story-rise linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 45%;
+  }
+
+  .story-draw {
+    stroke-dasharray: 1;
+    animation: story-draw linear both;
+    animation-timeline: view();
+    animation-range: entry 10% cover 45%;
+  }
+}
+
+/* Slow drift for full-bleed photographs (Ken Burns), hover-paused. */
+@keyframes story-drift {
+  from {
+    transform: scale(1.02) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.12) translate3d(-1.5%, -1%, 0);
+  }
+}
+
+.story-drift {
+  animation: story-drift 24s ease-in-out infinite alternate;
+}
+
 /* Header announcement rotator (news-ticker.tsx). Keyframes rather than
    transitions: a transition added in the same frame as the value change
    was measured starting late in Chrome, leaving the slot blank for up to
@@ -620,6 +674,16 @@
 
   .btn-shimmer::after {
     transition: none !important;
+  }
+
+  /* Story page: everything at rest, lines fully drawn. */
+  .story-reveal,
+  .story-draw,
+  .story-drift {
+    animation: none !important;
+  }
+  .story-draw {
+    stroke-dasharray: none;
   }
 
   /* Announcements still rotate, but swap in place without sliding. */

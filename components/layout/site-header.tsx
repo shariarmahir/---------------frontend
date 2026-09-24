@@ -43,9 +43,9 @@ function NavLabel({ link }: { link: NavLink }) {
  * The nav link matching a pathname, or null for links that only point at
  * in-page anchors.
  *
- * Longest path first: "/ajker-oporadh" is a prefix of "/ajker-oporadhi",
- * so scanning in declaration order would match the crime index while the
- * reader is on the offender index and light up the wrong tab.
+ * Exact path match, longest first: "/products" must not claim the tab
+ * while the reader is on "/products/swasti", and when several links share
+ * one path (the "/bangladesh#…" set) the first in declaration order wins.
  */
 function matchNavHref(pathname: string, links: NavLink[]): string | null {
   const best = links
@@ -149,7 +149,7 @@ export function SiteHeader() {
                 title="Kandari-Lab Homepage"
                 className="group flex min-w-0 items-center space-x-3 select-none focus:outline-none"
               >
-                {/* Sovereign emblem — a detailed illustrated mark (2000×2000
+                {/* Sovereign emblem — a detailed illustrated mark (1432×2000
                     source), not a simple wordmark icon. At the old 36–44px
                     it read as an indistinct smudge, so it runs taller than
                     the wordmark here to keep its linework legible; the two
@@ -209,38 +209,25 @@ export function SiteHeader() {
 
               <div className="hidden h-8 w-px bg-linear-to-b from-transparent via-slate-200 to-transparent sm:block" />
 
-              {/* আজকের বাংলাদেশ — live national feed. */}
+              {/* আমার বাংলাদেশ — the country story page (/bangladesh). */}
               <Link
-                href="/ajker-bangladesh"
-                title="National Pulse: Live Stream"
+                href="/bangladesh"
+                title="আমার বাংলাদেশ — Bangladesh story, nature, history & culture"
                 className="frosted-pill-bangladesh group hidden cursor-pointer items-center space-x-2.5 rounded-full px-3.5 py-1.5 transition-all duration-200 select-none md:flex"
               >
-                <span className="relative flex size-5 items-center justify-center rounded-full border border-emerald-300/80 bg-emerald-100/90 text-emerald-800 shadow-xs transition-transform group-hover:scale-105">
-                  <svg
-                    aria-hidden
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="size-3.5 text-bdgreen-900"
-                  >
-                    <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
-                    <line x1="9" x2="9" y1="3" y2="18" />
-                    <line x1="15" x2="15" y1="6" y2="21" />
-                  </svg>
-                </span>
+                <Image
+                  src="/icons/map.png"
+                  alt=""
+                  aria-hidden
+                  width={512}
+                  height={512}
+                  className="size-6 shrink-0 object-contain transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                />
 
-                <div className="flex items-center space-x-1.5">
-                  <span className="font-bengali text-sm font-bold tracking-normal text-slate-800 transition-colors group-hover:text-bdgreen-900">
-                    আজকের বাংলাদেশ
-                  </span>
-                  <span className="inline-flex items-center space-x-1 rounded border border-emerald-200/80 bg-white/90 px-1.5 py-0.5 font-mono text-[9px] font-bold text-emerald-700 shadow-2xs">
-                    <span className="size-1.5 animate-pulse rounded-full bg-emerald-500" />
-                    <span>LIVE</span>
-                  </span>
-                </div>
+                <span className="font-bengali text-sm font-bold tracking-normal">
+                  <span className="text-national-crimson">আমার</span>{" "}
+                  <span className="text-bd-green">বাংলাদেশ</span>
+                </span>
               </Link>
             </div>
 
@@ -321,13 +308,20 @@ export function SiteHeader() {
 
                   <SheetClose asChild>
                     <Link
-                      href="/ajker-bangladesh"
+                      href="/bangladesh"
                       className="frosted-pill-bangladesh mt-space-md flex items-center justify-center gap-2 rounded-full px-3.5 py-2 font-bengali text-sm font-bold text-slate-800"
                     >
-                      আজকের বাংলাদেশ
-                      <span className="inline-flex items-center gap-1 rounded border border-emerald-200/80 bg-white/90 px-1.5 py-0.5 font-mono text-[9px] font-bold text-emerald-700">
-                        <span className="size-1.5 animate-pulse rounded-full bg-emerald-500" />
-                        LIVE
+                      <Image
+                        src="/icons/map.png"
+                        alt=""
+                        aria-hidden
+                        width={512}
+                        height={512}
+                        className="size-6 shrink-0 object-contain"
+                      />
+                      <span>
+                        <span className="text-national-crimson">আমার</span>{" "}
+                        <span className="text-bd-green">বাংলাদেশ</span>
                       </span>
                     </Link>
                   </SheetClose>
