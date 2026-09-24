@@ -279,10 +279,10 @@ function AuthFormContainer({
         <Image
           src="/logo/logo.png"
           alt="কাণ্ডারী-ল্যাব"
-          width={1277}
-          height={832}
+          width={1432}
+          height={2000}
           priority
-          sizes="44px"
+          sizes="32px"
           className="h-11 w-auto shrink-0 object-contain"
         />
         <span className="flex flex-col text-left">

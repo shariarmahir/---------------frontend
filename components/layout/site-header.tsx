@@ -238,19 +238,17 @@ export function SiteHeader() {
 
             {/* Right cluster — tribute line, account, mobile menu. */}
             <div className="flex shrink-0 items-center space-x-2 sm:space-x-3">
-              {/* Nazrul tribute — a quiet outlined pill, not a conversion
-                  CTA: the shimmer/gradient/download-icon treatment belonged
-                  to the app-install action this replaced, and would misread
-                  as "primary action" on a memorial line. */}
+              {/* Feed link — a quiet outlined pill, not a conversion CTA:
+                  Bangla name on top, English tagline beneath. */}
               <Link
                 href="/jibaner-joygan"
                 className="hidden h-10 shrink-0 flex-col items-center justify-center rounded-xl border border-primary/30 px-3 text-center leading-tight transition-colors duration-200 hover:bg-emerald-50 min-[400px]:flex sm:px-4"
               >
                 <span className="font-bengali text-[11px] font-semibold whitespace-nowrap text-primary sm:text-xs">
-                  ফাঁসির মঞ্চে গেয়ে গেল যারা
+                  শিক্ষিতদের মিডিয়া
                 </span>
-                <span className="font-bengali text-[11px] font-semibold whitespace-nowrap text-primary sm:text-xs">
-                  জীবনের জয়গান
+                <span className="font-sans text-[11px] font-semibold whitespace-nowrap text-primary sm:text-xs">
+                  Prioritize your joy.
                 </span>
               </Link>
 

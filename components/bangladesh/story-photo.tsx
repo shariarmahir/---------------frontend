@@ -37,7 +37,6 @@ export function StoryPhoto({
         fill
         sizes={sizes}
         priority={priority}
-        quality={85}
         style={photo.focus ? { objectPosition: photo.focus } : undefined}
         className={cn(
           "object-cover transition-transform duration-700 ease-out group-hover/photo:scale-[1.06] motion-reduce:transition-none motion-reduce:group-hover/photo:scale-100",

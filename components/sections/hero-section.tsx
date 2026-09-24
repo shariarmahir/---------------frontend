@@ -35,10 +35,11 @@ const SLIDE_MS = 6000;
  * is the reference's two-column balance, but the right column here is the
  * photograph itself rather than a drawn mark.
  *
- * Ratio (per CLAUDE.md §4.3): 16:6 from lg up, as specified. Below that
- * the letterbox is abandoned — at 390px a 2.67:1 band is 146px tall, which
- * cannot hold a headline, a meta row and two links without shrinking the
- * type past legibility. Mobile takes a portrait-friendly ratio instead.
+ * Height: the shared `hero-band` floor, so this band matches the /products
+ * hero exactly (a requested change — it replaces the CLAUDE.md §4.3 16:6 ratio,
+ * which ran ~710px tall on a 1900px screen). The claim sits in normal flow
+ * and is centred, so a longer line on a phone grows the band rather than
+ * clipping.
  */
 export function HeroSection() {
   const [index, setIndex] = useState(0);
@@ -58,9 +59,8 @@ export function HeroSection() {
       id="overview-mission"
       className="relative w-full border-b border-slate-200/80"
     >
-      {/* The ratio band. 4:5 on phones so the photograph still reads as a
-          scene, 3:2 at sm, and the specified 16:6 from lg. */}
-      <div className="relative aspect-4/5 w-full overflow-hidden bg-slate-950 sm:aspect-3/2 lg:aspect-16/6">
+      {/* The band — same height as the /products hero. */}
+      <div className="hero-band relative flex w-full items-center overflow-hidden bg-slate-950">
         {heroPhotos.map((photo, i) => (
           <Image
             key={photo.src}
@@ -98,7 +98,7 @@ export function HeroSection() {
         />
 
         {/* ── Claim ─────────────────────────────────────────────── */}
-        <div className="absolute inset-0 flex items-center">
+        <div className="relative w-full py-16">
           <div className="mx-auto flex w-full max-w-7xl flex-col items-start gap-space-md px-gutter-x lg:gap-space-lg">
             {/* Meta row. Dot separators are decorative, so they are hidden
                 from the accessibility tree and the items read as a list. */}

@@ -131,7 +131,7 @@ export function BdMemories() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label htmlFor={ids.name} className="mb-1 block font-bengali text-sm font-semibold text-slate-700">আপনার নাম <span className="font-normal text-slate-400">(ঐচ্ছিক)</span></label>
-                <input id={ids.name} name="name" maxLength={60} className={field} placeholder="যেমন: রাফি" />
+                <input id={ids.name} name="name" autoComplete="name" maxLength={60} className={field} placeholder="যেমন: রাফি" />
               </div>
               <div>
                 <label htmlFor={ids.place} className="mb-1 block font-bengali text-sm font-semibold text-slate-700">বিভাগ</label>

@@ -43,7 +43,7 @@ export default function ProductsPage() {
       <SiteHeader />
       <main className="relative w-full bg-[#fcfdfd] pt-header lg:pt-header-lg">
         {/* Hero band. */}
-        <section className="relative overflow-hidden">
+        <section className="hero-band relative flex items-center overflow-hidden">
           <div className="absolute inset-0">
             <Image
               src="/sections/Bangladesh.jpg"
@@ -56,7 +56,7 @@ export default function ProductsPage() {
             />
             <div className="absolute inset-0 bg-linear-to-r from-slate-950/85 via-slate-950/65 to-slate-950/30" />
           </div>
-          <div className="relative mx-auto max-w-7xl px-gutter-x py-20 lg:py-28">
+          <div className="relative mx-auto w-full max-w-7xl px-gutter-x py-16">
             <span className="font-bengali text-sm font-bold text-signal-orange">আমাদের পণ্য</span>
             <h1 className="mt-3 max-w-3xl font-grotesk text-4xl leading-[1.05] font-bold tracking-tight text-white uppercase sm:text-5xl lg:text-6xl">
               Three products. <span className="text-signal-orange">One Golden Two Hours.</span>

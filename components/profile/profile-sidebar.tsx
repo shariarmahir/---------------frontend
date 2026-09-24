@@ -34,8 +34,8 @@ export function ProfileSidebar() {
           <Image
             src="/logo/logo.png"
             alt="কাণ্ডারী-ল্যাব"
-            width={1277}
-            height={832}
+            width={1432}
+            height={2000}
             sizes="48px"
             // Eager, not `priority`: the mark is above the fold on desktop
             // so it should not lazy-load, but the whole rail is `hidden`

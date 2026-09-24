@@ -49,9 +49,10 @@ export function SiteFooter() {
                 src="/logo/logo.png"
                 alt=""
                 aria-hidden
-                width={1277}
-                height={832}
-                className="h-8 w-auto shrink-0 object-contain"
+                width={1432}
+                height={2000}
+                sizes="24px"
+                className="h-8 w-[23px] shrink-0 object-contain"
               />
               <span className="font-grotesk text-lg font-bold text-text-primary">
                 Kandari-Lab

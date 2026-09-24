@@ -343,6 +343,19 @@
   padding-block: var(--spacing-seam-band);
 }
 
+/* Shared height for the full-bleed photo heroes (home and /products), so
+   the two bands always match. A floor rather than a fixed height: content
+   is centred inside it and a longer headline can still grow the band. */
+@utility hero-band {
+  min-height: 32rem;
+  @media (width >= 40rem) {
+    min-height: 30rem;
+  }
+  @media (width >= 64rem) {
+    min-height: 29rem;
+  }
+}
+
 /* Newsprint backdrop for the "আজকের বাংলাদেশ" button: ruled lines drifting
    upward, plus a highlight sweeping across like a headline ticker. */
 @keyframes newsprint {
