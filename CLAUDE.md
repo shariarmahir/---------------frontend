@@ -10,7 +10,8 @@ A single deliverable: the **Kandari-Lab mother-company marketing/portfolio websi
 
 **Out of scope for this repo** (do not build here — separate future repos):
 - The **Shukh** super-app itself (mobile, React Native/Expo — see `Shukh-frontend`/`Shukh-backend`).
-- The planned **Kandari-Lab social platform** ("GitHub for Bangladeshi problem-solving" — idea/discussion/complaint network). The brief describes it as a second, separate site. Do not merge its data model or pages into this one; at most, link out to it once it exists.
+
+**Exception — শিক্ষিতদের মিডিয়া (decided by Mahir, 2026-09-25):** the skill-first social platform is built in this repo, self-contained under `/media/*` with its own shell (`app/media/layout.tsx`), data (`data/media/`), rules (`lib/media/`) and components (`components/media/`). Keep it isolated there so it can move to its own repo later: nothing outside `/media` imports from those folders except the header link. Scope is the core loop only (post a skill → self-rate → community verifies → hire); jobs, civic alerts, events, travel groups, tournaments and tuition classifieds are explicitly out. Spec: `docs/superpowers/specs/2026-09-25-shikkhitoder-media-v2-design.md` (supersedes v1). The old `/jibaner-joygan`, `/profile` and `/u/*` pages redirect into it (see `next.config.ts`). Tests: `npm test`.
 
 ---
 

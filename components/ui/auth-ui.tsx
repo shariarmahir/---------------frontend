@@ -123,7 +123,7 @@ function SignInForm() {
 
     setError(undefined);
     startSession();
-    router.push("/profile");
+    router.push("/media/me");
   };
 
   return (
@@ -194,7 +194,7 @@ function SignUpForm() {
   const handleSignUp = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     startSession();
-    router.push("/profile");
+    router.push("/media/me");
   };
 
   return (

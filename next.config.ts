@@ -14,6 +14,15 @@ const nextConfig: NextConfig = {
     qualities: [75, 90],
     formats: ["image/avif", "image/webp"],
   },
+  // The social pages moved into শিক্ষিতদের মিডিয়া at /media. Temporary
+  // redirects keep old links working without browsers caching the move.
+  async redirects() {
+    return [
+      { source: "/jibaner-joygan", destination: "/media", permanent: false },
+      { source: "/profile", destination: "/media/me", permanent: false },
+      { source: "/u/:slug", destination: "/media/u/:slug", permanent: false },
+    ];
+  },
 };
 
 export default nextConfig;

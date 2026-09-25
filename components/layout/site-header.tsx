@@ -15,6 +15,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { KandariWordmark, LabelText, LogoText } from "@/components/brand/kandari-wordmark";
+import { LABEL_TEXT, LOGO_TEXT } from "@/data/logo-text";
 import { NAZRUL_MOTTO, navLinksFor, type NavLink } from "@/data/navigation";
 import { cn } from "@/lib/utils";
 
@@ -53,6 +55,60 @@ function matchNavHref(pathname: string, links: NavLink[]): string | null {
     .filter(({ path }) => path !== "" && pathname === path)
     .sort((a, b) => b.path.length - a.path.length)[0];
   return best?.link.href ?? null;
+}
+
+/**
+ * Brand lockup — emblem, wordmark and tagline. Its own component so the
+ * header and mobile menu no longer maintain two copies of the same
+ * proportions and colours.
+ *
+ * Ratio: the emblem is `h-11`/`h-14` (44px/56px). The wordmark's cap
+ * height is set so it and the tagline together fill that same band —
+ * `26px` type + a 13px tagline line closely matches the emblem at both
+ * breakpoints, so the lockup reads as one block rather than a wordmark
+ * floating loose beside the mark.
+ */
+function BrandLockup() {
+  return (
+    <Link
+      href="/"
+      title="Kandari-Lab Homepage"
+      className="group flex min-w-0 items-center gap-3 select-none focus:outline-none"
+    >
+      {/* Sovereign emblem — a detailed illustrated mark (1432×2000
+          source), not a simple wordmark icon. At 36–44px it read as an
+          indistinct smudge, so it runs a touch taller than the wordmark
+          block to keep its linework legible. */}
+      <Image
+        src="/logo/logo.png"
+        alt=""
+        aria-hidden
+        width={1432}
+        height={2000}
+        sizes="(min-width: 640px) 56px, 44px"
+        priority
+        className="h-11 w-auto shrink-0 object-contain transition-transform duration-200 group-hover:scale-105 sm:h-14"
+      />
+
+      <div className="flex min-w-0 shrink-0 flex-col justify-center gap-0.5">
+        {/* Logo face (3D italic) — see KandariWordmark. The face draws
+            its 3D as thin white cuts; a hard dark edge behind it gives
+            the letters extruded depth. Signal orange (#FF9100, the
+            brand's CTA colour per CLAUDE.md §4.1) at rest; bottle green
+            (#006747, Pantone 342 C) on hover/focus, each with a matching
+            darker edge. */}
+        <KandariWordmark className="text-[26px] leading-[1.1] text-signal-orange [text-shadow:1px_1px_0_#9a3412,2px_2px_0_rgb(154_52_18/0.35)] transition-[color,text-shadow] duration-300 group-hover:text-bd-green group-hover:[text-shadow:1px_1px_0_#003d29,2px_2px_0_rgb(0_61_41/0.35)] group-focus-visible:text-bd-green sm:text-[33px]" />
+
+        {/* Tagline — Kazi Nazrul Islam, "চল্ চল্ চল্": one line, one
+            colour (bottle green, the brand's "trust" colour), spanning
+            the wordmark's width. Hidden under 400px rather than wrapped
+            or shrunk past legibility. */}
+        <div className="hidden w-full text-[13px] leading-none text-bd-green min-[400px]:block sm:text-[14px]">
+          <LogoText text={LOGO_TEXT.tagline} />
+        </div>
+      </div>
+    </Link>
+  );
 }
 
 export function SiteHeader() {
@@ -140,97 +196,26 @@ export function SiteHeader() {
         {/* ── Level 2 — brand, live metric, conversion ────────────────── */}
         <div className="bg-white/70 px-4 py-2 backdrop-blur-md sm:px-6 lg:px-8">
           <div className="flex items-center justify-between gap-3 sm:gap-4">
-            {/* Left cluster — emblem, wordmark, today's pill. `min-w-0` so it
+            {/* Left cluster — emblem+wordmark, today's pill. `min-w-0` so it
                 yields to the action cluster instead of pushing it off the
                 card on narrow screens. */}
             <div className="flex min-w-0 items-center space-x-3.5 sm:space-x-5 lg:space-x-6">
-              <Link
-                href="/"
-                title="Kandari-Lab Homepage"
-                className="group flex min-w-0 items-center space-x-3 select-none focus:outline-none"
-              >
-                {/* Sovereign emblem — a detailed illustrated mark (1432×2000
-                    source), not a simple wordmark icon. At the old 36–44px
-                    it read as an indistinct smudge, so it runs taller than
-                    the wordmark here to keep its linework legible; the two
-                    no longer share one height, by necessity of the art. */}
-                <Image
-                  src="/logo/logo.png"
-                  alt=""
-                  aria-hidden
-                  width={1432}
-                  height={2000}
-                  sizes="(min-width: 640px) 56px, 44px"
-                  priority
-                  className="h-11 w-auto shrink-0 object-contain transition-transform duration-200 group-hover:scale-105 sm:h-14"
-                />
-
-                {/* Wordmark. */}
-                {/* The brand name never truncates — it shrinks a step on
-                    phones and the tagline drops instead. */}
-                <div className="flex shrink-0 flex-col">
-                  <div className="flex items-center space-x-1.5 leading-none">
-                    <span className="font-bengali text-xl font-black tracking-tight text-signal-orange transition-colors group-hover:text-bdorange-600 sm:text-2xl">
-                      কাণ্ডারী
-                    </span>
-                    <span className="font-bengali text-xl font-black tracking-tight text-signal-orange transition-colors group-hover:text-bdorange-600 sm:text-2xl">
-                      ল্যাব
-                    </span>
-                    {/* The trailing dot, as a live "beeping" node rather
-                        than a period glyph: a solid green core with a
-                        radar-pulse ring expanding behind it, matching the
-                        node-identity indicator in the telemetry strip
-                        above. `radar-indicator` already respects
-                        prefers-reduced-motion. */}
-                    <span
-                      aria-hidden
-                      className="relative ml-0.5 inline-flex size-2 shrink-0 items-center justify-center sm:size-2.5"
-                    >
-                      <span className="radar-indicator absolute inline-flex size-full rounded-full bg-emerald-500 opacity-75" />
-                      <span className="relative inline-flex size-1.5 rounded-full bg-emerald-600 ring-2 ring-emerald-100 sm:size-2" />
-                    </span>
-                  </div>
-                  {/* Tagline. Previously 11px; nudged up 2px to
-                      13px rather than matched to the wordmark's
-                      24px, which read as a competing second brand
-                      line instead of a supporting caption. "লড়তে"
-                      carries the crimson emphasis per CLAUDE.md
-                      §4.1 (alert colour, used sparingly); the rest
-                      is bottle green, the brand's "trust" colour. */}
-                  <div className="mt-0.5 hidden items-center min-[400px]:flex">
-                    <span className="font-bengali text-[13px] leading-none font-bold tracking-tight text-bd-green">
-                      গড়তে হলে{" "}
-                      <span className="text-national-crimson">লড়তে</span>{" "}
-                      হবে
-                    </span>
-                  </div>
-                </div>
-              </Link>
+              <BrandLockup />
 
               <div className="hidden h-8 w-px bg-linear-to-b from-transparent via-slate-200 to-transparent sm:block" />
 
-              {/* আমার বাংলাদেশ — the country story page (/bangladesh). */}
+              {/* বাংলাদেশ — the country story page (/bangladesh). */}
               {/* No prefetch: prefetching /bangladesh preloads its carousel
                   stylesheet on every page, which then sits unused and
                   raises a console "preloaded but not used" warning. */}
               <Link
                 href="/bangladesh"
                 prefetch={false}
-                title="আমার বাংলাদেশ — Bangladesh story, nature, history & culture"
-                className="frosted-pill-bangladesh group hidden cursor-pointer items-center space-x-2.5 rounded-full px-3.5 py-1.5 transition-all duration-200 select-none md:flex"
+                title="বাংলাদেশ — Bangladesh story, nature, history & culture"
+                className="frosted-pill-bangladesh group hidden cursor-pointer items-center rounded-full px-3.5 py-1.5 transition-all duration-200 select-none md:flex"
               >
-                <Image
-                  src="/icons/map.png"
-                  alt=""
-                  aria-hidden
-                  width={512}
-                  height={512}
-                  className="size-6 shrink-0 object-contain transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-                />
-
-                <span className="font-bengali text-sm font-bold tracking-normal">
-                  <span className="text-national-crimson">আমার</span>{" "}
-                  <span className="text-bd-green">বাংলাদেশ</span>
+                <span className="flex items-center text-[17px] leading-none">
+                  <LabelText text={LABEL_TEXT.bangladesh} className="text-bd-green" />
                 </span>
               </Link>
             </div>
@@ -245,12 +230,10 @@ export function SiteHeader() {
               {/* Feed link — a quiet outlined pill, not a conversion CTA:
                   Bangla name on top, English tagline beneath. */}
               <Link
-                href="/jibaner-joygan"
+                href="/media"
                 className="hidden h-10 shrink-0 flex-col items-center justify-center rounded-xl border border-primary/30 px-3 text-center leading-tight transition-colors duration-200 hover:bg-emerald-50 min-[400px]:flex sm:px-4"
               >
-                <span className="font-bengali text-[11px] font-semibold whitespace-nowrap text-primary sm:text-xs">
-                  শিক্ষিতদের মিডিয়া
-                </span>
+                <LabelText text={LABEL_TEXT.media} className="text-[14px] leading-none text-primary sm:text-[15px]" />
                 <span className="font-sans text-[11px] font-semibold whitespace-nowrap text-primary sm:text-xs">
                   Prioritize your joy.
                 </span>
@@ -290,8 +273,8 @@ export function SiteHeader() {
                   side="right"
                   className="gap-0 overflow-y-auto p-space-lg"
                 >
-                  <SheetTitle className="font-bengali text-xl font-black text-bdorange-600">
-                    কাণ্ডারী ল্যাব
+                  <SheetTitle className="text-[28px] font-normal text-signal-orange [text-shadow:1px_1px_0_#9a3412]">
+                    <KandariWordmark />
                   </SheetTitle>
 
                   <nav className="mt-space-md flex flex-col gap-space-xs">
@@ -322,9 +305,8 @@ export function SiteHeader() {
                         height={512}
                         className="size-6 shrink-0 object-contain"
                       />
-                      <span>
-                        <span className="text-national-crimson">আমার</span>{" "}
-                        <span className="text-bd-green">বাংলাদেশ</span>
+                      <span className="text-[18px] leading-none">
+                        <LabelText text={LABEL_TEXT.bangladesh} className="text-bd-green" />
                       </span>
                     </Link>
                   </SheetClose>
@@ -348,7 +330,7 @@ export function SiteHeader() {
                           strokeLinejoin="round"
                         />
                       </svg>
-                      প্রতিবাদ
+                      <LabelText text={LABEL_TEXT.protibad} className="text-[18px] leading-none" />
                     </Link>
                   </SheetClose>
 
@@ -442,7 +424,7 @@ export function SiteHeader() {
                     strokeLinejoin="round"
                   />
                 </svg>
-                <span className="tracking-wide">প্রতিবাদ</span>
+                <LabelText text={LABEL_TEXT.protibad} className="text-[16px] leading-none" />
               </Link>
 
               <Link
@@ -454,11 +436,9 @@ export function SiteHeader() {
                   <span className="absolute inline-flex size-full animate-ping rounded-full bg-red-400 opacity-75" />
                   <span className="relative inline-flex size-2 rounded-full bg-red-600" />
                 </span>
-                <span className="whitespace-nowrap text-slate-800">
-                  বাংলাদেশের প্রধান বাস্তব
-                </span>
-                <span className="rounded border border-red-200/60 bg-red-100/80 px-1.5 py-0.5 font-bold text-red-700">
-                  সমস্যা
+                <LabelText text={LABEL_TEXT.issueLead} className="text-[15px] leading-none text-slate-800" />
+                <span className="rounded border border-red-200/60 bg-red-100/80 px-1.5 py-0.5 text-[15px] leading-none text-red-700">
+                  <LabelText text={LABEL_TEXT.issue} />
                 </span>
               </Link>
             </div>
