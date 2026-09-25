@@ -11,7 +11,12 @@ import { PersonLine } from "@/components/media/ui/person";
 import { RatingPair, StatusBadge } from "@/components/media/ui/trust";
 import { categories, getCategory } from "@/data/media/categories";
 import { listings } from "@/data/media/market";
+import { EventCard } from "@/components/media/community/events";
+import { JobCard } from "@/components/media/jobs/job-card";
+import { events } from "@/data/media/events";
+import { jobs } from "@/data/media/jobs";
 import { posts } from "@/data/media/posts";
+import { isRated, topicOf } from "@/data/media/topics";
 import type { Person } from "@/data/media/types";
 import { people, personOrThrow } from "@/data/media/users";
 import { skillStatus } from "@/lib/media/skill";
@@ -24,6 +29,8 @@ const tabs = [
   { key: "people", bn: "মানুষ" },
   { key: "posts", bn: "পোস্ট" },
   { key: "market", bn: "বাজার" },
+  { key: "jobs", bn: "কাজ" },
+  { key: "events", bn: "উদ্যোগ" },
 ] as const;
 type Tab = (typeof tabs)[number]["key"];
 
@@ -46,21 +53,25 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
   const foundPeople = q
     ? people.filter((p) => matches(needle, p.nameBn, p.name, p.handle, p.headline, p.district, p.area, ...p.skills.map((s) => s.skill)) || p.categories.some((c) => cats.includes(c)))
     : [];
-  const foundPosts = q ? posts.filter((p) => matches(needle, p.caption, p.skill.name, ...p.tags) || cats.includes(p.category)) : [];
+  const foundPosts = q ? posts.filter((p) => matches(needle, p.caption, p.skill?.name, topicOf(p).bn, ...p.tags) || cats.includes(p.category)) : [];
   const foundListings = q ? listings.filter((l) => matches(needle, l.title, l.description, l.skill, l.location) || cats.includes(l.category)) : [];
+  const foundJobs = q ? jobs.filter((j) => matches(needle, j.title, j.org, j.description, j.location, ...j.tags) || cats.includes(j.sector)) : [];
+  const foundEvents = q ? events.filter((e) => matches(needle, e.title, e.description, e.area, e.district)) : [];
   const counts: Record<Tab, number> = {
-    all: foundPeople.length + foundPosts.length + foundListings.length,
+    all: foundPeople.length + foundPosts.length + foundListings.length + foundJobs.length + foundEvents.length,
     people: foundPeople.length,
     posts: foundPosts.length,
     market: foundListings.length,
+    jobs: foundJobs.length,
+    events: foundEvents.length,
   };
   const show = (t: Tab) => tab === "all" || tab === t;
   const href = (t: Tab) => `/media/search?${new URLSearchParams({ q, ...(t === "all" ? {} : { tab: t }) })}`;
-  const suggestions = Array.from(new Set(posts.map((p) => p.skill.name))).slice(0, 10);
+  const suggestions = Array.from(new Set(posts.filter(isRated).map((p) => p.skill.name))).slice(0, 10);
 
   return (
     <div className="mx-auto max-w-5xl">
-      <PageHeader title="খুঁজুন" subtitle="দক্ষতা, মানুষ বা বিক্রির জিনিস — যাচাই করা দক্ষতা আগে দেখায়।" />
+      <PageHeader title="খুঁজুন" subtitle="দক্ষতা, মানুষ, কাজ, উদ্যোগ বা বিক্রির জিনিস — যাচাই করা দক্ষতা আগে দেখায়।" />
 
       <form action="/media/search" role="search" className="mb-5">
         {tab !== "all" && <input type="hidden" name="tab" value={tab} />}
@@ -132,8 +143,8 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                     {foundPeople.map((p) => {
                       const s = topSkill(p);
                       return (
-                        <li key={p.handle} className="flex items-center justify-between gap-3 rounded-2xl border border-card-border bg-white p-4">
-                          <div className="min-w-0 space-y-2">
+                        <li key={p.handle} className="flex min-w-0 items-center justify-between gap-3 rounded-2xl border border-card-border bg-white p-4">
+                          <div className="min-w-0 flex-1 space-y-2">
                             <PersonLine person={p} size="lg" meta={p.headline} />
                             {s && (
                               <p className="flex flex-wrap items-center gap-2 text-xs text-text-secondary">
@@ -162,17 +173,35 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                             href={`/media/post/${p.id}`}
                             className="flex gap-3 rounded-2xl border border-card-border bg-white p-3 transition-[border-color,box-shadow] hover:border-bd-green/35 hover:shadow-[0_6px_18px_-10px_rgb(15_23_42/0.25)]"
                           >
-                            <MediaFrame bare slot={{ ...p.media[0], ratio: "1/1" }} className="w-24 shrink-0 self-start sm:w-28" sizes="112px" />
+                            {p.media[0] && <MediaFrame bare slot={{ ...p.media[0], ratio: "1/1" }} className="w-24 shrink-0 self-start sm:w-28" sizes="112px" />}
                             <span className="min-w-0 flex-1 space-y-1.5">
-                              <span className="block text-sm font-bold text-text-primary">{p.skill.name}</span>
+                              <span className="block text-sm font-bold text-text-primary">{p.skill?.name ?? topicOf(p).bn}</span>
                               <span className="block truncate text-xs text-text-muted">{a.nameBn} · {getCategory(p.category).bn}</span>
-                              <RatingPair self={p.skill.self} communityAvg={p.skill.communityAvg} raters={p.skill.raters} compact />
+                              {p.skill ? (
+                                <RatingPair self={p.skill.self} communityAvg={p.skill.communityAvg} raters={p.skill.raters} compact />
+                              ) : (
+                                <span className="line-clamp-2 text-xs text-text-secondary">{p.caption}</span>
+                              )}
                             </span>
                           </Link>
                         </li>
                       );
                     })}
                   </ul>
+                </section>
+              )}
+
+              {show("jobs") && foundJobs.length > 0 && (
+                <section aria-labelledby="r-jobs">
+                  <h2 id="r-jobs" className="mb-3 text-base font-bold text-text-primary">কাজ</h2>
+                  <div className="space-y-3">{foundJobs.map((j) => <JobCard key={j.id} job={j} />)}</div>
+                </section>
+              )}
+
+              {show("events") && foundEvents.length > 0 && (
+                <section aria-labelledby="r-events">
+                  <h2 id="r-events" className="mb-3 text-base font-bold text-text-primary">উদ্যোগ</h2>
+                  <div className="grid gap-4 md:grid-cols-2">{foundEvents.map((e) => <EventCard key={e.id} event={e} />)}</div>
                 </section>
               )}
 

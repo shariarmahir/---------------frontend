@@ -5,6 +5,7 @@ import { MessageCircle, Search, Wallet } from "lucide-react";
 import { LabelText } from "@/components/brand/kandari-wordmark";
 import { LABEL_TEXT } from "@/data/logo-text";
 import { CURRENT_USER_HANDLE, currentUser } from "@/data/media/users";
+import { NotificationBell } from "../notifications/notifications";
 import { mediaButton } from "../ui/button-styles";
 import { PersonAvatar } from "../ui/person";
 import { MobileMenu, NumeralsToggle } from "./nav";
@@ -13,7 +14,7 @@ import type { UnreadSeed } from "./unread";
 
 export function TopBar({ unreadSeed }: { unreadSeed: UnreadSeed }) {
   return (
-    <header className="sticky top-0 z-40 border-b border-card-border bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/85">
+    <header className="sticky top-0 z-40 border-b print:hidden border-card-border bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/85">
       <div className="mx-auto flex h-16 max-w-350 items-center gap-2 px-3 sm:gap-3 lg:px-6">
         <MobileMenu unreadSeed={unreadSeed} me={CURRENT_USER_HANDLE} />
         <Link href="/media" className="flex shrink-0 items-center gap-2 rounded-lg focus-visible:outline-2 focus-visible:outline-bd-green">
@@ -32,10 +33,11 @@ export function TopBar({ unreadSeed }: { unreadSeed: UnreadSeed }) {
 
         <div className="ml-auto flex items-center gap-1 md:ml-0">
           <NumeralsToggle className="hidden sm:inline-flex" />
-          <Link href="/media/search" className={mediaButton({ variant: "ghost", size: "icon", className: "md:hidden" })}>
+          <Link href="/media/search" className={mediaButton({ variant: "ghost", size: "icon", className: "hidden sm:inline-flex md:hidden" })}>
             <Search aria-hidden />
             <span className="sr-only">খুঁজুন</span>
           </Link>
+          <NotificationBell />
           <Link href="/media/messages" className={mediaButton({ variant: "ghost", size: "icon", className: "relative" })}>
             <MessageCircle aria-hidden />
             <span className="sr-only">বার্তা</span>

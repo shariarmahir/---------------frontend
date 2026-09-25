@@ -6,6 +6,13 @@ import { listings } from "./market.ts";
 import { posts } from "./posts.ts";
 import { people } from "./users.ts";
 import { walletSeed } from "./wallet.ts";
+import { RATED_TOPICS } from "../../lib/media/schemas.ts";
+import { isFairPay } from "../../lib/media/fair-pay.ts";
+import { challenges } from "./challenges.ts";
+import { civicReports } from "./civic.ts";
+import { events } from "./events.ts";
+import { jobs } from "./jobs.ts";
+import { teams } from "./teams.ts";
 
 const byHandle = new Map(people.map((p) => [p.handle, p]));
 const categoryIds = new Set(categories.map((c) => c.id));
@@ -38,9 +45,13 @@ test("every referenced person exists", () => {
 test("posts and listings tie to real skills", () => {
   for (const p of posts) {
     assert.ok(categoryIds.has(p.category), p.id);
-    assert.ok(p.media.length > 0, `${p.id} needs media`);
-    const author = byHandle.get(p.author)!;
-    assert.ok(author.skills.some((s) => s.skill === p.skill.name), `${p.id}: ${p.author} lacks ${p.skill.name}`);
+    const rated = RATED_TOPICS.includes(p.topic ?? "skill");
+    assert.equal(Boolean(p.skill), rated, `${p.id}: rated topics carry a skill, others none`);
+    if (p.skill) {
+      assert.ok(p.media.length > 0, `${p.id} needs proof media`);
+      const author = byHandle.get(p.author)!;
+      assert.ok(author.skills.some((s) => s.skill === p.skill!.name), `${p.id}: ${p.author} lacks ${p.skill.name}`);
+    }
     if (p.listingId) {
       const l = listings.find((x) => x.id === p.listingId);
       assert.ok(l, `${p.id} → ${p.listingId}`);
@@ -64,6 +75,29 @@ test("threads match their listings", () => {
     assert.equal(t.floor, l!.floor, `${t.id} floor`);
     assert.equal(t.with, l!.seller, `${t.id} seller`);
   }
+});
+
+test("community data: people exist, ids unique, jobs pay fairly", () => {
+  unique(jobs.map((j) => j.id), "job");
+  unique(events.map((e) => e.id), "event");
+  unique(teams.map((t) => t.id), "team");
+  unique(civicReports.map((r) => r.id), "civic");
+  unique(challenges.map((c) => c.id), "challenge");
+  const refs = [
+    ...jobs.map((j) => j.poster),
+    ...events.map((e) => e.organizer),
+    ...teams.flatMap((t) => [t.lead, ...t.members]),
+    ...civicReports.flatMap((r) => [...(r.by ? [r.by] : []), ...r.solutions.map((s) => s.by)]),
+    ...challenges.map((c) => c.by),
+  ];
+  for (const h of refs) assert.ok(byHandle.has(h), `unknown handle ${h}`);
+  for (const j of jobs) {
+    const band = categories.find((c) => c.id === j.sector)!.band;
+    assert.ok(isFairPay(j.pay.min, j.pay.unit, band), `${j.id} pays below the floor`);
+    assert.ok(j.pay.max >= j.pay.min, `${j.id} pay range`);
+  }
+  for (const t of teams) assert.equal(t.members[0], t.lead, `${t.id}: lead first`);
+  for (const e of events) assert.ok(e.joined <= e.goal, `${e.id} joined`);
 });
 
 test("wallet rows disclose fees correctly", () => {

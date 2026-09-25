@@ -2,9 +2,28 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CircleUserRound, House, Languages, Menu, MessageCircle, Plus, ShieldCheck, Store, Wallet, type LucideIcon } from "lucide-react";
+import {
+  BriefcaseBusiness,
+  CalendarHeart,
+  CircleUserRound,
+  Compass,
+  House,
+  Languages,
+  LayoutDashboard,
+  Megaphone,
+  Menu,
+  MessageCircle,
+  Plus,
+  ShieldCheck,
+  StickyNote,
+  Store,
+  Trophy,
+  Users,
+  Wallet,
+  type LucideIcon,
+} from "lucide-react";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { mediaNav, mediaTabs, type NavIcon } from "@/data/media/nav";
+import { mediaNavGroups, mediaTabs, type NavIcon } from "@/data/media/nav";
 import { cn } from "@/lib/utils";
 import { mediaButton } from "../ui/button-styles";
 import { Num, useNumerals } from "../ui/numerals";
@@ -13,15 +32,27 @@ import { useUnread, type UnreadSeed } from "./unread";
 export const navIcons: Record<NavIcon, LucideIcon> = {
   feed: House,
   market: Store,
+  jobs: BriefcaseBusiness,
   messages: MessageCircle,
+  events: CalendarHeart,
+  teams: Users,
+  challenges: Trophy,
+  civic: Megaphone,
+  notes: StickyNote,
+  dashboard: LayoutDashboard,
   wallet: Wallet,
   profile: CircleUserRound,
   create: Plus,
+  explore: Compass,
 };
 
+/** Sections the phone's "explore" tab stands for. */
+const exploreRoutes = ["/media/explore", "/media/jobs", "/media/events", "/media/teams", "/media/challenges", "/media/civic", "/media/notes", "/media/dashboard", "/media/wallet", "/media/messages", "/media/search", "/media/notifications", "/media/settings"];
+
 function isActive(pathname: string, href: string, me: string): boolean {
-  if (href === "/media") return pathname === "/media" || pathname.startsWith("/media/post/") && pathname !== "/media/post/new";
-  if (href === "/media/me") return pathname === "/media/me" || pathname === `/media/u/${me}`;
+  if (href === "/media") return pathname === "/media" || (pathname.startsWith("/media/post/") && pathname !== "/media/post/new");
+  if (href === "/media/me") return pathname === "/media/me" || pathname === `/media/u/${me}` || pathname.startsWith(`/media/certificate/${me}/`);
+  if (href === "/media/explore") return exploreRoutes.some((r) => pathname === r || pathname.startsWith(`${r}/`));
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
@@ -55,37 +86,52 @@ export function NumeralsToggle({ className }: { className?: string }) {
   );
 }
 
+function NavGroups({ pathname, me, unread, size }: { pathname: string; me: string; unread: number; size: "rail" | "sheet" }) {
+  return (
+    <div className={size === "rail" ? "space-y-5" : "space-y-4"}>
+      {mediaNavGroups.map((g) => (
+        <div key={g.title}>
+          <p className="mb-1 px-3 text-[11px] font-bold tracking-wide text-text-muted">{g.title}</p>
+          <ul className="space-y-0.5">
+            {g.items.map((item) => {
+              const Icon = navIcons[item.icon];
+              const on = isActive(pathname, item.href, me);
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    aria-current={on ? "page" : undefined}
+                    className={cn(
+                      "flex items-center gap-3 rounded-xl px-3 font-semibold transition-colors",
+                      size === "rail" ? "min-h-10 text-[15px]" : "min-h-11 text-base",
+                      on ? "bg-bd-green text-white" : "text-text-secondary hover:bg-white hover:text-text-primary",
+                      size === "sheet" && !on && "hover:bg-slate-50",
+                    )}
+                  >
+                    <Icon className="size-5" strokeWidth={on ? 2.25 : 1.75} aria-hidden />
+                    <span className="flex-1">{item.label}</span>
+                    {item.badge && <CountBadge n={unread} className={on ? "bg-white text-bd-green" : undefined} />}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function LeftRail({ unreadSeed, me }: { unreadSeed: UnreadSeed; me: string }) {
   const pathname = usePathname();
   const unread = useUnread(unreadSeed);
   return (
-    <nav aria-label="প্রধান মেনু" className="sticky top-16 hidden h-[calc(100dvh-4rem)] w-60 shrink-0 flex-col py-6 pr-2 lg:flex">
-      <Link href="/media/post/new" className={mediaButton({ variant: "primary", size: "lg", className: "mb-6 w-full" })}>
-        <Plus aria-hidden /> দক্ষতা পোস্ট করুন
+    <nav aria-label="প্রধান মেনু" className="sticky top-16 hidden h-[calc(100dvh-4rem)] w-60 shrink-0 flex-col overflow-y-auto py-5 pr-2 scrollbar-none lg:flex print:hidden">
+      <Link href="/media/post/new" className={mediaButton({ variant: "primary", size: "lg", className: "mb-5 w-full" })}>
+        <Plus aria-hidden /> পোস্ট করুন
       </Link>
-      <ul className="space-y-1">
-        {mediaNav.map((item) => {
-          const Icon = navIcons[item.icon];
-          const on = isActive(pathname, item.href, me);
-          return (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                aria-current={on ? "page" : undefined}
-                className={cn(
-                  "flex min-h-11 items-center gap-3 rounded-xl px-3 text-[15px] font-semibold transition-colors",
-                  on ? "bg-bd-green text-white" : "text-text-secondary hover:bg-white hover:text-text-primary",
-                )}
-              >
-                <Icon className="size-5" strokeWidth={on ? 2.25 : 1.75} aria-hidden />
-                <span className="flex-1">{item.label}</span>
-                {item.badge && <CountBadge n={unread} className={on ? "bg-white text-bd-green" : undefined} />}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-      <div className="mt-auto space-y-3 rounded-2xl border border-card-border bg-white p-4">
+      <NavGroups pathname={pathname} me={me} unread={unread} size="rail" />
+      <div className="mt-6 space-y-2 rounded-2xl border border-card-border bg-white p-4">
         <p className="flex items-center gap-2 text-sm font-bold text-text-primary">
           <ShieldCheck className="size-4.5 text-bd-green" aria-hidden /> এক এনআইডি, এক অ্যাকাউন্ট
         </p>
@@ -94,19 +140,19 @@ export function LeftRail({ unreadSeed, me }: { unreadSeed: UnreadSeed; me: strin
           নতুন অ্যাকাউন্ট খোলা দেখুন →
         </Link>
       </div>
-      <p className="mt-3 flex gap-3 px-1 text-[11px] text-text-muted">
+      <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 px-1 text-[11px] text-text-muted">
         <Link href="/" className="hover:text-bd-green">কাণ্ডারী-ল্যাব</Link>
+        <Link href="/media/settings" className="hover:text-bd-green">গোপনীয়তা</Link>
         <Link href="/media/credits" className="hover:text-bd-green">ছবির কৃতজ্ঞতা</Link>
       </p>
     </nav>
   );
 }
 
-export function BottomTabs({ unreadSeed, me }: { unreadSeed: UnreadSeed; me: string }) {
+export function BottomTabs({ me }: { me: string }) {
   const pathname = usePathname();
-  const unread = useUnread(unreadSeed);
   return (
-    <nav aria-label="প্রধান ট্যাব" className="media-safe-bottom fixed inset-x-0 bottom-0 z-40 border-t border-card-border bg-white/95 backdrop-blur lg:hidden">
+    <nav aria-label="প্রধান ট্যাব" className="media-safe-bottom fixed inset-x-0 bottom-0 z-40 border-t border-card-border bg-white/95 backdrop-blur lg:hidden print:hidden">
       <ul className="mx-auto grid max-w-lg grid-cols-5 px-1 pt-1.5">
         {mediaTabs.map((t) => {
           const Icon = navIcons[t.icon];
@@ -127,7 +173,6 @@ export function BottomTabs({ unreadSeed, me }: { unreadSeed: UnreadSeed; me: str
                   <Icon className="size-6" strokeWidth={on ? 2.25 : 1.75} aria-hidden />
                 )}
                 <span>{t.label}</span>
-                {t.badge && <CountBadge n={unread} className="absolute top-0 left-1/2 ml-1.5" />}
               </Link>
             </li>
           );
@@ -148,33 +193,18 @@ export function MobileMenu({ unreadSeed, me }: { unreadSeed: UnreadSeed; me: str
           <span className="sr-only">মেনু খুলুন</span>
         </button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-80 max-w-[85vw] bg-white font-sans">
+      <SheetContent side="left" className="w-80 max-w-[85vw] overflow-y-auto bg-white font-sans">
         <SheetHeader>
           <SheetTitle className="text-lg font-bold text-bd-green">শিক্ষিতদের মিডিয়া</SheetTitle>
-          <SheetDescription className="text-sm text-text-muted">দক্ষতা দেখান · যাচাই পান · কাজ পান</SheetDescription>
+          <SheetDescription className="text-sm text-text-muted">শিখুন · বানান · আয় করুন · এলাকার জন্য কিছু করুন</SheetDescription>
         </SheetHeader>
-        <ul className="space-y-1 px-4">
-          {mediaNav.map((item) => {
-            const Icon = navIcons[item.icon];
-            const on = isActive(pathname, item.href, me);
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={cn("flex min-h-12 items-center gap-3 rounded-xl px-3 text-base font-semibold", on ? "bg-bd-green text-white" : "text-text-primary hover:bg-slate-50")}
-                >
-                  <Icon className="size-5" aria-hidden />
-                  <span className="flex-1">{item.label}</span>
-                  {item.badge && <CountBadge n={unread} />}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-        <div className="mt-4 space-y-3 border-t border-card-border px-4 pt-4">
+        <div className="px-2">
+          <NavGroups pathname={pathname} me={me} unread={unread} size="sheet" />
+        </div>
+        <div className="mt-2 space-y-3 border-t border-card-border px-4 py-4">
           <NumeralsToggle />
           <Link href="/media/onboarding" className="block text-sm font-semibold text-bd-green">নতুন অ্যাকাউন্ট খোলা দেখুন →</Link>
-          <Link href="/media/search" className="block text-sm font-semibold text-text-primary">খুঁজুন</Link>
+          <Link href="/media/settings" className="block text-sm text-text-muted">গোপনীয়তা ও সময়</Link>
           <Link href="/media/credits" className="block text-sm text-text-muted">ছবির কৃতজ্ঞতা</Link>
           <Link href="/" className="block text-sm text-text-muted">কাণ্ডারী-ল্যাব হোম</Link>
         </div>

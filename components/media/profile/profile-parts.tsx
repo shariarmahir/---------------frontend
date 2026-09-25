@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { ArrowUpRight, Wallet } from "lucide-react";
-import type { Post, WalletSeed } from "@/data/media/types";
+import { isRated, type RatedPost } from "@/data/media/topics";
+import type { WalletSeed } from "@/data/media/types";
 import { currentUser } from "@/data/media/users";
 import { skillStatus } from "@/lib/media/skill";
 import { useHydrated, useMediaState } from "@/lib/media/store";
@@ -15,7 +16,7 @@ import { StatusBadge } from "../ui/trust";
 import { useWallet } from "../wallet/use-wallet";
 
 /** One portfolio tile: the proof thumbnail, the skill, its status. */
-export function PortfolioTile({ post }: { post: Post }) {
+export function PortfolioTile({ post }: { post: RatedPost }) {
   const status = skillStatus(post.skill.self, post.skill.communityAvg, post.skill.raters);
   return (
     <Link href={`/media/post/${post.id}`} className="group block overflow-hidden rounded-xl border border-card-border bg-white transition-[border-color,box-shadow] hover:border-bd-green/35 hover:shadow-[0_6px_18px_-10px_rgb(15_23_42/0.25)]">
@@ -33,7 +34,7 @@ export function MyPortfolioTiles() {
   const posts = useMediaState((s) => s.posts);
   return (
     <>
-      {posts.map((p) => (
+      {posts.filter(isRated).map((p) => (
         <PortfolioTile key={p.id} post={p} />
       ))}
     </>
@@ -52,10 +53,18 @@ export function MyShopCards() {
   );
 }
 
-/** Follower count that includes the viewer's own follow. */
+/** Follower count that includes the viewer's own follow (hidden if the viewer turned counts off). */
 export function FollowerCount({ handle, base }: { handle: string; base: number }) {
   const on = useMediaState((s) => Boolean(s.following[handle]));
+  const hide = useMediaState((s) => s.privacy.hideCounts);
+  if (hide) return <>—</>;
   return <Compact n={base + (on ? 1 : 0)} />;
+}
+
+/** The owner's own location line, honouring "district only". */
+export function OwnLocation({ area, district }: { area: string; district: string }) {
+  const districtOnly = useMediaState((s) => s.privacy.districtOnly);
+  return <>{districtOnly ? district : `${area}, ${district}`}</>;
 }
 
 /** Own-profile wallet card: balance and the way out (bKash / Nagad / BanglaQR). */

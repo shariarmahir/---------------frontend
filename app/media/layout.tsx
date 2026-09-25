@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { BottomTabs, LeftRail } from "@/components/media/shell/nav";
 import { TopBar } from "@/components/media/shell/top-bar";
 import { NumeralsProvider } from "@/components/media/ui/numerals";
+import { UsageTracker } from "@/components/media/wellbeing/usage";
 import { NUMERALS_COOKIE } from "@/lib/media/numerals-cookie";
 import { threads } from "@/data/media/chat";
 import { CURRENT_USER_HANDLE } from "@/data/media/users";
@@ -42,11 +43,12 @@ export default async function MediaLayout({ children }: { children: React.ReactN
         <TopBar unreadSeed={unreadSeed} />
         <div className="mx-auto flex w-full max-w-350 gap-6 px-3 lg:px-6">
           <LeftRail unreadSeed={unreadSeed} me={CURRENT_USER_HANDLE} />
-          <main id="media-main" className="min-w-0 flex-1 pt-6 pb-28 lg:pb-12">
+          <main id="media-main" className="min-w-0 flex-1 pt-6 pb-28 lg:pb-12 print:p-0">
             {children}
           </main>
         </div>
-        <BottomTabs unreadSeed={unreadSeed} me={CURRENT_USER_HANDLE} />
+        <BottomTabs me={CURRENT_USER_HANDLE} />
+        <UsageTracker />
         <Toaster />
       </div>
     </NumeralsProvider>

@@ -11,6 +11,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormGroup, For
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
+import { districts } from "@/data/media/districts";
 import type { CategoryId } from "@/data/media/types";
 import {
   categoriesSchema,
@@ -27,7 +28,6 @@ import { Num } from "../ui/numerals";
 
 const steps = ["পরিচয় যাচাই", "দক্ষতার বিভাগ", "প্রোফাইল"];
 
-const districts = ["ঢাকা", "চট্টগ্রাম", "রাজশাহী", "খুলনা", "সিলেট", "বরিশাল", "রংপুর", "ময়মনসিংহ", "গাজীপুর", "নারায়ণগঞ্জ", "কুমিল্লা", "জামালপুর", "শেরপুর", "বান্দরবান", "বগুড়া", "যশোর"];
 
 function Capture({ label, done, onDone, Icon, invalid }: { label: string; done: boolean; onDone: () => void; Icon: typeof Camera; invalid?: boolean }) {
   const [busy, setBusy] = useState(false);

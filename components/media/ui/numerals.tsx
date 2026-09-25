@@ -61,6 +61,34 @@ export function Ago({ iso, live }: { iso: string; live?: boolean }) {
   );
 }
 
+/** A calendar date (and optionally time) in Bangla, Dhaka time. */
+export function DateText({ iso, time, weekday }: { iso: string; time?: boolean; weekday?: boolean }) {
+  const { numerals } = useNumerals();
+  const d = new Date(iso.length === 10 ? `${iso}T00:00:00+06:00` : iso);
+  const date = new Intl.DateTimeFormat(numerals === "bn" ? "bn-BD" : "bn-BD-u-nu-latn", {
+    day: "numeric",
+    month: "long",
+    weekday: weekday ? "long" : undefined,
+    timeZone: "Asia/Dhaka",
+  }).format(d);
+  return (
+    <time dateTime={iso} suppressHydrationWarning>
+      {time ? `${date} · ${clockBn(d, numerals)}` : date}
+    </time>
+  );
+}
+
+/** "সকাল ৭টা", "বিকাল ৩:৩০" — Bangla time of day, Dhaka time. */
+function clockBn(d: Date, numerals: Numerals): string {
+  const [h, m] = new Intl.DateTimeFormat("en-GB", { hour: "numeric", minute: "2-digit", hourCycle: "h23", timeZone: "Asia/Dhaka" })
+    .format(d)
+    .split(":")
+    .map(Number);
+  const part = h < 6 ? "ভোর" : h < 12 ? "সকাল" : h < 15 ? "দুপুর" : h < 18 ? "বিকাল" : h < 20 ? "সন্ধ্যা" : "রাত";
+  const h12 = h % 12 || 12;
+  return `${part} ${digits(m ? `${h12}:${String(m).padStart(2, "0")}` : h12, numerals)}${m ? "" : "টা"}`;
+}
+
 /** Formatting for strings that must be built in client code (aria, toasts). */
 export function useFormat() {
   const { numerals } = useNumerals();

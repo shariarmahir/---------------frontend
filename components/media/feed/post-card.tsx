@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { ArrowUpRight, FolderKanban, Tag } from "lucide-react";
+import { ArrowUpRight, FolderKanban, LifeBuoy, Megaphone, Tag } from "lucide-react";
 import { getCategory } from "@/data/media/categories";
+import { topicOf } from "@/data/media/topics";
 import type { Listing, Person, Post } from "@/data/media/types";
 import { CURRENT_USER_HANDLE, getPerson } from "@/data/media/users";
 import { cn } from "@/lib/utils";
@@ -54,6 +55,7 @@ export function PostCard({
   live?: boolean;
 }) {
   const replies = post.comments.reduce((n, c) => n + (c.replies?.length ?? 0), 0);
+  const topic = topicOf(post);
   return (
     <article id={post.id} className="scroll-mt-24 rounded-2xl border border-card-border bg-white shadow-[0_1px_2px_rgb(15_23_42/0.04)] transition-shadow duration-200 hover:shadow-[0_6px_20px_-12px_rgb(15_23_42/0.18)]">
       <header className="flex items-start gap-3 p-4 pb-0 sm:p-6 sm:pb-0">
@@ -75,16 +77,32 @@ export function PostCard({
       </header>
 
       <div className="space-y-4 p-4 sm:p-6">
+        {post.topic === "help" && (
+          <p className="flex items-center gap-2 rounded-xl bg-red-50 px-3 py-2 text-sm font-semibold text-national-crimson">
+            <LifeBuoy className="size-4.5 shrink-0" aria-hidden /> সাহায্য চাই — পারলে শেয়ার করুন, কেউ হয়তো কাছেই আছেন
+          </p>
+        )}
+
         <p className="text-[15px] leading-relaxed whitespace-pre-line text-text-primary">{post.caption}</p>
 
         <MediaGallery media={post.media} />
 
         <div className="flex flex-wrap items-center gap-2">
-          <span className="inline-flex min-h-7 items-center gap-1.5 rounded-full bg-bd-green px-3 text-xs font-bold text-white">
-            {post.kind === "project" ? <FolderKanban className="size-3.5" aria-hidden /> : <Tag className="size-3.5" aria-hidden />}
-            {post.skill.name}
-          </span>
-          <CategoryChip id={post.category} />
+          {post.skill ? (
+            <span className="inline-flex min-h-7 items-center gap-1.5 rounded-full bg-bd-green px-3 text-xs font-bold text-white">
+              {post.kind === "project" ? <FolderKanban className="size-3.5" aria-hidden /> : <Tag className="size-3.5" aria-hidden />}
+              {post.skill.name}
+            </span>
+          ) : null}
+          {topic.id !== "skill" && (
+            <Link
+              href={`/media?t=${topic.id}`}
+              className="inline-flex min-h-7 items-center rounded-full bg-slate-100 px-2.5 text-xs font-semibold text-text-secondary transition-colors hover:bg-slate-200"
+            >
+              {topic.bn}
+            </Link>
+          )}
+          {post.skill && <CategoryChip id={post.category} />}
           {post.tags.map((t) => (
             <span key={t} className="text-xs font-medium text-bd-green">
               {t}
@@ -92,7 +110,19 @@ export function PostCard({
           ))}
         </div>
 
-        <LiveRatingPair postId={post.id} skill={post.skill} />
+        {post.skill && <LiveRatingPair postId={post.id} skill={post.skill} />}
+
+        {post.topic === "rights" && (
+          <Link
+            href="/media/civic"
+            className="flex items-center justify-between gap-3 rounded-xl border border-card-border bg-slate-50 px-4 py-3 text-sm transition-colors hover:border-bd-green/40"
+          >
+            <span className="flex items-center gap-2 font-semibold text-text-primary">
+              <Megaphone className="size-4.5 text-bd-green" aria-hidden /> নাগরিক বিভাগে এলাকার সমস্যা দেখুন ও নিশ্চিত করুন
+            </span>
+            <ArrowUpRight className="size-4.5 shrink-0 text-text-muted" aria-hidden />
+          </Link>
+        )}
 
         {listing && (
           <Link

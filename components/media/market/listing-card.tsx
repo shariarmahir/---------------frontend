@@ -25,6 +25,11 @@ export function ListingCard({ listing, seller }: { listing: Listing; seller: Per
         <span className="absolute top-2.5 left-2.5 rounded-full shadow-sm">
           <StatusBadge status={status} size="sm" />
         </span>
+        {listing.featured && (
+          <span className="absolute top-2.5 right-2.5 rounded-full bg-white/95 px-2 py-0.5 text-[11px] font-bold text-orange-900 shadow-sm" title="প্রচারিত তালিকা">
+            ফিচার্ড
+          </span>
+        )}
       </div>
       <div className="flex flex-1 flex-col gap-3 p-4">
         <p className="flex items-center justify-between gap-2 text-xs text-text-muted">

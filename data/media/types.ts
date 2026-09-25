@@ -1,4 +1,5 @@
 import type { PriceBand } from "@/lib/media/fair-price";
+import type { PayUnit } from "@/lib/media/fair-pay";
 
 /**
  * Domain types for শিক্ষিতদের মিডিয়া — shaped like the API a backend would
@@ -6,6 +7,9 @@ import type { PriceBand } from "@/lib/media/fair-price";
  */
 
 export type CategoryId =
+  | "shop"
+  | "rent"
+  | "fashion"
   | "tech"
   | "engineering"
   | "design"
@@ -103,14 +107,24 @@ export interface Comment {
 
 export type PostKind = "skill" | "project";
 
+/**
+ * What a post is for. Skill, education and research posts carry a
+ * self-rating the community verifies; the rest are for sharing, asking and
+ * speaking up, and carry none.
+ */
+export type PostTopic = "skill" | "education" | "research" | "team" | "entertainment" | "daily" | "help" | "rights";
+
 export interface Post {
   id: string;
   kind: PostKind;
+  /** Defaults to "skill". */
+  topic?: PostTopic;
   author: string;
   category: CategoryId;
   createdAt: string;
   caption: string;
-  skill: { name: string; self: number; communityAvg: number; raters: number };
+  /** Present on rated posts only (see PostTopic). */
+  skill?: { name: string; self: number; communityAvg: number; raters: number };
   media: MediaSlot[];
   tags: string[];
   stats: { likes: number; shares: number; views: number };
@@ -138,6 +152,127 @@ export interface Listing {
   highlights: string[];
   /** The seller skill whose community rating vouches for this listing. */
   skill: string;
+  /** Paid placement (a revenue line): shown first and tagged “ফিচার্ড”. */
+  featured?: boolean;
+}
+
+/* ── Community: jobs, events, teams, civic reports, challenges ───────── */
+
+export type JobType = "full" | "part" | "gig" | "intern";
+
+/** A free job post. Every job states its pay; pay below the fair band is refused. */
+export interface Job {
+  id: string;
+  /** Who posted it on the platform. */
+  poster: string;
+  org: string;
+  title: string;
+  sector: CategoryId;
+  type: JobType;
+  location: string;
+  remote: boolean;
+  pay: { min: number; max: number; unit: PayUnit };
+  tags: string[];
+  description: string;
+  requirements: string[];
+  postedAt: string;
+  deadline: string;
+  applicants: number;
+  /** Fits around classes — shown in the students' filter. */
+  studentFriendly: boolean;
+}
+
+export type EventKind = "tree" | "cleanup" | "blood" | "relief" | "awareness" | "repair";
+
+export interface Sponsor {
+  name: string;
+  /** What they give: "লোগোসহ ১০০টি টি-শার্ট", "৳২০,০০০". */
+  offer: string;
+  initials: string;
+}
+
+/** A social-work event: someone leads, others join, companies sponsor. */
+export interface CommunityEvent {
+  id: string;
+  kind: EventKind;
+  title: string;
+  organizer: string;
+  area: string;
+  district: string;
+  date: string;
+  description: string;
+  goal: number;
+  joined: number;
+  needs: string[];
+  sponsors: Sponsor[];
+  cover?: string;
+}
+
+export type TeamKind = "family" | "lab" | "project" | "travel" | "sports";
+
+export interface Team {
+  id: string;
+  kind: TeamKind;
+  name: string;
+  lead: string;
+  /** Known members on the platform (the lead first). */
+  members: string[];
+  memberCount: number;
+  district: string;
+  about: string;
+  tags: string[];
+  /** Taking new members? */
+  open: boolean;
+  cover?: string;
+}
+
+export type CivicKind = "sanitation" | "road" | "crime" | "extortion" | "harassment" | "utility" | "environment" | "help";
+export type CivicStatus = "reported" | "confirmed" | "in-progress" | "solved";
+
+/** A public problem, alert or call for help, confirmed by people nearby. */
+export interface CivicReport {
+  id: string;
+  kind: CivicKind;
+  title: string;
+  area: string;
+  district: string;
+  at: string;
+  /** Null when filed anonymously (still one verified person behind it). */
+  by: string | null;
+  description: string;
+  confirmations: number;
+  status: CivicStatus;
+  severity: "low" | "medium" | "high";
+  solutions: { id: string; by: string; text: string; votes: number }[];
+  media?: MediaSlot;
+}
+
+export type ChallengeKind = "code" | "design" | "research" | "assignment" | "lab";
+
+export interface Challenge {
+  id: string;
+  kind: ChallengeKind;
+  title: string;
+  host: string;
+  /** A member who runs it on the platform. */
+  by: string;
+  category: CategoryId;
+  prize: number;
+  deadline: string;
+  teams: boolean;
+  entries: number;
+  description: string;
+  tags: string[];
+}
+
+export type NoticeKind = "rating" | "hire" | "job" | "event" | "civic" | "team" | "sale" | "system";
+
+export interface Notice {
+  id: string;
+  kind: NoticeKind;
+  text: string;
+  href: string;
+  at: string;
 }
 
 export interface Message {

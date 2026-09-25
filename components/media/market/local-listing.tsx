@@ -29,7 +29,7 @@ export function LocalListing({ id }: { id: string }) {
     <ListingDetail
       listing={listing}
       seller={currentUser}
-      rating={{ self: post?.skill.self ?? 0, communityAvg: 0, raters: 0 }}
+      rating={{ self: post?.skill?.self ?? 0, communityAvg: 0, raters: 0 }}
       proofHref={post ? `/media/post/${post.id}` : undefined}
     />
   );

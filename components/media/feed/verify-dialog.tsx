@@ -33,7 +33,7 @@ export function VerifyDialog({
   onOpenChange: (o: boolean) => void;
   postId: string;
   authorName: string;
-  skill: Post["skill"];
+  skill: NonNullable<Post["skill"]>;
 }) {
   const [submitting, setSubmitting] = useState(false);
   const form = useForm<VerifyInput>({

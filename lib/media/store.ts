@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import type { CategoryId, Comment, Listing, Message, Post, Txn } from "@/data/media/types";
+import type { CategoryId, CivicReport, Comment, CommunityEvent, Job, Listing, Message, Post, Sponsor, Team, Txn } from "@/data/media/types";
 import type { Negotiation } from "./negotiation";
 
 /**
@@ -48,7 +48,59 @@ export interface MyProfile {
   verifiedAt: string;
 }
 
+export interface MyNote {
+  id: string;
+  text: string;
+  color: "yellow" | "green" | "orange" | "blue";
+  /** "Best work of the day" — shown on the profile. */
+  best: boolean;
+  pinned: boolean;
+  at: string;
+}
+
+export interface MyEntry {
+  summary: string;
+  link: string;
+  team: string;
+  at: string;
+}
+
+export interface Privacy {
+  /** Show only the district, never the area, on the profile. */
+  districtOnly: boolean;
+  /** Who can start a conversation. */
+  messages: "everyone" | "verified" | "following";
+  /** New civic reports default to anonymous. */
+  anonymousReports: boolean;
+  /** Hide follower counts and likes (less comparison, calmer feed). */
+  hideCounts: boolean;
+  /** Suggest a break after this many minutes (0 = off). */
+  breakAfter: number;
+}
+
+export const defaultPrivacy: Privacy = { districtOnly: false, messages: "verified", anonymousReports: true, hideCounts: false, breakAfter: 30 };
+
 export interface MediaState {
+  /* community */
+  applied: Record<string, string>;
+  myJobs: Job[];
+  joinedEvents: Record<string, true>;
+  myEvents: CommunityEvent[];
+  sponsorships: Record<string, Sponsor[]>;
+  /** Team id → join request sent or member. */
+  teamStatus: Record<string, "requested" | "member">;
+  myTeams: Team[];
+  confirmedReports: Record<string, true>;
+  myReports: CivicReport[];
+  mySolutions: Record<string, CivicReport["solutions"]>;
+  solutionVotes: Record<string, true>;
+  entries: Record<string, MyEntry>;
+  notes: MyNote[];
+  seenNotices: Record<string, true>;
+  privacy: Privacy;
+  /** Today's Learn → Connect → Create → Apply → Relax steps, keyed by date. */
+  plan: { date: string; done: Record<string, true> };
+
   liked: Record<string, true>;
   /** `${postId}:${commentId}` */
   commentLikes: Record<string, true>;
@@ -74,6 +126,22 @@ export interface MediaState {
 const STORAGE_KEY = "shikkhitoder-media-v2";
 
 const initialState: MediaState = Object.freeze({
+  applied: {},
+  myJobs: [],
+  joinedEvents: {},
+  myEvents: [],
+  sponsorships: {},
+  teamStatus: {},
+  myTeams: [],
+  confirmedReports: {},
+  myReports: [],
+  mySolutions: {},
+  solutionVotes: {},
+  entries: {},
+  notes: [],
+  seenNotices: {},
+  privacy: defaultPrivacy,
+  plan: { date: "", done: {} },
   liked: {},
   commentLikes: {},
   comments: {},
@@ -104,7 +172,10 @@ function load() {
   loaded = true;
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (raw) state = { ...initialState, ...(JSON.parse(raw) as Partial<MediaState>) };
+    if (raw) {
+      const saved = JSON.parse(raw) as Partial<MediaState>;
+      state = { ...initialState, ...saved, privacy: { ...defaultPrivacy, ...saved.privacy } };
+    }
   } catch {
     // Blocked or corrupt storage: keep the empty state.
   }
@@ -179,7 +250,7 @@ export function newId(prefix: string): string {
 }
 
 /** Toggle a key in a Record<string, true> slice. */
-export function toggleKey<K extends "liked" | "commentLikes" | "following">(key: K, id: string) {
+export function toggleKey<K extends "liked" | "commentLikes" | "following" | "joinedEvents" | "confirmedReports" | "solutionVotes">(key: K, id: string) {
   updateMedia((s) => {
     const next: Record<string, true> = { ...s[key] };
     if (next[id]) delete next[id];

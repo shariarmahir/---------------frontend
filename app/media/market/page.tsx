@@ -39,6 +39,8 @@ export default async function MarketPage({ searchParams }: { searchParams: Promi
     .filter(({ l }) => !cat || l.category === cat)
     .filter(({ l, seller }) => !needle || [l.title, l.description, l.skill, seller.nameBn, seller.name, l.location].some((f) => f.toLowerCase().includes(needle)))
     .sort((a, b) => {
+      // Paid placement comes first, but only within the chosen order.
+      if (sort === "trust" && Boolean(a.l.featured) !== Boolean(b.l.featured)) return a.l.featured ? -1 : 1;
       if (sort === "low") return a.l.price - b.l.price;
       if (sort === "high") return b.l.price - a.l.price;
       const ra = verifiedRatingFor(a.seller, a.l.skill);

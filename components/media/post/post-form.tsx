@@ -12,6 +12,7 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { categories, getCategory } from "@/data/media/categories";
+import { isTopic, topicOf, topics } from "@/data/media/topics";
 import type { CategoryId, Listing, Post } from "@/data/media/types";
 import { currentUser } from "@/data/media/users";
 import { computeFees } from "@/lib/media/fees";
@@ -40,6 +41,8 @@ export function PostForm() {
   const router = useRouter();
   const params = useSearchParams();
   const preset = params.get("kind");
+  const topicParam = params.get("topic") ?? "";
+  const presetTopic = isTopic(topicParam) ? topicParam : "skill";
   const [submitting, setSubmitting] = useState(false);
   const [reading, setReading] = useState(0);
   const photoInput = useRef<HTMLInputElement>(null);
@@ -53,6 +56,7 @@ export function PostForm() {
       skill: "",
       category: currentUser.categories[0],
       selfRating: 3,
+      topic: presetTopic,
       media: [],
       sellable: false,
       price: undefined,
@@ -62,6 +66,8 @@ export function PostForm() {
   });
   const media = useFieldArray({ control: form.control, name: "media" });
   const v = useWatch({ control: form.control }) as PostInput;
+  const topicInfo = topicOf({ topic: v.topic });
+  const rated = topicInfo.rated;
   const cat = getCategory(v.category as CategoryId);
   const suggestions = Array.from(new Set([...currentUser.skills.filter((s) => s.category === v.category).map((s) => s.skill), ...cat.skills])).slice(0, 6);
   const busy = reading > 0;
@@ -95,8 +101,9 @@ export function PostForm() {
     setSubmitting(true);
     const id = newId("p");
     const at = new Date().toISOString();
+    const isRatedPost = topicOf({ topic: values.topic }).rated;
     let listing: Listing | undefined;
-    if (values.sellable && values.price) {
+    if (isRatedPost && values.sellable && values.price && values.media[0]) {
       listing = {
         id: newId("l"),
         seller: currentUser.handle,
@@ -119,11 +126,12 @@ export function PostForm() {
     const post: Post = {
       id,
       kind: values.kind,
+      topic: values.topic ?? "skill",
       author: currentUser.handle,
       category: values.category,
       createdAt: at,
       caption: values.caption,
-      skill: { name: values.skill, self: values.selfRating, communityAvg: 0, raters: 0 },
+      skill: isRatedPost ? { name: values.skill, self: values.selfRating, communityAvg: 0, raters: 0 } : undefined,
       media: values.media.map((m) => ({ kind: m.kind, label: m.label, ratio: m.kind === "video" ? "16/9" : "4/3", src: m.src, duration: m.duration })),
       tags: [],
       stats: { likes: 0, shares: 0, views: 0 },
@@ -131,7 +139,7 @@ export function PostForm() {
       listingId: listing?.id,
     };
     const saved = updateMedia((s) => ({ ...s, posts: [post, ...s.posts], listings: listing ? [...s.listings, listing] : s.listings }));
-    if (saved) toast.success("পোস্ট হয়েছে", { description: "কমিউনিটি এখন দেখে রেটিং যাচাই করতে পারবে।" });
+    if (saved) toast.success("পোস্ট হয়েছে", { description: isRatedPost ? "কমিউনিটি এখন দেখে রেটিং যাচাই করতে পারবে।" : "আপনার পোস্ট ফিডে দেখা যাচ্ছে।" });
     else toast.warning("পোস্ট হয়েছে, তবে এই ব্রাউজারে জায়গা শেষ", { description: "পেজ রিলোড করলে পোস্টটি থাকবে না — কম ছবি দিন বা পুরোনো পোস্ট মুছুন।" });
     router.push(`/media/post/${id}`);
   }
@@ -142,6 +150,36 @@ export function PostForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="space-y-6 rounded-2xl border border-card-border bg-white p-4 sm:p-6">
+          <FormField
+            control={form.control}
+            name="topic"
+            render={({ field }) => (
+              <FormItem>
+                <FormGroupLabel>কী ধরনের পোস্ট?</FormGroupLabel>
+                <FormGroup className="flex flex-wrap gap-2">
+                  {topics.map((t) => {
+                    const on = (field.value ?? "skill") === t.id;
+                    return (
+                      <label
+                        key={t.id}
+                        title={t.hint}
+                        className={cn(
+                          "inline-flex min-h-10 cursor-pointer items-center rounded-full border-2 px-3.5 text-sm font-semibold transition-colors has-focus-visible:ring-3 has-focus-visible:ring-bd-green/30",
+                          on ? "border-bd-green bg-bd-green-light text-bd-green-dark" : "border-card-border text-text-secondary hover:border-slate-300",
+                        )}
+                      >
+                        <input type="radio" className="sr-only" name={field.name} checked={on} onChange={() => field.onChange(t.id)} />
+                        {t.bn}
+                      </label>
+                    );
+                  })}
+                </FormGroup>
+                <FormDescription>{topicInfo.hint}{topicInfo.rated ? " — কমিউনিটি আপনার দাবি যাচাই করবে।" : " — রেটিং ছাড়া সাধারণ পোস্ট।"}</FormDescription>
+              </FormItem>
+            )}
+          />
+
+          {rated && (
           <FormField
             control={form.control}
             name="kind"
@@ -172,6 +210,7 @@ export function PostForm() {
               </FormItem>
             )}
           />
+          )}
 
           <FormField
             control={form.control}
@@ -179,7 +218,9 @@ export function PostForm() {
             render={() => (
               <FormItem>
                 <FormGroupLabel>ছবি বা ভিডিও</FormGroupLabel>
-                <FormDescription>প্রমাণ ছাড়া যাচাই হয় না। সর্বোচ্চ ৪টি — ফোন বা কম্পিউটার থেকে বেছে নিন।</FormDescription>
+                <FormDescription>
+                  {rated ? "প্রমাণ ছাড়া যাচাই হয় না।" : "ঐচ্ছিক।"} সর্বোচ্চ ৪টি — ফোন বা কম্পিউটার থেকে বেছে নিন।
+                </FormDescription>
                 <input ref={photoInput} type="file" accept="image/*" multiple hidden onChange={(e) => { void addFiles("image", e.target.files); e.target.value = ""; }} />
                 <input ref={videoInput} type="file" accept="video/*" hidden onChange={(e) => { void addFiles("video", e.target.files); e.target.value = ""; }} />
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -240,7 +281,12 @@ export function PostForm() {
                   </span>
                 </FormLabel>
                 <FormControl>
-                  <Textarea rows={4} maxLength={1200} placeholder="কাজটা কী, কীভাবে করলেন, কতদিন লাগল — যা দেখে অন্যরা বিচার করতে পারবে।" {...field} />
+                  <Textarea
+                    rows={4}
+                    maxLength={1200}
+                    placeholder={rated ? "কাজটা কী, কীভাবে করলেন, কতদিন লাগল — যা দেখে অন্যরা বিচার করতে পারবে।" : "কী বলতে চান? সমস্যা হলে কোথায়, কবে — নির্দিষ্ট করে লিখুন।"}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -270,6 +316,7 @@ export function PostForm() {
                 </FormItem>
               )}
             />
+            {rated && (
             <FormField
               control={form.control}
               name="skill"
@@ -298,8 +345,11 @@ export function PostForm() {
                 </FormItem>
               )}
             />
+            )}
           </div>
 
+          {rated && (
+          <>
           <FormField
             control={form.control}
             name="selfRating"
@@ -406,6 +456,9 @@ export function PostForm() {
             )}
           </div>
 
+          </>
+          )}
+
           <button type="submit" disabled={submitting} className={mediaButton({ variant: "primary", size: "lg", className: "w-full" })}>
             {submitting ? <Loader2 className="animate-spin" aria-hidden /> : null}
             পোস্ট করুন
@@ -425,6 +478,10 @@ export function PostForm() {
                   <div className="media-slot-pattern aspect-video rounded-xl bg-slate-50" />
                 )}
               </div>
+              {!rated ? (
+                <p className="mt-3 inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-text-secondary">{topicInfo.bn}</p>
+              ) : (
+              <>
               <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-bd-green px-3 py-1 text-xs font-bold text-white">
                 <Tag className="size-3.5" aria-hidden /> {v.skill || "দক্ষতা"}
               </p>
@@ -443,6 +500,8 @@ export function PostForm() {
                   <Taka amount={v.price} />
                 </p>
               ) : null}
+              </>
+              )}
             </div>
           </div>
         </aside>

@@ -46,6 +46,7 @@ export function PostActions({
   seedVerdict?: Comment["verdict"];
 }) {
   const liked = useMediaState((s) => Boolean(s.liked[post.id]));
+  const hideCounts = useMediaState((s) => s.privacy.hideCounts);
   const rated = useMediaState((s) => s.ratings[post.id]);
   const mine = rated ? { stars: rated.stars, verdict: rated.verdict } : seedVerdict ? { stars: seedVerdict.stars, verdict: seedVerdict.kind } : undefined;
   const myComments = useMediaState((s) => {
@@ -59,7 +60,7 @@ export function PostActions({
   async function share() {
     const url = `${window.location.origin}/media/post/${post.id}`;
     try {
-      if (navigator.share) await navigator.share({ url, title: `${authorName} — ${post.skill.name}` });
+      if (navigator.share) await navigator.share({ url, title: `${authorName} — ${post.skill?.name ?? "শিক্ষিতদের মিডিয়া"}` });
       else {
         await navigator.clipboard.writeText(url);
         toast.success("লিংক কপি হয়েছে");
@@ -80,7 +81,7 @@ export function PostActions({
         className={cn(quiet, liked ? "text-national-crimson" : "hover:bg-red-50 hover:text-national-crimson")}
       >
         <Heart className={cn("size-5", liked && "like-pop fill-current")} aria-hidden />
-        <Compact n={post.stats.likes + (liked ? 1 : 0)} />
+        {!hideCounts && <Compact n={post.stats.likes + (liked ? 1 : 0)} />}
         <span className="sr-only">{liked ? "পছন্দ তুলে নিন" : "পছন্দ"}</span>
       </button>
       <Link href={`/media/post/${post.id}#discussion`} className={cn(quiet, "hover:bg-slate-100 hover:text-text-primary")}>
@@ -95,7 +96,7 @@ export function PostActions({
       </button>
 
       <span className="ml-auto">
-        {own ? (
+        {!post.skill ? null : own ? (
           <span className="text-xs text-text-muted">নিজের দক্ষতা নিজে যাচাই করা যায় না</span>
         ) : mine ? (
           <span
@@ -114,7 +115,7 @@ export function PostActions({
           </button>
         )}
       </span>
-      {!own && !mine && <VerifyDialog open={open} onOpenChange={setOpen} postId={post.id} authorName={authorName} skill={post.skill} />}
+      {post.skill && !own && !mine && <VerifyDialog open={open} onOpenChange={setOpen} postId={post.id} authorName={authorName} skill={post.skill} />}
     </div>
   );
 }

@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { BadgeCheck, Handshake, Star, Upload } from "lucide-react";
 import { posts } from "@/data/media/posts";
+import { isRated } from "@/data/media/topics";
 import { people } from "@/data/media/users";
 import { skillStatus } from "@/lib/media/skill";
 import { Num } from "../ui/numerals";
 import { Panel } from "../ui/layout";
 import { PersonLine } from "../ui/person";
 import { Stars } from "../ui/trust";
+import { DailyPlan } from "../wellbeing/daily-plan";
 
 const loop = [
   { Icon: Upload, title: "দক্ষতা পোস্ট করুন", body: "ছবি, ভিডিও বা প্রজেক্ট ডেমো — কাজই প্রমাণ।" },
@@ -16,7 +18,7 @@ const loop = [
 ];
 
 export function FeedRail() {
-  const needsEyes = posts.filter((p) => skillStatus(p.skill.self, p.skill.communityAvg, p.skill.raters) !== "verified").slice(0, 3);
+  const needsEyes = posts.filter(isRated).filter((p) => skillStatus(p.skill.self, p.skill.communityAvg, p.skill.raters) !== "verified").slice(0, 3);
   const top = people
     .flatMap((p) => p.skills.map((s) => ({ p, s })))
     .filter(({ s }) => skillStatus(s.self, s.communityAvg, s.raters) === "verified")
@@ -25,6 +27,7 @@ export function FeedRail() {
 
   return (
     <div className="space-y-4">
+      <DailyPlan compact />
       <Panel title="যেভাবে কাজ করে">
         <ol className="space-y-4">
           {loop.map(({ Icon, title, body }) => (

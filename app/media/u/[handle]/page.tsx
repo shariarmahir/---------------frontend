@@ -6,7 +6,7 @@ import { BriefcaseBusiness, CalendarDays, Clock, MapPin, SquarePen, Star, Users 
 import { FollowButton } from "@/components/media/feed/post-actions";
 import { HireBar } from "@/components/media/hire/hire";
 import { ListingCard } from "@/components/media/market/listing-card";
-import { FollowerCount, MyPortfolioTiles, MyShopCards, PortfolioTile, WalletCard } from "@/components/media/profile/profile-parts";
+import { FollowerCount, MyPortfolioTiles, MyShopCards, OwnLocation, PortfolioTile, WalletCard } from "@/components/media/profile/profile-parts";
 import { mediaButton } from "@/components/media/ui/button-styles";
 import { EmptyState } from "@/components/media/ui/empty-state";
 import { Panel } from "@/components/media/ui/layout";
@@ -17,7 +17,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getCategory } from "@/data/media/categories";
 import { threads } from "@/data/media/chat";
 import { listings } from "@/data/media/market";
+import { SealCheck } from "@phosphor-icons/react/ssr";
+import { PinnedNotes } from "@/components/media/notes/notes";
+import { certificatesFor } from "@/data/media/certificates";
 import { posts } from "@/data/media/posts";
+import { teamKindBn, teams } from "@/data/media/teams";
+import { isRated } from "@/data/media/topics";
 import { CURRENT_USER_HANDLE, getPerson, people } from "@/data/media/users";
 import { walletSeed } from "@/data/media/wallet";
 
@@ -59,10 +64,12 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
   if (!person) notFound();
 
   const self = person.handle === CURRENT_USER_HANDLE;
-  const theirPosts = posts.filter((p) => p.author === person.handle);
+  const theirPosts = posts.filter((p) => p.author === person.handle).filter(isRated);
   const theirListings = listings.filter((l) => l.seller === person.handle);
   const cat = getCategory(person.categories[0]);
   const thread = threads.find((t) => t.with === person.handle);
+  const certs = certificatesFor(person);
+  const theirTeams = teams.filter((t) => t.members.includes(person.handle));
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 pb-20 lg:pb-0">
@@ -94,7 +101,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
           <p className="mt-2 text-[15px] font-semibold text-text-secondary">{person.headline}</p>
           <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-text-primary">{person.bio}</p>
           <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-text-muted">
-            <span className="inline-flex items-center gap-1"><MapPin className="size-4" aria-hidden />{person.area}, {person.district}</span>
+            <span className="inline-flex items-center gap-1"><MapPin className="size-4" aria-hidden />{self ? <OwnLocation area={person.area} district={person.district} /> : `${person.area}, ${person.district}`}</span>
             <span className="inline-flex items-center gap-1"><CalendarDays className="size-4" aria-hidden />যোগ দিয়েছেন {monthsBn[Number(person.joined.slice(5, 7)) - 1]} <Num value={person.joined.slice(0, 4)} /></span>
             {person.idVerified && <IdBadge />}
           </div>
@@ -130,6 +137,44 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
               ))}
             </ul>
           </Panel>
+
+          {(certs.length > 0 || theirTeams.length > 0) && (
+            <div className="grid gap-6 md:grid-cols-2">
+              {certs.length > 0 && (
+                <Panel title="সার্টিফিকেট">
+                  <ul className="space-y-2">
+                    {certs.map((c) => (
+                      <li key={c.id}>
+                        <Link href={`/media/certificate/${person.handle}/${c.n}`} className="flex items-center gap-2.5 rounded-xl p-2 -m-2 hover:bg-slate-50">
+                          <SealCheck size={28} weight="duotone" className="shrink-0 text-bd-green" aria-hidden />
+                          <span className="min-w-0">
+                            <span className="block text-sm font-semibold text-text-primary">{c.skill.skill}</span>
+                            <span className="block text-xs text-text-muted">কমিউনিটি-যাচাইকৃত · {c.id}</span>
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </Panel>
+              )}
+              {theirTeams.length > 0 && (
+                <Panel title="টিম">
+                  <ul className="space-y-2">
+                    {theirTeams.map((t) => (
+                      <li key={t.id}>
+                        <Link href={`/media/teams?k=${t.kind}`} className="block rounded-xl p-2 -m-2 hover:bg-slate-50">
+                          <span className="block text-sm font-semibold text-text-primary">{t.name}</span>
+                          <span className="block text-xs text-text-muted">{teamKindBn[t.kind]}{t.lead === person.handle ? " · নেতৃত্বে" : ""}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </Panel>
+              )}
+            </div>
+          )}
+
+          {self && <PinnedNotes />}
 
           <Tabs defaultValue="portfolio">
             <TabsList className="w-full sm:w-fit">
