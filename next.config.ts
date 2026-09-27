@@ -21,6 +21,9 @@ const nextConfig: NextConfig = {
       { source: "/jibaner-joygan", destination: "/media", permanent: false },
       { source: "/profile", destination: "/media/me", permanent: false },
       { source: "/u/:slug", destination: "/media/u/:slug", permanent: false },
+      // The issue dossier and the news index merged into the country page.
+      { source: "/amar-bangladesh", destination: "/bangladesh", permanent: false },
+      { source: "/ajker-bangladesh", destination: "/bangladesh", permanent: false },
     ];
   },
 };

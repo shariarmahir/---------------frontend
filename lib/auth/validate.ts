@@ -3,15 +3,9 @@
  * and the tests all apply the same checks.
  */
 
-const BN_DIGITS = "০১২৩৪৫৬৭৮৯";
+import { toAsciiDigits, toBanglaDigits } from "../bangla.ts";
 
-export function toAsciiDigits(value: string): string {
-  return value.replace(/[০-৯]/g, (d) => String(BN_DIGITS.indexOf(d)));
-}
-
-export function toBanglaDigits(value: string | number): string {
-  return String(value).replace(/\d/g, (d) => BN_DIGITS[Number(d)]);
-}
+export { toAsciiDigits, toBanglaDigits };
 
 /**
  * A Bangladeshi mobile number as "01XXXXXXXXX", or null. Accepts +880 /

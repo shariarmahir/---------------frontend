@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Puzzle } from "lucide-react";
+import { Puzzle, ShieldCheck } from "lucide-react";
 import { AccountMenu, AccountSheetLinks } from "@/components/auth/account-menu";
 import { NewsTicker } from "@/components/layout/news-ticker";
 import { RecordDialog } from "@/components/record/record-dialog";
@@ -48,6 +48,17 @@ function NavLabel({ link, compact }: { link: NavLink; compact?: boolean }) {
       {before}
       <span className="text-national-crimson">{link.accentWord}</span>
       {after.join(link.accentWord)}
+    </span>
+  );
+}
+
+/** "বাংলাদেশ সমস্যা ও সমাধান" in the label face — problem in the flag's red. */
+function DeshLabel({ className }: { className?: string }) {
+  return (
+    <span className={cn("flex items-center gap-[0.3em]", className)}>
+      <LabelText text={LABEL_TEXT.bangladesh} className="text-bd-green" />
+      <LabelText text={LABEL_TEXT.issue} className="text-national-crimson" />
+      <LabelText text={LABEL_TEXT.solution} className="text-bd-green" />
     </span>
   );
 }
@@ -196,19 +207,19 @@ export function SiteHeader() {
 
               <div className="hidden h-8 w-px bg-linear-to-b from-transparent via-slate-200 to-transparent sm:block" />
 
-              {/* বাংলাদেশ — the country story page (/bangladesh). */}
+              {/* বাংলাদেশ সমস্যা ও সমাধান — the country page (/bangladesh):
+                  story, crisis, the 32 problems and their solutions. */}
               {/* No prefetch: prefetching /bangladesh preloads its carousel
                   stylesheet on every page, which then sits unused and
                   raises a console "preloaded but not used" warning. */}
               <Link
                 href="/bangladesh"
                 prefetch={false}
-                title="বাংলাদেশ — Bangladesh story, nature, history & culture"
-                className="frosted-pill-bangladesh group hidden cursor-pointer items-center rounded-full px-3.5 py-1.5 transition-all duration-200 select-none md:flex"
+                title="বাংলাদেশ সমস্যা ও সমাধান — ইতিহাস, সংকট, ৩২টি সমস্যা ও সমাধান"
+                aria-current={pathname === "/bangladesh" ? "page" : undefined}
+                className="frosted-pill-bangladesh group hidden cursor-pointer items-center rounded-full px-3.5 py-1.5 whitespace-nowrap transition-all duration-200 select-none md:flex"
               >
-                <span className="flex items-center text-[17px] leading-none">
-                  <LabelText text={LABEL_TEXT.bangladesh} className="text-bd-green" />
-                </span>
+                <DeshLabel className="text-[16px] leading-none" />
               </Link>
             </div>
 
@@ -278,9 +289,7 @@ export function SiteHeader() {
                         height={512}
                         className="size-6 shrink-0 object-contain"
                       />
-                      <span className="text-[18px] leading-none">
-                        <LabelText text={LABEL_TEXT.bangladesh} className="text-bd-green" />
-                      </span>
+                      <DeshLabel className="text-[17px] leading-none" />
                     </Link>
                   </SheetClose>
 
@@ -330,8 +339,8 @@ export function SiteHeader() {
 
         {/* ── Level 3 — section navigation + civic actions ────────────── */}
         <nav className="no-scrollbar hidden overflow-x-auto border-t border-slate-200/80 bg-white/85 px-4 py-1 backdrop-blur-md sm:px-6 lg:block lg:px-8">
-          <div className="flex min-w-max items-center justify-between gap-6">
-            <ul className="flex items-center space-x-1 lg:space-x-1.5">
+          <div className="flex min-w-max items-center justify-between gap-3 xl:gap-6">
+            <ul className="flex items-center space-x-0.5 xl:space-x-1.5">
               {navLinks.map((link) => {
                 const isActive = activeHref === link.href;
                 return (
@@ -340,9 +349,9 @@ export function SiteHeader() {
                       href={link.href}
                       onClick={() => setActiveHref(link.href)}
                       className={cn(
-                        "relative flex items-center rounded-lg px-3 py-1.5 text-sm transition-all duration-150",
+                        "relative flex items-center rounded-lg px-2 py-1.5 text-sm transition-all duration-150 xl:px-3",
                         isActive
-                          ? "bg-slate-100/80 px-3.5 font-bold text-slate-900"
+                          ? "bg-slate-100/80 px-2.5 font-bold text-slate-900 xl:px-3.5"
                           : "font-medium text-slate-600 hover:bg-slate-100/60 hover:text-slate-900",
                       )}
                     >
@@ -366,11 +375,11 @@ export function SiteHeader() {
             </ul>
 
             {/* Right — record, protest, national issue tracker. */}
-            <div className="flex items-center space-x-2.5 sm:space-x-3">
+            <div className="flex items-center space-x-2 xl:space-x-3">
               <button
                 type="button"
                 onClick={() => setRecordOpen(true)}
-                className="group inline-flex items-center space-x-2 rounded-full border border-slate-300/90 bg-white px-3.5 py-1.5 text-xs font-semibold tracking-tight text-slate-700 shadow-xs transition-all duration-150 hover:border-red-400 hover:bg-red-50/40"
+                className="group inline-flex items-center space-x-2 rounded-full border border-slate-300/90 bg-white px-2.5 py-1.5 text-xs font-semibold tracking-tight text-slate-700 xl:px-3.5 shadow-xs transition-all duration-150 hover:border-red-400 hover:bg-red-50/40"
               >
                 <span className="relative flex size-2.5">
                   <span className="absolute inline-flex size-full animate-ping rounded-full bg-red-400 opacity-75" />
@@ -383,7 +392,7 @@ export function SiteHeader() {
 
               <Link
                 href="/protibad"
-                className="inline-flex transform cursor-pointer items-center space-x-1.5 rounded-lg border-t border-white/20 bg-linear-to-r from-red-600 to-rose-700 px-3.5 py-1.5 font-bengali text-xs font-bold text-white shadow-red-glow transition-all duration-150 hover:-translate-y-0.5 hover:from-red-700 hover:to-rose-800 active:translate-y-0"
+                className="inline-flex transform cursor-pointer items-center space-x-1.5 rounded-lg border-t border-white/20 bg-linear-to-r from-red-600 to-rose-700 px-2.5 py-1.5 font-bengali text-xs font-bold text-white shadow-red-glow xl:px-3.5 transition-all duration-150 hover:-translate-y-0.5 hover:from-red-700 hover:to-rose-800 active:translate-y-0"
               >
                 <svg
                   aria-hidden
@@ -402,19 +411,15 @@ export function SiteHeader() {
                 <LabelText text={LABEL_TEXT.protibad} className="text-[16px] leading-none" />
               </Link>
 
+              {/* Civic rights and responsibilities (/nagorik). */}
               <Link
-                href="/amar-bangladesh"
-                title="National Critical Matrix Issue Tracker"
-                className="inline-flex cursor-pointer items-center space-x-2 rounded-full border border-rose-200/90 bg-linear-to-r from-rose-50/90 to-red-50/60 px-3.5 py-1.5 font-bengali text-xs font-semibold text-slate-800 shadow-xs transition-all duration-200 hover:border-rose-300 hover:bg-rose-100/60"
+                href="/nagorik"
+                title="নাগরিক অধিকার ও দায়িত্ব — দিনের হিসাব, অধিকার, প্রত্যেকের দায়িত্ব"
+                aria-current={pathname === "/nagorik" ? "page" : undefined}
+                className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-emerald-200/90 bg-linear-to-r from-emerald-50/90 to-white px-2.5 py-1.5 text-bd-green xl:px-3.5 shadow-xs transition-all duration-200 hover:border-emerald-300 hover:bg-emerald-100/60"
               >
-                <span className="relative flex size-2">
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-red-400 opacity-75" />
-                  <span className="relative inline-flex size-2 rounded-full bg-red-600" />
-                </span>
-                <LabelText text={LABEL_TEXT.issueLead} className="text-[15px] leading-none text-slate-800" />
-                <span className="rounded border border-red-200/60 bg-red-100/80 px-1.5 py-0.5 text-[15px] leading-none text-red-700">
-                  <LabelText text={LABEL_TEXT.issue} />
-                </span>
+                <ShieldCheck className="size-3.5" aria-hidden />
+                <LabelText text={LABEL_TEXT.nagorik} className="text-[15px] leading-none" />
               </Link>
 
               {/* The 32 problems above, as a game: solve them. */}
@@ -423,7 +428,7 @@ export function SiteHeader() {
                 title="চলো বাংলাদেশ গড়ি — ৩২টি বাস্তব সমস্যার ধাঁধা"
                 aria-current={pathname.startsWith("/cholo-bangladesh-gori") ? "page" : undefined}
                 className={cn(
-                  "group inline-flex items-center gap-1.5 rounded-full bg-linear-to-r from-bd-green to-bdgreen-800 px-3.5 py-1.5 text-white shadow-[0_4px_12px_-4px_rgb(0_103_71/0.6)] transition-all duration-200 hover:-translate-y-0.5 hover:from-bd-green-dark hover:to-bd-green",
+                  "group inline-flex items-center gap-1.5 rounded-full bg-linear-to-r from-bd-green to-bdgreen-800 px-2.5 py-1.5 text-white xl:px-3.5 shadow-[0_4px_12px_-4px_rgb(0_103_71/0.6)] transition-all duration-200 hover:-translate-y-0.5 hover:from-bd-green-dark hover:to-bd-green",
                   pathname.startsWith("/cholo-bangladesh-gori") && "ring-2 ring-signal-orange ring-offset-1",
                 )}
               >

@@ -75,7 +75,7 @@ export function NavIndicators({ className }: { className?: string }) {
         // Full path: the header appears on every page, and the national
         // index now lives on the issue dossier, so a bare fragment would
         // do nothing everywhere except that one page.
-        href="/amar-bangladesh#national-index"
+        href="/bangladesh#national-index"
         aria-live="polite"
         aria-label={`${active.label}: ${active.value}${
           active.unit ? ` ${active.unit}` : ""

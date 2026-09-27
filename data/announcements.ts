@@ -84,13 +84,6 @@ export const announcements: Announcement[] = [
     isNew: true,
   },
   {
-    id: "news-today",
-    kind: "news",
-    text: "আজকের শীর্ষ খবর: দেশের স্বাস্থ্য, প্রযুক্তি ও জনসেবার সর্বশেষ আপডেট",
-    cta: "পড়ুন",
-    href: "/ajker-bangladesh",
-  },
-  {
     id: "program-intern",
     sectors: ["semiconductor", "iot", "ai", "robotics"],
     kind: "program",

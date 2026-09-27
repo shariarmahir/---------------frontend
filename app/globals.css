@@ -50,6 +50,11 @@
   --font-grotesk: var(--font-sora), var(--font-bengali), sans-serif;
   --color-signal-orange: #e4b027;
   --color-national-crimson: #da291c;
+  /* Two-series chart pair, validated for light surfaces (dataviz validator:
+     lightness, chroma, CVD and contrast all pass). The brand gold fails
+     3:1 on white, so charts use this deeper gold. */
+  --color-chart-paid: #0f7a55;
+  --color-chart-care: #b7791f;
   --color-bd-green: #006747;
   --color-bd-green-dark: #004731;
   --color-bd-green-light: #e8f7f0;
@@ -418,24 +423,20 @@
   }
 }
 
-/* Newsprint backdrop for the "আজকের বাংলাদেশ" button: ruled lines drifting
-   upward, plus a highlight sweeping across like a headline ticker. */
-@keyframes newsprint {
-  from { transform: translateY(0); }
-  to   { transform: translateY(33.333%); }
+/* "বাংলাদেশ সমস্যা ও সমাধান" — the pixel map (components/desh/pixel-map.tsx).
+   Healthy land glows green into gold; the 32 problems flicker in the flag's
+   red. Reduced motion keeps them lit, still. */
+.desh-px {
+  fill: color-mix(in oklab, var(--color-bdgreen-500) 70%, var(--color-signal-orange));
 }
-
-@utility animate-newsprint {
-  animation: newsprint 6s linear infinite;
+.desh-px-bad {
+  fill: var(--color-national-crimson);
+  animation: desh-flicker 3s ease-in-out infinite;
 }
-
-@keyframes news-sweep {
-  0%        { transform: translateX(0); }
-  60%, 100% { transform: translateX(400%); }
-}
-
-@utility animate-news-sweep {
-  animation: news-sweep 4.5s ease-in-out infinite;
+@keyframes desh-flicker {
+  0%, 100% { opacity: 1; }
+  45% { opacity: 0.35; }
+  55% { opacity: 0.9; }
 }
 
 /* Live-signal dots trailing the `ল্যাব` line of the wordmark. */
@@ -907,6 +908,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .desh-px-bad {
+    animation: none;
+  }
+
   /* Team orbit: members rest in place, signals and waves stop. */
   .orbit-arm,
   .orbit-card,

@@ -97,6 +97,14 @@ Brief specifies 16:6 (~2.67:1), an ultra-wide letterbox. At that ratio on a phon
 /rnd                 R&D departments + featured early-stage projects (blind-assist, waste-to-soil)
 /impact               "One Village, One Medical Health Care Center" program, Kazaikat tie-in, stats
 /team                Leadership + department rosters
+/bangladesh          "বাংলাদেশ সমস্যা ও সমাধান" (merged 2026-09-27 from the country story page and the
+                      32-issue dossier; /amar-bangladesh and /ajker-bangladesh redirect here). Four acts:
+                      story → crisis & citizen shield → the 32 problems pixel by pixel (ideas from the game's
+                      puzzles) → realistic solutions → full-research placeholder. Copy: data/desh.ts; rural photos
+                      (Wikimedia Commons, credited): data/rural-life.ts; components/desh.
+/nagorik             "নাগরিক অধিকার ও দায়িত্ব" — BBS Time-Use Survey 2021 charts (real), a division table
+                      (SAMPLE data, labelled as such), constitutional rights, helplines, responsibilities by
+                      group, nightly self-check. Data: data/nagorik.ts; components/nagorik.
 /login, /signup      Kandari Profile auth — phone OTP first, email password or one-time link as fallback;
                       3-step sign-up (details → verify phone → sectors/products/consent). Mock gateway
                       (no backend yet): lib/auth/core.ts (pure, tested) + lib/auth/client.ts (browser

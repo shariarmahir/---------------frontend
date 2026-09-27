@@ -1,5 +1,6 @@
 import { P, facts, type Credit, type Photo } from "@/data/bangladesh";
 import { commonsPhotos } from "@/data/bangladesh-photos";
+import { ruralCredits } from "@/data/rural-life";
 import { StoryPhoto } from "./story-photo";
 
 /**
@@ -37,7 +38,7 @@ export function BdPride() {
 
 /** Full attribution list: every Commons photo, plus the data sources. */
 export function BdCredits() {
-  const photos = Object.values(commonsPhotos).filter(
+  const photos = [...Object.values(commonsPhotos), ...ruralCredits].filter(
     (p): p is Photo & { credit: Credit } => Boolean(p?.credit),
   );
 

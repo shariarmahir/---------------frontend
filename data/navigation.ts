@@ -29,10 +29,10 @@ export const navLinks: NavLink[] = [
     shortLabel: "Mission",
   },
   {
-    // A full path, not a bare "#national-index" anchor: the section now
-    // lives on the issue dossier, so the fragment alone would resolve to
-    // nothing on the home page and the link would silently do nothing.
-    href: "/amar-bangladesh#national-index",
+    // A full path, not a bare "#national-index" anchor: the section lives
+    // on the country page, so the fragment alone would resolve to nothing
+    // on the home page and the link would silently do nothing.
+    href: "/bangladesh#national-index",
     label: "National Index",
     shortLabel: "Index",
   },
@@ -63,22 +63,28 @@ export const navLinks: NavLink[] = [
 ];
 
 /**
- * Navigation for "বাংলাদেশ" — the country story page — and the news index.
- *
- * Every href is a full "/bangladesh#…" path rather than a bare anchor, so
- * the same set works from the news index as well: from there it navigates
- * to the story page, and on the story page it is an in-page jump. Each
- * fragment matches a section id in components/bangladesh.
+ * Navigation for "বাংলাদেশ সমস্যা ও সমাধান" (/bangladesh) — its four acts
+ * and their key sections, kept to six so the bar fits at 1024px. Full
+ * "/bangladesh#…" paths, so the set also works from /nagorik; each fragment
+ * matches a section id on the page.
  */
 export const bangladeshNavLinks: NavLink[] = [
   { href: "/bangladesh#history", label: "ইতিহাস", shortLabel: "ইতিহাস" },
-  { href: "/bangladesh#map", label: "মানচিত্র", shortLabel: "মানচিত্র" },
-  { href: "/bangladesh#nature", label: "প্রকৃতি", shortLabel: "প্রকৃতি" },
-  { href: "/bangladesh#seasons", label: "ষড়ঋতু", shortLabel: "ঋতু" },
-  { href: "/bangladesh#culture", label: "সংস্কৃতি", shortLabel: "সংস্কৃতি" },
-  { href: "/bangladesh#icons", label: "গুণীজন", shortLabel: "গুণীজন" },
-  { href: "/bangladesh#growth", label: "অগ্রযাত্রা", shortLabel: "অগ্রযাত্রা" },
-  { href: "/bangladesh#memories", label: "স্মৃতি", shortLabel: "স্মৃতি" },
+  { href: "/bangladesh#crisis", label: "সংকট", shortLabel: "সংকট" },
+  { href: "/bangladesh#shield", label: "নাগরিক ঢাল", shortLabel: "ঢাল" },
+  { href: "/bangladesh#register", label: "৩২টি সমস্যা", shortLabel: "সমস্যা" },
+  { href: "/bangladesh#solutions", label: "সমাধান", shortLabel: "সমাধান" },
+  { href: "/nagorik", label: "নাগরিক দায়িত্ব", shortLabel: "দায়িত্ব" },
+];
+
+/** Navigation for "নাগরিক অধিকার ও দায়িত্ব" (/nagorik). */
+export const nagorikNavLinks: NavLink[] = [
+  { href: "/nagorik#day", label: "দিনের হিসাব", shortLabel: "দিন" },
+  { href: "/nagorik#divisions", label: "বিভাগ", shortLabel: "বিভাগ" },
+  { href: "/nagorik#rights", label: "অধিকার", shortLabel: "অধিকার" },
+  { href: "/nagorik#responsibility", label: "দায়িত্ব", shortLabel: "দায়িত্ব" },
+  { href: "/nagorik#self-check", label: "আজ রাতের আয়না", shortLabel: "আয়না" },
+  { href: "/bangladesh", label: "বাংলাদেশ সমস্যা ও সমাধান", shortLabel: "বাংলাদেশ" },
 ];
 
 /**
@@ -121,22 +127,22 @@ export const goriNavLinks: NavLink[] = [
   { href: "/cholo-bangladesh-gori/lab", label: "বিজ্ঞানাগার", shortLabel: "ল্যাব" },
   { href: "/cholo-bangladesh-gori/evidence", label: "প্রমাণ", shortLabel: "প্রমাণ" },
   { href: "/cholo-bangladesh-gori/progress", label: "অগ্রগতি", shortLabel: "অগ্রগতি" },
-  { href: "/amar-bangladesh#register", label: "৩২টি সমস্যা", shortLabel: "সমস্যা" },
+  { href: "/bangladesh#register", label: "৩২টি সমস্যা", shortLabel: "সমস্যা" },
 ];
 
 /**
  * The nav set for a given pathname. Home's set is the default.
  *
- * The story page and the news index share one nav, so moving between them
- * keeps the same categories in place rather than swapping the bar out
- * underneath the reader.
  */
 export function navLinksFor(pathname: string): NavLink[] {
   if (pathname === "/products" || pathname.startsWith("/products/")) {
     return productNavLinks;
   }
-  if (pathname === "/bangladesh" || pathname.startsWith("/ajker-bangladesh")) {
+  if (pathname === "/bangladesh") {
     return bangladeshNavLinks;
+  }
+  if (pathname === "/nagorik") {
+    return nagorikNavLinks;
   }
   if (pathname === "/team" || pathname.startsWith("/team/")) {
     return teamNavLinks;

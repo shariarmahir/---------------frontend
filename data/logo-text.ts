@@ -35,16 +35,16 @@ export const LOGO_TEXT = {
 } satisfies Record<string, LogoString>;
 
 export const LABEL_TEXT = {
-  // "আমার বাংলাদেশ" pill — split for its red/green words.
-  amar: { bijoy: "Avgvi", bn: "আমার" },
+  // "বাংলাদেশ সমস্যা ও সমাধান" pill — split so "সমস্যা" can be red.
   bangladesh: { bijoy: "evsjv‡`k", bn: "বাংলাদেশ" },
+  issue: { bijoy: "mgm¨v", bn: "সমস্যা" },
+  solution: { bijoy: "I mgvavb", bn: "ও সমাধান" },
 
   media: { bijoy: "wkw¶Z‡`i wgwWqv", bn: "শিক্ষিতদের মিডিয়া" },
   protibad: { bijoy: "cÖwZev`", bn: "প্রতিবাদ" },
 
-  // National issue tracker.
-  issueLead: { bijoy: "evsjv‡`‡ki cÖavb ev¯Íe", bn: "বাংলাদেশের প্রধান বাস্তব" },
-  issue: { bijoy: "mgm¨v", bn: "সমস্যা" },
+  // Civic rights and responsibilities (/nagorik).
+  nagorik: { bijoy: "bvMwiK `vwqZ¡", bn: "নাগরিক দায়িত্ব" },
 
   // The 32-problem puzzle game (/cholo-bangladesh-gori).
   gori: { bijoy: "P‡jv evsjv‡`k Mwo", bn: "চলো বাংলাদেশ গড়ি" },
