@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { Puzzle } from "lucide-react";
 import { NewsTicker } from "@/components/layout/news-ticker";
 import { RecordDialog } from "@/components/record/record-dialog";
 import { Icon } from "@/components/ui/icon";
@@ -15,8 +16,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { KandariWordmark, LabelText, LogoText } from "@/components/brand/kandari-wordmark";
-import { LABEL_TEXT, LOGO_TEXT } from "@/data/logo-text";
+import { LabelText } from "@/components/brand/kandari-wordmark";
+import { LABEL_TEXT } from "@/data/logo-text";
 import { NAZRUL_MOTTO, navLinksFor, type NavLink } from "@/data/navigation";
 import { cn } from "@/lib/utils";
 
@@ -27,7 +28,16 @@ import { cn } from "@/lib/utils";
  * accent is presentation, so the two stay separate. The accent is purely
  * visual, so the text still reads as one string to assistive tech.
  */
-function NavLabel({ link }: { link: NavLink }) {
+function NavLabel({ link, compact }: { link: NavLink; compact?: boolean }) {
+  // In the bar, laptop widths get the condensed label so the civic actions stay on screen.
+  if (compact && link.shortLabel !== link.label && !link.accentWord) {
+    return (
+      <span>
+        <span className="max-[1439px]:hidden">{link.label}</span>
+        <span className="min-[1440px]:hidden">{link.shortLabel}</span>
+      </span>
+    );
+  }
   if (!link.accentWord || !link.label.includes(link.accentWord)) {
     return <span>{link.label}</span>;
   }
@@ -58,55 +68,36 @@ function matchNavHref(pathname: string, links: NavLink[]): string | null {
 }
 
 /**
- * Brand lockup — emblem, wordmark and tagline. Its own component so the
- * header and mobile menu no longer maintain two copies of the same
- * proportions and colours.
- *
- * Ratio: the emblem is `h-11`/`h-14` (44px/56px). The wordmark's cap
- * height is set so it and the tagline together fill that same band —
- * `26px` type + a 13px tagline line closely matches the emblem at both
- * breakpoints, so the lockup reads as one block rather than a wordmark
- * floating loose beside the mark.
+ * Brand logo — the Kandari Lab logo image alone (public/logo/kandari-logo.png,
+ * a web-sized copy of the 19531×11812 master logo.png). The earlier emblem +
+ * typeset wordmark + tagline lockup is retired: the new artwork carries the
+ * name itself. Own component so the header and mobile menu share it.
+ */
+export function BrandLogo({ className, priority = false }: { className?: string; priority?: boolean }) {
+  return (
+    <Image
+      src="/logo/kandari-logo.png"
+      alt="কাণ্ডারী-ল্যাব (Kandari Lab)"
+      width={1600}
+      height={967}
+      sizes="(min-width: 1024px) 133px, (min-width: 640px) 106px, 93px"
+      priority={priority}
+      // The artwork's own 1600:967 ratio, reserved before load so nothing shifts.
+      className={cn("aspect-1600/967 w-auto shrink-0 object-contain", className)}
+    />
+  );
+}
+
+/**
+ * Header logo. The mark is dense (fist + two-line name), so it runs larger
+ * than a plain wordmark would: 56px on phones, 64px on tablets, 80px on
+ * desktop, where "Kandari" renders ~22px tall — legible at a glance. The
+ * level-2 row is sized by it; --spacing-header in globals.css follows.
  */
 function BrandLockup() {
   return (
-    <Link
-      href="/"
-      title="Kandari-Lab Homepage"
-      className="group flex min-w-0 items-center gap-3 select-none focus:outline-none"
-    >
-      {/* Sovereign emblem — a detailed illustrated mark (1432×2000
-          source), not a simple wordmark icon. At 36–44px it read as an
-          indistinct smudge, so it runs a touch taller than the wordmark
-          block to keep its linework legible. */}
-      <Image
-        src="/logo/logo.png"
-        alt=""
-        aria-hidden
-        width={1432}
-        height={2000}
-        sizes="(min-width: 640px) 56px, 44px"
-        priority
-        className="h-11 w-auto shrink-0 object-contain transition-transform duration-200 group-hover:scale-105 sm:h-14"
-      />
-
-      <div className="flex min-w-0 shrink-0 flex-col justify-center gap-0.5">
-        {/* Logo face (3D italic) — see KandariWordmark. The face draws
-            its 3D as thin white cuts; a hard dark edge behind it gives
-            the letters extruded depth. Signal orange (#FF9100, the
-            brand's CTA colour per CLAUDE.md §4.1) at rest; bottle green
-            (#006747, Pantone 342 C) on hover/focus, each with a matching
-            darker edge. */}
-        <KandariWordmark className="text-[26px] leading-[1.1] text-signal-orange [text-shadow:1px_1px_0_#9a3412,2px_2px_0_rgb(154_52_18/0.35)] transition-[color,text-shadow] duration-300 group-hover:text-bd-green group-hover:[text-shadow:1px_1px_0_#003d29,2px_2px_0_rgb(0_61_41/0.35)] group-focus-visible:text-bd-green sm:text-[33px]" />
-
-        {/* Tagline — Kazi Nazrul Islam, "চল্ চল্ চল্": one line, one
-            colour (bottle green, the brand's "trust" colour), spanning
-            the wordmark's width. Hidden under 400px rather than wrapped
-            or shrunk past legibility. */}
-        <div className="hidden w-full text-[13px] leading-none text-bd-green min-[400px]:block sm:text-[14px]">
-          <LogoText text={LOGO_TEXT.tagline} />
-        </div>
-      </div>
+    <Link href="/" title="Kandari-Lab Homepage" className="group flex min-w-0 items-center select-none focus:outline-none focus-visible:rounded-lg focus-visible:ring-2 focus-visible:ring-signal-orange">
+      <BrandLogo priority className="h-14 transition-transform duration-200 group-hover:scale-[1.03] sm:h-16 lg:h-20" />
     </Link>
   );
 }
@@ -194,7 +185,7 @@ export function SiteHeader() {
         </div>
 
         {/* ── Level 2 — brand, live metric, conversion ────────────────── */}
-        <div className="bg-white/70 px-4 py-2 backdrop-blur-md sm:px-6 lg:px-8">
+        <div className="bg-white/70 px-4 py-1.5 backdrop-blur-md sm:px-6 lg:px-8">
           <div className="flex items-center justify-between gap-3 sm:gap-4">
             {/* Left cluster — emblem+wordmark, today's pill. `min-w-0` so it
                 yields to the action cluster instead of pushing it off the
@@ -273,8 +264,8 @@ export function SiteHeader() {
                   side="right"
                   className="gap-0 overflow-y-auto p-space-lg"
                 >
-                  <SheetTitle className="text-[28px] font-normal text-signal-orange [text-shadow:1px_1px_0_#9a3412]">
-                    <KandariWordmark />
+                  <SheetTitle>
+                    <BrandLogo className="h-14" />
                   </SheetTitle>
 
                   <nav className="mt-space-md flex flex-col gap-space-xs">
@@ -336,6 +327,16 @@ export function SiteHeader() {
 
                   <SheetClose asChild>
                     <Link
+                      href="/cholo-bangladesh-gori"
+                      className="mt-space-sm flex items-center justify-center gap-2 rounded-lg bg-linear-to-r from-bd-green to-bdgreen-800 px-3.5 py-2 text-white"
+                    >
+                      <Puzzle className="size-4 text-signal-orange" aria-hidden />
+                      <LabelText text={LABEL_TEXT.gori} className="text-[18px] leading-none" />
+                    </Link>
+                  </SheetClose>
+
+                  <SheetClose asChild>
+                    <Link
                       href="/login"
                       className="mt-space-sm flex items-center justify-center gap-space-xs rounded-lg bg-bdgreen-900 px-space-md py-space-sm text-sm font-bold text-white transition-colors hover:bg-bdgreen-800 sm:hidden"
                     >
@@ -371,7 +372,7 @@ export function SiteHeader() {
                           : "font-medium text-slate-600 hover:bg-slate-100/60 hover:text-slate-900",
                       )}
                     >
-                      <NavLabel link={link} />
+                      <NavLabel link={link} compact />
 
                       {/* The membership link carries an ID tag; keep it on
                           that one link only. */}
@@ -401,7 +402,7 @@ export function SiteHeader() {
                   <span className="absolute inline-flex size-full animate-ping rounded-full bg-red-400 opacity-75" />
                   <span className="relative inline-flex size-2.5 rounded-full bg-red-600 ring-2 ring-red-100" />
                 </span>
-                <span className="font-sans group-hover:text-red-700">
+                <span className="font-sans group-hover:text-red-700 max-[1439px]:sr-only">
                   Record
                 </span>
               </button>
@@ -440,6 +441,20 @@ export function SiteHeader() {
                 <span className="rounded border border-red-200/60 bg-red-100/80 px-1.5 py-0.5 text-[15px] leading-none text-red-700">
                   <LabelText text={LABEL_TEXT.issue} />
                 </span>
+              </Link>
+
+              {/* The 32 problems above, as a game: solve them. */}
+              <Link
+                href="/cholo-bangladesh-gori"
+                title="চলো বাংলাদেশ গড়ি — ৩২টি বাস্তব সমস্যার ধাঁধা"
+                aria-current={pathname.startsWith("/cholo-bangladesh-gori") ? "page" : undefined}
+                className={cn(
+                  "group inline-flex items-center gap-1.5 rounded-full bg-linear-to-r from-bd-green to-bdgreen-800 px-3.5 py-1.5 text-white shadow-[0_4px_12px_-4px_rgb(0_103_71/0.6)] transition-all duration-200 hover:-translate-y-0.5 hover:from-bd-green-dark hover:to-bd-green",
+                  pathname.startsWith("/cholo-bangladesh-gori") && "ring-2 ring-signal-orange ring-offset-1",
+                )}
+              >
+                <Puzzle className="size-3.5 text-signal-orange transition-transform duration-300 group-hover:rotate-12" aria-hidden />
+                <LabelText text={LABEL_TEXT.gori} className="text-[15px] leading-none" />
               </Link>
             </div>
           </div>

@@ -41,7 +41,7 @@ export function BdCulture() {
                   className="absolute inset-0 opacity-40"
                   style={{
                     backgroundImage:
-                      "repeating-linear-gradient(45deg, rgb(255 145 0 / 0.5) 0 6px, transparent 6px 18px), repeating-linear-gradient(-45deg, rgb(255 255 255 / 0.25) 0 6px, transparent 6px 18px)",
+                      "repeating-linear-gradient(45deg, rgb(228 176 39 / 0.5) 0 6px, transparent 6px 18px), repeating-linear-gradient(-45deg, rgb(255 255 255 / 0.25) 0 6px, transparent 6px 18px)",
                   }}
                 />
               )}

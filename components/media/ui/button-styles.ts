@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
  * Button looks for শিক্ষিতদের মিডিয়া, for <button> and <Link> alike.
  *
  * Buttons never move: hover and press change colour, border and shadow
- * only. Primary is orange with near-black text (white on #FF9100 is ~2:1).
+ * only. Primary is orange with near-black text (white on #E4B027 is ~2:1).
  */
 const buttonVariants = cva(
   "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border font-semibold whitespace-nowrap transition-[background-color,border-color,color,box-shadow] duration-150 outline-none select-none focus-visible:ring-3 focus-visible:ring-bd-green/35 disabled:pointer-events-none disabled:opacity-50 [&_svg]:shrink-0",

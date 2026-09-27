@@ -277,22 +277,14 @@ function AuthFormContainer({
         className="mx-auto flex w-fit items-center gap-space-sm rounded-xl px-space-sm py-space-xs transition-colors hover:bg-mint-subtle"
       >
         <Image
-          src="/logo/logo.png"
-          alt="কাণ্ডারী-ল্যাব"
-          width={1432}
-          height={2000}
+          src="/logo/kandari-logo.png"
+          alt="কাণ্ডারী-ল্যাব (Kandari Lab)"
+          width={1600}
+          height={967}
           priority
-          sizes="32px"
-          className="h-11 w-auto shrink-0 object-contain"
+          sizes="120px"
+          className="h-16 w-auto shrink-0 object-contain"
         />
-        <span className="flex flex-col text-left">
-          <span className="font-bengali text-headline-sm leading-tight font-bold text-text-primary">
-            কাণ্ডারী ল্যাব
-          </span>
-          <span className="font-mono text-[10px] tracking-[0.2em] text-bd-green uppercase">
-            Sovereign Tech
-          </span>
-        </span>
       </Link>
 
       {isSignIn ? <SignInForm /> : <SignUpForm />}

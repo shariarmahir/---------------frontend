@@ -48,7 +48,7 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
           <div
             aria-hidden
             className="absolute inset-0 -z-10"
-            style={{ background: `radial-gradient(circle at 20% 50%, ${dept.color}66, transparent 55%), radial-gradient(circle at 90% 10%, rgb(255 145 0 / 0.18), transparent 45%)` }}
+            style={{ background: `radial-gradient(circle at 20% 50%, ${dept.color}66, transparent 55%), radial-gradient(circle at 90% 10%, rgb(228 176 39 / 0.18), transparent 45%)` }}
           />
           <NeuralBrain className="absolute top-1/2 right-[-10%] -z-10 h-[130%] w-auto max-w-none -translate-y-1/2 opacity-50" />
 
@@ -56,7 +56,7 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
             <div className="relative shrink-0">
               <span
                 className="block rounded-full p-1"
-                style={{ background: `linear-gradient(135deg, ${dept.color}, #ff9100)`, boxShadow: `0 0 50px ${dept.color}88` }}
+                style={{ background: `linear-gradient(135deg, ${dept.color}, #e4b027)`, boxShadow: `0 0 50px ${dept.color}88` }}
               >
                 <MemberAvatar member={m} className="size-28 sm:size-36 lg:size-40" textClassName="text-4xl lg:text-5xl" />
               </span>

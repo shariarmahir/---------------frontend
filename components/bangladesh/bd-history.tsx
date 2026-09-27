@@ -72,7 +72,7 @@ function Chapter({ chapter: c, flip }: { chapter: HistoryChapter; flip: boolean 
           <span
             aria-hidden
             className="font-grotesk text-7xl leading-none font-bold text-transparent sm:text-8xl"
-            style={{ WebkitTextStroke: `1.5px ${red ? "#da291c" : "#ff9100"}` }}
+            style={{ WebkitTextStroke: `1.5px ${red ? "#da291c" : "#e4b027"}` }}
           >
             {c.number}
           </span>

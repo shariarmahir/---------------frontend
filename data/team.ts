@@ -59,7 +59,7 @@ export const departments: Record<DeptId, Dept> = {
     id: "leadership",
     label: "Leadership",
     labelBn: "নেতৃত্ব",
-    color: "#ff9100",
+    color: "#e4b027",
     text: "text-bdorange-600",
     soft: "bg-orange-50",
     border: "border-orange-200",

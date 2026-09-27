@@ -48,7 +48,7 @@
   /* Landing-page system (code.html / DESIGN.md "Clinical Cleanroom").
      Scoped to the page body; the navbar keeps its own palette above. */
   --font-grotesk: var(--font-sora), var(--font-bengali), sans-serif;
-  --color-signal-orange: #ff9100;
+  --color-signal-orange: #e4b027;
   --color-national-crimson: #da291c;
   --color-bd-green: #006747;
   --color-bd-green-dark: #004731;
@@ -59,7 +59,20 @@
   --color-card-border: #e2e8f0;
   --color-mint-subtle: #f2f8f5;
 
-  --shadow-glow-orange: 0 4px 20px -2px rgb(255 145 0 / 0.35);
+  /* চলো বাংলাদেশ গড়ি — command-centre palette (Prompt V3 §12). Series
+     colours are the dataviz-validated order for the cream surface. */
+  --color-gori-deep: var(--gori-deep);
+  --color-gori-panel: var(--gori-panel);
+  --color-gori-line: var(--gori-line);
+  --color-gori-cream: var(--gori-cream);
+  --color-gori-ink: var(--gori-ink);
+  --color-gori-ink-soft: var(--gori-ink-soft);
+  --color-gori-mute: var(--gori-mute);
+  --color-gori-series-1: var(--gori-series-1);
+  --color-gori-series-2: var(--gori-series-2);
+  --color-gori-series-3: var(--gori-series-3);
+
+  --shadow-glow-orange: 0 4px 20px -2px rgb(228 176 39 / 0.35);
   --shadow-glow-green: 0 4px 20px -2px rgb(0 103 71 / 0.25);
   --shadow-clean: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
   --shadow-elevated: 0 10px 30px -5px rgb(0 40 25 / 0.08),
@@ -176,13 +189,15 @@
 
   /* Fixed-header offset — single source of truth for content padding and
      anchor scroll margin. The header is a floating card, so this covers the
-     wrapper's inset padding plus the card itself: mobile is the two visible
-     levels (~117px) over a 0.5rem inset, desktop adds the nav row (~152px)
-     over a 0.625rem inset. Measured from the rendered card, not derived.
+     wrapper's inset padding plus the card itself. Measured from the rendered
+     card (logo 56/64/80px): phones ~119px, tablets ~133px (raised below in a
+     media query), desktop with the nav row ~194px.
      Keep in sync with site-header.tsx — if a level's height changes there
      and this does not, every page gains a gap or hides content under it. */
-  --spacing-header: 7.75rem;
-  --spacing-header-lg: 11rem;
+  /* `@theme inline` bakes values into utilities, so the offset points at a
+     runtime variable (set in :root below) that can change per breakpoint. */
+  --spacing-header: var(--header-offset);
+  --spacing-header-lg: 12.25rem;
 
   --color-title: var(--title);
   --color-signal: var(--signal);
@@ -235,6 +250,17 @@
   --radius-2xl: 0.75rem;
 }
 
+/* Header offset below lg (see --spacing-header): phones ~119px card;
+   tablets have the taller logo row but no nav row yet — ~133px card. */
+:root {
+  --header-offset: 7.75rem;
+}
+@media (width >= 40rem) {
+  :root {
+    --header-offset: 8.5rem;
+  }
+}
+
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
@@ -250,7 +276,7 @@
   --muted-foreground: #475569;
   --accent: #da291c;
   --accent-foreground: #ffffff;
-  --title: #ff9100;
+  --title: #e4b027;
   --signal: #e65100;
   /* Text-only orange. #e65100 is 3.62:1 on the page surface, below the 4.5:1
      AA minimum for small copy; this darker step is 4.95:1. The lighter
@@ -262,7 +288,7 @@
   --input: #cbd5e1;
   --ring: #006747;
   --chart-1: #006747;
-  --chart-2: #ff9100;
+  --chart-2: #e4b027;
   --chart-3: #da291c;
   --chart-4: #e65100;
   --chart-5: #64748b;
@@ -286,6 +312,30 @@
   --tertiary: #8b0001;
   --secondary-fixed: #ffdcc1;
   --on-secondary-fixed: #2e1500;
+}
+
+:root {
+  --gori-deep: #062d25;
+  --gori-panel: #0c3a30;
+  --gori-line: #1d5446;
+  --gori-cream: #f7f8f3;
+  --gori-ink: #17211d;
+  --gori-ink-soft: #3e4c46;
+  --gori-mute: #5c6b64;
+  --gori-series-1: #00875a;
+  --gori-series-2: #3651c9;
+  --gori-series-3: #c2410c;
+}
+
+/* High-contrast setting for the game (toggled on its root). */
+[data-gori-contrast="high"] {
+  --gori-cream: #ffffff;
+  --gori-ink: #000000;
+  --gori-ink-soft: #111a16;
+  --gori-mute: #26332d;
+  --gori-deep: #02140f;
+  --gori-panel: #041f18;
+  --gori-line: #7fbfa8;
 }
 
 @layer base {

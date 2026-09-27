@@ -44,19 +44,15 @@ export function SiteFooter() {
         <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-5">
           {/* Brand. */}
           <div className="space-y-4 lg:col-span-2">
-            <Link href="/" className="flex items-center gap-3">
+            <Link href="/" className="inline-flex rounded-lg focus-visible:outline-2 focus-visible:outline-bd-green">
               <Image
-                src="/logo/logo.png"
-                alt=""
-                aria-hidden
-                width={1432}
-                height={2000}
-                sizes="24px"
-                className="h-8 w-[23px] shrink-0 object-contain"
+                src="/logo/kandari-logo.png"
+                alt="কাণ্ডারী-ল্যাব (Kandari Lab)"
+                width={1600}
+                height={967}
+                sizes="120px"
+                className="h-16 w-auto shrink-0 object-contain"
               />
-              <span className="font-grotesk text-lg font-bold text-text-primary">
-                Kandari-Lab
-              </span>
             </Link>
 
             <p className="max-w-sm font-sans text-sm leading-relaxed text-text-secondary">

@@ -31,7 +31,7 @@ const PALETTE: Record<NewsCategory, [string, string]> = {
   invention: ["#312e81", "#4f46e5"],
   technology: ["#0c4a6e", "#0284c7"],
   growth: ["#065f46", "#0d9488"],
-  achievement: ["#78350f", "#ff9100"],
+  achievement: ["#78350f", "#e4b027"],
   banking: ["#164e63", "#0891b2"],
   scheme: ["#134e4a", "#0d9488"],
   citizen: ["#4c1d95", "#7c3aed"],

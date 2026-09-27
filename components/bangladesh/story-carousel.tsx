@@ -42,7 +42,7 @@ export function StoryCarousel({
   const reduced = useSyncExternalStore(subscribe, () => window.matchMedia(REDUCED).matches, () => true);
   const swiper = useRef<SwiperInstance | null>(null);
   const many = photos.length > 1;
-  const accent = tone === "red" ? "#da291c" : "#ff9100";
+  const accent = tone === "red" ? "#da291c" : "#e4b027";
 
   return (
     <div

@@ -61,7 +61,7 @@ A single deliverable: the **Kandari-Lab mother-company marketing/portfolio websi
 | Role | Color | Hex | Usage |
 |---|---|---|---|
 | Primary brand | Bottle Green | `#006747` | nav, footers, section backgrounds, primary text accents — the "trust" color |
-| Action / CTA | Orange | `#FF9100` | titles (per brief), all primary buttons, links, highlighted stats — the color that must draw the eye |
+| Action / CTA | Gold | `#E4B027` | titles (per brief), all primary buttons, links, highlighted stats — the color that must draw the eye. Replaced orange `#FF9100` on 2026-09-27 (Mahir's instruction), matching the new logo's gold; the CSS token keeps its old name `signal-orange`. Dark text on it, never white (white is ~2.2:1). |
 | Alert / urgency | Red | `#DA291C` | reserved for emergency/urgency-coded UI only (e.g. "Golden Two Hours" callouts, critical stats) — **not** a general decorative color. Overusing it undercuts the "calm, trustworthy" positioning the brief also asks for. |
 | Neutrals | Near-black `#0A0A0A`, off-white `#FAFAF8`, gray scale | — | body text, backgrounds, borders |
 
@@ -70,7 +70,7 @@ Rationale for capping red's role: the brief asks simultaneously for "green and r
 ### 4.2 Typography
 - Latin: a modern geometric sans (Inter or Satoshi).
 - Bengali: **Noto Sans Bengali or Hind Siliguri** — required, not optional. The brand name, motto, and product names are Bangla-first; do not let the Bangla text render in a fallback system font. Tune line-height separately for Bangla (conjuncts need more vertical room than Latin defaults).
-- Titles/headings: orange (`#FF9100`) per brief, bold weight, generous letter-spacing at large sizes.
+- Titles/headings: gold (`#E4B027`) per brief, bold weight, generous letter-spacing at large sizes.
 
 ### 4.3 Hero section — ratio **[FLAG — as specified, this breaks on mobile]**
 Brief specifies 16:6 (~2.67:1), an ultra-wide letterbox. At that ratio on a phone viewport, there isn't vertical room for headline + subhead + CTA + a legible 3D scene without severe cropping. Resolution used in this build:
@@ -99,6 +99,15 @@ Brief specifies 16:6 (~2.67:1), an ultra-wide letterbox. At that ratio on a phon
 /team                Leadership + department rosters
 /profile             Kandari Profile — auth-gated subscriber dashboard (see §9)
 /contact
+/cholo-bangladesh-gori  "চলো বাংলাদেশ গড়ি" V3 — systems-simulation game over the dossier's 32 problems
+                      (BD-001…BD-032). Headline mode: mission — a 2–4 player co-operative crisis game
+                      (pass-and-play + AI bot teammates, 3D board with 2D fallback). Sub-routes: mission,
+                      play, lab, evidence, compare, forge, community, progress, profile, module/[code]. Spec + ADR:
+                      docs/superpowers/specs/2026-09-26-cholo-bangladesh-gori-design.md.
+                      APIs: /api/gori/ai (7 agents; Claude when ANTHROPIC_API_KEY is set, else offline),
+                      /api/gori/runs (server replay/score), /api/gori/mission (mission replay/score).
+                      Keep it self-contained in app/cholo-bangladesh-gori,
+                      components/gori, data/gori, lib/gori.
 ```
 
 Each product/solution card component must be reusable across `/`, `/products`, and future sector pages — Kandari-Lab is explicitly a multi-sector company, so the component shouldn't be hardcoded to healthcare content.
@@ -129,7 +138,7 @@ Content (team roster, product copy, impact stats) should live in Postgres tables
 ## 8. Component conventions
 - Extend shadcn/ui primitives (`Card`, `Button`, `Dialog`, etc.) — do not fork them into bespoke components unless shadcn genuinely can't do it.
 - One `<ProductCard>` component, reused for SWASTI, Aponjon, and future sector products — don't build per-product one-offs.
-- Buttons: solid orange (`#FF9100`) = primary action (Download App, Join Kandari Profile); outline green = secondary.
+- Buttons: solid gold (`#E4B027`) = primary action (Download App, Join Kandari Profile); outline green = secondary.
 
 ---
 

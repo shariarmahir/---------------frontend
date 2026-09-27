@@ -45,4 +45,7 @@ export const LABEL_TEXT = {
   // National issue tracker.
   issueLead: { bijoy: "evsjv‡`‡ki cÖavb ev¯Íe", bn: "বাংলাদেশের প্রধান বাস্তব" },
   issue: { bijoy: "mgm¨v", bn: "সমস্যা" },
+
+  // The 32-problem puzzle game (/cholo-bangladesh-gori).
+  gori: { bijoy: "P‡jv evsjv‡`k Mwo", bn: "চলো বাংলাদেশ গড়ি" },
 } satisfies Record<string, LogoString>;

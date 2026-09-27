@@ -111,6 +111,20 @@ export const teamNavLinks: NavLink[] = [
 ];
 
 /**
+ * Navigation for the "চলো বাংলাদেশ গড়ি" game — its routes under
+ * /cholo-bangladesh-gori, plus the dossier it is built on.
+ */
+export const goriNavLinks: NavLink[] = [
+  { href: "/cholo-bangladesh-gori", label: "কমান্ড সেন্টার", shortLabel: "কমান্ড" },
+  { href: "/cholo-bangladesh-gori/mission", label: "জাতীয় মিশন", shortLabel: "মিশন" },
+  { href: "/cholo-bangladesh-gori/play", label: "অভিযান", shortLabel: "অভিযান" },
+  { href: "/cholo-bangladesh-gori/lab", label: "বিজ্ঞানাগার", shortLabel: "ল্যাব" },
+  { href: "/cholo-bangladesh-gori/evidence", label: "প্রমাণ", shortLabel: "প্রমাণ" },
+  { href: "/cholo-bangladesh-gori/progress", label: "অগ্রগতি", shortLabel: "অগ্রগতি" },
+  { href: "/amar-bangladesh#register", label: "৩২টি সমস্যা", shortLabel: "সমস্যা" },
+];
+
+/**
  * The nav set for a given pathname. Home's set is the default.
  *
  * The story page and the news index share one nav, so moving between them
@@ -126,6 +140,9 @@ export function navLinksFor(pathname: string): NavLink[] {
   }
   if (pathname === "/team" || pathname.startsWith("/team/")) {
     return teamNavLinks;
+  }
+  if (pathname === "/cholo-bangladesh-gori" || pathname.startsWith("/cholo-bangladesh-gori/")) {
+    return goriNavLinks;
   }
   return navLinks;
 }

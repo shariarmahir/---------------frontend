@@ -88,7 +88,7 @@ export function MemberHero({ member }: { member: MemberProfile }) {
             cx="85%"
             cy="30%"
             r="90"
-            fill="#ff9100"
+            fill="#e4b027"
             opacity="0.18"
             filter="blur(30px)"
           />

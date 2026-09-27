@@ -72,7 +72,7 @@ export function TeamHero() {
 
       <div className="mx-auto max-w-7xl px-gutter-x pt-14 text-center sm:pt-16 lg:pt-20">
         <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 font-mono text-[11px] font-semibold tracking-widest text-white/80 uppercase backdrop-blur-md">
-          <span className="size-1.5 rounded-full bg-signal-orange shadow-[0_0_8px_#ff9100]" />
+          <span className="size-1.5 rounded-full bg-signal-orange shadow-[0_0_8px_#e4b027]" />
           <span className="font-bengali text-xs tracking-normal normal-case">আমাদের দল</span> · The crew
         </span>
         <h1 className="mx-auto mt-5 max-w-4xl font-grotesk text-4xl leading-[1.05] font-bold tracking-tight text-white uppercase sm:text-5xl lg:text-6xl">

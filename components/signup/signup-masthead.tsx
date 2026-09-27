@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Icon } from "@/components/ui/icon";
 import { signupSteps } from "@/data/signup";
 import { cn } from "@/lib/utils";
@@ -59,14 +60,9 @@ export function SignupStatusBar() {
   return (
     <div className="flex flex-col items-center justify-between gap-space-md rounded-xl border border-card-border bg-white p-space-md shadow-clean sm:flex-row">
       <div className="flex w-full items-center gap-space-md sm:w-auto">
-        <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-text-primary text-emerald-200 shadow-md">
-          <Icon name="shield_with_house" className="text-2xl" />
-        </span>
+        <Image src="/logo/kandari-logo.png" alt="কাণ্ডারী-ল্যাব (Kandari Lab)" width={1600} height={967} sizes="80px" className="h-12 w-auto shrink-0 object-contain" />
         <div className="flex flex-col">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="font-grotesk text-headline-sm leading-none font-bold tracking-tight text-text-primary">
-              Kandari-Lab
-            </span>
             <span className="rounded bg-bd-green-light px-2 py-0.5 font-grotesk text-[10px] font-semibold text-bd-green">
               ভেরিফিকেশন পোর্টাল v3.4
             </span>

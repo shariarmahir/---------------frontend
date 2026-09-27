@@ -35,7 +35,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ ha
       </div>
       <article className="relative overflow-hidden rounded-2xl border-2 border-bd-green/40 bg-white p-6 text-center shadow-[0_10px_30px_-18px_rgb(0_71_49/0.45)] sm:p-12 print:border-bd-green print:shadow-none">
         <div className="absolute inset-3 rounded-xl border border-bd-green/15" aria-hidden />
-        <Image src="/logo/logo.png" alt="" width={1432} height={2000} className="mx-auto h-14 w-auto" />
+        <Image src="/logo/kandari-logo.png" alt="কাণ্ডারী-ল্যাব (Kandari Lab)" width={1600} height={967} sizes="120px" className="mx-auto h-16 w-auto" />
         <p className="mt-3 text-sm font-bold tracking-wide text-bd-green">শিক্ষিতদের মিডিয়া</p>
         <h1 className="mt-6 text-sm font-semibold text-text-muted">কমিউনিটি-যাচাইকৃত দক্ষতার সনদ</h1>
         <p className="mt-6 text-sm text-text-secondary">এই মর্মে জানানো যাচ্ছে যে</p>

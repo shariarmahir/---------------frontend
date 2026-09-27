@@ -18,7 +18,7 @@ export function TopBar({ unreadSeed }: { unreadSeed: UnreadSeed }) {
       <div className="mx-auto flex h-16 max-w-350 items-center gap-2 px-3 sm:gap-3 lg:px-6">
         <MobileMenu unreadSeed={unreadSeed} me={CURRENT_USER_HANDLE} />
         <Link href="/media" className="flex shrink-0 items-center gap-2 rounded-lg focus-visible:outline-2 focus-visible:outline-bd-green">
-          <Image src="/logo/logo.png" alt="" width={1432} height={2000} className="h-8 w-auto sm:h-9" priority />
+          <Image src="/logo/kandari-logo.png" alt="" width={1600} height={967} sizes="64px" className="h-8 w-auto sm:h-9" priority />
           <span className="flex flex-col leading-none">
             <span className="text-[18px] text-bd-green sm:text-[21px]">
               <LabelText text={LABEL_TEXT.media} />

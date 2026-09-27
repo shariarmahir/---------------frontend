@@ -32,26 +32,18 @@ export function ProfileSidebar() {
           className="mb-space-xs flex w-fit items-center gap-space-sm rounded-full px-space-sm py-space-xs transition-colors hover:bg-mint-subtle"
         >
           <Image
-            src="/logo/logo.png"
-            alt="কাণ্ডারী-ল্যাব"
-            width={1432}
-            height={2000}
-            sizes="48px"
+            src="/logo/kandari-logo.png"
+            alt="কাণ্ডারী-ল্যাব (Kandari Lab)"
+            width={1600}
+            height={967}
+            sizes="(min-width: 1280px) 100px, 60px"
             // Eager, not `priority`: the mark is above the fold on desktop
             // so it should not lazy-load, but the whole rail is `hidden`
             // below md and `priority` would emit a preload link on phones
             // where it never renders ("preloaded but not used").
             loading="eager"
-            className="h-8 w-auto shrink-0 object-contain"
+            className="h-9 w-auto shrink-0 object-contain xl:h-14"
           />
-          <span className="hidden flex-col xl:flex">
-            <span className="font-grotesk text-base leading-tight font-bold text-bd-green">
-              Kandari-Lab
-            </span>
-            <span className="font-bengali text-xs text-text-muted">
-              কাণ্ডারী-ল্যাব
-            </span>
-          </span>
         </Link>
 
         <nav className="flex flex-col gap-0.5">
