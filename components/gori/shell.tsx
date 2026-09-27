@@ -34,7 +34,9 @@ export function GoriNav() {
 
   return (
     <nav aria-label="খেলার মেনু" className="border-b border-white/10 bg-gori-deep">
-      <ul className="no-scrollbar mx-auto flex max-w-340 gap-1 overflow-x-auto px-3 py-2 sm:px-6 lg:px-8">
+      {/* `relative`: the lock labels are `sr-only` (absolutely positioned); without a
+          positioned scroller they escape its clipping and widen phone layouts. */}
+      <ul className="no-scrollbar relative mx-auto flex max-w-340 gap-1 overflow-x-auto px-3 py-2 sm:px-6 lg:px-8">
         {items.map((it) => {
           const on = it.href === BASE ? pathname === BASE : pathname.startsWith(it.href);
           const locked = it.feature ? !isUnlocked(it.feature, xp, openAll) : false;

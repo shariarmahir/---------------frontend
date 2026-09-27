@@ -42,7 +42,7 @@ export function MissionSetup({ onStart }: { onStart: (c: MissionConfig) => void 
         e.preventDefault();
         if (!err) onStart(config);
       }}
-      className="mx-auto grid max-w-340 gap-6 px-4 py-8 sm:px-6 lg:grid-cols-12 lg:px-8"
+      className="mx-auto grid max-w-340 grid-cols-1 gap-6 px-4 py-8 sm:px-6 lg:grid-cols-12 lg:px-8"
       aria-labelledby="mission-setup-title"
     >
       <div className="lg:col-span-7">
@@ -129,7 +129,7 @@ export function MissionSetup({ onStart }: { onStart: (c: MissionConfig) => void 
       </div>
 
       <div className="space-y-5 lg:col-span-5">
-        <fieldset className="rounded-2xl bg-gori-cream p-5 text-gori-ink">
+        <fieldset className="min-w-0 rounded-2xl bg-gori-cream p-5 text-gori-ink">
           <legend className="float-left mb-3 w-full font-bengali text-lg font-bold">কঠিনতা</legend>
           <div className="clear-both space-y-2">
             {(Object.keys(DIFFICULTIES) as Difficulty[]).map((d) => (

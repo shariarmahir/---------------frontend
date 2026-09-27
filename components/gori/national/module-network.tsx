@@ -138,7 +138,7 @@ export function ModuleNetwork({ shares, selected, onSelect }: { shares: number[]
             }}
             className="group cursor-pointer outline-none"
           >
-            <circle cx={l.x} cy={l.y} r={LEAF_DOT + 8} className="fill-transparent" />
+            <circle cx={l.x} cy={l.y} r={LEAF_DOT + 11} className="fill-transparent" />
             <circle
               cx={l.x}
               cy={l.y}

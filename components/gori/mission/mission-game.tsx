@@ -1,13 +1,13 @@
 "use client";
 
 import { AnimatePresence, useReducedMotion } from "framer-motion";
-import { Box, Gauge, Lightbulb, Loader2, LogOut, Map as MapIcon, SkipForward, Undo2 } from "lucide-react";
+import { ArrowDown, Box, Gauge, Lightbulb, Loader2, LogOut, Map as MapIcon, SkipForward, Undo2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { Component, useCallback, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { codeOf } from "@/data/gori/modules";
-import { PILLARS, roleDef, type PolicyId } from "@/data/gori/mission";
+import { PILLARS, pillarOf, roleDef, RULES, type PolicyId } from "@/data/gori/mission";
 import { botStep, suggest, type Hint } from "@/lib/gori/mission/bot";
-import { cascadePreview, missionKey, NODES, type LoggedEvent, type MissionAction, type MissionConfig, type MissionState } from "@/lib/gori/mission/engine";
+import { cascadePreview, missionKey, NODES, whyNot, type LoggedEvent, type MissionAction, type MissionConfig, type MissionState } from "@/lib/gori/mission/engine";
 import { bn, narrate, titleOf } from "@/lib/gori/mission/narrate";
 import { challengeKey, grant, recordRun } from "@/lib/gori/progression";
 import { randomSeed } from "@/lib/gori/rng";
@@ -234,7 +234,8 @@ function MissionTable({ state }: { state: MissionState }) {
   };
 
   return (
-    <div className="relative">
+    // On phones and tablets the docked bar (MobileDock) covers the last ~9rem.
+    <div className="relative max-xl:pb-36">
       <StatusBar state={state} />
 
       <div className="mx-auto grid max-w-400 gap-4 px-3 py-4 sm:px-6 xl:grid-cols-[250px_minmax(0,1fr)_360px]">
@@ -298,7 +299,7 @@ function MissionTable({ state }: { state: MissionState }) {
           </div>
 
           {hint && (
-            <div className="flex flex-wrap items-center gap-3 rounded-2xl bg-amber-100 px-4 py-3 font-bengali text-sm text-gori-ink" role="status">
+            <div className="flex flex-wrap items-center gap-3 rounded-2xl bg-amber-100 px-4 py-3 font-bengali text-sm text-gori-ink max-xl:hidden" role="status">
               <Lightbulb className="size-5 shrink-0 text-amber-700" aria-hidden />
               <p className="min-w-0 flex-1 leading-6">
                 <strong>পরামর্শ:</strong> {hint.reason} <span className="text-gori-ink-soft">(বটের হিসাব — ভুলও হতে পারে)</span>
@@ -319,7 +320,7 @@ function MissionTable({ state }: { state: MissionState }) {
               </BoardBoundary>
             ) : (
               // On phones the 2D board is wider than the screen and scrolls, so every module is a finger-sized target.
-              <div ref={scroller} className="no-scrollbar overflow-x-auto">
+              <div ref={scroller} className="no-scrollbar relative overflow-x-auto">
                 <div className="aspect-820/660 min-w-160 md:min-w-0">
                   <Board2D {...boardProps} />
                 </div>
@@ -357,6 +358,10 @@ function MissionTable({ state }: { state: MissionState }) {
           <NodePanel state={state} n={selected} me={me} preview={preview} onPreview={setPreview} onSelect={setSelected} onAct={run} onPeek={() => setPeek(true)} />
         </aside>
       </div>
+
+      {!state.outcome && handoff === null && (
+        <MobileDock state={state} n={selected} me={me} actorName={actorP.name} actorBot={actorP.bot} hint={hint} onAct={run} onHint={hintNow} onClearHint={() => setHint(null)} />
+      )}
 
       <PolicyDialog state={state} id={policy} selected={selected} onAct={run} onClose={() => setPolicy(null)} />
       <PeekDialog state={state} open={peek} onAct={run} onClose={() => setPeek(false)} />
@@ -401,6 +406,87 @@ function Legend({ hint, className }: { hint: string; className?: string }) {
           <span className="block w-4 border-t-2 border-dashed border-emerald-100/80" aria-hidden /> খেলার অনুমান
         </li>
       </ul>
+    </div>
+  );
+}
+
+/**
+ * Phones and tablets: the side panels stack below the board, so the turn's
+ * essentials dock to the bottom of the screen — the selected module, the
+ * one move that fits it, a hint and end-turn — within thumb reach. Hidden
+ * from xl up, where the panels sit beside the board.
+ */
+function MobileDock({ state, n, me, actorName, actorBot, hint, onAct, onHint, onClearHint }: { state: MissionState; n: number; me: number | null; actorName: string; actorBot: boolean; hint: Hint | null; onAct: (a: MissionAction) => void; onHint: () => void; onClearHint: () => void }) {
+  const pl = me !== null ? state.players[me] : null;
+  // The single most natural move for the tapped module.
+  const quick: { a: MissionAction; label: string } | null = (() => {
+    if (!pl || state.phase !== "actions") return null;
+    const options: { a: MissionAction; label: string }[] =
+      pl.at === n
+        ? [{ a: { type: "treat" }, label: "চাপ কমান" }]
+        : [
+            { a: { type: "drive", to: n }, label: "সড়কপথে যান" },
+            { a: { type: "shuttle", to: n }, label: "শাটলে যান" },
+            { a: { type: "flight", to: n }, label: "কার্ড দিয়ে যান" },
+            { a: { type: "charter", to: n }, label: "চার্টারে যান" },
+          ];
+    return options.find((o) => whyNot(state, o.a) === null) ?? null;
+  })();
+
+  return (
+    <div className="fixed inset-x-0 bottom-0 z-30 border-t border-white/15 bg-gori-deep/95 px-3 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] font-bengali shadow-[0_-12px_30px_-18px_rgb(0_0_0/0.9)] backdrop-blur xl:hidden" role="region" aria-label="দ্রুত অ্যাকশন">
+      {hint && (
+        <div className="mx-auto mb-2 flex max-w-3xl items-start gap-2 rounded-xl bg-amber-100 p-2.5 text-[13px] leading-5 text-gori-ink" role="status">
+          <Lightbulb className="mt-0.5 size-4 shrink-0 text-amber-700" aria-hidden />
+          <p className="min-w-0 flex-1">{hint.reason}</p>
+          <button type="button" onClick={() => onAct(hint.action)} className="h-9 shrink-0 rounded-lg bg-gori-ink px-3 text-xs font-bold text-white">
+            করুন
+          </button>
+          <button type="button" onClick={onClearHint} className="h-9 shrink-0 rounded-lg px-2 text-xs text-gori-ink-soft" aria-label="পরামর্শ বন্ধ">
+            ✕
+          </button>
+        </div>
+      )}
+      <div className="mx-auto flex max-w-3xl items-center gap-2">
+        <PillarGlyph id={pillarOf(n)} />
+        <p className="min-w-0 flex-1 truncate text-sm text-white">
+          <strong>{codeOf(n)}</strong> {titleOf(n)}
+        </p>
+        <span className="flex shrink-0 gap-0.5" aria-label={`চাপ ${bn(state.pressure[n])}`}>
+          {Array.from({ length: RULES.maxPressure }, (_, k) => (
+            <span key={k} className={cn("block size-2.5 rounded-[2px]", k < state.pressure[n] ? "bg-national-crimson" : "bg-white/15")} />
+          ))}
+        </span>
+        <a href="#module-panel" className="inline-flex h-9 shrink-0 items-center gap-1 rounded-lg px-2 text-xs font-semibold text-emerald-100 hover:bg-white/10">
+          বিস্তারিত <ArrowDown className="size-3.5" aria-hidden />
+        </a>
+      </div>
+      <div className="mx-auto mt-1.5 flex max-w-3xl items-center gap-2">
+        {me === null ? (
+          <p className="flex h-11 items-center gap-2 text-sm text-emerald-100">
+            {actorBot ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
+            {actorBot ? `${actorName} (AI) খেলছেন…` : `${actorName}-এর পালা`}
+          </p>
+        ) : (
+          <>
+            <button
+              type="button"
+              disabled={!quick}
+              onClick={() => quick && onAct(quick.a)}
+              className="h-11 min-w-0 flex-1 truncate rounded-xl bg-signal-orange px-3 text-sm font-extrabold text-gori-ink disabled:bg-white/10 disabled:text-white/50"
+            >
+              {quick ? quick.label : pl?.at === n ? "এখানে চাপ নেই" : "এখানে যাওয়া যায় না"}
+            </button>
+            <button type="button" onClick={onHint} className="inline-flex h-11 shrink-0 items-center gap-1 rounded-xl bg-amber-200 px-3 text-sm font-bold text-gori-ink" aria-label="পরামর্শ">
+              <Lightbulb className="size-4" aria-hidden />
+              <span className="max-[380px]:sr-only">পরামর্শ</span>
+            </button>
+            <button type="button" onClick={() => onAct({ type: "end" })} className="inline-flex h-11 shrink-0 items-center gap-1 rounded-xl bg-white/12 px-3 text-sm font-bold text-white">
+              <SkipForward className="size-4" aria-hidden /> শেষ <span className="text-xs font-normal opacity-80">({bn(state.actionsLeft)})</span>
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }

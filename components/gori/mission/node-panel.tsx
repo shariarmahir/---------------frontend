@@ -46,7 +46,7 @@ export function NodePanel({ state, n, me, preview, onPreview, onSelect, onAct, o
   const here = state.players.filter((pl) => pl.at === n);
 
   return (
-    <section aria-labelledby="node-title" className="rounded-2xl bg-gori-cream p-4 text-gori-ink">
+    <section id="module-panel" aria-labelledby="node-title" className="scroll-mt-header rounded-2xl bg-gori-cream p-4 text-gori-ink lg:scroll-mt-header-lg">
       <p className="flex flex-wrap items-center gap-2 font-bengali text-xs font-semibold text-gori-ink-soft">
         <PillarGlyph id={pillar} /> {pillarDef(pillar).bn}
         {root && <span className="rounded-full bg-bd-green px-2 py-0.5 text-[11px] font-bold text-white">মূল কারণ</span>}
@@ -76,6 +76,10 @@ export function NodePanel({ state, n, me, preview, onPreview, onSelect, onAct, o
         </p>
       )}
 
+      {/* Actions first: on phones the reference lists below are long, and the
+          move you came here to make should not sit under them. */}
+      {me !== null && <Actions state={state} n={n} me={me} onAct={onAct} onPeek={onPeek} />}
+
       {/* The systems lesson: what a collapse here would do. */}
       <div className="mt-3 rounded-xl bg-white p-3">
         <button type="button" onClick={() => onPreview(!preview)} aria-pressed={preview} className={cn("inline-flex h-9 items-center gap-1.5 rounded-lg px-3 font-bengali text-sm font-bold", preview ? "bg-national-crimson text-white" : "bg-gori-ink/8 hover:bg-gori-ink/12")}>
@@ -95,7 +99,6 @@ export function NodePanel({ state, n, me, preview, onPreview, onSelect, onAct, o
         <LinkList title="খাওয়ায় (ঢেউ যায়)" icon={ArrowUpRight} items={down} other={(m) => linkNote(n, m)} state={state} onSelect={onSelect} empty="কাউকে না।" />
       </div>
 
-      {me !== null && <Actions state={state} n={n} me={me} onAct={onAct} onPeek={onPeek} />}
     </section>
   );
 }
@@ -161,7 +164,7 @@ function Actions({ state, n, me, onAct, onPeek }: { state: MissionState; n: numb
   const others = state.players.map((q, j) => ({ q, j })).filter(({ q, j }) => j !== me && q.at === pl.at);
 
   return (
-    <div className="mt-4 border-t border-gori-ink/10 pt-3">
+    <div className="mt-3 border-y border-gori-ink/10 py-3">
       <h3 className="font-bengali text-sm font-bold">
         {pl.name}-এর অ্যাকশন <span className="font-normal text-gori-ink-soft">({bn(state.actionsLeft)}টি বাকি)</span>
       </h3>

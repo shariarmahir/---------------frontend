@@ -66,7 +66,7 @@ export function StatusRail({ sc, run, game, budgetAfterDraft, onStakeholders }: 
       <section className="rounded-2xl bg-gori-panel p-4" aria-labelledby="st-title">
         <div className="flex items-baseline justify-between gap-2">
           <h3 id="st-title" className="font-bengali text-sm font-bold">অংশীজনের সমর্থন</h3>
-          <button type="button" onClick={onStakeholders} className="font-bengali text-xs font-semibold text-signal-orange hover:underline">কে কী চান?</button>
+          <button type="button" onClick={onStakeholders} className="-my-2 inline-flex min-h-8 items-center px-1 font-bengali text-xs font-semibold text-signal-orange hover:underline">কে কী চান?</button>
         </div>
         <ul className="mt-2 space-y-2">
           {sc.stakeholders.map((s) => (

@@ -32,7 +32,7 @@ export function StatusBar({ state }: { state: MissionState }) {
   const [pile, setPile] = useState(false);
   return (
     <div className="border-b border-white/10 bg-black/20">
-      <div className="no-scrollbar mx-auto flex max-w-400 items-center gap-x-6 gap-y-2 overflow-x-auto px-4 py-2.5 font-bengali text-sm text-emerald-50/90 sm:px-6">
+      <div className="no-scrollbar relative mx-auto flex max-w-400 items-center gap-x-6 gap-y-2 overflow-x-auto px-4 py-2.5 font-bengali text-sm text-emerald-50/90 sm:px-6">
         <div className="flex shrink-0 items-center gap-2" title="প্রতিটি ভাঙনে এক ঘর কমে; শূন্য হলে মিশন ব্যর্থ">
           <ShieldAlert className="size-4 text-national-crimson" aria-hidden />
           <span className="font-semibold">জনআস্থা</span>
@@ -196,7 +196,7 @@ export function Hand({ state, player, onCard, selectedCard }: { state: MissionSt
       <h3 className="mb-2 font-bengali text-sm font-bold text-white">
         {p.name}-এর হাত <span className="font-normal text-emerald-100/75">· {bn(p.hand.length)}/{bn(RULES.handLimit)} · কার্ডে চাপ দিন</span>
       </h3>
-      <ul className="no-scrollbar flex gap-2 overflow-x-auto pb-2">
+      <ul className="no-scrollbar relative flex gap-2 overflow-x-auto pb-2">
         <AnimatePresence initial={false}>
           {p.hand.map((c, i) => (
             <motion.li

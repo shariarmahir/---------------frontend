@@ -100,7 +100,7 @@ export function CommandCenter({ game }: { game: Game }) {
         </aside>
 
         <section className="order-1 min-w-0 lg:order-2" aria-label="কর্মক্ষেত্র">
-          <div role="tablist" aria-label="কর্মক্ষেত্র" className="no-scrollbar flex gap-1 overflow-x-auto rounded-xl bg-gori-panel p-1">
+          <div role="tablist" aria-label="কর্মক্ষেত্র" className="no-scrollbar relative flex gap-1 overflow-x-auto rounded-xl bg-gori-panel p-1">
             {tabs.map((t) => (
               <button
                 key={t.id}

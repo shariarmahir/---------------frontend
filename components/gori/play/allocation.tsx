@@ -71,7 +71,7 @@ export function Allocation({
       {preview.active.length === 0 ? (
         <p className="rounded-2xl bg-white p-5 font-bengali text-sm text-gori-mute">কোনো হস্তক্ষেপ চলছে না। “হস্তক্ষেপ” ট্যাবে কিছু চালু করলে এখানে অর্থায়ন ঠিক করা যাবে।</p>
       ) : (
-        <div className="overflow-x-auto rounded-2xl bg-white">
+        <div className="relative overflow-x-auto rounded-2xl bg-white">
           <table className="w-full min-w-[40rem] font-bengali text-sm">
             <caption className="sr-only">চলমান হস্তক্ষেপের অর্থায়ন</caption>
             <thead>

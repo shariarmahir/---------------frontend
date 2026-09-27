@@ -34,10 +34,10 @@ export function ModuleDetail({ code }: { code: ModuleCode }) {
   return (
     <div className="mx-auto max-w-340 px-4 py-8 sm:px-6 lg:px-8">
       <nav aria-label="মডিউল" className="flex flex-wrap justify-between gap-2 font-bengali text-sm">
-        <Link href={BASE} className="inline-flex items-center gap-1 text-emerald-100/80 hover:text-white"><ArrowLeft className="size-4" aria-hidden /> জাতীয় মানচিত্র</Link>
+        <Link href={BASE} className="inline-flex min-h-10 items-center gap-1 text-emerald-100/80 hover:text-white"><ArrowLeft className="size-4" aria-hidden /> জাতীয় মানচিত্র</Link>
         <span className="flex gap-3">
-          {prev && <Link href={`${BASE}/module/${prev}`} className="text-emerald-100/80 hover:text-white">← {prev}</Link>}
-          {next && <Link href={`${BASE}/module/${next}`} className="text-emerald-100/80 hover:text-white">{next} →</Link>}
+          {prev && <Link href={`${BASE}/module/${prev}`} className="inline-flex min-h-10 items-center px-1 text-emerald-100/80 hover:text-white">← {prev}</Link>}
+          {next && <Link href={`${BASE}/module/${next}`} className="inline-flex min-h-10 items-center px-1 text-emerald-100/80 hover:text-white">{next} →</Link>}
         </span>
       </nav>
 
@@ -111,7 +111,7 @@ export function ModuleDetail({ code }: { code: ModuleCode }) {
                     {list.length ? (
                       list.map(({ c, l }) => (
                         <li key={c}>
-                          <Link href={`${BASE}/module/${c}`} className="font-semibold text-white hover:underline">{moduleOf(c)?.titleBn}</Link>
+                          <Link href={`${BASE}/module/${c}`} className="inline-block py-0.5 font-semibold text-white hover:underline">{moduleOf(c)?.titleBn}</Link>
                           <span className="block text-xs text-emerald-100/70">{l.basis === "dossier" ? "প্রতিবেদনের প্রক্রিয়া" : "খেলার অনুমান"} · আস্থা {l.confidence === "high" ? "উচ্চ" : l.confidence === "medium" ? "মাঝারি" : "নিম্ন"} — {l.note}</span>
                         </li>
                       ))
@@ -126,7 +126,7 @@ export function ModuleDetail({ code }: { code: ModuleCode }) {
               <p className="mt-4 font-bengali text-xs text-emerald-100/75">আন্তঃখাত বিষয়: {themesHere.map((t) => t.bn).join(", ")}</p>
             )}
           </section>
-          <Link href={`${BASE}/evidence?module=${code}`} className="inline-flex items-center gap-2 font-bengali text-sm font-semibold text-signal-orange hover:underline">
+          <Link href={`${BASE}/evidence?module=${code}`} className="inline-flex min-h-10 items-center gap-2 font-bengali text-sm font-semibold text-signal-orange hover:underline">
             প্রমাণ অনুসন্ধানে সব রেকর্ড <ArrowRight className="size-4" aria-hidden />
           </Link>
         </div>

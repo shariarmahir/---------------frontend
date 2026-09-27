@@ -121,7 +121,7 @@ export function Compare() {
                     </ResponsiveContainer>
                   </div>
                 </section>
-                <section className="overflow-x-auto rounded-2xl bg-gori-cream p-5 text-gori-ink">
+                <section className="relative overflow-x-auto rounded-2xl bg-gori-cream p-5 text-gori-ink">
                   <table className="w-full min-w-[34rem] font-bengali text-sm">
                     <caption className="mb-2 text-left font-bold">শেষ অবস্থা ও স্কোর</caption>
                     <thead>
