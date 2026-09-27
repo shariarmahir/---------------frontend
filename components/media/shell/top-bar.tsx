@@ -4,10 +4,10 @@ import { Suspense } from "react";
 import { MessageCircle, Search, Wallet } from "lucide-react";
 import { LabelText } from "@/components/brand/kandari-wordmark";
 import { LABEL_TEXT } from "@/data/logo-text";
-import { CURRENT_USER_HANDLE, currentUser } from "@/data/media/users";
+import { AccountMenu } from "@/components/auth/account-menu";
+import { CURRENT_USER_HANDLE } from "@/data/media/users";
 import { NotificationBell } from "../notifications/notifications";
 import { mediaButton } from "../ui/button-styles";
-import { PersonAvatar } from "../ui/person";
 import { MobileMenu, NumeralsToggle } from "./nav";
 import { SearchBox, UnreadBubble } from "./search-box";
 import type { UnreadSeed } from "./unread";
@@ -47,10 +47,7 @@ export function TopBar({ unreadSeed }: { unreadSeed: UnreadSeed }) {
             <Wallet aria-hidden />
             <span className="sr-only">ওয়ালেট</span>
           </Link>
-          <Link href="/media/me" className="ml-1 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bd-green">
-            <PersonAvatar person={currentUser} size="sm" />
-            <span className="sr-only">আমার প্রোফাইল</span>
-          </Link>
+          <AccountMenu variant="media" className="ml-1" />
         </div>
       </div>
     </header>

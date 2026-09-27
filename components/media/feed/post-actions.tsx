@@ -12,15 +12,17 @@ import { cn } from "@/lib/utils";
 import { mediaButton } from "../ui/button-styles";
 import { Compact, Num } from "../ui/numerals";
 import { VerifyDialog } from "./verify-dialog";
+import { useRequireAccount } from "@/components/auth/use-require-account";
 
 export function FollowButton({ handle, size = "sm" }: { handle: string; size?: "sm" | "md" }) {
   const on = useMediaState((s) => Boolean(s.following[handle]));
+  const ensure = useRequireAccount();
   if (handle === CURRENT_USER_HANDLE) return null;
   return (
     <button
       type="button"
       aria-pressed={on}
-      onClick={() => toggleKey("following", handle)}
+      onClick={() => ensure("অনুসরণ করতে") && toggleKey("following", handle)}
       className={mediaButton({ variant: on ? "quiet" : "outline", size })}
     >
       {on ? <UserCheck aria-hidden /> : <UserPlus aria-hidden />}
@@ -46,6 +48,7 @@ export function PostActions({
   seedVerdict?: Comment["verdict"];
 }) {
   const liked = useMediaState((s) => Boolean(s.liked[post.id]));
+  const ensure = useRequireAccount();
   const hideCounts = useMediaState((s) => s.privacy.hideCounts);
   const rated = useMediaState((s) => s.ratings[post.id]);
   const mine = rated ? { stars: rated.stars, verdict: rated.verdict } : seedVerdict ? { stars: seedVerdict.stars, verdict: seedVerdict.kind } : undefined;
@@ -77,7 +80,7 @@ export function PostActions({
       <button
         type="button"
         aria-pressed={liked}
-        onClick={() => toggleKey("liked", post.id)}
+        onClick={() => ensure("লাইক দিতে") && toggleKey("liked", post.id)}
         className={cn(quiet, liked ? "text-national-crimson" : "hover:bg-red-50 hover:text-national-crimson")}
       >
         <Heart className={cn("size-5", liked && "like-pop fill-current")} aria-hidden />
@@ -109,7 +112,7 @@ export function PostActions({
             আপনি দিয়েছেন <Num value={mine.stars} />★
           </span>
         ) : (
-          <button type="button" onClick={() => setOpen(true)} className={mediaButton({ variant: "green", size: "sm" })}>
+          <button type="button" onClick={() => ensure("রেটিং যাচাই করতে") && setOpen(true)} className={mediaButton({ variant: "green", size: "sm" })}>
             <SealCheck size={18} weight="duotone" aria-hidden />
             রেটিং যাচাই করুন
           </button>

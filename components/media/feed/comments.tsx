@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { mediaButton } from "../ui/button-styles";
 import { Ago, Compact, Num } from "../ui/numerals";
 import { PersonAvatar } from "../ui/person";
+import { useRequireAccount } from "@/components/auth/use-require-account";
 
 export type CommentPeople = Record<string, Pick<Person, "handle" | "nameBn" | "initials" | "tone" | "idVerified">>;
 
@@ -27,7 +28,8 @@ function CommentForm({
   autoFocus,
   compact,
 }: {
-  onSubmit: (text: string) => void;
+  /** Returns false when the comment was not accepted, so the text stays. */
+  onSubmit: (text: string) => boolean;
   placeholder: string;
   autoFocus?: boolean;
   compact?: boolean;
@@ -38,8 +40,7 @@ function CommentForm({
       <form
         noValidate
         onSubmit={form.handleSubmit((v) => {
-          onSubmit(v.text.trim());
-          form.reset();
+          if (onSubmit(v.text.trim())) form.reset();
         })}
         className="flex items-start gap-2"
       >
@@ -59,8 +60,7 @@ function CommentForm({
                     if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
                       e.preventDefault();
                       void form.handleSubmit((v) => {
-                        onSubmit(v.text.trim());
-                        form.reset();
+                        if (onSubmit(v.text.trim())) form.reset();
                       })();
                     }
                   }}
@@ -96,6 +96,7 @@ function CommentRow({
   /** Written in this browser: time it against the real clock. */
   live?: boolean;
 }) {
+  const ensure = useRequireAccount();
   const key = `${postId}:${c.id}`;
   const liked = useMediaState((s) => Boolean(s.commentLikes[key]));
   const author = people[c.author];
@@ -130,7 +131,7 @@ function CommentRow({
           <button
             type="button"
             aria-pressed={liked}
-            onClick={() => toggleKey("commentLikes", key)}
+            onClick={() => ensure("পছন্দ করতে") && toggleKey("commentLikes", key)}
             className={cn("inline-flex min-h-8 items-center gap-1 font-semibold hover:text-national-crimson", liked && "text-national-crimson")}
           >
             <Heart className={cn("size-3.5", liked && "like-pop fill-current")} aria-hidden />
@@ -169,22 +170,27 @@ export function CommentThread({
   const mine = useMediaState((s) => s.comments[postId] ?? EMPTY);
   const replies = useMediaState((s) => s.replies);
   const [replyTo, setReplyTo] = useState<string | null>(null);
+  const ensure = useRequireAccount();
 
   const all = [...seed, ...mine];
   const liveIds = new Set(mine.map((c) => c.id));
   const shown = limit ? all.slice(-limit) : all;
   const hidden = all.length - shown.length;
 
-  function add(text: string) {
+  function add(text: string): boolean {
+    if (!ensure("মন্তব্য করতে")) return false;
     const c: Comment = { id: newId("c"), author: CURRENT_USER_HANDLE, text, at: new Date().toISOString(), likes: 0 };
     updateMedia((s) => ({ ...s, comments: { ...s.comments, [postId]: [...(s.comments[postId] ?? []), c] } }));
+    return true;
   }
 
-  function reply(parent: string, text: string) {
+  function reply(parent: string, text: string): boolean {
+    if (!ensure("উত্তর দিতে")) return false;
     const key = `${postId}:${parent}`;
     const c: Comment = { id: newId("r"), author: CURRENT_USER_HANDLE, text, at: new Date().toISOString(), likes: 0 };
     updateMedia((s) => ({ ...s, replies: { ...s.replies, [key]: [...(s.replies[key] ?? []), c] } }));
     setReplyTo(null);
+    return true;
   }
 
   return (

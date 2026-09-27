@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { Noto_Sans_Bengali } from "next/font/google";
+import { RouteGuard } from "@/components/auth/route-guard";
 import { Toaster } from "@/components/ui/sonner";
 import { BottomTabs, LeftRail } from "@/components/media/shell/nav";
 import { TopBar } from "@/components/media/shell/top-bar";
@@ -33,24 +34,28 @@ export default async function MediaLayout({ children }: { children: React.ReactN
   const numerals = (await cookies()).get(NUMERALS_COOKIE)?.value === "latn" ? "latn" : "bn";
   return (
     <NumeralsProvider initial={numerals}>
-      <div className={`${notoBengali.variable} min-h-dvh w-full bg-mint-subtle/50 font-sans text-text-primary`}>
-        <a
-          href="#media-main"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:font-semibold focus:text-bd-green"
-        >
-          মূল বিষয়ে যান
-        </a>
-        <TopBar unreadSeed={unreadSeed} />
-        <div className="mx-auto flex w-full max-w-350 gap-6 px-3 lg:px-6">
-          <LeftRail unreadSeed={unreadSeed} me={CURRENT_USER_HANDLE} />
-          <main id="media-main" className="min-w-0 flex-1 pt-6 pb-28 lg:pb-12 print:p-0">
-            {children}
-          </main>
+      {/* Members only: proxy.ts redirects signed-out visitors to /login before
+          this renders; the guard re-checks the browser session. */}
+      <RouteGuard>
+        <div className={`${notoBengali.variable} min-h-dvh w-full bg-mint-subtle/50 font-sans text-text-primary`}>
+          <a
+            href="#media-main"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:font-semibold focus:text-bd-green"
+          >
+            মূল বিষয়ে যান
+          </a>
+          <TopBar unreadSeed={unreadSeed} />
+          <div className="mx-auto flex w-full max-w-350 gap-6 px-3 lg:px-6">
+            <LeftRail unreadSeed={unreadSeed} me={CURRENT_USER_HANDLE} />
+            <main id="media-main" className="min-w-0 flex-1 pt-6 pb-28 lg:pb-12 print:p-0">
+              {children}
+            </main>
+          </div>
+          <BottomTabs me={CURRENT_USER_HANDLE} />
+          <UsageTracker />
+          <Toaster />
         </div>
-        <BottomTabs me={CURRENT_USER_HANDLE} />
-        <UsageTracker />
-        <Toaster />
-      </div>
+      </RouteGuard>
     </NumeralsProvider>
   );
 }

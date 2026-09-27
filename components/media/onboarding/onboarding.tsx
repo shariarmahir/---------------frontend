@@ -21,6 +21,7 @@ import {
   type IdentityInput,
   type ProfileInput,
 } from "@/lib/media/schemas";
+import { useAuth } from "@/lib/auth/client";
 import { resetMedia, updateMedia, useHydrated, useMediaState } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
 import { mediaButton } from "../ui/button-styles";
@@ -54,10 +55,10 @@ function Capture({ label, done, onDone, Icon, invalid }: { label: string; done: 
   );
 }
 
-function IdentityStep({ onNext }: { onNext: (v: IdentityInput) => void }) {
+function IdentityStep({ defaultName, onNext }: { defaultName: string; onNext: (v: IdentityInput) => void }) {
   const form = useForm<IdentityInput>({
     resolver: zodResolver(identitySchema),
-    defaultValues: { docType: "nid", number: "", fullName: "", dob: "", front: false as true, back: false, selfie: false as true, consent: false as true },
+    defaultValues: { docType: "nid", number: "", fullName: defaultName, dob: "", front: false as true, back: false, selfie: false as true, consent: false as true },
   });
   const doc = useWatch({ control: form.control, name: "docType" });
   const [front, back, selfie] = useWatch({ control: form.control, name: ["front", "back", "selfie"] });
@@ -367,6 +368,7 @@ function ProfileStep({ takenHandles, defaultName, onBack, onDone }: { takenHandl
 
 export function Onboarding({ categories, takenHandles }: { categories: { id: CategoryId; bn: string; blurb: string }[]; takenHandles: string[] }) {
   const hydrated = useHydrated();
+  const { account } = useAuth();
   const profile = useMediaState((s) => s.profile);
   const [step, setStep] = useState(0);
   const [identity, setIdentity] = useState<IdentityInput | null>(null);
@@ -383,14 +385,15 @@ export function Onboarding({ categories, takenHandles }: { categories: { id: Cat
           @{profile.handle} · {profile.district} — পরিচয় যাচাইকৃত। এবার প্রথম দক্ষতার প্রমাণ পোস্ট করুন; কমিউনিটি যাচাই করলেই কাজ আসতে শুরু করবে।
         </p>
         <p className="mx-auto mt-3 max-w-md rounded-xl bg-slate-50 px-3 py-2 text-xs text-text-muted">
-          ডেমো: ব্যাকএন্ড যুক্ত না হওয়া পর্যন্ত অ্যাপের বাকি অংশ নমুনা অ্যাকাউন্ট (মাহির) দিয়ে দেখানো হয়।
+          ডেমো: ব্যাকএন্ড যুক্ত না হওয়া পর্যন্ত ফিড, ড্যাশবোর্ড ও ওয়ালেটের নমুনা তথ্য প্রতিষ্ঠাতার (মাহির) প্রোফাইল থেকে দেখানো হয়; আপনার লাইক, পোস্ট ও বার্তা আপনার অ্যাকাউন্টেই জমা থাকে।
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <Link href="/media/post/new" className={mediaButton({ variant: "primary" })}>প্রথম দক্ষতা পোস্ট করুন</Link>
+          <Link href="/media/me" className={mediaButton({ variant: "quiet" })}>আমার প্রোফাইল</Link>
           <Link href="/media" className={mediaButton({ variant: "quiet" })}>ফিড দেখুন</Link>
         </div>
         <button type="button" onClick={() => { resetMedia(); setStep(0); }} className="mt-6 text-xs font-semibold text-text-muted underline-offset-2 hover:underline">
-          ডেমো আবার শুরু করুন (সব স্থানীয় তথ্য মুছবে)
+          প্রোফাইল মুছে আবার শুরু করুন (এই অ্যাকাউন্টের মিডিয়া-তথ্য মুছবে)
         </button>
       </div>
     );
@@ -410,6 +413,7 @@ export function Onboarding({ categories, takenHandles }: { categories: { id: Cat
       </ol>
       {step === 0 && (
         <IdentityStep
+          defaultName={account?.name ?? ""}
           onNext={(v) => {
             setIdentity(v);
             setStep(1);

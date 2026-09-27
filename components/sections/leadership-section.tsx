@@ -154,7 +154,7 @@ export function LeadershipSection() {
         </div>
 
         <a
-          href="/login"
+          href="/signup?role=researcher"
           className="shrink-0 rounded-xl bg-bd-green px-5 py-2.5 font-mono text-xs font-bold text-white uppercase shadow-sm transition-colors hover:bg-bd-green-dark"
         >
           Apply for Fellowship

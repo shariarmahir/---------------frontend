@@ -11,7 +11,7 @@ A single deliverable: the **Kandari-Lab mother-company marketing/portfolio websi
 **Out of scope for this repo** (do not build here — separate future repos):
 - The **Shukh** super-app itself (mobile, React Native/Expo — see `Shukh-frontend`/`Shukh-backend`).
 
-**Exception — শিক্ষিতদের মিডিয়া (decided by Mahir, 2026-09-25):** the skill-first social platform is built in this repo, self-contained under `/media/*` with its own shell (`app/media/layout.tsx`), data (`data/media/`), rules (`lib/media/`) and components (`components/media/`). Keep it isolated there so it can move to its own repo later: nothing outside `/media` imports from those folders except the header link. The core loop (post a skill → self-rate → community verifies → hire) comes first. On 2026-09-25 Mahir reversed the earlier exclusions: jobs (free, fair-pay only), civic reports and area alerts, social-work events with sponsors, teams (productive family, university labs, travel, sports), challenges, sticky notes, certificates, a dashboard and wellbeing features (daily Learn→Connect→Create→Apply→Relax plan, break reminders) are now in scope under `/media/*`. Fees stay 5% seller / 5% buyer (confirmed over the ৳2 flat idea). Spec: `docs/superpowers/specs/2026-09-25-shikkhitoder-media-v2-design.md` (supersedes v1). The old `/jibaner-joygan`, `/profile` and `/u/*` pages redirect into it (see `next.config.ts`). Tests: `npm test`.
+**Exception — শিক্ষিতদের মিডিয়া (decided by Mahir, 2026-09-25):** the skill-first social platform is built in this repo, self-contained under `/media/*` with its own shell (`app/media/layout.tsx`), data (`data/media/`), rules (`lib/media/`) and components (`components/media/`). Keep it isolated there so it can move to its own repo later: nothing outside `/media` imports from those folders except the header link. The core loop (post a skill → self-rate → community verifies → hire) comes first. On 2026-09-27 Mahir made the whole platform members-only: every `/media/*` page needs a signed-in Kandari Profile (no public feed browsing); see `PROTECTED_PREFIXES` in `data/auth.ts`. On 2026-09-25 Mahir reversed the earlier exclusions: jobs (free, fair-pay only), civic reports and area alerts, social-work events with sponsors, teams (productive family, university labs, travel, sports), challenges, sticky notes, certificates, a dashboard and wellbeing features (daily Learn→Connect→Create→Apply→Relax plan, break reminders) are now in scope under `/media/*`. Fees stay 5% seller / 5% buyer (confirmed over the ৳2 flat idea). Spec: `docs/superpowers/specs/2026-09-25-shikkhitoder-media-v2-design.md` (supersedes v1). The old `/jibaner-joygan`, `/profile` and `/u/*` pages redirect into it (see `next.config.ts`). Tests: `npm test`.
 
 ---
 
@@ -97,7 +97,12 @@ Brief specifies 16:6 (~2.67:1), an ultra-wide letterbox. At that ratio on a phon
 /rnd                 R&D departments + featured early-stage projects (blind-assist, waste-to-soil)
 /impact               "One Village, One Medical Health Care Center" program, Kazaikat tie-in, stats
 /team                Leadership + department rosters
-/profile             Kandari Profile — auth-gated subscriber dashboard (see §9)
+/login, /signup      Kandari Profile auth — phone OTP first, email password or one-time link as fallback;
+                      3-step sign-up (details → verify phone → sectors/products/consent). Mock gateway
+                      (no backend yet): lib/auth/core.ts (pure, tested) + lib/auth/client.ts (browser
+                      storage); demo accounts in data/auth.ts. proxy.ts guards PROTECTED_PREFIXES.
+/account             Kandari Profile — auth-gated subscriber dashboard (was /profile, which now
+                      redirects to /media/me)
 /contact
 /cholo-bangladesh-gori  "চলো বাংলাদেশ গড়ি" V3 — systems-simulation game over the dossier's 32 problems
                       (BD-001…BD-032). Headline mode: mission — a 2–4 player co-operative crisis game

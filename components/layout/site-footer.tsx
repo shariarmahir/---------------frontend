@@ -116,14 +116,17 @@ export function SiteFooter() {
               microchip blueprints.
             </p>
 
-            <form className="space-y-2">
+            {/* Subscribing is a Kandari Profile: the email carries over to sign-up. */}
+            <form action="/signup" method="get" className="space-y-2">
               <div className="flex">
                 <label htmlFor="bulletin-email" className="sr-only">
                   Email address
                 </label>
                 <input
                   id="bulletin-email"
+                  name="email"
                   type="email"
+                  autoComplete="email"
                   placeholder="user@domain.bd"
                   className="w-full rounded-l-lg border border-slate-300 bg-slate-50 px-3 py-2 font-mono text-xs text-text-primary focus:ring-1 focus:ring-bd-green focus:outline-none"
                 />

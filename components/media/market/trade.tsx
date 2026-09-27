@@ -22,6 +22,7 @@ import { mediaButton } from "../ui/button-styles";
 import { Taka } from "../ui/numerals";
 import { defaultMethod, escrowTxn, payBn, PayPicker } from "../wallet/pay";
 import { useWallet } from "../wallet/use-wallet";
+import { useRequireAccount } from "@/components/auth/use-require-account";
 
 type TradeListing = Pick<Listing, "id" | "title" | "price" | "unit" | "negotiable" | "floor" | "seller">;
 
@@ -196,6 +197,7 @@ export function OfferDialog({
 
 /** Buy / Make offer buttons with their dialogs. */
 export function TradeButtons({ listing, band, size = "sm", stacked }: { listing: TradeListing; band: PriceBand; size?: "sm" | "md" | "lg"; stacked?: boolean }) {
+  const ensure = useRequireAccount();
   const [buy, setBuy] = useState(false);
   const [offer, setOffer] = useState(false);
   if (listing.seller === CURRENT_USER_HANDLE) {
@@ -208,11 +210,11 @@ export function TradeButtons({ listing, band, size = "sm", stacked }: { listing:
   return (
     <>
       <div className={cn("relative z-10 grid gap-2", listing.negotiable ? "grid-cols-2" : "grid-cols-1", stacked && "grid-cols-1")}>
-        <button type="button" onClick={() => setBuy(true)} className={mediaButton({ variant: "primary", size })}>
+        <button type="button" onClick={() => ensure("কিনতে") && setBuy(true)} className={mediaButton({ variant: "primary", size })}>
           <ShoppingBag aria-hidden /> কিনুন
         </button>
         {listing.negotiable && (
-          <button type="button" onClick={() => setOffer(true)} className={mediaButton({ variant: "outline", size })}>
+          <button type="button" onClick={() => ensure("দর প্রস্তাব দিতে") && setOffer(true)} className={mediaButton({ variant: "outline", size })}>
             <Handshake aria-hidden /> দর প্রস্তাব
           </button>
         )}

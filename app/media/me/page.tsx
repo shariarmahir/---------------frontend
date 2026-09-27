@@ -1,7 +1,15 @@
-import { redirect } from "next/navigation";
-import { CURRENT_USER_HANDLE } from "@/data/media/users";
+import type { Metadata } from "next";
+import { MyProfile } from "@/components/media/profile/me";
+import { categories } from "@/data/media/categories";
+import { people } from "@/data/media/users";
 
-/** "আমি" — the signed-in viewer's own profile. */
+export const metadata: Metadata = { title: "আমার প্রোফাইল" };
+
+/** "আমি" — the signed-in account's own profile (sign-in is enforced by the layout's guard). */
 export default function MePage() {
-  redirect(`/media/u/${CURRENT_USER_HANDLE}`);
+  return (
+    <div className="mx-auto max-w-3xl">
+      <MyProfile handles={people.map((p) => p.handle)} categoryNames={Object.fromEntries(categories.map((c) => [c.id, c.bn]))} />
+    </div>
+  );
 }

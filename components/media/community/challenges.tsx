@@ -18,6 +18,7 @@ import { entrySchema, type EntryInput } from "@/lib/media/schemas";
 import { updateMedia, useMediaState } from "@/lib/media/store";
 import { mediaButton } from "../ui/button-styles";
 import { DateText, Num, Taka } from "../ui/numerals";
+import { useRequireAccount } from "@/components/auth/use-require-account";
 
 function EntryDialog({ challenge, open, onOpenChange }: { challenge: Challenge; open: boolean; onOpenChange: (o: boolean) => void }) {
   const form = useForm<EntryInput>({ resolver: zodResolver(entrySchema), defaultValues: { summary: "", link: "", team: "" } });
@@ -71,6 +72,7 @@ function EntryDialog({ challenge, open, onOpenChange }: { challenge: Challenge; 
 }
 
 export function ChallengeCard({ challenge }: { challenge: Challenge }) {
+  const ensure = useRequireAccount();
   const [open, setOpen] = useState(false);
   const entry = useMediaState((s) => s.entries[challenge.id]);
   const by = getPerson(challenge.by);
@@ -107,7 +109,7 @@ export function ChallengeCard({ challenge }: { challenge: Challenge }) {
             <CircleCheck className="size-4" aria-hidden /> জমা দিয়েছেন
           </span>
         ) : (
-          <button type="button" onClick={() => setOpen(true)} className={mediaButton({ variant: "primary", size: "sm" })}>
+          <button type="button" onClick={() => ensure("চ্যালেঞ্জে অংশ নিতে") && setOpen(true)} className={mediaButton({ variant: "primary", size: "sm" })}>
             <Upload aria-hidden /> অংশ নিন
           </button>
         )}

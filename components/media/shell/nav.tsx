@@ -137,7 +137,7 @@ export function LeftRail({ unreadSeed, me }: { unreadSeed: UnreadSeed; me: strin
         </p>
         <p className="text-xs leading-relaxed text-text-muted">ভুয়া প্রোফাইল নেই — তাই প্রতিটি রেটিং একজন সত্যিকারের মানুষের।</p>
         <Link href="/media/onboarding" className="text-xs font-semibold text-bd-green hover:underline">
-          নতুন অ্যাকাউন্ট খোলা দেখুন →
+          দক্ষতা-প্রোফাইল খুলুন →
         </Link>
       </div>
       <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 px-1 text-[11px] text-text-muted">
@@ -203,7 +203,7 @@ export function MobileMenu({ unreadSeed, me }: { unreadSeed: UnreadSeed; me: str
         </div>
         <div className="mt-2 space-y-3 border-t border-card-border px-4 py-4">
           <NumeralsToggle />
-          <Link href="/media/onboarding" className="block text-sm font-semibold text-bd-green">নতুন অ্যাকাউন্ট খোলা দেখুন →</Link>
+          <Link href="/media/onboarding" className="block text-sm font-semibold text-bd-green">দক্ষতা-প্রোফাইল খুলুন →</Link>
           <Link href="/media/settings" className="block text-sm text-text-muted">গোপনীয়তা ও সময়</Link>
           <Link href="/media/credits" className="block text-sm text-text-muted">ছবির কৃতজ্ঞতা</Link>
           <Link href="/" className="block text-sm text-text-muted">কাণ্ডারী-ল্যাব হোম</Link>

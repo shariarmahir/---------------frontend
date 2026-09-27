@@ -19,6 +19,7 @@ import { DateText, Num, Taka } from "../ui/numerals";
 import { PersonAvatar } from "../ui/person";
 import { StatusBadge } from "../ui/trust";
 import { skillStatus } from "@/lib/media/skill";
+import { useRequireAccount } from "@/components/auth/use-require-account";
 
 /** Apply with a short note; the profile goes with it as the portfolio. */
 function ApplyDialog({ job, open, onOpenChange }: { job: Job; open: boolean; onOpenChange: (o: boolean) => void }) {
@@ -84,6 +85,7 @@ function ApplyDialog({ job, open, onOpenChange }: { job: Job; open: boolean; onO
 }
 
 export function JobCard({ job }: { job: Job }) {
+  const ensure = useRequireAccount();
   const [open, setOpen] = useState(false);
   const appliedAt = useMediaState((s) => s.applied[job.id]);
   const own = job.poster === CURRENT_USER_HANDLE;
@@ -148,7 +150,7 @@ export function JobCard({ job }: { job: Job }) {
             <CircleCheck className="size-4" aria-hidden /> আবেদন করেছেন
           </span>
         ) : (
-          <button type="button" onClick={() => setOpen(true)} className={mediaButton({ variant: "primary", size: "sm" })}>
+          <button type="button" onClick={() => ensure("আবেদন করতে") && setOpen(true)} className={mediaButton({ variant: "primary", size: "sm" })}>
             <Send aria-hidden /> আবেদন করুন
           </button>
         )}

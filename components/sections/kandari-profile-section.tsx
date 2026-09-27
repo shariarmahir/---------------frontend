@@ -1,8 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
 import { Icon } from "@/components/ui/icon";
+import { districts } from "@/data/districts";
+import { useAuth } from "@/lib/auth/client";
 
 const TIERS = [
   {
@@ -37,17 +40,6 @@ const TIERS = [
   },
 ];
 
-const DISTRICTS = [
-  "Dhaka District",
-  "Chittagong",
-  "Sylhet",
-  "Rangpur",
-  "Rajshahi",
-  "Khulna",
-  "Barisal",
-  "Mymensingh",
-];
-
 /**
  * Join Kandari Profile — the subscriber conversion section.
  *
@@ -70,6 +62,10 @@ const DISTRICTS = [
  */
 export function KandariProfileSection() {
   const [tier, setTier] = useState("citizen");
+  const [email, setEmail] = useState("");
+  const [district, setDistrict] = useState("");
+  const router = useRouter();
+  const { account } = useAuth();
   const emailId = useId();
   const districtId = useId();
   const headingId = useId();
@@ -171,9 +167,21 @@ export function KandariProfileSection() {
             </fieldset>
 
             {/* Sync form. */}
+            {/* Starts sign-up with what was entered here; a member goes to their account. */}
             <form
               aria-labelledby={headingId}
               className="flex flex-col gap-2.5 sm:flex-row"
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (account) {
+                  router.push("/account");
+                  return;
+                }
+                const q = new URLSearchParams({ role: tier });
+                if (email.trim()) q.set("email", email.trim());
+                if (district) q.set("district", district);
+                router.push(`/signup?${q}`);
+              }}
             >
               <div className="flex-1">
                 <label htmlFor={emailId} className="sr-only">
@@ -182,8 +190,10 @@ export function KandariProfileSection() {
                 <input
                   id={emailId}
                   type="email"
-                  required
-                  placeholder="> enter_telemetry_email@domain.bd"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="> enter_email@domain.bd (ঐচ্ছিক)"
                   className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 font-mono text-xs text-slate-900 transition-colors placeholder:text-slate-500 focus:border-signal-orange focus:bg-white focus:ring-3 focus:ring-signal-orange/30 focus:outline-none"
                 />
               </div>
@@ -194,20 +204,25 @@ export function KandariProfileSection() {
                 </label>
                 <select
                   id={districtId}
+                  value={district}
+                  onChange={(e) => setDistrict(e.target.value)}
                   className="w-full cursor-pointer rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 font-mono text-xs text-slate-900 focus:border-signal-orange focus:ring-3 focus:ring-signal-orange/30 focus:outline-none"
                 >
-                  {DISTRICTS.map((d) => (
-                    <option key={d}>{d}</option>
+                  <option value="">জেলা বেছে নিন</option>
+                  {districts.map((d) => (
+                    <option key={d} value={d}>
+                      {d}
+                    </option>
                   ))}
                 </select>
               </div>
 
               <button
                 type="submit"
-                className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-signal-orange px-6 py-3.5 font-grotesk text-xs font-bold text-white uppercase shadow-glow-orange transition-all hover:-translate-y-0.5 hover:bg-amber-600 focus-visible:ring-3 focus-visible:ring-signal-orange/40 focus-visible:outline-none sm:text-sm"
+                className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-signal-orange px-6 py-3.5 font-grotesk text-xs font-bold text-text-primary uppercase shadow-glow-orange transition-all hover:-translate-y-0.5 hover:bg-amber-600 focus-visible:ring-3 focus-visible:ring-signal-orange/40 focus-visible:outline-none sm:text-sm"
               >
-                <Icon name="sync" className="text-base" />
-                Sync Profile
+                <Icon name={account ? "account_circle" : "sync"} className="text-base" />
+                {account ? "My Profile" : "Join Profile"}
               </button>
             </form>
 

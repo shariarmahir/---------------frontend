@@ -17,6 +17,7 @@ import { hireSchema, type HireInput } from "@/lib/media/schemas";
 import { mediaButton } from "../ui/button-styles";
 import { Taka } from "../ui/numerals";
 import { startDeal } from "./start-deal";
+import { useRequireAccount } from "@/components/auth/use-require-account";
 
 export interface HireTarget {
   handle: string;
@@ -164,6 +165,7 @@ export function HireDialog({ target, open, onOpenChange }: { target: HireTarget;
  * above the tab bar on phones — always one tap away while scrolling.
  */
 export function HireBar({ target }: { target: HireTarget }) {
+  const ensure = useRequireAccount();
   const [open, setOpen] = useState(false);
   const message = `/media/messages${target.threadId ? `?t=${target.threadId}` : ""}`;
   return (
@@ -179,7 +181,7 @@ export function HireBar({ target }: { target: HireTarget }) {
           <Clock className="size-4" aria-hidden /> সাধারণত {target.responseTime} উত্তর দেন
         </p>
         <div className="mt-4 space-y-2">
-          <button type="button" onClick={() => setOpen(true)} className={mediaButton({ variant: "primary", size: "lg", className: "w-full" })}>
+          <button type="button" onClick={() => ensure("কাজ দিতে") && setOpen(true)} className={mediaButton({ variant: "primary", size: "lg", className: "w-full" })}>
             <BriefcaseBusiness aria-hidden /> হায়ার করুন
           </button>
           <Link href={message} className={mediaButton({ variant: "quiet", className: "w-full" })}>
@@ -203,7 +205,7 @@ export function HireBar({ target }: { target: HireTarget }) {
             <MessageCircle aria-hidden />
             <span className="sr-only">বার্তা</span>
           </Link>
-          <button type="button" onClick={() => setOpen(true)} className={mediaButton({ variant: "primary", className: target.rate ? "" : "flex-1" })}>
+          <button type="button" onClick={() => ensure("কাজ দিতে") && setOpen(true)} className={mediaButton({ variant: "primary", className: target.rate ? "" : "flex-1" })}>
             <BriefcaseBusiness aria-hidden /> হায়ার করুন
           </button>
         </div>

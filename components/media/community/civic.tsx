@@ -24,6 +24,7 @@ import { choiceClass, selectClass } from "../ui/field-styles";
 import { MediaFrame } from "../ui/media-frame";
 import { Ago, Num } from "../ui/numerals";
 import { PersonAvatar } from "../ui/person";
+import { useRequireAccount } from "@/components/auth/use-require-account";
 
 const severityInfo = {
   high: { bn: "গুরুতর", className: "bg-red-50 text-national-crimson ring-1 ring-red-200" },
@@ -62,6 +63,7 @@ function SolutionForm({ reportId }: { reportId: string }) {
 }
 
 export function CivicCard({ report, live }: { report: CivicReport; live?: boolean }) {
+  const ensure = useRequireAccount();
   const confirmed = useMediaState((s) => Boolean(s.confirmedReports[report.id]));
   const mine = useMediaState((s) => s.mySolutions[report.id] ?? EMPTY);
   const votes = useMediaState((s) => s.solutionVotes);
@@ -121,7 +123,7 @@ export function CivicCard({ report, live }: { report: CivicReport; live?: boolea
             <button
               type="button"
               aria-pressed={confirmed}
-              onClick={() => toggleKey("confirmedReports", report.id)}
+              onClick={() => ensure("রিপোর্ট নিশ্চিত করতে") && toggleKey("confirmedReports", report.id)}
               className={mediaButton({ variant: confirmed ? "outline" : "green", size: "sm" })}
             >
               <ThumbsUp aria-hidden /> {confirmed ? "নিশ্চিত করেছেন" : "আমিও দেখেছি"}
@@ -143,7 +145,7 @@ export function CivicCard({ report, live }: { report: CivicReport; live?: boolea
                   <button
                     type="button"
                     aria-pressed={voted}
-                    onClick={() => toggleKey("solutionVotes", key)}
+                    onClick={() => ensure("ভোট দিতে") && toggleKey("solutionVotes", key)}
                     className={cn("flex h-12 w-11 shrink-0 flex-col items-center justify-center rounded-lg border text-xs font-bold transition-colors", voted ? "border-bd-green bg-bd-green-light text-bd-green-dark" : "border-card-border bg-white text-text-secondary hover:border-bd-green/40")}
                   >
                     <ThumbsUp className="size-3.5" aria-hidden />
@@ -166,6 +168,7 @@ export function CivicCard({ report, live }: { report: CivicReport; live?: boolea
 }
 
 export function ReportButton({ defaultKind }: { defaultKind?: CivicKind }) {
+  const ensure = useRequireAccount();
   const [open, setOpen] = useState(false);
   const anonymousDefault = useMediaState((s) => s.privacy.anonymousReports);
   const defaults: CivicInput = { kind: defaultKind ?? "sanitation", title: "", area: currentUser.area, district: currentUser.district, description: "", severity: "medium", anonymous: anonymousDefault };
@@ -181,7 +184,7 @@ export function ReportButton({ defaultKind }: { defaultKind?: CivicKind }) {
 
   return (
     <>
-      <button type="button" onClick={() => { form.reset(defaults); setOpen(true); }} className={mediaButton({ variant: "primary" })}>
+      <button type="button" onClick={() => { if (!ensure("রিপোর্ট করতে")) return; form.reset(defaults); setOpen(true); }} className={mediaButton({ variant: "primary" })}>
         <Plus aria-hidden /> রিপোর্ট করুন
       </button>
       <Dialog open={open} onOpenChange={setOpen}>

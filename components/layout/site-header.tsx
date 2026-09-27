@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Puzzle } from "lucide-react";
+import { AccountMenu, AccountSheetLinks } from "@/components/auth/account-menu";
 import { NewsTicker } from "@/components/layout/news-ticker";
 import { RecordDialog } from "@/components/record/record-dialog";
 import { Icon } from "@/components/ui/icon";
@@ -230,27 +231,8 @@ export function SiteHeader() {
                 </span>
               </Link>
 
-              <Link
-                href="/login"
-                aria-label="Kandari Account Profile"
-                className="relative hidden size-10 items-center justify-center rounded-full border border-slate-200 bg-slate-100/90 text-slate-600 shadow-2xs transition-all duration-200 hover:border-emerald-600 hover:bg-emerald-50/70 hover:text-emerald-800 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:outline-none sm:flex"
-              >
-                <svg
-                  aria-hidden
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  className="size-5"
-                >
-                  <path
-                    d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <span className="absolute right-0 bottom-0 size-2.5 rounded-full bg-emerald-500 shadow-xs ring-2 ring-white" />
-              </Link>
+              {/* Account — sign-in link, or the signed-in avatar menu. */}
+              <AccountMenu className="hidden sm:flex" />
 
               {/* Mobile menu — the nav row below is desktop-only. */}
               <Sheet>
@@ -335,15 +317,7 @@ export function SiteHeader() {
                     </Link>
                   </SheetClose>
 
-                  <SheetClose asChild>
-                    <Link
-                      href="/login"
-                      className="mt-space-sm flex items-center justify-center gap-space-xs rounded-lg bg-bdgreen-900 px-space-md py-space-sm text-sm font-bold text-white transition-colors hover:bg-bdgreen-800 sm:hidden"
-                    >
-                      <Icon name="person" className="text-[18px]" />
-                      Kandari Member Portal
-                    </Link>
-                  </SheetClose>
+                  <AccountSheetLinks wrap={(node) => <SheetClose asChild>{node}</SheetClose>} />
 
                   <p className="mt-space-lg font-bengali text-xs font-semibold text-bdgreen-900">
                     {NAZRUL_MOTTO}

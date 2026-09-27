@@ -21,14 +21,17 @@ import { mediaButton } from "../ui/button-styles";
 import { choiceClass, selectClass } from "../ui/field-styles";
 import { Num } from "../ui/numerals";
 import { PersonAvatar } from "../ui/person";
+import { useRequireAccount } from "@/components/auth/use-require-account";
 
 export function TeamCard({ team }: { team: Team }) {
+  const ensure = useRequireAccount();
   const status = useMediaState((s) => s.teamStatus[team.id]);
   const lead = getPerson(team.lead) ?? currentUser;
   const mine = team.lead === currentUser.handle || team.members.includes(currentUser.handle) || status === "member";
   const known = team.members.map((h) => getPerson(h)).filter((p) => p !== undefined);
 
   function request() {
+    if (!ensure("টিমে যোগ দিতে")) return;
     updateMedia((s) => ({ ...s, teamStatus: { ...s.teamStatus, [team.id]: "requested" } }));
     toast.success("যোগদানের অনুরোধ গেছে", { description: `${lead.nameBn} আপনার প্রোফাইল দেখে জানাবেন।` });
   }
@@ -77,6 +80,7 @@ export function TeamCard({ team }: { team: Team }) {
 const defaults: TeamInput = { kind: "project", name: "", district: currentUser.district, about: "", tags: "" };
 
 export function CreateTeamButton() {
+  const ensure = useRequireAccount();
   const [open, setOpen] = useState(false);
   const form = useForm<TeamInput>({ resolver: zodResolver(teamSchema), defaultValues: defaults });
   function onSubmit(v: TeamInput) {
@@ -99,7 +103,7 @@ export function CreateTeamButton() {
   }
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} className={mediaButton({ variant: "primary" })}>
+      <button type="button" onClick={() => ensure("টিম খুলতে") && setOpen(true)} className={mediaButton({ variant: "primary" })}>
         <Plus aria-hidden /> টিম বানান
       </button>
       <Dialog open={open} onOpenChange={setOpen}>

@@ -21,6 +21,7 @@ import { JobCard } from "./job-card";
 import { mediaButton } from "../ui/button-styles";
 import { choiceClass, selectClass, toNumber } from "../ui/field-styles";
 import { Taka } from "../ui/numerals";
+import { useRequireAccount } from "@/components/auth/use-require-account";
 
 const defaults: JobInput = {
   title: "",
@@ -40,6 +41,7 @@ const defaults: JobInput = {
 
 /** Free job posting. Pay is mandatory and must clear the fair-pay floor. */
 export function PostJobButton() {
+  const ensure = useRequireAccount();
   const [open, setOpen] = useState(false);
   const schema = useMemo(() => jobSchema((s) => getCategory(s).band), []);
   const form = useForm<JobInput>({ resolver: zodResolver(schema), defaultValues: { ...defaults, org: currentUser.nameBn } });
@@ -73,7 +75,7 @@ export function PostJobButton() {
 
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} className={mediaButton({ variant: "primary" })}>
+      <button type="button" onClick={() => ensure("কাজের বিজ্ঞাপন দিতে") && setOpen(true)} className={mediaButton({ variant: "primary" })}>
         <Plus aria-hidden /> কাজের পোস্ট দিন
       </button>
       <Dialog open={open} onOpenChange={setOpen}>

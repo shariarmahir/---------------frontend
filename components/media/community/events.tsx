@@ -21,6 +21,7 @@ import { mediaButton } from "../ui/button-styles";
 import { choiceClass, selectClass, toNumber } from "../ui/field-styles";
 import { DateText, Num } from "../ui/numerals";
 import { PersonAvatar } from "../ui/person";
+import { useRequireAccount } from "@/components/auth/use-require-account";
 
 const EMPTY: Sponsor[] = [];
 
@@ -73,6 +74,7 @@ function SponsorDialog({ event, open, onOpenChange }: { event: CommunityEvent; o
 }
 
 export function EventCard({ event }: { event: CommunityEvent }) {
+  const ensure = useRequireAccount();
   const joined = useMediaState((s) => Boolean(s.joinedEvents[event.id]));
   const extra = useMediaState((s) => s.sponsorships[event.id] ?? EMPTY);
   const [sponsoring, setSponsoring] = useState(false);
@@ -139,7 +141,7 @@ export function EventCard({ event }: { event: CommunityEvent }) {
             <PersonAvatar person={organizer} size="xs" /> আয়োজক: <span className="font-semibold">{organizer.nameBn}</span>
           </Link>
           <div className="flex gap-2">
-            <button type="button" onClick={() => setSponsoring(true)} className={mediaButton({ variant: "quiet", size: "sm" })}>
+            <button type="button" onClick={() => ensure("স্পনসর করতে") && setSponsoring(true)} className={mediaButton({ variant: "quiet", size: "sm" })}>
               <HandHeart aria-hidden /> স্পনসর
             </button>
             {own ? (
@@ -149,6 +151,7 @@ export function EventCard({ event }: { event: CommunityEvent }) {
                 type="button"
                 aria-pressed={joined}
                 onClick={() => {
+                  if (!ensure("উদ্যোগে যোগ দিতে")) return;
                   toggleKey("joinedEvents", event.id);
                   if (!joined) toast.success("যোগ দিয়েছেন", { description: "আগের দিন মনে করিয়ে দেওয়া হবে।" });
                 }}
@@ -170,6 +173,7 @@ const eventDefaults: EventInput = { kind: "cleanup", title: "", area: "", distri
 
 /** Lead something: anyone can start a social-work event. */
 export function CreateEventButton() {
+  const ensure = useRequireAccount();
   const [open, setOpen] = useState(false);
   const form = useForm<EventInput>({ resolver: zodResolver(eventSchema), defaultValues: eventDefaults });
   function onSubmit(v: EventInput) {
@@ -194,7 +198,7 @@ export function CreateEventButton() {
   }
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} className={mediaButton({ variant: "primary" })}>
+      <button type="button" onClick={() => ensure("উদ্যোগ শুরু করতে") && setOpen(true)} className={mediaButton({ variant: "primary" })}>
         <Plus aria-hidden /> উদ্যোগ শুরু করুন
       </button>
       <Dialog open={open} onOpenChange={setOpen}>

@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import type { CategoryId, CivicReport, Comment, CommunityEvent, Job, Listing, Message, Post, Sponsor, Team, Txn } from "@/data/media/types";
+import { activeAccountId, subscribeAuth } from "@/lib/auth/client";
 import type { Negotiation } from "./negotiation";
 
 /**
@@ -13,6 +14,10 @@ import type { Negotiation } from "./negotiation";
  *
  * Selectors must return a value already in the state or a primitive —
  * never a freshly built object/array.
+ *
+ * Each Kandari account has its own copy (keyed by account id), so signing
+ * out and in as someone else never shows the last person's likes, wallet or
+ * messages. Signed out, nothing is read or saved.
  *
  * Swap for API calls when a backend exists; keep useMediaState/updateMedia.
  */
@@ -123,7 +128,13 @@ export interface MediaState {
   profile: MyProfile | null;
 }
 
-const STORAGE_KEY = "shikkhitoder-media-v2";
+const BASE_KEY = "shikkhitoder-media-v2";
+
+/** The demo founder keeps the original key, so earlier saved activity stays his. */
+function keyFor(accountId: string | null): string | null {
+  if (!accountId) return null;
+  return accountId === "acc-mahir" ? BASE_KEY : `${BASE_KEY}:${accountId}`;
+}
 
 const initialState: MediaState = Object.freeze({
   applied: {},
@@ -161,6 +172,8 @@ const initialState: MediaState = Object.freeze({
 
 let state: MediaState = initialState;
 let loaded = false;
+/** Storage key of the account the state was loaded for. */
+let scope: string | null = null;
 const listeners = new Set<() => void>();
 
 function emit() {
@@ -170,8 +183,11 @@ function emit() {
 function load() {
   if (loaded || typeof window === "undefined") return;
   loaded = true;
+  scope = keyFor(activeAccountId());
+  state = initialState;
+  if (!scope) return;
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const raw = window.localStorage.getItem(scope);
     if (raw) {
       const saved = JSON.parse(raw) as Partial<MediaState>;
       state = { ...initialState, ...saved, privacy: { ...defaultPrivacy, ...saved.privacy } };
@@ -183,8 +199,9 @@ function load() {
 
 /** False when the browser refused to save (private mode, storage full). */
 function persist(): boolean {
+  if (!scope) return false;
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    window.localStorage.setItem(scope, JSON.stringify(state));
     return true;
   } catch {
     // The change still applies for this visit.
@@ -192,24 +209,40 @@ function persist(): boolean {
   }
 }
 
-function onStorage(e: StorageEvent) {
-  if (e.key !== STORAGE_KEY) return;
+function reload() {
   loaded = false;
-  state = initialState;
   load();
   emit();
 }
+
+function onStorage(e: StorageEvent) {
+  if (e.key && e.key === scope) reload();
+}
+
+/** Another account signed in (or out): switch to its copy. */
+function onAuthChange() {
+  if (loaded && keyFor(activeAccountId()) !== scope) reload();
+}
+
+let unsubscribeAuth: (() => void) | null = null;
 
 function subscribe(listener: () => void) {
   if (!loaded) {
     load();
     queueMicrotask(emit);
   }
-  if (listeners.size === 0) window.addEventListener("storage", onStorage);
+  if (listeners.size === 0) {
+    window.addEventListener("storage", onStorage);
+    unsubscribeAuth = subscribeAuth(onAuthChange);
+  }
   listeners.add(listener);
   return () => {
     listeners.delete(listener);
-    if (listeners.size === 0) window.removeEventListener("storage", onStorage);
+    if (listeners.size === 0) {
+      window.removeEventListener("storage", onStorage);
+      unsubscribeAuth?.();
+      unsubscribeAuth = null;
+    }
   };
 }
 

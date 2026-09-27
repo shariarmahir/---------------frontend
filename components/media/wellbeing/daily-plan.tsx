@@ -6,6 +6,7 @@ import { updateMedia, useHydrated, useMediaState } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
 import { Num } from "../ui/numerals";
 import { useMinutesToday } from "./usage";
+import { useRequireAccount } from "@/components/auth/use-require-account";
 
 /** Learn → Connect → Create → Apply → Relax: a day on the platform, then off it. */
 export const planSteps: { id: string; bn: string; hint: string; href: string; Icon: LucideIcon }[] = [
@@ -31,6 +32,7 @@ export function toggleStep(id: string) {
 }
 
 export function DailyPlan({ compact }: { compact?: boolean }) {
+  const ensure = useRequireAccount();
   const hydrated = useHydrated();
   const plan = useMediaState((s) => s.plan);
   const minutes = useMinutesToday();
@@ -58,7 +60,7 @@ export function DailyPlan({ compact }: { compact?: boolean }) {
                 role="checkbox"
                 aria-checked={on}
                 aria-label={`${bn} — সম্পন্ন`}
-                onClick={() => toggleStep(id)}
+                onClick={() => ensure("দিনের পরিকল্পনা রাখতে") && toggleStep(id)}
                 className={cn(
                   "flex size-7 shrink-0 items-center justify-center rounded-lg border-2 transition-colors",
                   on ? "border-bd-green bg-bd-green text-white" : "border-card-border text-transparent hover:border-bd-green/50",
