@@ -81,11 +81,12 @@ export function NewsTicker() {
             )}
             <Link
               href={item.href}
-              className="group/tick flex min-w-0 items-center gap-1.5 rounded-sm font-bengali text-xs text-slate-700 hover:text-bd-green focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
+              // Set for the header's ink strip: light text, gold call to action.
+              className="group/tick flex min-w-0 items-center gap-1.5 rounded-sm font-bengali text-xs text-white/85 hover:text-white focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
             >
               {/* Truncates on narrow strips; the call to action never does. */}
               <span className="truncate">{item.text}</span>
-              <span className="inline-flex shrink-0 items-center gap-0.5 font-semibold whitespace-nowrap text-bdorange-600 group-hover/tick:underline">
+              <span className="inline-flex shrink-0 items-center gap-0.5 font-semibold whitespace-nowrap text-signal-orange group-hover/tick:underline">
                 {item.cta}
                 <Icon name="arrow_forward" className="text-[12px]!" />
               </span>

@@ -88,9 +88,11 @@ export function NavIndicators({ className }: { className?: string }) {
           // even though nothing clipped. The extra 8px here is padding the
           // eye can see, not padding it has to infer.
           "group relative block h-12 w-64 shrink-0 overflow-hidden xl:w-[18rem] 2xl:w-[19.5rem]",
-          "rounded-lg border border-slate-200/80 bg-slate-50/60",
-          "transition-colors duration-300 hover:border-slate-300 hover:bg-white",
-          "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:outline-none",
+          // A solid white tile on the gold header: the severity colours
+          // inside (green, gold-text, red) need a light ground to read.
+          "rounded-xl bg-white shadow-tile ring-1 ring-text-primary/10",
+          "transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-tile-lift motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+          "focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:outline-none",
         )}
       >
         {stats.map((stat, i) => (
