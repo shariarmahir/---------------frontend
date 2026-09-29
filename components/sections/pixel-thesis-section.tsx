@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { SectionHeading } from "@/components/ui/section-kit";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 
@@ -78,7 +79,8 @@ const PILLARS: Pillar[] = [
       "AI Waste-to-Soil transformation converting civic municipal refuse into organic agriculture manure and segregated industrial polymers.",
     footLabel: "CYCLE RATE",
     footValue: "48 HR TRANSIT",
-    surface: "bg-text-primary text-white",
+    // Ink on the black ground: a faint white ring keeps its edge.
+    surface: "bg-text-primary text-white ring-1 ring-white/12",
     artClass: "text-bdgreen-500",
     iconTile: "bg-bdgreen-500 text-text-primary",
     glow: "var(--color-bdgreen-500)",
@@ -204,23 +206,14 @@ export function PixelThesisSection() {
   return (
     <section
       id="pixel-map"
-      className="section-band-tinted relative border-y border-slate-200/80 bg-white"
+      className="section-band-tinted relative"
     >
       <div className="mx-auto max-w-7xl px-gutter-x">
-        <div className="mb-10 flex max-w-3xl flex-col gap-2">
-          <h2 className="font-grotesk text-2xl font-bold tracking-tight text-text-primary uppercase sm:text-3xl lg:text-4xl">
-            The Pixel-Map Framework: Solving Bangladesh Pixel by Pixel
-          </h2>
-
-          <p className="font-sans text-base leading-relaxed text-text-secondary">
-            Bangladesh has complex systemic challenges across public health,
-            transport, and energy. Like a high-resolution image formed by
-            individual pixels, every national problem is a discrete data
-            coordinate. By engineering native silicon, sensors, and algorithms
-            for each pixel, we auto-enhance the entire digital canvas of
-            Bangladesh.
-          </p>
-        </div>
+        <SectionHeading
+          tone="dark"
+          title="The Pixel-Map Framework: Solving Bangladesh Pixel by Pixel"
+          lead="Bangladesh has complex systemic challenges across public health, transport, and energy. Like a high-resolution image formed by individual pixels, every national problem is a discrete data coordinate. By engineering native silicon, sensors, and algorithms for each pixel, we auto-enhance the entire digital canvas of Bangladesh."
+        />
 
         <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {PILLARS.map((pillar) => (
@@ -237,12 +230,8 @@ export function PixelThesisSection() {
                   pillar.surface,
                 )}
               >
-                {/* Motion-graphic header on a faint pixel grid. */}
+                {/* Motion-graphic header. */}
                 <div className="relative -mx-6 -mt-6 mb-6 h-40">
-                  <div
-                    aria-hidden
-                    className="absolute inset-0 bg-[radial-gradient(currentColor_1px,transparent_1.4px)] bg-size-[14px_14px] opacity-15"
-                  />
                   <div className={cn("absolute inset-x-6 top-6 bottom-10", pillar.artClass)}>
                     <PillarArt kind={pillar.art} />
                   </div>

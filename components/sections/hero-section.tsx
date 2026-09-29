@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { heroPhotos } from "@/data/hero-gallery";
+import { SignalSeam, btn } from "@/components/ui/section-kit";
 
 /**
  * Meta row above the headline — the three facts that qualify the claim
@@ -57,10 +58,10 @@ export function HeroSection() {
   return (
     <section
       id="overview-mission"
-      className="relative w-full border-b border-slate-200/80"
+      className="relative w-full"
     >
       {/* The band — same height as the /products hero. */}
-      <div className="hero-band relative flex w-full items-center overflow-hidden bg-slate-950">
+      <div className="hero-band relative flex w-full items-center overflow-hidden bg-text-primary">
         {heroPhotos.map((photo, i) => (
           <Image
             key={photo.src}
@@ -84,17 +85,16 @@ export function HeroSection() {
           />
         ))}
 
-        {/* Scrim. Dark enough on the left for white text to clear AA over
-            any of the ten frames, fading out to the right so the image
-            stays visible — that open right half is what keeps the
-            two-column balance without a drawn mark in it. */}
+        {/* Scrim in the brand ink. Dark enough on the left for white text
+            to clear AA over any of the ten frames, fading out to the right
+            so the image stays visible. */}
         <div
           aria-hidden
-          className="absolute inset-0 bg-linear-to-r from-slate-950/95 via-slate-950/70 to-slate-950/25"
+          className="absolute inset-0 bg-linear-to-r from-text-primary/95 via-text-primary/70 to-text-primary/20"
         />
         <div
           aria-hidden
-          className="absolute inset-0 bg-linear-to-t from-slate-950/70 via-transparent to-slate-950/25"
+          className="absolute inset-0 bg-linear-to-t from-text-primary/75 via-transparent to-text-primary/25"
         />
 
         {/* ── Claim ─────────────────────────────────────────────── */}
@@ -102,14 +102,16 @@ export function HeroSection() {
           <div className="mx-auto flex w-full max-w-7xl flex-col items-start gap-space-md px-gutter-x lg:gap-space-lg">
             {/* Meta row. Dot separators are decorative, so they are hidden
                 from the accessibility tree and the items read as a list. */}
-            <ul className="flex flex-wrap items-center gap-x-space-sm gap-y-1 font-sans text-label-xs text-slate-300">
+            <ul className="flex flex-wrap items-center gap-2 font-sans text-label-xs text-white/90">
               {META.map((item, i) => (
-                <li key={item} className="flex items-center gap-x-space-sm">
-                  {i > 0 ? (
-                    <span aria-hidden className="text-slate-500">
-                      ·
-                    </span>
-                  ) : null}
+                <li
+                  key={item}
+                  className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 ring-1 ring-white/15 backdrop-blur-sm"
+                >
+                  <span
+                    aria-hidden
+                    className={`size-1.5 rounded-[2px] ${["bg-signal-orange", "bg-bdgreen-500", "bg-white"][i % 3]}`}
+                  />
                   {item}
                 </li>
               ))}
@@ -125,32 +127,21 @@ export function HeroSection() {
               <span className="text-signal-orange">built in Bangladesh.</span>
             </h1>
 
-            <p className="max-w-[46ch] font-sans text-body-md leading-relaxed text-slate-200 lg:text-body-lg">
+            <p className="max-w-[46ch] font-sans text-body-md leading-relaxed text-white/85 lg:text-body-lg">
               Native semiconductors, clinical wearables and rural telemetry —
               engineered for the Golden Two Hours, across all 64 districts.
             </p>
 
-            {/* Link row. Icon plate + label, matching the reference's quiet
-                treatment: these are routes into the work, not conversion
-                buttons, so they carry no fill. */}
-            <div className="flex flex-wrap items-center gap-x-space-lg gap-y-space-sm pt-space-xs">
-              <Link
-                href="#flagship"
-                className="group inline-flex items-center gap-space-sm rounded-lg font-sans text-label-md font-semibold text-white transition-colors hover:text-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange/50 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 focus-visible:outline-none"
-              >
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-white/25 bg-white/10 text-signal-orange backdrop-blur-sm transition-colors group-hover:border-signal-orange/50 group-hover:bg-white/15">
-                  <Icon name="monitor_heart" className="text-[18px]" />
-                </span>
+            {/* Actions: gold for the primary route, a quiet glass pill for
+                the second. */}
+            <div className="flex flex-wrap items-center gap-3 pt-space-xs">
+              <Link href="#flagship" className={btn.gold}>
+                <Icon name="monitor_heart" className="text-[18px]" />
                 Explore the hardware
               </Link>
 
-              <Link
-                href="#kandari-profile"
-                className="group inline-flex items-center gap-space-sm rounded-lg font-sans text-label-md font-semibold text-white transition-colors hover:text-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 focus-visible:outline-none"
-              >
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-white/25 bg-white/10 text-emerald-300 backdrop-blur-sm transition-colors group-hover:border-emerald-300/50 group-hover:bg-white/15">
-                  <Icon name="person_add" className="text-[18px]" />
-                </span>
+              <Link href="#kandari-profile" className={btn.ghost}>
+                <Icon name="person_add" className="text-[18px] text-bdgreen-500" />
                 Join Kandari Profile
               </Link>
             </div>
@@ -166,30 +157,40 @@ export function HeroSection() {
               onClick={() => setIndex(i)}
               aria-label={`স্লাইড ${i + 1}`}
               aria-current={i === index ? "true" : undefined}
-              className={`h-1 rounded-full transition-all duration-300 ${
-                i === index
-                  ? "w-7 bg-signal-orange"
-                  : "w-3.5 bg-white/40 hover:bg-white/70"
+              className={`relative h-1.5 overflow-hidden rounded-full transition-all duration-300 ${
+                i === index ? "w-10 bg-white/25" : "w-3.5 bg-white/40 hover:bg-white/70"
               }`}
-            />
+            >
+              {/* The active slide's timer, filling over its dwell. Keyed
+                  on the index so it restarts with every slide. */}
+              {i === index ? (
+                <span
+                  key={index}
+                  aria-hidden
+                  style={{ "--dwell": `${SLIDE_MS}ms` } as React.CSSProperties}
+                  className="hero-progress absolute inset-0 rounded-full bg-signal-orange"
+                />
+              ) : null}
+            </button>
           ))}
         </div>
       </div>
 
-      {/* Proof rule. Two columns on phones so the values stay large enough
-          to read; four from lg. `divide-*` rather than borders per cell so
-          the outer edges stay clean. */}
-      <div className="w-full border-t border-slate-200/80 bg-white">
-        <dl className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-slate-200/80 lg:grid-cols-4">
+      {/* Proof strip — the header's ink telemetry strip at full width, with
+          the same gold pulse on its seam. Two columns on phones so the
+          values stay large; four from lg. */}
+      <div className="relative w-full bg-text-primary">
+        <SignalSeam className="top-0" />
+        <dl className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-white/10 lg:grid-cols-4">
           {HERO_STATS.map((stat) => (
             <div
               key={stat.label}
-              className="flex flex-col items-center gap-1 px-space-sm py-space-md text-center max-lg:nth-[2n+1]:border-l-0 max-lg:nth-[n+3]:border-t max-lg:nth-[n+3]:border-slate-200/80"
+              className="flex flex-col items-center gap-1 px-space-sm py-space-md text-center max-lg:nth-[2n+1]:border-l-0 max-lg:nth-[n+3]:border-t max-lg:nth-[n+3]:border-white/10"
             >
-              <dt className="font-mono text-label-xs font-medium tracking-widest text-text-muted uppercase">
+              <dt className="font-mono text-label-xs font-medium tracking-widest text-white/65 uppercase">
                 {stat.label}
               </dt>
-              <dd className="font-grotesk text-lg font-bold text-bd-green sm:text-xl">
+              <dd className="font-grotesk text-lg font-bold text-signal-orange tabular-nums sm:text-xl">
                 {stat.value}
               </dd>
             </div>

@@ -152,7 +152,9 @@ export function AiWidget() {
         className={cn(
           "group ml-auto flex items-center gap-space-xs rounded-full bg-primary",
           "px-space-md py-space-sm font-display text-label-md font-bold text-white",
-          "shadow-lg transition-all duration-300",
+          // The white ring keeps the button distinct over the home page's
+          // green and ink bands, where the green fill alone would vanish.
+          "shadow-ink ring-2 ring-white transition-all duration-300",
           "hover:-translate-y-0.5 hover:bg-emerald-800 hover:shadow-xl active:scale-95",
           "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none",
         )}

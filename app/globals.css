@@ -485,15 +485,10 @@
   );
 }
 
-/* Site header — a solid gold card with a faint ink pixel grid, the same
-   surface as the home page's gold pillar card. */
+/* Site header — a solid gold card, the same surface as the home page's
+   gold pillar card. */
 @utility header-gold {
   background-color: var(--color-signal-orange);
-  background-image: radial-gradient(
-    color-mix(in oklab, var(--color-text-primary) 10%, transparent) 1px,
-    transparent 1.4px
-  );
-  background-size: 14px 14px;
   box-shadow:
     0 1px 2px rgb(3 32 23 / 0.08),
     0 18px 40px -18px color-mix(in oklab, var(--color-bdorange-600) 60%, transparent);
@@ -522,13 +517,32 @@
   28%, 100% { transform: translateX(560%) skewX(-14deg); }
 }
 
-/* A gold pulse travelling the seam under the telemetry strip. */
-.header-signal {
-  animation: header-signal 4.8s linear infinite;
+/* A gold pulse travelling a seam — under the header's telemetry strip and
+   along the top edge of every ink or green band on the home page. */
+.signal-run {
+  animation: signal-run 4.8s linear infinite;
 }
-@keyframes header-signal {
+@keyframes signal-run {
   from { transform: translateX(-100%); }
   to { transform: translateX(400%); }
+}
+
+/* Hero slide timer: the active indicator fills over one slide's dwell. */
+.hero-progress {
+  transform-origin: left;
+  animation: hero-progress var(--dwell, 6s) linear forwards;
+}
+@keyframes hero-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* Console caret. */
+.caret-blink {
+  animation: caret-blink 1.05s steps(1) infinite;
+}
+@keyframes caret-blink {
+  50% { opacity: 0; }
 }
 
 /* SYNC signal bars breathing in sequence. */
@@ -1001,12 +1015,19 @@
   .header-sheen::after {
     display: none;
   }
-  .header-signal,
+  .signal-run,
   .header-bar {
     animation: none !important;
   }
-  .header-signal {
+  .signal-run {
     visibility: hidden;
+  }
+  .caret-blink {
+    animation: none !important;
+  }
+  .hero-progress {
+    animation: none !important;
+    transform: none;
   }
 
   /* Pixel-Map cards: each graphic rests in its finished state. */

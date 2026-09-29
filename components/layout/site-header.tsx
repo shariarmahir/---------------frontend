@@ -298,7 +298,7 @@ export function SiteHeader() {
 
           {/* A signal pulse running along the seam between strip and card. */}
           <span aria-hidden className="absolute inset-x-0 bottom-0 h-px overflow-hidden bg-white/10">
-            <span className="header-signal absolute inset-y-0 left-0 w-1/4 bg-linear-to-r from-transparent via-signal-orange to-transparent" />
+            <span className="signal-run absolute inset-y-0 left-0 w-1/4 bg-linear-to-r from-transparent via-signal-orange to-transparent" />
           </span>
         </div>
 
