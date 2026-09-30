@@ -312,13 +312,15 @@ export function SiteHeader() {
                 so the two side clusters absorb any shortfall instead. */}
             <NavIndicators className="hidden shrink-0 lg:flex" />
 
-            {/* Right cluster — feed, account, mobile menu. */}
+            {/* Right cluster — feed, account, mobile menu. Below lg the bar
+                keeps only the profile face and the menu button; the feed
+                and the recorder live in the pop-up menu there. */}
             <div className="flex shrink-0 items-center gap-2 sm:gap-3">
               {/* Feed link: an ink tile, Bangla name above the tagline. */}
               <Link
                 href="/media"
                 className={cn(
-                  "hidden h-10 shrink-0 flex-col items-center justify-center rounded-xl bg-text-primary px-3 text-center leading-tight min-[400px]:flex sm:px-4",
+                  "hidden h-10 shrink-0 flex-col items-center justify-center rounded-xl bg-text-primary px-4 text-center leading-tight lg:flex",
                   "shadow-ink transition-[transform,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
                   "hover:-translate-y-0.5 hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none motion-reduce:transition-none motion-reduce:hover:translate-y-0",
                 )}
@@ -329,21 +331,8 @@ export function SiteHeader() {
                 </span>
               </Link>
 
-              {/* Account — sign-in link, or the signed-in avatar menu. */}
-              <AccountMenu className="hidden sm:flex" />
-
-              {/* Record — one tap from any phone screen, the red live dot on ink. */}
-              <button
-                type="button"
-                onClick={() => setRecordOpen(true)}
-                aria-label="Record evidence"
-                className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-text-primary [-webkit-tap-highlight-color:transparent] transition-[background-color,scale] duration-200 hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-90 lg:hidden"
-              >
-                <span className="relative flex size-3">
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-national-crimson opacity-75 motion-reduce:hidden" />
-                  <span className="relative inline-flex size-3 rounded-full bg-national-crimson ring-2 ring-white/80" />
-                </span>
-              </button>
+              {/* Account — sign-in face, or the signed-in avatar menu. */}
+              <AccountMenu />
 
               {/* Mobile menu — the nav row below is desktop-only. A short gold
                   pop-up that opens from the button's corner, items rising in
@@ -378,13 +367,41 @@ export function SiteHeader() {
                       </Dialog.Close>
                     </div>
 
+                    {/* The feed and the recorder, moved off the phone bar. */}
+                    <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
+                      <Dialog.Close asChild>
+                        <Link
+                          href="/media"
+                          style={{ "--i": 1 } as CSSProperties}
+                          className="menu-item flex min-h-14 flex-col items-center justify-center rounded-2xl bg-text-primary px-3 py-2 text-center leading-tight shadow-ink [-webkit-tap-highlight-color:transparent] transition-[background-color,scale] duration-200 hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-95"
+                        >
+                          <LabelText text={LABEL_TEXT.media} className="text-[17px] leading-none text-signal-orange" />
+                          <span className="mt-1 font-sans text-xs font-semibold text-white/85">Prioritize your joy.</span>
+                        </Link>
+                      </Dialog.Close>
+                      <Dialog.Close asChild>
+                        <button
+                          type="button"
+                          onClick={() => setRecordOpen(true)}
+                          style={{ "--i": 2 } as CSSProperties}
+                          className="menu-item flex min-h-14 flex-col items-center justify-center gap-1.5 rounded-2xl bg-text-primary px-4 py-2 font-sans text-xs font-bold text-white shadow-ink [-webkit-tap-highlight-color:transparent] transition-[background-color,scale] duration-200 hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-95"
+                        >
+                          <span className="relative flex size-3">
+                            <span className="absolute inline-flex size-full animate-ping rounded-full bg-national-crimson opacity-75 motion-reduce:hidden" />
+                            <span className="relative inline-flex size-3 rounded-full bg-national-crimson ring-2 ring-white/80" />
+                          </span>
+                          Record
+                        </button>
+                      </Dialog.Close>
+                    </div>
+
                     <nav className="grid grid-cols-2 gap-2">
                       {navLinks.map((link, i) => (
                         <Dialog.Close asChild key={link.href}>
                           <a
                             href={link.href}
                             onClick={() => setActiveHref(link.href)}
-                            style={{ "--i": i + 1 } as CSSProperties}
+                            style={{ "--i": i + 3 } as CSSProperties}
                             className={cn(
                               "menu-item flex min-h-11 items-center justify-center rounded-xl px-3 py-2 text-center text-sm transition-[background-color,scale] duration-200 focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:outline-none active:scale-95",
                               activeHref === link.href
@@ -402,7 +419,7 @@ export function SiteHeader() {
                       <Link
                         href="/bangladesh"
                         prefetch={false}
-                        style={{ "--i": navLinks.length + 1 } as CSSProperties}
+                        style={{ "--i": navLinks.length + 3 } as CSSProperties}
                         className="menu-item flex items-center justify-center gap-2 rounded-full bg-linear-to-r from-bd-green to-bdgreen-800 px-3.5 py-2.5 font-bengali text-sm font-bold text-signal-orange shadow-ink transition-[scale] duration-200 active:scale-95"
                       >
                         <DeshLabel className="text-[16px] leading-none" />
@@ -413,7 +430,7 @@ export function SiteHeader() {
                       <Dialog.Close asChild>
                         <Link
                           href="/protibad"
-                          style={{ "--i": navLinks.length + 2 } as CSSProperties}
+                          style={{ "--i": navLinks.length + 4 } as CSSProperties}
                           className="menu-item flex min-h-11 items-center justify-center gap-1.5 rounded-xl bg-national-crimson px-3 py-2 font-bengali text-sm font-bold text-white shadow-red-glow transition-[scale] duration-200 active:scale-95"
                         >
                           <ProtestGlyph className="size-3.5" />
@@ -423,7 +440,7 @@ export function SiteHeader() {
                       <Dialog.Close asChild>
                         <Link
                           href="/nagorik"
-                          style={{ "--i": navLinks.length + 3 } as CSSProperties}
+                          style={{ "--i": navLinks.length + 5 } as CSSProperties}
                           className="menu-item flex min-h-11 items-center justify-center gap-1.5 rounded-xl px-3 py-2 ring-1 ring-text-primary/45 transition-[background-color,scale] duration-200 hover:bg-text-primary/10 active:scale-95"
                         >
                           <ShieldCheck className="size-4 shrink-0" aria-hidden />
@@ -432,28 +449,13 @@ export function SiteHeader() {
                       </Dialog.Close>
                     </div>
 
-                    <Dialog.Close asChild>
-                      <button
-                        type="button"
-                        onClick={() => setRecordOpen(true)}
-                        style={{ "--i": navLinks.length + 4 } as CSSProperties}
-                        className="menu-item flex min-h-11 items-center justify-center gap-2 rounded-xl bg-text-primary px-3 py-2 font-sans text-sm font-bold text-white shadow-ink transition-[scale] duration-200 active:scale-95"
-                      >
-                        <span className="relative flex size-2.5">
-                          <span className="absolute inline-flex size-full animate-ping rounded-full bg-national-crimson opacity-75 motion-reduce:hidden" />
-                          <span className="relative inline-flex size-2.5 rounded-full bg-national-crimson" />
-                        </span>
-                        Record evidence · প্রমাণ রেকর্ড
-                      </button>
-                    </Dialog.Close>
-
-                    <div className="menu-item" style={{ "--i": navLinks.length + 5 } as CSSProperties}>
+                    <div className="menu-item" style={{ "--i": navLinks.length + 6 } as CSSProperties}>
                       <AccountSheetLinks onGold wrap={(node) => <Dialog.Close asChild>{node}</Dialog.Close>} />
                     </div>
 
                     <p
                       className="menu-item px-1 font-bengali text-xs font-semibold text-text-primary/80"
-                      style={{ "--i": navLinks.length + 6 } as CSSProperties}
+                      style={{ "--i": navLinks.length + 7 } as CSSProperties}
                     >
                       {NAZRUL_MOTTO}
                     </p>

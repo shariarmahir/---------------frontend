@@ -63,7 +63,7 @@ export function AccountMenu({ variant = "site", className }: { variant?: "site" 
         href={loginHref(pathname)}
         aria-label="সাইন ইন — Kandari Profile"
         className={cn(
-          "relative flex size-10 items-center justify-center rounded-full border border-slate-200 bg-slate-100/90 text-slate-600 shadow-2xs transition-colors duration-200 hover:border-emerald-600 hover:bg-emerald-50/70 hover:text-emerald-800 focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:outline-none",
+          "relative flex size-10 shrink-0 items-center justify-center rounded-full bg-text-primary text-signal-orange shadow-ink [-webkit-tap-highlight-color:transparent] transition-[background-color,scale] duration-200 hover:scale-105 hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-90",
           className,
         )}
       >
@@ -88,8 +88,13 @@ export function AccountMenu({ variant = "site", className }: { variant?: "site" 
         className={cn("relative shrink-0 rounded-full focus-visible:ring-2 focus-visible:ring-bd-green focus-visible:ring-offset-2 focus-visible:outline-none", className)}
         aria-label={`অ্যাকাউন্ট মেনু — ${account.name}`}
       >
-        <AccountAvatar name={account.name} photo={account.photo} sizes="48px" className={cn(size, "text-base ring-2 ring-white transition-[scale] duration-200 hover:scale-105")} />
-        <span className="absolute right-0 bottom-0 size-2.5 rounded-full bg-emerald-500 ring-2 ring-white" aria-hidden />
+        <AccountAvatar
+          name={account.name}
+          photo={account.photo}
+          sizes="48px"
+          className={cn(size, "text-base transition-[scale] duration-200 hover:scale-105 active:scale-95", variant === "site" ? "ring-2 ring-text-primary" : "ring-2 ring-white")}
+        />
+        <span className={cn("absolute right-0 bottom-0 size-2.5 rounded-full bg-emerald-500 ring-2", variant === "site" ? "ring-signal-orange" : "ring-white")} aria-hidden />
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content
