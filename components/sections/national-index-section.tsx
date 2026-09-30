@@ -22,26 +22,26 @@ const TONE_BAR: Record<RiskTone, string> = {
 };
 
 const TONE_CHIP: Record<RiskTone, string> = {
-  stable: "border-emerald-200 bg-emerald-50 text-primary",
-  watch: "border-orange-200 bg-orange-50 text-signal-text",
-  critical: "border-red-200 bg-red-50 text-crimson",
+  stable: "border-white/12 bg-bdgreen-500/15 text-primary",
+  watch: "border-white/12 bg-signal-orange/15 text-signal-text",
+  critical: "border-white/12 bg-national-crimson/20 text-crimson",
 };
 
 export function NationalIndexSection() {
   return (
     <section
       id="national-index"
-      className="w-full border-b border-border bg-white py-space-xl"
+      className="amar-dark w-full bg-black py-space-xl"
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-space-xl px-gutter">
         <div className="mx-auto flex max-w-3xl flex-col items-center gap-space-xs text-center">
           <span className="font-code-telemetry text-label-sm font-bold tracking-wider text-primary">
             National Sovereign Index
           </span>
-          <h2 className="font-display text-headline-lg-mobile font-bold tracking-tight text-slate-900 sm:text-headline-lg">
+          <h2 className="font-display text-headline-lg-mobile font-bold tracking-tight text-signal-orange sm:text-headline-lg">
             আমরা কাণ্ডারী — Judge Our Own Bangladesh
           </h2>
-          <p className="font-body-md text-body-md text-slate-600">
+          <p className="font-body-md text-body-md text-white/80">
             Where Bangladesh stands today, measured honestly. Figures compiled
             from IMF, World Bank, Bangladesh Bank, BBS, IQAir and national
             industry reporting.
@@ -53,7 +53,7 @@ export function NationalIndexSection() {
           {nationalStats.map((stat) => (
             <article
               key={stat.id}
-              className="flex flex-col gap-space-sm rounded-2xl border border-border bg-slate-50 p-space-md shadow-xs transition-all hover:-translate-y-1 hover:border-emerald-300 hover:shadow-md"
+              className="flex flex-col gap-space-sm rounded-2xl bg-text-primary p-space-md shadow-xs ring-1 ring-white/12 transition-all hover:-translate-y-1 hover:border-white/12 hover:shadow-md"
             >
               <div className="flex items-start justify-between gap-space-sm">
                 <span
@@ -69,8 +69,8 @@ export function NationalIndexSection() {
                     className={cn(
                       "flex items-center gap-0.5 rounded-sm px-1.5 py-0.5 font-code-telemetry text-label-xs font-bold",
                       (stat.deltaDirection === "up") === Boolean(stat.upIsGood)
-                        ? "bg-emerald-50 text-primary"
-                        : "bg-red-50 text-crimson",
+                        ? "bg-bdgreen-500/15 text-primary"
+                        : "bg-national-crimson/20 text-crimson",
                     )}
                   >
                     <Icon
@@ -85,10 +85,10 @@ export function NationalIndexSection() {
               </div>
 
               <div>
-                <h3 className="font-label-md text-label-md font-semibold text-slate-900">
+                <h3 className="font-label-md text-label-md font-semibold text-white">
                   {stat.label}
                 </h3>
-                <span className="block font-display text-body-sm text-slate-500">
+                <span className="block font-display text-body-sm text-white/65">
                   {stat.banglaLabel}
                 </span>
               </div>
@@ -103,7 +103,7 @@ export function NationalIndexSection() {
                   {stat.value}
                 </span>
                 {stat.unit ? (
-                  <span className="font-code-telemetry text-label-sm font-semibold text-slate-500">
+                  <span className="font-code-telemetry text-label-sm font-semibold text-white/65">
                     {stat.unit}
                   </span>
                 ) : null}
@@ -116,7 +116,7 @@ export function NationalIndexSection() {
                 aria-valuemin={0}
                 aria-valuemax={100}
                 aria-label={`${stat.label} index`}
-                className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200"
+                className="h-1.5 w-full overflow-hidden rounded-full bg-white/15"
               >
                 <div
                   className={cn("h-full rounded-full", TONE_BAR[stat.tone])}
@@ -124,10 +124,10 @@ export function NationalIndexSection() {
                 />
               </div>
 
-              <p className="font-body-sm text-body-sm leading-relaxed text-slate-600">
+              <p className="font-body-sm text-body-sm leading-relaxed text-white/80">
                 {stat.caption}
               </p>
-              <span className="mt-auto font-code-telemetry text-label-xs tracking-wide text-slate-500">
+              <span className="mt-auto font-code-telemetry text-label-xs tracking-wide text-white/65">
                 {stat.source}
               </span>
             </article>
@@ -136,7 +136,7 @@ export function NationalIndexSection() {
 
         {/* Bankruptcy / collapse risk console. */}
         <div className="grid grid-cols-1 gap-gutter lg:grid-cols-12">
-          <div className="flex flex-col gap-space-md rounded-2xl border-2 border-red-200 bg-red-50/60 p-space-lg shadow-md lg:col-span-5">
+          <div className="flex flex-col gap-space-md rounded-2xl border-2 border-white/12 bg-national-crimson/15 p-space-lg shadow-md lg:col-span-5">
             <div className="flex items-center gap-space-sm">
               {/* Beeping risk beacon. */}
               <span className="relative flex size-4 shrink-0 items-center justify-center">
@@ -157,7 +157,7 @@ export function NationalIndexSection() {
               </span>
             </div>
 
-            <div className="h-2.5 w-full overflow-hidden rounded-full bg-white">
+            <div className="h-2.5 w-full overflow-hidden rounded-full bg-text-primary ring-1 ring-white/12">
               <div
                 className="h-full animate-pulse rounded-full bg-linear-to-r from-signal to-crimson"
                 style={{ width: `${DEULIA_RISK_SCORE}%` }}
@@ -168,9 +168,9 @@ export function NationalIndexSection() {
               {economicRisks.map((risk) => (
                 <li key={risk.id} className="flex flex-col gap-1">
                   <div className="flex items-center justify-between gap-space-sm">
-                    <span className="font-label-md text-label-md font-semibold text-slate-900">
+                    <span className="font-label-md text-label-md font-semibold text-white">
                       {risk.label}{" "}
-                      <span className="font-display text-body-sm text-slate-500">
+                      <span className="font-display text-body-sm text-white/65">
                         {risk.banglaLabel}
                       </span>
                     </span>
@@ -183,13 +183,13 @@ export function NationalIndexSection() {
                       {risk.score}
                     </span>
                   </div>
-                  <div className="h-1 w-full overflow-hidden rounded-full bg-white">
+                  <div className="h-1 w-full overflow-hidden rounded-full bg-text-primary ring-1 ring-white/12">
                     <div
                       className={cn("h-full rounded-full", TONE_BAR[risk.tone])}
                       style={{ width: `${risk.score}%` }}
                     />
                   </div>
-                  <span className="font-body-sm text-body-sm text-slate-600">
+                  <span className="font-body-sm text-body-sm text-white/80">
                     {risk.detail}
                   </span>
                 </li>

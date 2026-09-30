@@ -36,7 +36,7 @@ export function BdMap() {
   };
 
   return (
-    <section id="map" className="section-band-tinted scroll-mt-40 border-y border-emerald-100 bg-linear-to-b from-mint-subtle to-white">
+    <section id="map" className="section-band-tinted scroll-mt-40 border-y border-white/12 bg-black">
       <div className="mx-auto max-w-7xl px-gutter-x">
         <StoryHeading
           index="০২"
@@ -49,7 +49,7 @@ export function BdMap() {
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
           {/* ── Map ─────────────────────────────────────────── */}
           <div className="story-reveal relative lg:col-span-7">
-            <div className="relative mx-auto max-w-[560px] rounded-[2rem] border border-emerald-100 bg-white/70 p-4 shadow-elevated backdrop-blur-sm sm:p-6">
+            <div className="relative mx-auto max-w-[560px] rounded-[2rem] border border-white/12 bg-text-primary/70 p-4 shadow-elevated backdrop-blur-sm sm:p-6">
               <svg
                 viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
                 className="h-auto w-full"
@@ -90,8 +90,8 @@ export function BdMap() {
                         onMouseEnter={() => setHovered(s.id)}
                         onMouseLeave={() => setHovered(null)}
                         className={cn(
-                          "story-draw cursor-pointer stroke-white transition-[fill] duration-300 outline-none focus-visible:stroke-signal-orange motion-reduce:transition-none",
-                          isSel ? "fill-[url(#bd-active)]" : isHover ? "fill-emerald-400" : "fill-emerald-200",
+                          "story-draw cursor-pointer stroke-black transition-[fill] duration-300 outline-none focus-visible:stroke-signal-orange motion-reduce:transition-none",
+                          isSel ? "fill-signal-orange" : isHover ? "fill-bdgreen-500" : "fill-bd-green",
                         )}
                         strokeWidth={isSel ? 3 : 1.6}
                         strokeLinejoin="round"
@@ -112,7 +112,7 @@ export function BdMap() {
                       textAnchor="middle"
                       className={cn(
                         "pointer-events-none font-bengali text-[17px] font-bold",
-                        isSel ? "fill-white" : "fill-emerald-900",
+                        isSel ? "fill-text-primary" : "fill-white",
                       )}
                     >
                       {d?.nameBn}
@@ -161,7 +161,7 @@ export function BdMap() {
               </svg>
 
               {/* Legend. */}
-              <div className="mt-3 flex flex-wrap items-center justify-center gap-4 font-bengali text-xs text-slate-600">
+              <div className="mt-3 flex flex-wrap items-center justify-center gap-4 font-bengali text-xs text-white/80">
                 <span className="inline-flex items-center gap-1.5"><span className="size-3 rounded-full bg-national-crimson" /> দর্শনীয় স্থান</span>
                 <span className="inline-flex items-center gap-1.5"><span className="size-3 rounded-sm bg-bd-green" /> নির্বাচিত বিভাগ</span>
               </div>
@@ -172,7 +172,7 @@ export function BdMap() {
           <div className="story-reveal lg:sticky lg:top-48 lg:col-span-5">
             <article
               key={pin?.id ?? division.id}
-              className="animate-in fade-in-0 slide-in-from-bottom-2 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-elevated duration-500"
+              className="animate-in fade-in-0 slide-in-from-bottom-2 overflow-hidden rounded-3xl border border-white/12 bg-text-primary ring-1 ring-white/12 shadow-elevated duration-500"
             >
               <StoryPhoto
                 photo={pin ? pin.photo : division.photo}
@@ -186,11 +186,11 @@ export function BdMap() {
                       <Icon name={KIND_ICON[pin.kind]} className="text-[18px]!" />
                       দর্শনীয় স্থান
                     </span>
-                    <h3 className="mt-1 font-bengali text-3xl font-bold text-text-primary">{pin.nameBn}</h3>
+                    <h3 className="mt-1 font-bengali text-3xl font-bold text-white">{pin.nameBn}</h3>
                     <button
                       type="button"
                       onClick={() => setPin(null)}
-                      className="mt-4 inline-flex items-center gap-1 font-bengali text-sm font-semibold text-bd-green hover:underline"
+                      className="mt-4 inline-flex items-center gap-1 font-bengali text-sm font-semibold text-signal-orange hover:underline"
                     >
                       <Icon name="arrow_back" className="text-[16px]!" />
                       {division.nameBn} বিভাগে ফিরুন
@@ -199,19 +199,19 @@ export function BdMap() {
                 ) : (
                   <>
                     <div className="flex items-baseline justify-between gap-3">
-                      <h3 className="font-bengali text-3xl font-bold text-text-primary">
+                      <h3 className="font-bengali text-3xl font-bold text-white">
                         {division.nameBn}
-                        <span className="ml-2 font-sans text-sm font-medium text-slate-400">{division.nameEn}</span>
+                        <span className="ml-2 font-sans text-sm font-medium text-white/65">{division.nameEn}</span>
                       </h3>
-                      <span className="shrink-0 rounded-full bg-bd-green-light px-3 py-1 font-bengali text-sm font-bold text-bd-green">
+                      <span className="shrink-0 rounded-full bg-white/10 px-3 py-1 font-bengali text-sm font-bold text-signal-orange">
                         {division.districts.toLocaleString("bn-BD")} জেলা
                       </span>
                     </div>
                     <p className="mt-1 font-bengali text-base font-semibold text-signal-orange">{division.tagline}</p>
-                    <p className="mt-3 font-bengali text-base leading-relaxed text-text-secondary">{division.body}</p>
+                    <p className="mt-3 font-bengali text-base leading-relaxed text-white/80">{division.body}</p>
                     <ul className="mt-4 flex flex-wrap gap-2">
                       {division.highlights.map((h) => (
-                        <li key={h} className="rounded-full border border-emerald-200 bg-mint-subtle px-3 py-1 font-bengali text-xs font-semibold text-bd-green">
+                        <li key={h} className="rounded-full border border-white/12 bg-text-primary px-3 py-1 font-bengali text-xs font-semibold text-signal-orange">
                           {h}
                         </li>
                       ))}
@@ -232,8 +232,8 @@ export function BdMap() {
                   className={cn(
                     "rounded-xl border px-2 py-2 font-bengali text-sm font-semibold transition-all hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none motion-reduce:hover:translate-y-0",
                     d.id === selected && !pin
-                      ? "border-bd-green bg-bd-green text-white shadow-glow-green"
-                      : "border-slate-200 bg-white text-slate-700 hover:border-bd-green hover:text-bd-green",
+                      ? "border-signal-orange bg-signal-orange text-text-primary shadow-glow-orange"
+                      : "border-white/12 bg-text-primary text-white/80 ring-1 ring-white/12 hover:border-signal-orange hover:text-signal-orange",
                   )}
                 >
                   {d.nameBn}
@@ -241,7 +241,7 @@ export function BdMap() {
               ))}
             </div>
 
-            <p className="mt-3 text-right font-mono text-[10px] text-slate-400">
+            <p className="mt-3 text-right font-mono text-[10px] text-white/65">
               Boundaries: <a href={MAP_SOURCE.url} target="_blank" rel="noopener noreferrer" className="hover:underline">{MAP_SOURCE.name}</a> · {MAP_SOURCE.license}
             </p>
           </div>

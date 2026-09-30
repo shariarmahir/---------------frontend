@@ -8,7 +8,7 @@ export function DeshShell({ current, children }: { current: string; children: Re
   return (
     <>
       <SiteHeader />
-      <main className="relative w-full bg-[#fcfdfd] pt-header lg:pt-header-lg">
+      <main className="relative w-full bg-black pt-header lg:pt-header-lg">
         {children}
         <ChapterPager current={current} />
       </main>

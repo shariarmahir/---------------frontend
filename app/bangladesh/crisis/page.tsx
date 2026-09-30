@@ -17,9 +17,15 @@ export default function BangladeshCrisisPage() {
     <DeshShell current="/bangladesh/crisis">
       <ActOpener act="crisis" photo={ruralBackdrops.floodBoat} />
       <CrisisAttacks />
-      <AmarLossProjection />
-      <AmarEmergency />
-      <AmarCausalLoop />
+      <div className="amar-dark">
+        <AmarLossProjection />
+      </div>
+      <div className="amar-dark">
+        <AmarEmergency />
+      </div>
+      <div className="amar-dark">
+        <AmarCausalLoop />
+      </div>
     </DeshShell>
   );
 }

@@ -3,21 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { motion, useReducedMotion, type Transition } from "framer-motion";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, X } from "lucide-react";
+import { Dialog } from "radix-ui";
 import { AccountMenu, AccountSheetLinks } from "@/components/auth/account-menu";
 import { NewsTicker } from "@/components/layout/news-ticker";
 import { RecordDialog } from "@/components/record/record-dialog";
 import { Icon } from "@/components/ui/icon";
 import { NavIndicators } from "@/components/ui/nav-indicators";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { LabelText } from "@/components/brand/kandari-wordmark";
 import { LABEL_TEXT } from "@/data/logo-text";
 import { NAZRUL_MOTTO, navLinksFor, type NavLink } from "@/data/navigation";
@@ -338,74 +332,106 @@ export function SiteHeader() {
               {/* Account — sign-in link, or the signed-in avatar menu. */}
               <AccountMenu className="hidden sm:flex" />
 
-              {/* Mobile menu — the nav row below is desktop-only. */}
-              <Sheet>
-                <SheetTrigger
+              {/* Mobile menu — the nav row below is desktop-only. A short gold
+                  pop-up that opens from the button's corner, items rising in
+                  one after another (keyframes: menu-* in globals.css). */}
+              <Dialog.Root>
+                <Dialog.Trigger
                   aria-label="Open navigation menu"
-                  className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-text-primary text-signal-orange transition-colors hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none lg:hidden"
+                  className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-text-primary text-signal-orange transition-[background-color,scale] duration-200 hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-90 lg:hidden"
                 >
                   <Icon name="menu" className="text-[20px]" />
-                </SheetTrigger>
-                <SheetContent side="right" className="gap-0 overflow-y-auto p-space-lg">
-                  <SheetTitle>
-                    <BrandLogo className="h-14" />
-                  </SheetTitle>
+                </Dialog.Trigger>
+                <Dialog.Portal>
+                  <Dialog.Overlay className="menu-veil fixed inset-0 z-50 bg-black/55 lg:hidden" />
+                  <Dialog.Content
+                    aria-describedby={undefined}
+                    onOpenAutoFocus={(e) => {
+                      // Focus the panel, not the close button, so no ring shows on open.
+                      e.preventDefault();
+                      (e.currentTarget as HTMLElement).focus();
+                    }}
+                    className="menu-pop fixed top-3 right-3 z-50 flex max-h-[calc(100dvh-1.5rem)] w-[min(21rem,calc(100vw-1.5rem))] flex-col gap-2.5 overflow-y-auto rounded-3xl bg-signal-orange p-3.5 text-text-primary shadow-[0_28px_60px_-18px_rgb(0_0_0/0.7)] focus:outline-none lg:hidden"
+                  >
+                    <div className="menu-item flex items-center justify-between" style={{ "--i": 0 } as CSSProperties}>
+                      <Dialog.Title>
+                        <BrandLogo className="h-12" />
+                      </Dialog.Title>
+                      <Dialog.Close
+                        aria-label="Close menu"
+                        className="flex size-10 items-center justify-center rounded-xl bg-text-primary text-signal-orange transition-[background-color,scale] duration-200 hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-90"
+                      >
+                        <X className="size-5" aria-hidden />
+                      </Dialog.Close>
+                    </div>
 
-                  <nav className="mt-space-md flex flex-col gap-space-xs">
-                    {navLinks.map((link) => (
-                      <SheetClose asChild key={link.href}>
-                        <a
-                          href={link.href}
-                          onClick={() => setActiveHref(link.href)}
-                          className={cn(
-                            "rounded-lg border px-space-md py-space-sm text-sm font-medium transition-colors",
-                            activeHref === link.href
-                              ? "border-text-primary bg-text-primary text-signal-orange"
-                              : "border-slate-200 bg-slate-50 text-text-primary hover:border-signal-orange hover:bg-signal-orange/15",
-                          )}
+                    <nav className="grid grid-cols-2 gap-2">
+                      {navLinks.map((link, i) => (
+                        <Dialog.Close asChild key={link.href}>
+                          <a
+                            href={link.href}
+                            onClick={() => setActiveHref(link.href)}
+                            style={{ "--i": i + 1 } as CSSProperties}
+                            className={cn(
+                              "menu-item flex min-h-11 items-center justify-center rounded-xl px-3 py-2 text-center text-sm transition-[background-color,scale] duration-200 focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:outline-none active:scale-95",
+                              activeHref === link.href
+                                ? "bg-text-primary font-bold text-signal-orange shadow-ink"
+                                : "bg-text-primary/10 font-medium text-text-primary ring-1 ring-text-primary/25 hover:bg-text-primary/15",
+                            )}
+                          >
+                            <NavLabel link={link} />
+                          </a>
+                        </Dialog.Close>
+                      ))}
+                    </nav>
+
+                    <Dialog.Close asChild>
+                      <Link
+                        href="/bangladesh"
+                        prefetch={false}
+                        style={{ "--i": navLinks.length + 1 } as CSSProperties}
+                        className="menu-item flex items-center justify-center gap-2 rounded-full bg-linear-to-r from-bd-green to-bdgreen-800 px-3.5 py-2.5 font-bengali text-sm font-bold text-signal-orange shadow-ink transition-[scale] duration-200 active:scale-95"
+                      >
+                        <DeshLabel className="text-[16px] leading-none" />
+                      </Link>
+                    </Dialog.Close>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <Dialog.Close asChild>
+                        <Link
+                          href="/protibad"
+                          style={{ "--i": navLinks.length + 2 } as CSSProperties}
+                          className="menu-item flex min-h-11 items-center justify-center gap-1.5 rounded-xl bg-national-crimson px-3 py-2 font-bengali text-sm font-bold text-white shadow-red-glow transition-[scale] duration-200 active:scale-95"
                         >
-                          <NavLabel link={link} />
-                        </a>
-                      </SheetClose>
-                    ))}
-                  </nav>
+                          <ProtestGlyph className="size-3.5" />
+                          <LabelText text={LABEL_TEXT.protibad} className="text-[17px] leading-none" />
+                        </Link>
+                      </Dialog.Close>
+                      <Dialog.Close asChild>
+                        <Link
+                          href="/nagorik"
+                          style={{ "--i": navLinks.length + 3 } as CSSProperties}
+                          className="menu-item flex min-h-11 items-center justify-center gap-1.5 rounded-xl px-3 py-2 ring-1 ring-text-primary/45 transition-[background-color,scale] duration-200 hover:bg-text-primary/10 active:scale-95"
+                        >
+                          <ShieldCheck className="size-4 shrink-0" aria-hidden />
+                          <LabelText text={LABEL_TEXT.nagorik} className="text-[17px] leading-none" />
+                        </Link>
+                      </Dialog.Close>
+                    </div>
 
-                  <SheetClose asChild>
-                    <Link
-                      href="/bangladesh"
-                      prefetch={false}
-                      className="mt-space-md flex items-center justify-center gap-2 rounded-full border border-bd-green/20 bg-bd-green-light px-3.5 py-2 font-bengali text-sm font-bold"
+                    <div className="menu-item" style={{ "--i": navLinks.length + 4 } as CSSProperties}>
+                      <AccountSheetLinks onGold wrap={(node) => <Dialog.Close asChild>{node}</Dialog.Close>} />
+                    </div>
+
+                    <p
+                      className="menu-item px-1 font-bengali text-xs font-semibold text-text-primary/80"
+                      style={{ "--i": navLinks.length + 5 } as CSSProperties}
                     >
-                      <Image src="/icons/map.png" alt="" aria-hidden width={512} height={512} className="size-6 shrink-0 object-contain" />
-                      <DeshLabel className="text-[17px] leading-none" />
-                    </Link>
-                  </SheetClose>
-
-                  <SheetClose asChild>
-                    <Link
-                      href="/protibad"
-                      className="mt-space-sm flex items-center justify-center gap-1.5 rounded-lg border-t border-white/20 bg-linear-to-r from-red-600 to-rose-700 px-3.5 py-2 font-bengali text-sm font-bold text-white shadow-red-glow"
-                    >
-                      <ProtestGlyph className="size-3.5" />
-                      <LabelText text={LABEL_TEXT.protibad} className="text-[18px] leading-none" />
-                    </Link>
-                  </SheetClose>
-
-                  <SheetClose asChild>
-                    <Link
-                      href="/nagorik"
-                      className="mt-space-sm flex items-center justify-center gap-2 rounded-lg border border-bd-green/25 bg-white px-3.5 py-2 text-bd-green"
-                    >
-                      <ShieldCheck className="size-4" aria-hidden />
-                      <LabelText text={LABEL_TEXT.nagorik} className="text-[18px] leading-none" />
-                    </Link>
-                  </SheetClose>
-
-                  <AccountSheetLinks wrap={(node) => <SheetClose asChild>{node}</SheetClose>} />
-
-                  <p className="mt-space-lg font-bengali text-xs font-semibold text-bdgreen-900">{NAZRUL_MOTTO}</p>
-                </SheetContent>
-              </Sheet>
+                      {NAZRUL_MOTTO}
+                    </p>
+                  </Dialog.Content>
+                </Dialog.Portal>
+              </Dialog.Root>
             </div>
           </div>
         </div>

@@ -18,7 +18,9 @@ export default function BangladeshSolutionsPage() {
       <SolutionResources />
       <SolutionLetGo />
       <SolutionDuties />
-      <AmarRoadmap />
+      <div className="amar-dark">
+        <AmarRoadmap />
+      </div>
       <SolutionClose />
       <ResearchCard />
     </DeshShell>

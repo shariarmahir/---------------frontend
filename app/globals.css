@@ -333,6 +333,35 @@
   --on-secondary-fixed: #2e1500;
 }
 
+/* The "Amar Bangladesh" evidence sections (components/amar) were written on
+   the light Sovereign Frontier surfaces. Inside .amar-dark the same semantic
+   tokens resolve to the home page's pitch black, ink and gold, so those
+   components sit on the black ground without a rewrite. */
+.amar-dark {
+  --surface: #000000;
+  --surface-dim: #000000;
+  --surface-lowest: #000000;
+  --surface-low: #032017;
+  --surface-container: #05291f;
+  --surface-high: #093126;
+  --surface-highest: #0d3a2d;
+  --on-surface: #ffffff;
+  --on-surface-variant: rgb(255 255 255 / 0.82);
+  --outline: rgb(255 255 255 / 0.66);
+  --outline-variant: rgb(255 255 255 / 0.4);
+  --deep-container: #e4b027;
+  --on-deep-container: #032017;
+  --tertiary: #ff6a5c;
+  --primary: var(--color-bdgreen-500);
+  --crimson: #ff6a5c;
+  --border: rgb(255 255 255 / 0.14);
+  --signal: #e4b027;
+  --signal-text: #e4b027;
+  --secondary-fixed: #e4b027;
+  --on-secondary-fixed: #032017;
+  color: #ffffff;
+}
+
 :root {
   --gori-deep: #062d25;
   --gori-panel: #0c3a30;
@@ -762,6 +791,62 @@
   }
 }
 
+/* Mobile menu pop-up (components/layout/site-header.tsx): opens from the
+   button's corner, closes quicker, items rise in one after another. */
+@keyframes menu-pop-in {
+  from { opacity: 0; transform: translateY(-12px) scale(0.88); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes menu-pop-out {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateY(-8px) scale(0.94); }
+}
+@keyframes menu-item-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes menu-veil-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes menu-veil-out { from { opacity: 1; } to { opacity: 0; } }
+
+.menu-pop {
+  transform-origin: top right;
+}
+.menu-pop[data-state="open"] {
+  animation: menu-pop-in 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.menu-pop[data-state="closed"] {
+  animation: menu-pop-out 0.18s ease-in both;
+}
+.menu-item {
+  animation: menu-item-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 45ms + 90ms);
+}
+.menu-veil[data-state="open"] {
+  animation: menu-veil-in 0.25s ease-out both;
+}
+.menu-veil[data-state="closed"] {
+  animation: menu-veil-out 0.18s ease-in both;
+}
+
+
+/* Product hero waveform (components/products/product-art.tsx): each bar
+   swells and settles in turn. */
+.voice-bar {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: voice-bar 1.6s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+@keyframes voice-bar {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
 /* Slow drift for full-bleed photographs (Ken Burns), hover-paused. */
 @keyframes story-drift {
   from {
@@ -1061,6 +1146,10 @@
     visibility: hidden;
   }
   .caret-blink,
+  .voice-bar,
+  .menu-pop,
+  .menu-item,
+  .menu-veil,
   .pixel-wave {
     animation: none !important;
   }

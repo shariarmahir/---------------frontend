@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { StoryHeading } from "@/components/bangladesh/story-heading";
 import { Icon } from "@/components/ui/icon";
+import { SignalSeam } from "@/components/ui/section-kit";
 import { DAILY_CHECKS } from "@/data/nagorik";
 import { toBanglaDigits } from "@/lib/bangla";
 import { cn } from "@/lib/utils";
@@ -24,16 +26,19 @@ export function DailyCheck() {
   const verdict = VERDICT.find((v) => n >= v.min)!;
 
   return (
-    <section id="self-check" aria-labelledby="check-title" className="section-band scroll-mt-40 bg-bdgreen-950 text-white">
+    <section id="self-check" aria-labelledby="check-title" className="section-band relative isolate scroll-mt-40 overflow-hidden bg-black text-white">
+      <SignalSeam className="top-0" />
       <div className="mx-auto grid max-w-7xl gap-10 px-gutter-x lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
         <div className="lg:sticky lg:top-44 lg:self-start">
-          <h2 id="check-title" className="font-bengali text-3xl leading-tight font-bold sm:text-4xl">
-            আজ রাতের <span className="text-signal-orange">আয়না</span>
-          </h2>
-          <p className="mt-3 font-bengali text-lg leading-relaxed text-emerald-50/85">
-            ঘুমানোর আগে দশটি প্রশ্ন। কোথাও জমা হয় না, কেউ দেখে না — শুধু নিজের কাছে সৎ থাকা।
-          </p>
-          <div className="mt-8 flex items-center gap-5">
+          <StoryHeading
+            id="check-title"
+            index="০৫"
+            kicker="আত্মপরীক্ষা"
+            title="আজ রাতের আয়না"
+            accent="আয়না"
+            lede="ঘুমানোর আগে দশটি প্রশ্ন। কোথাও জমা হয় না, কেউ দেখে না — শুধু নিজের কাছে সৎ থাকা।"
+          />
+          <div className="story-reveal flex items-center gap-5 rounded-3xl bg-text-primary p-5 ring-1 ring-white/12">
             <svg viewBox="0 0 36 36" className="size-28 -rotate-90" aria-hidden>
               <circle cx="18" cy="18" r="15.9" fill="none" stroke="rgb(255 255 255 / 0.12)" strokeWidth="3" />
               <circle
@@ -50,23 +55,25 @@ export function DailyCheck() {
               />
             </svg>
             <div aria-live="polite">
-              <p className="font-bengali text-4xl font-bold">
+              <p className="font-bengali text-4xl font-bold text-signal-orange">
                 {toBanglaDigits(n)}/{toBanglaDigits(DAILY_CHECKS.length)}
               </p>
-              <p className="mt-1 font-bengali text-base text-emerald-50/85">{verdict.text}</p>
+              <p className="mt-1 font-bengali text-base text-white/85">{verdict.text}</p>
             </div>
           </div>
         </div>
 
-        <ul className="grid gap-2 sm:grid-cols-2">
+        <ul className="grid gap-3 sm:grid-cols-2">
           {DAILY_CHECKS.map((c, i) => {
             const on = done.has(i);
             return (
-              <li key={c}>
+              <li key={c} className="story-reveal flex">
                 <label
                   className={cn(
-                    "relative flex min-h-14 cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 font-bengali text-[15px] leading-snug transition-colors has-focus-visible:ring-2 has-focus-visible:ring-signal-orange",
-                    on ? "border-signal-orange/60 bg-signal-orange/15 text-white" : "border-white/12 bg-white/5 text-emerald-50/90 hover:border-white/30",
+                    "relative flex min-h-14 w-full cursor-pointer items-center gap-3 rounded-2xl px-4 py-3 font-bengali text-[15px] leading-snug [-webkit-tap-highlight-color:transparent] touch-manipulation transition-[translate,scale,background-color,color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 active:scale-[0.97] active:duration-150 has-focus-visible:ring-2 has-focus-visible:ring-white motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100",
+                    on
+                      ? "bg-signal-orange font-semibold text-text-primary shadow-[0_18px_34px_-20px_var(--color-signal-orange)]"
+                      : "bg-text-primary text-white ring-1 ring-white/12 hover:shadow-[0_18px_34px_-20px_var(--color-bdgreen-500)]",
                   )}
                 >
                   <input
@@ -82,7 +89,7 @@ export function DailyCheck() {
                       })
                     }
                   />
-                  <span aria-hidden className={cn("flex size-6 shrink-0 items-center justify-center rounded-md border-2", on ? "border-signal-orange bg-signal-orange text-text-primary" : "border-white/40")}>
+                  <span aria-hidden className={cn("flex size-6 shrink-0 items-center justify-center rounded-md border-2", on ? "border-text-primary bg-text-primary text-signal-orange" : "border-white/40")}>
                     {on && <Icon name="check" className="text-[16px]" />}
                   </span>
                   {c}

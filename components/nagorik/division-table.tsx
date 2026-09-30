@@ -32,15 +32,15 @@ export function DivisionTable() {
   const rows = [...DIVISION_SAMPLE[sex]].sort((a: DivisionRow, b: DivisionRow) => (sort.desc ? b[sort.key] - a[sort.key] : a[sort.key] - b[sort.key]));
 
   return (
-    <div ref={ref} className="overflow-hidden rounded-3xl border border-slate-200 bg-white">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 p-5 sm:p-6">
+    <div ref={ref} className="story-reveal overflow-hidden rounded-3xl bg-black text-white ring-1 ring-white/12">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/12 p-5 sm:p-6">
         <div>
-          <h3 className="font-bengali text-xl font-bold text-text-primary">বিভাগভিত্তিক দিনের হিসাব</h3>
-          <p className="mt-1 flex items-center gap-1.5 font-bengali text-sm font-semibold text-amber-800">
+          <h3 className="font-bengali text-xl font-bold text-signal-orange">বিভাগভিত্তিক দিনের হিসাব</h3>
+          <p className="mt-1 flex items-center gap-1.5 font-bengali text-sm font-semibold text-signal-orange">
             <Icon name="info" className="text-[18px]" /> নমুনা তথ্য — বিভাগভিত্তিক প্রকৃত জরিপ হলে বসবে
           </p>
         </div>
-        <div role="radiogroup" aria-label="কাদের হিসাব" className="flex rounded-xl bg-slate-100 p-1">
+        <div role="radiogroup" aria-label="কাদের হিসাব" className="flex rounded-xl bg-white/10 p-1 ring-1 ring-white/12">
           {SEX.map((s) => (
             <button
               key={s.id}
@@ -49,8 +49,8 @@ export function DivisionTable() {
               aria-checked={sex === s.id}
               onClick={() => setSex(s.id)}
               className={cn(
-                "min-h-10 rounded-lg px-5 font-bengali text-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-bd-green/40 focus-visible:outline-none",
-                sex === s.id ? "bg-white text-bd-green shadow-sm" : "text-text-secondary hover:text-text-primary",
+                "min-h-10 rounded-lg px-5 font-bengali text-sm font-semibold [-webkit-tap-highlight-color:transparent] touch-manipulation transition-[background-color,color,scale] duration-200 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none active:scale-95",
+                sex === s.id ? "bg-signal-orange text-text-primary shadow-sm" : "text-white/80 hover:text-white",
               )}
             >
               {s.label}
@@ -63,8 +63,8 @@ export function DivisionTable() {
         <table className="w-full min-w-[52rem] border-collapse text-left">
           <caption className="sr-only">প্রতি বিভাগে {sex === "women" ? "নারীর" : "পুরুষের"} গড় দিন — নমুনা তথ্য</caption>
           <thead>
-            <tr className="bg-mint-subtle/70">
-              <th scope="col" className="px-5 py-3 font-bengali text-sm font-bold text-text-primary">বিভাগ</th>
+            <tr className="bg-white/6">
+              <th scope="col" className="px-5 py-3 font-bengali text-sm font-bold text-white">বিভাগ</th>
               {DIVISION_COLUMNS.map((c) => {
                 const on = sort.key === c.key;
                 return (
@@ -72,13 +72,13 @@ export function DivisionTable() {
                     <button
                       type="button"
                       onClick={() => setSort({ key: c.key, desc: on ? !sort.desc : true })}
-                      className="group flex flex-col items-start rounded text-left focus-visible:ring-2 focus-visible:ring-bd-green/40 focus-visible:outline-none"
+                      className="group flex flex-col items-start rounded text-left focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
                     >
-                      <span className="flex items-center gap-1 font-bengali text-sm font-bold text-text-primary">
+                      <span className="flex items-center gap-1 font-bengali text-sm font-bold text-white">
                         {c.label}
-                        <Icon name={on ? (sort.desc ? "arrow_downward" : "arrow_upward") : "unfold_more"} className={cn("text-[16px]", on ? "text-bd-green" : "text-text-muted")} />
+                        <Icon name={on ? (sort.desc ? "arrow_downward" : "arrow_upward") : "unfold_more"} className={cn("text-[16px]", on ? "text-signal-orange" : "text-white/60")} />
                       </span>
-                      <span className="font-bengali text-[11px] font-normal text-text-muted">{c.hint}</span>
+                      <span className="font-bengali text-[11px] font-normal text-white/65">{c.hint}</span>
                     </button>
                   </th>
                 );
@@ -87,17 +87,17 @@ export function DivisionTable() {
           </thead>
           <tbody>
             {rows.map((r, ri) => (
-              <tr key={r.division} className="border-t border-slate-100 transition-colors hover:bg-mint-subtle/50">
-                <th scope="row" className="px-5 py-3 font-bengali text-base font-semibold text-text-primary">{r.division}</th>
+              <tr key={r.division} className="border-t border-white/10 transition-colors hover:bg-white/6">
+                <th scope="row" className="px-5 py-3 font-bengali text-base font-semibold text-white">{r.division}</th>
                 {DIVISION_COLUMNS.map((c) => (
                   <td key={c.key} className="px-3 py-3">
                     <div className="flex items-center gap-2">
-                      <span className="w-9 shrink-0 text-right font-bengali text-sm font-semibold text-text-primary tabular-nums">
+                      <span className="w-9 shrink-0 text-right font-bengali text-sm font-semibold text-white tabular-nums">
                         {fmt(c.key, r[c.key])}
                       </span>
-                      <span className="h-2 flex-1 rounded-full bg-slate-100">
+                      <span className="h-2 flex-1 rounded-full bg-white/10">
                         <span
-                          className={cn("block h-full rounded-full transition-[width] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none", c.key === "idle" ? "bg-national-crimson/70" : c.key === "unpaid" ? "bg-chart-care" : "bg-chart-paid")}
+                          className={cn("block h-full rounded-full transition-[width] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none", c.key === "idle" ? "bg-national-crimson" : c.key === "unpaid" ? "bg-signal-orange" : "bg-bdgreen-500")}
                           style={{ width: seen ? `${(r[c.key] / max[c.key]) * 100}%` : "0%", transitionDelay: `${ri * 50}ms` }}
                         />
                       </span>
@@ -109,7 +109,7 @@ export function DivisionTable() {
           </tbody>
         </table>
       </div>
-      <p className="border-t border-slate-100 px-5 py-4 font-bengali text-xs leading-relaxed text-text-muted sm:px-6">
+      <p className="border-t border-white/12 px-5 py-4 font-bengali text-xs leading-relaxed text-white/70 sm:px-6">
         নমুনা সারিগুলো বিবিএস টাইম-ইউজ সার্ভে ২০২১-এর জাতীয় গড়ের আশপাশে বানানো, যাতে টেবিলটি কেমন হবে তা দেখা যায়। দায়িত্ব পালন বা অপচয় বিভাগভিত্তিকভাবে এখনো কোনো জরিপে মাপা হয়নি — এই সংখ্যাগুলো উদ্ধৃত করবেন না।
       </p>
     </div>

@@ -58,7 +58,7 @@ export function StoryVideo({
         <span aria-hidden className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <span className="relative flex size-20 items-center justify-center sm:size-24">
             <span className="absolute inset-0 animate-ping rounded-full bg-white/25 motion-reduce:animate-none" />
-            <span className="relative flex size-full items-center justify-center rounded-full bg-white/95 text-bd-green shadow-2xl ring-8 ring-white/20 transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none">
+            <span className="relative flex size-full items-center justify-center rounded-full bg-white/95 text-signal-orange shadow-2xl ring-8 ring-white/20 transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none">
               <Icon name="play_arrow" filled className="text-[44px]!" />
             </span>
           </span>
@@ -69,7 +69,7 @@ export function StoryVideo({
             Film
           </span>
           {!ready && (
-            <span className="rounded-full bg-white/90 px-3 py-1 font-bengali text-[11px] font-bold text-slate-800">
+            <span className="rounded-full bg-signal-orange px-3 py-1 font-bengali text-[11px] font-bold text-text-primary">
               শীঘ্রই আসছে
             </span>
           )}
@@ -92,7 +92,7 @@ export function StoryVideo({
           href={film.poster.credit.sourceUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-2 block truncate text-right font-mono text-[10px] text-slate-500 hover:text-bd-green hover:underline"
+          className="mt-2 block truncate text-right font-mono text-[10px] text-white/65 hover:text-signal-orange hover:underline"
         >
           Poster © {film.poster.credit.author} · {film.poster.credit.license}
         </a>
@@ -155,7 +155,7 @@ export function FilmButton({ film, label }: { film: Film; label: string }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="group inline-flex items-center gap-3 rounded-full bg-white/95 py-2 pr-5 pl-2 font-bengali text-sm font-bold text-slate-900 shadow-xl transition-all hover:-translate-y-0.5 hover:bg-white focus-visible:ring-4 focus-visible:ring-signal-orange/60 focus-visible:outline-none motion-reduce:hover:translate-y-0"
+        className="group inline-flex items-center gap-3 rounded-full bg-signal-orange py-2 pr-5 pl-2 font-bengali text-sm font-bold text-text-primary shadow-xl transition-all hover:-translate-y-0.5 active:scale-95 focus-visible:ring-4 focus-visible:ring-signal-orange/60 focus-visible:outline-none motion-reduce:hover:translate-y-0"
       >
         <span className="flex size-10 items-center justify-center rounded-full bg-national-crimson text-white transition-transform group-hover:scale-110 motion-reduce:transition-none">
           <Icon name="play_arrow" filled className="text-[24px]!" />

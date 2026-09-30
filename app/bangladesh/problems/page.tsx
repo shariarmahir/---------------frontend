@@ -18,8 +18,12 @@ export default function BangladeshProblemsPage() {
     <DeshShell current="/bangladesh/problems">
       <ActOpener act="problems" photo={ruralBackdrops.erosionWalk} />
       <NationalIndexSection />
-      <AmarBaseline />
-      <AmarPriorityBreaks />
+      <div className="amar-dark">
+        <AmarBaseline />
+      </div>
+      <div className="amar-dark">
+        <AmarPriorityBreaks />
+      </div>
       <RuralLives />
       <ProblemPixels />
     </DeshShell>

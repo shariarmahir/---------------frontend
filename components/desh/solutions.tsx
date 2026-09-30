@@ -1,54 +1,76 @@
 import Link from "next/link";
-import { Card } from "@/components/ui/card";
+import { StoryHeading } from "@/components/bangladesh/story-heading";
 import { Icon } from "@/components/ui/icon";
+import { SignalSeam, btn } from "@/components/ui/section-kit";
+import { LIFT, glowStyle, surfaceAt } from "@/components/ui/surfaces";
 import { BRAVERY, DUTY_COLUMNS, FOUNDER_QUOTE, LET_GO, RESOURCES } from "@/data/desh";
 import { cn } from "@/lib/utils";
 
 /** What we already have — the case that the country is not short of means. */
 export function SolutionResources() {
   return (
-    <section id="resources" aria-labelledby="resources-title" className="section-band scroll-mt-40 bg-[#fbf8f1]">
+    <section id="resources" aria-labelledby="resources-title" className="section-band-tinted scroll-mt-40 bg-black">
       <div className="mx-auto max-w-7xl px-gutter-x">
-        <div className="story-reveal max-w-3xl">
-          <h2 id="resources-title" className="font-bengali text-3xl leading-tight font-bold text-balance text-text-primary sm:text-4xl">
-            আমাদের <span className="text-bd-green">যথেষ্ট</span> আছে
-          </h2>
-          <p className="mt-3 font-bengali text-lg leading-relaxed text-text-secondary">সমাধান বিদেশ থেকে আমদানি করার দরকার নেই। মানুষ, মাটি, নদী আর একসাথে দাঁড়ানোর ইতিহাস — এগুলোই শুরুর পুঁজি।</p>
-        </div>
-        <ul className="mt-10 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-          {RESOURCES.map((r) => (
-            <li key={r.title} className="story-reveal border-t-2 border-bd-green pt-5">
-              <Icon name={r.icon} className="text-[32px] text-bd-green" />
-              <h3 className="mt-3 font-bengali text-xl font-bold text-text-primary">{r.title}</h3>
-              <p className="mt-2 font-bengali text-[15px] leading-relaxed text-text-secondary">{r.body}</p>
-            </li>
-          ))}
+        <StoryHeading
+          id="resources-title"
+          index="০১"
+          kicker="আমাদের পুঁজি"
+          title="আমাদের যথেষ্ট আছে"
+          accent="যথেষ্ট"
+          lede="সমাধান বিদেশ থেকে আমদানি করার দরকার নেই। মানুষ, মাটি, নদী আর একসাথে দাঁড়ানোর ইতিহাস — এগুলোই শুরুর পুঁজি।"
+        />
+        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-[repeat(2,minmax(0,1fr))] lg:grid-cols-[repeat(3,minmax(0,1fr))]">
+          {RESOURCES.map((r, i) => {
+            const tone = surfaceAt(i + (i >= 4 ? 1 : 0));
+            return (
+              <li key={r.title} className="story-reveal flex">
+                <div style={glowStyle(tone.glow)} className={cn("group w-full rounded-3xl p-6 shadow-sm", LIFT, tone.card)}>
+                  <span
+                    className={cn(
+                      "flex size-12 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:-rotate-6 motion-reduce:transition-none motion-reduce:group-hover:rotate-0",
+                      tone.tile,
+                    )}
+                  >
+                    <Icon name={r.icon} className="text-[28px]" />
+                  </span>
+                  <h3 className="mt-4 font-bengali text-xl font-bold">{r.title}</h3>
+                  <p className="mt-2 font-bengali text-[15px] leading-relaxed">{r.body}</p>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </section>
   );
 }
 
-/** The habits to drop, the living-cost spiral first. */
+/** The habits to drop, the living-cost spiral first — on an ink band. */
 export function SolutionLetGo() {
   const [key, ...rest] = LET_GO;
   return (
-    <section id="let-go" aria-labelledby="letgo-title" className="section-band scroll-mt-40 bg-white">
+    <section id="let-go" aria-labelledby="letgo-title" className="section-band-tinted relative isolate scroll-mt-40 overflow-hidden bg-text-primary text-white">
+      <SignalSeam className="top-0" />
       <div className="mx-auto max-w-7xl px-gutter-x">
-        <div className="story-reveal max-w-3xl">
-          <h2 id="letgo-title" className="font-bengali text-3xl leading-tight font-bold text-balance text-text-primary sm:text-4xl">
-            যা <span className="text-national-crimson">ছাড়তে</span> হবে
-          </h2>
-          <p className="mt-3 font-bengali text-lg leading-relaxed text-text-secondary">সমস্যার বড় অংশ আমাদের নিজেদের অভ্যাসে। কয়েকটি মৌলিক ভুল শুধরালেই অনেক কিছু বদলায়।</p>
-        </div>
+        <StoryHeading
+          id="letgo-title"
+          index="০২"
+          kicker="ছাড়তে হবে"
+          title="যা ছাড়তে হবে"
+          accent="ছাড়তে"
+          lede="সমস্যার বড় অংশ আমাদের নিজেদের অভ্যাসে। কয়েকটি মৌলিক ভুল শুধরালেই অনেক কিছু বদলায়।"
+        />
 
-        <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
-          <article className="relative overflow-hidden rounded-3xl bg-national-crimson p-8 text-white sm:p-10">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+          <article
+            style={glowStyle("var(--color-national-crimson)")}
+            className={cn("story-reveal relative overflow-hidden rounded-3xl bg-national-crimson p-8 text-white sm:p-10", LIFT)}
+          >
             <span className="rounded-full bg-white/15 px-3 py-1 font-bengali text-xs font-bold">সবচেয়ে জরুরি</span>
             <h3 className="mt-5 font-bengali text-3xl leading-tight font-bold sm:text-4xl">{key.habit}</h3>
             <p className="mt-4 font-bengali text-lg leading-relaxed text-white/90">{key.cost}</p>
-            <div className="mt-6 rounded-2xl bg-white p-5 text-text-primary">
-              <p className="flex items-center gap-2 font-bengali text-sm font-bold text-bd-green-dark">
+            <div className="mt-6 rounded-2xl bg-text-primary p-5 text-white ring-1 ring-white/12">
+              <p className="flex items-center gap-2 font-bengali text-sm font-bold text-signal-orange">
                 <Icon name="swap_horiz" className="text-[20px]" /> বদলে যা করব
               </p>
               <p className="mt-2 font-bengali text-[15px] leading-relaxed">{key.instead}</p>
@@ -56,15 +78,20 @@ export function SolutionLetGo() {
           </article>
 
           <ul className="flex flex-col gap-4">
-            {rest.map((h) => (
-              <li key={h.id} className="rounded-2xl border border-slate-200 p-5">
-                <h3 className="font-bengali text-xl font-bold text-national-crimson line-through decoration-2">{h.habit}</h3>
-                <p className="mt-2 font-bengali text-[15px] leading-relaxed text-text-secondary">{h.cost}</p>
-                <p className="mt-3 flex items-start gap-2 font-bengali text-[15px] leading-relaxed font-semibold text-bd-green-dark">
-                  <Icon name="arrow_forward" className="mt-0.5 text-[18px]" /> {h.instead}
-                </p>
-              </li>
-            ))}
+            {rest.map((h, i) => {
+              const tone = surfaceAt(i === 0 ? 1 : 0);
+              return (
+                <li key={h.id} className="story-reveal flex">
+                  <div style={glowStyle(tone.glow)} className={cn("w-full rounded-3xl p-5 shadow-sm", LIFT, tone.card)}>
+                    <h3 className="font-bengali text-xl font-bold line-through decoration-national-crimson decoration-2">{h.habit}</h3>
+                    <p className="mt-2 font-bengali text-[15px] leading-relaxed">{h.cost}</p>
+                    <p className="mt-3 flex items-start gap-2 rounded-xl bg-text-primary p-3 font-bengali text-[15px] leading-relaxed font-semibold text-white ring-1 ring-white/12">
+                      <Icon name="arrow_forward" className="mt-0.5 shrink-0 text-[18px] text-signal-orange" /> {h.instead}
+                    </p>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>
@@ -75,52 +102,59 @@ export function SolutionLetGo() {
 /** Who does what — the state, the citizen, and everyone for each other. */
 export function SolutionDuties() {
   return (
-    <section id="duties" aria-labelledby="duties-title" className="section-band-tinted scroll-mt-40 bg-mint-subtle">
+    <section id="duties" aria-labelledby="duties-title" className="section-band-tinted scroll-mt-40 bg-black">
       <div className="mx-auto max-w-7xl px-gutter-x">
-        <div className="story-reveal max-w-3xl">
-          <h2 id="duties-title" className="font-bengali text-3xl leading-tight font-bold text-balance text-text-primary sm:text-4xl">
-            কে কী করবে
-          </h2>
-          <p className="mt-3 font-bengali text-lg leading-relaxed text-text-secondary">
-            রাষ্ট্রের দায় রাষ্ট্রকেই নিতে হবে — কিন্তু সেই অপেক্ষায় বসে থাকলে আমাদের এলাকা আরও পিছিয়ে যাবে। তিনটি হাত একসাথে কাজ করলে সমাধান টেকে।
-          </p>
-        </div>
-        <ul className="mt-10 grid gap-5 lg:grid-cols-3">
-          {DUTY_COLUMNS.map((d, i) => (
-            <li key={d.id}>
-              <Card
-                style={{ "--card-accent": i === 2 ? "var(--color-signal-orange)" : "var(--color-bd-green)" } as React.CSSProperties}
-                className="glass-card block h-full rounded-3xl border border-slate-200 bg-white p-7 text-base ring-0"
-              >
-                <Icon name={d.icon} className={cn("text-[34px]", i === 2 ? "text-amber-600" : "text-bd-green")} />
-                <h3 className="mt-3 font-bengali text-2xl font-bold text-text-primary">{d.who}</h3>
-                <p className="mt-2 font-bengali text-[15px] leading-relaxed text-text-secondary">{d.lead}</p>
-                <ul className="mt-5 space-y-2.5">
-                  {d.items.map((it) => (
-                    <li key={it} className="flex items-start gap-2.5 font-bengali text-[15px] leading-snug text-text-primary">
-                      <span aria-hidden className="mt-1.5 size-2 shrink-0 rounded-xs bg-bd-green" />
-                      {it}
-                    </li>
-                  ))}
-                </ul>
-              </Card>
-            </li>
-          ))}
+        <StoryHeading
+          id="duties-title"
+          index="০৩"
+          kicker="দায়িত্ব"
+          title="কে কী করবে"
+          lede="রাষ্ট্রের দায় রাষ্ট্রকেই নিতে হবে — কিন্তু সেই অপেক্ষায় বসে থাকলে আমাদের এলাকা আরও পিছিয়ে যাবে। তিনটি হাত একসাথে কাজ করলে সমাধান টেকে।"
+        />
+        <ul className="grid gap-5 lg:grid-cols-[repeat(3,minmax(0,1fr))]">
+          {DUTY_COLUMNS.map((d, i) => {
+            const tone = surfaceAt(i);
+            return (
+              <li key={d.id} className="story-reveal flex">
+                <div style={glowStyle(tone.glow)} className={cn("group w-full rounded-3xl p-7 shadow-sm", LIFT, tone.card)}>
+                  <span
+                    className={cn(
+                      "flex size-14 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:-rotate-6 motion-reduce:transition-none motion-reduce:group-hover:rotate-0",
+                      tone.tile,
+                    )}
+                  >
+                    <Icon name={d.icon} className="text-[34px]" />
+                  </span>
+                  <h3 className="mt-4 font-bengali text-2xl font-bold">{d.who}</h3>
+                  <p className="mt-2 font-bengali text-[15px] leading-relaxed">{d.lead}</p>
+                  <ul className="mt-5 space-y-2.5">
+                    {d.items.map((it) => (
+                      <li key={it} className="flex items-start gap-2.5 font-bengali text-[15px] leading-snug">
+                        <span aria-hidden className="mt-1.5 size-2 shrink-0 rounded-xs bg-current" />
+                        {it}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </section>
   );
 }
 
-/** Mahir's words, then the bravery close and where to act next. */
+/** Mahir's words, then the bravery close and where to act next — a green band. */
 export function SolutionClose() {
   return (
-    <section aria-labelledby="close-title" className="relative isolate overflow-hidden bg-bdgreen-950 text-white">
-      <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(50%_60%_at_50%_0%,rgb(228_176_39/0.22),transparent_70%)]" />
+    <section aria-labelledby="close-title" className="relative isolate overflow-hidden bg-bd-green text-white">
+      <SignalSeam className="top-0" />
+      <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(50%_60%_at_50%_0%,rgb(228_176_39/0.28),transparent_70%)]" />
       <div className="mx-auto max-w-5xl px-gutter-x py-20 text-center sm:py-28">
-        <figure>
+        <figure className="story-reveal">
           <blockquote className="font-bengali text-2xl leading-relaxed font-semibold text-balance sm:text-3xl">“{FOUNDER_QUOTE.text}”</blockquote>
-          <p lang="en" className="mx-auto mt-4 max-w-2xl font-sans text-sm text-emerald-50/60 italic">
+          <p lang="en" className="mx-auto mt-4 max-w-2xl font-sans text-sm text-white/70 italic">
             “{FOUNDER_QUOTE.original}”
           </p>
           <figcaption className="mt-5 font-bengali text-base text-signal-orange">
@@ -128,30 +162,21 @@ export function SolutionClose() {
           </figcaption>
         </figure>
 
-        <h2 id="close-title" className="mx-auto mt-16 max-w-3xl font-bengali text-3xl leading-tight font-bold text-balance sm:text-5xl">
+        <h2 id="close-title" className="story-reveal mx-auto mt-16 max-w-3xl font-bengali text-3xl leading-tight font-bold text-balance text-signal-orange sm:text-5xl">
           {BRAVERY.title.split(BRAVERY.accent)[0]}
-          <span className="text-national-crimson">{BRAVERY.accent}</span>
+          <span className="text-white">{BRAVERY.accent}</span>
           {BRAVERY.title.split(BRAVERY.accent)[1]}
         </h2>
-        <p className="mx-auto mt-5 max-w-2xl font-bengali text-lg leading-relaxed text-emerald-50/85">{BRAVERY.body}</p>
+        <p className="mx-auto mt-5 max-w-2xl font-bengali text-lg leading-relaxed text-white/90">{BRAVERY.body}</p>
 
         <div className="mt-10 flex flex-wrap justify-center gap-3">
-          <Link
-            href="/nagorik"
-            className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-signal-orange px-6 font-bengali text-base font-bold text-text-primary shadow-[0_10px_30px_-10px_rgb(228_176_39/0.8)] transition-[filter] hover:brightness-95 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
-          >
+          <Link href="/nagorik" className={cn(btn.gold, "font-bengali text-base normal-case")}>
             <Icon name="how_to_reg" className="text-[20px]" /> নাগরিক দায়িত্ব ও অধিকার
           </Link>
-          <Link
-            href="/cholo-bangladesh-gori/mission"
-            className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-white/30 px-6 font-bengali text-base font-bold text-white transition-colors hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
-          >
-            <Icon name="extension" className="text-[20px]" /> চলো বাংলাদেশ গড়ি
+          <Link href="/cholo-bangladesh-gori/mission" className={cn(btn.ink, "font-bengali text-base normal-case")}>
+            <Icon name="extension" className="text-[20px] text-signal-orange" /> চলো বাংলাদেশ গড়ি
           </Link>
-          <Link
-            href="/protibad"
-            className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-white/30 px-6 font-bengali text-base font-bold text-white transition-colors hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
-          >
+          <Link href="/protibad" className={cn(btn.ghost, "font-bengali text-base normal-case")}>
             <Icon name="campaign" className="text-[20px]" /> অন্যায়ের প্রতিবাদ করুন
           </Link>
         </div>

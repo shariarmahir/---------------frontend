@@ -1,3 +1,17 @@
+/*
+ * THESIS: a product page is the home page in miniature — the same pitch-black
+ * ground and whole colour fields, with the product's own motion graphic
+ * running behind its hero.
+ * OWN-WORLD: the header's gold #e4b027, ink #032017 and bottle green #006747
+ * as solid cards and bands; ink cards carry a faint white ring; red only for
+ * the urgent things (the problem plates, "Today"); a three-pixel mark on every
+ * heading; a gold pulse on the seams. No textures.
+ * STORY: the claim → the numbers → the core problem and fix → how it works →
+ * real situations → films → what Bangladesh gains → roadmap → research → join.
+ * FIRST VIEWPORT: gold header over the ink hero, copy left, the photograph
+ * right, the heartbeat / waveform / network running behind.
+ * FORM: extension of the home world; bands alternate ink, black, green, gold.
+ */
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SiteFooter } from "@/components/layout/site-footer";
@@ -49,9 +63,10 @@ export default async function ProductPage({
   return (
     <>
       <SiteHeader />
-      <main className="relative w-full bg-[#fcfdfd] pt-header lg:pt-header-lg">
+      <main className="relative w-full bg-black pt-header lg:pt-header-lg">
         <ProductHero product={product} />
-        <div className="bg-grid-subtle">
+        {/* Pitch-black ground, solid colour bands (Mahir, 2026-09-30). */}
+        <div className="relative">
           <ProductProblem product={product} />
           <ProductCore product={product} />
           <ProductSolution product={product} />

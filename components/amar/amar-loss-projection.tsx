@@ -268,20 +268,20 @@ export function AmarLossProjection() {
               </ul>
             </div>
 
-            <div className="flex flex-col gap-space-sm rounded-lg border border-outline-variant/30 bg-on-surface p-space-lg shadow-xs">
-              <span className="flex items-center gap-space-xs font-code-telemetry text-label-sm font-bold uppercase text-on-deep-container">
+            <div className="flex flex-col gap-space-sm rounded-lg bg-signal-orange p-space-lg text-text-primary shadow-xs">
+              <span className="flex items-center gap-space-xs font-code-telemetry text-label-sm font-bold uppercase text-text-primary">
                 <Icon name="functions" className="text-[16px]" />
                 Calculation rules
               </span>
               {Object.values(CALC_RULES).map((rule) => (
                 <code
                   key={rule}
-                  className="block rounded-lg bg-on-surface/80 px-space-sm py-space-xs font-code-telemetry text-label-xs leading-relaxed text-surface"
+                  className="block rounded-lg bg-text-primary px-space-sm py-space-xs font-code-telemetry text-label-xs leading-relaxed text-white"
                 >
                   {rule}
                 </code>
               ))}
-              <p className="font-body-sm text-body-sm text-outline">
+              <p className="font-body-sm text-body-sm text-text-primary/80">
                 Avoided cost is a scenario benefit, not a budget saving.
               </p>
             </div>

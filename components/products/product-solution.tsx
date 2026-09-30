@@ -1,56 +1,75 @@
 import Image from "next/image";
 import { Icon } from "@/components/ui/icon";
-import { productAccents, type Product } from "@/data/products";
-import { SectionHeading } from "./section-heading";
+import { SectionHeading, SignalSeam } from "@/components/ui/section-kit";
+import type { Product } from "@/data/products";
+import { cn } from "@/lib/utils";
+import { LIFT, glowStyle, surfaceAt } from "./surfaces";
 
 /** What the product does, then how a person moves through it. */
 export function ProductSolution({ product }: { product: Product }) {
-  const accent = productAccents[product.accent];
-
   return (
-    <section id="solution" className="section-band mx-auto max-w-7xl scroll-mt-40 px-gutter-x">
+    <section id="solution" className="section-band-tinted mx-auto max-w-7xl scroll-mt-40 px-gutter-x">
       <SectionHeading
+        tone="dark"
         kicker="সমাধান"
         title={`How ${product.name} solves it`}
-        lede={product.coreSolve.detail}
-        accentText={accent.text}
+        lead={product.coreSolve.detail}
       />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {product.capabilities.map((item) => (
-          <div
-            key={item.title}
-            className="glass-card rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
-            style={{ "--card-accent": accent.cssVar } as React.CSSProperties}
-          >
-            <span className={`mb-4 inline-flex size-11 items-center justify-center rounded-xl ${accent.soft} ${accent.text}`}>
-              <Icon name={item.icon} className="text-[24px]!" />
-            </span>
-            <h3 className="font-grotesk text-lg font-bold text-text-primary">{item.title}</h3>
-            <p className="mt-1.5 font-sans text-sm leading-relaxed text-text-muted">{item.body}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* How it works — numbered flow. */}
-      <div className="mt-14 rounded-3xl border border-slate-200 bg-white p-6 shadow-elevated sm:p-8 lg:p-10">
-        <h3 className="mb-8 font-grotesk text-xl font-bold text-text-primary uppercase sm:text-2xl">
-          How it works <span className={`font-bengali normal-case ${accent.text}`}>· যেভাবে কাজ করে</span>
-        </h3>
-        <ol className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {product.steps.map((step, i) => (
-            <li key={step.title} className="relative">
-              {/* Connector to the next step on wide screens. */}
-              {i < product.steps.length - 1 && (
-                <span aria-hidden className="absolute top-6 left-14 hidden h-px w-[calc(100%-3rem)] border-t-2 border-dashed border-slate-200 lg:block" />
-              )}
-              <span className={`relative inline-flex size-12 items-center justify-center rounded-2xl font-grotesk text-lg font-bold text-white shadow-md ${accent.bg}`}>
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <h4 className="mt-4 font-grotesk text-lg font-bold text-text-primary">{step.title}</h4>
-              <p className="mt-1 font-sans text-sm leading-relaxed text-text-muted">{step.body}</p>
+      <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-[repeat(3,minmax(0,1fr))]">
+        {product.capabilities.map((item, i) => {
+          const tone = surfaceAt(i);
+          return (
+            <li key={item.title} className="story-reveal flex">
+              <div
+                style={glowStyle(tone.glow)}
+                className={cn("group w-full rounded-2xl p-4 shadow-sm sm:rounded-3xl sm:p-6", LIFT, tone.card)}
+              >
+                <span
+                  className={cn(
+                    "mb-4 inline-flex size-11 items-center justify-center rounded-xl transition-transform duration-300 group-hover:-rotate-6 motion-reduce:transition-none motion-reduce:group-hover:rotate-0",
+                    tone.tile,
+                  )}
+                >
+                  <Icon name={item.icon} className="text-[24px]!" />
+                </span>
+                <h3 className="font-grotesk text-base font-bold sm:text-lg">{item.title}</h3>
+                <p className="mt-1.5 font-sans text-xs leading-relaxed sm:text-sm">{item.body}</p>
+              </div>
             </li>
-          ))}
+          );
+        })}
+      </ul>
+
+      {/* How it works — a numbered flow on an ink panel. */}
+      <div className="story-reveal mt-14 rounded-3xl bg-text-primary p-6 text-white ring-1 ring-white/12 sm:p-8 lg:p-10">
+        <h3 className="mb-8 font-grotesk text-xl font-bold text-signal-orange uppercase sm:text-2xl">
+          How it works <span className="font-bengali text-white normal-case">· যেভাবে কাজ করে</span>
+        </h3>
+        <ol className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-[repeat(4,minmax(0,1fr))]">
+          {product.steps.map((step, i) => {
+            const tone = surfaceAt(i);
+            return (
+              <li key={step.title} className="relative">
+                {/* Connector to the next step on wide screens: a gold pulse runs along it. */}
+                {i < product.steps.length - 1 && (
+                  <span aria-hidden className="absolute top-6 left-14 hidden w-[calc(100%-3rem)] lg:block">
+                    <SignalSeam className="relative" />
+                  </span>
+                )}
+                <span
+                  className={cn(
+                    "relative inline-flex size-12 items-center justify-center rounded-2xl font-grotesk text-lg font-bold shadow-md",
+                    tone.card.replace(" ring-1 ring-white/12", ""),
+                  )}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h4 className="mt-4 font-grotesk text-lg font-bold">{step.title}</h4>
+                <p className="mt-1 font-sans text-sm leading-relaxed text-white/75">{step.body}</p>
+              </li>
+            );
+          })}
         </ol>
       </div>
     </section>
@@ -60,26 +79,26 @@ export function ProductSolution({ product }: { product: Product }) {
 /**
  * Before / after scenarios. These are illustrations of intended use, and
  * the chip says so — the photographs are context, not the people described.
+ * On an ink band: "Today" in the urgency red, "With the product" in green.
  */
 export function ProductScenarios({ product }: { product: Product }) {
-  const accent = productAccents[product.accent];
-
   return (
-    <section id="situations" className="section-band-tinted scroll-mt-40 border-y border-slate-200 bg-mint-subtle/70">
+    <section id="situations" className="section-band-tinted relative isolate scroll-mt-40 overflow-hidden bg-text-primary text-white">
+      <SignalSeam className="top-0" />
       <div className="mx-auto max-w-7xl px-gutter-x">
         <SectionHeading
+          tone="dark"
           kicker="বাস্তব পরিস্থিতি"
           title="Real-life situations"
-          lede="Everyday moments in rural Bangladesh — what happens today, and what changes with the product."
-          accentText={accent.text}
+          lead="Everyday moments in rural Bangladesh — what happens today, and what changes with the product."
         />
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[repeat(2,minmax(0,1fr))]">
           {product.scenarios.map((s) => (
             <article
               key={s.title}
-              className="glass-card flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
-              style={{ "--card-accent": accent.cssVar } as React.CSSProperties}
+              style={glowStyle("var(--color-signal-orange)")}
+              className={cn("story-reveal flex flex-col overflow-hidden rounded-3xl bg-black shadow-sm ring-1 ring-white/12", LIFT)}
             >
               <div className="group relative aspect-video overflow-hidden">
                 <Image
@@ -87,31 +106,29 @@ export function ProductScenarios({ product }: { product: Product }) {
                   alt={s.imageAlt}
                   fill
                   sizes="(min-width: 1024px) 45vw, 100vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                  className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                 />
-                <div aria-hidden className="absolute inset-0 bg-linear-to-t from-slate-950/75 to-transparent" />
-                <span className="absolute top-3 left-3 rounded-full bg-white/95 px-2.5 py-1 font-mono text-[10px] font-bold tracking-wide text-slate-700 uppercase shadow-sm">
+                <div aria-hidden className="absolute inset-0 bg-linear-to-t from-text-primary/90 to-transparent" />
+                <span className="absolute top-3 left-3 rounded-full bg-signal-orange px-2.5 py-1 font-mono text-[10px] font-bold tracking-wide text-text-primary uppercase shadow-sm">
                   Illustrative scenario
                 </span>
-                <h3 className="absolute inset-x-0 bottom-0 p-5 font-grotesk text-xl font-bold text-white">
-                  {s.title}
-                </h3>
+                <h3 className="absolute inset-x-0 bottom-0 p-5 font-grotesk text-xl font-bold text-white">{s.title}</h3>
               </div>
 
               <div className="grid flex-1 grid-cols-1 sm:grid-cols-2">
-                <div className="border-b border-slate-100 p-5 sm:border-r sm:border-b-0">
-                  <span className="mb-2 inline-flex items-center gap-1.5 font-mono text-[11px] font-bold tracking-wide text-national-crimson uppercase">
+                <div className="bg-national-crimson p-5 text-white">
+                  <span className="mb-2 inline-flex items-center gap-1.5 font-mono text-[11px] font-bold tracking-wide uppercase">
                     <Icon name="close" className="text-[14px]!" />
                     Today
                   </span>
-                  <p className="font-sans text-sm leading-relaxed text-text-secondary">{s.without}</p>
+                  <p className="font-sans text-sm leading-relaxed">{s.without}</p>
                 </div>
-                <div className="bg-bd-green-light/60 p-5">
-                  <span className="mb-2 inline-flex items-center gap-1.5 font-mono text-[11px] font-bold tracking-wide text-bd-green uppercase">
+                <div className="bg-bd-green p-5 text-white">
+                  <span className="mb-2 inline-flex items-center gap-1.5 font-mono text-[11px] font-bold tracking-wide text-signal-orange uppercase">
                     <Icon name="check" className="text-[14px]!" />
                     With {product.name}
                   </span>
-                  <p className="font-sans text-sm leading-relaxed text-text-primary">{s.withProduct}</p>
+                  <p className="font-sans text-sm leading-relaxed">{s.withProduct}</p>
                 </div>
               </div>
             </article>
@@ -128,52 +145,54 @@ export function ProductScenarios({ product }: { product: Product }) {
  * play button that plays nothing.
  */
 export function ProductVideos({ product }: { product: Product }) {
-  const accent = productAccents[product.accent];
-
   return (
-    <section id="videos" className="section-band mx-auto max-w-7xl scroll-mt-40 px-gutter-x">
+    <section id="videos" className="section-band-tinted mx-auto max-w-7xl scroll-mt-40 px-gutter-x">
       <SectionHeading
+        tone="dark"
         kicker="ভিডিও — সহজে বুঝুন"
         title="See it to understand it"
-        lede="Short films on the problem, the product and the people it serves."
-        accentText={accent.text}
+        lead="Short films on the problem, the product and the people it serves."
       />
 
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-        {product.videos.map((v, i) => (
-          <figure
-            key={v.title}
-            className="glass-card flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
-            style={{ "--card-accent": accent.cssVar } as React.CSSProperties}
-          >
-            <div className="group relative aspect-video overflow-hidden bg-slate-900">
-              <Image
-                src={v.poster}
-                alt={v.posterAlt}
-                fill
-                sizes="(min-width: 768px) 33vw, 100vw"
-                className="object-cover opacity-70 transition-all duration-700 group-hover:scale-[1.05] group-hover:opacity-85 motion-reduce:transition-none"
-              />
-              <div aria-hidden className="absolute inset-0 flex items-center justify-center">
-                <span className="flex size-14 items-center justify-center rounded-full bg-white/90 text-slate-900 shadow-lg ring-4 ring-white/30 transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none">
-                  <Icon name="play_arrow" filled className="text-[30px]!" />
-                </span>
-              </div>
-              <span className="absolute top-3 left-3 rounded-md bg-slate-950/75 px-2 py-0.5 font-mono text-[10px] font-bold text-white">
-                EP {String(i + 1).padStart(2, "0")}
-              </span>
-              <span className="absolute top-3 right-3 rounded-md bg-signal-orange px-2 py-0.5 font-bengali text-[11px] font-bold text-white">
-                শীঘ্রই আসছে
-              </span>
-            </div>
-            <figcaption className="flex flex-1 flex-col gap-1 p-5">
-              <span className={`font-bengali text-sm font-bold ${accent.text}`}>{v.titleBn}</span>
-              <span className="font-grotesk text-lg font-bold text-text-primary">{v.title}</span>
-              <span className="font-sans text-sm leading-relaxed text-text-muted">{v.brief}</span>
-            </figcaption>
-          </figure>
-        ))}
-      </div>
+      <ul className="grid grid-cols-1 gap-5 md:grid-cols-[repeat(3,minmax(0,1fr))]">
+        {product.videos.map((v, i) => {
+          const tone = surfaceAt(i);
+          return (
+            <li key={v.title} className="story-reveal flex">
+              <figure
+                style={glowStyle(tone.glow)}
+                className={cn("flex w-full flex-col overflow-hidden rounded-3xl shadow-sm", LIFT, tone.card)}
+              >
+                <div className="group relative aspect-video overflow-hidden bg-text-primary">
+                  <Image
+                    src={v.poster}
+                    alt={v.posterAlt}
+                    fill
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    className="object-cover opacity-75 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05] group-hover:opacity-90 motion-reduce:transition-none"
+                  />
+                  <div aria-hidden className="absolute inset-0 flex items-center justify-center">
+                    <span className="flex size-14 items-center justify-center rounded-full bg-signal-orange text-text-primary shadow-lg transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none">
+                      <Icon name="play_arrow" filled className="text-[30px]!" />
+                    </span>
+                  </div>
+                  <span className="absolute top-3 left-3 rounded-md bg-text-primary px-2 py-0.5 font-mono text-[10px] font-bold text-white">
+                    EP {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="absolute top-3 right-3 rounded-md bg-signal-orange px-2 py-0.5 font-bengali text-[11px] font-bold text-text-primary">
+                    শীঘ্রই আসছে
+                  </span>
+                </div>
+                <figcaption className="flex flex-1 flex-col gap-1 p-5">
+                  <span className="font-bengali text-sm font-bold">{v.titleBn}</span>
+                  <span className="font-grotesk text-lg font-bold">{v.title}</span>
+                  <span className="font-sans text-sm leading-relaxed">{v.brief}</span>
+                </figcaption>
+              </figure>
+            </li>
+          );
+        })}
+      </ul>
     </section>
   );
 }

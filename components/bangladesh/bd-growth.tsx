@@ -26,15 +26,15 @@ interface ChartSpec {
 }
 
 const CHARTS: ChartSpec[] = [
-  { key: "gdpPerCapita", title: "মাথাপিছু জিডিপি", unit: "ডলার", color: "#006747", good: "up" },
-  { key: "lifeExpectancy", title: "গড় আয়ু", unit: "বছর", color: "#0f766e", good: "up", digits: 1, note: "১৯৭১-এর ২৬.৫ বছর যুদ্ধের বছরের হিসাব" },
-  { key: "under5Mortality", title: "পাঁচ বছরের নিচে শিশুমৃত্যু", unit: "প্রতি হাজারে", color: "#da291c", good: "down", digits: 1 },
-  { key: "electricity", title: "বিদ্যুৎ সুবিধা", unit: "% মানুষ", color: "#ea580c", good: "up", digits: 1 },
-  { key: "poverty", title: "চরম দারিদ্র্য ($৩/দিন)", unit: "% মানুষ", color: "#b45309", good: "down", digits: 1 },
-  { key: "literacy", title: "প্রাপ্তবয়স্ক সাক্ষরতা", unit: "%", color: "#4338ca", good: "up", digits: 1 },
+  { key: "gdpPerCapita", title: "মাথাপিছু জিডিপি", unit: "ডলার", color: "#e4b027", good: "up" },
+  { key: "lifeExpectancy", title: "গড় আয়ু", unit: "বছর", color: "#34d399", good: "up", digits: 1, note: "১৯৭১-এর ২৬.৫ বছর যুদ্ধের বছরের হিসাব" },
+  { key: "under5Mortality", title: "পাঁচ বছরের নিচে শিশুমৃত্যু", unit: "প্রতি হাজারে", color: "#ff6a5c", good: "down", digits: 1 },
+  { key: "electricity", title: "বিদ্যুৎ সুবিধা", unit: "% মানুষ", color: "#ff8a3d", good: "up", digits: 1 },
+  { key: "poverty", title: "চরম দারিদ্র্য ($৩/দিন)", unit: "% মানুষ", color: "#ffd166", good: "down", digits: 1 },
+  { key: "literacy", title: "প্রাপ্তবয়স্ক সাক্ষরতা", unit: "%", color: "#93c5fd", good: "up", digits: 1 },
   // Millions, not billions: 1976's $18.8M would read "0.0" in billions.
-  { key: "remittances", title: "প্রবাসী আয়", unit: "মিলিয়ন ডলার", color: "#059669", good: "up", scale: 1e-6 },
-  { key: "population", title: "জনসংখ্যা", unit: "কোটি", color: "#334155", good: "up", scale: 1e-7, digits: 1 },
+  { key: "remittances", title: "প্রবাসী আয়", unit: "মিলিয়ন ডলার", color: "#6ee7b7", good: "up", scale: 1e-6 },
+  { key: "population", title: "জনসংখ্যা", unit: "কোটি", color: "#cbd5e1", good: "up", scale: 1e-7, digits: 1 },
 ];
 
 const W = 560;
@@ -82,16 +82,16 @@ function GrowthChart({ spec }: { spec: ChartSpec }) {
 
   return (
     <figure
-      className="glass-card story-reveal flex flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm"
+      className="glass-card story-reveal flex flex-col rounded-3xl border border-white/12 bg-text-primary ring-1 ring-white/12 p-5 shadow-sm"
       style={{ "--card-accent": spec.color } as React.CSSProperties}
     >
       <figcaption className="flex items-start justify-between gap-3">
         <div>
-          <p className="font-bengali text-base font-bold text-text-primary">{spec.title}</p>
-          <p className="font-bengali text-xs text-slate-500">{spec.unit}</p>
+          <p className="font-bengali text-base font-bold text-white">{spec.title}</p>
+          <p className="font-bengali text-xs text-white/65">{spec.unit}</p>
         </div>
         <span
-          className="shrink-0 rounded-full px-2.5 py-1 font-bengali text-xs font-bold text-white"
+          className="shrink-0 rounded-full px-2.5 py-1 font-bengali text-xs font-bold text-text-primary"
           style={{ backgroundColor: spec.color }}
         >
           {badge}
@@ -102,9 +102,9 @@ function GrowthChart({ spec }: { spec: ChartSpec }) {
         <span className="font-bengali text-3xl font-bold tabular-nums" style={{ color: spec.color }}>
           {bn(shown[1], digits)}
         </span>
-        <span className="font-bengali text-sm text-slate-500">({bn(shown[0])})</span>
+        <span className="font-bengali text-sm text-white/65">({bn(shown[0])})</span>
       </div>
-      <p className="font-bengali text-xs text-slate-500">
+      <p className="font-bengali text-xs text-white/65">
         {bn(first[0])} সালে {bn(first[1], digits)} → {bn(last[0])} সালে {bn(last[1], digits)}
       </p>
 
@@ -150,7 +150,7 @@ function GrowthChart({ spec }: { spec: ChartSpec }) {
           </g>
         )}
       </svg>
-      {spec.note && <p className="mt-1 font-bengali text-[11px] text-slate-400">{spec.note}</p>}
+      {spec.note && <p className="mt-1 font-bengali text-[11px] text-white/65">{spec.note}</p>}
     </figure>
   );
 }
@@ -172,9 +172,9 @@ export function BdGrowth() {
             <GrowthChart key={c.key} spec={c} />
           ))}
         </div>
-        <p className="mt-4 text-right font-mono text-[11px] text-slate-500">
+        <p className="mt-4 text-right font-mono text-[11px] text-white/65">
           Source:{" "}
-          <a href={WB_SOURCE_URL} target="_blank" rel="noopener noreferrer" className="text-bd-green hover:underline">
+          <a href={WB_SOURCE_URL} target="_blank" rel="noopener noreferrer" className="text-signal-orange hover:underline">
             World Bank — World Development Indicators
           </a>{" "}
           · fetched Sept 2026
@@ -189,20 +189,20 @@ export function BdGrowth() {
             <span aria-hidden className="absolute top-2 bottom-2 left-[1.1rem] w-0.5 bg-linear-to-b from-bd-green to-signal-orange" />
             {milestones.map((m) => (
               <li key={m.year + m.title} className="story-reveal relative flex gap-4 pl-0">
-                <span className="relative z-10 flex size-9 shrink-0 items-center justify-center rounded-full bg-white ring-2 ring-bd-green">
-                  <Icon name="flag" filled className="text-[18px]! text-bd-green" />
+                <span className="relative z-10 flex size-9 shrink-0 items-center justify-center rounded-full bg-text-primary ring-1 ring-white/12 ring-2 ring-bd-green">
+                  <Icon name="flag" filled className="text-[18px]! text-signal-orange" />
                 </span>
                 <div
                   className={cn(
-                    "glass-card flex-1 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs",
+                    "glass-card flex-1 overflow-hidden rounded-2xl border border-white/12 bg-text-primary ring-1 ring-white/12 shadow-xs",
                     "photo" in m && m.photo && "grid grid-cols-1 sm:grid-cols-[1fr_12rem]",
                   )}
                   style={{ "--card-accent": "var(--color-bd-green)" } as React.CSSProperties}
                 >
                   <div className="p-4">
                     <span className="font-bengali text-lg font-bold text-signal-orange">{m.year}</span>
-                    <h3 className="font-bengali text-lg font-bold text-text-primary">{m.title}</h3>
-                    <p className="font-bengali text-sm leading-relaxed text-text-secondary">{m.body}</p>
+                    <h3 className="font-bengali text-lg font-bold text-white">{m.title}</h3>
+                    <p className="font-bengali text-sm leading-relaxed text-white/80">{m.body}</p>
                   </div>
                   {"photo" in m && m.photo && (
                     <StoryPhoto photo={m.photo} sizes="200px" className="min-h-32" />

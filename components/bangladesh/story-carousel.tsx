@@ -116,7 +116,7 @@ export function StoryCarousel({
               onClick={() => (dir === "prev" ? swiper.current?.slidePrev() : swiper.current?.slideNext())}
               aria-label={dir === "prev" ? "আগের ছবি" : "পরের ছবি"}
               className={cn(
-                "flex size-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-transparent hover:text-white focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none motion-reduce:hover:translate-y-0",
+                "flex size-9 items-center justify-center rounded-full border border-white/12 bg-text-primary ring-1 ring-white/12 text-white/80 shadow-sm transition-all hover:-translate-y-0.5 hover:border-transparent hover:text-white focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none motion-reduce:hover:translate-y-0",
                 tone === "red" ? "hover:bg-national-crimson" : "hover:bg-bd-green",
               )}
             >

@@ -90,7 +90,7 @@ export function BdMemories() {
   };
 
   const field =
-    "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 font-bengali text-sm text-slate-900 transition-colors placeholder:text-slate-400 focus:border-bd-green focus:ring-3 focus:ring-bd-green/20 focus:outline-none";
+    "w-full rounded-xl border border-white/12 bg-text-primary ring-1 ring-white/12 px-4 py-3 font-bengali text-sm text-white transition-colors placeholder:text-white/65 focus:border-bd-green focus:ring-3 focus:ring-bd-green/20 focus:outline-none";
 
   return (
     <section id="memories" className="section-band scroll-mt-40">
@@ -108,21 +108,21 @@ export function BdMemories() {
           <form
             ref={formRef}
             onSubmit={onSubmit}
-            className="story-reveal space-y-4 rounded-3xl border border-emerald-100 bg-linear-to-b from-mint-subtle to-white p-6 shadow-elevated sm:p-8 lg:col-span-5"
+            className="story-reveal space-y-4 rounded-3xl border border-white/12 bg-black p-6 shadow-elevated sm:p-8 lg:col-span-5"
           >
             {/* Image picker with live preview. */}
             <label
               htmlFor={ids.file}
-              className="group relative flex aspect-video cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-emerald-300 bg-white text-center transition-colors hover:border-bd-green hover:bg-mint-subtle focus-within:ring-3 focus-within:ring-bd-green/30"
+              className="group relative flex aspect-video cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-white/12 bg-text-primary ring-1 ring-white/12 text-center transition-colors hover:border-bd-green hover:bg-text-primary focus-within:ring-3 focus-within:ring-bd-green/30"
             >
               {preview ? (
                 // eslint-disable-next-line @next/next/no-img-element -- a local object URL; next/image cannot optimise it
                 <img src={preview} alt="আপনার বেছে নেওয়া ছবির প্রিভিউ" className="absolute inset-0 size-full object-cover" />
               ) : (
                 <>
-                  <Icon name="add_photo_alternate" className="text-[44px]! text-bd-green transition-transform group-hover:scale-110" />
-                  <span className="mt-2 font-bengali text-sm font-bold text-text-primary">ছবি বেছে নিন</span>
-                  <span className="font-bengali text-xs text-slate-500">JPG, PNG বা WEBP · সর্বোচ্চ ৫ MB</span>
+                  <Icon name="add_photo_alternate" className="text-[44px]! text-signal-orange transition-transform group-hover:scale-110" />
+                  <span className="mt-2 font-bengali text-sm font-bold text-white">ছবি বেছে নিন</span>
+                  <span className="font-bengali text-xs text-white/65">JPG, PNG বা WEBP · সর্বোচ্চ ৫ MB</span>
                 </>
               )}
               <input id={ids.file} name="image" type="file" accept="image/*" onChange={onFile} className="sr-only" />
@@ -130,11 +130,11 @@ export function BdMemories() {
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <label htmlFor={ids.name} className="mb-1 block font-bengali text-sm font-semibold text-slate-700">আপনার নাম <span className="font-normal text-slate-400">(ঐচ্ছিক)</span></label>
+                <label htmlFor={ids.name} className="mb-1 block font-bengali text-sm font-semibold text-white/80">আপনার নাম <span className="font-normal text-white/65">(ঐচ্ছিক)</span></label>
                 <input id={ids.name} name="name" autoComplete="name" maxLength={60} className={field} placeholder="যেমন: রাফি" />
               </div>
               <div>
-                <label htmlFor={ids.place} className="mb-1 block font-bengali text-sm font-semibold text-slate-700">বিভাগ</label>
+                <label htmlFor={ids.place} className="mb-1 block font-bengali text-sm font-semibold text-white/80">বিভাগ</label>
                 <select id={ids.place} name="place" required defaultValue="" className={field}>
                   <option value="" disabled>বেছে নিন</option>
                   {divisions.map((d) => (
@@ -146,14 +146,14 @@ export function BdMemories() {
             </div>
 
             <div>
-              <label htmlFor={ids.title} className="mb-1 block font-bengali text-sm font-semibold text-slate-700">শিরোনাম</label>
+              <label htmlFor={ids.title} className="mb-1 block font-bengali text-sm font-semibold text-white/80">শিরোনাম</label>
               <input id={ids.title} name="title" required maxLength={80} className={field} placeholder="যেমন: নানুবাড়ির পুকুরঘাট" />
             </div>
 
             <div>
-              <label htmlFor={ids.story} className="mb-1 flex justify-between font-bengali text-sm font-semibold text-slate-700">
+              <label htmlFor={ids.story} className="mb-1 flex justify-between font-bengali text-sm font-semibold text-white/80">
                 আপনার গল্প
-                <span className="font-normal text-slate-400 tabular-nums">{story.length.toLocaleString("bn-BD")}/{MAX_STORY.toLocaleString("bn-BD")}</span>
+                <span className="font-normal text-white/65 tabular-nums">{story.length.toLocaleString("bn-BD")}/{MAX_STORY.toLocaleString("bn-BD")}</span>
               </label>
               <textarea
                 id={ids.story}
@@ -168,27 +168,27 @@ export function BdMemories() {
               />
             </div>
 
-            <label htmlFor={ids.consent} className="flex items-start gap-2 font-bengali text-xs leading-relaxed text-slate-600">
+            <label htmlFor={ids.consent} className="flex items-start gap-2 font-bengali text-xs leading-relaxed text-white/80">
               <input id={ids.consent} type="checkbox" required className="mt-0.5 size-4 accent-bd-green" />
               ছবিটি আমার তোলা বা ব্যবহারের অনুমতি আছে; ছবিতে কেউ থাকলে তাঁর সম্মতি নিয়েছি।
             </label>
 
             {error && (
-              <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 font-bengali text-sm font-semibold text-national-crimson">
+              <p role="alert" className="rounded-lg bg-national-crimson/20 px-3 py-2 font-bengali text-sm font-semibold text-national-crimson">
                 {error}
               </p>
             )}
 
             <button
               type="submit"
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-signal-orange px-6 py-3.5 font-bengali text-base font-bold text-white shadow-glow-orange transition-all hover:-translate-y-0.5 hover:bg-bdorange-600 focus-visible:ring-3 focus-visible:ring-signal-orange/40 focus-visible:outline-none motion-reduce:hover:translate-y-0"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-signal-orange px-6 py-3.5 font-bengali text-base font-bold text-text-primary shadow-glow-orange transition-all hover:-translate-y-0.5 hover:bg-bdorange-600 focus-visible:ring-3 focus-visible:ring-signal-orange/40 focus-visible:outline-none motion-reduce:hover:translate-y-0"
             >
               <Icon name="favorite" filled className="text-[20px]!" />
               স্মৃতি শেয়ার করুন
             </button>
 
             {/* Honest about where the memory goes. */}
-            <p className="flex items-start gap-2 rounded-xl bg-amber-50 px-3 py-2 font-bengali text-xs leading-relaxed text-amber-900">
+            <p className="flex items-start gap-2 rounded-xl bg-signal-orange/15 px-3 py-2 font-bengali text-xs leading-relaxed text-white">
               <Icon name="info" className="mt-0.5 shrink-0 text-[16px]!" />
               অনলাইনে জমা দেওয়ার ব্যবস্থা এখনো চালু হয়নি। আপনার স্মৃতি আপাতত শুধু এই ডিভাইসে, এই পেজেই দেখা যাবে — কোথাও আপলোড হবে না।
             </p>
@@ -202,7 +202,7 @@ export function BdMemories() {
             {memories.map((m) => (
               <li
                 key={m.id}
-                className="glass-card story-reveal group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
+                className="glass-card story-reveal group overflow-hidden rounded-3xl border border-white/12 bg-text-primary ring-1 ring-white/12 shadow-sm"
                 style={{ "--card-accent": "var(--color-signal-orange)" } as React.CSSProperties}
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
@@ -213,15 +213,15 @@ export function BdMemories() {
                     <img src={m.image} alt={m.title} className="size-full object-cover transition-transform duration-700 group-hover:scale-105 motion-reduce:transition-none" />
                   )}
                   {m.sample ? (
-                    <span className="absolute top-3 left-3 rounded-full bg-white/90 px-2.5 py-0.5 font-bengali text-[11px] font-bold text-slate-600">নমুনা</span>
+                    <span className="absolute top-3 left-3 rounded-full bg-signal-orange px-2.5 py-0.5 font-bengali text-[11px] font-bold text-text-primary">নমুনা</span>
                   ) : (
                     <span className="absolute top-3 left-3 rounded-full bg-bd-green px-2.5 py-0.5 font-bengali text-[11px] font-bold text-white">আপনার স্মৃতি</span>
                   )}
                 </div>
                 <div className="p-5">
-                  <h3 className="font-bengali text-lg font-bold text-text-primary">{m.title}</h3>
-                  <p className="mt-1 line-clamp-4 font-bengali text-sm leading-relaxed text-text-secondary">{m.story}</p>
-                  <p className="mt-3 flex items-center gap-1.5 font-bengali text-xs font-semibold text-slate-500">
+                  <h3 className="font-bengali text-lg font-bold text-white">{m.title}</h3>
+                  <p className="mt-1 line-clamp-4 font-bengali text-sm leading-relaxed text-white/80">{m.story}</p>
+                  <p className="mt-3 flex items-center gap-1.5 font-bengali text-xs font-semibold text-white/65">
                     <Icon name="person" className="text-[14px]!" /> {m.name}
                     {m.place && (
                       <>

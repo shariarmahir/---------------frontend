@@ -35,19 +35,12 @@ export function BdCulture() {
               {u.photo ? (
                 <StoryPhoto photo={u.photo} sizes="(min-width: 1024px) 16vw, 50vw" className="absolute inset-0" />
               ) : (
-                // Woven pattern tile for crafts we have no photo of.
-                <div
-                  aria-hidden
-                  className="absolute inset-0 opacity-40"
-                  style={{
-                    backgroundImage:
-                      "repeating-linear-gradient(45deg, rgb(228 176 39 / 0.5) 0 6px, transparent 6px 18px), repeating-linear-gradient(-45deg, rgb(255 255 255 / 0.25) 0 6px, transparent 6px 18px)",
-                  }}
-                />
+                // Solid tile for crafts we have no photo of (no texture: solid colours only).
+                <div aria-hidden className="absolute inset-0 bg-bd-green" />
               )}
               <div aria-hidden className="pointer-events-none absolute inset-0 bg-linear-to-t from-slate-950/90 via-slate-950/20 to-transparent" />
               <div className="pointer-events-none absolute inset-x-0 bottom-0 p-4">
-                <span className="inline-flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 font-mono text-[10px] font-bold text-bd-green">
+                <span className="inline-flex items-center gap-1 rounded-full bg-signal-orange px-2 py-0.5 font-mono text-[10px] font-bold text-text-primary">
                   <Icon name="verified" className="text-[12px]!" /> UNESCO {u.year}
                 </span>
                 <h3 className="mt-2 font-bengali text-lg leading-snug font-bold text-white">{u.title}</h3>
@@ -80,14 +73,14 @@ export function BdCulture() {
           {cultureHighlights.map((c) => (
             <div
               key={c.title}
-              className="glass-card story-reveal rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+              className="glass-card story-reveal rounded-2xl border border-white/12 bg-text-primary ring-1 ring-white/12 p-6 shadow-sm"
               style={{ "--card-accent": "var(--color-signal-orange)" } as React.CSSProperties}
             >
-              <span className="mb-3 inline-flex size-11 items-center justify-center rounded-xl bg-orange-50 text-bdorange-600">
+              <span className="mb-3 inline-flex size-11 items-center justify-center rounded-xl bg-signal-orange/15 text-bdorange-600">
                 <Icon name={c.icon} className="text-[24px]!" />
               </span>
-              <h3 className="font-bengali text-xl font-bold text-text-primary">{c.title}</h3>
-              <p className="mt-1 font-bengali text-sm leading-relaxed text-text-secondary">{c.body}</p>
+              <h3 className="font-bengali text-xl font-bold text-white">{c.title}</h3>
+              <p className="mt-1 font-bengali text-sm leading-relaxed text-white/80">{c.body}</p>
             </div>
           ))}
         </div>
@@ -105,7 +98,7 @@ export function BdIcons() {
   }));
 
   return (
-    <section id="icons" className="section-band-tinted scroll-mt-40 border-y border-slate-200 bg-[#fbf8f1]">
+    <section id="icons" className="section-band-tinted scroll-mt-40 border-y border-white/12 bg-black">
       <div className="mx-auto max-w-7xl px-gutter-x">
         <StoryHeading
           index="০৬"
@@ -118,7 +111,7 @@ export function BdIcons() {
         <div className="space-y-12">
           {groups.map((g) => (
             <div key={g.key}>
-              <h3 className="story-reveal mb-5 inline-flex items-center gap-2 font-bengali text-xl font-bold text-bd-green">
+              <h3 className="story-reveal mb-5 inline-flex items-center gap-2 font-bengali text-xl font-bold text-signal-orange">
                 <Icon name={g.icon} className="text-[24px]!" /> {g.label}
               </h3>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -127,7 +120,7 @@ export function BdIcons() {
                   return (
                     <article
                       key={p.id}
-                      className="glass-card story-reveal flex flex-col overflow-hidden rounded-3xl border border-amber-100 bg-white shadow-sm"
+                      className="glass-card story-reveal flex flex-col overflow-hidden rounded-3xl border border-white/12 bg-text-primary ring-1 ring-white/12 shadow-sm"
                       style={{ "--card-accent": "var(--color-bd-green)" } as React.CSSProperties}
                     >
                       <div className="flex items-start gap-4 p-5">
@@ -139,14 +132,14 @@ export function BdIcons() {
                           </span>
                         )}
                         <div className="min-w-0">
-                          <h4 className="font-bengali text-xl leading-tight font-bold text-text-primary">{p.name}</h4>
-                          <p className="font-bengali text-xs text-slate-500">{p.years}</p>
+                          <h4 className="font-bengali text-xl leading-tight font-bold text-white">{p.name}</h4>
+                          <p className="font-bengali text-xs text-white/65">{p.years}</p>
                           <p className="mt-1 font-bengali text-sm font-semibold text-signal-orange">{p.role}</p>
                         </div>
                       </div>
-                      <p className="px-5 font-bengali text-sm leading-relaxed text-text-secondary">{p.body}</p>
+                      <p className="px-5 font-bengali text-sm leading-relaxed text-white/80">{p.body}</p>
                       {p.quote && (
-                        <blockquote className="mx-5 mt-4 mb-5 border-l-4 border-national-crimson bg-red-50/60 px-4 py-3 font-bengali text-base leading-relaxed font-semibold text-text-primary italic">
+                        <blockquote className="mx-5 mt-4 mb-5 border-l-4 border-national-crimson bg-national-crimson/20/60 px-4 py-3 font-bengali text-base leading-relaxed font-semibold text-white italic">
                           “{p.quote}”
                         </blockquote>
                       )}

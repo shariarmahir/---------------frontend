@@ -77,7 +77,6 @@ export function BdSeasons() {
           title="ছয় ঋতুর দেশ"
           accent="ছয় ঋতুর"
           lede="প্রতি দুই মাসে বদলে যায় আকাশের রং, মাঠের ফসল আর মানুষের উৎসব — পৃথিবীতে এমন দেশ খুব কম।"
-          invert
         />
 
         <ol className="no-scrollbar -mx-gutter-x flex snap-x snap-mandatory gap-4 overflow-x-auto px-gutter-x pb-4 lg:mx-0 lg:grid lg:grid-cols-6 lg:overflow-visible lg:px-0">

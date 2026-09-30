@@ -98,19 +98,19 @@ export function DailyJudgmentForm() {
     return (
       <div
         id="daily-judgment"
-        className="flex h-full flex-col items-center justify-center gap-space-md rounded-2xl border-2 border-emerald-200 bg-emerald-50/60 p-space-lg text-center shadow-md"
+        className="flex h-full flex-col items-center justify-center gap-space-md rounded-2xl border-2 border-white/12 bg-bdgreen-500/15 p-space-lg text-center shadow-md"
       >
         <span className="flex size-14 items-center justify-center rounded-full bg-primary text-white shadow-md">
           <Icon name="check" className="text-[28px]" />
         </span>
-        <h3 className="font-display text-headline-md font-bold text-slate-900">
+        <h3 className="font-display text-headline-md font-bold text-white">
           আজকের রায় জমা হয়েছে
         </h3>
-        <p className="max-w-md font-body-md text-body-md text-slate-600">
+        <p className="max-w-md font-body-md text-body-md text-white/80">
           Your judgment is recorded for {todayKey()}. Come back tomorrow — every
           Bangladeshi voice compounds into the national index.
         </p>
-        <span className="rounded-full border border-emerald-300 bg-white px-space-md py-1 font-code-telemetry text-label-sm font-bold text-primary">
+        <span className="rounded-full border border-white/12 bg-text-primary ring-1 ring-white/12 px-space-md py-1 font-code-telemetry text-label-sm font-bold text-primary">
           {ledgerCount} DAY{ledgerCount === 1 ? "" : "S"} LOGGED BY YOU
         </span>
         <p className="font-display text-body-md font-semibold text-primary">
@@ -122,7 +122,7 @@ export function DailyJudgmentForm() {
             setSubmitted(false);
             setError(null);
           }}
-          className="font-label-sm text-label-sm text-slate-500 underline underline-offset-4 transition-colors hover:text-primary"
+          className="font-label-sm text-label-sm text-white/65 underline underline-offset-4 transition-colors hover:text-primary"
         >
           Edit today&apos;s entry
         </button>
@@ -134,24 +134,24 @@ export function DailyJudgmentForm() {
     <form
       id="daily-judgment"
       onSubmit={handleSubmit}
-      className="flex h-full flex-col gap-space-md rounded-2xl border border-border bg-slate-50 p-space-lg shadow-md"
+      className="flex h-full flex-col gap-space-md rounded-2xl border border-border bg-text-primary p-space-lg shadow-md"
     >
       <div className="flex flex-col gap-space-xs">
         <span className="flex w-fit items-center gap-space-xs rounded-sm bg-primary px-space-sm py-0.5 font-code-telemetry text-label-sm font-bold text-white">
           <Icon name="how_to_vote" className="text-[16px]" />
           DAILY CITIZEN INPUT
         </span>
-        <h3 className="font-display text-headline-md font-bold text-slate-900">
+        <h3 className="font-display text-headline-md font-bold text-white">
           {DAILY_FORM_PROMPT}
         </h3>
-        <p className="font-display text-body-md text-slate-600">
+        <p className="font-display text-body-md text-white/80">
           {DAILY_FORM_PROMPT_BN}
         </p>
       </div>
 
       {/* Mood scale. */}
       <fieldset className="flex flex-col gap-space-sm">
-        <legend className="font-label-md text-label-md font-semibold text-slate-900">
+        <legend className="font-label-md text-label-md font-semibold text-white">
           1. How was your day?
         </legend>
         <div className="flex flex-wrap gap-space-xs">
@@ -164,21 +164,21 @@ export function DailyJudgmentForm() {
               className={cn(
                 "flex min-w-18 flex-1 flex-col items-center gap-0.5 rounded-lg border-2 px-space-xs py-space-sm transition-all",
                 mood === m.value
-                  ? "border-primary bg-white shadow-sm"
-                  : "border-border bg-white/60 hover:border-emerald-300",
+                  ? "border-primary bg-text-primary ring-1 ring-white/12 shadow-sm"
+                  : "border-border bg-white/60 hover:border-white/12",
               )}
             >
               <Icon
                 name={m.icon}
                 className={cn(
                   "text-[24px]",
-                  mood === m.value ? "text-primary" : "text-slate-500",
+                  mood === m.value ? "text-primary" : "text-white/65",
                 )}
               />
-              <span className="font-display text-body-sm font-semibold text-slate-900">
+              <span className="font-display text-body-sm font-semibold text-white">
                 {m.label}
               </span>
-              <span className="font-label-sm text-label-xs text-slate-500">
+              <span className="font-label-sm text-label-xs text-white/65">
                 {m.en}
               </span>
             </button>
@@ -188,7 +188,7 @@ export function DailyJudgmentForm() {
 
       {/* Improvement areas. */}
       <fieldset className="flex flex-col gap-space-sm">
-        <legend className="font-label-md text-label-md font-semibold text-slate-900">
+        <legend className="font-label-md text-label-md font-semibold text-white">
           2. What can the government fix within 2 days?
         </legend>
         <div className="flex flex-wrap gap-space-xs">
@@ -204,7 +204,7 @@ export function DailyJudgmentForm() {
                   "inline-flex items-center gap-1 rounded-full border px-space-sm py-1 font-label-sm text-label-sm transition-all",
                   active
                     ? "border-crimson bg-crimson text-white shadow-sm"
-                    : "border-border bg-white text-slate-900 hover:border-crimson/40 hover:text-crimson",
+                    : "border-border bg-text-primary ring-1 ring-white/12 text-white hover:border-crimson/40 hover:text-crimson",
                 )}
               >
                 <Icon name={area.icon} className="text-[14px]" />
@@ -220,7 +220,7 @@ export function DailyJudgmentForm() {
       <div className="flex flex-col gap-space-xs">
         <label
           htmlFor="daily-note"
-          className="font-label-md text-label-md font-semibold text-slate-900"
+          className="font-label-md text-label-md font-semibold text-white"
         >
           3. Short description
         </label>
@@ -231,9 +231,9 @@ export function DailyJudgmentForm() {
           onChange={(e) => setNote(e.target.value)}
           rows={3}
           placeholder="আজ কী সমস্যায় পড়েছেন? সংক্ষেপে লিখুন…"
-          className="w-full resize-none rounded-lg border border-border bg-white px-space-sm py-space-sm font-sans text-body-sm text-slate-900 shadow-xs outline-none transition-all placeholder:text-slate-500 focus:border-primary focus:shadow-[0_0_0_3px_rgba(0,103,71,0.12)]"
+          className="w-full resize-none rounded-lg border border-border bg-text-primary ring-1 ring-white/12 px-space-sm py-space-sm font-sans text-body-sm text-white shadow-xs outline-none transition-all placeholder:text-white/65 focus:border-primary focus:shadow-[0_0_0_3px_rgba(0,103,71,0.12)]"
         />
-        <span className="self-end font-code-telemetry text-label-xs text-slate-500">
+        <span className="self-end font-code-telemetry text-label-xs text-white/65">
           {note.length}/{MAX_CHARS}
         </span>
       </div>
@@ -241,7 +241,7 @@ export function DailyJudgmentForm() {
       {error ? (
         <p
           role="alert"
-          className="flex items-center gap-space-xs rounded-lg border border-red-200 bg-red-50 px-space-sm py-space-xs font-body-sm text-body-sm text-crimson"
+          className="flex items-center gap-space-xs rounded-lg border border-white/12 bg-national-crimson/20 px-space-sm py-space-xs font-body-sm text-body-sm text-crimson"
         >
           <Icon name="error" className="text-[16px]" />
           {error}
@@ -250,7 +250,7 @@ export function DailyJudgmentForm() {
 
       <button
         type="submit"
-        className="mt-auto inline-flex items-center justify-center gap-space-sm rounded-lg bg-title px-space-lg py-3 font-display text-label-md font-bold text-slate-900 shadow-sm transition-all hover:scale-[1.01] hover:bg-signal active:scale-[0.99]"
+        className="mt-auto inline-flex items-center justify-center gap-space-sm rounded-lg bg-title px-space-lg py-3 font-display text-label-md font-bold text-white shadow-sm transition-all hover:scale-[1.01] hover:bg-signal active:scale-[0.99]"
       >
         <Icon name="send" className="text-[18px]" />
         Submit Today&apos;s Judgment

@@ -38,7 +38,7 @@ export default function BangladeshPage() {
       <DeshHero />
 
       <ActOpener act="amar-desh" photo={harvestDusk} />
-      <div className="bg-grid-subtle">
+      <div className="relative">
         <BdHistory />
         <BdMap />
         <BdNature />

@@ -38,11 +38,14 @@ export function PixelMark({ tone = "light", className }: { tone?: Tone; classNam
 }
 
 export function SectionHeading({
+  kicker,
   title,
   lead,
   tone = "light",
   className,
 }: {
+  /** A short Bangla line above the title. */
+  kicker?: ReactNode;
   title: ReactNode;
   lead?: ReactNode;
   tone?: Tone;
@@ -51,6 +54,9 @@ export function SectionHeading({
   return (
     <div className={cn("story-reveal mb-10 flex max-w-3xl flex-col gap-3", className)}>
       <PixelMark tone={tone} />
+      {kicker ? (
+        <span className={cn("font-bengali text-sm font-bold", tone === "dark" ? "text-white/80" : "text-bd-green")}>{kicker}</span>
+      ) : null}
       <h2
         className={cn(
           "font-grotesk text-2xl font-bold tracking-tight text-balance uppercase sm:text-3xl lg:text-4xl",

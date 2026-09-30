@@ -119,7 +119,7 @@ export function AccountMenu({ variant = "site", className }: { variant?: "site" 
 }
 
 /** Account links for a mobile menu sheet. `wrap` lets the sheet close on tap. */
-export function AccountSheetLinks({ wrap = (n) => n }: { wrap?: (node: React.ReactElement) => React.ReactNode }) {
+export function AccountSheetLinks({ wrap = (n) => n, onGold = false }: { wrap?: (node: React.ReactElement) => React.ReactNode; onGold?: boolean }) {
   const { ready, account } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -134,7 +134,7 @@ export function AccountSheetLinks({ wrap = (n) => n }: { wrap?: (node: React.Rea
           </Link>,
         )}
         {wrap(
-          <Link href="/signup" className={cn(base, "border border-bd-green/30 text-bd-green hover:bg-mint-subtle")}>
+          <Link href="/signup" className={cn(base, onGold ? "text-text-primary ring-1 ring-text-primary/45 hover:bg-text-primary/10" : "border border-bd-green/30 text-bd-green hover:bg-mint-subtle")}>
             <UserPlus className="size-4" aria-hidden /> অ্যাকাউন্ট খুলুন
           </Link>,
         )}
@@ -145,7 +145,7 @@ export function AccountSheetLinks({ wrap = (n) => n }: { wrap?: (node: React.Rea
   return (
     <div className="mt-space-sm grid gap-space-xs">
       {wrap(
-        <Link href="/account" className={cn(base, "justify-start bg-bdgreen-900 text-white hover:bg-bdgreen-800")}>
+        <Link href="/account" className={cn(base, "justify-start bg-text-primary text-white hover:bg-bdgreen-900")}>
           <AccountAvatar name={account.name} className="size-7 bg-white/15 text-sm" />
           <span className="truncate">{account.name}</span>
           <span className="ml-auto text-xs font-semibold text-white/80">অ্যাকাউন্ট →</span>
@@ -158,7 +158,7 @@ export function AccountSheetLinks({ wrap = (n) => n }: { wrap?: (node: React.Rea
             signOut();
             router.push("/");
           }}
-          className={cn(base, "border border-red-200 text-national-crimson hover:bg-red-50")}
+          className={cn(base, onGold ? "text-text-primary ring-1 ring-text-primary/45 hover:bg-text-primary/10" : "border border-red-200 text-national-crimson hover:bg-red-50")}
         >
           <LogOut className="size-4" aria-hidden /> সাইন আউট
         </button>,

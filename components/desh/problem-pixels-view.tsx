@@ -32,13 +32,13 @@ const TILE: Record<Urgency, string> = {
   "very-high": "bg-national-crimson text-white",
   high: "bg-[color-mix(in_oklab,var(--color-national-crimson)_62%,var(--color-signal-orange))] text-white",
   "medium-high": "bg-signal-orange text-text-primary",
-  medium: "bg-amber-100 text-text-primary",
+  medium: "bg-white text-text-primary",
 };
 
 const STATUS_CHIP: Record<EvidenceStatus, string> = {
-  verified: "bg-bd-green-light text-bd-green-dark",
-  plausible: "bg-amber-50 text-amber-900",
-  unverified: "bg-slate-100 text-slate-700",
+  verified: "bg-white/10 text-signal-orange",
+  plausible: "bg-signal-orange/20 text-signal-orange",
+  unverified: "bg-text-primary text-white/80",
 };
 
 const URGENCIES: Urgency[] = ["very-high", "high", "medium-high", "medium"];
@@ -64,13 +64,13 @@ export function ProblemPixelsView({ items }: { items: PixelProblem[] }) {
   const shown = (x: PixelProblem) => urgency === "all" || x.urgency === urgency;
 
   return (
-    <section id="register" aria-labelledby="pixels-title" className="section-band scroll-mt-40 bg-white">
+    <section id="register" aria-labelledby="pixels-title" className="section-band scroll-mt-40 bg-text-primary ring-1 ring-white/12">
       <div className="mx-auto max-w-7xl px-gutter-x">
         <div className="story-reveal max-w-3xl">
-          <h2 id="pixels-title" className="font-bengali text-3xl leading-tight font-bold text-balance text-text-primary sm:text-4xl">
+          <h2 id="pixels-title" className="font-bengali text-3xl leading-tight font-bold text-balance text-white sm:text-4xl">
             ৩২টি নষ্ট <span className="text-national-crimson">পিক্সেল</span> — প্রতিটির প্রমাণ আর সমাধানের পথ
           </h2>
-          <p className="mt-3 font-bengali text-lg leading-relaxed text-text-secondary">
+          <p className="mt-3 font-bengali text-lg leading-relaxed text-white/80">
             নিজের খুঁজে পাওয়া সমস্যা আর গভীর গবেষণা মিলিয়ে ৩২টি বিষয়। একটি পিক্সেল বেছে নিন — কতটা প্রমাণিত, কতটা জরুরি, আর কোন পথে এগোলে কাজ হবে, কোন পথে নয়।
           </p>
         </div>
@@ -84,7 +84,7 @@ export function ProblemPixelsView({ items }: { items: PixelProblem[] }) {
               onClick={() => setUrgency(u)}
               className={cn(
                 "inline-flex min-h-10 items-center gap-2 rounded-full border px-4 font-bengali text-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-bd-green/40 focus-visible:outline-none",
-                urgency === u ? "border-bd-green bg-bd-green text-white" : "border-slate-200 text-text-secondary hover:border-bd-green/40",
+                urgency === u ? "border-bd-green bg-bd-green text-white" : "border-white/12 text-white/80 hover:border-bd-green/40",
               )}
             >
               {u !== "all" && <span aria-hidden className={cn("size-3 rounded-xs", TILE[u])} />}
@@ -120,40 +120,40 @@ export function ProblemPixelsView({ items }: { items: PixelProblem[] }) {
             })}
           </ol>
 
-          <article aria-live="polite" className="rounded-3xl border border-slate-200 bg-[#fbf8f1] p-6 sm:p-8">
+          <article aria-live="polite" className="rounded-3xl border border-white/12 bg-black p-6 sm:p-8">
             <div className="flex flex-wrap items-center gap-2 font-bengali text-xs font-semibold">
               <span className={cn("rounded-full px-2.5 py-1", TILE[p.urgency])}>{p.urgencyBn}</span>
               <span className={cn("rounded-full px-2.5 py-1", STATUS_CHIP[p.status])}>{p.statusBn}</span>
-              <span className="rounded-full bg-white px-2.5 py-1 text-text-secondary ring-1 ring-slate-200">{p.theme}</span>
-              <span className="ml-auto font-mono text-text-muted">{p.code}</span>
+              <span className="rounded-full bg-text-primary ring-1 ring-white/12 px-2.5 py-1 text-white/80">{p.theme}</span>
+              <span className="ml-auto font-mono text-white/65">{p.code}</span>
             </div>
-            <h3 className="mt-4 font-bengali text-2xl leading-snug font-bold text-text-primary sm:text-3xl">
+            <h3 className="mt-4 font-bengali text-2xl leading-snug font-bold text-white sm:text-3xl">
               {toBanglaDigits(p.n)}. {p.title}
             </h3>
-            <p lang="en" className="mt-1 font-sans text-sm text-text-muted">
+            <p lang="en" className="mt-1 font-sans text-sm text-white/65">
               {p.topicEn} — {p.interpretation}
             </p>
-            <p className="mt-4 font-bengali text-lg leading-relaxed text-text-primary">{p.brief}</p>
+            <p className="mt-4 font-bengali text-lg leading-relaxed text-white">{p.brief}</p>
             {p.fact && (
-              <p className="mt-4 rounded-xl bg-white p-4 font-bengali text-[15px] leading-relaxed text-text-secondary ring-1 ring-slate-200">
-                <Icon name="fact_check" className="mr-1 align-[-4px] text-[18px] text-bd-green" />
-                {p.fact.text} <span className="text-text-muted">— {p.fact.source}</span>
+              <p className="mt-4 rounded-xl bg-text-primary ring-1 ring-white/12 p-4 font-bengali text-[15px] leading-relaxed text-white/80">
+                <Icon name="fact_check" className="mr-1 align-[-4px] text-[18px] text-signal-orange" />
+                {p.fact.text} <span className="text-white/65">— {p.fact.source}</span>
               </p>
             )}
-            <p className="mt-3 font-bengali text-sm text-text-muted">
+            <p className="mt-3 font-bengali text-sm text-white/65">
               প্রমাণের অবস্থা: <span lang="en" className="font-sans">{p.statusNote}</span>
             </p>
 
             <div className="mt-6 grid gap-5 sm:grid-cols-2">
               <div>
-                <h4 className="flex items-center gap-2 font-bengali text-base font-bold text-bd-green-dark">
+                <h4 className="flex items-center gap-2 font-bengali text-base font-bold text-signal-orange">
                   <Icon name="task_alt" className="text-[20px]" /> যা করতে হবে
                 </h4>
                 <ul className="mt-3 space-y-3">
                   {p.doThis.map((d) => (
                     <li key={d.text} className="font-bengali text-[15px] leading-relaxed">
-                      <p className="font-semibold text-text-primary">{d.text}</p>
-                      <p className="mt-0.5 text-sm text-text-secondary">{d.why}</p>
+                      <p className="font-semibold text-white">{d.text}</p>
+                      <p className="mt-0.5 text-sm text-white/80">{d.why}</p>
                     </li>
                   ))}
                 </ul>
@@ -165,15 +165,15 @@ export function ProblemPixelsView({ items }: { items: PixelProblem[] }) {
                 <ul className="mt-3 space-y-3">
                   {p.avoid.map((d) => (
                     <li key={d.text} className="font-bengali text-[15px] leading-relaxed">
-                      <p className="font-semibold text-text-primary">{d.text}</p>
-                      <p className="mt-0.5 text-sm text-text-secondary">{d.why}</p>
+                      <p className="font-semibold text-white">{d.text}</p>
+                      <p className="mt-0.5 text-sm text-white/80">{d.why}</p>
                     </li>
                   ))}
                 </ul>
               </div>
             </div>
 
-            <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-slate-200 pt-5">
+            <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-white/12 pt-5">
               {p.photo && (
                 <span className="relative size-14 shrink-0 overflow-hidden rounded-lg">
                   <Image src={p.photo.src} alt={p.photo.alt} fill sizes="56px" className="object-cover" />

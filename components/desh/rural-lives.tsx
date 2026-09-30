@@ -1,4 +1,5 @@
 import { StoryPhoto } from "@/components/bangladesh/story-photo";
+import { StoryHeading } from "@/components/bangladesh/story-heading";
 import { Icon } from "@/components/ui/icon";
 import { ruralStories } from "@/data/rural-life";
 import { toBanglaDigits } from "@/lib/bangla";
@@ -19,18 +20,18 @@ const OWN_FRAMES = [
  */
 export function RuralLives() {
   return (
-    <section id="rural" aria-labelledby="rural-title" className="section-band scroll-mt-40 bg-slate-950 text-white">
+    <section id="rural" aria-labelledby="rural-title" className="section-band-tinted scroll-mt-40 bg-black text-white">
       <div className="mx-auto max-w-7xl px-gutter-x">
-        <div className="story-reveal max-w-3xl">
-          <h2 id="rural-title" className="font-bengali text-3xl leading-tight font-bold text-balance sm:text-4xl">
-            মাঠ, নদী আর ভাটার <span className="text-signal-orange">মানুষ</span>
-          </h2>
-          <p className="mt-3 font-bengali text-lg leading-relaxed text-white/80">
-            পরিসংখ্যানের পেছনে মুখ আছে। যাঁদের ঘামে দেশ চলে, সমস্যার প্রথম আঘাত পড়ে তাঁদের ওপর — প্রতিটি ছবির নিচে সেই কষ্ট, আর কোন সমস্যার সাথে তা জড়িত।
-          </p>
-        </div>
+        <StoryHeading
+          id="rural-title"
+          index="০৩"
+          kicker="গ্রামীণ জীবন"
+          title="মাঠ, নদী আর ভাটার মানুষ"
+          accent="মানুষ"
+          lede="পরিসংখ্যানের পেছনে মুখ আছে। যাঁদের ঘামে দেশ চলে, সমস্যার প্রথম আঘাত পড়ে তাঁদের ওপর — প্রতিটি ছবির নিচে সেই কষ্ট, আর কোন সমস্যার সাথে তা জড়িত।"
+        />
 
-        <ul className="mt-10 grid auto-rows-[15rem] grid-cols-1 gap-3 sm:grid-cols-2 lg:auto-rows-[13rem] lg:grid-cols-4 lg:grid-flow-dense">
+        <ul className="grid auto-rows-[15rem] grid-cols-1 gap-3 sm:grid-cols-2 lg:auto-rows-[13rem] lg:grid-cols-4 lg:grid-flow-dense">
           {ruralStories.map((s, i) => {
             const big = i === 0 || i === 7;
             const tall = i === 3 || i === 10;
@@ -51,12 +52,12 @@ export function RuralLives() {
         </ul>
 
         <div className="mt-12">
-          <h3 className="flex items-center gap-2 font-bengali text-xl font-bold">
-            <Icon name="add_a_photo" className="text-[24px] text-signal-orange" /> মাঠ থেকে আমাদের নিজের ছবি
+          <h3 className="flex items-center gap-2 font-bengali text-xl font-bold text-signal-orange">
+            <Icon name="add_a_photo" className="text-[24px]" /> মাঠ থেকে আমাদের নিজের ছবি
           </h3>
           <ul className="mt-5 grid gap-3 sm:grid-cols-3">
             {OWN_FRAMES.map((f) => (
-              <li key={f.title} className="relative flex aspect-4/3 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-white/25 bg-[repeating-linear-gradient(135deg,rgb(255_255_255/0.03)_0_12px,transparent_12px_24px)] p-6 text-center">
+              <li key={f.title} className="relative flex aspect-4/3 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-white/25 bg-text-primary p-6 text-center">
                 <Icon name="photo_camera" className="text-[36px] text-white/50" />
                 <p className="font-bengali text-base font-bold text-white">{f.title}</p>
                 <p className="font-bengali text-sm text-white/65">{f.note}</p>

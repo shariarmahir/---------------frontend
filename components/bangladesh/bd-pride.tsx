@@ -27,7 +27,7 @@ export function BdPride() {
         </p>
         <a
           href="#memories"
-          className="mt-10 inline-flex items-center gap-2 rounded-full bg-signal-orange px-7 py-4 font-bengali text-base font-bold text-white shadow-glow-orange transition-all hover:-translate-y-0.5 hover:bg-bdorange-600 focus-visible:ring-4 focus-visible:ring-white/40 focus-visible:outline-none motion-reduce:hover:translate-y-0"
+          className="mt-10 inline-flex items-center gap-2 rounded-full bg-signal-orange px-7 py-4 font-bengali text-base font-bold text-text-primary shadow-glow-orange transition-all hover:-translate-y-0.5 hover:bg-bdorange-600 focus-visible:ring-4 focus-visible:ring-white/40 focus-visible:outline-none motion-reduce:hover:translate-y-0"
         >
           আপনার বাংলাদেশের গল্প বলুন
         </a>
@@ -43,34 +43,34 @@ export function BdCredits() {
   );
 
   return (
-    <section className="border-t border-slate-200 bg-slate-50">
+    <section className="border-t border-white/12 bg-text-primary">
       <div className="mx-auto max-w-7xl px-gutter-x py-10">
-        <details className="group rounded-2xl border border-slate-200 bg-white p-5">
-          <summary className="flex cursor-pointer list-none items-center justify-between font-bengali text-sm font-bold text-text-primary">
+        <details className="group rounded-2xl border border-white/12 bg-text-primary ring-1 ring-white/12 p-5">
+          <summary className="flex cursor-pointer list-none items-center justify-between font-bengali text-sm font-bold text-white">
             ছবি ও তথ্যের উৎস ({photos.length + facts.length})
             <span aria-hidden className="material-symbols-outlined transition-transform group-open:rotate-180 motion-reduce:transition-none">expand_more</span>
           </summary>
           <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
-              <h3 className="mb-2 font-bengali text-sm font-bold text-slate-700">তথ্য</h3>
-              <ul className="space-y-1.5 font-sans text-xs text-slate-600">
+              <h3 className="mb-2 font-bengali text-sm font-bold text-white/80">তথ্য</h3>
+              <ul className="space-y-1.5 font-sans text-xs text-white/80">
                 <li>
-                  গ্রাফ: <a className="text-bd-green hover:underline" href="https://data.worldbank.org/country/bangladesh" target="_blank" rel="noopener noreferrer">World Bank WDI</a>
+                  গ্রাফ: <a className="text-signal-orange hover:underline" href="https://data.worldbank.org/country/bangladesh" target="_blank" rel="noopener noreferrer">World Bank WDI</a>
                 </li>
                 {facts.map((f) => (
                   <li key={f.label}>
                     <span className="font-bengali">{f.label}</span>:{" "}
-                    <a className="text-bd-green hover:underline" href={f.url} target="_blank" rel="noopener noreferrer">{f.source}</a>
+                    <a className="text-signal-orange hover:underline" href={f.url} target="_blank" rel="noopener noreferrer">{f.source}</a>
                   </li>
                 ))}
               </ul>
             </div>
             <div>
-              <h3 className="mb-2 font-bengali text-sm font-bold text-slate-700">ছবি (Wikimedia Commons)</h3>
-              <ul className="space-y-1.5 font-sans text-xs text-slate-600">
+              <h3 className="mb-2 font-bengali text-sm font-bold text-white/80">ছবি (Wikimedia Commons)</h3>
+              <ul className="space-y-1.5 font-sans text-xs text-white/80">
                 {photos.map((p) => (
                   <li key={p.src}>
-                    <a className="font-bengali text-bd-green hover:underline" href={p.credit.sourceUrl} target="_blank" rel="noopener noreferrer">{p.alt}</a>
+                    <a className="font-bengali text-signal-orange hover:underline" href={p.credit.sourceUrl} target="_blank" rel="noopener noreferrer">{p.alt}</a>
                     {" — "}{p.credit.author},{" "}
                     {p.credit.licenseUrl ? (
                       <a className="hover:underline" href={p.credit.licenseUrl} target="_blank" rel="noopener noreferrer">{p.credit.license}</a>
