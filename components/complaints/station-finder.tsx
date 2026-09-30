@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import { Icon } from "@/components/ui/icon";
+import { SectionHeading, SignalSeam } from "@/components/ui/section-kit";
 import { stationAreas } from "@/data/complaints";
 import { cn } from "@/lib/utils";
 
 /**
- * Nearest police station finder.
+ * Nearest police station finder — an ink band with the gold pulse on its
+ * seam, the home page's gold pills for the divisions and the map on an ink
+ * card.
  *
  * OpenStreetMap rather than Google Maps: the embed needs no API key and no
  * billing account, so it works the moment this ships instead of rendering a
@@ -32,9 +35,7 @@ export function StationFinder() {
   /** Hand off to the user's map app, centred on their actual position. */
   function findNearest() {
     if (!("geolocation" in navigator)) {
-      setLocateError(
-        "This browser cannot share your location. Use the division list instead.",
-      );
+      setLocateError("This browser cannot share your location. Use the division list instead.");
       return;
     }
     setLocating(true);
@@ -51,66 +52,52 @@ export function StationFinder() {
       },
       () => {
         setLocating(false);
-        setLocateError(
-          "Location was not shared. Pick your division below instead.",
-        );
+        setLocateError("Location was not shared. Pick your division below instead.");
       },
       { timeout: 10_000 },
     );
   }
 
-  return (
-    <section
-      id="stations"
-      className="w-full border-b border-border bg-white px-gutter py-space-lg"
-    >
-      <div className="mx-auto flex max-w-[1440px] flex-col gap-space-lg">
-        <div className="flex flex-col gap-space-xs">
-          <h2 className="font-display text-headline-md font-extrabold tracking-tight text-slate-900">
-            নিকটস্থ থানা
-          </h2>
-          <p className="max-w-2xl font-sans text-body-sm leading-relaxed text-slate-600">
-            Most complaints start at a police station. Find the one nearest to
-            you, or browse by division.
-          </p>
-        </div>
+  const mapSearch = `https://www.openstreetmap.org/search?query=${encodeURIComponent(area.mapQuery)}`;
 
-        <div className="grid grid-cols-1 gap-space-lg lg:grid-cols-[20rem_1fr]">
-          {/* Controls. */}
-          <div className="flex flex-col gap-space-md">
+  return (
+    <section id="stations" aria-labelledby="stations-title" className="section-band-tinted relative isolate w-full scroll-mt-40 overflow-hidden bg-text-primary">
+      <SignalSeam className="top-0" />
+      <div className="mx-auto max-w-7xl px-gutter-x">
+        <SectionHeading
+          tone="dark"
+          kicker="নিকটস্থ থানা"
+          title={<span id="stations-title">Nearest police station</span>}
+          lead="Most complaints start at a police station. Find the one nearest to you, or browse by division."
+        />
+
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-[22rem_minmax(0,1fr)]">
+          <div className="story-reveal flex flex-col gap-4">
             <button
               type="button"
               onClick={findNearest}
               disabled={locating}
               className={cn(
-                "inline-flex h-11 items-center justify-center gap-space-xs rounded-lg px-space-md font-sans text-label-md font-bold transition-colors",
+                "group inline-flex h-14 items-center justify-center gap-2 rounded-2xl px-5 font-grotesk text-sm font-bold uppercase [-webkit-tap-highlight-color:transparent] transition-[translate,scale,box-shadow] duration-200 active:scale-95",
                 locating
-                  ? "cursor-wait bg-slate-200 text-slate-500"
-                  : "bg-primary text-white hover:bg-emerald-800",
+                  ? "cursor-wait bg-white/10 text-white/60"
+                  : "bg-signal-orange text-text-primary shadow-tile hover:-translate-y-0.5 hover:shadow-tile-lift",
               )}
             >
-              <Icon
-                name={locating ? "progress_activity" : "my_location"}
-                className={cn("text-[18px]", locating && "animate-spin")}
-              />
+              <Icon name={locating ? "progress_activity" : "my_location"} className={cn("text-[20px]", locating && "animate-spin")} />
               {locating ? "Locating…" : "Find nearest station"}
             </button>
 
             {locateError ? (
-              <p
-                role="status"
-                className="flex items-start gap-1.5 rounded-lg border border-amber-300 bg-amber-50 p-space-sm font-sans text-[0.8125rem] leading-relaxed text-amber-900"
-              >
-                <Icon name="info" className="mt-px shrink-0 text-[15px]" />
+              <p role="status" className="live-in flex items-start gap-2 rounded-2xl bg-bdorange-600 p-3 font-sans text-[0.8125rem] leading-relaxed text-text-primary">
+                <Icon name="info" className="mt-px shrink-0 text-[16px]" />
                 {locateError}
               </p>
             ) : null}
 
-            <div className="flex flex-col gap-space-xs">
-              <span className="font-sans text-[0.75rem] font-semibold tracking-wider text-slate-500 uppercase">
-                Browse by division
-              </span>
-              <div className="flex flex-wrap gap-space-xs">
+            <div className="flex flex-col gap-2">
+              <span className="font-mono text-[11px] font-bold tracking-widest text-white/80 uppercase">Browse by division</span>
+              <div className="flex flex-wrap gap-2">
                 {stationAreas.map((s) => (
                   <button
                     key={s.division}
@@ -118,10 +105,8 @@ export function StationFinder() {
                     onClick={() => setArea(s)}
                     aria-pressed={area.division === s.division}
                     className={cn(
-                      "rounded-lg border px-space-sm py-1.5 font-sans text-[0.8125rem] font-semibold transition-colors",
-                      area.division === s.division
-                        ? "border-slate-900 bg-slate-900 text-white"
-                        : "border-border bg-white text-slate-600 hover:border-slate-400 hover:text-slate-900",
+                      "min-h-10 rounded-full px-4 font-bengali text-sm font-semibold [-webkit-tap-highlight-color:transparent] transition-[background-color,color,scale] duration-200 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none active:scale-95",
+                      area.division === s.division ? "bg-signal-orange text-text-primary" : "bg-white/10 text-white ring-1 ring-white/20 hover:bg-white/20",
                     )}
                   >
                     {s.divisionBn}
@@ -131,28 +116,25 @@ export function StationFinder() {
             </div>
 
             <a
-              href={`https://www.openstreetmap.org/search?query=${encodeURIComponent(area.mapQuery)}`}
+              href={mapSearch}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex w-fit items-center gap-1 font-sans text-[0.8125rem] font-semibold text-primary hover:underline"
+              className="inline-flex w-fit items-center gap-1.5 rounded-xl bg-bd-green px-4 py-2.5 font-sans text-[0.8125rem] font-bold text-white [-webkit-tap-highlight-color:transparent] transition-[translate,scale] duration-200 hover:-translate-y-0.5 active:scale-95"
             >
-              <Icon name="open_in_new" className="text-[14px]" />
+              <Icon name="open_in_new" className="text-[16px]" />
               Open {area.division} stations in a map
             </a>
 
-            <p className="rounded-lg border border-border bg-slate-50 p-space-sm font-sans text-[0.75rem] leading-relaxed text-slate-600">
-              Station phone numbers are not listed here. Numbers change, and a
-              wrong one costs time in an emergency — call{" "}
-              <a href="tel:999" className="font-bold text-crimson underline">
+            <p className="rounded-2xl bg-black p-4 font-sans text-[0.75rem] leading-relaxed text-white/75 ring-1 ring-white/12">
+              Station phone numbers are not listed here. Numbers change, and a wrong one costs time in an emergency — call{" "}
+              <a href="tel:999" className="font-bold text-crimson-bright underline">
                 999
               </a>{" "}
-              for police, or use the map to reach a station&apos;s current
-              published contact.
+              for police, or use the map to reach a station&apos;s current published contact.
             </p>
           </div>
 
-          {/* Map. */}
-          <div className="overflow-hidden rounded-xl border border-border bg-slate-100">
+          <div className="story-reveal overflow-hidden rounded-3xl bg-black ring-1 ring-white/12">
             <iframe
               key={area.division}
               title={`Map of police stations in ${area.division}`}
@@ -161,16 +143,9 @@ export function StationFinder() {
               referrerPolicy="no-referrer-when-downgrade"
               className="h-[22rem] w-full border-0 lg:h-[28rem]"
             />
-            <div className="flex flex-wrap items-center justify-between gap-space-xs border-t border-border bg-white px-space-md py-space-sm">
-              <span className="font-sans text-[0.75rem] text-slate-600">
-                Map data © OpenStreetMap contributors
-              </span>
-              <a
-                href={`https://www.openstreetmap.org/search?query=${encodeURIComponent(area.mapQuery)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-sans text-[0.75rem] font-semibold text-primary hover:underline"
-              >
+            <div className="flex flex-wrap items-center justify-between gap-2 px-5 py-3">
+              <span className="font-sans text-[0.75rem] text-white/65">Map data © OpenStreetMap contributors</span>
+              <a href={mapSearch} target="_blank" rel="noopener noreferrer" className="font-sans text-[0.75rem] font-bold text-signal-orange hover:underline">
                 Search stations near {area.division} →
               </a>
             </div>

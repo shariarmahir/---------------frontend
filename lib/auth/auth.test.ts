@@ -7,7 +7,9 @@ import {
   consumeLink,
   currentAccount,
   deleteAccount,
+  parseDb,
   passwordLogin,
+  PHOTO_MAX_CHARS,
   register,
   requestLink,
   requestOtp,
@@ -215,4 +217,21 @@ test("account edits, password change and deletion", () => {
   assert.equal(gone.db.session, null);
   assert.ok(!passwordLogin(gone.db, mahir.email!, mahir.password, T0).ok);
   assert.ok(!updateAccount(signOut(db), T0, { name: "x y z" }).ok);
+});
+
+test("profile pictures: seeded, uploaded, removed, rejected", () => {
+  const { db } = unwrap(passwordLogin(seed(), mahir.email!, mahir.password, T0));
+  assert.equal(currentAccount(db, T0)?.photo, "/team/mahir_shariar_mahin.png");
+  const uploaded = unwrap(updateAccount(db, T0, { photo: "data:image/jpeg;base64,AAAA" }));
+  assert.equal(uploaded.value.photo, "data:image/jpeg;base64,AAAA");
+  const removed = unwrap(updateAccount(uploaded.db, T0, { photo: null }));
+  assert.equal(removed.value.photo, null);
+  for (const bad of ["javascript:alert(1)", "https://evil.example/x.png", "data:text/html;base64,AAAA", `data:image/png;base64,${"A".repeat(PHOTO_MAX_CHARS)}`]) {
+    const r = updateAccount(db, T0, { photo: bad });
+    assert.ok(!r.ok && r.error === "photo_invalid", bad.slice(0, 30));
+  }
+  // A saved demo account from before photos existed is back-filled; a removal is kept.
+  const legacy = { ...db, accounts: db.accounts.map((a) => { const c = { ...a }; delete c.photo; return c; }) };
+  assert.equal(parseDb(JSON.parse(JSON.stringify(legacy)))!.accounts.find((a) => a.id === "acc-mahir")!.photo, "/team/mahir_shariar_mahin.png");
+  assert.equal(parseDb(JSON.parse(JSON.stringify(removed.db)))!.accounts.find((a) => a.id === "acc-mahir")!.photo, null);
 });

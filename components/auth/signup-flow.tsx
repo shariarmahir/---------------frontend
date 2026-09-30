@@ -108,9 +108,9 @@ export function SignupFlow() {
       <ol className="grid grid-cols-3 gap-2" aria-label="ধাপ">
         {STEPS.map((s, i) => (
           <li key={s} aria-current={i === step ? "step" : undefined}>
-            <span className={cn("block h-1.5 rounded-full transition-colors", i < step ? "bg-bd-green" : i === step ? "bg-signal-orange" : "bg-slate-200")} />
-            <span className={cn("mt-1.5 flex items-center gap-1 font-sans text-body-sm", i === step ? "font-bold text-text-primary" : "text-text-muted")}>
-              {i < step ? <Check className="size-3.5 text-bd-green" aria-hidden /> : <span aria-hidden>{toBanglaDigits(i + 1)}.</span>}
+            <span className={cn("block h-2 rounded-full transition-colors duration-300", i < step ? "bg-text-primary" : i === step ? "bg-white" : "bg-text-primary/15")} />
+            <span className={cn("mt-1.5 flex items-center gap-1 font-sans text-body-sm", i === step ? "font-bold text-text-primary" : "text-text-primary/70")}>
+              {i < step ? <Check className="size-3.5" aria-hidden /> : <span aria-hidden>{toBanglaDigits(i + 1)}.</span>}
               {s}
               <span className="sr-only">{i < step ? " (সম্পন্ন)" : i === step ? " (চলছে)" : ""}</span>
             </span>
@@ -135,7 +135,7 @@ export function SignupFlow() {
             required
           />
           {phoneTaken && errors.phone ? (
-            <Link href={`/login?phone=${encodeURIComponent(normalizePhone(phone) ?? phone)}`} className="-mt-space-sm font-sans text-body-sm font-semibold text-bd-green underline underline-offset-2">
+            <Link href={`/login?phone=${encodeURIComponent(normalizePhone(phone) ?? phone)}`} className="-mt-space-sm font-sans text-body-sm font-bold text-text-primary underline decoration-2 underline-offset-2">
               এই নম্বরে সাইন ইন করুন →
             </Link>
           ) : null}
@@ -153,27 +153,35 @@ export function SignupFlow() {
           <PasswordField label="পাসওয়ার্ড" name="new-password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} error={errors.password} showRules required />
 
           <fieldset className="grid gap-space-sm">
-            <legend className="mb-space-sm font-sans text-label-sm font-semibold tracking-wide text-text-secondary">আপনি কে</legend>
+            <legend className="mb-space-sm font-sans text-label-sm font-bold tracking-wide text-text-primary">আপনি কে</legend>
             {ROLES.map((r) => (
-              <label key={r.id} className={cn("flex cursor-pointer gap-space-sm rounded-xl border-2 p-space-sm transition-colors has-focus-visible:ring-2 has-focus-visible:ring-bd-green/30", role === r.id ? "border-bd-green bg-bd-green-light" : "border-card-border hover:border-slate-300")}>
-                <input type="radio" name="role" value={r.id} checked={role === r.id} onChange={() => setRole(r.id)} className="mt-1 size-4 shrink-0 accent-bd-green" />
+              <label
+                key={r.id}
+                className={cn(
+                  "flex cursor-pointer gap-space-sm rounded-2xl border-2 p-space-sm [-webkit-tap-highlight-color:transparent] transition-[background-color,border-color,scale] duration-200 active:scale-[0.98] has-focus-visible:ring-2 has-focus-visible:ring-text-primary/40",
+                  role === r.id ? "border-text-primary bg-text-primary text-white shadow-ink" : "border-text-primary/25 hover:border-text-primary/60",
+                )}
+              >
+                <input type="radio" name="role" value={r.id} checked={role === r.id} onChange={() => setRole(r.id)} className={cn("mt-1 size-4 shrink-0", role === r.id ? "accent-signal-orange" : "accent-text-primary")} />
                 <span className="font-sans">
-                  <span className="block text-body-md font-semibold text-text-primary">{r.bn}</span>
-                  <span className="block text-body-sm text-text-muted">{r.blurb}</span>
+                  <span className={cn("block text-body-md font-bold", role === r.id ? "text-signal-orange" : "text-text-primary")}>{r.bn}</span>
+                  <span className={cn("block text-body-sm", role === r.id ? "text-white/80" : "text-text-primary/70")}>{r.blurb}</span>
                 </span>
               </label>
             ))}
           </fieldset>
 
           <div className="grid gap-space-sm">
-            <Label htmlFor="signup-district">জেলা</Label>
+            <Label htmlFor="signup-district" className="font-bold text-text-primary">
+              জেলা
+            </Label>
             <select
               id="signup-district"
               value={district}
               onChange={(e) => setDistrict(e.target.value)}
               aria-invalid={errors.district ? true : undefined}
               autoComplete="address-level2"
-              className="h-11 w-full rounded-lg border border-card-border bg-white px-space-md font-sans text-body-md text-text-primary shadow-clean focus-visible:border-bd-green focus-visible:ring-2 focus-visible:ring-bd-green/20 focus-visible:outline-none aria-invalid:border-national-crimson"
+              className="h-11 w-full rounded-xl border border-text-primary/25 bg-white px-space-md font-sans text-body-md text-text-primary shadow-clean hover:border-text-primary/50 focus-visible:border-text-primary focus-visible:ring-2 focus-visible:ring-text-primary/25 focus-visible:outline-none aria-invalid:border-national-crimson"
             >
               <option value="">বেছে নিন</option>
               {districts.map((d) => (
@@ -203,12 +211,14 @@ export function SignupFlow() {
             });
           }}
         >
-          <p className="font-sans text-body-md text-text-secondary">
+          <p className="font-sans text-body-md text-text-primary/85">
             <span className="font-semibold text-text-primary">{maskPhone(sent.phone)}</span> নম্বরে ৬ অঙ্কের কোড পাঠানো হয়েছে।
           </p>
           <DemoMessage kind="sms">
             কাণ্ডারী-ল্যাব: নতুন অ্যাকাউন্টের যাচাই-কোড <strong className="font-mono text-base tracking-widest">{toBanglaDigits(sent.code)}</strong>। ৫ মিনিট কার্যকর।{" "}
-            <TextButton onClick={() => setOtp(sent.code)}>বসিয়ে দিন</TextButton>
+            <TextButton onClick={() => setOtp(sent.code)} className="text-signal-orange decoration-signal-orange/50 hover:text-white">
+              বসিয়ে দিন
+            </TextButton>
           </DemoMessage>
           <OtpInput label="৬ অঙ্কের কোড" value={otp} onChange={setOtp} invalid={!!errors.form} autoFocus />
           {errors.form ? <FieldError>{errors.form}</FieldError> : null}
@@ -229,12 +239,12 @@ export function SignupFlow() {
 
       {step === 2 && (
         <form noValidate onSubmit={submitInterests} className="flex flex-col gap-space-lg">
-          <p className="flex items-center gap-space-xs rounded-xl bg-bd-green-light p-space-sm font-sans text-body-sm font-semibold text-bd-green-dark">
+          <p className="live-in flex items-center gap-space-xs rounded-2xl bg-bd-green p-space-sm font-sans text-body-sm font-semibold text-white shadow-ink">
             <ShieldCheck className="size-5 shrink-0" aria-hidden /> মোবাইল নম্বর যাচাই হয়েছে। শেষ ধাপ: কোন খবর চান?
           </p>
 
           <fieldset aria-describedby={errors.sectors ? "sectors-err" : undefined}>
-            <legend className="mb-space-sm font-sans text-label-sm font-semibold tracking-wide text-text-secondary">যে খাতের খবর চান</legend>
+            <legend className="mb-space-sm font-sans text-label-sm font-bold tracking-wide text-text-primary">যে খাতের খবর চান</legend>
             <div className="flex flex-wrap gap-space-xs">
               {SECTORS.map((s) => (
                 <Chip key={s.id} on={sectors.includes(s.id)} onChange={() => setSectors((xs) => toggle(xs, s.id))}>
@@ -246,7 +256,7 @@ export function SignupFlow() {
           </fieldset>
 
           <fieldset>
-            <legend className="mb-space-sm font-sans text-label-sm font-semibold tracking-wide text-text-secondary">যে পণ্য অনুসরণ করবেন (ঐচ্ছিক)</legend>
+            <legend className="mb-space-sm font-sans text-label-sm font-bold tracking-wide text-text-primary">যে পণ্য অনুসরণ করবেন (ঐচ্ছিক)</legend>
             <div className="flex flex-wrap gap-space-xs">
               {FOLLOWABLE_PRODUCTS.map((p) => (
                 <Chip key={p.slug} on={products.includes(p.slug)} onChange={() => setProducts((xs) => toggle(xs, p.slug))}>
@@ -257,20 +267,20 @@ export function SignupFlow() {
           </fieldset>
 
           <fieldset className="grid gap-space-sm">
-            <legend className="mb-space-sm font-sans text-label-sm font-semibold tracking-wide text-text-secondary">কীভাবে জানাব</legend>
+            <legend className="mb-space-sm font-sans text-label-sm font-bold tracking-wide text-text-primary">কীভাবে জানাব</legend>
             <Toggle checked={notify.sms} onChange={(v) => setNotify((n) => ({ ...n, sms: v }))} label="এসএমএস" />
             <Toggle checked={notify.email && !!email.trim()} disabled={!email.trim()} onChange={(v) => setNotify((n) => ({ ...n, email: v }))} label={email.trim() ? "ইমেইল" : "ইমেইল (আগের ধাপে ইমেইল দিলে)"} />
           </fieldset>
 
-          <label className="flex cursor-pointer items-start gap-space-sm font-sans text-body-sm text-text-secondary">
-            <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} aria-invalid={errors.consent ? true : undefined} className="mt-0.5 size-5 shrink-0 accent-bd-green" />
+          <label className="flex cursor-pointer items-start gap-space-sm rounded-2xl bg-text-primary/10 p-space-sm font-sans text-body-sm text-text-primary">
+            <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} aria-invalid={errors.consent ? true : undefined} className="mt-0.5 size-5 shrink-0 accent-text-primary" />
             <span>আমি কাণ্ডারী-ল্যাবের শর্তাবলী ও গোপনীয়তা নীতিতে সম্মত। আমার নম্বর ও ইমেইল কারও কাছে বিক্রি বা হস্তান্তর করা হবে না।</span>
           </label>
           {errors.consent ? <FieldError>{errors.consent}</FieldError> : null}
           {errors.form ? <FieldError>{errors.form}</FieldError> : null}
 
           <div className="flex flex-col-reverse gap-space-sm sm:flex-row">
-            <button type="button" onClick={() => { setStep(0); setErrors({}); }} className="inline-flex h-12 items-center justify-center gap-space-xs rounded-lg border border-card-border px-space-md font-sans text-body-sm font-semibold text-text-secondary hover:border-slate-300 hover:text-text-primary">
+            <button type="button" onClick={() => { setStep(0); setErrors({}); }} className="inline-flex h-12 items-center justify-center gap-space-xs rounded-xl border-2 border-text-primary/30 px-space-md font-sans text-body-sm font-bold text-text-primary transition-[background-color,scale] duration-200 hover:bg-text-primary/10 active:scale-95">
               <ArrowLeft className="size-4" aria-hidden /> আগের ধাপ
             </button>
             <SubmitButton busy={busy} className="sm:flex-1">
@@ -280,9 +290,9 @@ export function SignupFlow() {
         </form>
       )}
 
-      <p className="text-center font-sans text-body-md text-text-secondary">
+      <p className="text-center font-sans text-body-md text-text-primary/85">
         আগেই অ্যাকাউন্ট আছে?{" "}
-        <Link href={params.get("next") ? `/login?next=${encodeURIComponent(safeNext(params.get("next")))}` : "/login"} className="rounded font-semibold text-bd-green underline-offset-4 hover:text-bd-green-dark hover:underline">
+        <Link href={params.get("next") ? `/login?next=${encodeURIComponent(safeNext(params.get("next")))}` : "/login"} className="rounded font-bold text-text-primary underline decoration-text-primary/30 decoration-2 underline-offset-4 hover:text-bd-green-dark hover:decoration-bd-green-dark">
           সাইন ইন করুন
         </Link>
       </p>

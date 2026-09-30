@@ -56,6 +56,12 @@ export interface Account {
   notify: NotifyPrefs;
   /** Linked শিক্ষিতদের মিডিয়া profile, if the person has one. */
   mediaHandle: string | null;
+  /**
+   * Profile picture: a site path (e.g. the founder's portrait in
+   * /public/team) or a small JPEG data URL the person uploaded, resized in
+   * the browser. Null or absent shows the initial on a placeholder.
+   */
+  photo?: string | null;
   createdAt: string;
   demo?: true;
 }
@@ -78,6 +84,7 @@ export const DEMO_ACCOUNTS: DemoAccount[] = [
     products: ["swasti", "aponjon"],
     notify: { sms: true, email: true },
     mediaHandle: "mahir",
+    photo: "/team/mahir_shariar_mahin.png",
     createdAt: "2026-01-12T09:00:00.000Z",
     demo: true,
   },

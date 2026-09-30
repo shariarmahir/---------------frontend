@@ -831,6 +831,48 @@
 }
 
 
+/* Evidence recorder side panel (components/record/record-dialog.tsx):
+   snaps in from the right edge in under a third of a second on an
+   ease-out-expo curve, parts rising after it; leaves faster than it came. */
+@keyframes record-in {
+  0% { opacity: 0; transform: translateX(calc(100% + 1rem)) scale(0.94); }
+  60% { opacity: 1; }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes record-out {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateX(calc(100% + 1rem)) scale(0.97); }
+}
+.record-panel {
+  transform-origin: right center;
+}
+.record-panel[data-state="open"] {
+  animation: record-in 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.record-panel[data-state="closed"] {
+  animation: record-out 0.16s cubic-bezier(0.5, 0, 0.75, 0) both;
+}
+.record-item {
+  animation: menu-item-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 35ms + 70ms);
+}
+.record-veil[data-state="open"] {
+  animation: menu-veil-in 0.18s ease-out both;
+}
+.record-veil[data-state="closed"] {
+  animation: menu-veil-out 0.14s ease-in both;
+}
+
+/* প্রতিবাদ live board and routing panel (components/complaints): a new
+   item drops in from above and settles in a quarter of a second. */
+@keyframes live-in {
+  from { opacity: 0; transform: translateY(-14px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+.live-in {
+  animation: live-in 0.26s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 /* Product hero waveform (components/products/product-art.tsx): each bar
    swells and settles in turn. */
 .voice-bar {
@@ -861,6 +903,21 @@
 
 .story-drift {
   animation: story-drift 24s ease-in-out infinite alternate;
+}
+
+/* Sign-in / sign-up form column: rises into place on load, fast. */
+@keyframes auth-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.auth-rise {
+  animation: auth-rise 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /* Header announcement rotator (news-ticker.tsx). Keyframes rather than
@@ -910,36 +967,42 @@
    the plane size are custom properties so one set of keyframes serves
    every breakpoint. */
 .orbit-stage {
-  --r-inner: 80px;
-  --r-mid: 124px;
-  --r-outer: 168px;
-  --plane: 360px;
-  --tilt-x: 58deg;
+  --r-inner: 78px;
+  --r-mid: 112px;
+  --r-outer: 146px;
+  --plane: 300px;
+  --tilt-x: 56deg;
   --tilt-y: -8deg;
+  height: 290px;
   perspective: 1600px;
 }
 @media (width >= 40rem) {
   .orbit-stage {
     --r-inner: 110px;
-    --r-mid: 178px;
-    --r-outer: 246px;
-    --plane: 580px;
+    --r-mid: 165px;
+    --r-outer: 220px;
+    --plane: 450px;
+    height: 400px;
   }
 }
+/* From lg the galaxy shares the hero band with the claim, so it sizes to
+   the right-hand column and the band keeps the home hero's height. */
 @media (width >= 64rem) {
   .orbit-stage {
-    --r-inner: 160px;
-    --r-mid: 258px;
-    --r-outer: 356px;
-    --plane: 820px;
+    --r-inner: 112px;
+    --r-mid: 172px;
+    --r-outer: 232px;
+    --plane: 480px;
+    height: 440px;
   }
 }
 @media (width >= 80rem) {
   .orbit-stage {
-    --r-inner: 175px;
-    --r-mid: 285px;
-    --r-outer: 395px;
-    --plane: 940px;
+    --r-inner: 128px;
+    --r-mid: 198px;
+    --r-outer: 268px;
+    --plane: 550px;
+    height: 460px;
   }
 }
 
@@ -1040,6 +1103,38 @@
 }
 .orbit-core-glow {
   animation: orbit-core-glow 3.2s ease-in-out infinite alternate;
+}
+
+/* Comet arcs run round each ring; the core's two arcs counter-rotate. The
+   `rotate` property composes with Tailwind's separate `translate`. */
+@keyframes orbit-comet {
+  to {
+    rotate: -360deg;
+  }
+}
+.orbit-comet {
+  animation: orbit-comet var(--spin, 12s) linear infinite;
+}
+.orbit-spin {
+  animation: orbit-comet var(--spin, 9s) linear infinite;
+}
+.orbit-spin-rev {
+  animation: orbit-comet var(--spin, 13s) linear infinite reverse;
+}
+
+/* The core's halo: a solid gold ring breathing out from the founder. */
+@keyframes orbit-halo {
+  from {
+    scale: 0.85;
+    opacity: 0.9;
+  }
+  to {
+    scale: 1.6;
+    opacity: 0;
+  }
+}
+.orbit-halo {
+  animation: orbit-halo 2.6s cubic-bezier(0.2, 0.6, 0.35, 1) infinite;
 }
 
 /* Neural brain behind the orbit (components/team/neural-brain.tsx):
@@ -1152,6 +1247,10 @@
   .menu-pop,
   .menu-item,
   .menu-veil,
+  .record-panel,
+  .record-item,
+  .record-veil,
+  .live-in,
   .pixel-wave {
     animation: none !important;
   }
@@ -1186,12 +1285,17 @@
   .orbit-pulse,
   .orbit-wave,
   .orbit-core-glow,
+  .orbit-comet,
+  .orbit-spin,
+  .orbit-spin-rev,
+  .orbit-halo,
   .neural-node,
   .neural-spark {
     animation-play-state: paused !important;
   }
   .orbit-pulse,
   .orbit-wave,
+  .orbit-halo,
   .neural-spark {
     visibility: hidden;
   }
@@ -1211,7 +1315,8 @@
   /* Story page: everything at rest, lines fully drawn. */
   .story-reveal,
   .story-draw,
-  .story-drift {
+  .story-drift,
+  .auth-rise {
     animation: none !important;
   }
   .story-draw {

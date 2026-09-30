@@ -1,26 +1,47 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { DropdownMenu } from "radix-ui";
-import { CircleUserRound, Gamepad2, LogIn, LogOut, UserPlus, UsersRound } from "lucide-react";
+import { CircleUserRound, Gamepad2, LogIn, LogOut, PencilLine, UserPlus, UsersRound } from "lucide-react";
 import { ROLES } from "@/data/auth";
 import { signOut, useAuth } from "@/lib/auth/client";
 import { formatPhone, initialsOf } from "@/lib/auth/validate";
 import { cn } from "@/lib/utils";
 
+/** Items on the gold menu: ink text, an ink field under the pointer. */
 const itemClass =
-  "flex min-h-10 cursor-pointer items-center gap-space-sm rounded-lg px-space-sm font-sans text-body-sm font-medium text-text-primary outline-none select-none data-highlighted:bg-mint-subtle data-highlighted:text-bd-green";
+  "flex min-h-11 cursor-pointer items-center gap-space-sm rounded-xl px-space-sm font-sans text-body-sm font-semibold text-text-primary outline-none select-none transition-[background-color,color,scale] duration-150 active:scale-[0.98] data-highlighted:bg-text-primary data-highlighted:text-signal-orange";
 
 /** Where "sign in" should bring the visitor back to. */
 function loginHref(pathname: string) {
   return pathname === "/" || pathname === "/login" || pathname === "/signup" ? "/login" : `/login?next=${encodeURIComponent(pathname)}`;
 }
 
-export function AccountAvatar({ name, className }: { name: string; className?: string }) {
+/**
+ * The account's round face: the uploaded picture (or a demo account's seeded
+ * portrait) when there is one, otherwise the placeholder — the name's first
+ * letter on bottle green.
+ */
+export function AccountAvatar({
+  name,
+  photo,
+  className,
+  sizes = "80px",
+}: {
+  name: string;
+  photo?: string | null;
+  className?: string;
+  sizes?: string;
+}) {
   return (
-    <span aria-hidden className={cn("flex items-center justify-center rounded-full bg-bd-green font-bengali font-bold text-white", className)}>
-      {initialsOf(name)}
+    <span aria-hidden className={cn("relative flex items-center justify-center overflow-hidden rounded-full bg-bd-green font-bengali font-bold text-white", className)}>
+      {photo ? (
+        <Image src={photo} alt="" fill sizes={sizes} unoptimized={photo.startsWith("data:")} className="object-cover object-top" />
+      ) : (
+        initialsOf(name)
+      )}
     </span>
   );
 }
@@ -67,7 +88,7 @@ export function AccountMenu({ variant = "site", className }: { variant?: "site" 
         className={cn("relative shrink-0 rounded-full focus-visible:ring-2 focus-visible:ring-bd-green focus-visible:ring-offset-2 focus-visible:outline-none", className)}
         aria-label={`অ্যাকাউন্ট মেনু — ${account.name}`}
       >
-        <AccountAvatar name={account.name} className={cn(size, "text-base ring-2 ring-white")} />
+        <AccountAvatar name={account.name} photo={account.photo} sizes="48px" className={cn(size, "text-base ring-2 ring-white transition-[scale] duration-200 hover:scale-105")} />
         <span className="absolute right-0 bottom-0 size-2.5 rounded-full bg-emerald-500 ring-2 ring-white" aria-hidden />
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
@@ -75,36 +96,42 @@ export function AccountMenu({ variant = "site", className }: { variant?: "site" 
           align="end"
           sideOffset={8}
           collisionPadding={12}
-          className="z-60 w-72 rounded-2xl border border-card-border bg-white p-space-xs shadow-xl data-[state=open]:animate-in data-[state=open]:fade-in-0 motion-reduce:animate-none"
+          className="menu-pop z-60 w-76 rounded-3xl bg-signal-orange p-2 text-text-primary shadow-[0_28px_60px_-18px_rgb(0_0_0/0.7)] ring-1 ring-text-primary/15"
         >
-          <div className="flex items-center gap-space-sm px-space-sm py-space-sm">
-            <AccountAvatar name={account.name} className="size-11 shrink-0 text-lg" />
+          {/* Who is signed in — an ink card with the picture. */}
+          <div className="flex items-center gap-space-sm rounded-2xl bg-text-primary p-space-sm text-white">
+            <AccountAvatar name={account.name} photo={account.photo} sizes="56px" className="size-12 shrink-0 text-lg ring-2 ring-signal-orange" />
             <div className="min-w-0 font-sans">
-              <p className="truncate text-body-md font-bold text-text-primary">{account.name}</p>
-              <p className="truncate text-body-sm text-text-muted">
+              <p className="truncate font-bengali text-body-md font-bold">{account.name}</p>
+              <p className="truncate text-xs text-white/75">
                 {role?.bn} · {formatPhone(account.phone)}
               </p>
             </div>
           </div>
-          <DropdownMenu.Separator className="my-1 h-px bg-card-border" />
+          <DropdownMenu.Item asChild className={cn(itemClass, "mt-2 justify-center bg-text-primary text-signal-orange data-highlighted:bg-bd-green data-highlighted:text-white")}>
+            <Link href="/account?edit=1">
+              <PencilLine className="size-4" aria-hidden /> প্রোফাইল সম্পাদনা
+            </Link>
+          </DropdownMenu.Item>
+          <DropdownMenu.Separator className="my-1.5 h-px bg-text-primary/15" />
           <DropdownMenu.Item asChild className={itemClass}>
             <Link href="/account">
-              <CircleUserRound className="size-4 text-bd-green" aria-hidden /> আমার অ্যাকাউন্ট
+              <CircleUserRound className="size-4" aria-hidden /> আমার অ্যাকাউন্ট
             </Link>
           </DropdownMenu.Item>
           <DropdownMenu.Item asChild className={itemClass}>
             <Link href="/media/me">
-              <UsersRound className="size-4 text-bd-green" aria-hidden /> শিক্ষিতদের মিডিয়া প্রোফাইল
+              <UsersRound className="size-4" aria-hidden /> শিক্ষিতদের মিডিয়া প্রোফাইল
             </Link>
           </DropdownMenu.Item>
           <DropdownMenu.Item asChild className={itemClass}>
             <Link href="/cholo-bangladesh-gori/profile">
-              <Gamepad2 className="size-4 text-bd-green" aria-hidden /> চলো বাংলাদেশ গড়ি — অগ্রগতি
+              <Gamepad2 className="size-4" aria-hidden /> চলো বাংলাদেশ গড়ি — অগ্রগতি
             </Link>
           </DropdownMenu.Item>
-          <DropdownMenu.Separator className="my-1 h-px bg-card-border" />
+          <DropdownMenu.Separator className="my-1.5 h-px bg-text-primary/15" />
           <DropdownMenu.Item
-            className={cn(itemClass, "text-national-crimson data-highlighted:bg-red-50 data-highlighted:text-national-crimson")}
+            className={cn(itemClass, "data-highlighted:bg-national-crimson data-highlighted:text-white")}
             onSelect={() => {
               signOut();
               router.push("/");
@@ -146,7 +173,7 @@ export function AccountSheetLinks({ wrap = (n) => n, onGold = false }: { wrap?: 
     <div className="mt-space-sm grid gap-space-xs">
       {wrap(
         <Link href="/account" className={cn(base, "justify-start bg-text-primary text-white hover:bg-bdgreen-900")}>
-          <AccountAvatar name={account.name} className="size-7 bg-white/15 text-sm" />
+          <AccountAvatar name={account.name} photo={account.photo} sizes="32px" className="size-7 text-sm ring-1 ring-white/40" />
           <span className="truncate">{account.name}</span>
           <span className="ml-auto text-xs font-semibold text-white/80">অ্যাকাউন্ট →</span>
         </Link>,

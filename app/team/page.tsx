@@ -1,13 +1,25 @@
+/*
+ * THESIS: one signal leaves the founder and reaches every builder — the
+ * page is that signal travelling, from the core to the crew to the next
+ * cohort.
+ * OWN-WORLD: the home page's — pitch-black ground, solid gold / ink / bottle
+ * green / orange fields, gold pixel-mark headings, the gold pulse on the
+ * ink bands' seams; the people are the home page's poster cards.
+ * FIRST VIEWPORT: the home hero's band — claim left with the gold action,
+ * the founder's galaxy right, the ink proof strip closing it.
+ */
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
-import { SectionHeading } from "@/components/products/section-heading";
 import { FounderSpotlight } from "@/components/team/founder-spotlight";
 import { TeamDirectory } from "@/components/team/team-directory";
 import { TeamHero } from "@/components/team/team-hero";
 import { Icon } from "@/components/ui/icon";
+import { SectionHeading, SignalSeam, btn } from "@/components/ui/section-kit";
+import { LIFT, glowStyle, surfaceAt } from "@/components/ui/surfaces";
 import { crew, fellowship } from "@/data/team";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Team | কাণ্ডারী-ল্যাব",
@@ -28,78 +40,83 @@ export default function TeamPage() {
   return (
     <>
       <SiteHeader />
-      <main className="relative w-full bg-[#fcfdfd] pt-header lg:pt-header-lg">
+      <main className="relative w-full bg-black pt-header lg:pt-header-lg">
         <TeamHero />
 
-        <div className="bg-grid-subtle">
-          <FounderSpotlight />
+        <FounderSpotlight />
 
-          {/* How the signal travels. */}
-          <section aria-labelledby="signal-path" className="section-band-tinted border-y border-slate-200 bg-mint-subtle/70">
-            <div className="mx-auto max-w-7xl px-gutter-x">
-              <h2 id="signal-path" className="sr-only">
-                How an idea travels through the team
-              </h2>
-              <ol className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
-                {SIGNAL_PATH.map((step, i) => (
-                  <li
-                    key={step.title}
-                    className="glass-card relative flex flex-col gap-2 rounded-2xl border border-emerald-100 bg-white p-5 shadow-xs"
-                  >
-                    <span className="flex items-center justify-between">
-                      <span className="flex size-10 items-center justify-center rounded-xl bg-bd-green-light text-bd-green">
-                        <Icon name={step.icon} className="text-[22px]!" />
-                      </span>
-                      <span className="font-mono text-xs font-bold text-signal-orange">0{i + 1}</span>
-                    </span>
-                    <span className="font-grotesk text-base font-bold text-text-primary uppercase">{step.title}</span>
-                    <span className="font-sans text-sm leading-relaxed text-text-secondary">{step.body}</span>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </section>
-
-          <section id="members" className="section-band mx-auto max-w-7xl scroll-mt-40 px-gutter-x">
+        {/* How the signal travels — an ink band, five solid steps. */}
+        <section aria-labelledby="signal-path" className="section-band-tinted relative isolate overflow-hidden bg-text-primary">
+          <SignalSeam className="top-0" />
+          <div className="mx-auto max-w-7xl px-gutter-x">
             <SectionHeading
-              kicker="আমাদের কারিগর"
-              title="The crew in orbit"
-              lede={`${crew.length} people across leadership, creative, client, IoT and AI — each one a line of the founder's signal. Open a profile to see what they build.`}
+              tone="dark"
+              title={<span id="signal-path">How the signal travels</span>}
+              lead="Five hand-offs from an idea to a village — every team on this page is one of them."
             />
-            <TeamDirectory />
-          </section>
+            <ol className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-5">
+              {SIGNAL_PATH.map((step, i) => {
+                // No ink card on the ink band: green, gold, orange, green, gold.
+                const tone = surfaceAt([0, 1, 2, 0, 1][i]);
+                return (
+                  <li key={step.title} className="story-reveal flex max-lg:last:col-span-2">
+                    <div style={glowStyle(tone.glow)} className={cn("group flex w-full flex-col gap-3 rounded-3xl p-4 shadow-sm sm:p-5", LIFT, tone.card)}>
+                      <span className="flex items-center justify-between">
+                        <span
+                          className={cn(
+                            "flex size-11 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:-rotate-6 motion-reduce:transition-none motion-reduce:group-hover:rotate-0",
+                            tone.tile,
+                          )}
+                        >
+                          <Icon name={step.icon} className="text-[24px]!" />
+                        </span>
+                        <span className="font-grotesk text-2xl font-bold opacity-85">0{i + 1}</span>
+                      </span>
+                      <span className="font-grotesk text-base font-bold uppercase sm:text-lg">{step.title}</span>
+                      <span className="font-sans text-sm leading-relaxed">{step.body}</span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+        </section>
 
-          {/* R&D fellowship. */}
-          <section id="fellowship" className="mx-auto max-w-7xl scroll-mt-40 px-gutter-x pb-[var(--spacing-seam)]">
-            <div className="relative overflow-hidden rounded-[2rem] bg-slate-950 p-8 sm:p-12">
-              <div aria-hidden className="absolute inset-0 bg-[radial-gradient(circle_at_85%_20%,rgb(255_145_0/0.3),transparent_45%),radial-gradient(circle_at_10%_100%,rgb(0_103_71/0.55),transparent_55%)]" />
-              <div className="relative grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
-                <div className="lg:col-span-8">
-                  <span className="inline-flex items-center gap-2 font-mono text-xs font-bold tracking-widest text-signal-orange uppercase">
-                    <Icon name="school" className="text-[18px]!" />
-                    R&amp;D Fellowship
-                  </span>
-                  <h2 className="mt-3 font-grotesk text-3xl font-bold tracking-tight text-white uppercase sm:text-4xl">
-                    The next orbit is yours.
-                  </h2>
-                  <p className="mt-3 max-w-2xl font-sans text-base leading-relaxed text-white/75">
-                    {fellowship.note} Each cohort runs {fellowship.cycle} ({fellowship.cycleBn}).
-                  </p>
-                </div>
-                <div className="flex flex-col gap-3 lg:col-span-4 lg:items-end">
-                  <Link
-                    href="/#kandari-profile"
-                    className="btn-shimmer inline-flex items-center justify-center gap-2 rounded-xl bg-signal-orange px-6 py-3 font-grotesk text-sm font-bold text-white uppercase shadow-glow-orange transition-all hover:-translate-y-0.5 hover:bg-bdorange-600 focus-visible:ring-3 focus-visible:ring-signal-orange/40 focus-visible:outline-none motion-reduce:hover:translate-y-0"
-                  >
-                    <Icon name="notifications_active" className="text-[18px]!" />
-                    Get notified of the next cohort
-                  </Link>
-                  <span className="font-sans text-xs text-white/60">Join Kandari Profile — we announce each cohort there.</span>
-                </div>
+        <section id="members" aria-labelledby="members-title" className="section-band mx-auto max-w-7xl scroll-mt-40 px-gutter-x">
+          <SectionHeading
+            tone="dark"
+            title={<span id="members-title">The crew in orbit</span>}
+            lead={`${crew.length} people across leadership, creative, client, IoT and AI — each one a line of the founder's signal. Open a card to see what they build.`}
+          />
+          <TeamDirectory />
+        </section>
+
+        {/* R&D fellowship — the home page's gold strip. */}
+        <section id="fellowship" aria-labelledby="fellowship-title" className="mx-auto max-w-7xl scroll-mt-40 px-gutter-x pb-[var(--spacing-seam)]">
+          <div className="story-reveal relative isolate flex flex-col items-start justify-between gap-6 overflow-hidden rounded-3xl bg-signal-orange p-6 text-text-primary shadow-tile sm:p-10 lg:flex-row lg:items-center">
+            <div className="flex items-start gap-4 sm:gap-5">
+              <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-text-primary text-signal-orange shadow-ink">
+                <Icon name="school" className="text-3xl" />
+              </span>
+              <div>
+                <span className="font-mono text-xs font-bold tracking-widest uppercase">R&amp;D Fellowship</span>
+                <h2 id="fellowship-title" className="mt-1 font-grotesk text-2xl font-bold tracking-tight uppercase sm:text-4xl">
+                  The next orbit is yours.
+                </h2>
+                <p className="mt-2 max-w-2xl font-sans text-base leading-relaxed text-text-primary/85">
+                  {fellowship.note} Each cohort runs {fellowship.cycle} ({fellowship.cycleBn}).
+                </p>
               </div>
             </div>
-          </section>
-        </div>
+            <div className="flex shrink-0 flex-col gap-2 lg:items-end">
+              <Link href="/signup?role=researcher" className={btn.ink}>
+                <Icon name="notifications_active" className="text-[18px]!" />
+                Apply for the next cohort
+              </Link>
+              <span className="font-sans text-xs text-text-primary/75">We announce each cohort on Kandari Profile.</span>
+            </div>
+          </div>
+        </section>
       </main>
       <SiteFooter />
     </>

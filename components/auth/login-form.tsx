@@ -78,8 +78,8 @@ export function LoginForm() {
   if (linkState === "checking") {
     return (
       <div role="status" className="flex flex-col items-center gap-space-md py-space-2xl text-center">
-        <span className="size-10 animate-spin rounded-full border-4 border-bd-green/20 border-t-bd-green motion-reduce:animate-none" aria-hidden />
-        <p className="font-sans text-body-md text-text-secondary">লিংক যাচাই হচ্ছে…</p>
+        <span className="size-10 animate-spin rounded-full border-4 border-text-primary/20 border-t-text-primary motion-reduce:animate-none" aria-hidden />
+        <p className="font-sans text-body-md text-text-primary/85">লিংক যাচাই হচ্ছে…</p>
       </div>
     );
   }
@@ -98,7 +98,7 @@ export function LoginForm() {
         }
       />
 
-      <div role="tablist" aria-label="সাইন ইনের উপায়" className="grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1">
+      <div role="tablist" aria-label="সাইন ইনের উপায়" className="grid grid-cols-2 gap-1 rounded-2xl bg-text-primary/10 p-1">
         {([
           ["phone", "মোবাইল কোড", Smartphone],
           ["email", "ইমেইল", Mail],
@@ -112,8 +112,8 @@ export function LoginForm() {
             aria-controls={`panel-${id}`}
             onClick={() => switchTab(id)}
             className={cn(
-              "inline-flex min-h-10 items-center justify-center gap-space-xs rounded-lg font-sans text-body-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-bd-green/30 focus-visible:outline-none",
-              tab === id ? "bg-white text-bd-green shadow-clean" : "text-text-secondary hover:text-text-primary",
+              "inline-flex min-h-11 items-center justify-center gap-space-xs rounded-xl font-sans text-body-sm font-bold [-webkit-tap-highlight-color:transparent] transition-[background-color,color,scale] duration-200 focus-visible:ring-2 focus-visible:ring-text-primary/40 focus-visible:outline-none active:scale-95",
+              tab === id ? "bg-text-primary text-signal-orange shadow-ink" : "text-text-primary/80 hover:bg-text-primary/10 hover:text-text-primary",
             )}
           >
             <TabIcon className="size-4" aria-hidden />
@@ -171,7 +171,7 @@ export function LoginForm() {
                 act(verifyOtp(sent.phone, otp), done);
               }}
             >
-              <p className="font-sans text-body-md text-text-secondary">
+              <p className="font-sans text-body-md text-text-primary/85">
                 <span className="font-semibold text-text-primary">{maskPhone(sent.phone)}</span> নম্বরে কোড পাঠানো হয়েছে।{" "}
                 <TextButton
                   onClick={() => {
@@ -184,14 +184,16 @@ export function LoginForm() {
               </p>
               <DemoMessage kind="sms">
                 কাণ্ডারী-ল্যাব: আপনার সাইন-ইন কোড <strong className="font-mono text-base tracking-widest">{toBanglaDigits(sent.code)}</strong>। ৫ মিনিট কার্যকর। কাউকে জানাবেন না।{" "}
-                <TextButton onClick={() => setOtp(sent.code)}>বসিয়ে দিন</TextButton>
+                <TextButton onClick={() => setOtp(sent.code)} className="text-signal-orange decoration-signal-orange/50 hover:text-white">
+                  বসিয়ে দিন
+                </TextButton>
               </DemoMessage>
               <OtpInput label="৬ অঙ্কের কোড" value={otp} onChange={setOtp} invalid={!!error} autoFocus />
               {error ? <FieldError>{error.message}</FieldError> : null}
               <SubmitButton busy={busy} disabled={otp.length < 6}>
                 যাচাই করে ঢুকুন
               </SubmitButton>
-              <p className="text-center font-sans text-body-sm text-text-muted">
+              <p className="text-center font-sans text-body-sm text-text-primary/75">
                 কোড আসেনি?{" "}
                 <TextButton
                   disabled={resendIn > 0 || busy}
@@ -270,7 +272,7 @@ export function LoginForm() {
                 act(requestLink(identifier), (v) => setLink({ email: identifier.trim(), token: v.token }));
               }}
             >
-              <p className="font-sans text-body-md text-text-secondary">ইমেইলে একবার-ব্যবহারযোগ্য একটি লিংক যাবে — খুললেই সাইন ইন। পাসওয়ার্ড ভুলে গেলেও এভাবে ঢুকে পরে বদলে নিতে পারবেন।</p>
+              <p className="font-sans text-body-md text-text-primary/85">ইমেইলে একবার-ব্যবহারযোগ্য একটি লিংক যাবে — খুললেই সাইন ইন। পাসওয়ার্ড ভুলে গেলেও এভাবে ঢুকে পরে বদলে নিতে পারবেন।</p>
               <TextField
                 label="ইমেইল"
                 name="email"
@@ -293,7 +295,7 @@ export function LoginForm() {
                       <span className="block">বিষয়: কাণ্ডারী-ল্যাবে সাইন ইন (১৫ মিনিট কার্যকর)</span>
                       <Link
                         href={`/login?token=${link.token}${next !== "/account" ? `&next=${encodeURIComponent(next)}` : ""}`}
-                        className="mt-space-sm inline-flex min-h-10 items-center gap-space-xs rounded-lg bg-bd-green px-space-md font-semibold text-white hover:bg-bd-green-dark"
+                        className="mt-space-sm inline-flex min-h-10 items-center gap-space-xs rounded-xl bg-signal-orange px-space-md font-bold text-text-primary transition-[scale] duration-150 active:scale-95"
                       >
                         <Link2 className="size-4" aria-hidden /> লিংক খুলে সাইন ইন করুন
                       </Link>
@@ -321,9 +323,9 @@ export function LoginForm() {
         </div>
       )}
 
-      <p className="text-center font-sans text-body-md text-text-secondary">
+      <p className="text-center font-sans text-body-md text-text-primary/85">
         অ্যাকাউন্ট নেই?{" "}
-        <Link href={next !== "/account" ? `/signup?next=${encodeURIComponent(next)}` : "/signup"} className="rounded font-semibold text-bd-green underline-offset-4 hover:text-bd-green-dark hover:underline">
+        <Link href={next !== "/account" ? `/signup?next=${encodeURIComponent(next)}` : "/signup"} className="rounded font-bold text-text-primary underline decoration-text-primary/30 decoration-2 underline-offset-4 hover:text-bd-green-dark hover:decoration-bd-green-dark">
           নতুন অ্যাকাউন্ট খুলুন
         </Link>
       </p>
@@ -349,22 +351,22 @@ export function LoginForm() {
 
 function DemoAccounts({ onPick }: { onPick: (a: (typeof DEMO_ACCOUNTS)[number], how: "phone" | "password") => void }) {
   return (
-    <details className="group rounded-xl border border-card-border bg-mint-subtle/60 p-space-md font-sans text-body-sm">
-      <summary className="flex min-h-8 cursor-pointer list-none items-center gap-space-xs font-semibold text-text-primary marker:hidden">
-        <UserRound className="size-4 text-bd-green" aria-hidden />
+    <details className="group rounded-2xl bg-text-primary p-space-md font-sans text-body-sm text-white shadow-ink">
+      <summary className="flex min-h-8 cursor-pointer list-none items-center gap-space-xs font-bold text-white marker:hidden">
+        <UserRound className="size-4 text-signal-orange" aria-hidden />
         ডেমো অ্যাকাউন্ট দিয়ে দেখুন
-        <span className="ml-auto text-text-muted transition-transform group-open:rotate-180" aria-hidden>
+        <span className="ml-auto text-signal-orange transition-transform group-open:rotate-180" aria-hidden>
           ▾
         </span>
       </summary>
       <ul className="mt-space-sm grid gap-space-sm">
         {DEMO_ACCOUNTS.map((a) => (
-          <li key={a.id} className="rounded-lg border border-card-border bg-white p-space-sm">
-            <p className="font-semibold text-text-primary">
-              {a.name} <span className="font-normal text-text-muted">· {ROLES.find((r) => r.id === a.role)?.bn}</span>
+          <li key={a.id} className="rounded-xl bg-signal-orange p-space-sm text-text-primary">
+            <p className="font-bold text-text-primary">
+              {a.name} <span className="font-normal text-text-primary/75">· {ROLES.find((r) => r.id === a.role)?.bn}</span>
             </p>
-            <p className="mt-0.5 break-all text-text-secondary">
-              {formatPhone(a.phone)} · {a.email} · পাসওয়ার্ড <code className="rounded bg-slate-100 px-1 font-mono">{a.password}</code>
+            <p className="mt-0.5 break-all text-text-primary/85">
+              {formatPhone(a.phone)} · {a.email} · পাসওয়ার্ড <code className="rounded bg-text-primary/10 px-1 font-mono">{a.password}</code>
             </p>
             <div className="mt-space-xs flex flex-wrap gap-x-space-md gap-y-1">
               <TextButton onClick={() => onPick(a, "password")}>পাসওয়ার্ডে ঢুকুন</TextButton>

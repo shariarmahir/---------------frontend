@@ -16,7 +16,7 @@ export default function AccountPage() {
   return (
     <>
       <SiteHeader />
-      <main className="min-h-dvh w-full bg-mint-subtle/50 pt-header lg:pt-header-lg">
+      <main className="min-h-dvh w-full bg-black pt-header lg:pt-header-lg">
         <RouteGuard>
           <Suspense fallback={null}>
             <AccountDashboard />

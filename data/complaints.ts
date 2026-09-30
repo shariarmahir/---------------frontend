@@ -50,7 +50,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Chadabaji / Extortion",
     labelBn: "চাঁদাবাজি",
     icon: "payments",
-    chip: "bg-red-50 text-red-700 border-red-200",
+    chip: "bg-national-crimson text-white",
     accent: "bg-crimson",
     describes:
       "Someone is demanding regular payments from you, your shop or your transport to let you operate.",
@@ -66,7 +66,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Bribery by Officials",
     labelBn: "ঘুষ দাবি",
     icon: "gavel",
-    chip: "bg-orange-50 text-signal-text border-orange-200",
+    chip: "bg-signal-orange text-text-primary",
     accent: "bg-signal",
     describes:
       "A government officer is demanding money to do work that is supposed to be free or fee-fixed.",
@@ -81,7 +81,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Police Misconduct",
     labelBn: "পুলিশি অসদাচরণ",
     icon: "shield_person",
-    chip: "bg-slate-100 text-slate-900 border-slate-300",
+    chip: "bg-text-primary text-white ring-1 ring-white/25",
     accent: "bg-slate-600",
     describes:
       "Refusal to take your case, unlawful detention, abuse of authority or demand for money by police.",
@@ -97,7 +97,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Land Grabbing",
     labelBn: "ভূমি দখল",
     icon: "landscape",
-    chip: "bg-amber-50 text-amber-800 border-amber-200",
+    chip: "bg-bdorange-600 text-text-primary",
     accent: "bg-title",
     describes:
       "Someone has occupied your land, forged records, or is blocking your lawful possession.",
@@ -113,7 +113,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Service Denial",
     labelBn: "সেবা বঞ্চনা",
     icon: "block",
-    chip: "bg-blue-50 text-blue-800 border-blue-200",
+    chip: "bg-bd-green text-white",
     accent: "bg-blue-600",
     describes:
       "A public office is refusing, delaying or obstructing a service you are entitled to.",
@@ -129,7 +129,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Harassment & Safety",
     labelBn: "হয়রানি ও নিরাপত্তা",
     icon: "report",
-    chip: "bg-violet-50 text-violet-800 border-violet-200",
+    chip: "bg-national-crimson text-white",
     accent: "bg-violet-600",
     describes:
       "Threats, stalking, sexual harassment, or violence against you or a family member.",
@@ -145,7 +145,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Environment",
     labelBn: "পরিবেশ",
     icon: "eco",
-    chip: "bg-emerald-50 text-primary border-emerald-200",
+    chip: "bg-bdgreen-500 text-text-primary",
     accent: "bg-primary",
     describes:
       "Illegal filling of water bodies, unlicensed emissions, tree felling or industrial dumping.",
@@ -160,7 +160,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Consumer Rights",
     labelBn: "ভোক্তা অধিকার",
     icon: "shopping_cart",
-    chip: "bg-cyan-50 text-cyan-800 border-cyan-200",
+    chip: "bg-signal-orange text-text-primary",
     accent: "bg-cyan-600",
     describes:
       "Overcharging above listed price, adulterated goods, short weight or refusal to give a receipt.",
@@ -176,7 +176,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Labour & Wages",
     labelBn: "শ্রম ও মজুরি",
     icon: "engineering",
-    chip: "bg-teal-50 text-teal-800 border-teal-200",
+    chip: "bg-bdorange-600 text-text-primary",
     accent: "bg-teal-600",
     describes:
       "Unpaid wages, unsafe workplace, unlawful dismissal or denial of legal leave.",
@@ -191,7 +191,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Other",
     labelBn: "অন্যান্য",
     icon: "more_horiz",
-    chip: "bg-slate-100 text-slate-700 border-slate-300",
+    chip: "bg-white/15 text-white",
     accent: "bg-slate-500",
     describes: "Anything that does not fit the categories above.",
     routesTo: {
@@ -330,25 +330,25 @@ export const STATUS_META: Record<
   draft: {
     label: "Draft — not yet submitted",
     labelBn: "খসড়া",
-    chip: "bg-slate-100 text-slate-700 border-slate-300",
+    chip: "bg-white/15 text-white",
     icon: "edit_note",
   },
   filed: {
     label: "Filed with authority",
     labelBn: "দাখিল করা হয়েছে",
-    chip: "bg-blue-50 text-blue-800 border-blue-200",
+    chip: "bg-bd-green text-white",
     icon: "send",
   },
   acknowledged: {
     label: "Acknowledged",
     labelBn: "গৃহীত",
-    chip: "bg-amber-50 text-amber-800 border-amber-200",
+    chip: "bg-signal-orange text-text-primary",
     icon: "mark_email_read",
   },
   resolved: {
     label: "Resolved",
     labelBn: "সমাধান হয়েছে",
-    chip: "bg-emerald-50 text-primary border-emerald-200",
+    chip: "bg-bdgreen-500 text-text-primary",
     icon: "task_alt",
   },
 };

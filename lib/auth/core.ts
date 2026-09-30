@@ -69,6 +69,7 @@ export type AuthError =
   | "sectors_missing"
   | "link_invalid"
   | "link_expired"
+  | "photo_invalid"
   | "not_signed_in";
 
 export const AUTH_ERROR_BN: Record<AuthError, string> = {
@@ -91,6 +92,7 @@ export const AUTH_ERROR_BN: Record<AuthError, string> = {
   sectors_missing: "অন্তত একটি খাত বেছে নিন।",
   link_invalid: "লিংকটি সঠিক নয় বা আগেই ব্যবহার হয়েছে।",
   link_expired: "লিংকের মেয়াদ শেষ — নতুন লিংক নিন।",
+  photo_invalid: "ছবিটি নেওয়া গেল না — JPG, PNG বা WebP ছবি দিন।",
   not_signed_in: "আগে সাইন ইন করুন।",
 };
 
@@ -143,7 +145,13 @@ export function parseDb(raw: unknown): AuthDb | null {
   if (!raw || typeof raw !== "object") return null;
   const d = raw as Partial<AuthDb>;
   if (d.version !== 1 || !Array.isArray(d.accounts)) return null;
-  return { ...seed(), ...d, accounts: d.accounts } as AuthDb;
+  // Demo accounts saved before profile pictures existed pick up their seeded
+  // photo; an account that has set or removed one keeps its choice.
+  const accounts = (d.accounts as StoredAccount[]).map((a) => {
+    const demo = DEMO_ACCOUNTS.find((x) => x.id === a.id);
+    return demo && !("photo" in a) && demo.photo ? { ...a, photo: demo.photo } : a;
+  });
+  return { ...seed(), ...d, accounts } as AuthDb;
 }
 
 export const findByPhone = (db: AuthDb, phone: string) => db.accounts.find((a) => a.phone === phone);
@@ -315,7 +323,17 @@ export function signOut(db: AuthDb): AuthDb {
   return { ...db, session: null };
 }
 
-export type AccountPatch = Partial<Pick<Account, "name" | "email" | "role" | "district" | "sectors" | "products" | "notify" | "mediaHandle">>;
+export type AccountPatch = Partial<Pick<Account, "name" | "email" | "role" | "district" | "sectors" | "products" | "notify" | "mediaHandle" | "photo">>;
+
+/** Largest uploaded picture kept, as a data URL (~300 KB of JPEG). */
+export const PHOTO_MAX_CHARS = 400_000;
+
+/** A picture is a site path, a small image data URL, or null (placeholder). */
+export function validPhoto(photo: string | null): boolean {
+  if (photo === null) return true;
+  if (/^\/team\/[\w.-]+\.(png|jpe?g|webp)$/i.test(photo)) return true;
+  return /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(photo) && photo.length <= PHOTO_MAX_CHARS;
+}
 
 export function updateAccount(db: AuthDb, now: number, patch: AccountPatch): Result<Account> {
   const me = currentAccount(db, now);
@@ -330,6 +348,7 @@ export function updateAccount(db: AuthDb, now: number, patch: AccountPatch): Res
   }
   if (patch.district !== undefined && !patch.district) return fail(db, "district_missing");
   if (patch.sectors !== undefined && !patch.sectors.length) return fail(db, "sectors_missing");
+  if (patch.photo !== undefined && !validPhoto(patch.photo)) return fail(db, "photo_invalid");
   const accounts = db.accounts.map((a) => (a.id === me.id ? { ...a, ...patch, name: (patch.name ?? a.name).trim(), email } : a));
   const next = { ...db, accounts };
   return ok(next, publicAccount(findById(next, me.id)!));

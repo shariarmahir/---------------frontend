@@ -7,18 +7,17 @@ import { cn } from "@/lib/utils";
  *
  * Adapted from VengeanceUI's "Solar System" by Ashutoshx7
  * (github.com/Ashutoshx7/VengeanceUI, src/components/ui/solar-system.tsx;
- * the registry URL for the shadcn CLI returned 404, so it was vendored by
- * hand). Kept: the tilted plane, per-ring orbit speeds, evenly phased
- * nodes, billboarded cards and the core-to-node beam. Changed for this
- * project:
- *  - all motion lives in globals.css (`.orbit-*`) instead of a <style> tag
- *    that rewrote `:root` on every render, so it is a server component;
- *  - typed custom properties instead of `as any`;
- *  - nodes can be links, with an accessible name, and hovering or focusing
- *    any node pauses the system so it can be clicked;
- *  - beams carry a travelling "signal" from the core, and rings broadcast
- *    outward from it;
- *  - reduced motion leaves every node at rest in its phased position.
+ * vendored by hand). Kept: the tilted plane, per-ring orbit speeds, evenly
+ * phased nodes, billboarded cards and the core-to-node beam.
+ *
+ * Redrawn in the home page's language (2026-09-30): every ring is a solid
+ * theme colour — gold, orange, green — with a bright comet arc running
+ * round it; the waves broadcast from the core in gold; each planet is a
+ * face on a solid colour ring with its name on an ink chip that opens on
+ * hover or focus. No gradients, no textures. All motion lives in
+ * globals.css (`.orbit-*`), so this stays a server component; hovering or
+ * focusing a planet pauses the system so it can be clicked; reduced motion
+ * leaves every planet at rest in its phased position.
  */
 
 export type OrbitRadius = "inner" | "mid" | "outer";
@@ -27,7 +26,7 @@ export interface SolarSystemItem {
   id: string;
   label: string;
   sublabel?: string;
-  /** Accent for the beam, glow and hover border. */
+  /** Solid colour (a CSS colour or theme var) for the planet ring, beam and glow. */
   color: string;
   /** The node's face — an avatar, logo or icon. */
   avatar: ReactNode;
@@ -42,6 +41,8 @@ export interface OrbitConfig {
   radius: OrbitRadius;
   /** Seconds for one full revolution. */
   speed: number;
+  /** Solid colour of the ring and its comet. */
+  color: string;
   items: SolarSystemItem[];
 }
 
@@ -61,42 +62,60 @@ const RADIUS: Record<OrbitRadius, string> = {
   outer: "var(--r-outer)",
 };
 
+const mix = (c: string, pct: number) => `color-mix(in oklab, ${c} ${pct}%, transparent)`;
+
 export function SolarSystem({ core, orbits, signals = true, className }: SolarSystemProps) {
   let node = 0;
 
   return (
-    <div
-      className={cn(
-        "orbit-stage relative flex h-[340px] w-full items-center justify-center overflow-visible select-none sm:h-[470px] lg:h-[580px] xl:h-[640px]",
-        className,
-      )}
-    >
+    <div className={cn("orbit-stage relative flex w-full items-center justify-center overflow-visible select-none", className)}>
       <div className="orbit-plane absolute flex items-center justify-center">
-        {/* Brain waves broadcast from the core across the plane. */}
+        {/* Waves broadcast from the core across the plane, gold then green. */}
         {signals &&
-          ["0s", "-1.8s", "-3.6s"].map((delay) => (
+          [
+            { delay: "0s", c: "border-signal-orange" },
+            { delay: "-1.8s", c: "border-bdgreen-500" },
+            { delay: "-3.6s", c: "border-signal-orange" },
+          ].map(({ delay, c }) => (
             <span
               key={delay}
               aria-hidden
-              className="orbit-wave pointer-events-none absolute top-1/2 left-1/2 rounded-full border border-signal-orange/40"
+              className={cn("orbit-wave pointer-events-none absolute top-1/2 left-1/2 rounded-full border-2", c)}
               style={{ width: "calc(2 * var(--r-outer))", height: "calc(2 * var(--r-outer))", animationDelay: delay }}
             />
           ))}
 
-        {/* Orbit rings. */}
-        {orbits.map((orbit) => (
-          <span
-            key={orbit.id}
-            aria-hidden
-            className="pointer-events-none absolute top-1/2 left-1/2 -translate-1/2 rounded-full border border-dashed border-white/20"
-            style={{ width: `calc(2 * ${RADIUS[orbit.radius]})`, height: `calc(2 * ${RADIUS[orbit.radius]})` }}
-          />
-        ))}
+        {/* Rings: a solid colour line, and a bright comet arc running round it. */}
+        {orbits.map((orbit, i) => {
+          const size = `calc(2 * ${RADIUS[orbit.radius]})`;
+          return (
+            <span key={orbit.id} aria-hidden className="pointer-events-none">
+              <span
+                className="absolute top-1/2 left-1/2 -translate-1/2 rounded-full border-[1.5px]"
+                style={{ width: size, height: size, borderColor: mix(orbit.color, 45) }}
+              />
+              <span
+                className="orbit-comet absolute top-1/2 left-1/2 -translate-1/2 rounded-full border-[3px] border-transparent"
+                style={
+                  {
+                    width: size,
+                    height: size,
+                    borderTopColor: orbit.color,
+                    borderRightColor: mix(orbit.color, 35),
+                    filter: `drop-shadow(0 0 6px ${orbit.color})`,
+                    "--spin": `${orbit.speed / 3}s`,
+                    animationDelay: `${-i * 1.7}s`,
+                  } as Vars
+                }
+              />
+            </span>
+          );
+        })}
 
         {/* The core — faces the viewer. */}
         <div className="orbit-face absolute top-1/2 left-1/2 z-20">{core}</div>
 
-        {/* Nodes. */}
+        {/* Planets. */}
         {orbits.flatMap((orbit) =>
           orbit.items.map((item, i, arr) => {
             const delay = `${-(orbit.speed / arr.length) * i}s`;
@@ -110,37 +129,30 @@ export function SolarSystem({ core, orbits, signals = true, className }: SolarSy
             };
             const name = item.ariaLabel ?? (item.sublabel ? `${item.label} — ${item.sublabel}` : item.label);
             const cardClass =
-              "orbit-card absolute top-1/2 left-1/2 flex items-center gap-2 rounded-full border border-white/10 bg-slate-950/70 p-1 text-white shadow-[0_6px_24px_rgb(0_0_0/0.45)] backdrop-blur-md transition-[border-color,box-shadow,scale] duration-300 hover:scale-110 hover:border-(--c) hover:shadow-[0_0_24px_var(--c)] focus-visible:scale-110 focus-visible:border-(--c) focus-visible:outline-none sm:pr-4";
+              "orbit-card group/planet absolute top-1/2 left-1/2 flex flex-col items-center rounded-full outline-none [-webkit-tap-highlight-color:transparent]";
             const face = (
               <>
-                {item.avatar}
-                <span className="hidden flex-col leading-tight sm:flex">
-                  <span className="text-[12px] font-semibold whitespace-nowrap lg:text-[13px]">{item.label}</span>
-                  {item.sublabel && (
-                    <span className="text-[10px] whitespace-nowrap text-white/60 lg:text-[11px]">{item.sublabel}</span>
-                  )}
+                <span className="block rounded-full bg-(--c) p-[3px] shadow-[0_0_18px_-2px_var(--c)] transition-[scale,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/planet:scale-125 group-hover/planet:shadow-[0_0_28px_2px_var(--c)] group-focus-visible/planet:scale-125 group-focus-visible/planet:ring-2 group-focus-visible/planet:ring-white motion-reduce:transition-none">
+                  {item.avatar}
+                </span>
+                <span className="pointer-events-none absolute top-full mt-2 flex scale-90 flex-col items-center rounded-lg bg-text-primary px-2.5 py-1 leading-tight opacity-0 shadow-[0_10px_24px_-10px_var(--c)] ring-1 ring-white/15 transition-[opacity,scale] duration-200 group-hover/planet:scale-100 group-hover/planet:opacity-100 group-focus-visible/planet:scale-100 group-focus-visible/planet:opacity-100">
+                  <span className="font-grotesk text-[11px] font-bold whitespace-nowrap text-white">{item.label}</span>
+                  {item.sublabel && <span className="font-mono text-[9px] whitespace-nowrap text-signal-orange uppercase">{item.sublabel}</span>}
                 </span>
               </>
             );
 
             return (
-              <div
-                key={item.id}
-                className="orbit-arm group/arm pointer-events-none absolute top-1/2 left-1/2 size-0"
-                style={armVars}
-              >
-                {/* Beam from the core to this node, with its signal. */}
+              <div key={item.id} className="orbit-arm group/arm pointer-events-none absolute top-1/2 left-1/2 size-0" style={armVars}>
+                {/* Beam from the core to this planet, with its signal. */}
                 <span
                   aria-hidden
-                  className="absolute top-0 right-0 h-[1.5px] origin-right -translate-y-1/2 opacity-35 transition-opacity duration-300 group-has-[.orbit-card:hover]/arm:opacity-100 group-has-[.orbit-card:focus-visible]/arm:opacity-100"
-                  style={{
-                    width: RADIUS[orbit.radius],
-                    background: `linear-gradient(90deg, transparent 0%, rgb(255 255 255 / 0.12) 25%, ${item.color} 100%)`,
-                  }}
+                  className="absolute top-0 right-0 h-[1.5px] origin-right -translate-y-1/2 opacity-50 transition-opacity duration-300 group-has-[.orbit-card:hover]/arm:opacity-100 group-has-[.orbit-card:focus-visible]/arm:opacity-100"
+                  style={{ width: RADIUS[orbit.radius], background: mix(item.color, 40) }}
                 >
                   {signals && (
                     <span
-                      className="orbit-pulse absolute top-1/2 left-0 -mt-[3px] size-1.5 rounded-full"
+                      className="orbit-pulse absolute top-1/2 left-0 -mt-[3px] size-1.5 rounded-[2px]"
                       style={{ background: item.color, boxShadow: `0 0 10px 2px ${item.color}` }}
                     />
                   )}

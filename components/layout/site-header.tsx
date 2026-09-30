@@ -332,6 +332,19 @@ export function SiteHeader() {
               {/* Account — sign-in link, or the signed-in avatar menu. */}
               <AccountMenu className="hidden sm:flex" />
 
+              {/* Record — one tap from any phone screen, the red live dot on ink. */}
+              <button
+                type="button"
+                onClick={() => setRecordOpen(true)}
+                aria-label="Record evidence"
+                className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-text-primary [-webkit-tap-highlight-color:transparent] transition-[background-color,scale] duration-200 hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-90 lg:hidden"
+              >
+                <span className="relative flex size-3">
+                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-national-crimson opacity-75 motion-reduce:hidden" />
+                  <span className="relative inline-flex size-3 rounded-full bg-national-crimson ring-2 ring-white/80" />
+                </span>
+              </button>
+
               {/* Mobile menu — the nav row below is desktop-only. A short gold
                   pop-up that opens from the button's corner, items rising in
                   one after another (keyframes: menu-* in globals.css). */}
@@ -419,13 +432,28 @@ export function SiteHeader() {
                       </Dialog.Close>
                     </div>
 
-                    <div className="menu-item" style={{ "--i": navLinks.length + 4 } as CSSProperties}>
+                    <Dialog.Close asChild>
+                      <button
+                        type="button"
+                        onClick={() => setRecordOpen(true)}
+                        style={{ "--i": navLinks.length + 4 } as CSSProperties}
+                        className="menu-item flex min-h-11 items-center justify-center gap-2 rounded-xl bg-text-primary px-3 py-2 font-sans text-sm font-bold text-white shadow-ink transition-[scale] duration-200 active:scale-95"
+                      >
+                        <span className="relative flex size-2.5">
+                          <span className="absolute inline-flex size-full animate-ping rounded-full bg-national-crimson opacity-75 motion-reduce:hidden" />
+                          <span className="relative inline-flex size-2.5 rounded-full bg-national-crimson" />
+                        </span>
+                        Record evidence · প্রমাণ রেকর্ড
+                      </button>
+                    </Dialog.Close>
+
+                    <div className="menu-item" style={{ "--i": navLinks.length + 5 } as CSSProperties}>
                       <AccountSheetLinks onGold wrap={(node) => <Dialog.Close asChild>{node}</Dialog.Close>} />
                     </div>
 
                     <p
                       className="menu-item px-1 font-bengali text-xs font-semibold text-text-primary/80"
-                      style={{ "--i": navLinks.length + 5 } as CSSProperties}
+                      style={{ "--i": navLinks.length + 6 } as CSSProperties}
                     >
                       {NAZRUL_MOTTO}
                     </p>

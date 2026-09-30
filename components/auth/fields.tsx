@@ -9,6 +9,15 @@ import { AUTH_RULES } from "@/data/auth";
 import { PASSWORD_ISSUE_BN, passwordIssues, passwordStrength, toAsciiDigits, toBanglaDigits } from "@/lib/auth/validate";
 import { cn } from "@/lib/utils";
 
+/**
+ * The auth fields sit on the home page's gold (sign-in, sign-up and the
+ * profile's gold cards): a white well with an ink edge and an ink focus
+ * ring; chosen chips and switches turn ink with gold; the primary action is
+ * ink, since gold on gold would vanish.
+ */
+const GOLD_INPUT =
+  "rounded-xl border-text-primary/25 bg-white hover:border-text-primary/50 focus-visible:border-text-primary focus-visible:ring-text-primary/25 placeholder:text-text-primary/45";
+
 /* ── Text field with label, hint and error wired to aria ─────────────── */
 
 export function TextField({
@@ -23,18 +32,21 @@ export function TextField({
   return (
     <div className={cn("grid gap-space-sm", className)}>
       <div className="flex items-baseline justify-between gap-space-sm">
-        <Label htmlFor={id}>{label}</Label>
+        <Label htmlFor={id} className="font-bold text-text-primary">
+          {label}
+        </Label>
         {labelAction}
       </div>
-      <Input id={id} aria-invalid={error ? true : undefined} aria-describedby={error ? `${id}-err` : hint ? `${id}-hint` : undefined} {...props} />
-      {error ? <FieldError id={`${id}-err`}>{error}</FieldError> : hint ? <p id={`${id}-hint`} className="font-sans text-body-sm text-text-muted">{hint}</p> : null}
+      <Input id={id} aria-invalid={error ? true : undefined} aria-describedby={error ? `${id}-err` : hint ? `${id}-hint` : undefined} {...props} className={GOLD_INPUT} />
+      {error ? <FieldError id={`${id}-err`}>{error}</FieldError> : hint ? <p id={`${id}-hint`} className="font-sans text-body-sm text-text-primary/75">{hint}</p> : null}
     </div>
   );
 }
 
+/** An error, as a solid red chip so it reads on gold and on ink alike. */
 export function FieldError({ id, children }: { id?: string; children: React.ReactNode }) {
   return (
-    <p id={id} role="alert" className="flex items-start gap-space-xs font-sans text-body-sm font-medium text-national-crimson">
+    <p id={id} role="alert" className="live-in flex w-fit items-start gap-space-xs rounded-lg bg-national-crimson px-2.5 py-1.5 font-sans text-body-sm font-semibold text-white">
       <X className="mt-0.5 size-4 shrink-0" aria-hidden />
       <span>{children}</span>
     </p>
@@ -44,11 +56,11 @@ export function FieldError({ id, children }: { id?: string; children: React.Reac
 /* ── Password with reveal toggle and optional strength meter ───────── */
 
 const STRENGTH = [
-  { label: "", bar: "bg-slate-200" },
+  { label: "", bar: "bg-text-primary/15" },
   { label: "দুর্বল", bar: "bg-national-crimson" },
-  { label: "চলনসই", bar: "bg-amber-500" },
-  { label: "ভালো", bar: "bg-emerald-500" },
-  { label: "শক্ত", bar: "bg-bd-green" },
+  { label: "চলনসই", bar: "bg-bdorange-600" },
+  { label: "ভালো", bar: "bg-bd-green" },
+  { label: "শক্ত", bar: "bg-text-primary" },
 ];
 
 export function PasswordField({
@@ -66,7 +78,9 @@ export function PasswordField({
   return (
     <div className="grid gap-space-sm">
       <div className="flex items-baseline justify-between gap-space-sm">
-        <Label htmlFor={id}>{label}</Label>
+        <Label htmlFor={id} className="font-bold text-text-primary">
+          {label}
+        </Label>
         {labelAction}
       </div>
       <div className="relative">
@@ -77,13 +91,13 @@ export function PasswordField({
           value={value}
           aria-invalid={error ? true : undefined}
           aria-describedby={showRules ? `${id}-rules` : error ? `${id}-err` : undefined}
-          className="pe-11 [&::-ms-reveal]:hidden"
+          className={cn(GOLD_INPUT, "pe-11 [&::-ms-reveal]:hidden")}
           {...props}
         />
         <button
           type="button"
           onClick={() => setShown((s) => !s)}
-          className="absolute inset-y-0 inset-e-0 flex w-11 items-center justify-center rounded-e-lg text-text-muted transition-colors hover:text-bd-green focus-visible:text-bd-green focus-visible:ring-2 focus-visible:ring-bd-green/30 focus-visible:outline-none"
+          className="absolute inset-y-0 inset-e-0 flex w-11 items-center justify-center rounded-e-xl text-text-primary/60 transition-colors hover:text-text-primary focus-visible:text-text-primary focus-visible:ring-2 focus-visible:ring-text-primary/40 focus-visible:outline-none"
           aria-label={shown ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখুন"}
           aria-pressed={shown}
         >
@@ -95,16 +109,16 @@ export function PasswordField({
           <div className="flex items-center gap-space-sm" aria-hidden={!value}>
             <div className="grid flex-1 grid-cols-4 gap-1">
               {[1, 2, 3, 4].map((n) => (
-                <span key={n} className={cn("h-1.5 rounded-full transition-colors", n <= strength ? STRENGTH[strength].bar : "bg-slate-200")} />
+                <span key={n} className={cn("h-1.5 rounded-full transition-colors duration-300", n <= strength ? STRENGTH[strength].bar : "bg-text-primary/15")} />
               ))}
             </div>
-            <span className="w-12 text-right font-sans text-body-sm font-semibold text-text-secondary">{STRENGTH[strength].label}</span>
+            <span className="w-12 text-right font-sans text-body-sm font-bold text-text-primary">{STRENGTH[strength].label}</span>
           </div>
           <ul className="grid gap-x-space-md gap-y-1 sm:grid-cols-2">
             {(["short", "letter", "digit"] as const).map((rule) => {
               const met = !!value && !issues.includes(rule);
               return (
-                <li key={rule} className={cn("flex items-center gap-1.5 font-sans text-body-sm", met ? "text-bd-green" : "text-text-muted")}>
+                <li key={rule} className={cn("flex items-center gap-1.5 font-sans text-body-sm", met ? "font-semibold text-text-primary" : "text-text-primary/65")}>
                   {met ? <Check className="size-3.5" aria-hidden /> : <span className="size-1.5 rounded-full bg-current" aria-hidden />}
                   {PASSWORD_ISSUE_BN[rule]}
                   <span className="sr-only">{met ? " — হয়েছে" : " — বাকি"}</span>
@@ -136,7 +150,7 @@ export function OtpInput({ value, onChange, invalid, disabled, autoFocus, label 
 
   return (
     <fieldset className="grid gap-space-sm" disabled={disabled}>
-      <legend className="mb-space-sm font-sans text-label-sm font-semibold tracking-wide text-text-secondary">{label}</legend>
+      <legend className="mb-space-sm font-sans text-label-sm font-bold tracking-wide text-text-primary">{label}</legend>
       <div className="flex justify-between gap-1.5 sm:gap-2" dir="ltr">
         {digits.map((d, i) => (
           <input
@@ -177,8 +191,8 @@ export function OtpInput({ value, onChange, invalid, disabled, autoFocus, label 
               else e.target.select();
             }}
             className={cn(
-              "h-13 w-full min-w-0 rounded-lg border bg-white text-center font-mono text-headline-sm font-bold text-text-primary shadow-clean transition-colors focus-visible:border-bd-green focus-visible:ring-2 focus-visible:ring-bd-green/20 focus-visible:outline-none disabled:opacity-50",
-              invalid ? "border-national-crimson" : d ? "border-bd-green/50" : "border-card-border",
+              "h-13 w-full min-w-0 rounded-xl border-2 bg-white text-center font-mono text-headline-sm font-bold text-text-primary shadow-sm transition-[border-color,scale] duration-150 focus-visible:scale-105 focus-visible:border-text-primary focus-visible:ring-2 focus-visible:ring-text-primary/30 focus-visible:outline-none disabled:opacity-50 motion-reduce:transition-none motion-reduce:focus-visible:scale-100",
+              invalid ? "border-national-crimson" : d ? "border-text-primary" : "border-text-primary/25",
             )}
           />
         ))}
@@ -188,10 +202,15 @@ export function OtpInput({ value, onChange, invalid, disabled, autoFocus, label 
 }
 
 /* ── Choices ───────────────────────────────────────────────────────── */
-/** A checkbox styled as a pill, for multi-select lists. */
+/** A checkbox styled as a pill, for multi-select lists: ink with gold when chosen. */
 export function Chip({ on, onChange, children }: { on: boolean; onChange: () => void; children: React.ReactNode }) {
   return (
-    <label className={cn("relative inline-flex min-h-10 cursor-pointer items-center gap-1.5 rounded-full border-2 px-space-md font-sans text-body-sm font-semibold transition-colors has-focus-visible:ring-2 has-focus-visible:ring-bd-green/30", on ? "border-bd-green bg-bd-green text-white" : "border-card-border text-text-secondary hover:border-bd-green/40")}>
+    <label
+      className={cn(
+        "relative inline-flex min-h-10 cursor-pointer items-center gap-1.5 rounded-full border-2 px-space-md font-sans text-body-sm font-semibold [-webkit-tap-highlight-color:transparent] transition-[background-color,color,scale] duration-150 has-focus-visible:ring-2 has-focus-visible:ring-text-primary/40 active:scale-95",
+        on ? "border-text-primary bg-text-primary text-signal-orange" : "border-text-primary/30 text-text-primary hover:bg-text-primary/10",
+      )}
+    >
       <input type="checkbox" checked={on} onChange={onChange} className="sr-only" />
       {on ? <Check className="size-3.5" aria-hidden /> : null}
       {children}
@@ -199,15 +218,15 @@ export function Chip({ on, onChange, children }: { on: boolean; onChange: () => 
   );
 }
 
-/** A checkbox styled as a switch. */
+/** A checkbox styled as a switch: an ink track with a gold knob when on. */
 export function Toggle({ checked, onChange, label, disabled }: { checked: boolean; onChange: (v: boolean) => void; label: string; disabled?: boolean }) {
   return (
     <label className={cn("flex min-h-10 items-center justify-between gap-space-md font-sans text-body-md text-text-primary", disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer")}>
       {label}
       <span className="relative inline-flex shrink-0">
         <input type="checkbox" role="switch" checked={checked} disabled={disabled} onChange={(e) => onChange(e.target.checked)} className="peer sr-only" />
-        <span className="h-6 w-11 rounded-full bg-slate-300 transition-colors peer-checked:bg-bd-green peer-focus-visible:ring-2 peer-focus-visible:ring-bd-green/40 peer-focus-visible:ring-offset-2" />
-        <span className="absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow transition-transform peer-checked:translate-x-5 motion-reduce:transition-none" />
+        <span className="h-6 w-11 rounded-full bg-text-primary/25 transition-colors peer-checked:bg-text-primary peer-focus-visible:ring-2 peer-focus-visible:ring-text-primary/40 peer-focus-visible:ring-offset-2" />
+        <span className="absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow transition-[translate,background-color] duration-200 peer-checked:translate-x-5 peer-checked:bg-signal-orange motion-reduce:transition-none" />
       </span>
     </label>
   );
@@ -222,7 +241,7 @@ export function SubmitButton({ busy, children, className, ...props }: React.Comp
       disabled={busy || props.disabled}
       aria-busy={busy || undefined}
       className={cn(
-        "inline-flex h-12 w-full items-center justify-center gap-space-sm rounded-lg bg-bd-green px-space-lg font-display text-label-md font-bold text-white shadow-sm transition-colors hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-bd-green/40 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60",
+        "inline-flex h-12 w-full items-center justify-center gap-space-sm rounded-xl bg-text-primary px-space-lg font-display text-label-md font-bold text-signal-orange shadow-ink [-webkit-tap-highlight-color:transparent] transition-[translate,scale,background-color,color] duration-200 hover:-translate-y-0.5 hover:bg-bd-green hover:text-white active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-text-primary/40 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 motion-reduce:transition-none",
         className,
       )}
       {...props}
@@ -238,7 +257,7 @@ export function TextButton({ className, ...props }: React.ComponentProps<"button
     <button
       type="button"
       className={cn(
-        "rounded font-sans text-body-sm font-semibold text-bd-green underline-offset-4 transition-colors hover:text-bd-green-dark hover:underline focus-visible:ring-2 focus-visible:ring-bd-green/30 focus-visible:outline-none disabled:cursor-not-allowed disabled:text-text-muted disabled:no-underline",
+        "rounded font-sans text-body-sm font-bold text-text-primary underline decoration-text-primary/30 decoration-2 underline-offset-4 transition-colors hover:text-bd-green-dark hover:decoration-bd-green-dark focus-visible:ring-2 focus-visible:ring-text-primary/40 focus-visible:outline-none disabled:cursor-not-allowed disabled:text-text-primary/50 disabled:no-underline",
         className,
       )}
       {...props}
@@ -250,12 +269,12 @@ export function TextButton({ className, ...props }: React.ComponentProps<"button
 
 /**
  * No SMS or email is sent in the demo, so the message that would arrive is
- * shown here instead, clearly marked as such.
+ * shown here instead, clearly marked as such — an ink card on the gold.
  */
 export function DemoMessage({ kind, children }: { kind: "sms" | "email"; children: React.ReactNode }) {
   return (
-    <div role="status" className="rounded-xl border border-dashed border-signal-orange/70 bg-amber-50/70 p-space-md font-sans text-body-sm text-text-primary">
-      <p className="mb-1 font-mono text-label-xs font-bold tracking-widest text-amber-800 uppercase">{kind === "sms" ? "ডেমো এসএমএস" : "ডেমো ইমেইল"} · আসলে পাঠানো হয়নি</p>
+    <div role="status" className="live-in rounded-2xl bg-text-primary p-space-md font-sans text-body-sm text-white shadow-ink">
+      <p className="mb-1 font-mono text-label-xs font-bold tracking-widest text-signal-orange uppercase">{kind === "sms" ? "ডেমো এসএমএস" : "ডেমো ইমেইল"} · আসলে পাঠানো হয়নি</p>
       {children}
     </div>
   );
