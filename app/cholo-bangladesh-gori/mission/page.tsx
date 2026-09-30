@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { MissionGame } from "@/components/gori/mission/mission-game";
+import { PixelMark } from "@/components/ui/section-kit";
 
 export const metadata: Metadata = {
   title: "জাতীয় মিশন — চলো বাংলাদেশ গড়ি | কাণ্ডারী-ল্যাব",
@@ -11,8 +12,9 @@ export default function MissionPage() {
   return (
     <>
       <header className="mx-auto flex max-w-400 flex-wrap items-baseline gap-x-4 gap-y-1 px-4 pt-6 sm:px-6">
+        <PixelMark tone="dark" className="mb-2" />
         <h1 className="font-bengali text-3xl font-extrabold text-signal-orange sm:text-4xl">জাতীয় মিশন</h1>
-        <p className="font-bengali text-sm text-emerald-50/85 sm:text-base">সংকট শৃঙ্খলে ছড়ায় — মূল কারণ ধরুন, দল মিলিয়ে দেশ গড়ুন।</p>
+        <p className="font-bengali text-sm text-white/85 sm:text-base">সংকট শৃঙ্খলে ছড়ায় — মূল কারণ ধরুন, দল মিলিয়ে দেশ গড়ুন।</p>
       </header>
       <MissionGame />
     </>

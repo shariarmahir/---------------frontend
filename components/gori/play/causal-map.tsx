@@ -52,14 +52,14 @@ function VarNode({ data }: NodeProps<Node<VarData>>) {
   const better = data.delta === 0 ? null : (data.good === "up") === data.delta > 0;
   const c = 2 * Math.PI * (R - 5);
   return (
-    <div className={cn("relative flex size-[92px] flex-col items-center justify-center rounded-full bg-white text-center shadow-[0_6px_16px_-10px_rgb(0_0_0/0.5)]", data.focused && "ring-4 ring-signal-orange/60")}>
+    <div className={cn("relative flex size-[92px] flex-col items-center justify-center rounded-full bg-black ring-1 ring-white/12 text-center shadow-[0_6px_16px_-10px_rgb(0_0_0/0.5)]", data.focused && "ring-4 ring-signal-orange/60")}>
       <svg viewBox="0 0 92 92" className="absolute inset-0" aria-hidden>
-        <circle cx="46" cy="46" r={R - 5} className="fill-none stroke-slate-200" strokeWidth="5" />
+        <circle cx="46" cy="46" r={R - 5} className="fill-none stroke-white/25" strokeWidth="5" />
         <circle
           cx="46"
           cy="46"
           r={R - 5}
-          className={cn("fill-none transition-[stroke-dashoffset] duration-700", data.kind === "pressure" ? "stroke-[#c2410c]" : "stroke-[#00875a]")}
+          className={cn("fill-none transition-[stroke-dashoffset] duration-700", data.kind === "pressure" ? "stroke-bdorange-600" : "stroke-bdgreen-500")}
           strokeWidth="5"
           strokeDasharray={c}
           strokeDashoffset={c * (1 - data.value / 100)}
@@ -67,22 +67,22 @@ function VarNode({ data }: NodeProps<Node<VarData>>) {
           transform="rotate(-90 46 46)"
         />
       </svg>
-      <span className="relative max-w-[70px] font-bengali text-[11px] leading-tight font-semibold text-gori-ink">{data.label}</span>
-      <span className="relative font-bengali text-base font-bold text-gori-ink tabular-nums">{n(Math.round(data.value))}</span>
+      <span className="relative max-w-[70px] font-bengali text-[11px] leading-tight font-semibold text-white">{data.label}</span>
+      <span className="relative font-bengali text-base font-bold text-white tabular-nums">{n(Math.round(data.value))}</span>
       {better !== null && (
-        <span className={cn("relative font-bengali text-[10px] font-bold", better ? "text-[#00704b]" : "text-[#b3380a]")}>
+        <span className={cn("relative font-bengali text-[10px] font-bold", better ? "text-bdgreen-500" : "text-bdorange-600")}>
           {data.delta > 0 ? "▲" : "▼"} {n(Math.abs(data.delta))}
         </span>
       )}
       <Handle type="target" position={Position.Left} className="!size-3 !border-2 !border-white !bg-slate-400" />
-      <Handle type="source" position={Position.Right} className="!size-3 !border-2 !border-white !bg-signal-orange" />
+      <Handle type="source" position={Position.Right} className="!size-3 !border-2 !border-white !bg-signal-orange text-text-primary" />
     </div>
   );
 }
 
 function IntNode({ data }: NodeProps<Node<IntData>>) {
   return (
-    <div className={cn("max-w-40 rounded-lg px-2.5 py-1.5 text-center font-bengali text-[11px] leading-tight font-semibold shadow-sm", data.scale === "planned" ? "border-2 border-dashed border-signal-orange bg-orange-50 text-gori-ink" : "bg-gori-deep text-white")}>
+    <div className={cn("max-w-40 rounded-lg px-2.5 py-1.5 text-center font-bengali text-[11px] leading-tight font-semibold shadow-sm", data.scale === "planned" ? "border-2 border-dashed border-signal-orange bg-bdorange-600 text-text-primary" : "bg-black text-white")}>
       {data.label}
       <span className="block text-[10px] font-normal opacity-80">{data.scale === "pilot" ? "পাইলট" : data.scale === "full" ? "পূর্ণ" : "পরিকল্পনায়"}</span>
       <Handle type="source" position={Position.Bottom} className="!opacity-0" isConnectable={false} />
@@ -131,11 +131,11 @@ function CausalEdgeView({ id, source, target, data, markerEnd }: EdgeProps<Edge<
       />
       <EdgeLabelRenderer>
         <span
-          className="nodrag nopan pointer-events-none absolute flex items-center gap-0.5 rounded-full border border-current/30 bg-white px-2 py-0.5 font-bengali text-[14px] leading-none font-bold shadow-sm"
+          className="nodrag nopan pointer-events-none absolute flex items-center gap-0.5 rounded-full border border-current/30 bg-black ring-1 ring-white/12 px-2 py-0.5 font-bengali text-[14px] leading-none font-bold shadow-sm"
           style={{ transform: `translate(-50%,-50%) translate(${mid.x}px,${mid.y}px)`, color }}
         >
           {data.sign > 0 ? "+" : "−"}
-          {data.delay > 0 && <span className="text-[11px] font-normal text-gori-mute">⏱{n(data.delay)}</span>}
+          {data.delay > 0 && <span className="text-[11px] font-normal text-white/65">⏱{n(data.delay)}</span>}
         </span>
       </EdgeLabelRenderer>
     </>
@@ -239,12 +239,12 @@ export function CausalMap({ sc, run, turn, puzzle }: { sc: ScenarioDef; run: Run
   return (
     <div className="space-y-4">
       {puzzle && (
-        <p className="flex flex-wrap items-center gap-2 rounded-xl bg-orange-50 px-4 py-2.5 font-bengali text-sm text-gori-ink">
-          <Search className="size-4 text-bdorange-700" aria-hidden />
+        <p className="flex flex-wrap items-center gap-2 rounded-xl bg-bdorange-600 px-4 py-2.5 font-bengali text-sm text-text-primary">
+          <Search className="size-4 text-bdorange-600" aria-hidden />
           মানচিত্রে {n(hiddenLeft)}টি সম্পর্ক লুকোনো। এক বৃত্তের কমলা বিন্দু থেকে আরেক বৃত্তে টেনে সম্পর্ক প্রস্তাব করুন, অথবা নিচের ফর্ম ব্যবহার করুন। পেয়েছেন {n(found.length)}/{n(PUZZLE_TARGET)}।
         </p>
       )}
-      <div className="h-[460px] overflow-hidden rounded-2xl border border-gori-ink/10 bg-gori-cream sm:h-[540px]" aria-label="কারণ-মানচিত্র: চাপ দিলে বিস্তারিত নিচে">
+      <div className="h-[460px] overflow-hidden rounded-2xl border border-white/10 bg-text-primary ring-1 ring-white/12 sm:h-[540px]" aria-label="কারণ-মানচিত্র: চাপ দিলে বিস্তারিত নিচে">
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -266,22 +266,22 @@ export function CausalMap({ sc, run, turn, puzzle }: { sc: ScenarioDef; run: Run
         </ReactFlow>
       </div>
 
-      <ul className="flex flex-wrap gap-x-5 gap-y-1 font-bengali text-xs text-gori-ink-soft" aria-label="সংকেত">
-        <li><span className="font-bold text-[#00875a]">+</span> বাড়ায়</li>
-        <li><span className="font-bold text-[#c2410c]">−</span> কমায়</li>
+      <ul className="flex flex-wrap gap-x-5 gap-y-1 font-bengali text-xs text-white/80" aria-label="সংকেত">
+        <li><span className="font-bold text-bdgreen-500">+</span> বাড়ায়</li>
+        <li><span className="font-bold text-bdorange-600">−</span> কমায়</li>
         <li>মোটা দাগ = শক্তিশালী সম্পর্ক</li>
         <li>ড্যাশ দাগ = খেলার অনুমান</li>
         <li>⏱ = দেরিতে পৌঁছায় (প্রান্তিক)</li>
-        <li><span className="font-bold text-[#6d4bd1]">বেগুনি</span> = আপনার অনুমান</li>
+        <li><span className="font-bold text-violet-300">বেগুনি</span> = আপনার অনুমান</li>
       </ul>
 
       {pending && (
-        <div role="dialog" aria-label="সম্পর্কের ধরন" className="flex flex-wrap items-center gap-3 rounded-xl bg-gori-deep px-4 py-3 font-bengali text-white">
+        <div role="dialog" aria-label="সম্পর্কের ধরন" className="flex flex-wrap items-center gap-3 rounded-xl bg-black px-4 py-3 font-bengali text-white">
           <span>
             {sc.variables.find((v) => v.id === pending.from)?.bn} → {sc.variables.find((v) => v.id === pending.to)?.bn}:
           </span>
           <button type="button" onClick={() => propose(pending.from, pending.to, 1)} className="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-bold">+ বাড়ায়</button>
-          <button type="button" onClick={() => propose(pending.from, pending.to, -1)} className="rounded-lg bg-[#c2410c] px-3 py-1.5 text-sm font-bold">− কমায়</button>
+          <button type="button" onClick={() => propose(pending.from, pending.to, -1)} className="rounded-lg bg-bdorange-600 px-3 py-1.5 text-sm font-bold text-text-primary">− কমায়</button>
           <button type="button" onClick={() => setPending(null)} className="ml-auto rounded-lg p-1.5 hover:bg-white/10" aria-label="বাতিল"><X className="size-4" /></button>
         </div>
       )}
@@ -289,14 +289,14 @@ export function CausalMap({ sc, run, turn, puzzle }: { sc: ScenarioDef; run: Run
       <ProposeForm sc={sc} onPropose={propose} />
 
       {edge && (
-        <section aria-label="সম্পর্কের বিস্তারিত" className="rounded-2xl bg-white p-5 text-gori-ink shadow-sm">
+        <section aria-label="সম্পর্কের বিস্তারিত" className="rounded-2xl bg-black ring-1 ring-white/12 p-5 text-white shadow-sm">
           <div className="flex items-start justify-between gap-3">
             <h3 className="font-bengali text-lg font-bold">
               {sc.variables.find((v) => v.id === edge.from)?.bn} {edge.sign > 0 ? "বাড়ায়" : "কমায়"} {sc.variables.find((v) => v.id === edge.to)?.bn}
             </h3>
-            <button type="button" onClick={() => setSelEdge(null)} aria-label="বন্ধ" className="rounded-lg p-1 hover:bg-slate-100"><X className="size-4" /></button>
+            <button type="button" onClick={() => setSelEdge(null)} aria-label="বন্ধ" className="rounded-lg p-1 hover:bg-white/10"><X className="size-4" /></button>
           </div>
-          <p className="mt-1 font-bengali text-sm leading-6 text-gori-ink-soft">{edge.note}</p>
+          <p className="mt-1 font-bengali text-sm leading-6 text-white/80">{edge.note}</p>
           <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2 font-bengali text-sm sm:grid-cols-3">
             <Fact k="সম্পর্কের ধরন" v={edge.sign > 0 ? "ধনাত্মক (+)" : "ঋণাত্মক (−)"} />
             <Fact k="শক্তি (খেলার সহগ)" v={n(edge.weight * assumptionValue(sc, run.config, edge.assumption))} />
@@ -311,26 +311,26 @@ export function CausalMap({ sc, run, turn, puzzle }: { sc: ScenarioDef; run: Run
       )}
 
       {selVar && (
-        <section aria-label="সূচকের বিস্তারিত" className="rounded-2xl bg-white p-5 text-gori-ink shadow-sm">
+        <section aria-label="সূচকের বিস্তারিত" className="rounded-2xl bg-black ring-1 ring-white/12 p-5 text-white shadow-sm">
           <div className="flex items-start justify-between gap-3">
             <h3 className="font-bengali text-lg font-bold">{sc.variables.find((v) => v.id === selVar)?.bn}</h3>
-            <button type="button" onClick={() => setSelVar(null)} aria-label="বন্ধ" className="rounded-lg p-1 hover:bg-slate-100"><X className="size-4" /></button>
+            <button type="button" onClick={() => setSelVar(null)} aria-label="বন্ধ" className="rounded-lg p-1 hover:bg-white/10"><X className="size-4" /></button>
           </div>
-          <p className="mt-1 font-bengali text-sm text-gori-ink-soft">{sc.variables.find((v) => v.id === selVar)?.description}</p>
+          <p className="mt-1 font-bengali text-sm text-white/80">{sc.variables.find((v) => v.id === selVar)?.description}</p>
           {varExplain ? (
             <>
               <p className="mt-3 font-bengali text-[15px] leading-7">{varExplain.sentence}</p>
               <ul className="mt-2 space-y-1 font-bengali text-sm">
                 {varExplain.parts.map((p, i) => (
-                  <li key={i} className="flex justify-between gap-3 border-b border-slate-100 py-1">
+                  <li key={i} className="flex justify-between gap-3 border-b border-white/12 py-1">
                     <span>{p.label}{p.basis === "assumption" ? " (অনুমান)" : ""}</span>
-                    <span className={cn("font-bold tabular-nums", p.amount > 0 ? "text-[#00704b]" : "text-[#b3380a]")}>{p.amount > 0 ? "+" : ""}{n(p.amount)}</span>
+                    <span className={cn("font-bold tabular-nums", p.amount > 0 ? "text-bdgreen-500" : "text-bdorange-600")}>{p.amount > 0 ? "+" : ""}{n(p.amount)}</span>
                   </li>
                 ))}
               </ul>
             </>
           ) : (
-            <p className="mt-3 font-bengali text-sm text-gori-mute">একটি টার্ন চালালে এখানে দেখাবে কেন এটি বদলাল।</p>
+            <p className="mt-3 font-bengali text-sm text-white/65">একটি টার্ন চালালে এখানে দেখাবে কেন এটি বদলাল।</p>
           )}
         </section>
       )}
@@ -341,7 +341,7 @@ export function CausalMap({ sc, run, turn, puzzle }: { sc: ScenarioDef; run: Run
 function Fact({ k, v }: { k: string; v: string }) {
   return (
     <div>
-      <dt className="text-xs text-gori-mute">{k}</dt>
+      <dt className="text-xs text-white/65">{k}</dt>
       <dd className="font-semibold">{v}</dd>
     </div>
   );
@@ -352,7 +352,7 @@ function ProposeForm({ sc, onPropose }: { sc: ScenarioDef; onPropose: (from: str
   const [from, setFrom] = useState(sc.variables[0].id);
   const [to, setTo] = useState(sc.variables[1].id);
   const [sign, setSign] = useState<1 | -1>(1);
-  const sel = "h-10 rounded-lg border border-gori-ink/15 bg-white px-2 font-bengali text-sm text-gori-ink";
+  const sel = "h-10 rounded-lg border border-white/15 bg-black ring-1 ring-white/12 px-2 font-bengali text-sm text-white";
   return (
     <form
       onSubmit={(e) => {
@@ -362,26 +362,26 @@ function ProposeForm({ sc, onPropose }: { sc: ScenarioDef; onPropose: (from: str
       className="flex flex-wrap items-end gap-2 rounded-xl bg-white/70 p-3"
       aria-label="সম্পর্ক প্রস্তাব"
     >
-      <label className="font-bengali text-xs text-gori-mute">
+      <label className="font-bengali text-xs text-white/65">
         কারণ
         <select value={from} onChange={(e) => setFrom(e.target.value)} className={cn(sel, "mt-1 block")}>
           {sc.variables.map((v) => <option key={v.id} value={v.id}>{v.bn}</option>)}
         </select>
       </label>
-      <label className="font-bengali text-xs text-gori-mute">
+      <label className="font-bengali text-xs text-white/65">
         প্রভাব
         <select value={sign} onChange={(e) => setSign(Number(e.target.value) as 1 | -1)} className={cn(sel, "mt-1 block")}>
           <option value={1}>বাড়ায় (+)</option>
           <option value={-1}>কমায় (−)</option>
         </select>
       </label>
-      <label className="font-bengali text-xs text-gori-mute">
+      <label className="font-bengali text-xs text-white/65">
         যার ওপর
         <select value={to} onChange={(e) => setTo(e.target.value)} className={cn(sel, "mt-1 block")}>
           {sc.variables.map((v) => <option key={v.id} value={v.id}>{v.bn}</option>)}
         </select>
       </label>
-      <button type="submit" className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-gori-deep px-3 font-bengali text-sm font-bold text-white">
+      <button type="submit" className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-black px-3 font-bengali text-sm font-bold text-white">
         <Link2 className="size-4" aria-hidden /> প্রস্তাব করুন
       </button>
     </form>

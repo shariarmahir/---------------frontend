@@ -62,10 +62,10 @@ export function useAgent() {
 }
 
 const VERDICT = {
-  supported: { bn: "সমর্থিত", icon: CheckCircle2, cls: "bg-emerald-100 text-emerald-900" },
-  partly: { bn: "আংশিক সমর্থিত", icon: CircleHelp, cls: "bg-amber-100 text-amber-900" },
-  unsupported: { bn: "অসমর্থিত", icon: XCircle, cls: "bg-red-100 text-red-900" },
-  unknown: { bn: "প্রমাণে তথ্য নেই", icon: CircleHelp, cls: "bg-gori-ink/10 text-gori-ink" },
+  supported: { bn: "সমর্থিত", icon: CheckCircle2, cls: "bg-bdgreen-500 text-text-primary" },
+  partly: { bn: "আংশিক সমর্থিত", icon: CircleHelp, cls: "bg-white/10 text-white" },
+  unsupported: { bn: "অসমর্থিত", icon: XCircle, cls: "bg-national-crimson text-white" },
+  unknown: { bn: "প্রমাণে তথ্য নেই", icon: CircleHelp, cls: "bg-white/10 text-white" },
 } as const;
 
 const SECTIONS = [
@@ -78,29 +78,29 @@ const SECTIONS = [
 
 export function AgentAnswerView({ answer, status }: { answer: AgentAnswer | null; status: Status }) {
   return (
-    <div aria-live="polite" aria-busy={status === "loading"} className="text-gori-ink">
+    <div aria-live="polite" aria-busy={status === "loading"} className="text-white">
       <AnimatePresence mode="wait" initial={false}>
         {status === "loading" ? (
-          <motion.p key="l" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2 font-bengali text-sm text-gori-ink-soft">
+          <motion.p key="l" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2 font-bengali text-sm text-white/80">
             <Loader2 className="size-4 animate-spin" aria-hidden /> প্রমাণ খুঁজে বিশ্লেষণ হচ্ছে…
           </motion.p>
         ) : answer ? (
           <motion.div key={JSON.stringify(answer).length} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="space-y-4">
             <div className="flex flex-wrap items-center gap-2">
-              <span className={cn("inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-bengali text-[11px] font-bold", answer.mode === "claude" ? "bg-signal-orange/20 text-[#8a4b00]" : "bg-gori-ink/8 text-gori-ink-soft")}>
+              <span className={cn("inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-bengali text-[11px] font-bold", answer.mode === "claude" ? "bg-signal-orange/20 text-signal-orange" : "bg-white/10 text-white/80")}>
                 {answer.mode === "claude" ? <Bot className="size-3.5" aria-hidden /> : <WifiOff className="size-3.5" aria-hidden />}
                 {answer.mode === "claude" ? "Claude · লাইভ" : "অফলাইন বিশ্লেষণ (নিয়মভিত্তিক)"}
               </span>
-              <span className="font-bengali text-[11px] text-gori-mute">{AGENTS.find((a) => a.id === answer.agent)?.bn}</span>
+              <span className="font-bengali text-[11px] text-white/65">{AGENTS.find((a) => a.id === answer.agent)?.bn}</span>
             </div>
 
             {answer.agent === "moderation" ? (
               <div className="font-bengali">
-                <p className={cn("inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-bold", answer.moderation.verdict === "allow" ? "bg-emerald-100 text-emerald-900" : answer.moderation.verdict === "review" ? "bg-amber-100 text-amber-900" : "bg-red-100 text-red-900")}>
+                <p className={cn("inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-bold", answer.moderation.verdict === "allow" ? "bg-bdgreen-500 text-text-primary" : answer.moderation.verdict === "review" ? "bg-signal-orange text-text-primary" : "bg-national-crimson text-white")}>
                   <ShieldAlert className="size-4" aria-hidden />
                   {answer.moderation.verdict === "allow" ? "প্রকাশযোগ্য" : answer.moderation.verdict === "review" ? "মানুষের পর্যালোচনা দরকার" : "প্রকাশ করা যাবে না"}
                 </p>
-                <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-gori-ink-soft">
+                <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-white/80">
                   {answer.moderation.reasons.map((r, i) => <li key={i}>{r}</li>)}
                 </ul>
               </div>
@@ -114,7 +114,7 @@ export function AgentAnswerView({ answer, status }: { answer: AgentAnswer | null
                   <Section title="ব্যবহৃত প্রমাণ">
                     {answer.analysis.evidenceUsed.map((e) => (
                       <li key={e.id}>
-                        <span className="font-mono text-[11px] text-gori-mute">{e.id}</span> — {e.how}
+                        <span className="font-mono text-[11px] text-white/65">{e.id}</span> — {e.how}
                       </li>
                     ))}
                   </Section>
@@ -127,23 +127,23 @@ export function AgentAnswerView({ answer, status }: { answer: AgentAnswer | null
                   ) : null,
                 )}
                 <div>
-                  <h4 className="font-bengali text-xs font-bold text-gori-mute">সূত্র</h4>
+                  <h4 className="font-bengali text-xs font-bold text-white/65">সূত্র</h4>
                   {answer.sources.length ? (
                     <ul className="mt-1 space-y-1.5">
                       {answer.sources.map((s) => (
-                        <li key={s.id} className="rounded-lg bg-white px-3 py-2 font-bengali text-xs">
-                          <span className="font-semibold text-gori-ink">{s.title}</span>
-                          <span className="block text-gori-mute">
+                        <li key={s.id} className="rounded-lg bg-black ring-1 ring-white/12 px-3 py-2 font-bengali text-xs">
+                          <span className="font-semibold text-white">{s.title}</span>
+                          <span className="block text-white/65">
                             {s.publisher} · {s.status === "unsupported" ? "অসমর্থিত দাবি (সতর্কতা)" : s.status} · {s.reliabilityNotes}
                           </span>
                         </li>
                       ))}
                     </ul>
                   ) : (
-                    <p className="mt-1 font-bengali text-xs text-gori-mute">কোনো সূত্র উদ্ধৃত হয়নি।</p>
+                    <p className="mt-1 font-bengali text-xs text-white/65">কোনো সূত্র উদ্ধৃত হয়নি।</p>
                   )}
                   {answer.dropped.length > 0 && (
-                    <p className="mt-1.5 font-bengali text-[11px] text-national-crimson">{answer.dropped.length}টি অজানা সূত্র বাদ দেওয়া হয়েছে — যাচাই করা যায়নি।</p>
+                    <p className="mt-1.5 font-bengali text-[11px] text-crimson-bright">{answer.dropped.length}টি অজানা সূত্র বাদ দেওয়া হয়েছে — যাচাই করা যায়নি।</p>
                   )}
                 </div>
               </>
@@ -167,8 +167,8 @@ function Verdict({ v }: { v: keyof typeof VERDICT }) {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h4 className="font-bengali text-xs font-bold text-gori-mute">{title}</h4>
-      <ul className="mt-1 list-disc space-y-1 pl-5 font-bengali text-sm leading-6 text-gori-ink-soft">{children}</ul>
+      <h4 className="font-bengali text-xs font-bold text-white/65">{title}</h4>
+      <ul className="mt-1 list-disc space-y-1 pl-5 font-bengali text-sm leading-6 text-white/80">{children}</ul>
     </div>
   );
 }

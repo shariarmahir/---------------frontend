@@ -25,7 +25,7 @@ import { hydrateMission, useMission, useMissionHydrated } from "./store";
 const Board3D = dynamic(() => import("./board-3d"), {
   ssr: false,
   loading: () => (
-    <div className="flex h-full items-center justify-center gap-2 font-bengali text-sm text-emerald-100/80">
+    <div className="flex h-full items-center justify-center gap-2 font-bengali text-sm text-white/80">
       <Loader2 className="size-4 animate-spin" aria-hidden /> ৩D বোর্ড লোড হচ্ছে…
     </div>
   ),
@@ -246,25 +246,25 @@ function MissionTable({ state }: { state: MissionState }) {
 
         <div className="order-1 min-w-0 space-y-3 xl:order-2">
           {/* Turn bar */}
-          <div className="flex flex-wrap items-center gap-2 rounded-2xl bg-gori-panel px-3 py-2.5 font-bengali">
-            <p className="mr-auto text-sm text-emerald-50/90">
+          <div className="flex flex-wrap items-center gap-2 rounded-2xl bg-text-primary ring-1 ring-white/12 px-3 py-2.5 font-bengali">
+            <p className="mr-auto text-sm text-white/85">
               <strong className="text-base text-white">{actorP.name}</strong> · {roleDef(actorP.role).bn}
               {state.phase === "discard" ? " · হাতের কার্ড কমাতে হবে" : ` · অ্যাকশন বাকি ${bn(state.actionsLeft)}`}
               {actorP.bot && !state.outcome && (
-                <span className="ml-2 inline-flex items-center gap-1 text-emerald-200">
+                <span className="ml-2 inline-flex items-center gap-1 text-white/75">
                   <Loader2 className="size-3.5 animate-spin" aria-hidden /> AI ভাবছে…
                 </span>
               )}
             </p>
             {me !== null && (
               <>
-                <button type="button" onClick={hintNow} className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-amber-300 px-3 text-sm font-bold text-gori-ink hover:bg-amber-200">
+                <button type="button" onClick={hintNow} className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-signal-orange px-3 text-sm font-bold text-text-primary hover:bg-signal-orange">
                   <Lightbulb className="size-4" aria-hidden /> পরামর্শ
                 </button>
                 <button type="button" onClick={undo} disabled={!undoable} className="inline-flex h-9 items-center gap-1.5 rounded-lg px-3 text-sm font-semibold text-white hover:bg-white/10 disabled:opacity-40" title="এই পালার শেষ অ্যাকশন ফিরিয়ে নিন (কার্ড ওঠার আগে)">
                   <Undo2 className="size-4" aria-hidden /> ফিরিয়ে নিন
                 </button>
-                <button type="button" onClick={() => run({ type: "end" })} className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-white/10 px-3 text-sm font-bold text-white hover:bg-white/20">
+                <button type="button" onClick={() => run({ type: "end" })} className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-white/10 px-3 text-sm font-bold text-white hover:bg-white/10">
                   <SkipForward className="size-4" aria-hidden /> পালা শেষ{state.actionsLeft > 0 ? ` (${bn(state.actionsLeft)} বাদ)` : ""}
                 </button>
               </>
@@ -272,13 +272,13 @@ function MissionTable({ state }: { state: MissionState }) {
             <span className="mx-1 hidden h-6 w-px bg-white/15 sm:block" aria-hidden />
             <div role="radiogroup" aria-label="বোর্ড" className="flex rounded-lg bg-black/25 p-0.5">
               {(["3d", "2d"] as const).map((b) => (
-                <button key={b} type="button" role="radio" aria-checked={use3D === (b === "3d")} onClick={() => setBoard(b)} className={cn("inline-flex h-8 items-center gap-1 rounded-md px-2.5 text-xs font-bold", use3D === (b === "3d") ? "bg-gori-cream text-gori-ink" : "text-emerald-50/80 hover:text-white")}>
+                <button key={b} type="button" role="radio" aria-checked={use3D === (b === "3d")} onClick={() => setBoard(b)} className={cn("inline-flex h-8 items-center gap-1 rounded-md px-2.5 text-xs font-bold", use3D === (b === "3d") ? "bg-text-primary ring-1 ring-white/12 text-white" : "text-white/85 hover:text-white")}>
                   {b === "3d" ? <Box className="size-3.5" aria-hidden /> : <MapIcon className="size-3.5" aria-hidden />}
                   {b === "3d" ? "৩D" : "২D"}
                 </button>
               ))}
             </div>
-            <label className="inline-flex items-center gap-1 text-xs text-emerald-50/80">
+            <label className="inline-flex items-center gap-1 text-xs text-white/85">
               <Gauge className="size-3.5" aria-hidden />
               <span className="sr-only">বটের গতি</span>
               <select value={speed} onChange={(e) => setSpeed(e.target.value as typeof speed)} className="h-8 rounded-md bg-black/25 px-1.5 text-xs text-white">
@@ -292,22 +292,22 @@ function MissionTable({ state }: { state: MissionState }) {
               onClick={() => {
                 if (window.confirm("মিশন ছেড়ে দেবেন? এই খেলা মুছে যাবে।")) quit();
               }}
-              className="inline-flex h-8 items-center gap-1 rounded-md px-2 text-xs text-emerald-50/70 hover:bg-white/10 hover:text-white"
+              className="inline-flex h-8 items-center gap-1 rounded-md px-2 text-xs text-white/85 hover:bg-white/10 hover:text-white"
             >
               <LogOut className="size-3.5" aria-hidden /> ছাড়ুন
             </button>
           </div>
 
           {hint && (
-            <div className="flex flex-wrap items-center gap-3 rounded-2xl bg-amber-100 px-4 py-3 font-bengali text-sm text-gori-ink max-xl:hidden" role="status">
-              <Lightbulb className="size-5 shrink-0 text-amber-700" aria-hidden />
+            <div className="flex flex-wrap items-center gap-3 rounded-2xl bg-signal-orange px-4 py-3 font-bengali text-sm text-text-primary max-xl:hidden" role="status">
+              <Lightbulb className="size-5 shrink-0 text-signal-orange" aria-hidden />
               <p className="min-w-0 flex-1 leading-6">
-                <strong>পরামর্শ:</strong> {hint.reason} <span className="text-gori-ink-soft">(বটের হিসাব — ভুলও হতে পারে)</span>
+                <strong>পরামর্শ:</strong> {hint.reason} <span className="text-white/80">(বটের হিসাব — ভুলও হতে পারে)</span>
               </p>
-              <button type="button" onClick={() => run(hint.action)} className="h-9 rounded-lg bg-gori-ink px-3 font-bold text-white">
+              <button type="button" onClick={() => run(hint.action)} className="h-9 rounded-lg bg-signal-orange px-3 font-bold text-text-primary">
                 এটাই করুন
               </button>
-              <button type="button" onClick={() => setHint(null)} className="h-9 rounded-lg px-2 text-gori-ink-soft hover:bg-white">
+              <button type="button" onClick={() => setHint(null)} className="h-9 rounded-lg px-2 text-white/80 hover:bg-white/10">
                 থাক
               </button>
             </div>
@@ -345,9 +345,9 @@ function MissionTable({ state }: { state: MissionState }) {
         </div>
 
         <aside className="order-2 space-y-3 xl:order-3" aria-label="নির্বাচিত মডিউল">
-          <label className="block font-bengali text-xs font-semibold text-emerald-100/80">
+          <label className="block font-bengali text-xs font-semibold text-white/80">
             মডিউল বাছুন (কিবোর্ডে)
-            <select value={selected} onChange={(e) => setSelected(Number(e.target.value))} className="mt-1 h-10 w-full rounded-xl border border-white/15 bg-gori-panel px-2 text-sm text-white">
+            <select value={selected} onChange={(e) => setSelected(Number(e.target.value))} className="mt-1 h-10 w-full rounded-xl border border-white/15 bg-text-primary ring-1 ring-white/12 px-2 text-sm text-white">
               {NODES.map((n) => (
                 <option key={n} value={n}>
                   {codeOf(n)} {titleOf(n)} {state.pressure[n] ? `(চাপ ${bn(state.pressure[n])})` : ""}
@@ -388,8 +388,8 @@ function MissionTable({ state }: { state: MissionState }) {
 /** What the marks on the board mean — shapes and colours never stand alone. */
 function Legend({ hint, className }: { hint: string; className?: string }) {
   return (
-    <div className={cn("pointer-events-none absolute right-2 bottom-2 left-2 flex flex-wrap items-end justify-between gap-2 font-bengali text-[11px] text-emerald-50/85", className)}>
-      <p className="text-emerald-100/60">{hint}</p>
+    <div className={cn("pointer-events-none absolute right-2 bottom-2 left-2 flex flex-wrap items-end justify-between gap-2 font-bengali text-[11px] text-white/85", className)}>
+      <p className="text-white/80">{hint}</p>
       <ul className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg bg-black/45 px-2.5 py-1.5">
         {PILLARS.map((p) => (
           <li key={p.id} className="flex items-center gap-1">
@@ -400,7 +400,7 @@ function Legend({ hint, className }: { hint: string; className?: string }) {
           <span className="block size-2.5 rounded-[2px] bg-national-crimson" aria-hidden /> চাপ
         </li>
         <li className="flex items-center gap-1">
-          <span className="block h-2.5 w-3 rounded-[2px] bg-amber-300" aria-hidden /> কেন্দ্র
+          <span className="block h-2.5 w-3 rounded-[2px] bg-signal-orange text-text-primary" aria-hidden /> কেন্দ্র
         </li>
         <li className="flex items-center gap-1">
           <span className="block w-4 border-t-2 border-dashed border-emerald-100/80" aria-hidden /> খেলার অনুমান
@@ -434,15 +434,15 @@ function MobileDock({ state, n, me, actorName, actorBot, hint, onAct, onHint, on
   })();
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-30 border-t border-white/15 bg-gori-deep/95 px-3 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] font-bengali shadow-[0_-12px_30px_-18px_rgb(0_0_0/0.9)] backdrop-blur xl:hidden" role="region" aria-label="দ্রুত অ্যাকশন">
+    <div className="fixed inset-x-0 bottom-0 z-30 border-t border-white/15 bg-black px-3 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] font-bengali shadow-[0_-12px_30px_-18px_rgb(0_0_0/0.9)] backdrop-blur xl:hidden" role="region" aria-label="দ্রুত অ্যাকশন">
       {hint && (
-        <div className="mx-auto mb-2 flex max-w-3xl items-start gap-2 rounded-xl bg-amber-100 p-2.5 text-[13px] leading-5 text-gori-ink" role="status">
-          <Lightbulb className="mt-0.5 size-4 shrink-0 text-amber-700" aria-hidden />
+        <div className="mx-auto mb-2 flex max-w-3xl items-start gap-2 rounded-xl bg-signal-orange p-2.5 text-[13px] leading-5 text-text-primary" role="status">
+          <Lightbulb className="mt-0.5 size-4 shrink-0 text-signal-orange" aria-hidden />
           <p className="min-w-0 flex-1">{hint.reason}</p>
-          <button type="button" onClick={() => onAct(hint.action)} className="h-9 shrink-0 rounded-lg bg-gori-ink px-3 text-xs font-bold text-white">
+          <button type="button" onClick={() => onAct(hint.action)} className="h-9 shrink-0 rounded-lg bg-signal-orange px-3 text-xs font-bold text-text-primary">
             করুন
           </button>
-          <button type="button" onClick={onClearHint} className="h-9 shrink-0 rounded-lg px-2 text-xs text-gori-ink-soft" aria-label="পরামর্শ বন্ধ">
+          <button type="button" onClick={onClearHint} className="h-9 shrink-0 rounded-lg px-2 text-xs text-white/80" aria-label="পরামর্শ বন্ধ">
             ✕
           </button>
         </div>
@@ -457,13 +457,13 @@ function MobileDock({ state, n, me, actorName, actorBot, hint, onAct, onHint, on
             <span key={k} className={cn("block size-2.5 rounded-[2px]", k < state.pressure[n] ? "bg-national-crimson" : "bg-white/15")} />
           ))}
         </span>
-        <a href="#module-panel" className="inline-flex h-9 shrink-0 items-center gap-1 rounded-lg px-2 text-xs font-semibold text-emerald-100 hover:bg-white/10">
+        <a href="#module-panel" className="inline-flex h-9 shrink-0 items-center gap-1 rounded-lg px-2 text-xs font-semibold text-white/80 hover:bg-white/10">
           বিস্তারিত <ArrowDown className="size-3.5" aria-hidden />
         </a>
       </div>
       <div className="mx-auto mt-1.5 flex max-w-3xl items-center gap-2">
         {me === null ? (
-          <p className="flex h-11 items-center gap-2 text-sm text-emerald-100">
+          <p className="flex h-11 items-center gap-2 text-sm text-white/80">
             {actorBot ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
             {actorBot ? `${actorName} (AI) খেলছেন…` : `${actorName}-এর পালা`}
           </p>
@@ -473,11 +473,11 @@ function MobileDock({ state, n, me, actorName, actorBot, hint, onAct, onHint, on
               type="button"
               disabled={!quick}
               onClick={() => quick && onAct(quick.a)}
-              className="h-11 min-w-0 flex-1 truncate rounded-xl bg-signal-orange px-3 text-sm font-extrabold text-gori-ink disabled:bg-white/10 disabled:text-white/50"
+              className="h-11 min-w-0 flex-1 truncate rounded-xl bg-signal-orange px-3 text-sm font-extrabold text-text-primary disabled:bg-white/10 disabled:text-text-primary"
             >
               {quick ? quick.label : pl?.at === n ? "এখানে চাপ নেই" : "এখানে যাওয়া যায় না"}
             </button>
-            <button type="button" onClick={onHint} className="inline-flex h-11 shrink-0 items-center gap-1 rounded-xl bg-amber-200 px-3 text-sm font-bold text-gori-ink" aria-label="পরামর্শ">
+            <button type="button" onClick={onHint} className="inline-flex h-11 shrink-0 items-center gap-1 rounded-xl bg-signal-orange px-3 text-sm font-bold text-text-primary" aria-label="পরামর্শ">
               <Lightbulb className="size-4" aria-hidden />
               <span className="max-[380px]:sr-only">পরামর্শ</span>
             </button>

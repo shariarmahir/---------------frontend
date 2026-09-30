@@ -46,15 +46,15 @@ export function MissionSetup({ onStart }: { onStart: (c: MissionConfig) => void 
       aria-labelledby="mission-setup-title"
     >
       <div className="lg:col-span-7">
-        <h2 id="mission-setup-title" className="font-bengali text-2xl font-bold text-white">দল সাজান</h2>
-        <p className="mt-1 font-bengali text-sm text-emerald-100/80">
+        <h2 id="mission-setup-title" className="font-bengali text-2xl font-bold text-signal-orange">দল সাজান</h2>
+        <p className="mt-1 font-bengali text-sm text-white/80">
           ২–৪ জন, এক ডিভাইসে পালা করে। খালি আসনে AI বট মন্ত্রী খেলবে — আপনার সহযোদ্ধা, সবাই একসাথে জেতে বা হারে। খেলা শেষে প্রত্যেকের অবদান আলাদা করে দেখানো হয়।
         </p>
         <ol className="mt-5 space-y-3">
           {seats.map((s, i) => (
-            <li key={i} className="rounded-2xl bg-gori-panel p-4">
+            <li key={i} className="rounded-2xl bg-text-primary ring-1 ring-white/12 p-4">
               <div className="flex flex-wrap items-center gap-3">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-full font-bengali text-base font-extrabold text-gori-ink" style={{ background: PLAYER_COLOR[i] }} aria-hidden>
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full font-bengali text-base font-extrabold text-white" style={{ background: PLAYER_COLOR[i] }} aria-hidden>
                   {bn(i + 1)}
                 </span>
                 <label className="min-w-40 flex-1">
@@ -74,7 +74,7 @@ export function MissionSetup({ onStart }: { onStart: (c: MissionConfig) => void 
                       role="radio"
                       aria-checked={s.bot === bot}
                       onClick={() => patch(i, { bot, name: bot && !s.bot ? BOT_NAMES[i % 3] : !bot && s.bot ? (i === 0 && me) || `খেলোয়াড় ${bn(i + 1)}` : s.name })}
-                      className={cn("inline-flex h-9 items-center gap-1.5 rounded-lg px-3 font-bengali text-sm font-semibold", s.bot === bot ? "bg-gori-cream text-gori-ink" : "text-emerald-50/80 hover:text-white")}
+                      className={cn("inline-flex h-9 items-center gap-1.5 rounded-lg px-3 font-bengali text-sm font-semibold", s.bot === bot ? "bg-text-primary ring-1 ring-white/12 text-white" : "text-white/85 hover:text-white")}
                     >
                       {bot ? <Bot className="size-4" aria-hidden /> : <User className="size-4" aria-hidden />}
                       {bot ? "AI বট" : "মানুষ"}
@@ -82,7 +82,7 @@ export function MissionSetup({ onStart }: { onStart: (c: MissionConfig) => void 
                   ))}
                 </div>
                 {seats.length > 2 && (
-                  <button type="button" onClick={() => setSeats((xs) => xs.filter((_, j) => j !== i))} className="inline-flex size-9 items-center justify-center rounded-lg text-emerald-100/70 hover:bg-white/10 hover:text-white" aria-label={`খেলোয়াড় ${bn(i + 1)} সরান`}>
+                  <button type="button" onClick={() => setSeats((xs) => xs.filter((_, j) => j !== i))} className="inline-flex size-9 items-center justify-center rounded-lg text-white/80 hover:bg-white/10 hover:text-white" aria-label={`খেলোয়াড় ${bn(i + 1)} সরান`}>
                     <X className="size-4" aria-hidden />
                   </button>
                 )}
@@ -99,7 +99,7 @@ export function MissionSetup({ onStart }: { onStart: (c: MissionConfig) => void 
                         key={r.id}
                         className={cn(
                           "flex cursor-pointer items-center gap-2 rounded-lg border px-2.5 py-2 font-bengali text-sm transition-colors has-focus-visible:ring-2 has-focus-visible:ring-signal-orange",
-                          on ? "border-signal-orange bg-signal-orange/15 text-white" : busy ? "cursor-not-allowed border-white/5 text-white/35" : "border-white/10 text-emerald-50/85 hover:border-white/30",
+                          on ? "border-signal-orange bg-signal-orange/15 text-white" : busy ? "cursor-not-allowed border-white/5 text-white/35" : "border-white/10 text-white/85 hover:border-white/30",
                         )}
                       >
                         <input type="radio" name={`role-${i}`} className="sr-only" checked={on} disabled={busy} onChange={() => patch(i, { role: r.id })} />
@@ -109,7 +109,7 @@ export function MissionSetup({ onStart }: { onStart: (c: MissionConfig) => void 
                     );
                   })}
                 </div>
-                <p className="mt-2 font-bengali text-[13px] leading-6 text-emerald-100/80">{ROLES.find((r) => r.id === s.role)!.power}</p>
+                <p className="mt-2 font-bengali text-[13px] leading-6 text-white/80">{ROLES.find((r) => r.id === s.role)!.power}</p>
               </fieldset>
             </li>
           ))}
@@ -121,7 +121,7 @@ export function MissionSetup({ onStart }: { onStart: (c: MissionConfig) => void 
               const role = ROLES.find((r) => !taken.has(r.id))!.id;
               setSeats((xs) => [...xs, { name: BOT_NAMES[xs.length % 3], role, bot: true }]);
             }}
-            className="mt-3 inline-flex h-11 items-center gap-2 rounded-xl border border-dashed border-white/25 px-4 font-bengali text-sm font-semibold text-emerald-50/90 hover:border-white/50 hover:text-white"
+            className="mt-3 inline-flex h-11 items-center gap-2 rounded-xl border border-dashed border-white/25 px-4 font-bengali text-sm font-semibold text-white/85 hover:border-white/50 hover:text-white"
           >
             <Plus className="size-4" aria-hidden /> আসন যোগ করুন
           </button>
@@ -129,15 +129,15 @@ export function MissionSetup({ onStart }: { onStart: (c: MissionConfig) => void 
       </div>
 
       <div className="space-y-5 lg:col-span-5">
-        <fieldset className="min-w-0 rounded-2xl bg-gori-cream p-5 text-gori-ink">
+        <fieldset className="min-w-0 rounded-2xl bg-text-primary ring-1 ring-white/12 p-5 text-white">
           <legend className="float-left mb-3 w-full font-bengali text-lg font-bold">কঠিনতা</legend>
           <div className="clear-both space-y-2">
             {(Object.keys(DIFFICULTIES) as Difficulty[]).map((d) => (
-              <label key={d} className={cn("flex cursor-pointer items-start gap-3 rounded-xl border-2 px-3.5 py-2.5 has-focus-visible:ring-2 has-focus-visible:ring-bd-green", difficulty === d ? "border-bd-green bg-white" : "border-transparent hover:bg-white/60")}>
-                <input type="radio" name="difficulty" checked={difficulty === d} onChange={() => setDifficulty(d)} className="mt-1.5 accent-bd-green" />
+              <label key={d} className={cn("flex cursor-pointer items-start gap-3 rounded-xl border-2 px-3.5 py-2.5 has-focus-visible:ring-2 has-focus-visible:ring-bd-green", difficulty === d ? "border-bd-green bg-black ring-1 ring-white/12" : "border-transparent hover:bg-white/10")}>
+                <input type="radio" name="difficulty" checked={difficulty === d} onChange={() => setDifficulty(d)} className="mt-1.5 accent-signal-orange" />
                 <span className="font-bengali">
                   <strong className="block">{DIFFICULTIES[d].bn}</strong>
-                  <span className="text-sm text-gori-ink-soft">{DIFFICULTIES[d].body}</span>
+                  <span className="text-sm text-white/80">{DIFFICULTIES[d].body}</span>
                 </span>
               </label>
             ))}
@@ -145,15 +145,15 @@ export function MissionSetup({ onStart }: { onStart: (c: MissionConfig) => void 
           <label className="mt-4 block font-bengali text-sm font-semibold">
             বীজ (একই বীজে একই ডেক — বন্ধুর সাথে একই চ্যালেঞ্জ খেলুন)
             <span className="mt-1.5 flex gap-2">
-              <input value={seed} onChange={(e) => setSeed(e.target.value.slice(0, 24))} className="h-11 min-w-0 flex-1 rounded-xl border border-gori-ink/20 bg-white px-3 font-mono text-sm" />
-              <button type="button" onClick={() => setSeed(randomSeed())} className="inline-flex h-11 items-center gap-1.5 rounded-xl border border-gori-ink/20 px-3 font-bengali text-sm font-semibold hover:bg-white" aria-label="নতুন বীজ">
+              <input value={seed} onChange={(e) => setSeed(e.target.value.slice(0, 24))} className="h-11 min-w-0 flex-1 rounded-xl border border-white/20 bg-black ring-1 ring-white/12 px-3 font-mono text-sm" />
+              <button type="button" onClick={() => setSeed(randomSeed())} className="inline-flex h-11 items-center gap-1.5 rounded-xl border border-white/20 px-3 font-bengali text-sm font-semibold hover:bg-white/10" aria-label="নতুন বীজ">
                 <Dices className="size-4" aria-hidden />
               </button>
             </span>
           </label>
         </fieldset>
 
-        <section aria-labelledby="how-title" className="rounded-2xl border border-white/10 p-5 font-bengali text-sm leading-7 text-emerald-50/90">
+        <section aria-labelledby="how-title" className="rounded-2xl border border-white/10 p-5 font-bengali text-sm leading-7 text-white/85">
           <h3 id="how-title" className="text-base font-bold text-white">কীভাবে জিতবেন</h3>
           <ul className="mt-2 list-disc space-y-1 pl-5 marker:text-signal-orange">
             <li>প্রতি পালায় {bn(RULES.actionsPerTurn)}টি অ্যাকশন: চলাচল, চাপ কমানো, সমন্বয় কেন্দ্র বানানো, কার্ড দেওয়া-নেওয়া, সংস্কার।</li>
@@ -162,11 +162,11 @@ export function MissionSetup({ onStart }: { onStart: (c: MissionConfig) => void 
             <li>মূল কারণ (যাদের কেউ খাওয়ায় না) ঠিক রাখলে পুরো শৃঙ্খল শান্ত থাকে। মডিউলে চাপ দিলে ‘ভাঙলে কী হবে’ দেখা যায় — আগে ভাবুন।</li>
             <li>হার: বারবার ভাঙনে জনআস্থা শেষ, অথবা কার্ডের ডেক ফুরিয়ে সময় শেষ।</li>
           </ul>
-          <p className="mt-3 text-xs text-emerald-100/70">সংযোগগুলো জাতীয় প্রতিবেদনের যুক্তি বা খেলার অনুমান (ড্যাশ দেওয়া রেখা)। খেলার ফল বাস্তব পূর্বাভাস নয়।</p>
+          <p className="mt-3 text-xs text-white/80">সংযোগগুলো জাতীয় প্রতিবেদনের যুক্তি বা খেলার অনুমান (ড্যাশ দেওয়া রেখা)। খেলার ফল বাস্তব পূর্বাভাস নয়।</p>
         </section>
 
         {err && <p role="alert" className="font-bengali text-sm font-semibold text-signal-orange">{err}</p>}
-        <button type="submit" disabled={!!err} className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-signal-orange font-bengali text-lg font-extrabold text-gori-ink transition-transform hover:-translate-y-0.5 disabled:opacity-50">
+        <button type="submit" disabled={!!err} className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-signal-orange font-bengali text-lg font-extrabold text-text-primary transition-transform hover:-translate-y-0.5 disabled:opacity-50">
           <Play className="size-5" aria-hidden /> মিশন শুরু
         </button>
       </div>

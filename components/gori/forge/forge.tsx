@@ -13,6 +13,7 @@ import { useAgent } from "../ai-panel";
 import { useT } from "../provider";
 import { BASE, LockedNotice, useFeature } from "../shell";
 import { useGori, useHydrated } from "../store";
+import { PixelMark } from "@/components/ui/section-kit";
 
 const sc = scenarioOf("health-access");
 
@@ -68,7 +69,7 @@ export function Forge() {
     URL.revokeObjectURL(url);
   }
 
-  const field = "mt-1 block w-full rounded-xl border border-gori-ink/15 bg-white px-3 font-bengali text-sm";
+  const field = "mt-1 block w-full rounded-xl border border-white/15 bg-black ring-1 ring-white/12 px-3 font-bengali text-sm";
   const sel = (label: string, value: string, onChange: (v: string) => void, opts: [string, string][]) => (
     <label key={label} className="font-bengali text-sm font-semibold">
       {label}
@@ -80,13 +81,14 @@ export function Forge() {
 
   return (
     <div className="mx-auto max-w-340 px-4 py-8 sm:px-6 lg:px-8">
+      <PixelMark tone="dark" className="mb-2" />
       <h1 className="flex items-center gap-3 font-bengali text-3xl font-bold text-signal-orange"><Hammer className="size-8" aria-hidden /> দৃশ্যকল্প কারখানা</h1>
-      <p className="mt-2 max-w-[70ch] font-bengali text-emerald-50/85">
+      <p className="mt-2 max-w-[70ch] font-bengali text-white/85">
         BD-001-এর মডেলে নিজের দৃশ্যকল্প সাজান — প্রেক্ষাপট, সম্পদ, ঘটনা, অনুমান। নাম আর বিবরণ মডারেশনে পরীক্ষা হয়। দৃশ্যকল্প আপাতত এই ব্রাউজারেই থাকে; অন্যদের জন্য প্রকাশ করতে সার্ভার আর মানুষের পর্যালোচনা লাগবে।
       </p>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
-        <form onSubmit={save} className="space-y-4 rounded-2xl bg-gori-cream p-5 text-gori-ink" aria-label="নতুন দৃশ্যকল্প">
+        <form onSubmit={save} className="space-y-4 rounded-2xl bg-text-primary ring-1 ring-white/12 p-5 text-white" aria-label="নতুন দৃশ্যকল্প">
           <label className="block font-bengali text-sm font-semibold">
             নাম
             <input value={name} onChange={(e) => setName(e.target.value)} maxLength={60} className={cn(field, "h-11")} placeholder="যেমন: হাওরে বর্ষার আগে প্রস্তুতি" />
@@ -107,35 +109,35 @@ export function Forge() {
           </div>
           <label className="block font-bengali text-sm font-semibold">
             সময়সীমা: {n(c.horizon)} প্রান্তিক
-            <input type="range" min={4} max={16} value={c.horizon} onChange={(e) => set({ horizon: Number(e.target.value) })} className="mt-2 block w-full accent-[#006747]" />
+            <input type="range" min={4} max={16} value={c.horizon} onChange={(e) => set({ horizon: Number(e.target.value) })} className="mt-2 block w-full accent-signal-orange" />
           </label>
           <div className="grid gap-3 sm:grid-cols-2">
             {sc.assumptions.map((a) =>
               sel(a.bn, c.assumptions[a.id] ?? "mid", (v) => set({ assumptions: { ...c.assumptions, [a.id]: v as "low" | "mid" | "high" } }), (["low", "mid", "high"] as const).map((k) => [k, a.optionBn[k]])),
             )}
           </div>
-          <button type="submit" disabled={!valid || moderator.status === "loading"} className="inline-flex h-12 items-center gap-2 rounded-xl bg-signal-orange px-6 font-bengali font-bold disabled:opacity-40">
+          <button type="submit" disabled={!valid || moderator.status === "loading"} className="inline-flex h-12 items-center gap-2 rounded-xl bg-signal-orange px-6 font-bengali font-bold disabled:opacity-40 text-text-primary">
             {moderator.status === "loading" ? <Loader2 className="size-5 animate-spin" aria-hidden /> : <Hammer className="size-5" aria-hidden />} মডারেশন করে সংরক্ষণ
           </button>
-          {!valid && <p className="font-bengali text-xs text-gori-mute">নাম (৩+ অক্ষর) আর বিবরণ (এক বাক্য) দিন।</p>}
+          {!valid && <p className="font-bengali text-xs text-white/65">নাম (৩+ অক্ষর) আর বিবরণ (এক বাক্য) দিন।</p>}
         </form>
 
         <section aria-labelledby="mine-title">
-          <h2 id="mine-title" className="font-bengali text-lg font-bold">আপনার দৃশ্যকল্প</h2>
+          <h2 id="mine-title" className="font-bengali text-lg font-bold text-signal-orange">আপনার দৃশ্যকল্প</h2>
           {list.length ? (
             <ul className="mt-3 space-y-3">
               {list.map((f) => (
-                <li key={f.id} className="rounded-2xl bg-gori-panel p-4">
+                <li key={f.id} className="rounded-2xl bg-text-primary ring-1 ring-white/12 p-4">
                   <p className="font-bengali font-bold">{f.name}</p>
-                  <p className="font-bengali text-sm text-emerald-50/85">{f.description}</p>
-                  <p className="mt-1 font-bengali text-xs text-emerald-100/70">{configSummary(sc, f.config)}</p>
+                  <p className="font-bengali text-sm text-white/85">{f.description}</p>
+                  <p className="mt-1 font-bengali text-xs text-white/80">{configSummary(sc, f.config)}</p>
                   {f.moderation && (
-                    <p className={cn("mt-2 inline-flex rounded-full px-2.5 py-0.5 font-bengali text-xs font-semibold", f.moderation.verdict === "allow" ? "bg-emerald-900/60 text-emerald-100" : "bg-amber-900/60 text-amber-100")}>
+                    <p className={cn("mt-2 inline-flex rounded-full px-2.5 py-0.5 font-bengali text-xs font-semibold", f.moderation.verdict === "allow" ? "bg-emerald-900/60 text-white/80" : "bg-amber-900/60 text-white/85")}>
                       মডারেশন ({f.moderation.mode === "claude" ? "Claude" : "অফলাইন ফিল্টার"}): {f.moderation.verdict === "allow" ? "প্রকাশযোগ্য" : "মানুষের পর্যালোচনা দরকার"}
                     </p>
                   )}
                   <div className="mt-3 flex flex-wrap gap-2">
-                    <button type="button" onClick={() => { startGame({ ...f.config, mode: "sandbox" }); router.push(`${BASE}/play`); }} className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-signal-orange px-3 font-bengali text-sm font-bold text-gori-ink">
+                    <button type="button" onClick={() => { startGame({ ...f.config, mode: "sandbox" }); router.push(`${BASE}/play`); }} className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-signal-orange px-3 font-bengali text-sm font-bold text-text-primary">
                       <Play className="size-4" aria-hidden /> খেলুন
                     </button>
                     <button type="button" onClick={() => exportJson(f.id)} className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-white/10 px-3 font-bengali text-sm">
@@ -152,7 +154,7 @@ export function Forge() {
               ))}
             </ul>
           ) : (
-            <p className="mt-3 rounded-2xl border border-white/15 p-5 font-bengali text-sm text-emerald-100/80">এখনো কোনো দৃশ্যকল্প নেই।</p>
+            <p className="mt-3 rounded-2xl border border-white/15 p-5 font-bengali text-sm text-white/80">এখনো কোনো দৃশ্যকল্প নেই।</p>
           )}
         </section>
       </div>

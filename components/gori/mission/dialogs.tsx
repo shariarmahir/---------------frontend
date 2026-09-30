@@ -11,14 +11,14 @@ import { bn, titleOf } from "@/lib/gori/mission/narrate";
 import { cn } from "@/lib/utils";
 import { CardFace, PillarGlyph } from "./hud";
 
-const shell = "max-w-md bg-gori-cream text-gori-ink font-bengali";
+const shell = "max-w-md bg-text-primary ring-1 ring-white/12 text-white font-bengali";
 const optionLabel = (s: MissionState, n: number) => `${codeOf(n)} ${titleOf(n)} — চাপ ${bn(s.pressure[n])}`;
 
 function NodeSelect({ state, value, onChange, filter, label }: { state: MissionState; value: number; onChange: (n: number) => void; filter: (n: number) => boolean; label: string }) {
   return (
     <label className="block text-sm font-semibold">
       {label}
-      <select value={value} onChange={(e) => onChange(Number(e.target.value))} className="mt-1 h-11 w-full rounded-xl border border-gori-ink/20 bg-white px-2 text-sm">
+      <select value={value} onChange={(e) => onChange(Number(e.target.value))} className="mt-1 h-11 w-full rounded-xl border border-white/20 bg-black ring-1 ring-white/12 px-2 text-sm">
         {NODES.filter(filter).map((n) => (
           <option key={n} value={n}>
             {optionLabel(state, n)}
@@ -33,8 +33,8 @@ function Confirm({ state, action, onAct, children = "খেলুন" }: { state
   const why = whyNot(state, action);
   return (
     <div>
-      {why && <p className="mb-2 text-sm text-national-crimson">{why}</p>}
-      <button type="button" disabled={!!why} onClick={() => onAct(action)} className="inline-flex h-11 w-full items-center justify-center rounded-xl bg-signal-orange font-bold text-gori-ink disabled:opacity-50">
+      {why && <p className="mb-2 text-sm text-crimson-bright">{why}</p>}
+      <button type="button" disabled={!!why} onClick={() => onAct(action)} className="inline-flex h-11 w-full items-center justify-center rounded-xl bg-signal-orange font-bold text-text-primary disabled:opacity-50">
         {children}
       </button>
     </div>
@@ -70,7 +70,7 @@ function PolicyBody({ state, id, selected, onAct }: { state: MissionState; id: P
   return (
     <>
       <DialogTitle className="text-xl font-bold">নীতি-কার্ড: {def.bn}</DialogTitle>
-      <DialogDescription className="text-sm leading-6 text-gori-ink-soft">{def.body} নীতি-কার্ডে অ্যাকশন লাগে না।</DialogDescription>
+      <DialogDescription className="text-sm leading-6 text-white/80">{def.body} নীতি-কার্ডে অ্যাকশন লাগে না।</DialogDescription>
       {id === "fund" && (
         <>
           <NodeSelect state={state} value={node} onChange={setNode} filter={(n) => !state.hubs.includes(n)} label="কেন্দ্র কোথায় হবে?" />
@@ -82,17 +82,17 @@ function PolicyBody({ state, id, selected, onAct }: { state: MissionState; id: P
           <p className="text-sm">উপরেরটি সবার আগে উঠবে। নিরাপদ কার্ড উপরে, বিপজ্জনকগুলো নিচে রাখুন — অথবা এমন মডিউল উপরে দিন যেখানে চাপ নেই।</p>
           <ol className="space-y-1.5">
             {order.map((n, i) => (
-              <li key={n} className="flex items-center gap-2 rounded-lg bg-white px-2 py-1.5 text-sm">
-                <span className="w-5 text-center font-bold text-gori-mute">{bn(i + 1)}</span>
+              <li key={n} className="flex items-center gap-2 rounded-lg bg-black ring-1 ring-white/12 px-2 py-1.5 text-sm">
+                <span className="w-5 text-center font-bold text-white/65">{bn(i + 1)}</span>
                 <PillarGlyph id={pillarOf(n)} />
                 <span className="min-w-0 flex-1 truncate">
                   <strong>{codeOf(n)}</strong> {titleOf(n)}
                 </span>
-                <span className="text-national-crimson">{"■".repeat(state.pressure[n])}</span>
-                <button type="button" disabled={i === 0} onClick={() => move(i, -1)} className="rounded p-1 hover:bg-gori-ink/10 disabled:opacity-30" aria-label={`${codeOf(n)} উপরে`}>
+                <span className="text-crimson-bright">{"■".repeat(state.pressure[n])}</span>
+                <button type="button" disabled={i === 0} onClick={() => move(i, -1)} className="rounded p-1 hover:bg-white/15 disabled:opacity-30" aria-label={`${codeOf(n)} উপরে`}>
                   <ArrowUp className="size-4" />
                 </button>
-                <button type="button" disabled={i === order.length - 1} onClick={() => move(i, 1)} className="rounded p-1 hover:bg-gori-ink/10 disabled:opacity-30" aria-label={`${codeOf(n)} নিচে`}>
+                <button type="button" disabled={i === order.length - 1} onClick={() => move(i, 1)} className="rounded p-1 hover:bg-white/15 disabled:opacity-30" aria-label={`${codeOf(n)} নিচে`}>
                   <ArrowDown className="size-4" />
                 </button>
               </li>
@@ -110,17 +110,17 @@ function PolicyBody({ state, id, selected, onAct }: { state: MissionState; id: P
             {pressured.map((n) => {
               const k = targets.filter((t) => t === n).length;
               return (
-                <li key={n} className="flex items-center gap-2 rounded-lg bg-white px-2 py-1.5 text-sm">
+                <li key={n} className="flex items-center gap-2 rounded-lg bg-black ring-1 ring-white/12 px-2 py-1.5 text-sm">
                   <PillarGlyph id={pillarOf(n)} />
                   <span className="min-w-0 flex-1 truncate">
                     <strong>{codeOf(n)}</strong> {titleOf(n)}
                   </span>
-                  <span className="text-national-crimson">{"■".repeat(state.pressure[n] - k)}</span>
-                  <button type="button" disabled={!k} onClick={() => setTargets((t) => t.filter((_, j) => j !== t.indexOf(n)))} className="size-7 rounded-lg bg-gori-ink/8 font-bold disabled:opacity-30" aria-label={`${codeOf(n)} থেকে কম`}>
+                  <span className="text-crimson-bright">{"■".repeat(state.pressure[n] - k)}</span>
+                  <button type="button" disabled={!k} onClick={() => setTargets((t) => t.filter((_, j) => j !== t.indexOf(n)))} className="size-7 rounded-lg bg-white/10 font-bold disabled:opacity-30" aria-label={`${codeOf(n)} থেকে কম`}>
                     −
                   </button>
                   <span className="w-4 text-center font-bold">{bn(k)}</span>
-                  <button type="button" disabled={targets.length >= 2 || k >= state.pressure[n]} onClick={() => setTargets((t) => [...t, n])} className="size-7 rounded-lg bg-gori-ink/8 font-bold disabled:opacity-30" aria-label={`${codeOf(n)} থেকে বেশি`}>
+                  <button type="button" disabled={targets.length >= 2 || k >= state.pressure[n]} onClick={() => setTargets((t) => [...t, n])} className="size-7 rounded-lg bg-white/10 font-bold disabled:opacity-30" aria-label={`${codeOf(n)} থেকে বেশি`}>
                     +
                   </button>
                 </li>
@@ -141,7 +141,7 @@ function PolicyBody({ state, id, selected, onAct }: { state: MissionState; id: P
         <>
           <label className="block text-sm font-semibold">
             কাকে?
-            <select value={player} onChange={(e) => setPlayer(Number(e.target.value))} className="mt-1 h-11 w-full rounded-xl border border-gori-ink/20 bg-white px-2">
+            <select value={player} onChange={(e) => setPlayer(Number(e.target.value))} className="mt-1 h-11 w-full rounded-xl border border-white/20 bg-black ring-1 ring-white/12 px-2">
               {state.players.map((p, i) => (
                 <option key={i} value={i}>
                   {p.name} ({codeOf(p.at)})
@@ -165,18 +165,18 @@ export function PeekDialog({ state, open, onAct, onClose }: { state: MissionStat
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className={shell}>
         <DialogTitle className="text-xl font-bold">সংকট-ডেকের উপরের তিনটি</DialogTitle>
-        <DialogDescription className="text-sm leading-6 text-gori-ink-soft">পরের পালাগুলোতে এগুলো আগে উঠবে। চাইলে একটিকে ডেকের একেবারে নিচে পাঠান। এতে ১টি অ্যাকশন লাগে।</DialogDescription>
+        <DialogDescription className="text-sm leading-6 text-white/80">পরের পালাগুলোতে এগুলো আগে উঠবে। চাইলে একটিকে ডেকের একেবারে নিচে পাঠান। এতে ১টি অ্যাকশন লাগে।</DialogDescription>
         <ul className="space-y-1.5" role="radiogroup" aria-label="কোনটি নিচে পাঠাবেন">
           {top.map((n, i) => {
             const c = cascadePreview(state, n);
             return (
               <li key={n}>
-                <button type="button" role="radio" aria-checked={bury === i} onClick={() => setBury(bury === i ? undefined : i)} className={cn("flex w-full items-center gap-2 rounded-lg border-2 bg-white px-2.5 py-2 text-left text-sm", bury === i ? "border-signal-orange" : "border-transparent")}>
-                  <span className="w-5 text-center font-bold text-gori-mute">{bn(i + 1)}</span>
+                <button type="button" role="radio" aria-checked={bury === i} onClick={() => setBury(bury === i ? undefined : i)} className={cn("flex w-full items-center gap-2 rounded-lg border-2 bg-black ring-1 ring-white/12 px-2.5 py-2 text-left text-sm", bury === i ? "border-signal-orange" : "border-transparent")}>
+                  <span className="w-5 text-center font-bold text-white/65">{bn(i + 1)}</span>
                   <PillarGlyph id={pillarOf(n)} />
                   <span className="min-w-0 flex-1">
                     <strong>{codeOf(n)}</strong> {titleOf(n)}
-                    <span className="block text-xs text-gori-ink-soft">
+                    <span className="block text-xs text-white/80">
                       চাপ {bn(state.pressure[n])}/{bn(RULES.maxPressure)}
                       {state.pressure[n] === RULES.maxPressure && c.hit.length ? ` — উঠলেই ভাঙবে, ঢেউ ${bn(c.hit.length)}টিতে` : ""}
                     </span>
@@ -206,20 +206,20 @@ export function DiscardDialog({ state, onAct, onPolicy }: { state: MissionState;
         {p && (
           <>
             <DialogTitle className="text-xl font-bold">{p.name}: হাতে {bn(p.hand.length)}টি কার্ড — সর্বোচ্চ {bn(RULES.handLimit)}</DialogTitle>
-            <DialogDescription className="text-sm leading-6 text-gori-ink-soft">একটি কার্ড ফেলুন (বা নীতি-কার্ড খেলুন)। যে স্তম্ভের সংস্কার হয়ে গেছে, তার কার্ড সাধারণত সবচেয়ে কম কাজে লাগে।</DialogDescription>
+            <DialogDescription className="text-sm leading-6 text-white/80">একটি কার্ড ফেলুন (বা নীতি-কার্ড খেলুন)। যে স্তম্ভের সংস্কার হয়ে গেছে, তার কার্ড সাধারণত সবচেয়ে কম কাজে লাগে।</DialogDescription>
             <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4">
               {p.hand.map((c, i) => (
                 <li key={i} className="flex flex-col gap-1">
-                  <div className="relative h-28 overflow-hidden rounded-xl bg-white p-2.5 pl-3.5">
+                  <div className="relative h-28 overflow-hidden rounded-xl bg-black ring-1 ring-white/12 p-2.5 pl-3.5">
                     <span className={cn("absolute inset-y-0 left-0 w-1.5", c.kind !== "node" && "bg-signal-orange")} style={c.kind === "node" ? { background: PILLAR_COLOR[pillarOf(c.n)] } : undefined} aria-hidden />
                     <CardFace card={c} small />
                   </div>
                   <div className="flex gap-1">
-                    <button type="button" onClick={() => onAct({ type: "discard", index: i })} className="h-9 flex-1 rounded-lg bg-gori-ink/10 text-xs font-bold hover:bg-gori-ink/15">
+                    <button type="button" onClick={() => onAct({ type: "discard", index: i })} className="h-9 flex-1 rounded-lg bg-white/10 text-xs font-bold text-white hover:bg-white/15">
                       ফেলুন
                     </button>
                     {c.kind === "policy" && d!.player === state.current && (
-                      <button type="button" onClick={() => onPolicy(c.id)} className="h-9 flex-1 rounded-lg bg-signal-orange text-xs font-bold">
+                      <button type="button" onClick={() => onPolicy(c.id)} className="h-9 flex-1 rounded-lg bg-signal-orange text-xs font-bold text-text-primary">
                         খেলুন
                       </button>
                     )}

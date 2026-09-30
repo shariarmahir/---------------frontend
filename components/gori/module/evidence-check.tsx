@@ -21,7 +21,7 @@ export function Stars({ count, size = "md" }: { count: number; size?: "sm" | "md
     <span className="inline-flex items-center gap-0.5" role="img" aria-label={`৩টির মধ্যে ${count}টি তারা`}>
       {[0, 1, 2].map((i) => (
         <motion.span key={i} initial={reduce ? false : { scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.1 + i * 0.1 }}>
-          <Star className={cn(cls, i < count ? "fill-signal-orange text-signal-orange" : "fill-transparent text-slate-300")} aria-hidden />
+          <Star className={cn(cls, i < count ? "fill-signal-orange text-signal-orange" : "fill-transparent text-white/80")} aria-hidden />
         </motion.span>
       ))}
     </span>
@@ -80,26 +80,26 @@ export function EvidenceCheck({ n: moduleN }: { n: number }) {
   }
 
   return (
-    <section aria-labelledby="check-title" className="rounded-2xl bg-white p-5 text-gori-ink sm:p-7">
+    <section aria-labelledby="check-title" className="rounded-2xl bg-black ring-1 ring-white/12 p-5 text-white sm:p-7">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 id="check-title" className="font-bengali text-xl font-bold">প্রমাণ-পরীক্ষা: আপনি নীতিনির্ধারক</h2>
+        <h2 id="check-title" className="font-bengali text-xl font-bold text-signal-orange">প্রমাণ-পরীক্ষা: আপনি নীতিনির্ধারক</h2>
         {best !== undefined && (
-          <p className="flex items-center gap-2 font-bengali text-sm text-gori-ink-soft">
+          <p className="flex items-center gap-2 font-bengali text-sm text-white/80">
             সেরা {n(best)} <Stars count={starsOf(best)} size="sm" />
           </p>
         )}
       </div>
-      <p className="mt-1 font-bengali text-sm text-gori-ink-soft">{p.brief}</p>
+      <p className="mt-1 font-bengali text-sm text-white/80">{p.brief}</p>
       {p.fact && (
-        <figure className="mt-3 rounded-xl bg-mint-subtle px-4 py-3">
+        <figure className="mt-3 rounded-xl bg-white/10 px-4 py-3">
           <blockquote className="font-bengali text-sm font-medium">{p.fact.text}</blockquote>
-          <figcaption className="mt-1 font-bengali text-xs text-gori-mute">সূত্র: {p.fact.source}</figcaption>
+          <figcaption className="mt-1 font-bengali text-xs text-white/65">সূত্র: {p.fact.source}</figcaption>
         </figure>
       )}
 
       {!result ? (
         <form onSubmit={submit} noValidate className="mt-5">
-          <ol className="divide-y divide-slate-100 rounded-xl border border-slate-200">
+          <ol className="divide-y divide-white/12 rounded-xl border border-white/12">
             {p.decisions.map((d, i) => {
               const id = `q-${moduleN}-${i}`;
               const v = choices[i];
@@ -107,7 +107,7 @@ export function EvidenceCheck({ n: moduleN }: { n: number }) {
               return (
                 <li key={i} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
                   <label htmlFor={id} className="font-bengali text-[15px] leading-6">
-                    <span className="mr-2 font-bold text-gori-mute">{n(i + 1)}.</span>
+                    <span className="mr-2 font-bold text-white/65">{n(i + 1)}.</span>
                     {d.q}
                   </label>
                   <select
@@ -117,7 +117,7 @@ export function EvidenceCheck({ n: moduleN }: { n: number }) {
                     onChange={(e) => setChoices(choices.map((c, j) => (j === i ? (e.target.value as Choice) : c)))}
                     className={cn(
                       "h-11 w-full shrink-0 rounded-xl border px-3 font-bengali text-[15px] font-semibold sm:w-36",
-                      v === "yes" ? "border-bd-green bg-bd-green-light text-bd-green-dark" : v === "no" ? "border-slate-400 bg-slate-100" : invalid ? "border-national-crimson" : "border-slate-300 text-gori-mute",
+                      v === "yes" ? "border-bd-green bg-white/10 text-signal-orange" : v === "no" ? "border-white/12 bg-white/10" : invalid ? "border-national-crimson" : "border-white/12 text-white/65",
                     )}
                   >
                     <option value="" disabled>বাছাই করুন</option>
@@ -128,16 +128,16 @@ export function EvidenceCheck({ n: moduleN }: { n: number }) {
               );
             })}
           </ol>
-          {error && choices.includes("") && <p role="alert" className="mt-3 font-bengali text-sm font-semibold text-national-crimson">চারটি প্রস্তাবেই “হ্যাঁ” বা “না” বেছে নিন।</p>}
+          {error && choices.includes("") && <p role="alert" className="mt-3 font-bengali text-sm font-semibold text-crimson-bright">চারটি প্রস্তাবেই “হ্যাঁ” বা “না” বেছে নিন।</p>}
           <label htmlFor={`idea-${moduleN}`} className="mt-4 block font-bengali text-sm font-semibold">আপনার নিজের সমাধান-ভাবনা (ঐচ্ছিক, এই ব্রাউজারেই থাকে)</label>
-          <textarea id={`idea-${moduleN}`} value={idea} onChange={(e) => setIdea(e.target.value)} maxLength={600} rows={2} className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 font-bengali text-sm" />
-          <button type="submit" className="mt-4 inline-flex h-12 items-center gap-2 rounded-xl bg-signal-orange px-6 font-bengali font-bold">
+          <textarea id={`idea-${moduleN}`} value={idea} onChange={(e) => setIdea(e.target.value)} maxLength={600} rows={2} className="mt-1 w-full rounded-xl border border-white/12 px-3 py-2 font-bengali text-sm" />
+          <button type="submit" className="mt-4 inline-flex h-12 items-center gap-2 rounded-xl bg-signal-orange px-6 font-bengali font-bold text-text-primary">
             সিদ্ধান্ত জমা দিন <ArrowRight className="size-5" aria-hidden />
           </button>
         </form>
       ) : (
         <div className="mt-5 space-y-5">
-          <div className="flex flex-wrap items-center gap-4 rounded-2xl bg-gori-deep px-5 py-4 text-white">
+          <div className="flex flex-wrap items-center gap-4 rounded-2xl bg-black px-5 py-4 text-white">
             <Stars count={starsOf(result.score)} size="lg" />
             <p className="font-bengali">
               <strong className="block text-lg">{result.score >= 75 ? "মডিউল পুনর্গঠিত" : "প্রমাণ অন্য পথ দেখাচ্ছে"}</strong>
@@ -148,14 +148,14 @@ export function EvidenceCheck({ n: moduleN }: { n: number }) {
             {p.decisions.map((d, i) => {
               const ok = result.answers[i] === d.answer;
               return (
-                <li key={i} className={cn("flex gap-3 rounded-xl p-3.5 font-bengali", ok ? "bg-bd-green-light/70" : "bg-orange-50")}>
+                <li key={i} className={cn("flex gap-3 rounded-xl p-3.5 font-bengali", ok ? "bg-white/10" : "bg-bdorange-600")}>
                   <span className={cn("mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full text-white", ok ? "bg-bd-green" : "bg-bdorange-600")}>
                     {ok ? <Check className="size-4" aria-label="ঠিক" /> : <X className="size-4" aria-label="ভুল" />}
                   </span>
                   <div>
                     <p className="text-[15px] font-semibold">{d.q}</p>
-                    <p className="text-xs text-gori-mute">আপনি: {result.answers[i] === "yes" ? "হ্যাঁ" : "না"} · প্রমাণ অনুযায়ী: {d.answer === "yes" ? "হ্যাঁ" : "না"}</p>
-                    <p className="mt-1 text-sm text-gori-ink-soft">{d.why}</p>
+                    <p className="text-xs text-white/65">আপনি: {result.answers[i] === "yes" ? "হ্যাঁ" : "না"} · প্রমাণ অনুযায়ী: {d.answer === "yes" ? "হ্যাঁ" : "না"}</p>
+                    <p className="mt-1 text-sm text-white/80">{d.why}</p>
                   </div>
                 </li>
               );
@@ -163,25 +163,25 @@ export function EvidenceCheck({ n: moduleN }: { n: number }) {
           </ol>
           {result.deltas.length > 0 && (
             <div>
-              <h3 className="flex items-center gap-2 font-bengali text-base font-bold"><TrendingUp className="size-5 text-bd-green" aria-hidden /> জাতীয় খেলার সূচক যেখানে বদলাল</h3>
+              <h3 className="flex items-center gap-2 font-bengali text-base font-bold"><TrendingUp className="size-5 text-signal-orange" aria-hidden /> জাতীয় খেলার সূচক যেখানে বদলাল</h3>
               <ul className="mt-2 flex flex-wrap gap-2">
                 {result.deltas.map((d) => (
                   <li key={d.id} className="rounded-full border border-bd-green/25 px-3 py-1.5 font-bengali text-sm">
-                    {d.bn} {n(d.from)} → <strong className="text-bd-green">{n(d.to)}</strong>
+                    {d.bn} {n(d.from)} → <strong className="text-signal-orange">{n(d.to)}</strong>
                   </li>
                 ))}
               </ul>
             </div>
           )}
-          <div className="rounded-2xl bg-gori-cream p-4">
+          <div className="rounded-2xl bg-text-primary ring-1 ring-white/12 p-4">
             <h3 className="mb-2 font-bengali text-sm font-bold">পর্যালোচকের মতামত</h3>
             <AgentAnswerView answer={agent.answer} status={agent.status} />
           </div>
           <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={() => { setResult(null); setChoices(p.decisions.map(() => "")); setError(false); }} className="inline-flex h-11 items-center gap-2 rounded-xl border border-bd-green/40 px-4 font-bengali text-sm font-semibold text-bd-green">
+            <button type="button" onClick={() => { setResult(null); setChoices(p.decisions.map(() => "")); setError(false); }} className="inline-flex h-11 items-center gap-2 rounded-xl border border-bd-green/40 px-4 font-bengali text-sm font-semibold text-signal-orange">
               <RotateCcw className="size-4" aria-hidden /> আবার খেলুন
             </button>
-            <button type="button" onClick={share} className="inline-flex h-11 items-center gap-2 rounded-xl px-4 font-bengali text-sm font-semibold text-gori-ink-soft hover:bg-slate-100">
+            <button type="button" onClick={share} className="inline-flex h-11 items-center gap-2 rounded-xl px-4 font-bengali text-sm font-semibold text-white/80 hover:bg-white/10">
               <Share2 className="size-4" aria-hidden /> শেয়ার
             </button>
           </div>

@@ -33,7 +33,7 @@ export function GoriNav() {
   const xp = totalXp(progress);
 
   return (
-    <nav aria-label="খেলার মেনু" className="border-b border-white/10 bg-gori-deep">
+    <nav aria-label="খেলার মেনু" className="border-b border-white/10 bg-black">
       {/* `relative`: the lock labels are `sr-only` (absolutely positioned); without a
           positioned scroller they escape its clipping and widen phone layouts. */}
       <ul className="no-scrollbar relative mx-auto flex max-w-340 gap-1 overflow-x-auto px-3 py-2 sm:px-6 lg:px-8">
@@ -47,8 +47,8 @@ export function GoriNav() {
                 aria-current={on ? "page" : undefined}
                 title={locked ? `${t("unlockAt")} ${n(UNLOCKS[it.feature!].level)}` : undefined}
                 className={cn(
-                  "inline-flex min-h-10 items-center gap-2 rounded-lg px-3 font-bengali text-sm font-semibold transition-colors",
-                  on ? "bg-gori-cream text-gori-ink" : "text-emerald-50/85 hover:bg-white/10 hover:text-white",
+                  "inline-flex min-h-10 items-center gap-2 rounded-full px-4 font-bengali text-sm font-semibold [-webkit-tap-highlight-color:transparent] touch-manipulation transition-[background-color,color,scale] duration-200 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none active:scale-95",
+                  on ? "bg-signal-orange text-text-primary" : "text-white/85 hover:bg-white/10 hover:text-white",
                 )}
               >
                 <it.icon className="size-4" aria-hidden />
@@ -63,7 +63,7 @@ export function GoriNav() {
             </li>
           );
         })}
-        <li className="ml-auto hidden shrink-0 items-center pl-4 font-bengali text-xs text-emerald-100/80 md:flex">
+        <li className="ml-auto hidden shrink-0 items-center pl-4 font-bengali text-xs text-white/80 md:flex">
           {t("level")} {n(levelOf(xp).number)} · {levelOf(xp).bn} · {n(xp)} XP
         </li>
       </ul>
@@ -79,20 +79,20 @@ export function LockedNotice({ feature }: { feature: Feature }) {
   const xp = totalXp(progress);
   const u = UNLOCKS[feature];
   return (
-    <div className="mx-auto max-w-xl rounded-2xl bg-gori-cream p-8 text-center text-gori-ink">
-      <Lock className="mx-auto size-8 text-gori-mute" aria-hidden />
-      <h2 className="mt-3 font-bengali text-2xl font-bold">{u.bn} এখনো বন্ধ</h2>
-      <p className="mt-2 font-bengali text-[15px] leading-7 text-gori-ink-soft">
+    <div className="mx-auto max-w-xl rounded-2xl bg-text-primary ring-1 ring-white/12 p-8 text-center text-white">
+      <Lock className="mx-auto size-8 text-white/65" aria-hidden />
+      <h2 className="mt-3 font-bengali text-2xl font-bold text-signal-orange">{u.bn} এখনো বন্ধ</h2>
+      <p className="mt-2 font-bengali text-[15px] leading-7 text-white/80">
         স্তর {n(u.level)}-এ খুলবে। আপনি এখন স্তর {n(levelOf(xp).number)}-এ ({n(xp)} XP)। অভিযান আর প্রমাণ-পরীক্ষা খেলে XP পান — XP কেবল শেখা আর উন্নতিতে আসে, একই খেলা বারবার চালিয়ে নয়।
       </p>
       <div className="mt-5 flex flex-wrap justify-center gap-2">
-        <Link href={`${BASE}/play`} className="inline-flex h-11 items-center rounded-xl bg-signal-orange px-5 font-bengali font-bold text-gori-ink">
+        <Link href={`${BASE}/play`} className="inline-flex h-11 items-center rounded-xl bg-signal-orange px-5 font-bengali font-bold text-text-primary">
           অভিযান খেলুন
         </Link>
         <button
           type="button"
           onClick={() => setSettings({ openAll: true })}
-          className="inline-flex h-11 items-center rounded-xl border border-gori-ink/20 px-4 font-bengali text-sm font-semibold text-gori-ink-soft hover:bg-white"
+          className="inline-flex h-11 items-center rounded-xl border border-white/20 px-4 font-bengali text-sm font-semibold text-white/80 hover:bg-white/10"
         >
           শিক্ষক/উন্নত মোড: সব খুলে দিন
         </button>

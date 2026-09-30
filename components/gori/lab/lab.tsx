@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { useT } from "../provider";
 import { LockedNotice, useFeature } from "../shell";
 import { useGori, useHydrated, type LabRecord } from "../store";
+import { PixelMark } from "@/components/ui/section-kit";
 
 const sc = scenarioOf("health-access");
 const CONFOUNDERS = [
@@ -88,18 +89,19 @@ export function Lab() {
     toast.success("পরীক্ষা নথিভুক্ত হলো", { description: xp ? `+${n(xp)} XP — নতুন প্রশ্নের জন্য` : "একই প্রশ্ন আগেও পরীক্ষা করেছেন — নতুন XP নেই।" });
   }
 
-  const field = "mt-1 block w-full rounded-xl border border-gori-ink/15 bg-white px-3 font-bengali text-sm";
+  const field = "mt-1 block w-full rounded-xl border border-white/15 bg-black ring-1 ring-white/12 px-3 font-bengali text-sm";
 
   return (
     <div className="mx-auto max-w-340 px-4 py-8 sm:px-6 lg:px-8">
+      <PixelMark tone="dark" className="mb-2" />
       <h1 className="flex items-center gap-3 font-bengali text-3xl font-bold text-signal-orange"><FlaskConical className="size-8" aria-hidden /> বিজ্ঞানাগার</h1>
-      <p className="mt-2 max-w-[70ch] font-bengali text-emerald-50/85">
+      <p className="mt-2 max-w-[70ch] font-bengali text-white/85">
         একটি অনুমান লিখুন, তারপর একই বীজে “কিছু না করা” আর “হস্তক্ষেপ” অনেকবার চালান। প্রতিটি জোড়া একই ঘটনা আর একই আসল প্রভাবের মুখোমুখি হয়, তাই পার্থক্যটা হস্তক্ষেপেরই। ফল খেলার মডেলের ভেতরে — মডেলটি বাস্তবের সাথে যাচাই করা হয়নি।
       </p>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
         <form
-          className="space-y-4 rounded-2xl bg-gori-cream p-5 text-gori-ink"
+          className="space-y-4 rounded-2xl bg-text-primary ring-1 ring-white/12 p-5 text-white"
           onSubmit={(e) => {
             e.preventDefault();
             if (valid) run();
@@ -149,8 +151,8 @@ export function Lab() {
               {CONFOUNDERS.map((c) => (
                 <li key={c.id}>
                   <label className="flex gap-2 font-bengali text-sm">
-                    <input type="checkbox" className="mt-1 accent-[#006747]" checked={confounders.includes(c.id)} onChange={(e) => setConfounders(e.target.checked ? [...confounders, c.id] : confounders.filter((x) => x !== c.id))} />
-                    <span>{c.bn}<span className="block text-xs text-gori-mute">{c.how}</span></span>
+                    <input type="checkbox" className="mt-1 accent-signal-orange" checked={confounders.includes(c.id)} onChange={(e) => setConfounders(e.target.checked ? [...confounders, c.id] : confounders.filter((x) => x !== c.id))} />
+                    <span>{c.bn}<span className="block text-xs text-white/65">{c.how}</span></span>
                   </label>
                 </li>
               ))}
@@ -161,7 +163,7 @@ export function Lab() {
             <legend className="font-bengali text-sm font-semibold">অনুমানের মান</legend>
             <div className="mt-1 grid gap-2 sm:grid-cols-2">
               {sc.assumptions.map((a) => (
-                <label key={a.id} className="font-bengali text-xs text-gori-mute">
+                <label key={a.id} className="font-bengali text-xs text-white/65">
                   {a.bn}
                   <select value={assumptions[a.id] ?? "mid"} onChange={(e) => setAssumptions({ ...assumptions, [a.id]: e.target.value as "low" | "mid" | "high" })} className={cn(field, "h-10")}>
                     {(["low", "mid", "high"] as const).map((k) => <option key={k} value={k}>{a.optionBn[k]}</option>)}
@@ -174,7 +176,7 @@ export function Lab() {
           <div className="grid gap-3 sm:grid-cols-3">
             <label className="font-bengali text-sm font-semibold">
               সময়: {n(horizon)} প্রান্তিক
-              <input type="range" min={4} max={16} value={horizon} onChange={(e) => setHorizon(Number(e.target.value))} className="mt-3 block w-full accent-[#006747]" />
+              <input type="range" min={4} max={16} value={horizon} onChange={(e) => setHorizon(Number(e.target.value))} className="mt-3 block w-full accent-signal-orange" />
             </label>
             <label className="font-bengali text-sm font-semibold">
               প্রমাণের স্তর
@@ -199,19 +201,19 @@ export function Lab() {
             বীজ
             <input value={seed} onChange={(e) => setSeed(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 24))} className={cn(field, "h-11 font-mono")} />
           </label>
-          <button type="submit" disabled={!valid || busy} className="inline-flex h-12 items-center gap-2 rounded-xl bg-signal-orange px-6 font-bengali font-bold disabled:opacity-40">
+          <button type="submit" disabled={!valid || busy} className="inline-flex h-12 items-center gap-2 rounded-xl bg-signal-orange px-6 font-bengali font-bold disabled:opacity-40 text-text-primary">
             {busy ? <Loader2 className="size-5 animate-spin" aria-hidden /> : <FlaskConical className="size-5" aria-hidden />} পরীক্ষা চালান
           </button>
-          {!valid && <p className="font-bengali text-xs text-gori-mute">অনুমান, প্রক্রিয়া আর খণ্ডনের শর্ত অন্তত এক বাক্যে লিখুন।</p>}
+          {!valid && <p className="font-bengali text-xs text-white/65">অনুমান, প্রক্রিয়া আর খণ্ডনের শর্ত অন্তত এক বাক্যে লিখুন।</p>}
         </form>
 
         <div className="space-y-5">
           {result ? (
-            <section className="rounded-2xl bg-gori-cream p-5 text-gori-ink" aria-live="polite">
-              <p className={cn("inline-flex rounded-full px-3 py-1 font-bengali text-sm font-bold", result.r.verdict === "supported" ? "bg-emerald-100 text-emerald-900" : result.r.verdict === "refuted" ? "bg-red-100 text-red-900" : "bg-gori-ink/10 text-gori-ink")}>
+            <section className="rounded-2xl bg-text-primary ring-1 ring-white/12 p-5 text-white" aria-live="polite">
+              <p className={cn("inline-flex rounded-full px-3 py-1 font-bengali text-sm font-bold", result.r.verdict === "supported" ? "bg-bdgreen-500 text-text-primary" : result.r.verdict === "refuted" ? "bg-national-crimson text-white" : "bg-white/10 text-white")}>
                 {VERDICT[result.r.verdict]}
               </p>
-              {!result.r.launchOk && <p className="mt-2 font-bengali text-sm text-national-crimson">হস্তক্ষেপটি শুরুতেই চালু করা যায়নি ({def.requires?.note}) — তাই কোনো পার্থক্য নেই।</p>}
+              {!result.r.launchOk && <p className="mt-2 font-bengali text-sm text-crimson-bright">হস্তক্ষেপটি শুরুতেই চালু করা যায়নি ({def.requires?.note}) — তাই কোনো পার্থক্য নেই।</p>}
               <p className="mt-3 font-bengali text-sm leading-6">
                 {n(trials)}টি জোড়ায় {v.bn}: কিছু না করলে গড় {n(result.r.baseline.mean)}, {def.bn} চালালে গড় {n(result.r.treated.mean)}। পার্থক্যের ১০–৯০% পরিসর {n(result.r.diff.p10)} থেকে {n(result.r.diff.p90)}।
               </p>
@@ -237,38 +239,38 @@ export function Lab() {
               <details className="mt-3 font-bengali text-sm">
                 <summary className="cursor-pointer font-semibold">টেবিল হিসেবে দেখুন</summary>
                 <table className="mt-2 w-full text-xs">
-                  <thead><tr className="text-left text-gori-mute"><th className="py-1">প্রান্তিক</th><th>ভিত্তি (১০–৯০%)</th><th>হস্তক্ষেপ (১০–৯০%)</th></tr></thead>
+                  <thead><tr className="text-left text-white/65"><th className="py-1">প্রান্তিক</th><th>ভিত্তি (১০–৯০%)</th><th>হস্তক্ষেপ (১০–৯০%)</th></tr></thead>
                   <tbody>
                     {result.r.series.map((s) => (
-                      <tr key={s.turn} className="border-t border-slate-200"><td className="py-1">{n(s.turn)}</td><td>{n(s.base)} ({n(s.baseLo)}–{n(s.baseHi)})</td><td>{n(s.treat)} ({n(s.treatLo)}–{n(s.treatHi)})</td></tr>
+                      <tr key={s.turn} className="border-t border-white/12"><td className="py-1">{n(s.turn)}</td><td>{n(s.base)} ({n(s.baseLo)}–{n(s.baseHi)})</td><td>{n(s.treat)} ({n(s.treatLo)}–{n(s.treatHi)})</td></tr>
                     ))}
                   </tbody>
                 </table>
               </details>
-              <p className="mt-3 font-bengali text-xs text-gori-mute">বীজ {seed} · নিয়ম {RULESET_VERSION} · ইঞ্জিন {ENGINE_VERSION} · একই ইনপুটে ফল হুবহু পুনরুৎপাদনযোগ্য। সম্পর্ক (correlation) নয় — মডেলের ভেতরে কারণ দেখানো; বাস্তবে প্রমাণ দরকার।</p>
+              <p className="mt-3 font-bengali text-xs text-white/65">বীজ {seed} · নিয়ম {RULESET_VERSION} · ইঞ্জিন {ENGINE_VERSION} · একই ইনপুটে ফল হুবহু পুনরুৎপাদনযোগ্য। সম্পর্ক (correlation) নয় — মডেলের ভেতরে কারণ দেখানো; বাস্তবে প্রমাণ দরকার।</p>
               <label className="mt-4 block font-bengali text-sm font-semibold">
                 আপনার উপসংহার ও অনিশ্চয়তা
                 <textarea value={conclusion} onChange={(e) => setConclusion(e.target.value)} rows={3} maxLength={600} className={cn(field, "py-2")} />
               </label>
               <div className="mt-3 flex flex-wrap gap-2">
-                <button type="button" onClick={save} className="inline-flex h-11 items-center gap-2 rounded-xl bg-gori-deep px-4 font-bengali text-sm font-bold text-white">নথিভুক্ত করুন</button>
-                <button type="button" disabled title="সার্ভার যুক্ত হলে চালু হবে" className="inline-flex h-11 items-center gap-2 rounded-xl border border-gori-ink/20 px-4 font-bengali text-sm text-gori-mute opacity-60">
+                <button type="button" onClick={save} className="inline-flex h-11 items-center gap-2 rounded-xl bg-black px-4 font-bengali text-sm font-bold text-white">নথিভুক্ত করুন</button>
+                <button type="button" disabled title="সার্ভার যুক্ত হলে চালু হবে" className="inline-flex h-11 items-center gap-2 rounded-xl border border-white/20 px-4 font-bengali text-sm text-white/65 opacity-60">
                   <Send className="size-4" aria-hidden /> সহকর্মী পর্যালোচনায় পাঠান (শীঘ্রই)
                 </button>
               </div>
             </section>
           ) : (
-            <p className="rounded-2xl border border-white/15 p-6 font-bengali text-emerald-100/80">অনুমান লিখে পরীক্ষা চালালে ফল এখানে দেখাবে।</p>
+            <p className="rounded-2xl border border-white/15 p-6 font-bengali text-white/80">অনুমান লিখে পরীক্ষা চালালে ফল এখানে দেখাবে।</p>
           )}
 
           {records.length > 0 && (
             <section className="rounded-2xl border border-white/10 p-5">
-              <h2 className="font-bengali text-lg font-bold">নথিভুক্ত পরীক্ষা</h2>
+              <h2 className="font-bengali text-lg font-bold text-signal-orange">নথিভুক্ত পরীক্ষা</h2>
               <ul className="mt-2 divide-y divide-white/10">
                 {records.slice(0, 10).map((r) => (
                   <li key={r.id} className="py-2.5 font-bengali text-sm">
                     <p className="font-semibold">{r.hypothesis.statement}</p>
-                    <p className="text-xs text-emerald-100/75">
+                    <p className="text-xs text-white/80">
                       {VERDICT[r.result.verdict]} · পার্থক্য {n(r.result.diff.p10)} থেকে {n(r.result.diff.p90)} · বীজ {r.seed} · {n(r.trials)} ট্রায়াল
                     </p>
                   </li>

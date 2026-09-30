@@ -38,12 +38,12 @@ export function Setup({ onStart }: { onStart: (c: SimConfig, strategy: StrategyI
         e.preventDefault();
         if (valid.success) onStart(valid.data, strategy);
       }}
-      className="space-y-6 rounded-2xl bg-gori-cream p-5 text-gori-ink sm:p-7"
+      className="space-y-6 rounded-2xl bg-text-primary ring-1 ring-white/12 p-5 text-white sm:p-7"
       aria-labelledby="setup-title"
     >
       <div>
-        <h2 id="setup-title" className="font-bengali text-2xl font-bold">স্যান্ডবক্স — দৃশ্যকল্প সাজান</h2>
-        <p className="mt-1 font-bengali text-sm text-gori-ink-soft">{sc.bn}। প্রতিটি বাছাই খেলার নিয়ম বদলায়; সংখ্যাগুলো খেলার সহগ।</p>
+        <h2 id="setup-title" className="font-bengali text-2xl font-bold text-signal-orange">স্যান্ডবক্স — দৃশ্যকল্প সাজান</h2>
+        <p className="mt-1 font-bengali text-sm text-white/80">{sc.bn}। প্রতিটি বাছাই খেলার নিয়ম বদলায়; সংখ্যাগুলো খেলার সহগ।</p>
       </div>
 
       <fieldset>
@@ -55,10 +55,10 @@ export function Setup({ onStart }: { onStart: (c: SimConfig, strategy: StrategyI
               type="button"
               disabled={!regions}
               onClick={() => set({ ...col.patch, assumptions: { ...c.assumptions, ...col.patch.assumptions } })}
-              className="rounded-xl border border-gori-ink/15 bg-white px-3 py-2 text-left font-bengali text-sm disabled:opacity-50"
+              className="rounded-xl border border-white/15 bg-black ring-1 ring-white/12 px-3 py-2 text-left font-bengali text-sm disabled:opacity-50"
             >
               <span className="block font-semibold">{col.bn}</span>
-              <span className="block text-xs text-gori-mute">{col.note}</span>
+              <span className="block text-xs text-white/65">{col.note}</span>
             </button>
           ))}
         </div>
@@ -71,11 +71,11 @@ export function Setup({ onStart }: { onStart: (c: SimConfig, strategy: StrategyI
             const ctx = sc.contexts.find((x) => x.id === id)!;
             const locked = !regions && id !== "rural";
             return (
-              <label key={id} className={cn("flex cursor-pointer gap-2 rounded-xl border bg-white px-3 py-2.5 font-bengali", c.context === id ? "border-signal-orange ring-2 ring-signal-orange/30" : "border-gori-ink/15", locked && "cursor-not-allowed opacity-50")}>
-                <input type="radio" name="context" className="mt-1 accent-[#006747]" checked={c.context === id} disabled={locked} onChange={() => set({ context: id })} />
+              <label key={id} className={cn("flex cursor-pointer gap-2 rounded-xl border bg-black ring-1 ring-white/12 px-3 py-2.5 font-bengali", c.context === id ? "border-signal-orange ring-2 ring-signal-orange/30" : "border-white/15", locked && "cursor-not-allowed opacity-50")}>
+                <input type="radio" name="context" className="mt-1 accent-signal-orange" checked={c.context === id} disabled={locked} onChange={() => set({ context: id })} />
                 <span>
                   <span className="flex items-center gap-1 text-sm font-semibold">{ctx.bn} {locked && <Lock className="size-3.5" aria-hidden />}</span>
-                  <span className="block text-xs text-gori-mute">{ctx.description}</span>
+                  <span className="block text-xs text-white/65">{ctx.description}</span>
                 </span>
               </label>
             );
@@ -94,7 +94,7 @@ export function Setup({ onStart }: { onStart: (c: SimConfig, strategy: StrategyI
         />
         <label className="font-bengali text-sm font-semibold">
           সময়সীমা: {n(c.horizon)} টার্ন
-          <input type="range" min={4} max={c.turnMonths === 12 ? 12 : 24} value={c.horizon} onChange={(e) => set({ horizon: Number(e.target.value) })} className="mt-3 block w-full accent-[#006747]" />
+          <input type="range" min={4} max={c.turnMonths === 12 ? 12 : 24} value={c.horizon} onChange={(e) => set({ horizon: Number(e.target.value) })} className="mt-3 block w-full accent-signal-orange" />
         </label>
         <Select label="কাঠিন্য" value={c.difficulty} onChange={(v) => set({ difficulty: v as SimConfig["difficulty"] })} options={[["easy", "সহজ"], ["normal", "স্বাভাবিক"], ["hard", "কঠিন"]]} />
         <Select label="ঘটনার তীব্রতা" value={c.events} onChange={(v) => set({ events: v as SimConfig["events"] })} options={[["off", "বন্ধ"], ["low", "কম"], ["normal", "স্বাভাবিক"], ["high", "বেশি"]]} />
@@ -134,18 +134,18 @@ export function Setup({ onStart }: { onStart: (c: SimConfig, strategy: StrategyI
               id="seed"
               value={c.seed}
               onChange={(e) => set({ seed: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 24) })}
-              className="h-11 min-w-0 flex-1 rounded-xl border border-gori-ink/15 bg-white px-3 font-mono text-sm"
+              className="h-11 min-w-0 flex-1 rounded-xl border border-white/15 bg-black ring-1 ring-white/12 px-3 font-mono text-sm"
               aria-invalid={!valid.success || undefined}
             />
-            <button type="button" onClick={() => set({ seed: randomSeed() })} className="inline-flex h-11 items-center gap-1.5 rounded-xl border border-gori-ink/15 bg-white px-3 font-bengali text-sm" aria-label="নতুন বীজ">
+            <button type="button" onClick={() => set({ seed: randomSeed() })} className="inline-flex h-11 items-center gap-1.5 rounded-xl border border-white/15 bg-black ring-1 ring-white/12 px-3 font-bengali text-sm" aria-label="নতুন বীজ">
               <Dices className="size-4" aria-hidden /> এলোমেলো
             </button>
           </div>
-          {!valid.success && <p className="mt-1 font-bengali text-xs text-national-crimson">বীজে ৩–২৪টি ছোট হাতের ইংরেজি অক্ষর, সংখ্যা বা “-” দিন।</p>}
+          {!valid.success && <p className="mt-1 font-bengali text-xs text-crimson-bright">বীজে ৩–২৪টি ছোট হাতের ইংরেজি অক্ষর, সংখ্যা বা “-” দিন।</p>}
         </div>
       </div>
 
-      <button type="submit" disabled={!valid.success} className="inline-flex h-12 items-center gap-2 rounded-xl bg-signal-orange px-6 font-bengali text-base font-bold disabled:opacity-40">
+      <button type="submit" disabled={!valid.success} className="inline-flex h-12 items-center gap-2 rounded-xl bg-signal-orange px-6 font-bengali text-base font-bold disabled:opacity-40 text-text-primary">
         <Play className="size-5" aria-hidden /> খেলা শুরু
       </button>
     </form>
@@ -157,10 +157,10 @@ function Select({ label, value, onChange, options, hint }: { label: string; valu
   return (
     <div>
       <label htmlFor={id} className="font-bengali text-sm font-semibold">{label}</label>
-      <select id={id} value={value} onChange={(e) => onChange(e.target.value)} className="mt-1 block h-11 w-full rounded-xl border border-gori-ink/15 bg-white px-3 font-bengali text-sm">
+      <select id={id} value={value} onChange={(e) => onChange(e.target.value)} className="mt-1 block h-11 w-full rounded-xl border border-white/15 bg-black ring-1 ring-white/12 px-3 font-bengali text-sm">
         {options.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
       </select>
-      {hint && <p className="mt-1 font-bengali text-xs leading-5 text-gori-mute">{hint}</p>}
+      {hint && <p className="mt-1 font-bengali text-xs leading-5 text-white/65">{hint}</p>}
     </div>
   );
 }

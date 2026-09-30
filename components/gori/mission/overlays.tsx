@@ -39,11 +39,11 @@ export function CrisisReveal({ batch, reduce, pace, onDone }: { batch: LoggedEve
       <motion.div
         initial={reduce ? false : { scale: 0.9, y: 20 }}
         animate={{ scale: 1, y: 0 }}
-        className={cn("w-full max-w-md rounded-2xl p-5 font-bengali shadow-2xl", escalation ? "bg-national-crimson text-white" : "bg-gori-cream text-gori-ink")}
+        className={cn("w-full max-w-md rounded-2xl p-5 font-bengali shadow-2xl", escalation ? "bg-national-crimson text-white" : "bg-text-primary ring-1 ring-white/12 text-white")}
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="crisis-title" className="flex items-center gap-2 text-xl font-extrabold">
-          {escalation ? <Zap className="size-6" aria-hidden /> : <Flame className="size-6 text-national-crimson" aria-hidden />}
+          {escalation ? <Zap className="size-6" aria-hidden /> : <Flame className="size-6 text-crimson-bright" aria-hidden />}
           {escalation ? "মহাসংকট!" : "সংকট-পর্ব"}
           {collapses > 0 && <span className="ml-auto rounded-full bg-black/80 px-2.5 py-0.5 text-xs text-white">{bn(collapses)}টি ভাঙন</span>}
         </h2>
@@ -61,7 +61,7 @@ export function CrisisReveal({ batch, reduce, pace, onDone }: { batch: LoggedEve
                   <PillarGlyph id={pillarOf(e.n)} />
                   <strong>{codeOf(e.n)}</strong>
                   <span className="truncate">{titleOf(e.n)}</span>
-                  <span className={cn("ml-auto shrink-0 font-bold", e.blocked ? "text-emerald-700" : escalation ? "" : "text-national-crimson")}>
+                  <span className={cn("ml-auto shrink-0 font-bold", e.blocked ? "text-bdgreen-500" : escalation ? "" : "text-crimson-bright")}>
                     {e.blocked === "guardian" ? "ঠেকানো গেছে" : e.blocked === "restored" ? "সুস্থ — বসেনি" : `${e.source === "cascade" ? "ঢেউ " : ""}+${bn(e.amount)}`}
                   </span>
                 </>
@@ -74,7 +74,7 @@ export function CrisisReveal({ batch, reduce, pace, onDone }: { batch: LoggedEve
             </motion.li>
           ))}
         </ol>
-        <button type="button" onClick={onDone} className={cn("mt-4 h-10 w-full rounded-xl font-bold", escalation ? "bg-white text-national-crimson" : "bg-gori-ink text-white")} autoFocus>
+        <button type="button" onClick={onDone} className={cn("mt-4 h-10 w-full rounded-xl font-bold", escalation ? "bg-black ring-1 ring-white/12 text-national-crimson" : "bg-signal-orange text-text-primary")} autoFocus>
           চালিয়ে যান
         </button>
       </motion.div>
@@ -87,17 +87,17 @@ export function Handoff({ state, player, onReady }: { state: MissionState; playe
   const p = state.players[player];
   const Icon = ROLE_ICON[p.role];
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-30 flex items-center justify-center bg-gori-deep/85 p-4 backdrop-blur-sm" role="dialog" aria-labelledby="handoff-title">
-      <motion.div initial={{ scale: 0.92 }} animate={{ scale: 1 }} className="w-full max-w-sm rounded-3xl bg-gori-cream p-6 text-center font-bengali text-gori-ink">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-30 flex items-center justify-center bg-black p-4 backdrop-blur-sm" role="dialog" aria-labelledby="handoff-title">
+      <motion.div initial={{ scale: 0.92 }} animate={{ scale: 1 }} className="w-full max-w-sm rounded-3xl bg-text-primary ring-1 ring-white/12 p-6 text-center font-bengali text-white">
         <span className="mx-auto flex size-14 items-center justify-center rounded-full text-2xl font-extrabold" style={{ background: PLAYER_COLOR[player] }}>
           {bn(player + 1)}
         </span>
         <h2 id="handoff-title" className="mt-3 text-2xl font-extrabold">{p.name}-এর পালা</h2>
-        <p className="mt-1 flex items-center justify-center gap-1.5 text-sm text-gori-ink-soft">
+        <p className="mt-1 flex items-center justify-center gap-1.5 text-sm text-white/80">
           <Icon className="size-4" aria-hidden /> {roleDef(p.role).bn} · {codeOf(p.at)}
         </p>
-        <p className="mt-2 text-sm text-gori-ink-soft">ডিভাইসটি {p.name}-কে দিন।</p>
-        <button type="button" onClick={onReady} autoFocus className="mt-5 h-12 w-full rounded-2xl bg-signal-orange text-lg font-extrabold">
+        <p className="mt-2 text-sm text-white/80">ডিভাইসটি {p.name}-কে দিন।</p>
+        <button type="button" onClick={onReady} autoFocus className="mt-5 h-12 w-full rounded-2xl bg-signal-orange text-lg font-extrabold text-text-primary">
           আমি প্রস্তুত
         </button>
       </motion.div>
@@ -110,8 +110,8 @@ export function EndScreen({ state, credited, onAgain, onSameSeed, onNewTeam }: {
   const score = scoreMission(state);
   const ranked = state.players.map((p, i) => ({ p, i, c: contribution(p.stats) })).sort((a, b) => b.c - a.c);
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 z-40 overflow-y-auto bg-gori-deep/90 p-4 backdrop-blur-sm" role="dialog" aria-labelledby="end-title">
-      <motion.div initial={{ y: 30, scale: 0.96 }} animate={{ y: 0, scale: 1 }} transition={{ type: "spring", stiffness: 200, damping: 22 }} className="mx-auto my-6 max-w-2xl rounded-3xl bg-gori-cream p-6 font-bengali text-gori-ink sm:p-8">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 z-40 overflow-y-auto bg-black p-4 backdrop-blur-sm" role="dialog" aria-labelledby="end-title">
+      <motion.div initial={{ y: 30, scale: 0.96 }} animate={{ y: 0, scale: 1 }} transition={{ type: "spring", stiffness: 200, damping: 22 }} className="mx-auto my-6 max-w-2xl rounded-3xl bg-text-primary ring-1 ring-white/12 p-6 font-bengali text-white sm:p-8">
         <p className={cn("inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-bold", win ? "bg-bd-green text-white" : "bg-national-crimson text-white")}>
           {win ? <Trophy className="size-4" aria-hidden /> : <Flame className="size-4" aria-hidden />}
           {DIFFICULTIES[state.config.difficulty].bn} · বীজ {state.config.seed}
@@ -119,7 +119,7 @@ export function EndScreen({ state, credited, onAgain, onSameSeed, onNewTeam }: {
         <h2 id="end-title" className="mt-3 text-3xl font-extrabold sm:text-4xl">
           {win ? "মিশন সফল — চারটি জাতীয় সংস্কার চালু!" : state.outcome?.reason === "trust" ? "জনআস্থা ফুরিয়ে গেল" : "সময় ফুরিয়ে গেল"}
         </h2>
-        <p className="mt-2 text-[15px] leading-7 text-gori-ink-soft">
+        <p className="mt-2 text-[15px] leading-7 text-white/80">
           {win
             ? `${bn(state.turn)} পালায়, ${bn(state.collapses)}টি ভাঙন সয়ে। মূল কারণগুলো শান্ত রাখা আর কার্ড এক হাতে জমানোই ছিল চাবিকাঠি।`
             : state.outcome?.reason === "trust"
@@ -128,25 +128,25 @@ export function EndScreen({ state, credited, onAgain, onSameSeed, onNewTeam }: {
         </p>
 
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
-          <section aria-labelledby="score-title" className="rounded-2xl bg-white p-4">
+          <section aria-labelledby="score-title" className="rounded-2xl bg-black ring-1 ring-white/12 p-4">
             <h3 id="score-title" className="flex items-baseline justify-between font-bold">
-              স্কোর <span className="text-3xl font-extrabold text-bd-green">{bn(score.total)}</span>
+              স্কোর <span className="text-3xl font-extrabold text-signal-orange">{bn(score.total)}</span>
             </h3>
             <ul className="mt-2 space-y-1 text-sm">
               {score.parts.map((p) => (
                 <li key={p.id} className="flex justify-between gap-2">
-                  <span className="text-gori-ink-soft">{p.bn}</span>
+                  <span className="text-white/80">{p.bn}</span>
                   <span className="font-semibold">{bn(p.points)}</span>
                 </li>
               ))}
             </ul>
             {credited && (
-              <p className="mt-3 rounded-lg bg-bd-green/10 px-2.5 py-1.5 text-xs text-bd-green">
+              <p className="mt-3 rounded-lg bg-bd-green/10 px-2.5 py-1.5 text-xs text-signal-orange">
                 {credited.xp > 0 ? `+${bn(credited.xp)} XP` : "XP আগের সেরা স্কোরেই গোনা আছে"} · {credited.verified ? "খেলাটি পুনরায় চালিয়ে যাচাই করা হয়েছে" : "যাচাই বাকি"}
               </p>
             )}
           </section>
-          <section aria-labelledby="mvp-title" className="rounded-2xl bg-white p-4">
+          <section aria-labelledby="mvp-title" className="rounded-2xl bg-black ring-1 ring-white/12 p-4">
             <h3 id="mvp-title" className="flex items-center gap-1.5 font-bold">
               <UsersRound className="size-4" aria-hidden /> কে কী করলেন
             </h3>
@@ -160,7 +160,7 @@ export function EndScreen({ state, credited, onAgain, onSameSeed, onNewTeam }: {
                     <strong className="flex items-center gap-1">
                       {p.name} {k === 0 && c > 0 && <Crown className="size-4 text-signal-orange" aria-label="সবচেয়ে বেশি অবদান" />}
                     </strong>
-                    <span className="block text-xs text-gori-ink-soft">
+                    <span className="block text-xs text-white/80">
                       চাপ কমালেন {bn(p.stats.treated)} · সংস্কার {bn(p.stats.reforms)} · কেন্দ্র {bn(p.stats.hubs)} · কার্ড দিলেন {bn(p.stats.shared)} · ঠেকালেন {bn(p.stats.prevented)}
                     </span>
                   </span>
@@ -172,17 +172,17 @@ export function EndScreen({ state, credited, onAgain, onSameSeed, onNewTeam }: {
         </div>
 
         <div className="mt-6 flex flex-wrap gap-2">
-          <button type="button" onClick={onAgain} className="inline-flex h-12 items-center gap-2 rounded-2xl bg-signal-orange px-5 font-extrabold">
+          <button type="button" onClick={onAgain} className="inline-flex h-12 items-center gap-2 rounded-2xl bg-signal-orange px-5 font-extrabold text-text-primary">
             <Shuffle className="size-5" aria-hidden /> একই দল, নতুন ডেক
           </button>
-          <button type="button" onClick={onSameSeed} className="inline-flex h-12 items-center gap-2 rounded-2xl border-2 border-bd-green px-4 font-bold text-bd-green hover:bg-white">
+          <button type="button" onClick={onSameSeed} className="inline-flex h-12 items-center gap-2 rounded-2xl border-2 border-bd-green px-4 font-bold text-bd-green hover:bg-white/10">
             <RotateCcw className="size-5" aria-hidden /> একই বীজে আবার
           </button>
-          <button type="button" onClick={onNewTeam} className="inline-flex h-12 items-center gap-2 rounded-2xl px-4 font-semibold text-gori-ink-soft hover:bg-white">
+          <button type="button" onClick={onNewTeam} className="inline-flex h-12 items-center gap-2 rounded-2xl px-4 font-semibold text-white/80 hover:bg-white/10">
             নতুন দল সাজান
           </button>
         </div>
-        <p className="mt-4 text-xs text-gori-mute">খেলার মডেল — কোনো ফল বাস্তব জাতীয় উন্নয়নের পূর্বাভাস বা দাবি নয়।</p>
+        <p className="mt-4 text-xs text-white/65">খেলার মডেল — কোনো ফল বাস্তব জাতীয় উন্নয়নের পূর্বাভাস বা দাবি নয়।</p>
       </motion.div>
     </motion.div>
   );

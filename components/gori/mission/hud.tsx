@@ -32,9 +32,9 @@ export function StatusBar({ state }: { state: MissionState }) {
   const [pile, setPile] = useState(false);
   return (
     <div className="border-b border-white/10 bg-black/20">
-      <div className="no-scrollbar relative mx-auto flex max-w-400 items-center gap-x-6 gap-y-2 overflow-x-auto px-4 py-2.5 font-bengali text-sm text-emerald-50/90 sm:px-6">
+      <div className="no-scrollbar relative mx-auto flex max-w-400 items-center gap-x-6 gap-y-2 overflow-x-auto px-4 py-2.5 font-bengali text-sm text-white/85 sm:px-6">
         <div className="flex shrink-0 items-center gap-2" title="প্রতিটি ভাঙনে এক ঘর কমে; শূন্য হলে মিশন ব্যর্থ">
-          <ShieldAlert className="size-4 text-national-crimson" aria-hidden />
+          <ShieldAlert className="size-4 text-crimson-bright" aria-hidden />
           <span className="font-semibold">জনআস্থা</span>
           <span className="flex gap-0.5" role="meter" aria-valuemin={0} aria-valuemax={trust} aria-valuenow={Math.max(0, trust - state.collapses)} aria-label="জনআস্থা">
             {Array.from({ length: trust }, (_, i) => (
@@ -52,7 +52,7 @@ export function StatusBar({ state }: { state: MissionState }) {
           <span className="font-semibold">সংকট-হার</span>
           <span className="flex items-center gap-1">
             {RULES.rate.map((r, i) => (
-              <span key={i} className={cn("flex size-5 items-center justify-center rounded text-[11px] font-bold", i === Math.min(state.escalations, RULES.rate.length - 1) ? "bg-signal-orange text-gori-ink" : i < state.escalations ? "bg-white/10 text-white/40" : "bg-white/5 text-white/60")}>
+              <span key={i} className={cn("flex size-5 items-center justify-center rounded text-[11px] font-bold", i === Math.min(state.escalations, RULES.rate.length - 1) ? "bg-signal-orange text-text-primary" : i < state.escalations ? "bg-white/10 text-white/40" : "bg-white/5 text-white/60")}>
                 {bn(r)}
               </span>
             ))}
@@ -60,7 +60,7 @@ export function StatusBar({ state }: { state: MissionState }) {
           <span className="sr-only">এখন প্রতি পালায় {bn(crisisRate(state))}টি</span>
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          <Zap className="size-4 text-amber-300" aria-hidden />
+          <Zap className="size-4 text-signal-orange" aria-hidden />
           <span className="font-semibold">মহাসংকট</span>
           <span>
             {bn(state.escalations)}/{bn(DIFFICULTIES[state.config.difficulty].escalations)}
@@ -75,7 +75,7 @@ export function StatusBar({ state }: { state: MissionState }) {
           {PILLARS.map((p) => {
             const st = state.reforms[p.id];
             return (
-              <li key={p.id} className={cn("flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold", st === "open" ? "border-white/15 text-emerald-50/80" : "border-transparent text-gori-ink")} style={st !== "open" ? { background: PILLAR_COLOR[p.id] } : undefined}>
+              <li key={p.id} className={cn("flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold", st === "open" ? "border-white/15 text-white/85" : "border-transparent text-white")} style={st !== "open" ? { background: PILLAR_COLOR[p.id] } : undefined}>
                 <PillarGlyph id={p.id} className={st !== "open" ? "opacity-0" : ""} />
                 {p.bn}
                 {st === "reformed" && <CheckCircle2 className="size-3.5" aria-label="সংস্কার চালু" />}
@@ -89,15 +89,15 @@ export function StatusBar({ state }: { state: MissionState }) {
             <Layers className="size-4" aria-hidden /> ফিরে আসতে পারে: {bn(state.crisisDiscard.length)}
           </button>
           {pile && (
-            <div className="absolute right-0 z-30 mt-1 w-72 rounded-xl bg-gori-cream p-3 text-gori-ink shadow-2xl">
-              <p className="text-xs leading-5 text-gori-ink-soft">বাতিল সংকট-স্তূপ। প্রতিটি মহাসংকটে এগুলো ফেঁটে ডেকের উপরে ফেরে — তাই এরাই আগামী পালাগুলোর সবচেয়ে সম্ভাব্য সংকট।</p>
+            <div className="absolute right-0 z-30 mt-1 w-72 rounded-xl bg-text-primary ring-1 ring-white/12 p-3 text-white shadow-2xl">
+              <p className="text-xs leading-5 text-white/80">বাতিল সংকট-স্তূপ। প্রতিটি মহাসংকটে এগুলো ফেঁটে ডেকের উপরে ফেরে — তাই এরাই আগামী পালাগুলোর সবচেয়ে সম্ভাব্য সংকট।</p>
               <ul className="mt-2 max-h-56 space-y-1 overflow-y-auto text-[13px]">
                 {state.crisisDiscard.map((n) => (
                   <li key={n} className="flex items-center gap-2">
                     <PillarGlyph id={pillarOf(n)} />
                     <span className="font-semibold">{codeOf(n)}</span>
                     <span className="truncate">{titleOf(n)}</span>
-                    <span className="ml-auto shrink-0 text-national-crimson">{"■".repeat(state.pressure[n])}</span>
+                    <span className="ml-auto shrink-0 text-crimson-bright">{"■".repeat(state.pressure[n])}</span>
                   </li>
                 ))}
               </ul>
@@ -118,16 +118,16 @@ export function PlayersPanel({ state, actor, onSelect }: { state: MissionState; 
         const Icon = ROLE_ICON[p.role];
         const active = i === actor && !state.outcome;
         return (
-          <li key={i} className={cn("rounded-xl border p-3 transition-colors", active ? "border-signal-orange bg-signal-orange/10" : "border-white/10 bg-gori-panel")} aria-current={active ? "step" : undefined}>
+          <li key={i} className={cn("rounded-xl border p-3 transition-colors", active ? "border-signal-orange bg-signal-orange/10" : "border-white/10 bg-text-primary ring-1 ring-white/12")} aria-current={active ? "step" : undefined}>
             <div className="flex items-center gap-2.5">
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-full font-bengali text-sm font-extrabold text-gori-ink" style={{ background: PLAYER_COLOR[i] }}>
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-full font-bengali text-sm font-extrabold text-white" style={{ background: PLAYER_COLOR[i] }}>
                 {bn(i + 1)}
               </span>
               <div className="min-w-0 flex-1 font-bengali">
                 <p className="truncate text-sm font-bold text-white">
-                  {p.name} {p.bot && <span className="ml-1 rounded bg-white/10 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-100">AI</span>}
+                  {p.name} {p.bot && <span className="ml-1 rounded bg-white/10 px-1.5 py-0.5 text-[10px] font-semibold text-white/80">AI</span>}
                 </p>
-                <p className="flex items-center gap-1 text-xs text-emerald-100/80" title={roleDef(p.role).power}>
+                <p className="flex items-center gap-1 text-xs text-white/80" title={roleDef(p.role).power}>
                   <Icon className="size-3.5" aria-hidden /> {roleDef(p.role).bn}
                 </p>
               </div>
@@ -136,7 +136,7 @@ export function PlayersPanel({ state, actor, onSelect }: { state: MissionState; 
               </button>
             </div>
             {active && state.phase === "actions" && (
-              <p className="mt-2 flex items-center gap-1.5 font-bengali text-xs text-emerald-50/90">
+              <p className="mt-2 flex items-center gap-1.5 font-bengali text-xs text-white/85">
                 অ্যাকশন বাকি
                 {Array.from({ length: RULES.actionsPerTurn }, (_, k) => (
                   <span key={k} className={cn("block size-2.5 rounded-full", k < state.actionsLeft ? "bg-signal-orange" : "bg-white/15")} />
@@ -144,7 +144,7 @@ export function PlayersPanel({ state, actor, onSelect }: { state: MissionState; 
                 <span className="sr-only">{bn(state.actionsLeft)}</span>
               </p>
             )}
-            <div className="mt-2 flex items-center gap-2 font-bengali text-[11px] text-emerald-100/75">
+            <div className="mt-2 flex items-center gap-2 font-bengali text-[11px] text-white/80">
               <span>হাতে {bn(p.hand.length)}/{bn(RULES.handLimit)}</span>
               <span className="flex items-center gap-1.5">
                 {PILLARS.map((pl) => {
@@ -171,20 +171,20 @@ export function CardFace({ card, small }: { card: Card; small?: boolean }) {
   if (card.kind === "policy")
     return (
       <span className="flex h-full flex-col">
-        <span className="font-bengali text-[11px] font-semibold text-amber-900/80">নীতি-কার্ড</span>
+        <span className="font-bengali text-[11px] font-semibold text-signal-orange">নীতি-কার্ড</span>
         <span className={cn("font-bengali leading-tight font-extrabold", small ? "text-sm" : "text-base")}>{policyDef(card.id).bn}</span>
-        {!small && <span className="mt-1 line-clamp-3 font-bengali text-[11px] leading-4 text-gori-ink-soft">{policyDef(card.id).body}</span>}
+        {!small && <span className="mt-1 line-clamp-3 font-bengali text-[11px] leading-4 text-white/80">{policyDef(card.id).body}</span>}
       </span>
     );
   if (card.kind === "escalation") return <span className="font-bengali font-bold">মহাসংকট</span>;
   const pillar = pillarOf(card.n);
   return (
     <span className="flex h-full flex-col">
-      <span className="flex items-center gap-1.5 font-bengali text-[11px] font-semibold text-gori-ink-soft">
+      <span className="flex items-center gap-1.5 font-bengali text-[11px] font-semibold text-white/80">
         <PillarGlyph id={pillar} /> {PILLARS.find((p) => p.id === pillar)!.bn}
       </span>
       <span className={cn("font-extrabold", small ? "text-sm" : "text-lg")}>{codeOf(card.n)}</span>
-      {!small && <span className="line-clamp-2 font-bengali text-xs leading-4 text-gori-ink-soft">{titleOf(card.n)}</span>}
+      {!small && <span className="line-clamp-2 font-bengali text-xs leading-4 text-white/80">{titleOf(card.n)}</span>}
     </span>
   );
 }
@@ -194,7 +194,7 @@ export function Hand({ state, player, onCard, selectedCard }: { state: MissionSt
   return (
     <section aria-label={`${p.name}-এর হাতের কার্ড`} className="min-w-0">
       <h3 className="mb-2 font-bengali text-sm font-bold text-white">
-        {p.name}-এর হাত <span className="font-normal text-emerald-100/75">· {bn(p.hand.length)}/{bn(RULES.handLimit)} · কার্ডে চাপ দিন</span>
+        {p.name}-এর হাত <span className="font-normal text-white/80">· {bn(p.hand.length)}/{bn(RULES.handLimit)} · কার্ডে চাপ দিন</span>
       </h3>
       <ul className="no-scrollbar relative flex gap-2 overflow-x-auto pb-2">
         <AnimatePresence initial={false}>
@@ -213,8 +213,8 @@ export function Hand({ state, player, onCard, selectedCard }: { state: MissionSt
                 onClick={() => onCard(i)}
                 aria-pressed={selectedCard === i}
                 className={cn(
-                  "relative h-32 w-32 overflow-hidden rounded-xl p-2.5 pl-3.5 text-left text-gori-ink shadow-[0_8px_20px_-12px_rgb(0_0_0/0.8)] transition-transform hover:-translate-y-1.5 focus-visible:-translate-y-1.5 focus-visible:outline-2 focus-visible:outline-signal-orange",
-                  c.kind === "policy" ? "bg-amber-100" : "bg-gori-cream",
+                  "relative h-32 w-32 overflow-hidden rounded-xl p-2.5 pl-3.5 text-left text-white shadow-[0_8px_20px_-12px_rgb(0_0_0/0.8)] transition-transform hover:-translate-y-1.5 focus-visible:-translate-y-1.5 focus-visible:outline-2 focus-visible:outline-signal-orange",
+                  c.kind === "policy" ? "bg-signal-orange" : "bg-text-primary ring-1 ring-white/12",
                   selectedCard === i && "-translate-y-2 ring-3 ring-signal-orange",
                 )}
               >
@@ -246,7 +246,7 @@ export function Log({ state }: { state: MissionState }) {
           <li
             key={e.seq}
             className={cn(
-              e.type === "collapse" || e.type === "escalation" ? "font-semibold text-red-300" : e.type === "reform" || e.type === "restored" || e.type === "over" ? "font-semibold text-amber-200" : e.type === "turn" ? "pt-1 text-emerald-200/70" : "text-emerald-50/85",
+              e.type === "collapse" || e.type === "escalation" ? "font-semibold text-crimson-bright" : e.type === "reform" || e.type === "restored" || e.type === "over" ? "font-semibold text-signal-orange" : e.type === "turn" ? "pt-1 text-white/75" : "text-white/85",
             )}
           >
             {text}

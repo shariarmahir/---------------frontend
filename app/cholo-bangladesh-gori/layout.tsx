@@ -7,7 +7,7 @@ export default function GoriLayout({ children }: { children: React.ReactNode }) 
   return (
     <GoriProvider>
       <SiteHeader />
-      <main className="w-full bg-gori-deep pt-header text-white lg:pt-header-lg">
+      <main className="w-full bg-black pt-header text-white lg:pt-header-lg">
         <GoriNav />
         {children}
       </main>

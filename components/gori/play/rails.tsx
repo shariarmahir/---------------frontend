@@ -20,29 +20,29 @@ export function StatusRail({ sc, run, game, budgetAfterDraft, onStakeholders }: 
 
   return (
     <div className="space-y-4">
-      <section className="rounded-2xl bg-gori-panel p-4" aria-label="সেবা সূচক">
-        <p className="font-bengali text-xs text-emerald-100/75">সেবা সূচক · খেলার সূচক, বাস্তব পরিসংখ্যান নয়</p>
+      <section className="rounded-2xl bg-text-primary ring-1 ring-white/12 p-4" aria-label="সেবা সূচক">
+        <p className="font-bengali text-xs text-white/80">সেবা সূচক · খেলার সূচক, বাস্তব পরিসংখ্যান নয়</p>
         <p className="mt-1 flex items-baseline gap-2">
           <span className="font-bengali text-4xl font-extrabold tabular-nums">{n(index)}</span>
           {gain !== 0 && (
-            <span className={cn("font-bengali text-sm font-bold", gain > 0 ? "text-emerald-300" : "text-orange-300")}>
+            <span className={cn("font-bengali text-sm font-bold", gain > 0 ? "text-white/70" : "text-signal-orange")}>
               {gain > 0 ? "▲" : "▼"} {n(Math.abs(Math.round(gain * 10) / 10))} শুরু থেকে
             </span>
           )}
         </p>
         <dl className="mt-3 grid grid-cols-2 gap-2 font-bengali text-sm">
           <div className="rounded-lg bg-white/6 px-2.5 py-2">
-            <dt className="text-[11px] text-emerald-100/70">বাজেট (পরিকল্পনার পর)</dt>
-            <dd className={cn("text-lg font-bold tabular-nums", budgetAfterDraft < 0 && "text-orange-300")}>{n(Math.round(budgetAfterDraft))}</dd>
+            <dt className="text-[11px] text-white/80">বাজেট (পরিকল্পনার পর)</dt>
+            <dd className={cn("text-lg font-bold tabular-nums", budgetAfterDraft < 0 && "text-signal-orange")}>{n(Math.round(budgetAfterDraft))}</dd>
           </div>
           <div className="rounded-lg bg-white/6 px-2.5 py-2">
-            <dt className="text-[11px] text-emerald-100/70">কর্মী-সংকুলান</dt>
+            <dt className="text-[11px] text-white/80">কর্মী-সংকুলান</dt>
             <dd className="text-lg font-bold tabular-nums">{n(Math.round((last?.workforceCoverage ?? 1) * 100))}%</dd>
           </div>
         </dl>
       </section>
 
-      <section className="rounded-2xl bg-gori-panel p-4" aria-labelledby="vars-title">
+      <section className="rounded-2xl bg-text-primary ring-1 ring-white/12 p-4" aria-labelledby="vars-title">
         <h3 id="vars-title" className="font-bengali text-sm font-bold">ইউনিয়নের অবস্থা</h3>
         <ul className="mt-2 space-y-1.5">
           {sc.variables.map((v) => {
@@ -50,9 +50,9 @@ export function StatusRail({ sc, run, game, budgetAfterDraft, onStakeholders }: 
             const better = d === 0 ? null : (v.good === "up") === d > 0;
             return (
               <li key={v.id} className="grid grid-cols-[minmax(0,1fr)_2.5rem_3.2rem] items-center gap-2 font-bengali text-sm">
-                <span className="truncate text-emerald-50/90" title={v.description}>{v.bn}{v.good === "down" ? " ↓ভালো" : ""}</span>
+                <span className="truncate text-white/85" title={v.description}>{v.bn}{v.good === "down" ? " ↓ভালো" : ""}</span>
                 <span className="text-right font-bold tabular-nums">{n(Math.round(vars[v.id]))}</span>
-                <span className={cn("flex items-center justify-end gap-0.5 text-xs font-semibold tabular-nums", better === null ? "text-emerald-100/50" : better ? "text-emerald-300" : "text-orange-300")}>
+                <span className={cn("flex items-center justify-end gap-0.5 text-xs font-semibold tabular-nums", better === null ? "text-white/80" : better ? "text-white/70" : "text-signal-orange")}>
                   {d > 0 ? <ArrowUp className="size-3" aria-hidden /> : d < 0 ? <ArrowDown className="size-3" aria-hidden /> : <Minus className="size-3" aria-hidden />}
                   {d !== 0 && n(Math.abs(d))}
                   <span className="sr-only">{better === null ? "অপরিবর্তিত" : better ? "ভালো দিকে" : "খারাপ দিকে"}</span>
@@ -63,7 +63,7 @@ export function StatusRail({ sc, run, game, budgetAfterDraft, onStakeholders }: 
         </ul>
       </section>
 
-      <section className="rounded-2xl bg-gori-panel p-4" aria-labelledby="st-title">
+      <section className="rounded-2xl bg-text-primary ring-1 ring-white/12 p-4" aria-labelledby="st-title">
         <div className="flex items-baseline justify-between gap-2">
           <h3 id="st-title" className="font-bengali text-sm font-bold">অংশীজনের সমর্থন</h3>
           <button type="button" onClick={onStakeholders} className="-my-2 inline-flex min-h-8 items-center px-1 font-bengali text-xs font-semibold text-signal-orange hover:underline">কে কী চান?</button>
@@ -71,7 +71,7 @@ export function StatusRail({ sc, run, game, budgetAfterDraft, onStakeholders }: 
         <ul className="mt-2 space-y-2">
           {sc.stakeholders.map((s) => (
             <li key={s.id} className="font-bengali text-xs">
-              <span className="flex justify-between text-emerald-50/85">
+              <span className="flex justify-between text-white/85">
                 <span>{s.bn}</span>
                 <span className="tabular-nums">{n(Math.round(support[s.id]))}</span>
               </span>
@@ -81,7 +81,7 @@ export function StatusRail({ sc, run, game, budgetAfterDraft, onStakeholders }: 
             </li>
           ))}
         </ul>
-        {run.config.stakeholders === "simple" && <p className="mt-2 font-bengali text-[11px] text-emerald-100/60">সরল মোড: সমর্থন স্থির।</p>}
+        {run.config.stakeholders === "simple" && <p className="mt-2 font-bengali text-[11px] text-white/80">সরল মোড: সমর্থন স্থির।</p>}
       </section>
     </div>
   );
@@ -149,19 +149,19 @@ export function CommandRail({
   return (
     <div className="space-y-4">
       {guided && (
-        <section className="rounded-2xl bg-gori-panel p-4" aria-labelledby="stages-title">
+        <section className="rounded-2xl bg-text-primary ring-1 ring-white/12 p-4" aria-labelledby="stages-title">
           <h3 id="stages-title" className="font-bengali text-sm font-bold">অভিযানের ধাপ</h3>
           <ol className="mt-2 space-y-1.5">
             {CAMPAIGN_STAGES.map((s, i) => {
               const done = stages.done[s.id];
               const cur = stages.current?.id === s.id;
               return (
-                <li key={s.id} className={cn("flex gap-2 font-bengali text-sm", done ? "text-emerald-200" : cur ? "text-white" : "text-emerald-100/55")}>
+                <li key={s.id} className={cn("flex gap-2 font-bengali text-sm", done ? "text-white/75" : cur ? "text-white" : "text-white/80")}>
                   {done ? <CheckCircle2 className="mt-0.5 size-4 shrink-0" aria-hidden /> : <Circle className={cn("mt-0.5 size-4 shrink-0", cur && "text-signal-orange")} aria-hidden />}
                   <span>
                     {n(i + 1)}. {s.bn}
                     <span className="sr-only">{done ? " — সম্পন্ন" : cur ? " — এখনকার ধাপ" : ""}</span>
-                    {cur && <span className="mt-0.5 block text-xs text-emerald-100/80">{s.hint}</span>}
+                    {cur && <span className="mt-0.5 block text-xs text-white/80">{s.hint}</span>}
                   </span>
                 </li>
               );
@@ -171,7 +171,7 @@ export function CommandRail({
       )}
 
       {!finished && (
-        <section className="rounded-2xl bg-gori-panel p-4" aria-labelledby="draft-title">
+        <section className="rounded-2xl bg-text-primary ring-1 ring-white/12 p-4" aria-labelledby="draft-title">
           <h3 id="draft-title" className="font-bengali text-sm font-bold">এই টার্নের পরিকল্পনা</h3>
           {draft.length ? (
             <ul className="mt-2 space-y-1.5">
@@ -181,7 +181,7 @@ export function CommandRail({
                   <li key={i} className={cn("flex items-start gap-2 rounded-lg px-2.5 py-2 font-bengali text-sm", r?.ok === false ? "bg-orange-900/40" : "bg-white/6")}>
                     <span className="min-w-0 flex-1">
                       {actionLabel(sc, a)}
-                      {r && (r.ok ? r.cost > 0 && <span className="block text-xs text-emerald-100/70">খরচ {n(r.cost)}</span> : <span className="block text-xs text-orange-200">চলবে না: {r.reason}</span>)}
+                      {r && (r.ok ? r.cost > 0 && <span className="block text-xs text-white/80">খরচ {n(r.cost)}</span> : <span className="block text-xs text-white/80">চলবে না: {r.reason}</span>)}
                     </span>
                     <button type="button" onClick={() => setDraft(draft.filter((_, j) => j !== i))} className="rounded p-0.5 hover:bg-white/10" aria-label={`সরান: ${actionLabel(sc, a)}`}>
                       <X className="size-4" />
@@ -191,7 +191,7 @@ export function CommandRail({
               })}
             </ul>
           ) : (
-            <p className="mt-2 font-bengali text-sm text-emerald-100/70">কিছু বাছাই করা হয়নি — এই টার্নে শুধু চলমানগুলো চলবে।</p>
+            <p className="mt-2 font-bengali text-sm text-white/80">কিছু বাছাই করা হয়নি — এই টার্নে শুধু চলমানগুলো চলবে।</p>
           )}
 
           {state.responses.length > 0 && (
@@ -205,10 +205,10 @@ export function CommandRail({
                     type="button"
                     disabled={on}
                     onClick={() => setDraft([...draft, { type: "respond", event: r.event }])}
-                    className="mt-1.5 block w-full rounded-lg bg-white/8 px-2.5 py-2 text-left font-bengali text-sm hover:bg-white/12 disabled:opacity-50"
+                    className="mt-1.5 block w-full rounded-lg bg-white/8 px-2.5 py-2 text-left font-bengali text-sm hover:bg-white/10 disabled:opacity-50"
                   >
                     {r.bn} — খরচ {n(r.cost)}
-                    <span className="block text-xs text-emerald-100/70">{on ? "পরিকল্পনায় আছে" : r.note}</span>
+                    <span className="block text-xs text-white/80">{on ? "পরিকল্পনায় আছে" : r.note}</span>
                   </button>
                 );
               })}
@@ -222,21 +222,21 @@ export function CommandRail({
           type="button"
           onClick={run}
           disabled={finished || running || autoRun}
-          className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-signal-orange font-bengali text-lg font-extrabold text-gori-ink shadow-[0_10px_24px_-12px_rgb(255_145_0/0.9)] transition-transform hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-50"
+          className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-signal-orange font-bengali text-lg font-extrabold text-text-primary shadow-[0_10px_24px_-12px_rgb(255_145_0/0.9)] transition-transform hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-50"
         >
           {running ? <Loader2 className="size-5 animate-spin" aria-hidden /> : <Play className="size-5" aria-hidden />}
           {finished ? "খেলা শেষ" : `টার্ন ${n(game.turn + 1)} চালান`}
         </button>
         <div className="grid grid-cols-2 gap-2">
-          <button type="button" onClick={() => setAuto((x) => !x)} disabled={finished} aria-pressed={auto} className="flex h-11 items-center justify-center gap-1.5 rounded-xl bg-white/8 font-bengali text-sm font-semibold hover:bg-white/12 disabled:opacity-40">
+          <button type="button" onClick={() => setAuto((x) => !x)} disabled={finished} aria-pressed={auto} className="flex h-11 items-center justify-center gap-1.5 rounded-xl bg-white/8 font-bengali text-sm font-semibold hover:bg-white/10 disabled:opacity-40">
             {auto ? <Pause className="size-4" aria-hidden /> : <Play className="size-4" aria-hidden />}
             {auto ? "থামান" : "বাকিগুলো চালান"}
           </button>
-          <button type="button" onClick={() => { setAuto(false); rewind(); }} disabled={game.turn === 0} className="flex h-11 items-center justify-center gap-1.5 rounded-xl bg-white/8 font-bengali text-sm font-semibold hover:bg-white/12 disabled:opacity-40">
+          <button type="button" onClick={() => { setAuto(false); rewind(); }} disabled={game.turn === 0} className="flex h-11 items-center justify-center gap-1.5 rounded-xl bg-white/8 font-bengali text-sm font-semibold hover:bg-white/10 disabled:opacity-40">
             <Undo2 className="size-4" aria-hidden /> এক টার্ন পিছনে
           </button>
         </div>
-        <p className="font-bengali text-[11px] leading-5 text-emerald-100/65">
+        <p className="font-bengali text-[11px] leading-5 text-white/80">
           “বাকিগুলো চালান” নতুন কিছু যোগ না করে চলমান পরিকল্পনায় টার্ন চালায় (গতি সেটিংসে)। পিছনে গেলে সেটি নতুন খেলা হিসেবে গণ্য হয়।
         </p>
       </section>

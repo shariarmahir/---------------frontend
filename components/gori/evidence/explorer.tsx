@@ -9,6 +9,7 @@ import { newsItems } from "@/data/news-feed";
 import { cn } from "@/lib/utils";
 import { AgentAnswerView, useAgent } from "../ai-panel";
 import { useT } from "../provider";
+import { PixelMark } from "@/components/ui/section-kit";
 
 const TYPE_BN: Record<SourceType, string> = {
   statistic: "পরিসংখ্যান",
@@ -48,12 +49,13 @@ export function EvidenceExplorer() {
     return c;
   }, []);
 
-  const field = "h-11 rounded-xl border border-gori-ink/15 bg-white px-3 font-bengali text-sm text-gori-ink";
+  const field = "h-11 rounded-xl border border-white/15 bg-black ring-1 ring-white/12 px-3 font-bengali text-sm text-white";
 
   return (
     <div className="mx-auto max-w-340 px-4 py-8 sm:px-6 lg:px-8">
+      <PixelMark tone="dark" className="mb-2" />
       <h1 className="font-bengali text-3xl font-bold text-signal-orange">প্রমাণ অনুসন্ধান</h1>
-      <p className="mt-2 max-w-[72ch] font-bengali text-emerald-50/85">
+      <p className="mt-2 max-w-[72ch] font-bengali text-white/85">
         খেলার প্রতিটি দাবি আর AI-এর প্রতিটি উদ্ধৃতি এই {n(evidence.length)}টি রেকর্ড থেকে। সব রেকর্ড জাতীয় সমস্যা প্রতিবেদনে সংকলিত; প্রকাশক আছে, কিন্তু মূল নথির লিংক প্রতিবেদনে নেই — তাই এখানেও নেই, বানানো হয়নি। সংস্করণ {EVIDENCE_VERSION}।
       </p>
 
@@ -63,7 +65,7 @@ export function EvidenceExplorer() {
           <div className="flex flex-wrap gap-2">
             <label className="relative min-w-0 flex-1">
               <span className="sr-only">খুঁজুন</span>
-              <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-gori-mute" aria-hidden />
+              <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-white/65" aria-hidden />
               <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="যেমন: মূল্যস্ফীতি, দূষণ, ঘুষ" className={cn(field, "w-full pl-9")} />
             </label>
             <label>
@@ -81,20 +83,20 @@ export function EvidenceExplorer() {
               </select>
             </label>
           </div>
-          <p className="mt-3 font-bengali text-sm text-emerald-100/80" aria-live="polite">{n(list.length)}টি রেকর্ড</p>
+          <p className="mt-3 font-bengali text-sm text-white/80" aria-live="polite">{n(list.length)}টি রেকর্ড</p>
           <ul className="mt-2 space-y-2">
             {list.map((e) => (
-              <li key={e.id} className={cn("rounded-xl bg-gori-cream p-4 text-gori-ink", e.sourceType === "unsupported" && "ring-2 ring-national-crimson/50")}>
+              <li key={e.id} className={cn("rounded-xl bg-text-primary ring-1 ring-white/12 p-4 text-white", e.sourceType === "unsupported" && "ring-2 ring-national-crimson/50")}>
                 <p className="flex flex-wrap items-center gap-2 font-bengali text-[11px]">
-                  <span className="font-mono text-gori-mute">{e.id}</span>
-                  <span className="rounded-full bg-gori-ink/8 px-2 py-0.5 font-semibold">{TYPE_BN[e.sourceType]}</span>
-                  <span className={cn("rounded-full px-2 py-0.5 font-semibold", e.status === "verified" ? "bg-emerald-100 text-emerald-900" : e.status === "unsupported" ? "bg-red-100 text-red-900" : "bg-amber-100 text-amber-900")}>{STATUS_BN[e.status]}</span>
+                  <span className="font-mono text-white/65">{e.id}</span>
+                  <span className="rounded-full bg-white/10 px-2 py-0.5 font-semibold text-white">{TYPE_BN[e.sourceType]}</span>
+                  <span className={cn("rounded-full px-2 py-0.5 font-semibold", e.status === "verified" ? "bg-bdgreen-500 text-text-primary" : e.status === "unsupported" ? "bg-national-crimson text-white" : "bg-signal-orange text-text-primary")}>{STATUS_BN[e.status]}</span>
                 </p>
                 <p className="mt-1 font-bengali font-semibold">{e.title}</p>
-                <ul className="mt-1 list-disc pl-5 font-bengali text-sm text-gori-ink-soft">
+                <ul className="mt-1 list-disc pl-5 font-bengali text-sm text-white/80">
                   {e.extractedClaims.map((c, i) => <li key={i}>{c}</li>)}
                 </ul>
-                <p className="mt-1.5 font-bengali text-xs text-gori-mute">
+                <p className="mt-1.5 font-bengali text-xs text-white/65">
                   প্রকাশক: {e.publisher} · সংকলনের তারিখ {e.retrievalDate} · {e.reliabilityNotes}
                   {e.modules.length > 0 && ` · মডিউল: ${e.modules.map((m) => moduleOf(m)?.code).join(", ")}`}
                 </p>
@@ -104,49 +106,49 @@ export function EvidenceExplorer() {
         </section>
 
         <div className="space-y-5">
-          <section className="rounded-2xl bg-gori-cream p-5 text-gori-ink" aria-labelledby="checker-title">
-            <h2 id="checker-title" className="flex items-center gap-2 font-bengali text-lg font-bold"><ShieldCheck className="size-5 text-bd-green" aria-hidden /> প্রমাণ যাচাইকারী</h2>
-            <p className="mt-1 font-bengali text-sm text-gori-ink-soft">একটি দাবি লিখুন — রেকর্ডের সাথে মিলিয়ে বলবে সমর্থিত, আংশিক, অসমর্থিত, না তথ্য নেই।</p>
+          <section className="rounded-2xl bg-text-primary ring-1 ring-white/12 p-5 text-white" aria-labelledby="checker-title">
+            <h2 id="checker-title" className="flex items-center gap-2 font-bengali text-lg font-bold text-signal-orange"><ShieldCheck className="size-5 text-signal-orange" aria-hidden /> প্রমাণ যাচাইকারী</h2>
+            <p className="mt-1 font-bengali text-sm text-white/80">একটি দাবি লিখুন — রেকর্ডের সাথে মিলিয়ে বলবে সমর্থিত, আংশিক, অসমর্থিত, না তথ্য নেই।</p>
             <label className="mt-3 block font-bengali text-sm font-semibold">
               দাবি
-              <textarea value={claim} onChange={(e) => setClaim(e.target.value)} maxLength={500} rows={3} placeholder="যেমন: বাংলাদেশের সবাই ঘুষ দেয়।" className="mt-1 block w-full rounded-xl border border-gori-ink/15 bg-white px-3 py-2 text-sm" />
+              <textarea value={claim} onChange={(e) => setClaim(e.target.value)} maxLength={500} rows={3} placeholder="যেমন: বাংলাদেশের সবাই ঘুষ দেয়।" className="mt-1 block w-full rounded-xl border border-white/15 bg-black ring-1 ring-white/12 px-3 py-2 text-sm" />
             </label>
-            <button type="button" disabled={!claim.trim() || checker.status === "loading"} onClick={() => checker.ask({ agent: "evidence", claim: claim.trim(), ...(mod !== "all" ? { module: mod as never } : {}) })} className="mt-3 inline-flex h-11 items-center rounded-xl bg-signal-orange px-5 font-bengali text-sm font-bold disabled:opacity-40">
+            <button type="button" disabled={!claim.trim() || checker.status === "loading"} onClick={() => checker.ask({ agent: "evidence", claim: claim.trim(), ...(mod !== "all" ? { module: mod as never } : {}) })} className="mt-3 inline-flex h-11 items-center rounded-xl bg-signal-orange px-5 font-bengali text-sm font-bold disabled:opacity-40 text-text-primary">
               যাচাই করুন
             </button>
             <div className="mt-4"><AgentAnswerView answer={checker.answer} status={checker.status} /></div>
           </section>
 
-          <section className="rounded-2xl bg-gori-cream p-5 text-gori-ink" aria-labelledby="news-title">
-            <h2 id="news-title" className="flex items-center gap-2 font-bengali text-lg font-bold"><Newspaper className="size-5 text-bdorange-700" aria-hidden /> সংবাদ ব্যাখ্যাকারী</h2>
-            <p className="mt-1 font-bengali text-sm text-gori-ink-soft">সংবাদ সূচি এখনো নমুনা তথ্যে — আসল প্রকাশিত প্রতিবেদন নয়। ব্যাখ্যাকারী সেটা স্পষ্ট বলবে।</p>
+          <section className="rounded-2xl bg-text-primary ring-1 ring-white/12 p-5 text-white" aria-labelledby="news-title">
+            <h2 id="news-title" className="flex items-center gap-2 font-bengali text-lg font-bold text-signal-orange"><Newspaper className="size-5 text-bdorange-600" aria-hidden /> সংবাদ ব্যাখ্যাকারী</h2>
+            <p className="mt-1 font-bengali text-sm text-white/80">সংবাদ সূচি এখনো নমুনা তথ্যে — আসল প্রকাশিত প্রতিবেদন নয়। ব্যাখ্যাকারী সেটা স্পষ্ট বলবে।</p>
             <label className="mt-3 block font-bengali text-sm font-semibold">
               খবর
-              <select value={newsId} onChange={(e) => setNewsId(e.target.value)} className="mt-1 block h-11 w-full rounded-xl border border-gori-ink/15 bg-white px-3 text-sm">
+              <select value={newsId} onChange={(e) => setNewsId(e.target.value)} className="mt-1 block h-11 w-full rounded-xl border border-white/15 bg-black ring-1 ring-white/12 px-3 text-sm">
                 {newsItems.map((x) => <option key={x.id} value={x.id}>{x.headline}</option>)}
               </select>
             </label>
-            <button type="button" disabled={interpreter.status === "loading"} onClick={() => interpreter.ask({ agent: "news", newsId })} className="mt-3 inline-flex h-11 items-center rounded-xl bg-gori-deep px-5 font-bengali text-sm font-bold text-white disabled:opacity-40">
+            <button type="button" disabled={interpreter.status === "loading"} onClick={() => interpreter.ask({ agent: "news", newsId })} className="mt-3 inline-flex h-11 items-center rounded-xl bg-black px-5 font-bengali text-sm font-bold text-white disabled:opacity-40">
               ব্যাখ্যা চাই
             </button>
             <div className="mt-4"><AgentAnswerView answer={interpreter.answer} status={interpreter.status} /></div>
           </section>
 
           <section className="rounded-2xl border border-white/10 p-5" aria-labelledby="review-title">
-            <h2 id="review-title" className="font-bengali text-lg font-bold">উৎস পর্যালোচনা (অ্যাডমিন — শুধু পড়া)</h2>
+            <h2 id="review-title" className="font-bengali text-lg font-bold text-signal-orange">উৎস পর্যালোচনা (অ্যাডমিন — শুধু পড়া)</h2>
             <dl className="mt-3 grid grid-cols-2 gap-3 font-bengali text-sm">
               {Object.entries(counts).map(([k, v]) => (
                 <div key={k}>
-                  <dt className="text-xs text-emerald-100/70">{STATUS_BN[k as keyof typeof STATUS_BN]}</dt>
+                  <dt className="text-xs text-white/80">{STATUS_BN[k as keyof typeof STATUS_BN]}</dt>
                   <dd className="text-xl font-bold">{n(v)}</dd>
                 </div>
               ))}
               <div>
-                <dt className="text-xs text-emerald-100/70">মূল লিংক বাকি</dt>
+                <dt className="text-xs text-white/80">মূল লিংক বাকি</dt>
                 <dd className="text-xl font-bold text-signal-orange">{n(evidence.filter((e) => !e.url).length)}</dd>
               </div>
             </dl>
-            <p className="mt-3 font-bengali text-xs leading-5 text-emerald-100/70">
+            <p className="mt-3 font-bengali text-xs leading-5 text-white/80">
               রেকর্ড যোগ, সম্পাদনা আর পর্যালোচকের সই — সার্ভার ও অ্যাডমিন ভূমিকা যুক্ত হলে (TODO backend)। মডারেশন কনসোলও তখন।
             </p>
           </section>

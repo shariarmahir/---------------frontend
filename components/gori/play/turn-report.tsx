@@ -20,25 +20,25 @@ export function TurnReportView({ sc, run, played }: { sc: ScenarioDef; run: RunR
   const [busy, setBusy] = useState(false);
 
   if (!r || t < 0) {
-    return <p className="rounded-2xl bg-white p-6 font-bengali text-gori-mute">এখনো কোনো টার্ন চালানো হয়নি। পরিকল্পনা করে “টার্ন চালান” চাপুন।</p>;
+    return <p className="rounded-2xl bg-black ring-1 ring-white/12 p-6 font-bengali text-white/75">এখনো কোনো টার্ন চালানো হয়নি। পরিকল্পনা করে “টার্ন চালান” চাপুন।</p>;
   }
   const rec = run.turns[t];
   const vName = (id: string) => sc.variables.find((v) => v.id === id)?.bn ?? id;
 
   return (
-    <div className="space-y-4 text-gori-ink">
+    <div className="space-y-4 text-white">
       <div className="flex flex-wrap items-center gap-2">
-        <label htmlFor="report-turn" className="font-bengali text-sm font-semibold text-emerald-50">কোন টার্ন</label>
-        <select id="report-turn" value={t} onChange={(e) => setTurn(Number(e.target.value))} className="h-10 rounded-lg border border-white/20 bg-white px-3 font-bengali text-sm">
+        <label htmlFor="report-turn" className="font-bengali text-sm font-semibold text-white/85">কোন টার্ন</label>
+        <select id="report-turn" value={t} onChange={(e) => setTurn(Number(e.target.value))} className="h-10 rounded-lg border border-white/20 bg-black ring-1 ring-white/12 px-3 font-bengali text-sm">
           {run.turns.slice(0, played).map((x) => (
             <option key={x.turn} value={x.turn}>টার্ন {n(x.turn + 1)} · {periodLabel(run.config, x.turn)}</option>
           ))}
         </select>
-        <span className="font-bengali text-xs text-emerald-100/75">সব ফল খেলার মডেলে — বাস্তব ফল নয়।</span>
+        <span className="font-bengali text-xs text-white/80">সব ফল খেলার মডেলে — বাস্তব ফল নয়।</span>
       </div>
 
       {r.events.map((e) => (
-        <div key={e.id} className="flex gap-3 rounded-2xl bg-[#3a1a14] p-4 text-white">
+        <div key={e.id} className="flex gap-3 rounded-2xl bg-national-crimson p-4 text-white">
           <CloudLightning className="mt-0.5 size-5 shrink-0 text-signal-orange" aria-hidden />
           <div className="font-bengali">
             <p className="font-bold">{e.bn} <span className="ml-1 rounded bg-white/10 px-1.5 text-[11px] font-normal">{e.source === "context" ? "প্রেক্ষাপটভিত্তিক — সম্ভাবনা খেলার সহগ" : "খেলার নিয়ম"}</span></p>
@@ -54,20 +54,20 @@ export function TurnReportView({ sc, run, played }: { sc: ScenarioDef; run: RunR
 
       <Block title="কী বদলাল, আর কেন">
         {r.changes.length ? (
-          <ul className="divide-y divide-slate-100">
+          <ul className="divide-y divide-white/12">
             {r.changes.map((c) => (
               <li key={c.v} className="py-2.5">
                 <div className="flex items-center justify-between gap-3 font-bengali">
                   <span className="font-semibold">{c.bn}</span>
-                  <span className={cn("flex items-center gap-1 font-bold tabular-nums", c.good ? "text-[#00704b]" : "text-[#b3380a]")}>
+                  <span className={cn("flex items-center gap-1 font-bold tabular-nums", c.good ? "text-bdgreen-500" : "text-bdorange-600")}>
                     {c.delta > 0 ? <ArrowUp className="size-3.5" aria-hidden /> : <ArrowDown className="size-3.5" aria-hidden />}
                     {n(c.from)} → {n(c.to)}
                     <span className="sr-only">{c.good ? "(ভালো দিকে)" : "(খারাপ দিকে)"}</span>
                   </span>
                 </div>
-                <p className="mt-0.5 font-bengali text-sm leading-6 text-gori-ink-soft">{c.sentence}</p>
+                <p className="mt-0.5 font-bengali text-sm leading-6 text-white/80">{c.sentence}</p>
                 {detail === "advanced" && (
-                  <p className="mt-0.5 font-bengali text-xs text-gori-mute">
+                  <p className="mt-0.5 font-bengali text-xs text-white/65">
                     {c.parts.map((p) => `${p.label} ${p.amount > 0 ? "+" : ""}${n(p.amount)}`).join(" · ")}
                   </p>
                 )}
@@ -75,7 +75,7 @@ export function TurnReportView({ sc, run, played }: { sc: ScenarioDef; run: RunR
             ))}
           </ul>
         ) : (
-          <p className="font-bengali text-sm text-gori-mute">কিছু বদলায়নি।</p>
+          <p className="font-bengali text-sm text-white/65">কিছু বদলায়নি।</p>
         )}
       </Block>
 
@@ -113,7 +113,7 @@ export function TurnReportView({ sc, run, played }: { sc: ScenarioDef; run: RunR
                   setBusy(false);
                 }, 20);
               }}
-              className="mt-2 inline-flex items-center gap-2 rounded-lg border border-gori-ink/20 px-3 py-1.5 font-bengali text-sm font-semibold"
+              className="mt-2 inline-flex items-center gap-2 rounded-lg border border-white/20 px-3 py-1.5 font-bengali text-sm font-semibold"
             >
               {busy && <Loader2 className="size-4 animate-spin" aria-hidden />} পরিসর হিসাব করুন (২৪টি বীজ)
             </button>
@@ -144,8 +144,8 @@ export function TurnReportView({ sc, run, played }: { sc: ScenarioDef; run: RunR
 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl bg-white p-4">
-      <h3 className="mb-2 font-bengali text-sm font-bold text-gori-ink">{title}</h3>
+    <section className="rounded-2xl bg-black ring-1 ring-white/12 p-4">
+      <h3 className="mb-2 font-bengali text-sm font-bold text-white">{title}</h3>
       {children}
     </section>
   );
@@ -153,19 +153,19 @@ function Block({ title, children }: { title: string; children: React.ReactNode }
 
 function List({ items, empty }: { items: string[]; empty?: string }) {
   return items.length ? (
-    <ul className="list-disc space-y-1 pl-5 font-bengali text-sm leading-6 text-gori-ink-soft">
+    <ul className="list-disc space-y-1 pl-5 font-bengali text-sm leading-6 text-white/80">
       {items.map((x, i) => <li key={i}>{x}</li>)}
     </ul>
   ) : (
-    <p className="font-bengali text-sm text-gori-mute">{empty}</p>
+    <p className="font-bengali text-sm text-white/65">{empty}</p>
   );
 }
 
 function KV({ k, v, warn }: { k: string; v: string; warn?: boolean }) {
   return (
     <div>
-      <dt className="text-xs text-gori-mute">{k}</dt>
-      <dd className={cn("font-semibold tabular-nums", warn && "text-national-crimson")}>{v}</dd>
+      <dt className="text-xs text-white/65">{k}</dt>
+      <dd className={cn("font-semibold tabular-nums", warn && "text-crimson-bright")}>{v}</dd>
     </div>
   );
 }

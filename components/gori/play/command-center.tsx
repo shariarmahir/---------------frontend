@@ -60,28 +60,28 @@ export function CommandCenter({ game }: { game: Game }) {
     <div className="mx-auto max-w-340 px-3 pt-5 pb-28 sm:px-6 lg:px-8 lg:pb-12">
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="flex flex-wrap items-center gap-2 font-bengali text-xs text-emerald-100/80">
-            <span className="rounded-full bg-signal-orange px-2 py-0.5 font-bold text-gori-ink">{MODE_BN[game.config.mode]}</span>
+          <p className="flex flex-wrap items-center gap-2 font-bengali text-xs text-white/80">
+            <span className="rounded-full bg-signal-orange px-2 py-0.5 font-bold text-text-primary">{MODE_BN[game.config.mode]}</span>
             <span>BD-001</span>·<span>{ctx.bn}</span>·<span>বীজ {game.config.seed}</span>·<span className="rounded bg-white/10 px-1.5">সিমুলেশন — বাস্তব ফল নয়</span>
-            {game.config.mode === "future" && <span className="rounded bg-[#8a5a00] px-1.5 text-white">কাল্পনিক ভবিষ্যৎ</span>}
+            {game.config.mode === "future" && <span className="rounded bg-signal-orange px-1.5 text-text-primary">কাল্পনিক ভবিষ্যৎ</span>}
           </p>
           <h1 className="mt-1.5 font-bengali text-2xl font-bold text-white sm:text-3xl">{sc.bn}</h1>
-          <p className="font-bengali text-sm text-emerald-100/80">
+          <p className="font-bengali text-sm text-white/80">
             {finished ? "খেলা শেষ" : `টার্ন ${n(game.turn + 1)}/${n(game.config.horizon)} · ${periodLabel(game.config, game.turn)}`}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button type="button" onClick={() => setBriefOpen(true)} className="inline-flex h-10 items-center gap-2 rounded-xl bg-white/10 px-3.5 font-bengali text-sm font-semibold hover:bg-white/15">
+          <button type="button" onClick={() => setBriefOpen(true)} className="inline-flex h-10 items-center gap-2 rounded-xl bg-white/10 px-3.5 font-bengali text-sm font-semibold hover:bg-white/10">
             <BookOpen className="size-4" aria-hidden /> সমস্যা ও প্রমাণ
           </button>
-          <button type="button" onClick={() => setRulesOpen(true)} className="inline-flex h-10 items-center gap-2 rounded-xl bg-white/10 px-3.5 font-bengali text-sm font-semibold hover:bg-white/15">
+          <button type="button" onClick={() => setRulesOpen(true)} className="inline-flex h-10 items-center gap-2 rounded-xl bg-white/10 px-3.5 font-bengali text-sm font-semibold hover:bg-white/10">
             <ScrollText className="size-4" aria-hidden /> নিয়ম
           </button>
           <AiSheet sc={sc} game={game} />
           <button
             type="button"
             onClick={() => window.confirm("এই খেলা বন্ধ করবেন? সংরক্ষণ না করলে হারাবে।") && endGame()}
-            className="inline-flex h-10 items-center gap-2 rounded-xl px-3 font-bengali text-sm text-emerald-100/80 hover:bg-white/10"
+            className="inline-flex h-10 items-center gap-2 rounded-xl px-3 font-bengali text-sm text-white/80 hover:bg-white/10"
           >
             <RotateCcw className="size-4" aria-hidden /> বন্ধ করুন
           </button>
@@ -89,7 +89,7 @@ export function CommandCenter({ game }: { game: Game }) {
       </header>
 
       {guided && stages.current && !finished && (
-        <p className="mt-4 rounded-xl bg-signal-orange/15 px-4 py-2.5 font-bengali text-sm text-orange-100" aria-live="polite">
+        <p className="mt-4 rounded-xl bg-signal-orange/15 px-4 py-2.5 font-bengali text-sm text-white/85" aria-live="polite">
           <strong className="text-signal-orange">এখনকার ধাপ — {stages.current.bn}:</strong> {stages.current.hint}
         </p>
       )}
@@ -100,7 +100,7 @@ export function CommandCenter({ game }: { game: Game }) {
         </aside>
 
         <section className="order-1 min-w-0 lg:order-2" aria-label="কর্মক্ষেত্র">
-          <div role="tablist" aria-label="কর্মক্ষেত্র" className="no-scrollbar relative flex gap-1 overflow-x-auto rounded-xl bg-gori-panel p-1">
+          <div role="tablist" aria-label="কর্মক্ষেত্র" className="no-scrollbar relative flex gap-1 overflow-x-auto rounded-xl bg-text-primary ring-1 ring-white/12 p-1">
             {tabs.map((t) => (
               <button
                 key={t.id}
@@ -110,7 +110,7 @@ export function CommandCenter({ game }: { game: Game }) {
                 aria-selected={tab === t.id}
                 aria-controls={`panel-${t.id}`}
                 onClick={() => setTab(t.id)}
-                className={cn("min-h-10 shrink-0 flex-1 rounded-lg px-3 font-bengali text-sm font-semibold whitespace-nowrap", tab === t.id ? "bg-gori-cream text-gori-ink" : "text-emerald-50/80 hover:text-white")}
+                className={cn("min-h-10 shrink-0 flex-1 rounded-lg px-3 font-bengali text-sm font-semibold whitespace-nowrap", tab === t.id ? "bg-text-primary ring-1 ring-white/12 text-white" : "text-white/85 hover:text-white")}
               >
                 {t.bn}
               </button>
@@ -131,10 +131,10 @@ export function CommandCenter({ game }: { game: Game }) {
       </div>
 
       <Dialog open={briefOpen} onOpenChange={setBriefOpen}>
-        <DialogContent className="max-h-[90dvh] overflow-y-auto bg-gori-cream text-gori-ink sm:max-w-2xl">
+        <DialogContent className="max-h-[90dvh] overflow-y-auto bg-text-primary ring-1 ring-white/12 text-white sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle className="font-bengali text-xl">{sc.bn}</DialogTitle>
-            <DialogDescription className="font-bengali text-sm text-gori-ink-soft">{sc.place} · প্রেক্ষাপট: {ctx.bn} — {ctx.description}</DialogDescription>
+            <DialogDescription className="font-bengali text-sm text-white/80">{sc.place} · প্রেক্ষাপট: {ctx.bn} — {ctx.description}</DialogDescription>
           </DialogHeader>
           <p className="font-bengali text-[15px] leading-7">{sc.brief}</p>
           <h3 className="mt-2 font-bengali text-sm font-bold">বাস্তব প্রমাণ (প্রতিবেদন থেকে)</h3>
@@ -142,15 +142,15 @@ export function CommandCenter({ game }: { game: Game }) {
             {["EV-POINT-01", "EV-MECH-service-access", "EV-MON-health"].map((id) => {
               const e = evidenceById.get(id)!;
               return (
-                <li key={id} className="rounded-lg bg-white px-3 py-2 font-bengali text-sm">
+                <li key={id} className="rounded-lg bg-black ring-1 ring-white/12 px-3 py-2 font-bengali text-sm">
                   <span className="font-semibold">{e.title}</span>
-                  <span className="block text-gori-ink-soft">{e.extractedClaims.join(" · ")}</span>
-                  <span className="block text-xs text-gori-mute">{e.publisher}</span>
+                  <span className="block text-white/80">{e.extractedClaims.join(" · ")}</span>
+                  <span className="block text-xs text-white/65">{e.publisher}</span>
                 </li>
               );
             })}
           </ul>
-          <p className="rounded-lg bg-amber-50 px-3 py-2 font-bengali text-xs leading-5 text-amber-900">
+          <p className="rounded-lg bg-signal-orange px-3 py-2 font-bengali text-xs leading-5 text-text-primary">
             চারটি জিনিস আলাদা রাখুন: ওপরের প্রমাণ বাস্তব; ইউনিয়ন আর তার সংখ্যা কাল্পনিক; সম্পর্কের মাত্রা খেলার অনুমান; ফল সিমুলেশন।
           </p>
           <div className="flex flex-wrap gap-2">
@@ -160,11 +160,11 @@ export function CommandCenter({ game }: { game: Game }) {
                 flag("brief");
                 setBriefOpen(false);
               }}
-              className="inline-flex h-11 items-center rounded-xl bg-signal-orange px-5 font-bengali font-bold"
+              className="inline-flex h-11 items-center rounded-xl bg-signal-orange px-5 font-bengali font-bold text-text-primary"
             >
               বুঝেছি — শুরু করি
             </button>
-            <Link href={`${BASE}/module/BD-001`} className="inline-flex h-11 items-center rounded-xl border border-gori-ink/20 px-4 font-bengali text-sm font-semibold">
+            <Link href={`${BASE}/module/BD-001`} className="inline-flex h-11 items-center rounded-xl border border-white/20 px-4 font-bengali text-sm font-semibold">
               মডিউল BD-001 দেখুন
             </Link>
           </div>
@@ -172,17 +172,17 @@ export function CommandCenter({ game }: { game: Game }) {
       </Dialog>
 
       <Dialog open={peopleOpen} onOpenChange={setPeopleOpen}>
-        <DialogContent className="max-h-[90dvh] overflow-y-auto bg-gori-cream text-gori-ink sm:max-w-xl">
+        <DialogContent className="max-h-[90dvh] overflow-y-auto bg-text-primary ring-1 ring-white/12 text-white sm:max-w-xl">
           <DialogHeader>
             <DialogTitle className="font-bengali text-xl">অংশীজন — কে কী চান</DialogTitle>
-            <DialogDescription className="font-bengali text-sm text-gori-ink-soft">সরলীকৃত খেলার নিয়ম — কোনো বাস্তব গোষ্ঠী সম্পর্কে দাবি নয়। সমর্থন কম হলে তাঁদের ওপর নির্ভরশীল হস্তক্ষেপ কম কার্যকর হয়।</DialogDescription>
+            <DialogDescription className="font-bengali text-sm text-white/80">সরলীকৃত খেলার নিয়ম — কোনো বাস্তব গোষ্ঠী সম্পর্কে দাবি নয়। সমর্থন কম হলে তাঁদের ওপর নির্ভরশীল হস্তক্ষেপ কম কার্যকর হয়।</DialogDescription>
           </DialogHeader>
           <ul className="space-y-3">
             {sc.stakeholders.map((s) => (
-              <li key={s.id} className="rounded-xl bg-white p-3 font-bengali">
-                <p className="font-semibold">{s.bn} <span className="text-xs font-normal text-gori-mute">{s.en}</span></p>
-                <p className="text-sm text-gori-ink-soft">{s.description}</p>
-                <p className="mt-1 text-xs text-gori-mute">
+              <li key={s.id} className="rounded-xl bg-black ring-1 ring-white/12 p-3 font-bengali">
+                <p className="font-semibold">{s.bn} <span className="text-xs font-normal text-white/65">{s.en}</span></p>
+                <p className="text-sm text-white/80">{s.description}</p>
+                <p className="mt-1 text-xs text-white/65">
                   খুশি হন যখন: {Object.entries(s.cares).map(([v, w]) => `${sc.variables.find((x) => x.id === v)?.bn} ${w > 0 ? "বাড়ে" : "কমে"}`).join(", ")}
                 </p>
               </li>
@@ -192,10 +192,10 @@ export function CommandCenter({ game }: { game: Game }) {
       </Dialog>
 
       <Dialog open={rulesOpen} onOpenChange={setRulesOpen}>
-        <DialogContent className="max-h-[90dvh] overflow-y-auto bg-gori-cream text-gori-ink sm:max-w-2xl">
+        <DialogContent className="max-h-[90dvh] overflow-y-auto bg-text-primary ring-1 ring-white/12 text-white sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle className="font-bengali text-xl">খেলার নিয়ম (নিয়ম-সংস্করণ {run.ruleset}, ইঞ্জিন {run.engine})</DialogTitle>
-            <DialogDescription className="font-bengali text-sm text-gori-ink-soft">সব নিয়ম প্রকাশ্য; কোনো লুকোনো শাস্তি নেই।</DialogDescription>
+            <DialogDescription className="font-bengali text-sm text-white/80">সব নিয়ম প্রকাশ্য; কোনো লুকোনো শাস্তি নেই।</DialogDescription>
           </DialogHeader>
           <ul className="list-disc space-y-1.5 pl-5 font-bengali text-sm leading-6">
             <li>প্রতিটি সূচক নিজের লক্ষ্যের দিকে প্রতি প্রান্তিকে কিছুটা এগোয়। লক্ষ্য = শুরুর মান + চলমান হস্তক্ষেপের প্রভাব + কারণ-সম্পর্কের প্রভাব।</li>
@@ -207,7 +207,7 @@ export function CommandCenter({ game }: { game: Game }) {
             <li>সীমা-ঘটনা (যেমন ওষুধ সংকট) নির্দিষ্ট সূচক টানা দুই প্রান্তিক সীমার বাইরে থাকলে ঘটে। কিছু ঘটনায় পরের টার্নে একবার সাড়া দেওয়া যায়।</li>
             <li>স্কোর আর শাস্তির সূত্র চূড়ান্ত ফল পাতায় দেখানো হয়।</li>
           </ul>
-          <button type="button" onClick={() => setRulesOpen(false)} className="inline-flex h-10 items-center gap-1 self-start rounded-xl border border-gori-ink/20 px-3 font-bengali text-sm">
+          <button type="button" onClick={() => setRulesOpen(false)} className="inline-flex h-10 items-center gap-1 self-start rounded-xl border border-white/20 px-3 font-bengali text-sm">
             <X className="size-4" aria-hidden /> বন্ধ
           </button>
         </DialogContent>
@@ -215,7 +215,7 @@ export function CommandCenter({ game }: { game: Game }) {
 
       {/* Phones: the run button stays in reach. */}
       {!finished && (
-        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-white/10 bg-gori-deep/95 px-4 py-3 backdrop-blur lg:hidden">
+        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-white/10 bg-black px-4 py-3 backdrop-blur lg:hidden">
           <PhoneRun turn={game.turn} />
         </div>
       )}
@@ -227,7 +227,7 @@ function PhoneRun({ turn }: { turn: number }) {
   const playTurn = useGori((s) => s.playTurn);
   const { n } = useT();
   return (
-    <button type="button" onClick={playTurn} className="flex h-12 w-full items-center justify-center rounded-xl bg-signal-orange font-bengali text-base font-extrabold text-gori-ink">
+    <button type="button" onClick={playTurn} className="flex h-12 w-full items-center justify-center rounded-xl bg-signal-orange font-bengali text-base font-extrabold text-text-primary">
       টার্ন {n(turn + 1)} চালান
     </button>
   );
