@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -9,13 +9,30 @@ import { cn } from "@/lib/utils";
 
 export type Tone = "light" | "dark";
 
-/** Three pixels — gold, green, ink — the mark every section heading carries. */
+/**
+ * Three pixels — gold, green, ink — the mark every section heading carries.
+ * They run a wave one after another: each rises, turns a half-turn and
+ * glows in its own colour, then settles (keyframes in globals.css).
+ */
 export function PixelMark({ tone = "light", className }: { tone?: Tone; className?: string }) {
+  const pixels = [
+    { fill: "bg-signal-orange", glow: "var(--color-signal-orange)" },
+    tone === "dark"
+      ? { fill: "bg-bdgreen-500", glow: "var(--color-bdgreen-500)" }
+      : { fill: "bg-bd-green", glow: "var(--color-bd-green)" },
+    tone === "dark"
+      ? { fill: "bg-white", glow: "white" }
+      : { fill: "bg-text-primary", glow: "var(--color-text-primary)" },
+  ];
   return (
-    <span aria-hidden className={cn("flex items-center gap-1", className)}>
-      <span className="size-2.5 rounded-[3px] bg-signal-orange" />
-      <span className={cn("size-2.5 rounded-[3px]", tone === "dark" ? "bg-bdgreen-500" : "bg-bd-green")} />
-      <span className={cn("size-2.5 rounded-[3px]", tone === "dark" ? "bg-white" : "bg-text-primary")} />
+    <span aria-hidden className={cn("flex items-center gap-1.5 py-1", className)}>
+      {pixels.map((px, i) => (
+        <span
+          key={i}
+          style={{ "--i": i, "--glow": px.glow } as CSSProperties}
+          className={cn("pixel-wave size-2.5 rounded-[3px]", px.fill)}
+        />
+      ))}
     </span>
   );
 }
@@ -65,7 +82,7 @@ export function SignalSeam({ className }: { className?: string }) {
  * grounds; on a gold ground the primary turns ink so it never disappears.
  */
 const LIFT =
-  "transition-[transform,box-shadow,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0";
+  "[-webkit-tap-highlight-color:transparent] touch-manipulation transition-[translate,scale,rotate,transform,box-shadow,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 active:-translate-y-0.5 active:scale-[0.97] active:duration-150 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:translate-y-0 motion-reduce:active:scale-100";
 
 export const btn = {
   gold: cn(

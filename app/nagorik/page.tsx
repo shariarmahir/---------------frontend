@@ -86,7 +86,7 @@ export default function NagorikPage() {
               অধিকার জানুন, দায়িত্ব পালন করুন, আর অন্যায়ের সামনে সাহস নিয়ে দাঁড়ান। একজন বদলালে একটি ঘর বদলায়; একটি পাড়া বদলালে দেশ।
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Link href="/bangladesh#solutions" className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-bd-green px-6 font-bengali text-base font-bold text-white transition-colors hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-bd-green/40 focus-visible:ring-offset-2 focus-visible:outline-none">
+              <Link href="/bangladesh/solutions" className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-bd-green px-6 font-bengali text-base font-bold text-white transition-colors hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-bd-green/40 focus-visible:ring-offset-2 focus-visible:outline-none">
                 <Icon name="lightbulb" className="text-[20px]" /> বাংলাদেশ সমস্যা ও সমাধান
               </Link>
               <Link href="/cholo-bangladesh-gori/mission" className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-signal-orange px-6 font-bengali text-base font-bold text-text-primary transition-[filter] hover:brightness-95 focus-visible:ring-2 focus-visible:ring-bd-green/40 focus-visible:outline-none">

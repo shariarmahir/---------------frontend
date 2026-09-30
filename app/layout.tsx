@@ -5,6 +5,7 @@ import {
   Hind_Siliguri,
   JetBrains_Mono,
 } from "next/font/google";
+import { RevealFallback } from "@/components/ui/reveal-fallback";
 import "./globals.css";
 
 // Gilroy is a commercial font with no next/font/google entry and no local
@@ -77,6 +78,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         className="min-h-full flex flex-col bg-background font-sans text-body-md text-foreground antialiased"
       >
         {children}
+        <RevealFallback />
       </body>
     </html>
   );

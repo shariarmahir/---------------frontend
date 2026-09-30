@@ -1,6 +1,7 @@
+import Link from "next/link";
 import { FilmButton } from "@/components/bangladesh/story-video";
 import { heroFacts, heroFilm } from "@/data/bangladesh";
-import { ACTS } from "@/data/desh";
+import { DESH_CHAPTERS } from "@/data/desh";
 import { PixelMap } from "./pixel-map";
 
 /**
@@ -25,19 +26,20 @@ export function DeshHero() {
             <span className="text-signal-orange [text-shadow:0_0_28px_rgb(228_176_39/0.5)]">সমাধান</span>
           </h1>
           <p className="mt-5 max-w-xl font-bengali text-lg leading-relaxed text-emerald-50/85">
-            দেশটা যেন একটা ঝাপসা ছবি — প্রতিটি অমীমাংসিত সমস্যা একটা নষ্ট পিক্সেল। আমাদের গল্প, সামনের সংকট, ৩২টি বাস্তব সমস্যা আর সেগুলো মেরামতের বাস্তব পথ — এক পাতায়।
+            দেশটা যেন একটা ঝাপসা ছবি — প্রতিটি অমীমাংসিত সমস্যা একটা নষ্ট পিক্সেল। আমাদের গল্প, সামনের সংকট, ৩২টি বাস্তব সমস্যা আর সেগুলো মেরামতের বাস্তব পথ — পাঁচটি অধ্যায়ে।
           </p>
 
-          <nav aria-label="এই পাতার চার অধ্যায়" className="mt-8 grid grid-cols-2 gap-2 sm:grid-cols-4">
-            {ACTS.map((a) => (
-              <a
-                key={a.id}
-                href={`#${a.id}`}
-                className="group rounded-xl border border-white/12 bg-white/5 px-3 py-3 transition-colors hover:border-signal-orange/60 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
+          <nav aria-label="পাঁচটি অধ্যায়" className="mt-8 grid grid-cols-2 gap-2 sm:grid-cols-5">
+            {DESH_CHAPTERS.map((c) => (
+              <Link
+                key={c.href}
+                href={c.href}
+                aria-current={c.href === "/bangladesh" ? "page" : undefined}
+                className="group rounded-xl border border-white/12 bg-white/5 px-3 py-3 transition-colors hover:border-signal-orange/60 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none aria-[current=page]:border-signal-orange/60 aria-[current=page]:bg-white/10"
               >
-                <span className="block font-bengali text-2xl leading-none font-bold text-signal-orange">{a.n}</span>
-                <span className="mt-1.5 block font-bengali text-sm font-semibold text-white">{a.label}</span>
-              </a>
+                <span className="block font-bengali text-2xl leading-none font-bold text-signal-orange">{c.n}</span>
+                <span className="mt-1.5 block font-bengali text-sm font-semibold text-white">{c.label}</span>
+              </Link>
             ))}
           </nav>
 

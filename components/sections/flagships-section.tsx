@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import { Icon } from "@/components/ui/icon";
 import { SectionHeading, btn } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
@@ -25,28 +26,30 @@ const SWASTI_BULLETS = [
   },
 ];
 
-/** White tiles on the gold panel; the title colour names the job. */
+/** Solid colour cards on the gold panel, the Pixel-Map palette (no gold: it would vanish). */
 const SWASTI_HIGHLIGHTS = [
   {
     title: "5-STEP RISK ANALYSIS",
     note: "Hemodynamic CNN diagnostic pass & automated triage.",
-    titleClass: "text-bd-green",
+    surface: "bg-bd-green text-white",
+    glow: "var(--color-bd-green)",
   },
   {
-    // Golden-hours content: the one place red belongs (CLAUDE.md §4.1).
     title: "GOLDEN 2-HR ALERT",
     note: "Autonomous pre-stroke & cardiac anomaly detection.",
-    titleClass: "text-national-crimson",
+    surface: "bg-bdorange-600 text-text-primary",
+    glow: "var(--color-bdorange-600)",
   },
   {
     title: "OFFLINE BENGALI RAG",
     note: "On-device medical guidance without cloud dependence.",
-    titleClass: "text-text-primary",
+    surface: "bg-text-primary text-white",
+    glow: "var(--color-text-primary)",
   },
 ];
 
 const PANEL_LIFT =
-  "transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0";
+  "[-webkit-tap-highlight-color:transparent] touch-manipulation transition-[translate,scale,rotate,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0";
 
 export function FlagshipsSection() {
   return (
@@ -132,8 +135,8 @@ export function FlagshipsSection() {
         </div>
 
         {/* Device photograph, no frame: it fills the whole right side of the
-            panel (stretched to the copy's height on desktop, 4:3 on phones). */}
-        <div className="lg:col-span-6 lg:self-stretch">
+            panel (stretched to the copy's height on desktop; on phones it sits above the copy, 4:3). */}
+        <div className="order-first lg:order-none lg:col-span-6 lg:self-stretch">
           <div className="group relative aspect-4/3 h-full overflow-hidden rounded-2xl shadow-tile-lift lg:aspect-auto lg:min-h-112">
             <Image
               src="/sections/device.png"
@@ -143,20 +146,6 @@ export function FlagshipsSection() {
               quality={90}
               className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] motion-reduce:transition-none"
             />
-
-            {/* Live readout pinned over the render. */}
-            <span className="absolute top-3 left-3 flex items-center gap-1.5 rounded-lg bg-text-primary/85 px-2.5 py-1 font-mono text-[10px] font-bold tracking-wide text-emerald-200 shadow-md backdrop-blur-sm">
-              <span className="size-1.5 animate-pulse rounded-full bg-emerald-300" />
-              APONJON · 72 BPM
-            </span>
-
-            <span className="absolute right-3 bottom-3 flex gap-1.5 font-mono text-[9px] text-white">
-              {["ECG", "SpO₂", "EMG"].map((tag) => (
-                <span key={tag} className="rounded bg-text-primary/80 px-2 py-0.5 ring-1 ring-white/25 backdrop-blur-sm">
-                  {tag}
-                </span>
-              ))}
-            </span>
           </div>
         </div>
       </article>
@@ -217,14 +206,19 @@ export function FlagshipsSection() {
             ))}
           </ul>
 
-          <div className="grid grid-cols-1 gap-3 pt-1 font-mono text-xs sm:grid-cols-3">
+          <div className="grid grid-cols-3 gap-2 pt-1 font-mono text-xs sm:gap-3">
             {SWASTI_HIGHLIGHTS.map((item) => (
               <div
                 key={item.title}
-                className={cn("rounded-xl bg-white p-3 ring-1 ring-text-primary/10", PANEL_LIFT, "shadow-tile hover:shadow-tile-lift")}
+                style={{ "--glow": item.glow } as CSSProperties}
+                className={cn(
+                  "rounded-xl p-2.5 shadow-sm sm:rounded-2xl sm:p-3.5",
+                  "[-webkit-tap-highlight-color:transparent] touch-manipulation transition-[translate,scale,rotate,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-[0_22px_40px_-20px_var(--glow)] active:-translate-y-1.5 active:shadow-[0_22px_40px_-20px_var(--glow)] active:scale-[0.98] active:duration-150 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+                  item.surface,
+                )}
               >
-                <span className={cn("mb-1 block font-bold", item.titleClass)}>{item.title}</span>
-                <span className="text-[11px] text-text-secondary">{item.note}</span>
+                <span className="mb-1 block text-[10px] leading-tight font-bold sm:text-xs">{item.title}</span>
+                <span className="text-[10px] leading-snug sm:text-[11px]">{item.note}</span>
               </div>
             ))}
           </div>
@@ -234,9 +228,6 @@ export function FlagshipsSection() {
               <Icon name="download" className="text-lg text-signal-orange" />
               Download SWASTI App APK / Play Store
             </a>
-            <span className="rounded-xl bg-white px-3.5 py-2.5 font-mono text-xs font-bold text-bd-green shadow-tile">
-              FREE NATIONAL CITIZEN ACCESS
-            </span>
           </div>
         </div>
       </article>

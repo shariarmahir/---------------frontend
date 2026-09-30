@@ -32,7 +32,7 @@ export const navLinks: NavLink[] = [
     // A full path, not a bare "#national-index" anchor: the section lives
     // on the country page, so the fragment alone would resolve to nothing
     // on the home page and the link would silently do nothing.
-    href: "/bangladesh#national-index",
+    href: "/bangladesh/problems#national-index",
     label: "National Index",
     shortLabel: "Index",
   },
@@ -63,18 +63,18 @@ export const navLinks: NavLink[] = [
 ];
 
 /**
- * Navigation for "বাংলাদেশ সমস্যা ও সমাধান" (/bangladesh) — its four acts
- * and their key sections plus the game (চলো বাংলাদেশ গড়ি), kept to six so
- * the bar fits at 1024px; the civic-duty page has its own header button. Full
- * "/bangladesh#…" paths, so the set also works from /nagorik; each fragment
- * matches a section id on the page.
+ * Navigation for "বাংলাদেশ সমস্যা ও সমাধান" — one page per item
+ * (/bangladesh and /bangladesh/{crisis,shield,problems,solutions}) plus the
+ * game (চলো বাংলাদেশ গড়ি), kept to six so the bar fits at 1024px; the
+ * civic-duty page has its own header button. Full paths, so the set also
+ * works from /nagorik.
  */
 export const bangladeshNavLinks: NavLink[] = [
-  { href: "/bangladesh#history", label: "ইতিহাস", shortLabel: "ইতিহাস" },
-  { href: "/bangladesh#crisis", label: "সংকট", shortLabel: "সংকট" },
-  { href: "/bangladesh#shield", label: "নাগরিক ঢাল", shortLabel: "ঢাল" },
-  { href: "/bangladesh#register", label: "৩২টি সমস্যা", shortLabel: "সমস্যা" },
-  { href: "/bangladesh#solutions", label: "সমাধান", shortLabel: "সমাধান" },
+  { href: "/bangladesh", label: "ইতিহাস", shortLabel: "ইতিহাস" },
+  { href: "/bangladesh/crisis", label: "সংকট", shortLabel: "সংকট" },
+  { href: "/bangladesh/shield", label: "নাগরিক ঢাল", shortLabel: "ঢাল" },
+  { href: "/bangladesh/problems", label: "৩২টি সমস্যা", shortLabel: "সমস্যা" },
+  { href: "/bangladesh/solutions", label: "সমাধান", shortLabel: "সমাধান" },
   { href: "/cholo-bangladesh-gori", label: "চলো বাংলাদেশ গড়ি", shortLabel: "গড়ি" },
 ];
 
@@ -128,7 +128,7 @@ export const goriNavLinks: NavLink[] = [
   { href: "/cholo-bangladesh-gori/lab", label: "বিজ্ঞানাগার", shortLabel: "ল্যাব" },
   { href: "/cholo-bangladesh-gori/evidence", label: "প্রমাণ", shortLabel: "প্রমাণ" },
   { href: "/cholo-bangladesh-gori/progress", label: "অগ্রগতি", shortLabel: "অগ্রগতি" },
-  { href: "/bangladesh#register", label: "৩২টি সমস্যা", shortLabel: "সমস্যা" },
+  { href: "/bangladesh/problems", label: "৩২টি সমস্যা", shortLabel: "সমস্যা" },
 ];
 
 /**
@@ -139,7 +139,7 @@ export function navLinksFor(pathname: string): NavLink[] {
   if (pathname === "/products" || pathname.startsWith("/products/")) {
     return productNavLinks;
   }
-  if (pathname === "/bangladesh") {
+  if (pathname === "/bangladesh" || pathname.startsWith("/bangladesh/")) {
     return bangladeshNavLinks;
   }
   if (pathname === "/nagorik") {

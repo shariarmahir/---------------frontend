@@ -26,6 +26,26 @@ export const ACTS: Act[] = [
   { id: "solutions", n: "৪", label: "সমাধান", title: "বাস্তব সমাধান, একসাথে", line: "যা আমাদের আছে, যা ছাড়তে হবে, আর কে কী করবে — দয়া আর সাহস নিয়ে।" },
 ];
 
+/**
+ * The five pages of the country section, in reading order — one route each,
+ * matching the header nav. The hero's chapter cards and the pager at the
+ * foot of every page read from here.
+ */
+export interface DeshChapter {
+  href: string;
+  n: string;
+  label: string;
+  blurb: string;
+}
+
+export const DESH_CHAPTERS: DeshChapter[] = [
+  { href: "/bangladesh", n: "১", label: "ইতিহাস", blurb: "হাজার বছরের গল্প, নদী-মাঠ-পাহাড়, ভাষা আর একাত্তর।" },
+  { href: "/bangladesh/crisis", n: "২", label: "সংকট", blurb: "যে ঝুঁকি দেশকে আঘাত করছে।" },
+  { href: "/bangladesh/shield", n: "৩", label: "নাগরিক ঢাল", blurb: "নিজের এলাকা রক্ষায় নাগরিকের দায়িত্ব।" },
+  { href: "/bangladesh/problems", n: "৪", label: "৩২টি সমস্যা", blurb: "প্রমাণসহ পিক্সেল বাই পিক্সেল সমস্যা।" },
+  { href: "/bangladesh/solutions", n: "৫", label: "সমাধান", blurb: "যা আছে, যা ছাড়তে হবে, কে কী করবে।" },
+];
+
 /* ── Act 2 · the attacks and the shield ─────────────────────────────── */
 
 export interface CrisisAttack {

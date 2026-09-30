@@ -58,9 +58,9 @@ export function ResearchCard() {
               <Link href="/cholo-bangladesh-gori/evidence" className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-bd-green px-4 font-bengali text-sm font-bold text-white transition-colors hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-bd-green/40 focus-visible:ring-offset-2 focus-visible:outline-none">
                 <Icon name="manage_search" className="text-[18px]" /> প্রমাণ অন্বেষণ করুন
               </Link>
-              <a href="#register" className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-bd-green/30 px-4 font-bengali text-sm font-bold text-bd-green transition-colors hover:bg-mint-subtle focus-visible:ring-2 focus-visible:ring-bd-green/40 focus-visible:outline-none">
+              <Link href="/bangladesh/problems" className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-bd-green/30 px-4 font-bengali text-sm font-bold text-bd-green transition-colors hover:bg-mint-subtle focus-visible:ring-2 focus-visible:ring-bd-green/40 focus-visible:outline-none">
                 <Icon name="grid_view" className="text-[18px]" /> ৩২টি পিক্সেলে ফিরুন
-              </a>
+              </Link>
             </div>
           </div>
         </article>

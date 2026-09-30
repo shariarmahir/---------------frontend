@@ -72,7 +72,7 @@ function PillarArt({ kind }: { kind: ArtKind }) {
     strokeLinejoin: "round" as const,
     "aria-hidden": true,
     className:
-      "absolute inset-0 size-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100",
+      "absolute inset-0 size-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 group-active:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100 motion-reduce:group-active:scale-100",
   };
 
   if (kind === "pulse") {
@@ -190,7 +190,7 @@ export function PixelThesisSection() {
           lead="Bangladesh has complex systemic challenges across public health, transport, and energy. Like a high-resolution image formed by individual pixels, every national problem is a discrete data coordinate. By engineering native silicon, sensors, and algorithms for each pixel, we auto-enhance the entire digital canvas of Bangladesh."
         />
 
-        <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
           {PILLARS.map((pillar) => (
             // The scroll reveal lives on the <li> so its transform never
             // fights the card's own hover lift.
@@ -198,25 +198,25 @@ export function PixelThesisSection() {
               <article
                 style={{ "--glow": pillar.glow } as CSSProperties}
                 className={cn(
-                  "group relative flex w-full flex-col overflow-hidden rounded-3xl p-6 shadow-sm",
-                  "transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
-                  "hover:-translate-y-2 hover:shadow-[0_28px_48px_-22px_var(--glow)]",
+                  "group relative flex w-full flex-col overflow-hidden rounded-2xl p-4 shadow-sm sm:rounded-3xl sm:p-6",
+                  "[-webkit-tap-highlight-color:transparent] touch-manipulation transition-[translate,scale,rotate,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                  "hover:-translate-y-2 hover:shadow-[0_28px_48px_-22px_var(--glow)] active:-translate-y-2 active:shadow-[0_28px_48px_-22px_var(--glow)] active:scale-[0.98] active:duration-150",
                   "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
                   pillar.surface,
                 )}
               >
                 {/* Motion-graphic header. */}
-                <div className="relative -mx-6 -mt-6 mb-4 h-36">
-                  <div className={cn("absolute inset-x-6 top-6 bottom-2", pillar.artClass)}>
+                <div className="relative -mx-4 -mt-4 mb-2 h-24 sm:-mx-6 sm:-mt-6 sm:mb-4 sm:h-36">
+                  <div className={cn("absolute inset-x-4 top-4 bottom-1 sm:inset-x-6 sm:top-6 sm:bottom-2", pillar.artClass)}>
                     <PillarArt kind={pillar.art} />
                   </div>
                 </div>
 
-                <h3 className="mb-2 font-grotesk text-lg font-bold uppercase">
+                <h3 className="mb-1.5 font-grotesk text-[0.8rem] leading-tight font-bold uppercase sm:mb-2 sm:text-lg">
                   {pillar.title}
                 </h3>
 
-                <p className="font-sans text-sm leading-relaxed">
+                <p className="font-sans text-xs leading-relaxed sm:text-sm">
                   {pillar.description}
                 </p>
               </article>

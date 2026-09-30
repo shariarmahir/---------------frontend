@@ -537,6 +537,28 @@
   to { transform: scaleX(1); }
 }
 
+/* Section-heading pixels: a wave, one pixel after the next. Each rises,
+   turns a half-turn (a rounded square looks the same every quarter-turn,
+   so the loop restarts seamlessly) and glows in its own colour. */
+.pixel-wave {
+  animation: pixel-wave 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  animation-delay: calc(var(--i, 0) * 180ms);
+}
+@keyframes pixel-wave {
+  0%, 55%, 100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    box-shadow: 0 0 0 0 transparent;
+  }
+  20% {
+    transform: translateY(-6px) rotate(90deg) scale(1.25);
+    box-shadow: 0 6px 12px -2px var(--glow);
+  }
+  40% {
+    transform: translateY(0) rotate(180deg) scale(1);
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
 /* Console caret. */
 .caret-blink {
   animation: caret-blink 1.05s steps(1) infinite;
@@ -721,6 +743,22 @@
     animation: story-draw linear both;
     animation-timeline: view();
     animation-range: entry 10% cover 45%;
+  }
+}
+
+/* Same rise for browsers without view timelines: a small script marks the
+   root and adds .in-view on scroll (components/ui/reveal-fallback.tsx). */
+@supports not (animation-timeline: view()) {
+  .reveal-js .story-reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.7s ease-out,
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .reveal-js .story-reveal.in-view {
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -1022,7 +1060,8 @@
   .signal-run {
     visibility: hidden;
   }
-  .caret-blink {
+  .caret-blink,
+  .pixel-wave {
     animation: none !important;
   }
   .hero-progress {
@@ -1086,6 +1125,11 @@
   }
   .story-draw {
     stroke-dasharray: none;
+  }
+  .reveal-js .story-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 
   /* Announcements still rotate, but swap in place without sliding. */

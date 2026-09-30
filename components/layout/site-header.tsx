@@ -266,6 +266,7 @@ export function SiteHeader() {
   // other pages, so linking to them there would scroll nowhere.
   const pathname = usePathname();
   const navLinks = navLinksFor(pathname);
+  const inDesh = pathname === "/bangladesh" || pathname.startsWith("/bangladesh/");
 
   // Which link the current page corresponds to, recomputed each render
   // so client-side navigation between two nav pages moves the highlight.
@@ -460,10 +461,10 @@ export function SiteHeader() {
                 href="/bangladesh"
                 prefetch={false}
                 title="বাংলাদেশ সমস্যা ও সমাধান — ইতিহাস, সংকট, ৩২টি সমস্যা ও সমাধান"
-                aria-current={pathname === "/bangladesh" ? "page" : undefined}
+                aria-current={inDesh ? "page" : undefined}
                 className={cn(
                   "inline-flex items-center rounded-full bg-linear-to-r from-bd-green to-bdgreen-800 px-2.5 py-1.5 whitespace-nowrap text-signal-orange shadow-ink transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:from-bd-green-dark hover:to-bd-green focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:outline-none motion-reduce:hover:translate-y-0 xl:px-3.5",
-                  pathname === "/bangladesh" && "ring-2 ring-text-primary",
+                  inDesh && "ring-2 ring-text-primary",
                 )}
               >
                 <DeshLabel className="text-[15px] leading-none" />

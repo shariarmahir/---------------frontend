@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
+import { CardDetails, TapCard } from "@/components/ui/card-details";
 import { Icon } from "@/components/ui/icon";
 import { SectionHeading, btn } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
@@ -17,6 +18,7 @@ const EXECUTIVES = [
     name: "Mahir Shariar Mahin",
     photo: "/team/mahir_shariar_mahin.png",
     role: "Founder & Team Leader",
+    short: "Founder & CEO",
     title: "Chief Executive Officer",
     blurb:
       "Spearheading native deep-tech roadmaps, hardware prototyping, and national clinical integration protocols.",
@@ -30,6 +32,7 @@ const EXECUTIVES = [
     name: "Sadman bin Arif",
     photo: "/team/sadman-bin-arif.jpg",
     role: "Executive Governance",
+    short: "COO",
     title: "Chief Operating Officer",
     blurb:
       "Orchestrating 64-district smart pharmacy scaling, government telemetry compliance, and supply chain logistics.",
@@ -42,6 +45,7 @@ const EXECUTIVES = [
     name: "Nabeel Shadad",
     photo: "/team/nabeel-shadad.jpg",
     role: "Strategic Expansion",
+    short: "CMO",
     title: "Chief Marketing Officer",
     blurb:
       "Leading international hardware partnerships, medical institutional adoption, and public narrative momentum.",
@@ -59,7 +63,6 @@ const EXECUTIVES = [
  */
 const LEADS = [
   {
-    tag: "[ Idea & Creative Leads ]",
     title: "Concept & Clinical User Empathy",
     people: "Istiake Ahmed, Safia Mubassara Ruzba, Jamil Hossan",
     note: "User empathy, ergonomic medical casing, product semantics.",
@@ -67,7 +70,6 @@ const LEADS = [
     glow: "var(--color-bd-green)",
   },
   {
-    tag: "[ IoT & Hardware Architecture ]",
     title: "Sensors & Embedded Systems",
     people: "Janassor Ahmed, Sharul Bhuiya, Safia Mubassara Ruzba",
     note: "Micro-soldering, LiDAR circuits, low-power telemetry & antenna RF.",
@@ -75,7 +77,6 @@ const LEADS = [
     glow: "var(--color-signal-orange)",
   },
   {
-    tag: "[ AI & Software Systems ]",
     title: "Fullstack, AI & SWASTI Mobile",
     people: "Luban Ahmed, Shabbin Ahmed",
     note: "Bengali RAG models, Flutter app core, real-time WebSockets & CNNs.",
@@ -95,14 +96,16 @@ export function LeadershipSection() {
       />
 
       {/* Executive row. */}
-      <ul className="mb-6 grid gap-5 sm:grid-cols-3">
+      <ul className="mb-4 grid grid-cols-3 gap-2 sm:mb-6 sm:gap-5">
         {EXECUTIVES.map((exec) => (
           <li key={exec.name} className="story-reveal flex">
-            <article
+            <TapCard
+              label={exec.name}
+              hint={<span className="font-mono text-[10px] font-bold uppercase opacity-90">{exec.short}</span>}
               style={{ "--glow": exec.glow } as CSSProperties}
               className={cn(
-                "group relative flex w-full flex-col overflow-hidden rounded-3xl shadow-sm",
-                "transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:shadow-[0_28px_48px_-22px_var(--glow)] motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+                "group flex w-full flex-col overflow-hidden rounded-2xl shadow-sm sm:rounded-3xl",
+                "[-webkit-tap-highlight-color:transparent] touch-manipulation transition-[translate,scale,rotate,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:shadow-[0_28px_48px_-22px_var(--glow)] active:-translate-y-2 active:shadow-[0_28px_48px_-22px_var(--glow)] active:scale-[0.98] active:duration-150 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
                 exec.surface,
               )}
             >
@@ -112,43 +115,47 @@ export function LeadershipSection() {
                   src={exec.photo}
                   alt={`${exec.name}, ${exec.title}`}
                   fill
-                  sizes="(min-width: 640px) 33vw, 100vw"
+                  sizes="(min-width: 1280px) 400px, 33vw"
                   quality={90}
                   className="object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 motion-reduce:transition-none"
                 />
                 <div aria-hidden className={cn("absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-b from-transparent", exec.fade)} />
               </div>
 
-              <div className="relative -mt-8 flex flex-1 flex-col px-6 pb-6">
-                <span className={cn("mb-3 w-fit rounded-full px-3 py-1 font-mono text-[11px] font-bold uppercase", exec.pill)}>
+              <div className="relative -mt-5 flex flex-1 flex-col px-2.5 pb-1 sm:-mt-8 sm:px-6 sm:pb-6">
+                <span className={cn("mb-2 w-fit rounded-full px-2 py-0.5 font-mono text-[9px] leading-tight font-bold uppercase sm:mb-3 sm:px-3 sm:py-1 sm:text-[11px]", exec.pill)}>
                   {exec.title}
                 </span>
-                <h3 className="font-grotesk text-xl font-bold">{exec.name}</h3>
-                <p className="mt-1 font-mono text-xs font-semibold uppercase opacity-80">{exec.role}</p>
-                <p className="mt-3 font-sans text-sm leading-relaxed">{exec.blurb}</p>
+                <h3 className="font-grotesk text-[0.85rem] leading-tight font-bold sm:text-xl">{exec.name}</h3>
+                <CardDetails>
+                  <p className="mt-1 font-mono text-[9px] leading-tight font-semibold uppercase opacity-80 sm:text-xs">{exec.role}</p>
+                  <p className="mt-2 font-sans text-[11px] leading-snug sm:mt-3 sm:text-sm sm:leading-relaxed">{exec.blurb}</p>
+                </CardDetails>
               </div>
-            </article>
+            </TapCard>
           </li>
         ))}
       </ul>
 
       {/* Functional leads. */}
-      <ul className="grid gap-5 md:grid-cols-3">
+      <ul className="grid grid-cols-3 gap-2 sm:gap-5">
         {LEADS.map((lead) => (
-          <li key={lead.tag} className="story-reveal flex">
-            <article
+          <li key={lead.title} className="story-reveal flex">
+            <TapCard
+              label={lead.title}
               style={{ "--glow": lead.glow } as CSSProperties}
               className={cn(
-                "flex w-full flex-col gap-2 rounded-3xl p-6 shadow-sm",
-                "transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:shadow-[0_28px_48px_-22px_var(--glow)] motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+                "flex w-full flex-col gap-1.5 rounded-2xl p-3 shadow-sm sm:gap-2 sm:rounded-3xl sm:p-6",
+                "[-webkit-tap-highlight-color:transparent] touch-manipulation transition-[translate,scale,rotate,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:shadow-[0_28px_48px_-22px_var(--glow)] active:-translate-y-2 active:shadow-[0_28px_48px_-22px_var(--glow)] active:scale-[0.98] active:duration-150 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
                 lead.surface,
               )}
             >
-              <span className="font-mono text-xs font-bold uppercase opacity-80">{lead.tag}</span>
-              <h4 className="font-grotesk text-lg font-bold">{lead.title}</h4>
-              <p className="font-sans text-sm font-medium">{lead.people}</p>
-              <p className="mt-auto pt-3 font-mono text-xs opacity-80">{lead.note}</p>
-            </article>
+              <h4 className="font-grotesk text-[0.85rem] leading-tight font-bold sm:text-lg">{lead.title}</h4>
+              <CardDetails className="flex flex-col gap-1.5 sm:h-full sm:gap-2">
+                <p className="font-sans text-[11px] leading-snug font-medium sm:text-sm">{lead.people}</p>
+                <p className="mt-auto pt-2 font-mono text-[10px] leading-snug opacity-80 sm:pt-3 sm:text-xs">{lead.note}</p>
+              </CardDetails>
+            </TapCard>
           </li>
         ))}
       </ul>

@@ -1,18 +1,23 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import { Icon } from "@/components/ui/icon";
-import { PixelMark, SignalSeam, tileLift } from "@/components/ui/section-kit";
+import { PixelMark, SignalSeam } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
 
 const CAPABILITIES = [
   {
     icon: "solar_power",
-    tile: "bg-signal-orange text-text-primary",
+    surface: "bg-signal-orange text-text-primary",
+    tile: "bg-text-primary text-signal-orange",
+    glow: "var(--color-signal-orange)",
     title: "Solar Powered Grid",
     note: "Uninterrupted 24/7 cold-chain & telemetry during rural grid shedding.",
   },
   {
     icon: "switch_video",
-    tile: "bg-bd-green text-white",
+    surface: "bg-text-primary text-white ring-1 ring-white/12",
+    tile: "bg-bdgreen-500 text-text-primary",
+    glow: "var(--color-bdgreen-500)",
     title: "Tele-Consultation",
     note: "Sub-second encrypted video connection directly to Dhaka specialized doctors.",
   },
@@ -41,20 +46,6 @@ export function MetricsSection() {
                 quality={90}
                 className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] motion-reduce:transition-none"
               />
-
-              <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-white px-3 py-1 font-mono text-xs font-bold text-bd-green shadow-tile">
-                <span className="size-2 animate-pulse rounded-full bg-bd-green" />
-                LIVE PILOT: MANIKGANJ UNION #3
-              </div>
-
-              {/* Capability tags the schematic used to carry. */}
-              <div className="absolute right-3 bottom-3 left-3 flex flex-wrap gap-1.5 font-mono text-[9px] text-white">
-                {["DIAG KIOSK", "TELE-LINK", "COLD CHAIN", "SOLAR CELL"].map((tag) => (
-                  <span key={tag} className="rounded bg-text-primary/80 px-2 py-0.5 whitespace-nowrap ring-1 ring-white/25 backdrop-blur-sm">
-                    ◦ {tag}
-                  </span>
-                ))}
-              </div>
             </div>
           </div>
 
@@ -74,13 +65,21 @@ export function MetricsSection() {
               automated tele-consultation, and SWASTI digital records.
             </p>
 
-            <div className="grid grid-cols-1 gap-4 pt-2 sm:grid-cols-2">
+            <div className="grid grid-cols-2 gap-2.5 pt-2 sm:gap-4">
               {CAPABILITIES.map((c) => (
-                <div key={c.title} className={cn("group rounded-2xl bg-white p-4 text-text-primary", tileLift)}>
-                  <div className="mb-2 flex items-center gap-2.5 font-grotesk text-sm font-bold uppercase">
+                <div
+                  key={c.title}
+                  style={{ "--glow": c.glow } as CSSProperties}
+                  className={cn(
+                    "group rounded-xl p-3 shadow-sm sm:rounded-2xl sm:p-4",
+                    "[-webkit-tap-highlight-color:transparent] touch-manipulation transition-[translate,scale,rotate,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-[0_22px_40px_-20px_var(--glow)] active:-translate-y-1.5 active:shadow-[0_22px_40px_-20px_var(--glow)] active:scale-[0.98] active:duration-150 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+                    c.surface,
+                  )}
+                >
+                  <div className="mb-2 flex items-center gap-2.5 font-grotesk text-xs font-bold uppercase sm:text-sm">
                     <span
                       className={cn(
-                        "grid size-9 place-items-center rounded-xl transition-transform duration-300 group-hover:-rotate-6 motion-reduce:transition-none motion-reduce:group-hover:rotate-0",
+                        "grid size-8 shrink-0 place-items-center rounded-lg transition-transform duration-300 group-hover:-rotate-6 motion-reduce:transition-none motion-reduce:group-hover:rotate-0",
                         c.tile,
                       )}
                     >
@@ -88,7 +87,7 @@ export function MetricsSection() {
                     </span>
                     {c.title}
                   </div>
-                  <p className="font-sans text-xs leading-relaxed text-text-secondary">{c.note}</p>
+                  <p className="font-sans text-[11px] leading-snug sm:text-xs sm:leading-relaxed">{c.note}</p>
                 </div>
               ))}
             </div>

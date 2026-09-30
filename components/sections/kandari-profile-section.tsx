@@ -125,15 +125,15 @@ export function KandariProfileSection() {
           <div className="relative isolate flex flex-1 flex-col gap-6 bg-bd-green px-6 py-8 text-white sm:px-10 lg:px-12 lg:py-10">
             <fieldset className="flex flex-col gap-3">
               <legend className="sr-only">Choose your profile tier</legend>
-              <div className="flex flex-col gap-3 md:flex-row">
+              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3 sm:gap-3">
                 {TIERS.map((item) => {
                   const active = tier === item.id;
                   return (
                     <label
                       key={item.id}
                       className={cn(
-                        "group relative flex flex-1 cursor-pointer flex-col justify-between gap-3 rounded-2xl p-4",
-                        "transition-[transform,box-shadow,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+                        "group relative grid cursor-pointer grid-cols-[auto_1fr_auto] items-center gap-x-3 rounded-2xl p-3.5 sm:flex sm:flex-1 sm:flex-col sm:items-stretch sm:justify-between sm:gap-3 sm:p-4",
+                        "[-webkit-tap-highlight-color:transparent] touch-manipulation transition-[translate,scale,rotate,transform,box-shadow,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 active:scale-[0.98] active:duration-150 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100",
                         "has-focus-visible:ring-2 has-focus-visible:ring-white has-focus-visible:ring-offset-2 has-focus-visible:ring-offset-bd-green",
                         item.surface,
                         // The chosen tier is lifted and framed in dark ink; the
@@ -143,10 +143,10 @@ export function KandariProfileSection() {
                           : "shadow-tile hover:shadow-tile-lift",
                       )}
                     >
-                      <div className="flex flex-col gap-2">
-                        <div className="flex items-center justify-between">
-                          <span className={cn("grid size-10 place-items-center rounded-xl", item.tile)}>
-                            <Icon name={item.icon} className="text-2xl" />
+                      <div className="contents sm:flex sm:flex-col sm:gap-2">
+                        <div className="contents sm:flex sm:items-center sm:justify-between">
+                          <span className={cn("col-start-1 row-span-3 row-start-1 grid size-11 place-items-center rounded-xl sm:size-10", item.tile)}>
+                            <Icon name={item.icon} className="text-xl sm:text-2xl" />
                           </span>
                           <input
                             type="radio"
@@ -154,18 +154,18 @@ export function KandariProfileSection() {
                             value={item.id}
                             checked={active}
                             onChange={() => setTier(item.id)}
-                            className={cn("size-4 focus-visible:outline-none", item.radio)}
+                            className={cn("col-start-3 row-span-3 row-start-1 size-4 focus-visible:outline-none", item.radio)}
                           />
                         </div>
-                        <span className="font-grotesk text-base font-bold">{item.title}</span>
-                        <p className="font-sans text-xs leading-relaxed">
+                        <span className="col-start-2 font-grotesk text-base leading-tight font-bold">{item.title}</span>
+                        <p className="col-start-2 mt-1 font-sans text-xs leading-relaxed sm:mt-0">
                           {item.blurb}
                         </p>
                       </div>
 
                       <span
                         className={cn(
-                          "border-t border-current/20 pt-2 font-mono text-[10px] font-semibold uppercase",
+                          "col-start-2 mt-2 border-t border-current/20 pt-2 font-mono text-[10px] leading-tight font-semibold uppercase sm:mt-0",
                         )}
                       >
                         {item.tier}
