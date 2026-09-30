@@ -55,7 +55,7 @@ export function NodeTerminalSection() {
           {/* Narrative. */}
           <div className="story-reveal space-y-5 lg:col-span-5">
             <PixelMark tone="dark" />
-            <h2 className="font-grotesk text-2xl font-bold tracking-tight text-balance uppercase sm:text-3xl lg:text-4xl">
+            <h2 className="font-grotesk text-2xl font-bold tracking-tight text-balance text-signal-orange uppercase sm:text-3xl lg:text-4xl">
               The Bangladesh Innovation Drive
             </h2>
 

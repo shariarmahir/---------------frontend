@@ -131,35 +131,32 @@ export function FlagshipsSection() {
           </div>
         </div>
 
-        {/* Device photograph in a white frame, like the header's tiles. */}
-        <div className="lg:col-span-6">
-          <div className="group relative overflow-hidden rounded-2xl bg-white p-1.5 shadow-tile-lift">
-            {/* 4:3 matches the source's 1.34 ratio almost exactly, so the
-                photograph is shown essentially uncropped. */}
-            <div className="relative aspect-4/3 overflow-hidden rounded-xl">
-              <Image
-                src="/sections/device.png"
-                alt="আপনজন AI নিউরো ব্যান্ড পরা এক নারীর কব্জি থেকে পালস, SpO₂ ও স্ট্রেস রিডিং ভেসে উঠছে; পেছনে হেলথকেয়ার সেন্টারে একজন চিকিৎসক"
-                fill
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                quality={90}
-                className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] motion-reduce:transition-none"
-              />
+        {/* Device photograph, no frame: it fills the whole right side of the
+            panel (stretched to the copy's height on desktop, 4:3 on phones). */}
+        <div className="lg:col-span-6 lg:self-stretch">
+          <div className="group relative aspect-4/3 h-full overflow-hidden rounded-2xl shadow-tile-lift lg:aspect-auto lg:min-h-112">
+            <Image
+              src="/sections/device.png"
+              alt="আপনজন AI নিউরো ব্যান্ড পরা এক নারীর কব্জি থেকে পালস, SpO₂ ও স্ট্রেস রিডিং ভেসে উঠছে; পেছনে হেলথকেয়ার সেন্টারে একজন চিকিৎসক"
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              quality={90}
+              className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] motion-reduce:transition-none"
+            />
 
-              {/* Live readout pinned over the render. */}
-              <span className="absolute top-3 left-3 flex items-center gap-1.5 rounded-lg bg-text-primary/85 px-2.5 py-1 font-mono text-[10px] font-bold tracking-wide text-emerald-200 shadow-md backdrop-blur-sm">
-                <span className="size-1.5 animate-pulse rounded-full bg-emerald-300" />
-                APONJON · 72 BPM
-              </span>
+            {/* Live readout pinned over the render. */}
+            <span className="absolute top-3 left-3 flex items-center gap-1.5 rounded-lg bg-text-primary/85 px-2.5 py-1 font-mono text-[10px] font-bold tracking-wide text-emerald-200 shadow-md backdrop-blur-sm">
+              <span className="size-1.5 animate-pulse rounded-full bg-emerald-300" />
+              APONJON · 72 BPM
+            </span>
 
-              <span className="absolute right-3 bottom-3 flex gap-1.5 font-mono text-[9px] text-white">
-                {["ECG", "SpO₂", "EMG"].map((tag) => (
-                  <span key={tag} className="rounded bg-text-primary/80 px-2 py-0.5 ring-1 ring-white/25 backdrop-blur-sm">
-                    {tag}
-                  </span>
-                ))}
-              </span>
-            </div>
+            <span className="absolute right-3 bottom-3 flex gap-1.5 font-mono text-[9px] text-white">
+              {["ECG", "SpO₂", "EMG"].map((tag) => (
+                <span key={tag} className="rounded bg-text-primary/80 px-2 py-0.5 ring-1 ring-white/25 backdrop-blur-sm">
+                  {tag}
+                </span>
+              ))}
+            </span>
           </div>
         </div>
       </article>
@@ -172,23 +169,18 @@ export function FlagshipsSection() {
         )}
       >
 
-        <div className="flex items-center justify-center lg:col-span-5">
-          <div className="group relative w-full max-w-90">
-            {/* 3:4 matches the source's 0.75 ratio exactly — no crop. The
-                render already includes the handset and a hand, so it sits in
-                a plain white frame rather than drawn phone chrome. */}
-            <div className={cn("relative rounded-3xl bg-white p-2 shadow-tile-lift", PANEL_LIFT, "hover:-rotate-1")}>
-              <div className="relative aspect-3/4 overflow-hidden rounded-2xl">
-                <Image
-                  src="/sections/mobileapp.png"
-                  alt="SWASTI স্বস্তি অ্যাপের হোম স্ক্রিন — হার্ট রেট ৭৪ BPM, SpO₂ ৯৮%, রক্তচাপ ১২০/৮০ ও দ্রুত অ্যাকশন বোতাম"
-                  fill
-                  sizes="(min-width: 1024px) 30vw, 90vw"
-                  quality={90}
-                  className="object-cover"
-                />
-              </div>
-            </div>
+        {/* App render, no frame: it fills the whole left side of the panel
+            (stretched to the copy's height on desktop, 3:4 on phones). */}
+        <div className="lg:col-span-5 lg:self-stretch">
+          <div className={cn("group relative mx-auto aspect-3/4 h-full w-full max-w-90 overflow-hidden rounded-3xl shadow-tile-lift lg:aspect-auto lg:max-w-none lg:min-h-112", PANEL_LIFT, "hover:-rotate-1")}>
+            <Image
+              src="/sections/mobileapp.png"
+              alt="SWASTI স্বস্তি অ্যাপের হোম স্ক্রিন — হার্ট রেট ৭৪ BPM, SpO₂ ৯৮%, রক্তচাপ ১২০/৮০ ও দ্রুত অ্যাকশন বোতাম"
+              fill
+              sizes="(min-width: 1024px) 40vw, 90vw"
+              quality={90}
+              className="object-cover"
+            />
           </div>
         </div>
 

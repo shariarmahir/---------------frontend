@@ -2,21 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { Icon } from "@/components/ui/icon";
-import { nationalStats, type RiskTone } from "@/data/national-index";
+import { nationalStats } from "@/data/national-index";
 import { cn } from "@/lib/utils";
-
-const TONE_TEXT: Record<RiskTone, string> = {
-  stable: "text-primary",
-  watch: "text-signal-text",
-  critical: "text-crimson",
-};
-
-/** Icon plate — a tinted disc carrying the severity colour. */
-const TONE_PLATE: Record<RiskTone, string> = {
-  stable: "bg-primary/10 text-primary",
-  watch: "bg-signal/10 text-signal-text",
-  critical: "bg-crimson/10 text-crimson",
-};
 
 /** Indicators that rotate through the navbar slot. */
 const HEADER_IDS = [
@@ -88,10 +75,10 @@ export function NavIndicators({ className }: { className?: string }) {
           // even though nothing clipped. The extra 8px here is padding the
           // eye can see, not padding it has to infer.
           "group relative block h-12 w-64 shrink-0 overflow-hidden xl:w-[18rem] 2xl:w-[19.5rem]",
-          // A solid white tile on the gold header: the severity colours
-          // inside (green, gold-text, red) need a light ground to read.
-          "rounded-xl bg-white shadow-tile ring-1 ring-text-primary/10",
-          "transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-tile-lift motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+          // No fill on the gold header: ink text with a thin ink ring, like
+          // the other header buttons. Direction shows by arrow, not colour.
+          "rounded-xl text-text-primary ring-1 ring-text-primary/35",
+          "transition-[transform,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:bg-text-primary/10 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
           "focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:outline-none",
         )}
       >
@@ -115,8 +102,7 @@ export function NavIndicators({ className }: { className?: string }) {
             <span
               className={cn(
                 "flex size-8 shrink-0 items-center justify-center rounded-full",
-                "transition-transform duration-300 group-hover:scale-105",
-                TONE_PLATE[stat.tone],
+                "bg-text-primary text-signal-orange transition-transform duration-300 group-hover:scale-105",
               )}
             >
               <Icon name={stat.icon} className="text-[16px]" />
@@ -125,36 +111,25 @@ export function NavIndicators({ className }: { className?: string }) {
             {/* Two text rows, min-w-0 throughout so truncation works instead
                 of overflowing the card. */}
             <span className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
-              <span className="truncate font-label-sm text-label-xs leading-[1.3] font-bold tracking-wide text-slate-500">
+              <span className="truncate font-label-sm text-label-xs leading-[1.3] font-bold tracking-wide text-text-primary/75">
                 {stat.label}
               </span>
 
               <span className="flex min-w-0 items-baseline gap-1.5 leading-[1.3]">
                 <span
-                  className={cn(
-                    "shrink-0 font-code-telemetry text-[0.9rem] font-extrabold whitespace-nowrap",
-                    TONE_TEXT[stat.tone],
-                  )}
+                  className="shrink-0 font-code-telemetry text-[0.9rem] font-extrabold whitespace-nowrap"
                 >
                   {stat.value}
                 </span>
                 {stat.unit ? (
-                  <span className="min-w-0 truncate font-code-telemetry text-label-xs text-slate-500">
+                  <span className="min-w-0 truncate font-code-telemetry text-label-xs text-text-primary/75">
                     {stat.unit}
                   </span>
                 ) : null}
 
                 {stat.delta ? (
                   <span
-                    className={cn(
-                      "ml-auto flex shrink-0 items-center gap-0.5",
-                      "font-code-telemetry text-label-xs font-bold whitespace-nowrap",
-                      // Colour by whether the movement is good news for this
-                      // metric, not by its direction.
-                      (stat.deltaDirection === "up") === Boolean(stat.upIsGood)
-                        ? "text-primary"
-                        : "text-crimson",
-                    )}
+                    className="ml-auto flex shrink-0 items-center gap-0.5 font-code-telemetry text-label-xs font-bold whitespace-nowrap"
                   >
                     <Icon
                       name={

@@ -13,7 +13,9 @@ const TIERS = [
   {
     id: "citizen",
     icon: "favorite",
-    tile: "bg-signal-orange text-text-primary",
+    surface: "bg-signal-orange text-text-primary",
+    radio: "accent-text-primary",
+    tile: "bg-text-primary text-signal-orange",
     title: "Citizen / Patient",
     blurb:
       "Personalized vitals sync with Aponjon band, priority telemedicine queue, and local pharmacy digital lockers.",
@@ -22,7 +24,9 @@ const TIERS = [
   {
     id: "researcher",
     icon: "memory",
-    tile: "bg-bd-green text-white",
+    surface: "bg-text-primary text-white",
+    radio: "accent-signal-orange",
+    tile: "bg-bdgreen-500 text-text-primary",
     title: "Researcher / Engineer",
     blurb:
       "Hardware SDK access, RISC-V 28nm simulation specs, 10-Crore Bengali multimodal training datasets & cleanroom tokens.",
@@ -31,7 +35,9 @@ const TIERS = [
   {
     id: "provider",
     icon: "local_pharmacy",
-    tile: "bg-text-primary text-signal-orange ring-1 ring-white/20",
+    surface: "bg-bdorange-600 text-text-primary",
+    radio: "accent-text-primary",
+    tile: "bg-text-primary text-signal-orange",
     title: "Healthcare Provider / Clinic",
     blurb:
       "Rural Pharmacy Node onboarding, certified diagnostic device whitelist, automated doctor video triage & API keys.",
@@ -59,9 +65,9 @@ const TIERS = [
  * The headline is one line: the gold accent carries the emphasis, so
  * it no longer needs three lines of uppercase to land.
  *
- * The lower half is the page's gold action panel: tiers are white tiles and
- * the chosen one turns ink, the same inversion the header uses for the
- * current section.
+ * The lower half is a solid bottle-green panel. Each tier is a solid colour
+ * card like the Pixel-Map cards (gold, ink, orange); the chosen one lifts and
+ * takes an ink frame.
  */
 export function KandariProfileSection() {
   const [tier, setTier] = useState("citizen");
@@ -116,7 +122,7 @@ export function KandariProfileSection() {
           </div>
 
           {/* ── Bottom half — tiers + sync form ────────────────────── */}
-          <div className="relative isolate flex flex-1 flex-col gap-6 bg-signal-orange px-6 py-8 text-text-primary sm:px-10 lg:px-12 lg:py-10">
+          <div className="relative isolate flex flex-1 flex-col gap-6 bg-bd-green px-6 py-8 text-white sm:px-10 lg:px-12 lg:py-10">
             <fieldset className="flex flex-col gap-3">
               <legend className="sr-only">Choose your profile tier</legend>
               <div className="flex flex-col gap-3 md:flex-row">
@@ -128,10 +134,13 @@ export function KandariProfileSection() {
                       className={cn(
                         "group relative flex flex-1 cursor-pointer flex-col justify-between gap-3 rounded-2xl p-4",
                         "transition-[transform,box-shadow,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
-                        "has-focus-visible:ring-2 has-focus-visible:ring-text-primary has-focus-visible:ring-offset-2 has-focus-visible:ring-offset-signal-orange",
+                        "has-focus-visible:ring-2 has-focus-visible:ring-white has-focus-visible:ring-offset-2 has-focus-visible:ring-offset-bd-green",
+                        item.surface,
+                        // The chosen tier is lifted and framed in dark ink; the
+                        // radio inside still carries the state for assistive tech.
                         active
-                          ? "bg-text-primary text-white shadow-ink"
-                          : "bg-white text-text-primary shadow-tile ring-1 ring-text-primary/10 hover:shadow-tile-lift",
+                          ? "-translate-y-1 shadow-ink ring-4 ring-text-primary"
+                          : "shadow-tile hover:shadow-tile-lift",
                       )}
                     >
                       <div className="flex flex-col gap-2">
@@ -145,19 +154,18 @@ export function KandariProfileSection() {
                             value={item.id}
                             checked={active}
                             onChange={() => setTier(item.id)}
-                            className="size-4 accent-signal-orange focus-visible:outline-none"
+                            className={cn("size-4 focus-visible:outline-none", item.radio)}
                           />
                         </div>
                         <span className="font-grotesk text-base font-bold">{item.title}</span>
-                        <p className={cn("font-sans text-xs leading-relaxed", active ? "text-white/75" : "text-text-secondary")}>
+                        <p className="font-sans text-xs leading-relaxed">
                           {item.blurb}
                         </p>
                       </div>
 
                       <span
                         className={cn(
-                          "border-t pt-2 font-mono text-[10px] font-semibold uppercase",
-                          active ? "border-white/15 text-signal-orange" : "border-text-primary/10 text-text-muted",
+                          "border-t border-current/20 pt-2 font-mono text-[10px] font-semibold uppercase",
                         )}
                       >
                         {item.tier}
@@ -196,7 +204,7 @@ export function KandariProfileSection() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="> enter_email@domain.bd (ঐচ্ছিক)"
-                  className="w-full rounded-xl bg-white px-4 py-3.5 font-mono text-xs text-text-primary shadow-tile ring-1 ring-text-primary/15 transition-shadow placeholder:text-text-muted focus:ring-2 focus:ring-text-primary focus:outline-none"
+                  className="w-full rounded-xl bg-signal-orange px-4 py-3.5 font-mono text-xs text-text-primary shadow-tile transition-shadow placeholder:text-text-primary/75 focus:ring-2 focus:ring-white focus:outline-none"
                 />
               </div>
 
@@ -208,7 +216,7 @@ export function KandariProfileSection() {
                   id={districtId}
                   value={district}
                   onChange={(e) => setDistrict(e.target.value)}
-                  className="w-full cursor-pointer rounded-xl bg-white px-4 py-3.5 font-mono text-xs text-text-primary shadow-tile ring-1 ring-text-primary/15 focus:ring-2 focus:ring-text-primary focus:outline-none"
+                  className="w-full cursor-pointer rounded-xl bg-signal-orange px-4 py-3.5 font-mono text-xs text-text-primary shadow-tile focus:ring-2 focus:ring-white focus:outline-none"
                 >
                   <option value="">জেলা বেছে নিন</option>
                   {districts.map((d) => (
@@ -221,7 +229,7 @@ export function KandariProfileSection() {
 
               <button
                 type="submit"
-                className={cn(btn.ink, "shrink-0 focus-visible:ring-offset-signal-orange")}
+                className={cn(btn.ink, "shrink-0 focus-visible:ring-offset-bd-green")}
               >
                 <Icon name={account ? "account_circle" : "sync"} className="text-base text-signal-orange" />
                 {account ? "My Profile" : "Join Profile"}

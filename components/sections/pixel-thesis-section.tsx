@@ -1,27 +1,19 @@
 import type { CSSProperties } from "react";
 import { SectionHeading } from "@/components/ui/section-kit";
-import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 
 type ArtKind = "pulse" | "network" | "radar" | "cycle";
 
 interface Pillar {
   art: ArtKind;
-  icon: string;
   title: string;
   description: string;
-  footLabel: string;
-  footValue: string;
   /** Solid card fill and the ink that reads on it. */
   surface: string;
   /** Motion-graphic stroke colour, chosen to contrast with the fill. */
   artClass: string;
-  /** Icon tile: its own fill plus the glyph colour. */
-  iconTile: string;
   /** Hover glow, a CSS colour value. */
   glow: string;
-  /** Only the flagship pillar carries a live status dot. */
-  live?: boolean;
 }
 
 /**
@@ -33,56 +25,39 @@ interface Pillar {
 const PILLARS: Pillar[] = [
   {
     art: "pulse",
-    icon: "monitor_heart",
     title: "Healthcare & Biometrics",
     description:
       "Continuous vitals capture pairing SWASTI Super App with the Aponjon wearable band for early arrhythmia, diabetic spike, and pre-stroke alerts.",
-    footLabel: "SYS STATUS",
-    footValue: "OPERATIONAL",
     surface: "bg-bd-green text-white",
     artClass: "text-signal-orange",
-    iconTile: "bg-signal-orange text-text-primary",
     glow: "var(--color-bd-green)",
-    live: true,
   },
   {
     art: "network",
-    icon: "local_pharmacy",
     title: "Rural Tele-Network",
     description:
       "'One Village, One Smart Pharmacy' converting 12,000+ union-level medicine dispensaries into solar micro-diagnostic clinical endpoints.",
-    footLabel: "GRID REACH",
-    footValue: "64 DISTRICTS",
     surface: "bg-signal-orange text-text-primary",
     artClass: "text-bd-green",
-    iconTile: "bg-bd-green text-white",
     glow: "var(--color-signal-orange)",
   },
   {
     art: "radar",
-    icon: "visibility",
     title: "Assistive Tech Shield",
     description:
       "2-Meter spatial consciousness wearable for visually impaired citizens leveraging ultrasonic LiDAR, haptic feedback, and Bengali spatial voice.",
-    footLabel: "DETECTION RAD",
-    footValue: "2.0 METERS",
     surface: "bg-bdorange-600 text-text-primary",
     artClass: "text-text-primary",
-    iconTile: "bg-text-primary text-signal-orange",
     glow: "var(--color-bdorange-600)",
   },
   {
     art: "cycle",
-    icon: "recycling",
     title: "Circular Economy",
     description:
       "AI Waste-to-Soil transformation converting civic municipal refuse into organic agriculture manure and segregated industrial polymers.",
-    footLabel: "CYCLE RATE",
-    footValue: "48 HR TRANSIT",
     // Ink on the black ground: a faint white ring keeps its edge.
     surface: "bg-text-primary text-white ring-1 ring-white/12",
     artClass: "text-bdgreen-500",
-    iconTile: "bg-bdgreen-500 text-text-primary",
     glow: "var(--color-bdgreen-500)",
   },
 ];
@@ -231,42 +206,19 @@ export function PixelThesisSection() {
                 )}
               >
                 {/* Motion-graphic header. */}
-                <div className="relative -mx-6 -mt-6 mb-6 h-40">
-                  <div className={cn("absolute inset-x-6 top-6 bottom-10", pillar.artClass)}>
+                <div className="relative -mx-6 -mt-6 mb-4 h-36">
+                  <div className={cn("absolute inset-x-6 top-6 bottom-2", pillar.artClass)}>
                     <PillarArt kind={pillar.art} />
                   </div>
-                  <span
-                    className={cn(
-                      "absolute -bottom-3 left-6 grid size-14 place-items-center rounded-2xl shadow-lg ring-4 ring-current/10",
-                      "transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-rotate-6 group-hover:scale-110",
-                      "motion-reduce:transition-none motion-reduce:group-hover:rotate-0 motion-reduce:group-hover:scale-100",
-                      pillar.iconTile,
-                    )}
-                  >
-                    <Icon name={pillar.icon} className="text-[28px]" />
-                  </span>
                 </div>
 
-                <h3 className="mt-4 mb-2 font-grotesk text-lg font-bold uppercase">
+                <h3 className="mb-2 font-grotesk text-lg font-bold uppercase">
                   {pillar.title}
                 </h3>
 
-                <p className="mb-6 font-sans text-sm leading-relaxed">
+                <p className="font-sans text-sm leading-relaxed">
                   {pillar.description}
                 </p>
-
-                <div className="mt-auto flex items-center justify-between border-t border-current/20 pt-4 font-mono text-xs">
-                  <span className="font-medium">{pillar.footLabel}</span>
-                  <span className="flex items-center gap-1.5 font-bold">
-                    {pillar.live ? (
-                      <span className="relative flex size-2">
-                        <span className="absolute inset-0 animate-ping rounded-full bg-signal-orange motion-reduce:hidden" />
-                        <span className="relative size-2 rounded-full bg-signal-orange" />
-                      </span>
-                    ) : null}
-                    {pillar.footValue}
-                  </span>
-                </div>
               </article>
             </li>
           ))}

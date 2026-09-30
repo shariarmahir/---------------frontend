@@ -29,34 +29,31 @@ export function MetricsSection() {
 
       <div className="mx-auto max-w-7xl px-gutter-x">
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">
-          {/* Pharmacy photograph in a white frame. */}
-          <div className="story-reveal relative lg:col-span-6">
-            <div className="group overflow-hidden rounded-3xl bg-white p-1.5 shadow-[0_30px_60px_-28px_var(--color-text-primary)]">
-              {/* 4:3 matches the source's 1.34 ratio, so the pharmacy
-                  interior is shown essentially uncropped. */}
-              <div className="relative aspect-4/3 overflow-hidden rounded-[1.1rem]">
-                <Image
-                  src="/sections/smartpharmacy.png"
-                  alt="গ্রামীণ স্মার্ট ফার্মেসিতে স্বস্তি ইউনিফর্ম পরা একজন স্বাস্থ্যকর্মী এক প্রবীণ রোগীর রক্তচাপ মাপছেন; পাশে টেলিমেডিসিন স্ক্রিনে চিকিৎসক ও তাকভর্তি ওষুধ"
-                  fill
-                  sizes="(min-width: 1024px) 50vw, 100vw"
-                  quality={90}
-                  className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] motion-reduce:transition-none"
-                />
+          {/* Pharmacy photograph, no frame: it fills the whole left side
+              (stretched to the copy's height on desktop, 4:3 on phones). */}
+          <div className="story-reveal relative lg:col-span-6 lg:self-stretch">
+            <div className="group relative aspect-4/3 h-full overflow-hidden rounded-3xl shadow-[0_30px_60px_-28px_var(--color-text-primary)] lg:aspect-auto lg:min-h-112">
+              <Image
+                src="/sections/smartpharmacy.png"
+                alt="গ্রামীণ স্মার্ট ফার্মেসিতে স্বস্তি ইউনিফর্ম পরা একজন স্বাস্থ্যকর্মী এক প্রবীণ রোগীর রক্তচাপ মাপছেন; পাশে টেলিমেডিসিন স্ক্রিনে চিকিৎসক ও তাকভর্তি ওষুধ"
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                quality={90}
+                className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] motion-reduce:transition-none"
+              />
 
-                <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-white px-3 py-1 font-mono text-xs font-bold text-bd-green shadow-tile">
-                  <span className="size-2 animate-pulse rounded-full bg-bd-green" />
-                  LIVE PILOT: MANIKGANJ UNION #3
-                </div>
+              <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-white px-3 py-1 font-mono text-xs font-bold text-bd-green shadow-tile">
+                <span className="size-2 animate-pulse rounded-full bg-bd-green" />
+                LIVE PILOT: MANIKGANJ UNION #3
+              </div>
 
-                {/* Capability tags the schematic used to carry. */}
-                <div className="absolute right-3 bottom-3 left-3 flex flex-wrap gap-1.5 font-mono text-[9px] text-white">
-                  {["DIAG KIOSK", "TELE-LINK", "COLD CHAIN", "SOLAR CELL"].map((tag) => (
-                    <span key={tag} className="rounded bg-text-primary/80 px-2 py-0.5 whitespace-nowrap ring-1 ring-white/25 backdrop-blur-sm">
-                      ◦ {tag}
-                    </span>
-                  ))}
-                </div>
+              {/* Capability tags the schematic used to carry. */}
+              <div className="absolute right-3 bottom-3 left-3 flex flex-wrap gap-1.5 font-mono text-[9px] text-white">
+                {["DIAG KIOSK", "TELE-LINK", "COLD CHAIN", "SOLAR CELL"].map((tag) => (
+                  <span key={tag} className="rounded bg-text-primary/80 px-2 py-0.5 whitespace-nowrap ring-1 ring-white/25 backdrop-blur-sm">
+                    ◦ {tag}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
@@ -64,7 +61,7 @@ export function MetricsSection() {
           {/* Narrative. */}
           <div className="story-reveal space-y-5 lg:col-span-6">
             <PixelMark tone="dark" />
-            <h2 className="font-grotesk text-2xl font-bold tracking-tight text-balance uppercase sm:text-3xl lg:text-4xl">
+            <h2 className="font-grotesk text-2xl font-bold tracking-tight text-balance text-signal-orange uppercase sm:text-3xl lg:text-4xl">
               &lsquo;One Village, One Medical Healthcare Center&rsquo; — Rural
               Pharmacy Grid
             </h2>

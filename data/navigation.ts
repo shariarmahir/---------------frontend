@@ -64,7 +64,8 @@ export const navLinks: NavLink[] = [
 
 /**
  * Navigation for "বাংলাদেশ সমস্যা ও সমাধান" (/bangladesh) — its four acts
- * and their key sections, kept to six so the bar fits at 1024px. Full
+ * and their key sections plus the game (চলো বাংলাদেশ গড়ি), kept to six so
+ * the bar fits at 1024px; the civic-duty page has its own header button. Full
  * "/bangladesh#…" paths, so the set also works from /nagorik; each fragment
  * matches a section id on the page.
  */
@@ -74,7 +75,7 @@ export const bangladeshNavLinks: NavLink[] = [
   { href: "/bangladesh#shield", label: "নাগরিক ঢাল", shortLabel: "ঢাল" },
   { href: "/bangladesh#register", label: "৩২টি সমস্যা", shortLabel: "সমস্যা" },
   { href: "/bangladesh#solutions", label: "সমাধান", shortLabel: "সমাধান" },
-  { href: "/nagorik", label: "নাগরিক দায়িত্ব", shortLabel: "দায়িত্ব" },
+  { href: "/cholo-bangladesh-gori", label: "চলো বাংলাদেশ গড়ি", shortLabel: "গড়ি" },
 ];
 
 /** Navigation for "নাগরিক অধিকার ও দায়িত্ব" (/nagorik). */

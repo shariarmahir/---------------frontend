@@ -7,17 +7,6 @@ import { Icon } from "@/components/ui/icon";
 import { heroPhotos } from "@/data/hero-gallery";
 import { SignalSeam, btn } from "@/components/ui/section-kit";
 
-/**
- * Meta row above the headline — the three facts that qualify the claim
- * before it is made. Kept to three: a fourth turns a line of context into
- * a stat bar, which is a different (and noisier) component.
- */
-const META = [
-  "৬৪ districts",
-  "Semiconductor · IoT · AI",
-  "SWASTI & আপনজন shipping",
-];
-
 /** The four proof points, in the rule below the hero band. */
 const HERO_STATS = [
   { label: "Citizens Monitored", value: "4.8M+" },
@@ -100,23 +89,6 @@ export function HeroSection() {
         {/* ── Claim ─────────────────────────────────────────────── */}
         <div className="relative w-full py-16">
           <div className="mx-auto flex w-full max-w-7xl flex-col items-start gap-space-md px-gutter-x lg:gap-space-lg">
-            {/* Meta row. Dot separators are decorative, so they are hidden
-                from the accessibility tree and the items read as a list. */}
-            <ul className="flex flex-wrap items-center gap-2 font-sans text-label-xs text-white/90">
-              {META.map((item, i) => (
-                <li
-                  key={item}
-                  className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 ring-1 ring-white/15 backdrop-blur-sm"
-                >
-                  <span
-                    aria-hidden
-                    className={`size-1.5 rounded-[2px] ${["bg-signal-orange", "bg-bdgreen-500", "bg-white"][i % 3]}`}
-                  />
-                  {item}
-                </li>
-              ))}
-            </ul>
-
             {/* `text-pretty` not `text-balance`: balance re-flows the first
                 line to match the second and fights the explicit break
                 below. The <br /> holds the reference's two-line shape from

@@ -1,17 +1,21 @@
+import type { CSSProperties } from "react";
 import { Icon } from "@/components/ui/icon";
-import { SectionHeading, tileLift } from "@/components/ui/section-kit";
+import { SectionHeading } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
 
 /**
- * Each project is a spec-sheet row rather than another card in a grid: a
- * solid colour block (the project's "pixel"), its brief, and its headline
- * measurement set as a chip in the same colour.
+ * Each project is a spec-sheet row rather than another card in a grid, on the
+ * same solid colour fields as the Pixel-Map cards (orange for vision, ink
+ * for the circular economy, gold for silicon). Ink text on orange and gold,
+ * white on ink; the icon tile and result chip take the contrasting colour.
  */
 const LABS = [
   {
     icon: "blind",
+    surface: "bg-bdorange-600 text-text-primary",
     block: "bg-text-primary text-signal-orange",
     chip: "bg-text-primary text-white",
+    glow: "var(--color-bdorange-600)",
     badge: "[ PROJECT NETRO ]",
     title: "Eye-Consciousness AI Agent for Visually Impaired",
     description:
@@ -21,8 +25,10 @@ const LABS = [
   },
   {
     icon: "recycling",
-    block: "bg-bd-green text-white",
-    chip: "bg-bd-green text-white",
+    surface: "bg-text-primary text-white ring-1 ring-white/12",
+    block: "bg-bdgreen-500 text-text-primary",
+    chip: "bg-bdgreen-500 text-text-primary",
+    glow: "var(--color-bdgreen-500)",
     badge: "[ PROJECT MATI ]",
     title: "Biochemical Circular Automation",
     description:
@@ -32,8 +38,10 @@ const LABS = [
   },
   {
     icon: "developer_board",
-    block: "bg-signal-orange text-text-primary",
-    chip: "bg-signal-orange text-text-primary",
+    surface: "bg-signal-orange text-text-primary",
+    block: "bg-bd-green text-white",
+    chip: "bg-text-primary text-signal-orange",
+    glow: "var(--color-signal-orange)",
     badge: "[ PROJECT SILICON ]",
     title: "Semiconductor Fabrication & 10-Crore Data Engine",
     description:
@@ -56,9 +64,11 @@ export function ResearchSection() {
         {LABS.map((lab) => (
           <li key={lab.badge} className="story-reveal">
             <article
+              style={{ "--glow": lab.glow } as CSSProperties}
               className={cn(
-                "group grid grid-cols-[auto_1fr] items-start gap-5 rounded-3xl bg-white p-5 ring-1 ring-text-primary/10 sm:p-6 md:grid-cols-[auto_1fr_auto] md:items-center md:gap-8",
-                tileLift,
+                "group grid grid-cols-[auto_1fr] items-start gap-5 rounded-3xl p-5 shadow-sm sm:p-6 md:grid-cols-[auto_1fr_auto] md:items-center md:gap-8",
+                "transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-[0_28px_48px_-22px_var(--glow)] motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+                lab.surface,
               )}
             >
               {/* The project's pixel: a solid block with a slow orbit. */}
@@ -77,14 +87,14 @@ export function ResearchSection() {
               </span>
 
               <div className="min-w-0">
-                <span className="font-mono text-xs font-bold text-text-muted">{lab.badge}</span>
-                <h3 className="mt-1 mb-2 font-grotesk text-lg font-bold text-text-primary uppercase">{lab.title}</h3>
-                <p className="max-w-[68ch] font-sans text-sm leading-relaxed text-text-secondary">{lab.description}</p>
+                <span className="font-mono text-xs font-bold opacity-75">{lab.badge}</span>
+                <h3 className="mt-1 mb-2 font-grotesk text-lg font-bold uppercase">{lab.title}</h3>
+                <p className="max-w-[68ch] font-sans text-sm leading-relaxed">{lab.description}</p>
               </div>
 
               {/* Headline measurement. */}
-              <div className="col-span-2 flex items-center justify-between gap-3 border-t border-text-primary/10 pt-4 font-mono text-xs md:col-span-1 md:flex-col md:items-end md:border-t-0 md:border-l md:pt-0 md:pl-8">
-                <span className="text-text-muted">{lab.footLabel}</span>
+              <div className="col-span-2 flex items-center justify-between gap-3 border-t border-current/20 pt-4 font-mono text-xs md:col-span-1 md:flex-col md:items-end md:border-t-0 md:border-l md:pt-0 md:pl-8">
+                <span className="font-medium">{lab.footLabel}</span>
                 <span className={cn("rounded-lg px-2.5 py-1.5 font-bold whitespace-nowrap", lab.chip)}>{lab.footValue}</span>
               </div>
             </article>

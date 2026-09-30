@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { motion, useReducedMotion, type Transition } from "framer-motion";
-import { Puzzle, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import { AccountMenu, AccountSheetLinks } from "@/components/auth/account-menu";
 import { NewsTicker } from "@/components/layout/news-ticker";
 import { RecordDialog } from "@/components/record/record-dialog";
@@ -27,9 +27,8 @@ import { cn } from "@/lib/utils";
  * Direction: the header is a solid gold card (the action colour, like the
  * home page's "Rural Tele-Network" pillar) under an ink telemetry strip.
  * Ink text reads at ~8.9:1 on the gold; green and red text do not (≈3.5:1
- * and 2.4:1), so anything carrying them — the logo, the country label, the
- * live readout — sits on its own white tile, the way each pillar card sets
- * its icon on a contrasting tile.
+ * and 2.4:1), so header buttons are ink text on the gold with a thin ink ring, no
+ * white fills. The logo sits bare.
  */
 
 /**
@@ -62,13 +61,13 @@ function NavLabel({ link, compact }: { link: NavLink; compact?: boolean }) {
   );
 }
 
-/** "বাংলাদেশ সমস্যা ও সমাধান" in the label face — problem in the flag's red. */
+/** "বাংলাদেশ সমস্যা ও সমাধান" in the label face, in the header's ink. */
 function DeshLabel({ className }: { className?: string }) {
   return (
     <span className={cn("flex items-center gap-[0.3em]", className)}>
-      <LabelText text={LABEL_TEXT.bangladesh} className="text-bd-green" />
-      <LabelText text={LABEL_TEXT.issue} className="text-national-crimson" />
-      <LabelText text={LABEL_TEXT.solution} className="text-bd-green" />
+      <LabelText text={LABEL_TEXT.bangladesh} />
+      <LabelText text={LABEL_TEXT.issue} />
+      <LabelText text={LABEL_TEXT.solution} />
     </span>
   );
 }
@@ -114,7 +113,7 @@ export function BrandLogo({ className, priority = false }: { className?: string;
       alt="কাণ্ডারী-ল্যাব (Kandari Lab)"
       width={1600}
       height={967}
-      sizes="(min-width: 1024px) 120px, (min-width: 640px) 93px, 80px"
+      sizes="(min-width: 1024px) 133px, (min-width: 640px) 106px, 93px"
       priority={priority}
       // The artwork's own 1600:967 ratio, reserved before load so nothing shifts.
       className={cn("aspect-1600/967 w-auto shrink-0 object-contain", className)}
@@ -123,18 +122,21 @@ export function BrandLogo({ className, priority = false }: { className?: string;
 }
 
 /**
- * Header logo on a white tile — the artwork's gold fist would vanish into
- * the gold bar otherwise. Tile padding plus logo height equals the old
- * bare logo (56 / 64 / 80px), so --spacing-header in globals.css still holds.
+ * Header logo, straight on the gold bar: no tile and no added outline, just
+ * the artwork. Sizes are 56 / 64 / 80px, so --spacing-header in globals.css
+ * still holds.
  */
 function BrandLockup() {
   return (
     <Link
       href="/"
       title="Kandari-Lab Homepage"
-      className="group flex min-w-0 shrink-0 items-center rounded-xl bg-white p-1 shadow-tile ring-1 ring-text-primary/10 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] select-none hover:-translate-y-0.5 hover:-rotate-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-text-primary motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:hover:rotate-0"
+      className="group flex min-w-0 shrink-0 items-center rounded-lg select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-text-primary"
     >
-      <BrandLogo priority className="h-12 sm:h-14 lg:h-18" />
+      <BrandLogo
+        priority
+        className="h-14 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100 sm:h-16 lg:h-20"
+      />
     </Link>
   );
 }
@@ -278,7 +280,6 @@ export function SiteHeader() {
   const activeHref = clickedHref ?? pathHref ?? navLinks[0].href;
   const setActiveHref = (href: string) => setClicked({ href, path: pathname });
   const [recordOpen, setRecordOpen] = useState(false);
-  const onGori = pathname.startsWith("/cholo-bangladesh-gori");
 
   return (
     // The card floats inset from the page edges, so the fixed wrapper is the
@@ -310,26 +311,6 @@ export function SiteHeader() {
             <div className="flex min-w-0 items-center gap-3.5 sm:gap-5 lg:gap-6">
               <BrandLockup />
 
-              <span aria-hidden className="hidden h-9 w-px bg-linear-to-b from-transparent via-text-primary/30 to-transparent sm:block" />
-
-              {/* বাংলাদেশ সমস্যা ও সমাধান — the country page (/bangladesh). */}
-              {/* No prefetch: prefetching /bangladesh preloads its carousel
-                  stylesheet on every page, which then sits unused and
-                  raises a console "preloaded but not used" warning. */}
-              <Link
-                href="/bangladesh"
-                prefetch={false}
-                title="বাংলাদেশ সমস্যা ও সমাধান — ইতিহাস, সংকট, ৩২টি সমস্যা ও সমাধান"
-                aria-current={pathname === "/bangladesh" ? "page" : undefined}
-                className={cn(
-                  "hidden items-center rounded-full bg-white px-3.5 py-1.5 whitespace-nowrap shadow-tile ring-1 ring-text-primary/10 select-none md:flex",
-                  "transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-tile-lift",
-                  "focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:outline-none motion-reduce:transition-none motion-reduce:hover:translate-y-0",
-                  pathname === "/bangladesh" && "ring-2 ring-bd-green",
-                )}
-              >
-                <DeshLabel className="text-[16px] leading-none" />
-              </Link>
             </div>
 
             {/* Centre — the live national readout, auto-rotating. `shrink-0`
@@ -419,16 +400,6 @@ export function SiteHeader() {
                     </Link>
                   </SheetClose>
 
-                  <SheetClose asChild>
-                    <Link
-                      href="/cholo-bangladesh-gori"
-                      className="mt-space-sm flex items-center justify-center gap-2 rounded-lg bg-linear-to-r from-bd-green to-bdgreen-800 px-3.5 py-2 text-white"
-                    >
-                      <Puzzle className="size-4 text-signal-orange" aria-hidden />
-                      <LabelText text={LABEL_TEXT.gori} className="text-[18px] leading-none" />
-                    </Link>
-                  </SheetClose>
-
                   <AccountSheetLinks wrap={(node) => <SheetClose asChild>{node}</SheetClose>} />
 
                   <p className="mt-space-lg font-bengali text-xs font-semibold text-bdgreen-900">{NAZRUL_MOTTO}</p>
@@ -448,7 +419,7 @@ export function SiteHeader() {
               <button
                 type="button"
                 onClick={() => setRecordOpen(true)}
-                className="group inline-flex items-center gap-2 rounded-full bg-white px-2.5 py-1.5 text-xs font-semibold tracking-tight text-text-primary shadow-xs ring-1 ring-text-primary/10 transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:ring-red-400 focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:outline-none motion-reduce:hover:translate-y-0 xl:px-3.5"
+                className="group inline-flex items-center gap-2 rounded-full px-2.5 py-1.5 text-xs font-semibold tracking-tight text-text-primary ring-1 ring-text-primary/35 transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:bg-text-primary/10 focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:outline-none motion-reduce:hover:translate-y-0 xl:px-3.5"
               >
                 <span className="relative flex size-2.5">
                   <span className="absolute inline-flex size-full animate-ping rounded-full bg-red-400 opacity-75 motion-reduce:hidden" />
@@ -471,26 +442,31 @@ export function SiteHeader() {
                 title="নাগরিক অধিকার ও দায়িত্ব — দিনের হিসাব, অধিকার, প্রত্যেকের দায়িত্ব"
                 aria-current={pathname === "/nagorik" ? "page" : undefined}
                 className={cn(
-                  "inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1.5 text-bd-green shadow-xs ring-1 ring-text-primary/10 transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:bg-bd-green-light focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:outline-none motion-reduce:hover:translate-y-0 xl:px-3.5",
-                  pathname === "/nagorik" && "ring-2 ring-bd-green",
+                  "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-text-primary ring-1 ring-text-primary/35 transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:bg-text-primary/10 focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:outline-none motion-reduce:hover:translate-y-0 xl:px-3.5",
+                  pathname === "/nagorik" && "bg-text-primary/10 ring-2 ring-text-primary",
                 )}
               >
                 <ShieldCheck className="size-3.5" aria-hidden />
                 <LabelText text={LABEL_TEXT.nagorik} className="text-[15px] leading-none" />
               </Link>
 
-              {/* The 32 problems above, as a game: solve them. */}
+              {/* বাংলাদেশ সমস্যা ও সমাধান — the country page (/bangladesh): story,
+                  crisis, the 32 problems and their solutions. The game
+                  (চলো বাংলাদেশ গড়ি) is reached from that page's own nav. */}
+              {/* No prefetch: prefetching /bangladesh preloads its carousel
+                  stylesheet on every page, which then sits unused and
+                  raises a console "preloaded but not used" warning. */}
               <Link
-                href="/cholo-bangladesh-gori"
-                title="চলো বাংলাদেশ গড়ি — ৩২টি বাস্তব সমস্যার ধাঁধা"
-                aria-current={onGori ? "page" : undefined}
+                href="/bangladesh"
+                prefetch={false}
+                title="বাংলাদেশ সমস্যা ও সমাধান — ইতিহাস, সংকট, ৩২টি সমস্যা ও সমাধান"
+                aria-current={pathname === "/bangladesh" ? "page" : undefined}
                 className={cn(
-                  "group inline-flex items-center gap-1.5 rounded-full bg-linear-to-r from-bd-green to-bdgreen-800 px-2.5 py-1.5 text-white shadow-ink transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:from-bd-green-dark hover:to-bd-green focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:outline-none motion-reduce:hover:translate-y-0 xl:px-3.5",
-                  onGori && "ring-2 ring-text-primary",
+                  "inline-flex items-center rounded-full bg-linear-to-r from-bd-green to-bdgreen-800 px-2.5 py-1.5 whitespace-nowrap text-signal-orange shadow-ink transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:from-bd-green-dark hover:to-bd-green focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:outline-none motion-reduce:hover:translate-y-0 xl:px-3.5",
+                  pathname === "/bangladesh" && "ring-2 ring-text-primary",
                 )}
               >
-                <Puzzle className="size-3.5 text-signal-orange transition-transform duration-300 group-hover:rotate-12 motion-reduce:transition-none" aria-hidden />
-                <LabelText text={LABEL_TEXT.gori} className="text-[15px] leading-none" />
+                <DeshLabel className="text-[15px] leading-none" />
               </Link>
             </div>
           </div>
