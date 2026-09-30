@@ -4,11 +4,13 @@ import { Icon } from "@/components/ui/icon";
 import { SectionHeading, btn } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
 
+/** Solid colour cards on the ink panel, in the Pixel-Map order: green, gold, orange, ink. */
 const APONJON_FEATURES = [
-  { title: "✓ BIO-IMPEDANCE", note: "Sub-dermal vascular track" },
-  { title: "✓ 7-DAY BATTERY", note: "Ultra-low power Nordic SoC" },
-  { title: "✓ OFFLINE AI CHIP", note: "Edge inference on device" },
-  { title: "✓ IP68 RESILIENT", note: "Monsoon & dust certified" },
+  { title: "✓ BIO-IMPEDANCE", note: "Sub-dermal vascular track", surface: "bg-bd-green text-white", glow: "var(--color-bd-green)" },
+  { title: "✓ 7-DAY BATTERY", note: "Ultra-low power Nordic SoC", surface: "bg-signal-orange text-text-primary", glow: "var(--color-signal-orange)" },
+  { title: "✓ OFFLINE AI CHIP", note: "Edge inference on device", surface: "bg-bdorange-600 text-text-primary", glow: "var(--color-bdorange-600)" },
+  // Ink on the ink panel: a faint white ring keeps its edge.
+  { title: "✓ IP68 RESILIENT", note: "Monsoon & dust certified", surface: "bg-text-primary text-white ring-1 ring-white/25", glow: "var(--color-bdgreen-500)" },
 ];
 
 const SWASTI_BULLETS = [
@@ -118,10 +120,15 @@ export function FlagshipsSection() {
             {APONJON_FEATURES.map((feature) => (
               <div
                 key={feature.title}
-                className="rounded-xl bg-white/6 p-3 ring-1 ring-white/10 transition-colors duration-300 hover:bg-white/10"
+                style={{ "--glow": feature.glow } as CSSProperties}
+                className={cn(
+                  "rounded-xl p-3 shadow-sm sm:rounded-2xl sm:p-3.5",
+                  "[-webkit-tap-highlight-color:transparent] touch-manipulation transition-[translate,scale,rotate,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-[0_22px_40px_-20px_var(--glow)] active:-translate-y-1.5 active:scale-[0.98] active:duration-150 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100",
+                  feature.surface,
+                )}
               >
-                <span className="block text-sm font-bold text-signal-orange">{feature.title}</span>
-                <span className="text-white/65">{feature.note}</span>
+                <span className="block text-sm font-bold">{feature.title}</span>
+                <span>{feature.note}</span>
               </div>
             ))}
           </div>
