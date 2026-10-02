@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarClock, CircleCheck, Trophy, Upload, Users } from "lucide-react";
+import { CalendarClock, CircleCheck, Scale, Trophy, Upload, Users } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -71,7 +71,7 @@ function EntryDialog({ challenge, open, onOpenChange }: { challenge: Challenge; 
   );
 }
 
-export function ChallengeCard({ challenge }: { challenge: Challenge }) {
+export function ChallengeCard({ challenge, mine }: { challenge: Challenge; mine?: boolean }) {
   const ensure = useRequireAccount();
   const [open, setOpen] = useState(false);
   const entry = useMediaState((s) => s.entries[challenge.id]);
@@ -98,13 +98,18 @@ export function ChallengeCard({ challenge }: { challenge: Challenge }) {
         </div>
       </div>
       <p className="mt-3 text-sm leading-relaxed text-white">{challenge.description}</p>
+      {challenge.judging && (
+        <p className="mt-2 flex items-start gap-1.5 text-xs text-white/75"><Scale className="mt-0.5 size-3.5 shrink-0 text-signal-orange" aria-hidden /><span><span className="font-semibold text-white">বিচার:</span> {challenge.judging}</span></p>
+      )}
       <p className="mt-3 flex flex-wrap gap-x-2 text-xs font-medium text-signal-orange">{challenge.tags.map((t) => <span key={t}>{t}</span>)}</p>
       <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-white/12 pt-3">
         <p className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-white/65">
           <span className="inline-flex items-center gap-1"><CalendarClock className="size-3.5" aria-hidden /><DateText iso={challenge.deadline} /> পর্যন্ত</span>
           <span className="inline-flex items-center gap-1"><Users className="size-3.5" aria-hidden /><Num value={challenge.entries + (entry ? 1 : 0)} /> জমা{challenge.teams ? " · টিমে চলবে" : ""}</span>
         </p>
-        {entry ? (
+        {mine ? (
+          <span className="inline-flex min-h-9 items-center rounded-xl bg-bd-green px-3 text-sm font-semibold text-white">আপনার চ্যালেঞ্জ</span>
+        ) : entry ? (
           <span className="inline-flex min-h-9 items-center gap-1.5 rounded-xl bg-white/10 px-3 text-sm font-semibold text-signal-orange">
             <CircleCheck className="size-4" aria-hidden /> জমা দিয়েছেন
           </span>
@@ -114,7 +119,7 @@ export function ChallengeCard({ challenge }: { challenge: Challenge }) {
           </button>
         )}
       </div>
-      {!entry && <EntryDialog challenge={challenge} open={open} onOpenChange={setOpen} />}
+      {!entry && !mine && <EntryDialog challenge={challenge} open={open} onOpenChange={setOpen} />}
     </article>
   );
 }

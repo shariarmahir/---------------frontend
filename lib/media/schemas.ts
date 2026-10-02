@@ -10,7 +10,7 @@ import { normalizeDigits, validateNid, validatePassport } from "./identity.ts";
 
 const CATEGORY_IDS = [
   "crafts", "cooking", "tech", "design", "art", "music", "photo", "content", "engineering",
-  "homeservice", "teaching", "finance", "beauty", "research", "travel", "sports", "shop", "rent", "fashion",
+  "homeservice", "teaching", "finance", "beauty", "research", "travel", "sports", "shop", "rent", "fashion", "farm", "legal", "other",
 ] as const;
 
 const futureDate = (msg: string) =>
@@ -222,6 +222,20 @@ export const teamSchema = z.object({
   practice: short,
 });
 export type TeamInput = z.infer<typeof teamSchema>;
+
+export const challengeSchema = z.object({
+  kind: z.enum(["code", "design", "research", "assignment", "lab"]),
+  title: z.string().trim().min(6, "চ্যালেঞ্জের নাম দিন।").max(80),
+  host: z.string().trim().min(2, "কে আয়োজন করছে লিখুন — নিজে হলে “নিজে”।").max(60),
+  category: z.enum(CATEGORY_IDS),
+  prize: z.number({ error: "পুরস্কার লিখুন — শুধু সনদ হলে ০।" }).int().min(0, "পুরস্কার ঋণাত্মক হতে পারে না।").max(1_000_000),
+  deadline: futureDate("শেষ তারিখ দিন।"),
+  teams: z.boolean(),
+  description: z.string().trim().min(30, "সমস্যাটা অন্তত ৩০ অক্ষরে বুঝিয়ে লিখুন।").max(800),
+  judging: z.string().trim().min(5, "কীভাবে বিচার হবে লিখুন।").max(200),
+  tags: z.string().trim().max(120),
+});
+export type ChallengeInput = z.infer<typeof challengeSchema>;
 
 export const entrySchema = z.object({
   summary: z.string().trim().min(20, "আপনার সমাধান অন্তত ২০ অক্ষরে বুঝিয়ে লিখুন।").max(800),

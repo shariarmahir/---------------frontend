@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { MapPin } from "lucide-react";
+import { Leaf, MapPin } from "lucide-react";
+import { STAGES } from "@/data/media/bazaar";
 import { getCategory } from "@/data/media/categories";
 import type { Listing, Person } from "@/data/media/types";
 import { verifiedRatingFor } from "@/data/media/users";
@@ -8,6 +9,7 @@ import { MediaFrame } from "../ui/media-frame";
 import { Compact, Num, Taka } from "../ui/numerals";
 import { PersonAvatar } from "../ui/person";
 import { IdSeal, Stars, StatusBadge } from "../ui/trust";
+import { tagsOf } from "./matching";
 import { TradeButtons } from "./trade";
 
 /**
@@ -25,15 +27,23 @@ export function ListingCard({ listing, seller }: { listing: Listing; seller: Per
         <span className="absolute top-2.5 left-2.5 rounded-full shadow-sm">
           <StatusBadge status={status} size="sm" />
         </span>
-        {listing.featured && (
-          <span className="absolute top-2.5 right-2.5 rounded-full bg-black/70 px-2 py-0.5 text-[11px] font-bold text-signal-orange shadow-sm" title="প্রচারিত তালিকা">
-            ফিচার্ড
-          </span>
-        )}
+        <span className="absolute top-2.5 right-2.5 flex gap-1.5">
+          {listing.organic && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-bd-green px-2 py-0.5 text-[11px] font-bold text-white shadow-sm"><Leaf className="size-3" aria-hidden />বিষমুক্ত</span>
+          )}
+          {listing.featured && (
+            <span className="rounded-full bg-black/70 px-2 py-0.5 text-[11px] font-bold text-signal-orange shadow-sm" title="ম্যাচ বুস্ট: যাঁরা এটাই খুঁজছেন, তাঁদের আগে দেখায়">
+              বুস্টেড
+            </span>
+          )}
+        </span>
       </div>
       <div className="flex flex-1 flex-col gap-3 p-4">
         <p className="flex items-center justify-between gap-2 text-xs text-white/65">
-          <span className="font-semibold text-signal-orange">{cat.bn}</span>
+          <span className="truncate font-semibold text-signal-orange">
+            {listing.customCategory ?? cat.bn}
+            {listing.stage && <span className="font-normal text-white/65"> · {STAGES[listing.stage].bn}</span>}
+          </span>
           <span className="inline-flex items-center gap-0.5"><MapPin className="size-3.5" aria-hidden />{listing.location.split(",")[0]}</span>
         </p>
         <h3 className="text-[15px] leading-snug font-bold text-white">
@@ -44,7 +54,21 @@ export function ListingCard({ listing, seller }: { listing: Listing; seller: Per
         <p className="flex items-baseline gap-1.5">
           <span className="text-xl font-bold text-white"><Taka amount={listing.price} /></span>
           <span className="text-xs text-white/65">/ {listing.unit}</span>
+          {listing.tiers?.length ? (
+            <span className="ml-auto rounded-md bg-bd-green px-1.5 py-0.5 text-[11px] font-semibold text-white">
+              পাইকারি <Taka amount={Math.min(...listing.tiers.map((t) => t.price))} /> থেকে
+            </span>
+          ) : null}
         </p>
+        <ul className="relative z-10 flex flex-wrap gap-1.5">
+          {tagsOf(listing).slice(0, 3).map((t) => (
+            <li key={t}>
+              <Link href={`/media/market?q=%23${encodeURIComponent(t)}`} className="rounded-md bg-white/10 px-1.5 py-0.5 text-[11px] font-medium text-white/80 hover:bg-signal-orange hover:text-text-primary">
+                #{t}
+              </Link>
+            </li>
+          ))}
+        </ul>
         <div className="flex items-center gap-2.5 rounded-xl bg-white/10 p-2.5">
           <PersonAvatar person={seller} size="sm" />
           <span className="min-w-0 flex-1">
@@ -66,7 +90,9 @@ export function ListingCard({ listing, seller }: { listing: Listing; seller: Per
           </span>
         </div>
         <p className="text-[11px] text-white/65">
-          <Compact n={listing.sold} /> বার বিক্রি {listing.negotiable ? "· দরদাম চলে" : "· নির্ধারিত দাম"}
+          <Compact n={listing.sold} /> বার বিক্রি
+          {listing.stock !== undefined && <> · <Num value={listing.stock} /> {listing.unit} আছে</>}
+          {listing.negotiable ? " · দরদাম চলে" : " · নির্ধারিত দাম"}
         </p>
         <div className="mt-auto">
           <TradeButtons listing={listing} band={cat.band} />

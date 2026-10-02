@@ -1,10 +1,52 @@
 "use client";
 
+import { useState } from "react";
+import { Megaphone } from "lucide-react";
+import { toast } from "sonner";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { BOOST_TIERS } from "@/data/media/bazaar";
+import type { Listing } from "@/data/media/types";
 import { currentUser } from "@/data/media/users";
-import { useMediaState } from "@/lib/media/store";
+import { updateMedia, useMediaState } from "@/lib/media/store";
+import { mediaButton } from "../ui/button-styles";
+import { Num, Taka } from "../ui/numerals";
 import { ListingCard } from "./listing-card";
 
-/** Listings the viewer created from sellable posts, shown first. */
+function BoostButton({ listing }: { listing: Listing }) {
+  const [open, setOpen] = useState(false);
+  if (listing.featured) return <p className="text-center text-xs font-semibold text-signal-orange">ম্যাচ বুস্ট চালু</p>;
+  function boost(days: number) {
+    const ok = updateMedia((s) => ({ ...s, listings: s.listings.map((l) => (l.id === listing.id ? { ...l, featured: true } : l)) }));
+    setOpen(false);
+    if (ok) toast.success(`${days} দিনের বুস্ট চালু`, { description: "ডেমো: কোনো টাকা কাটা হয়নি।" });
+    else toast.error("এই ব্রাউজারে সেভ করা গেল না");
+  }
+  return (
+    <>
+      <button type="button" onClick={() => setOpen(true)} className={mediaButton({ variant: "outline", size: "sm", className: "w-full" })}>
+        <Megaphone aria-hidden /> ম্যাচ বুস্ট
+      </button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>ম্যাচ বুস্ট</DialogTitle>
+            <DialogDescription>যাঁরা এই হ্যাশট্যাগ বা বিভাগ খোঁজেন, শুধু তাঁদের তালিকায় আপনার পণ্য আগে আসবে।</DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-3 gap-2">
+            {BOOST_TIERS.map((t) => (
+              <button key={t.taka} type="button" onClick={() => boost(t.days)} className="rounded-2xl bg-text-primary px-3 py-4 text-center ring-1 ring-white/12 transition-[translate,box-shadow] hover:-translate-y-0.5 hover:ring-signal-orange active:scale-[0.97] motion-reduce:transition-none">
+                <span className="block text-xl font-bold text-signal-orange"><Taka amount={t.taka} /></span>
+                <span className="text-xs text-white/75"><Num value={t.days} /> দিন</span>
+              </button>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
+/** Listings the viewer created, shown first, each with its boost. */
 export function MyListings() {
   const mine = useMediaState((s) => s.listings);
   if (mine.length === 0) return null;
@@ -13,7 +55,10 @@ export function MyListings() {
       <h2 className="mb-3 text-base font-bold text-white">আপনার বিক্রির তালিকা</h2>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {mine.map((l) => (
-          <ListingCard key={l.id} listing={l} seller={currentUser} />
+          <div key={l.id} className="flex flex-col gap-2">
+            <ListingCard listing={l} seller={currentUser} />
+            <BoostButton listing={l} />
+          </div>
         ))}
       </div>
     </section>

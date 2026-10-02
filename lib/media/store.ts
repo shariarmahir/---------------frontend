@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import type { CategoryId, CivicReport, Comment, CommunityEvent, Job, Listing, Message, Post, Sponsor, Team, Txn } from "@/data/media/types";
+import type { BoardPost, CategoryId, Challenge, CivicReport, Comment, CommunityEvent, Job, Listing, Message, Post, Sponsor, Team, Txn } from "@/data/media/types";
 import { activeAccountId, subscribeAuth } from "@/lib/auth/client";
 import type { Classroom } from "./classroom";
 import type { CrimePost } from "./crime";
@@ -102,6 +102,8 @@ export interface MediaState {
   mySolutions: Record<string, CivicReport["solutions"]>;
   solutionVotes: Record<string, true>;
   entries: Record<string, MyEntry>;
+  /** Challenges the viewer created. */
+  myChallenges: Challenge[];
   notes: MyNote[];
   seenNotices: Record<string, true>;
   privacy: Privacy;
@@ -123,8 +125,12 @@ export interface MediaState {
   replies: Record<string, Comment[]>;
   ratings: Record<string, MyRating>;
   following: Record<string, true>;
+  /** People the viewer closed in “আপনি হয়তো চেনেন”. */
+  dismissedPeople: Record<string, true>;
   posts: Post[];
   listings: Listing[];
+  /** চাহিদা বোর্ড posts by the viewer. */
+  board: BoardPost[];
   threads: MyThread[];
   negotiations: Record<string, Negotiation>;
   messages: Record<string, Message[]>;
@@ -157,6 +163,7 @@ const initialState: MediaState = Object.freeze({
   mySolutions: {},
   solutionVotes: {},
   entries: {},
+  myChallenges: [],
   notes: [],
   seenNotices: {},
   privacy: defaultPrivacy,
@@ -171,8 +178,10 @@ const initialState: MediaState = Object.freeze({
   replies: {},
   ratings: {},
   following: {},
+  dismissedPeople: {},
   posts: [],
   listings: [],
+  board: [],
   threads: [],
   negotiations: {},
   messages: {},

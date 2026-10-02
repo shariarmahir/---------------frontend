@@ -63,3 +63,37 @@ export function readVideo(file: File): Promise<{ poster: string; duration: strin
     video.src = url;
   });
 }
+
+/** Files up to this size keep a playable copy; larger ones keep only their poster and length. */
+export const PLAY_MAX = 1_500_000;
+
+export function readDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
+/** An audio file's length, and a playable copy when it is small. */
+export function readAudio(file: File): Promise<{ duration: string; play?: string }> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const audio = document.createElement("audio");
+    audio.preload = "metadata";
+    audio.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("audio"));
+    };
+    audio.onloadedmetadata = async () => {
+      URL.revokeObjectURL(url);
+      try {
+        resolve({ duration: clock(audio.duration), play: file.size <= PLAY_MAX ? await readDataUrl(file) : undefined });
+      } catch (e) {
+        reject(e);
+      }
+    };
+    audio.src = url;
+  });
+}

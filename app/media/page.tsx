@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { Fragment } from "react";
 import { FolderKanban, ImagePlus, Video, X } from "lucide-react";
 import { FeedEnd } from "@/components/media/feed/feed-end";
 import { FeedRail } from "@/components/media/feed/feed-rail";
+import { PeopleYouMayKnow } from "@/components/media/feed/people-you-may-know";
 import { MyPosts } from "@/components/media/feed/my-posts";
 import { PostCard } from "@/components/media/feed/post-card";
 import { EmptyState } from "@/components/media/ui/empty-state";
@@ -138,8 +140,12 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
           />
         ) : (
           <>
-            {shown.map((p) => (
-              <PostCard key={p.id} post={p} author={personOrThrow(p.author)} listing={p.listingId ? getListing(p.listingId) : undefined} />
+            {shown.map((p, i) => (
+              <Fragment key={p.id}>
+                <PostCard post={p} author={personOrThrow(p.author)} listing={p.listingId ? getListing(p.listingId) : undefined} />
+                {/* Every seventh post (or after a short list), reshuffled each time. */}
+                {((i + 1) % 7 === 0 || (shown.length < 7 && i === shown.length - 1)) && <PeopleYouMayKnow seed={i < 7 ? 0 : i + 1} />}
+              </Fragment>
             ))}
             <FeedEnd />
           </>

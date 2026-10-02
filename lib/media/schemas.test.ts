@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
+  challengeSchema,
   civicSchema,
   eventSchema,
   jobSchema,
@@ -112,4 +113,25 @@ test("withdraw: limits and wallet numbers", () => {
   assert.deepEqual(errPaths(s.safeParse({ method: "bkash", account: "01712345678", amount: 400 })), ["amount"]);
   assert.deepEqual(errPaths(s.safeParse({ method: "bkash", account: "01712345678", amount: 20000 })), ["amount"]);
   assert.ok(s.safeParse({ method: "banglaqr", account: "QR-7310", amount: 1000 }).success);
+});
+
+test("challenge: a real brief, a future deadline, and a prize that is never negative", () => {
+  const ok = {
+    kind: "code",
+    title: "বাংলা ওসিআর — হাতের লেখা চেনা",
+    host: "নিজে",
+    category: "tech",
+    prize: 5000,
+    deadline: "2099-01-01",
+    teams: true,
+    description: "হাতে লেখা বাংলা নোটের ছবি থেকে লেখা বের করার মডেল বানান, অন্তত ৯০% নির্ভুল।",
+    judging: "নির্ভুলতা ৬০%, গতি ২০%, কোডের মান ২০%",
+    tags: "#ওসিআর #বাংলা",
+  };
+  assert.equal(challengeSchema.safeParse(ok).success, true);
+  assert.equal(challengeSchema.safeParse({ ...ok, prize: 0 }).success, true, "a certificate-only challenge is allowed");
+  assert.deepEqual(errPaths(challengeSchema.safeParse({ ...ok, prize: -5 })), ["prize"]);
+  assert.deepEqual(errPaths(challengeSchema.safeParse({ ...ok, deadline: "2020-01-01" })), ["deadline"]);
+  assert.deepEqual(errPaths(challengeSchema.safeParse({ ...ok, description: "কোড দিন" })), ["description"]);
+  assert.deepEqual(errPaths(challengeSchema.safeParse({ ...ok, judging: "" })), ["judging"]);
 });

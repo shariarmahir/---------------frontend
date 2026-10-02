@@ -22,6 +22,7 @@ import {
   Users,
   Wallet,
   type LucideIcon,
+  UsersRound,
 } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -48,6 +49,7 @@ export const navIcons: Record<NavIcon, LucideIcon> = {
   profile: CircleUserRound,
   create: Plus,
   explore: Compass,
+  people: UsersRound,
 };
 
 /** Sections the phone's "explore" tab stands for. */

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BriefcaseBusiness, CalendarDays, Clock, MapPin, SquarePen, Star, Users } from "lucide-react";
+import { PeopleYouMayKnow } from "@/components/media/feed/people-you-may-know";
 import { FollowButton } from "@/components/media/feed/post-actions";
 import { HireBar } from "@/components/media/hire/hire";
 import { ListingCard } from "@/components/media/market/listing-card";
@@ -258,6 +259,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
           )}
         </aside>
       </div>
+      {self ? <PeopleYouMayKnow /> : <PeopleYouMayKnow about={person.handle} title="আরও যাঁদের চিনতে পারেন" />}
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import type { GameId } from "@/lib/media/teams";
+import type { JourneyStep, SellerStage, Tier, TradeMode } from "@/lib/media/bazaar";
 import type { PriceBand } from "@/lib/media/fair-price";
 import type { PayUnit } from "@/lib/media/fair-pay";
 
@@ -26,7 +27,10 @@ export type CategoryId =
   | "crafts"
   | "homeservice"
   | "finance"
-  | "beauty";
+  | "beauty"
+  | "farm"
+  | "legal"
+  | "other";
 
 export interface Category {
   id: CategoryId;
@@ -93,6 +97,8 @@ export interface MediaSlot {
   ratio: "16/9" | "4/3" | "1/1" | "4/5";
   duration?: string;
   src?: string;
+  /** A short playable copy (audio or video data URL), kept when the file is small. */
+  play?: string;
 }
 
 export interface Comment {
@@ -145,8 +151,10 @@ export interface Listing {
   negotiable: boolean;
   /** Private minimum for offers. */
   floor: number;
-  delivery: ("home" | "courier" | "pickup" | "digital" | "onsite")[];
+  delivery: Delivery[];
   media: MediaSlot;
+  /** Every photo, video and audio sample, cover first. */
+  gallery?: MediaSlot[];
   rating: number;
   sold: number;
   location: string;
@@ -155,6 +163,53 @@ export interface Listing {
   skill: string;
   /** Paid placement (a revenue line): shown first and tagged “ফিচার্ড”. */
   featured?: boolean;
+
+  /* বাজার fields — older skill listings leave them out. */
+  stage?: SellerStage;
+  /** Trade modes the seller accepts; unset means all. */
+  modes?: TradeMode[];
+  tags?: string[];
+  stock?: number;
+  minOrder?: number;
+  /** Wholesale prices by quantity. */
+  tiers?: Tier[];
+  organic?: boolean;
+  perishable?: boolean;
+  /** Weight of one unit, for delivery quotes. */
+  kg?: number;
+  /** Category- and stage-specific answers from the form, in order. */
+  specs?: { k: string; v: string }[];
+  /** The seller's own category name under “অন্যান্য”. */
+  customCategory?: string;
+  /** Field to buyer, hash-linked (see lib/media/bazaar). */
+  journey?: JourneyStep[];
+}
+
+export type Delivery = "home" | "courier" | "pickup" | "digital" | "onsite" | "bus" | "cold" | "train" | "truck";
+
+/** A quick চাহিদা বোর্ড post: someone wants to buy, or has something to sell. Matched automatically. */
+export interface BoardPost {
+  id: string;
+  author: string;
+  side: "buy" | "sell";
+  /** Who is posting, in a few words: “কারওয়ান বাজারের আড়তদার”. */
+  who: string;
+  title: string;
+  category: CategoryId;
+  tags: string[];
+  qty: number;
+  unit: string;
+  /** Buyers: the most they will pay per unit (unset = open). Sellers: the asking price. */
+  price?: number;
+  district: string;
+  /** Buyers: what the purchase is for. Sellers: who they sell to. */
+  mode: TradeMode;
+  organic?: boolean;
+  /** Sample and lab test before the bulk order (exporters). */
+  sampleTest?: boolean;
+  /** Buyers: needed by. Sellers: available from. As written. */
+  when: string;
+  note?: string;
 }
 
 /* ── Community: jobs, events, teams, civic reports, challenges ───────── */
@@ -298,6 +353,8 @@ export interface Challenge {
   teams: boolean;
   entries: number;
   description: string;
+  /** How entries are judged. */
+  judging?: string;
   tags: string[];
 }
 

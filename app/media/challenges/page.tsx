@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ChallengeCard } from "@/components/media/community/challenges";
+import { CreateChallengeButton, MyChallenges } from "@/components/media/community/create-challenge";
 import { chipClass } from "@/components/media/ui/field-styles";
 import { PageHeader } from "@/components/media/ui/layout";
 import { challengeKindBn, challenges } from "@/data/media/challenges";
@@ -18,6 +19,7 @@ export default async function ChallengesPage({ searchParams }: { searchParams: P
       <PageHeader
         title="চ্যালেঞ্জ"
         subtitle="কোড, ডিজাইন, গবেষণা আর ল্যাবের চ্যালেঞ্জ — একা বা টিমে। বাস্তব সমস্যার সমাধান করে পুরস্কার জিতুন, ছোট পেইড অ্যাসাইনমেন্টে আয় করুন।"
+        actions={<CreateChallengeButton />}
       />
       <nav aria-label="চ্যালেঞ্জের ধরন" className="-mx-3 mb-5 overflow-x-auto px-3 scrollbar-none sm:mx-0 sm:px-0">
         <ul className="flex w-max gap-2">
@@ -31,6 +33,7 @@ export default async function ChallengesPage({ searchParams }: { searchParams: P
           ))}
         </ul>
       </nav>
+      <MyChallenges kind={kind} />
       <div className="grid gap-4 md:grid-cols-2">
         {shown.map((c) => <ChallengeCard key={c.id} challenge={c} />)}
       </div>

@@ -4,7 +4,7 @@ import type { Person, Tone } from "@/data/media/types";
 import { cn } from "@/lib/utils";
 import { IdSeal } from "./trust";
 
-const toneClass: Record<Tone, string> = {
+export const toneClass: Record<Tone, string> = {
   green: "bg-bd-green text-white",
   orange: "bg-signal-orange text-text-primary",
   emerald: "bg-emerald-700 text-white",
