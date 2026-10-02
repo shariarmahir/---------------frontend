@@ -86,7 +86,7 @@ export function BuyDialog({ listing, open, onOpenChange }: { listing: TradeListi
               </span>
             </p>
             <div className="grid grid-cols-2 gap-2">
-              <Link href="/media/wallet" className={mediaButton({ variant: "quiet" })}>ওয়ালেটে দেখুন</Link>
+              <Link href="/media/dashboard?txns=1" className={mediaButton({ variant: "quiet" })}>লেনদেন দেখুন</Link>
               <button type="button" onClick={() => onOpenChange(false)} className={mediaButton({ variant: "green" })}>ঠিক আছে</button>
             </div>
           </div>

@@ -51,8 +51,7 @@ export const mediaNavGroups: { title: string; items: MediaNavItem[] }[] = [
     title: "আমার",
     items: [
       { href: "/media/notes", label: "নোট", icon: "notes", hint: "দিনের সেরা কাজ ও স্মৃতি" },
-      { href: "/media/dashboard", label: "ড্যাশবোর্ড", icon: "dashboard", hint: "আয়, রেটিং, সার্টিফিকেট, সময়" },
-      { href: "/media/wallet", label: "ওয়ালেট", icon: "wallet", hint: "ব্যালান্স, এসক্রো, উত্তোলন" },
+      { href: "/media/dashboard", label: "ড্যাশবোর্ড ও ওয়ালেট", icon: "dashboard", hint: "আয়, বিক্রি, অর্ডার, ব্যালান্স, উত্তোলন" },
       { href: "/media/me", label: "প্রোফাইল", icon: "profile", hint: "আপনার পোর্টফোলিও" },
     ],
   },

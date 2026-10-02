@@ -2,6 +2,8 @@
 
 import { useSyncExternalStore } from "react";
 import type { BoardPost, CategoryId, Challenge, CivicReport, Comment, CommunityEvent, Job, Listing, Message, Post, Sponsor, Team, Txn } from "@/data/media/types";
+import { follows } from "@/data/media/follows";
+import { CURRENT_USER_HANDLE } from "@/data/media/users";
 import { activeAccountId, subscribeAuth } from "@/lib/auth/client";
 import type { Classroom } from "./classroom";
 import type { CrimePost } from "./crime";
@@ -177,7 +179,7 @@ const initialState: MediaState = Object.freeze({
   comments: {},
   replies: {},
   ratings: {},
-  following: {},
+  following: Object.fromEntries((follows[CURRENT_USER_HANDLE] ?? []).map((h) => [h, true])),
   dismissedPeople: {},
   posts: [],
   listings: [],

@@ -48,9 +48,9 @@ export function TopBar({ unreadSeed }: { unreadSeed: UnreadSeed }) {
             <span className="sr-only">বার্তা</span>
             <UnreadBubble seed={unreadSeed} />
           </Link>
-          <Link href="/media/wallet" className={mediaButton({ variant: "tile", size: "icon", className: "hidden sm:inline-flex" })}>
+          <Link href="/media/dashboard" className={mediaButton({ variant: "tile", size: "icon", className: "hidden sm:inline-flex" })}>
             <Wallet aria-hidden />
-            <span className="sr-only">ওয়ালেট</span>
+            <span className="sr-only">ড্যাশবোর্ড ও ওয়ালেট</span>
           </Link>
           <AccountMenu variant="media" className="ml-1" />
         </div>

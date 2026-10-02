@@ -1,3 +1,5 @@
+import { earningOf } from "../../lib/media/business.ts";
+import { orders } from "./orders.ts";
 import type { WalletSeed } from "./types";
 
 /**
@@ -7,7 +9,8 @@ import type { WalletSeed } from "./types";
 export const walletSeed: WalletSeed = {
   available: 38450,
   escrow: 28350,
-  lifetime: 214800,
+  // Everything the shop has earned, so the wallet and the dashboard charts agree.
+  lifetime: orders.reduce((n, o) => n + earningOf(o), 0),
   linked: { bkash: "01*** ***482", nagad: "01*** ***905", banglaqr: "QR · ****7310" },
   txns: [
     { id: "x1", at: "2026-09-25T05:45:00Z", kind: "escrow", label: "এসক্রোতে জমা — ওয়েব অ্যাপ, অনিক হাসান", gross: 27000, fee: 1350, feeSide: "buyer", net: -28350, status: "held", paidVia: "wallet", deal: "t-anik" },

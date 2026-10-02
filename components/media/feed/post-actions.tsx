@@ -5,6 +5,7 @@ import { useState } from "react";
 import { SealCheck } from "@phosphor-icons/react/ssr";
 import { Check, Heart, MessageCircle, Share2, UserPlus, UserCheck } from "lucide-react";
 import { toast } from "sonner";
+import { follows } from "@/data/media/follows";
 import type { Comment, Post } from "@/data/media/types";
 import { CURRENT_USER_HANDLE } from "@/data/media/users";
 import { toggleKey, useMediaState } from "@/lib/media/store";
@@ -26,7 +27,7 @@ export function FollowButton({ handle, size = "sm" }: { handle: string; size?: "
       className={mediaButton({ variant: on ? "quiet" : "outline", size })}
     >
       {on ? <UserCheck aria-hidden /> : <UserPlus aria-hidden />}
-      {on ? "অনুসরণ করছেন" : "অনুসরণ"}
+      {on ? "অনুসরণ করছেন" : follows[handle]?.includes(CURRENT_USER_HANDLE) ? "ফিরতি অনুসরণ" : "অনুসরণ"}
     </button>
   );
 }

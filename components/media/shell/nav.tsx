@@ -53,7 +53,7 @@ export const navIcons: Record<NavIcon, LucideIcon> = {
 };
 
 /** Sections the phone's "explore" tab stands for. */
-const exploreRoutes = ["/media/explore", "/media/classroom", "/media/jobs", "/media/events", "/media/teams", "/media/challenges", "/media/civic", "/media/notes", "/media/dashboard", "/media/wallet", "/media/messages", "/media/search", "/media/notifications", "/media/settings"];
+const exploreRoutes = ["/media/explore", "/media/classroom", "/media/jobs", "/media/events", "/media/teams", "/media/challenges", "/media/civic", "/media/notes", "/media/dashboard", "/media/messages", "/media/search", "/media/notifications", "/media/settings"];
 
 function isActive(pathname: string, href: string, me: string): boolean {
   if (href === "/media") return pathname === "/media" || (pathname.startsWith("/media/post/") && pathname !== "/media/post/new");

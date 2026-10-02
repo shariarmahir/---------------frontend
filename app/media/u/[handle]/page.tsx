@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BriefcaseBusiness, CalendarDays, Clock, MapPin, SquarePen, Star, Users } from "lucide-react";
-import { PeopleYouMayKnow } from "@/components/media/feed/people-you-may-know";
+import { MutualLine, PeopleYouMayKnow } from "@/components/media/feed/people-you-may-know";
 import { FollowButton } from "@/components/media/feed/post-actions";
 import { HireBar } from "@/components/media/hire/hire";
 import { ListingCard } from "@/components/media/market/listing-card";
@@ -106,6 +106,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
             <span className="inline-flex items-center gap-1"><CalendarDays className="size-4" aria-hidden />যোগ দিয়েছেন {monthsBn[Number(person.joined.slice(5, 7)) - 1]} <Num value={person.joined.slice(0, 4)} /></span>
             {person.idVerified && <IdBadge />}
           </div>
+          <MutualLine handle={person.handle} />
           <dl className="mt-6 grid grid-cols-2 gap-4 border-t border-white/12 pt-5 sm:grid-cols-4">
             <Stat icon={<Users className="size-4.5" aria-hidden />} value={<FollowerCount handle={person.handle} base={person.followers} />} label="অনুসারী" />
             <Stat icon={<BriefcaseBusiness className="size-4.5" aria-hidden />} value={<Compact n={person.jobsDone} />} label="সম্পন্ন কাজ" />

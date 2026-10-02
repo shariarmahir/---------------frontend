@@ -26,6 +26,8 @@ const nextConfig: NextConfig = {
       { source: "/ajker-bangladesh", destination: "/bangladesh", permanent: false },
       // অপরাধ বার্তা merged into নাগরিক বার্তা.
       { source: "/media/crime", destination: "/media/civic", permanent: false },
+      // ওয়ালেট merged into the dashboard; ?withdraw=1 passes through.
+      { source: "/media/wallet", destination: "/media/dashboard", permanent: false },
     ];
   },
 };

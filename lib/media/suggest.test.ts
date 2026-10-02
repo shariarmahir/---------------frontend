@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { shuffled, suggestPeople } from "./suggest.ts";
+import { followersOf, mutualsOf, shuffled, suggestPeople } from "./suggest.ts";
 
 const me = { handle: "me", district: "ঢাকা", categories: ["tech", "design"], skills: ["পাইথন", "লোগো"], followers: 10 };
 const pool = [
@@ -36,4 +36,21 @@ test("each feed row gets its own order; the same seed always gives the same one"
   assert.deepEqual(shuffled(list, 7), shuffled(list, 7));
   assert.notDeepEqual(shuffled(list, 7), shuffled(list, 14));
   assert.deepEqual([...shuffled(list, 7)].sort((a, b) => a - b), list, "nobody lost or doubled");
+});
+
+const graph = { me: ["coder", "twin"], coder: ["star", "me"], twin: ["star"], neighbour: ["star", "me"], star: [] };
+
+test("mutuals are people you follow who follow them; followers read the graph backwards", () => {
+  assert.deepEqual(mutualsOf("star", ["coder", "twin"], graph), ["coder", "twin"]);
+  assert.deepEqual(mutualsOf("star", ["neighbour"], graph), ["neighbour"]);
+  assert.deepEqual(mutualsOf("coder", ["coder"], graph), [], "never your own mutual");
+  assert.deepEqual(followersOf("me", graph), ["coder", "neighbour"]);
+});
+
+test("mutual followers lift a stranger above a popular one", () => {
+  const strangers = pool.filter((p) => p.handle !== "twin" && p.handle !== "coder");
+  const plain = suggestPeople(me, strangers, { following: new Set(), dismissed: new Set() });
+  assert.equal(plain[0].handle, "neighbour");
+  const m = suggestPeople(me, strangers, { following: new Set(), dismissed: new Set(), mutuals: (h) => mutualsOf(h, ["coder", "twin"], graph).length });
+  assert.equal(m[0].handle, "star");
 });

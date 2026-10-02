@@ -15,10 +15,22 @@ export interface Candidate {
 
 export type Reason = { kind: "skill" | "district" | "category" | "popular"; value: string };
 
+/** handle → the handles they follow. */
+export type FollowGraph = Record<string, readonly string[]>;
+
+export function followersOf(handle: string, graph: FollowGraph): string[] {
+  return Object.keys(graph).filter((h) => h !== handle && graph[h].includes(handle));
+}
+
+/** People the viewer follows who also follow `target` — the mutual line. */
+export function mutualsOf(target: string, following: Iterable<string>, graph: FollowGraph): string[] {
+  return [...following].filter((h) => h !== target && graph[h]?.includes(target));
+}
+
 export function suggestPeople(
   viewer: Candidate,
   pool: Candidate[],
-  { following, dismissed, exclude = [] }: { following: Set<string>; dismissed: Set<string>; exclude?: string[] },
+  { following, dismissed, exclude = [], mutuals }: { following: Set<string>; dismissed: Set<string>; exclude?: string[]; mutuals?: (handle: string) => number },
 ): { handle: string; score: number; reason: Reason }[] {
   const skip = new Set([viewer.handle, ...exclude]);
   return pool
@@ -27,7 +39,9 @@ export function suggestPeople(
       const skills = p.skills.filter((s) => viewer.skills.includes(s));
       const fields = p.categories.filter((c) => viewer.categories.includes(c));
       const near = p.district === viewer.district;
-      const score = 5 * Math.min(skills.length, 2) + 3 * fields.length + (near ? 4 : 0) + Math.log10(p.followers + 1) / 2;
+      // Friends of friends count like a shared skill, capped so a crowd can't drown the rest.
+      const shared = Math.min(mutuals?.(p.handle) ?? 0, 3);
+      const score = 5 * Math.min(skills.length, 2) + 4 * shared + 3 * fields.length + (near ? 4 : 0) + Math.log10(p.followers + 1) / 2;
       const reason: Reason = skills.length
         ? { kind: "skill", value: skills[0] }
         : near

@@ -5,6 +5,8 @@ import { threads } from "./chat.ts";
 import { listings } from "./market.ts";
 import { posts } from "./posts.ts";
 import { people } from "./users.ts";
+import { follows } from "./follows.ts";
+import { districts, divisionOf, divisions } from "../districts.ts";
 import { walletSeed } from "./wallet.ts";
 import { RATED_TOPICS } from "../../lib/media/schemas.ts";
 import { isFairPay } from "../../lib/media/fair-pay.ts";
@@ -107,4 +109,18 @@ test("wallet rows disclose fees correctly", () => {
     if (t.feeSide === "none") assert.equal(t.fee, 0, t.id);
     if (t.fee > 0) assert.equal(t.fee, Math.round(t.gross * 0.05), `${t.id} is 5%`);
   }
+});
+
+test("the follow graph names real people and nobody follows themselves", () => {
+  for (const [h, list] of Object.entries(follows)) {
+    assert.ok(byHandle.has(h), `unknown follower ${h}`);
+    for (const t of list) assert.ok(byHandle.has(t) && t !== h, `${h} → ${t}`);
+    assert.equal(new Set(list).size, list.length, `${h} follows someone twice`);
+  }
+});
+
+test("64 districts, each in one division, and every member lives in one", () => {
+  assert.equal(divisions.length, 8);
+  assert.equal(new Set(districts).size, 64);
+  for (const p of people) assert.ok(divisionOf(p.district), `${p.handle}: ${p.district}`);
 });

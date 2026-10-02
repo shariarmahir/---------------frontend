@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowDownLeft, ArrowUpRight, Lock, PackageCheck, QrCode, ShoppingBag, Smartphone, Undo2, type LucideIcon } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, Lock, PackageCheck, QrCode, ReceiptText, ShoppingBag, Smartphone, Undo2, type LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormGroup, FormGroupLabel, FormLabel, FormMessage } from "@/components/ui/form";
@@ -16,7 +16,7 @@ import { newId, updateMedia, useHydrated } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
 import { mediaButton } from "../ui/button-styles";
 import { EmptyState } from "../ui/empty-state";
-import { Ago, Taka } from "../ui/numerals";
+import { Ago, Num, Taka } from "../ui/numerals";
 import { WalletSkeleton } from "../ui/skeletons";
 import { payBn, releaseEscrow } from "./pay";
 import { useWallet } from "./use-wallet";
@@ -214,6 +214,7 @@ function WithdrawDialog({ available, linked, open, onOpenChange }: { available: 
   );
 }
 
+/** Balance, escrow, lifetime earnings and withdraw. The ledger opens from TransactionsButton. */
 export function WalletView({ seed }: { seed: WalletSeed }) {
   const hydrated = useHydrated();
   const w = useWallet(seed);
@@ -222,18 +223,10 @@ export function WalletView({ seed }: { seed: WalletSeed }) {
   const [open, setOpen] = useState(params.get("withdraw") === "1");
 
   if (!hydrated) return <WalletSkeleton />;
-  const seedIds = new Set(seed.txns.map((t) => t.id));
-
   const fees = w.txns.reduce((n, t) => n + t.fee, 0);
-  const groups: { key: string; bn: string; kinds?: TxnKind[] }[] = [
-    { key: "all", bn: "সব" },
-    { key: "in", bn: "আয়", kinds: ["sale", "release", "refund"] },
-    { key: "out", bn: "খরচ", kinds: ["purchase", "escrow"] },
-    { key: "withdraw", bn: "উত্তোলন", kinds: ["withdraw"] },
-  ];
 
   return (
-    <div className="space-y-5">
+    <>
       <section className="rounded-2xl bg-bd-green p-5 text-white sm:p-6">
         <p className="text-sm text-white/85">তোলা যাবে</p>
         <p className="mt-1 text-4xl font-bold">
@@ -263,46 +256,97 @@ export function WalletView({ seed }: { seed: WalletSeed }) {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-white/12 bg-text-primary p-4 sm:p-6">
-        <Tabs defaultValue="all">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-base font-bold text-white">লেনদেন</h2>
-            <TabsList>
-              {groups.map((g) => (
-                <TabsTrigger key={g.key} value={g.key}>
-                  {g.bn}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </div>
-          {groups.map((g) => {
-            const rows = w.txns.filter((t) => !g.kinds || g.kinds.includes(t.kind));
-            return (
-              <TabsContent key={g.key} value={g.key}>
-                {rows.length === 0 ? (
-                  <div className="pt-4"><EmptyState icon="wallet" title="এই ধরনের লেনদেন নেই" /></div>
-                ) : (
-                  <ul className="divide-y divide-white/12">
-                    {rows.map((t) => (
-                      <TxnRow key={t.id} t={t} live={!seedIds.has(t.id)} />
-                    ))}
-                  </ul>
-                )}
-              </TabsContent>
-            );
-          })}
-        </Tabs>
-      </section>
-
       <WithdrawDialog
         available={w.available}
         linked={seed.linked}
         open={open}
         onOpenChange={(o) => {
           setOpen(o);
-          if (!o && params.get("withdraw")) router.replace("/media/wallet", { scroll: false });
+          if (!o && params.get("withdraw")) router.replace("/media/dashboard", { scroll: false });
         }}
       />
-    </div>
+    </>
+  );
+}
+
+const groups: { key: string; bn: string; kinds?: TxnKind[] }[] = [
+  { key: "all", bn: "সব" },
+  { key: "in", bn: "আয়", kinds: ["sale", "release", "refund"] },
+  { key: "out", bn: "খরচ", kinds: ["purchase", "escrow"] },
+  { key: "withdraw", bn: "উত্তোলন", kinds: ["withdraw"] },
+];
+
+/** The "লেনদেন" button: every transaction in a pop-up, filterable by kind. `?txns=1` opens it. */
+export function TransactionsButton({ seed }: { seed: WalletSeed }) {
+  const w = useWallet(seed);
+  const params = useSearchParams();
+  const router = useRouter();
+  const [open, setOpen] = useState(params.get("txns") === "1");
+  const seedIds = new Set(seed.txns.map((t) => t.id));
+  // Same sign rule as TxnRow: a bill paid from outside the wallet still counts as money out.
+  const moved = (t: Txn) => (t.paidVia !== undefined && t.paidVia !== "wallet" ? -(t.gross + t.fee) : t.net);
+  const income = w.txns.reduce((n, t) => n + Math.max(0, moved(t)), 0);
+  const spent = w.txns.reduce((n, t) => n + Math.min(0, moved(t)), 0);
+
+  return (
+    <>
+      <button type="button" onClick={() => setOpen(true)} className={mediaButton({ variant: "primary" })}>
+        <ReceiptText aria-hidden /> লেনদেন
+        <span className="rounded-md bg-text-primary px-1.5 text-xs text-signal-orange"><Num value={w.txns.length} /></span>
+      </button>
+      <Dialog
+        open={open}
+        onOpenChange={(o) => {
+          setOpen(o);
+          if (!o && params.get("txns")) router.replace("/media/dashboard", { scroll: false });
+        }}
+      >
+        <DialogContent className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden rounded-2xl bg-text-primary p-0 font-sans sm:max-w-2xl">
+          <Tabs defaultValue="all" className="flex min-h-0 flex-1 flex-col gap-0">
+            <DialogHeader className="gap-3 border-b border-white/12 p-5 pr-12">
+              <DialogTitle className="text-lg font-bold text-white">সব লেনদেন</DialogTitle>
+              <DialogDescription className="sr-only">ওয়ালেটের প্রতিটি লেনদেন, ফি-সহ।</DialogDescription>
+              <dl className="grid grid-cols-3 gap-2">
+                {[
+                  { label: "লেনদেন", value: <Num value={w.txns.length} /> },
+                  { label: "এসেছে", value: <>+<Taka amount={income} /></> },
+                  { label: "গেছে", value: <Taka amount={spent} /> },
+                ].map((x) => (
+                  <div key={x.label} className="flex flex-col-reverse rounded-xl bg-white/10 px-3 py-2">
+                    <dt className="text-xs text-white/65">{x.label}</dt>
+                    <dd className="text-sm font-bold text-white sm:text-base">{x.value}</dd>
+                  </div>
+                ))}
+              </dl>
+              <TabsList className="w-full sm:w-auto sm:self-start">
+                {groups.map((g) => (
+                  <TabsTrigger key={g.key} value={g.key}>
+                    {g.bn}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </DialogHeader>
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-5">
+              {groups.map((g) => {
+                const rows = w.txns.filter((t) => !g.kinds || g.kinds.includes(t.kind));
+                return (
+                  <TabsContent key={g.key} value={g.key}>
+                    {rows.length === 0 ? (
+                      <div className="pt-4"><EmptyState icon="wallet" title="এই ধরনের লেনদেন নেই" /></div>
+                    ) : (
+                      <ul className="divide-y divide-white/12">
+                        {rows.map((t) => (
+                          <TxnRow key={t.id} t={t} live={!seedIds.has(t.id)} />
+                        ))}
+                      </ul>
+                    )}
+                  </TabsContent>
+                );
+              })}
+            </div>
+          </Tabs>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

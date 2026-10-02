@@ -87,10 +87,10 @@ export function WalletCard({ seed }: { seed: WalletSeed }) {
         এসক্রোতে <Taka amount={w.escrow} /> · মোট আয় <Taka amount={w.lifetime} />
       </p>
       <div className="mt-4 grid grid-cols-2 gap-2">
-        <Link href="/media/wallet?withdraw=1" className={mediaButton({ variant: "primary", size: "sm" })}>
+        <Link href="/media/dashboard?withdraw=1" className={mediaButton({ variant: "primary", size: "sm" })}>
           টাকা তুলুন
         </Link>
-        <Link href="/media/wallet" className="inline-flex h-9 items-center justify-center gap-1 rounded-xl border border-white/30 text-sm font-semibold text-white transition-colors hover:bg-white/10">
+        <Link href="/media/dashboard" className="inline-flex h-9 items-center justify-center gap-1 rounded-xl border border-white/30 text-sm font-semibold text-white transition-colors hover:bg-white/10">
           লেনদেন <ArrowUpRight className="size-4" aria-hidden />
         </Link>
       </div>

@@ -1,13 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { BriefcaseBusiness, CalendarHeart, Clock, Lock, StickyNote, Wallet, type LucideIcon } from "lucide-react";
+import { BriefcaseBusiness, CalendarHeart, Clock, StickyNote, type LucideIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LIFT, glowStyle, surfaceAt } from "@/components/ui/surfaces";
 import { cn } from "@/lib/utils";
 import { useHydrated, useMediaState } from "@/lib/media/store";
-import { Num, Taka } from "../ui/numerals";
-import { useWallet } from "../wallet/use-wallet";
+import { Num } from "../ui/numerals";
 import { useMinutesToday } from "../wellbeing/usage";
 
 function Tile({ i, href, Icon, label, children }: { i: number; href: string; Icon: LucideIcon; label: string; children: React.ReactNode }) {
@@ -25,24 +24,20 @@ function Tile({ i, href, Icon, label, children }: { i: number; href: string; Ico
   );
 }
 
-/** The viewer's numbers — money, activity, time. */
+/** The viewer's activity and time; money lives in the wallet and shop charts above. */
 export function DashboardStats() {
   const hydrated = useHydrated();
-  const w = useWallet();
   const applied = useMediaState((s) => Object.keys(s.applied).length);
   const joined = useMediaState((s) => Object.keys(s.joinedEvents).length + s.myEvents.length);
   const notes = useMediaState((s) => s.notes.length);
   const minutes = useMinutesToday();
-  if (!hydrated) return <div className="grid grid-cols-2 gap-3 md:grid-cols-3"><Skeleton className="h-22 rounded-2xl" /><Skeleton className="h-22 rounded-2xl" /><Skeleton className="h-22 rounded-2xl" /></div>;
+  if (!hydrated) return <div className="grid grid-cols-2 gap-3 md:grid-cols-4"><Skeleton className="h-22 rounded-2xl" /><Skeleton className="h-22 rounded-2xl" /><Skeleton className="h-22 rounded-2xl" /><Skeleton className="h-22 rounded-2xl" /></div>;
   return (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-      <Tile i={0} href="/media/wallet" Icon={Wallet} label="তোলা যাবে"><Taka amount={w.available} /></Tile>
-      <Tile i={1} href="/media/wallet" Icon={Lock} label="এসক্রোতে"><Taka amount={w.escrow} /></Tile>
-      <Tile i={2} href="/media/wallet" Icon={Wallet} label="মোট আয়"><Taka amount={w.lifetime} /></Tile>
-      <Tile i={3} href="/media/jobs" Icon={BriefcaseBusiness} label="কাজে আবেদন"><Num value={applied} /></Tile>
-      <Tile i={4} href="/media/events" Icon={CalendarHeart} label="উদ্যোগে অংশ"><Num value={joined} /></Tile>
-      <Tile i={5} href="/media/settings" Icon={Clock} label="আজ এখানে"><Num value={minutes} /> মিনিট</Tile>
-      <Tile i={6} href="/media/notes" Icon={StickyNote} label="নোট"><Num value={notes} /></Tile>
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <Tile i={0} href="/media/jobs" Icon={BriefcaseBusiness} label="কাজে আবেদন"><Num value={applied} /></Tile>
+      <Tile i={1} href="/media/events" Icon={CalendarHeart} label="উদ্যোগে অংশ"><Num value={joined} /></Tile>
+      <Tile i={2} href="/media/settings" Icon={Clock} label="আজ এখানে"><Num value={minutes} /> মিনিট</Tile>
+      <Tile i={3} href="/media/notes" Icon={StickyNote} label="নোট"><Num value={notes} /></Tile>
     </div>
   );
 }
