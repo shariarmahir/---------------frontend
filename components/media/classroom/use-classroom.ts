@@ -7,11 +7,17 @@ import { newJoinCode, type ClassLevel, type Classroom, type MemberStats } from "
 import { newId, updateMedia, useMediaState } from "@/lib/media/store";
 import type { Role } from "@/lib/media/notices";
 import { classDuties, isFull, type Rota } from "@/lib/media/teamwork";
+import { useParentView } from "./focus/session-context";
 
-/** The viewer as a classroom member: their Kandari Profile, nothing more. */
+/**
+ * The viewer as a classroom member: their Kandari Profile, nothing more. A
+ * parent watching a child is nobody in the room, so every room shows them
+ * its read-only guest view.
+ */
 export function useMe(): { id: string; name: string } | null {
   const { account } = useAuth();
-  return account ? { id: account.id, name: account.name } : null;
+  const parent = useParentView();
+  return account && !parent ? { id: account.id, name: account.name } : null;
 }
 
 /** Sample classes are dated round the demo clock; classes people make run on real time. */

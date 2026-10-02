@@ -70,13 +70,14 @@ export function ClassroomRoom({ id }: { id: string }) {
           meId={me?.id}
           name={(nid) => nameOf(room, nid)}
           today={bdToday(classNow(room.id))}
-          subjects={[...new Set(room.routine.map((s) => s.subject))]}
-          items={[...room.notes.filter((n) => n.kind === "homework").map((n) => n.title), ...room.exams.map((e) => e.title)]}
+          subjects={[...new Set(room.routine.map((s) => s.subject).filter(Boolean))]}
+          // Notes saved by older versions may have no title.
+          items={[...room.notes.filter((n) => n.kind === "homework").map((n) => n.title), ...room.exams.map((e) => e.title)].filter(Boolean)}
           onChange={(fn) => editClassroom(room.id, (r) => ({ ...r, notices: fn(r.notices ?? []) }))}
         />
       </div>
 
-      <nav aria-label="ক্লাসরুমের অংশ" className="sticky top-16 z-30 -mx-3 bg-black/85 px-3 py-2 backdrop-blur-md sm:mx-0 sm:rounded-2xl sm:px-2 print:hidden">
+      <nav aria-label="ক্লাসরুমের অংশ" className="sticky top-[var(--sticky-top,4rem)] z-30 -mx-3 bg-black/85 px-3 py-2 backdrop-blur-md sm:mx-0 sm:rounded-2xl sm:px-2 print:hidden">
         <ul className="flex gap-1 overflow-x-auto scrollbar-none">
           {TABS.map((t) => (
             <li key={t.key} className="shrink-0">

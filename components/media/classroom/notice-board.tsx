@@ -12,7 +12,7 @@ import { newId } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
 import { mediaButton } from "../ui/button-styles";
 import { choiceClass, selectClass } from "../ui/field-styles";
-import { DateText, Num } from "../ui/numerals";
+import { DateText, Num, useFormat } from "../ui/numerals";
 
 const ICON: Record<NoticeKind, LucideIcon> = { emergency: Siren, cancel: CalendarX2, leave: UserRoundX, late: ClipboardClock, custom: Megaphone };
 
@@ -154,17 +154,19 @@ function NoticeComposer({ open, onOpenChange, role, meId, meName, today, subject
   const [kind, setKind] = useState<NoticeKind>(kinds[0]);
   const [date, setDate] = useState(today);
   const [days, setDays] = useState(1);
-  const [subject, setSubject] = useState("");
-  const [item, setItem] = useState("");
+  const [subject, setSubject] = useState(subjects[0] ?? "");
+  const [item, setItem] = useState(items[0] ?? "");
   const [reason, setReason] = useState("");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [pinned, setPinned] = useState(false);
   const [color, setColor] = useState<NoteColor | undefined>();
   const [tried, setTried] = useState(false);
+  const { num } = useFormat();
 
+  /** Clear the form as it closes, so the next note starts fresh however the dialog was opened. */
   function reset(o: boolean) {
-    if (o) {
+    if (!o) {
       setKind(kinds[0]);
       setDate(today);
       setDays(1);
@@ -180,11 +182,13 @@ function NoticeComposer({ open, onOpenChange, role, meId, meName, today, subject
     onOpenChange(o);
   }
 
+  // The room's saved data can arrive after the form opened: keep the pick only while it is still offered.
+  const work = (items.length > 0 && !items.includes(item) ? items[0] : item) ?? "";
   const word = oneWord(reason);
   const problem = {
     date: !date ? "তারিখ দিন" : date < today && kind !== "custom" ? "আজ বা সামনের কোনো দিন দিন" : "",
     subject: kind === "cancel" && subject.trim().length < 2 ? "কোন ক্লাস, লিখুন" : "",
-    item: kind === "late" && item.trim().length < 2 ? "কোন কাজ, লিখুন" : "",
+    item: kind === "late" && work.trim().length < 2 ? "কোন কাজ, লিখুন" : "",
     reason: kind === "leave" && !word ? "এক শব্দে কারণ দিন (যেমন জ্বর)" : kind === "late" && reason.trim() && !word ? "কারণ এক শব্দে" : "",
     title: kind === "custom" && title.trim().length < 4 ? "শিরোনাম দিন" : "",
     body: kind === "emergency" && body.trim().length < 4 ? "কী হয়েছে, এক লাইনে লিখুন" : "",
@@ -194,7 +198,7 @@ function NoticeComposer({ open, onOpenChange, role, meId, meName, today, subject
     emergency: "জরুরি: ক্লাস বন্ধ",
     cancel: `${subject.trim()} ক্লাস হবে না`,
     leave: `${meName} — ছুটি`,
-    late: `${item.trim()} — দেরিতে জমা`,
+    late: `${work.trim()} — দেরিতে জমা`,
     custom: title.trim(),
   };
   const draft: Notice = {
@@ -270,7 +274,7 @@ function NoticeComposer({ open, onOpenChange, role, meId, meName, today, subject
             <label className="block">
               <span className={label}>কোন কাজ *</span>
               {items.length > 0 ? (
-                <select value={item} onChange={(e) => setItem(e.target.value)} className={selectClass}>
+                <select value={work} onChange={(e) => setItem(e.target.value)} className={selectClass}>
                   {items.map((x) => <option key={x} value={x}>{x}</option>)}
                 </select>
               ) : (
@@ -291,7 +295,7 @@ function NoticeComposer({ open, onOpenChange, role, meId, meName, today, subject
                 <label className="block">
                   <span className={label}>কত দিন</span>
                   <select value={days} onChange={(e) => setDays(Number(e.target.value))} className={selectClass}>
-                    {[1, 2, 3, 4, 5, 6, 7].map((d) => <option key={d} value={d}>{d} দিন</option>)}
+                    {[1, 2, 3, 4, 5, 6, 7].map((d) => <option key={d} value={d}>{num(d)} দিন</option>)}
                   </select>
                 </label>
               )}

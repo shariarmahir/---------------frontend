@@ -865,6 +865,19 @@
 
 /* প্রতিবাদ live board and routing panel (components/complaints): a new
    item drops in from above and settles in a quarter of a second. */
+/* The classroom strip's fifteen-second progress line. */
+@keyframes ticker-bar {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.ticker-bar {
+  animation: ticker-bar linear both;
+}
+
 @keyframes live-in {
   from { opacity: 0; transform: translateY(-14px) scale(0.97); }
   to { opacity: 1; transform: none; }

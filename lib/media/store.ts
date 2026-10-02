@@ -5,7 +5,9 @@ import type { BoardPost, CategoryId, Challenge, CivicReport, Comment, CommunityE
 import { follows } from "@/data/media/follows";
 import { CURRENT_USER_HANDLE } from "@/data/media/users";
 import { activeAccountId, subscribeAuth } from "@/lib/auth/client";
+import type { ClassMsg } from "./class-chat";
 import type { Classroom } from "./classroom";
+import type { TutorMsg } from "./tutor";
 import type { LabRoom } from "./lab";
 import type { ResearchProject } from "./research-project";
 import type { ResearchEntry } from "./showcase";
@@ -120,6 +122,12 @@ export interface MediaState {
   research: ResearchEntry[];
   /** Research workspaces the viewer started or joined, by id (a sample is copied here on first edit). */
   projects: Record<string, ResearchProject>;
+  /** Class chat messages written on this device, by room id (the room's own come from data). */
+  classChat: Record<string, ClassMsg[]>;
+  /** The classroom AI helper's conversation (file names only, never the bytes). */
+  tutor: TutorMsg[];
+  /** Milliseconds spent in the full-screen classroom, all visits. */
+  classStay: number;
   /** অপরাধ বার্তা: the viewer's own posts, and the posts they witnessed or flagged. */
   crimePosts: CrimePost[];
   crimeWitness: Record<string, true>;
@@ -182,6 +190,9 @@ const initialState: MediaState = Object.freeze({
   labs: {},
   research: [],
   projects: {},
+  classChat: {},
+  tutor: [],
+  classStay: 0,
   crimePosts: [],
   crimeWitness: {},
   crimeFlags: {},

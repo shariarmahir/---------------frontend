@@ -23,7 +23,7 @@ import { isFull, labDuties } from "@/lib/media/teamwork";
 import { cn } from "@/lib/utils";
 import { mediaButton } from "../ui/button-styles";
 import { EmptyState } from "../ui/empty-state";
-import { Ago, DateText, Num } from "../ui/numerals";
+import { Ago, DateText, Num, useFormat } from "../ui/numerals";
 import { DutyBoard } from "./duty-board";
 import { FilePreview, NoteReader, readerUrl, toNoteFile } from "./note-files";
 import { InnovationTab } from "../research/start-research";
@@ -108,6 +108,7 @@ export function LabRoomView({ id }: { id: string }) {
   const [sharing, setSharing] = useState<SharePreset | null>(null);
   const [settings, setSettings] = useState(false);
   const reduce = useReducedMotion();
+  const { num } = useFormat();
 
   if (!lab) {
     return hydrated ? (
@@ -142,14 +143,14 @@ export function LabRoomView({ id }: { id: string }) {
           meId={me?.id}
           name={(nid) => labMemberName(lab, nid)}
           today={bdToday(now)}
-          subjects={["ল্যাব ক্লাস", ...lab.experiments.map((e) => `এক্সপেরিমেন্ট ${e.no}`)]}
-          items={lab.experiments.map((e) => `রিপোর্ট ${e.no} — ${e.title}`)}
+          subjects={["ল্যাব ক্লাস", ...lab.experiments.map((e) => `এক্সপেরিমেন্ট ${num(e.no)}`)]}
+          items={lab.experiments.map((e) => `রিপোর্ট ${num(e.no)} — ${e.title}`)}
           onChange={(fn) => editLab(lab.id, (l) => ({ ...l, notices: fn(l.notices ?? []) }))}
         />
         <Status lab={lab} me={me?.id} now={now} />
       </div>
 
-      <nav aria-label="ল্যাবের অংশ" className="sticky top-16 z-30 -mx-3 bg-black/85 px-3 py-2 backdrop-blur-md sm:mx-0 sm:rounded-2xl sm:px-2 print:hidden">
+      <nav aria-label="ল্যাবের অংশ" className="sticky top-[var(--sticky-top,4rem)] z-30 -mx-3 bg-black/85 px-3 py-2 backdrop-blur-md sm:mx-0 sm:rounded-2xl sm:px-2 print:hidden">
         <ul className="flex gap-1 overflow-x-auto scrollbar-none">
           {TABS.map((t) => (
             <li key={t.key} className="shrink-0">

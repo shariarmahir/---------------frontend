@@ -214,3 +214,21 @@ test("teacher codes are unique, never a class code, and sample papers are comple
     for (const t of p.tasks) assert.ok(p.members.some((m) => m.id === t.who), `${t.id} assignee`);
   }
 });
+
+test("sample class chats come from the room's people, with the right role", async () => {
+  const { sampleChats } = await import("./class-chat.ts");
+  const { studentCode } = await import("../../lib/media/class-access.ts");
+  const rooms = [...sampleClassrooms, ...sampleLabs];
+  for (const [id, list] of Object.entries(sampleChats)) {
+    const room = rooms.find((r) => r.id === id);
+    assert.ok(room, `chat for unknown room ${id}`);
+    unique(list.map((m) => m.id), `${id} message ids`);
+    for (const m of list) {
+      const role: string = m.by === room.teacherId ? "teacher" : m.by === room.leaderId ? "leader" : "member";
+      assert.ok(m.by === room.teacherId || room.members.some((x) => x.id === m.by), `${m.id} by ${m.by}`);
+      assert.equal(m.byRole, role, m.id);
+    }
+  }
+  // Two different students must never share the ID a parent types.
+  unique([...new Set(rooms.flatMap((r) => r.members.map((m) => m.id)))].map(studentCode), "student codes");
+});

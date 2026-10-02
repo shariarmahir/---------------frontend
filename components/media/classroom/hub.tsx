@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { CalendarClock, Crown, FlaskConical, GraduationCap, KeyRound, Lightbulb, Plus, Shuffle, Swords, Timer, Users } from "lucide-react";
+import { CalendarClock, Crown, Eye, FlaskConical, GraduationCap, KeyRound, Lightbulb, Plus, Shuffle, Swords, Timer, Users } from "lucide-react";
 import { toast } from "sonner";
 import { AccountAvatar } from "@/components/auth/account-menu";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -13,10 +13,11 @@ import { LIFT, glowStyle, surfaceAt } from "@/components/ui/surfaces";
 import { Textarea } from "@/components/ui/textarea";
 import { ROLES } from "@/data/auth";
 import { DEMO_NOW } from "@/data/media/clock";
-import { sampleByCode, sampleClassrooms } from "@/data/media/classroom";
+import { sampleByCode, sampleClassroom, sampleClassrooms } from "@/data/media/classroom";
 import { sampleLab, sampleLabByCode, sampleLabs } from "@/data/media/labs";
 import { useAuth } from "@/lib/auth/client";
-import { LEVELS, WEEKDAYS, nextExam, syllabusProgress, validJoinCode, type ClassLevel, type Classroom } from "@/lib/media/classroom";
+import { studentCode, type Child } from "@/lib/media/class-access";
+import { LEVELS, WEEKDAYS, nextExam, rank, syllabusProgress, validJoinCode, type ClassLevel, type Classroom } from "@/lib/media/classroom";
 import { countdown, dueAt, nextLab, type LabRoom } from "@/lib/media/lab";
 import { useMediaState } from "@/lib/media/store";
 import { TEAM_LIMITS, isFull } from "@/lib/media/teamwork";
@@ -26,6 +27,7 @@ import { choiceClass } from "../ui/field-styles";
 import { Num } from "../ui/numerals";
 import { createClassroom, joinClassAsTeacher, joinClassroom, useMe } from "./use-classroom";
 import { createLab, joinLab, joinLabAsTeacher } from "./use-lab";
+import { useClassSession } from "./focus/session-context";
 import { LimitField } from "./team-settings";
 
 const FEATURES = [
@@ -36,6 +38,87 @@ const FEATURES = [
 ];
 
 export function ClassroomHub() {
+  const session = useClassSession();
+  return session?.mode === "parent" ? <ParentHub child={session.child} /> : <StudentHub />;
+}
+
+/**
+ * What a parent sees: only their child's classes and labs, how the child is
+ * doing in each, and the same cards students open — read-only inside.
+ */
+function ParentHub({ child }: { child: Child }) {
+  const classMap = useMediaState((s) => s.classrooms);
+  const labMap = useMediaState((s) => s.labs);
+  const classes = child.classes.flatMap((id) => classMap[id] ?? sampleClassroom(id) ?? []);
+  const labs = child.labs.flatMap((id) => labMap[id] ?? sampleLab(id) ?? []);
+  const isChild = (m: { id: string; accountId?: string }) => studentCode(m.id) === child.code || (m.accountId !== undefined && studentCode(m.accountId) === child.code);
+
+  return (
+    <div className="mx-auto max-w-6xl space-y-8">
+      <section className="live-in overflow-hidden rounded-3xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-8">
+        <PixelMark tone="dark" />
+        <p className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-signal-orange px-3 py-1 text-xs font-bold text-text-primary">
+          <Eye className="size-3.5" aria-hidden /> অভিভাবক · শুধু দেখা
+        </p>
+        <h1 className="mt-3 text-3xl font-bold tracking-tight text-balance text-white sm:text-5xl sm:leading-[1.1]">
+          {child.name}-এর <span className="text-signal-orange">ক্লাসরুম</span>
+        </h1>
+        <p className="mt-3 max-w-[52ch] text-[15px] leading-relaxed text-white/80">রুটিন, নোটিশ, পরীক্ষার কাউন্টডাউন আর ক্লাসে সন্তানের অবস্থান — সব দেখতে পারবেন। কিছু বদলানো, জমা দেওয়া বা চ্যাটে লেখা যায় না।</p>
+
+        {classes.length > 0 && (
+          <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {classes.map((c) => {
+              const ranked = rank(c.members);
+              const at = ranked.findIndex(isChild);
+              const me = ranked[at];
+              if (!me) return null;
+              return (
+                <li key={c.id} className="rounded-2xl bg-white/5 p-4 ring-1 ring-white/12">
+                  <p className="truncate text-sm font-bold text-white">{c.name}</p>
+                  <dl className="mt-3 grid grid-cols-3 gap-2 text-center">
+                    <div className="rounded-xl bg-signal-orange px-2 py-2 text-text-primary">
+                      <dt className="text-[11px] font-semibold">গড় নম্বর</dt>
+                      <dd className="text-xl font-bold"><Num value={me.stats.assess} /></dd>
+                    </div>
+                    <div className="rounded-xl bg-bd-green px-2 py-2 text-white">
+                      <dt className="text-[11px] font-semibold">ক্লাসে</dt>
+                      <dd className="text-xl font-bold"><Num value={at + 1} /><span className="text-xs font-semibold text-white/75">/<Num value={ranked.length} /></span></dd>
+                    </div>
+                    <div className="rounded-xl bg-white px-2 py-2 text-text-primary">
+                      <dt className="text-[11px] font-semibold">সমাধান</dt>
+                      <dd className="text-xl font-bold"><Num value={me.stats.solved} /></dd>
+                    </div>
+                  </dl>
+                  <p className="mt-2 text-xs text-white/65"><Num value={me.stats.notes} />টি নোট শেয়ার · <Num value={me.stats.helped} /> বার সহপাঠীকে সাহায্য</p>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
+
+      {classes.length > 0 && (
+        <section aria-labelledby="child-class-title">
+          <h2 id="child-class-title" className="mb-4 text-xl font-bold text-white">ক্লাস</h2>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {classes.map((c, i) => <ClassCard key={c.id} room={c} i={i} />)}
+          </div>
+        </section>
+      )}
+
+      {labs.length > 0 && (
+        <section aria-labelledby="child-lab-title">
+          <h2 id="child-lab-title" className="mb-4 flex items-center gap-2 text-xl font-bold text-white"><FlaskConical className="size-5 text-signal-orange" aria-hidden /> ল্যাব</h2>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {labs.map((l) => <LabCard key={l.id} lab={l} />)}
+          </div>
+        </section>
+      )}
+    </div>
+  );
+}
+
+function StudentHub() {
   const { account } = useAuth();
   const mineMap = useMediaState((s) => s.classrooms);
   const mine = useMemo(() => Object.values(mineMap), [mineMap]);
