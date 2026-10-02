@@ -85,7 +85,7 @@ export function EventCard({ event }: { event: CommunityEvent }) {
   const pct = Math.min(100, Math.round((count / event.goal) * 100));
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-white/12 bg-text-primary story-reveal transition-[translate,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-white/25 hover:shadow-[0_24px_44px_-26px_var(--color-signal-orange)] active:scale-[0.99] motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+    <article id={event.id} className="scroll-mt-24 overflow-hidden rounded-2xl border border-white/12 bg-text-primary story-reveal target:ring-2 target:ring-signal-orange transition-[translate,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-white/25 hover:shadow-[0_24px_44px_-26px_var(--color-signal-orange)] active:scale-[0.99] motion-reduce:transition-none motion-reduce:hover:translate-y-0">
       <div className="relative aspect-16/7 bg-white/10">
         {event.cover ? (
           <Image src={event.cover} alt="" fill sizes="(min-width: 1024px) 560px, 100vw" className="object-cover" />

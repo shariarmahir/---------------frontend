@@ -50,7 +50,7 @@ export function TopBar({ unreadSeed }: { unreadSeed: UnreadSeed }) {
           </Link>
           <Link href="/media/dashboard" className={mediaButton({ variant: "tile", size: "icon", className: "hidden sm:inline-flex" })}>
             <Wallet aria-hidden />
-            <span className="sr-only">ড্যাশবোর্ড ও ওয়ালেট</span>
+            <span className="sr-only">মাটির ব্যাংক</span>
           </Link>
           <AccountMenu variant="media" className="ml-1" />
         </div>

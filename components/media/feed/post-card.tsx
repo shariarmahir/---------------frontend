@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { ArrowUpRight, FlaskConical, FolderKanban, GraduationCap, LifeBuoy, Megaphone, Tag, UsersRound } from "lucide-react";
+import { ArrowUpRight, Earth, FlaskConical, FolderKanban, GraduationCap, LifeBuoy, Lock, MapPin, Megaphone, Tag, UsersRound } from "lucide-react";
 import { getCategory } from "@/data/media/categories";
+import { bgOf, feelingOf } from "@/data/media/feelings";
 import { topicOf } from "@/data/media/topics";
 import type { Listing, Person, Post } from "@/data/media/types";
 import { CURRENT_USER_HANDLE, getPerson } from "@/data/media/users";
+import { BG_MAX } from "@/lib/media/schemas";
 import { roomHref } from "@/lib/media/showcase";
 import { cn } from "@/lib/utils";
 import { Ago, Taka } from "../ui/numerals";
@@ -14,6 +16,7 @@ import { CommentThread, type CommentPeople } from "./comments";
 import { LinkCard } from "./link-card";
 import { LiveRatingPair } from "./live-rating";
 import { FollowButton, PostActions } from "./post-actions";
+import { TOPIC_ICON } from "./topic-style";
 
 /** Only the people a post's discussion mentions (plus the viewer) cross to the client. */
 export function commentPeopleFor(post: Post): CommentPeople {
@@ -58,6 +61,11 @@ export function PostCard({
 }) {
   const replies = post.comments.reduce((n, c) => n + (c.replies?.length ?? 0), 0);
   const topic = topicOf(post);
+  const TopicIcon = TOPIC_ICON[topic.id];
+  const feeling = feelingOf(post.feeling);
+  // A short text-only post with a colour is set large on it.
+  const bg = post.media.length === 0 && post.caption.length <= BG_MAX ? bgOf(post.bg) : undefined;
+  const Audience = post.audience === "private" ? Lock : post.audience === "followers" ? UsersRound : Earth;
   return (
     <article id={post.id} className="scroll-mt-24 rounded-2xl border border-white/12 bg-text-primary story-reveal transition-[translate,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-white/25 hover:shadow-[0_24px_44px_-26px_var(--color-signal-orange)] active:scale-[0.99] motion-reduce:transition-none motion-reduce:hover:translate-y-0">
       <header className="flex items-start gap-3 p-4 pb-0 sm:p-6 sm:pb-0">
@@ -70,9 +78,23 @@ export function PostCard({
               {author.nameBn}
             </Link>
             {author.idVerified && <IdSeal />}
+            {feeling && (
+              <span className="truncate text-sm text-white/70">
+                — <span aria-hidden>{feeling.emoji}</span> {feeling.line}
+              </span>
+            )}
           </p>
-          <p className="truncate text-xs text-white/65">
-            {author.headline} · <Ago iso={post.createdAt} live={live} />
+          <p className="flex min-w-0 items-center gap-1 text-xs text-white/65">
+            <span className="truncate">{author.headline}</span>
+            <span aria-hidden>·</span>
+            <span className="shrink-0"><Ago iso={post.createdAt} live={live} /></span>
+            {post.place && (
+              <span className="inline-flex shrink-0 items-center gap-0.5">
+                <span aria-hidden>·</span> <MapPin className="size-3" aria-hidden /> {post.place}
+              </span>
+            )}
+            <span aria-hidden>·</span>
+            <Audience className="size-3 shrink-0" aria-label={post.audience === "private" ? "শুধু আমি" : post.audience === "followers" ? "অনুসারীরা" : "সবাই দেখতে পারেন"} />
           </p>
         </div>
         <FollowButton handle={author.handle} />
@@ -85,7 +107,11 @@ export function PostCard({
           </p>
         )}
 
-        <p className="text-[15px] leading-relaxed whitespace-pre-line text-white">{post.caption}</p>
+        {bg ? (
+          <p className={cn("grid min-h-56 place-items-center rounded-2xl px-6 py-10 text-center text-2xl leading-snug font-bold whitespace-pre-line text-balance sm:text-[1.7rem]", bg.className)}>{post.caption}</p>
+        ) : post.caption ? (
+          <p className="text-[15px] leading-relaxed whitespace-pre-line text-white">{post.caption}</p>
+        ) : null}
 
         <MediaGallery media={post.media} />
 
@@ -101,8 +127,9 @@ export function PostCard({
           {topic.id !== "skill" && (
             <Link
               href={`/media?t=${topic.id}`}
-              className="inline-flex min-h-7 items-center rounded-full bg-white/10 px-2.5 text-xs font-semibold text-white/80 transition-colors hover:bg-white/15"
+              className="inline-flex min-h-7 items-center gap-1 rounded-full bg-white/10 px-2.5 text-xs font-semibold text-white/80 transition-colors hover:bg-white/15"
             >
+              <TopicIcon className="size-3.5 text-signal-orange" aria-hidden />
               {topic.bn}
             </Link>
           )}

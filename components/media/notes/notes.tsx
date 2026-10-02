@@ -2,7 +2,8 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Pin, PinOff, Star, StickyNote, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Pin, PinOff, Plus, Star, StickyNote, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
@@ -146,6 +147,50 @@ export function NotesBoard() {
         </>
       )}
     </div>
+  );
+}
+
+/** Text colour that reads on each note colour (white on gold or sky would not). */
+const noteInk: Record<MyNote["color"], string> = { yellow: "text-text-primary", green: "text-white", orange: "text-text-primary", blue: "text-text-primary" };
+
+/** Today's date as the browser's local day, for matching notes to "today". */
+const localDay = () => new Date().toDateString();
+
+/**
+ * "আজকের নোট" on the viewer's own profile, under the post button: today's
+ * best-of-the-day note, else the latest note written today, else a prompt
+ * to write one.
+ */
+export function TodayNote() {
+  const hydrated = useHydrated();
+  const notes = useMediaState((s) => s.notes);
+  const day = hydrated ? localDay() : "";
+  const todays = notes.filter((n) => new Date(n.at).toDateString() === day).sort((a, b) => b.at.localeCompare(a.at));
+  const note = todays.find((n) => n.best) ?? todays[0];
+
+  if (!note) {
+    return (
+      <Link href="/media/notes" className="group flex items-start gap-3 rounded-2xl border border-dashed border-white/25 p-4 transition-colors hover:border-signal-orange hover:bg-white/5">
+        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-white/10 text-signal-orange"><Plus className="size-5" aria-hidden /></span>
+        <span className="min-w-0">
+          <span className="block text-sm font-bold text-white">আজকের নোট</span>
+          <span className="mt-0.5 block text-[13px] leading-snug text-white/65">আজ কী শিখলেন বা কাকে সাহায্য করলেন? এক লাইনে লিখে রাখুন।</span>
+        </span>
+      </Link>
+    );
+  }
+  return (
+    <Link href="/media/notes" className={cn("group block rounded-2xl p-4 shadow-tile ring-1 transition-[translate] duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0", noteColor[note.color], noteInk[note.color])}>
+      <span className="flex items-center justify-between gap-2 text-xs font-bold">
+        <span className="inline-flex items-center gap-1.5"><StickyNote className="size-4" aria-hidden /> আজকের নোট</span>
+        {note.best && <span className="inline-flex items-center gap-1 rounded-full bg-black/75 px-2 py-0.5 text-[11px] text-signal-orange"><Star className="size-3 fill-current" aria-hidden /> সেরা কাজ</span>}
+      </span>
+      <span className="mt-2 line-clamp-4 block text-[15px] leading-relaxed whitespace-pre-line">{note.text}</span>
+      <span className="mt-3 flex items-center justify-between gap-2 text-xs opacity-80">
+        <Ago iso={note.at} live />
+        <span className="inline-flex items-center gap-1 font-bold">সব নোট <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden /></span>
+      </span>
+    </Link>
   );
 }
 

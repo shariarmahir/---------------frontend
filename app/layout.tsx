@@ -11,11 +11,17 @@ import "./globals.css";
 // Gilroy is a commercial font with no next/font/google entry and no local
 // files in this project; Sora is the closest free geometric-sans match for
 // headings, matching Gilroy's rounded, confident letterforms.
+// Sora and JetBrains Mono are not on every route (the /media feed uses
+// neither above the fold), so they are not preloaded: a preloaded font the
+// page never draws makes the browser warn "preloaded but not used". They
+// still load the moment text needs them, and next/font's size-matched
+// fallback keeps the layout from jumping while they do.
 const sora = Sora({
   subsets: ["latin"],
   weight: ["500", "600", "700", "800"],
   variable: "--font-sora",
   display: "swap",
+  preload: false,
 });
 
 const inter = Inter({
@@ -29,6 +35,7 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500", "600", "700"],
   variable: "--font-mono",
   display: "swap",
+  preload: false,
 });
 
 const hindSiliguri = Hind_Siliguri({
@@ -61,6 +68,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       // Browser extensions inject attributes onto <html> before hydration.
       suppressHydrationWarning
+      // globals.css sets smooth scrolling for in-page links; this tells Next
+      // it is deliberate, so route changes still jump to the top instantly.
+      data-scroll-behavior="smooth"
       className={`${sora.variable} ${inter.variable} ${jetbrainsMono.variable} ${hindSiliguri.variable} h-full antialiased`}
     >
       <head>

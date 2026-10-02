@@ -75,7 +75,7 @@ export function MyProfile({ handles, categoryNames }: { handles: string[]; categ
           ))}
         </ul>
         <div className="mt-6 flex flex-wrap gap-2">
-          <Link href="/media/post/new" className={mediaButton({ variant: "primary" })}>
+          <Link href="/media/post/new?topic=skill" className={mediaButton({ variant: "primary" })}>
             <PenLine aria-hidden /> দক্ষতার প্রমাণ পোস্ট করুন
           </Link>
           <Link href="/account" className={mediaButton({ variant: "quiet" })}>

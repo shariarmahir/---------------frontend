@@ -1,8 +1,9 @@
 import type { Post } from "./types";
 
 /**
- * Skill posts: proof of work, the owner's self-rating, and the community's
- * verdict. Comments carry a verdict when the commenter also rated the claim.
+ * Posts of every kind — life, talent, skill, research, help. Rated ones
+ * carry proof, the owner's self-rating and the community's verdict.
+ * Comments carry a verdict when the commenter also rated the claim.
  */
 export const posts: Post[] = [
   {
@@ -289,6 +290,51 @@ export const posts: Post[] = [
     comments: [
       { id: "c1", author: "joy", text: "রাজশাহীতে ওয়ার্ড কাউন্সিলরের অফিসে লিখিত দিলে কাজ হয়েছিল। স্বাক্ষর জোগাড় করলে সাথে আছি।", at: "2026-09-25T09:00:00Z", likes: 96 },
     ],
+  },
+  {
+    // A short life post, set large on gold (Post.bg).
+    id: "p-life-salary",
+    kind: "skill",
+    topic: "daily",
+    author: "nusrat",
+    category: "teaching",
+    createdAt: "2026-09-25T08:10:00Z",
+    caption: "আজ জীবনের প্রথম বেতন পেলাম। আম্মুর জন্য একটা শাড়ি কিনেছি — তাঁর চোখের পানিটুকুই সবচেয়ে বড় পুরস্কার।",
+    media: [],
+    tags: [],
+    stats: { likes: 2140, shares: 36, views: 18400 },
+    comments: [{ id: "c1", author: "rahima", text: "মাশাআল্লাহ! আম্মুকে সালাম দিও।", at: "2026-09-25T08:40:00Z", likes: 64 }],
+    feeling: "grateful",
+    bg: "gold",
+  },
+  {
+    id: "p-talent-song",
+    kind: "skill",
+    topic: "talent",
+    author: "mitu",
+    category: "music",
+    createdAt: "2026-09-25T10:45:00Z",
+    caption: "পাড়ার বৈশাখী অনুষ্ঠানে প্রথমবার মঞ্চে ‘এসো হে বৈশাখ’ গাইলাম। হাত-পা কাঁপছিল, তবু শেষ পর্যন্ত গেয়েছি। কেমন হলো বলবেন?",
+    media: [{ kind: "video", label: "মঞ্চে গান", ratio: "16/9", duration: "৩:০৫", src: "/bangladesh/boishakh.jpg" }],
+    tags: ["#গান", "#বৈশাখ"],
+    stats: { likes: 1290, shares: 88, views: 15600 },
+    comments: [],
+    feeling: "proud",
+  },
+  {
+    id: "p-life-sajek",
+    kind: "skill",
+    topic: "daily",
+    author: "tanvir",
+    category: "travel",
+    createdAt: "2026-09-24T18:30:00Z",
+    caption: "ছয় মাস টাকা জমিয়ে বন্ধুদের সাথে সাজেক। মেঘের ওপরে সকাল — অফিসের সব চাপ এক মুহূর্তে উধাও।",
+    media: [{ kind: "image", label: "মেঘের ভোর", ratio: "4/3", src: "/bangladesh/sajek.jpg" }],
+    tags: ["#সাজেক", "#ভ্রমণ"],
+    stats: { likes: 860, shares: 21, views: 9300 },
+    comments: [],
+    feeling: "happy",
+    place: "সাজেক, রাঙামাটি",
   },
   {
     id: "p-daily-fuchka",

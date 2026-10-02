@@ -15,7 +15,7 @@ import { DailyPlan } from "@/components/media/wellbeing/daily-plan";
 import { currentUser } from "@/data/media/users";
 import { walletSeed } from "@/data/media/wallet";
 
-export const metadata: Metadata = { title: "ড্যাশবোর্ড ও ওয়ালেট" };
+export const metadata: Metadata = { title: "মাটির ব্যাংক" };
 
 /** One screen for money and work: balance, shop numbers, activity and skills; the ledger opens from the header. */
 export default function DashboardPage() {
@@ -25,7 +25,7 @@ export default function DashboardPage() {
   return (
     <div className="mx-auto max-w-6xl">
       <PageHeader
-        title="ড্যাশবোর্ড ও ওয়ালেট"
+        title="মাটির ব্যাংক"
         subtitle="ব্যালান্স, রাজস্ব, আয়, বিক্রি আর অর্ডার — সঙ্গে প্রতিটি লেনদেন আর কাজের হিসাব, এক স্ক্রিনে।"
         actions={
           <>

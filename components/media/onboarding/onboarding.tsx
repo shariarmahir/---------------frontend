@@ -385,10 +385,10 @@ export function Onboarding({ categories, takenHandles }: { categories: { id: Cat
           @{profile.handle} · {profile.district} — পরিচয় যাচাইকৃত। এবার প্রথম দক্ষতার প্রমাণ পোস্ট করুন; কমিউনিটি যাচাই করলেই কাজ আসতে শুরু করবে।
         </p>
         <p className="mx-auto mt-3 max-w-md rounded-xl bg-white/10 px-3 py-2 text-xs text-white/65">
-          ডেমো: ব্যাকএন্ড যুক্ত না হওয়া পর্যন্ত ফিড, ড্যাশবোর্ড ও ওয়ালেটের নমুনা তথ্য প্রতিষ্ঠাতার (মাহির) প্রোফাইল থেকে দেখানো হয়; আপনার লাইক, পোস্ট ও বার্তা আপনার অ্যাকাউন্টেই জমা থাকে।
+          ডেমো: ব্যাকএন্ড যুক্ত না হওয়া পর্যন্ত ফিড ও মাটির ব্যাংকের নমুনা তথ্য প্রতিষ্ঠাতার (মাহির) প্রোফাইল থেকে দেখানো হয়; আপনার লাইক, পোস্ট ও বার্তা আপনার অ্যাকাউন্টেই জমা থাকে।
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <Link href="/media/post/new" className={mediaButton({ variant: "primary" })}>প্রথম দক্ষতা পোস্ট করুন</Link>
+          <Link href="/media/post/new?topic=skill" className={mediaButton({ variant: "primary" })}>প্রথম দক্ষতা পোস্ট করুন</Link>
           <Link href="/media/me" className={mediaButton({ variant: "quiet" })}>আমার প্রোফাইল</Link>
           <Link href="/media" className={mediaButton({ variant: "quiet" })}>ফিড দেখুন</Link>
         </div>

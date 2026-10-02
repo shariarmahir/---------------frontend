@@ -5,9 +5,9 @@ import { FlagshipsSection } from "@/components/sections/flagships-section";
 import { HeroSection } from "@/components/sections/hero-section";
 import { KandariProfileSection } from "@/components/sections/kandari-profile-section";
 import { LeadershipSection } from "@/components/sections/leadership-section";
-import { MetricsSection } from "@/components/sections/metrics-section";
 import { NodeTerminalSection } from "@/components/sections/node-terminal-section";
 import { PixelThesisSection } from "@/components/sections/pixel-thesis-section";
+import { PlatformsSection } from "@/components/sections/platforms/platforms-section";
 import { ResearchSection } from "@/components/sections/research-section";
 
 /*
@@ -18,9 +18,9 @@ import { ResearchSection } from "@/components/sections/research-section";
  * panels carry a faint white ring so they hold an edge on the black); every
  * surface a solid colour, no textures; white tiles for anything green or red; a three-pixel mark on every heading; a gold pulse running
  * the seam of each dark band.
- * STORY: see the photographs and the claim → the four pixels → the two
- * products → the village grid → the labs → the open drive → the people →
- * join.
+ * STORY: see the photographs and the claim → the four pixels → products
+ * and services → the platforms (শিক্ষিতদের মিডিয়া, গবেষণাকোষ, ক্লাসরুম) →
+ * the labs → the open drive → the people → join.
  * FIRST VIEWPORT: the gold header over the photo hero, claim left, gold
  * primary action, the ink proof strip closing the band.
  * FORM: extension of the established header world (no seed roll); pacing
@@ -36,7 +36,7 @@ export default function Home() {
         <div className="relative">
           <PixelThesisSection />
           <FlagshipsSection />
-          <MetricsSection />
+          <PlatformsSection />
           <ResearchSection />
           <NodeTerminalSection />
           <LeadershipSection />

@@ -17,17 +17,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
-import { ProductCard } from "@/components/products/product-card";
+import { ProductsShowcase, ServicesShowcase, ShowcaseCta } from "@/components/showcase/showcase";
 import { SourceLink } from "@/components/products/source-link";
 import { Icon } from "@/components/ui/icon";
 import { SectionHeading, SignalSeam } from "@/components/ui/section-kit";
 import { getProduct, products } from "@/data/products";
+import { services } from "@/data/services";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Products | কাণ্ডারী-ল্যাব",
+  title: "Products & Services | কাণ্ডারী-ল্যাব",
   description:
-    "Aponjon, SWASTI and the Smart Pharmacy — three connected products for Bangladesh's Golden Two Hours: detect early, triage fast, treat in the village.",
+    "Aponjon, SWASTI and the Smart Pharmacy for Bangladesh's Golden Two Hours — and the services behind them: AI, LLMs and agents; automation for factory, home and office; IoT solutions; websites, apps and UI.",
 };
 
 /** How the three products hand a patient to one another. */
@@ -47,8 +48,8 @@ const CHAIN_SURFACES = [
 /** The four proof points, in the ink rule below the hero band. */
 const PROOF = [
   { label: "Connected products", value: String(products.length) },
+  { label: "Services", value: String(services.length) },
   { label: "Golden window", value: "2 HOURS" },
-  { label: "Districts served", value: "64" },
   { label: "Built in", value: "BANGLADESH" },
 ];
 
@@ -101,11 +102,11 @@ export default function ProductsPage() {
               <div className="mx-auto flex w-full max-w-7xl flex-col items-start gap-space-md px-gutter-x">
                 <span className="font-bengali text-sm font-bold text-signal-orange">আমাদের পণ্য</span>
                 <h1 className="max-w-3xl font-grotesk text-3xl leading-[1.1] font-bold tracking-tight text-white sm:text-4xl lg:text-[2.75rem] xl:text-[3.25rem]">
-                  Three products. <span className="text-signal-orange">One Golden Two Hours.</span>
+                  Three products. Four services. <span className="text-signal-orange">One team, built in Bangladesh.</span>
                 </h1>
                 <p className="max-w-[46ch] font-sans text-body-md leading-relaxed text-white/85 lg:text-body-lg">
-                  Built in Bangladesh for the moment that decides survival — from the first warning sign, to a
-                  doctor&apos;s opinion, to care in the village.
+                  Healthcare products for the Golden Two Hours, and the engineering behind them — AI, automation, IoT
+                  and software — built for your factory, office, farm or app.
                 </p>
               </div>
             </div>
@@ -137,13 +138,19 @@ export default function ProductsPage() {
               title="Explore the products"
               lead="Each page covers the research, the core problem, how the product solves it, and what it means for Bangladesh."
             />
-            <ul className="grid grid-cols-1 gap-5 md:grid-cols-[repeat(2,minmax(0,1fr))] lg:grid-cols-[repeat(3,minmax(0,1fr))]">
-              {products.map((p, i) => (
-                <li key={p.slug} className="story-reveal flex">
-                  <ProductCard product={p} index={i} />
-                </li>
-              ))}
-            </ul>
+            <ProductsShowcase />
+          </section>
+
+          {/* Services — the same team's engineering, built for others. */}
+          <section id="services" className="section-band-tinted mx-auto max-w-7xl scroll-mt-header px-gutter-x lg:scroll-mt-header-lg">
+            <SectionHeading
+              tone="dark"
+              kicker="সেবা — আপনার জন্য আমরা বানাই"
+              title="Services"
+              lead="The skills behind Aponjon and SWASTI, put to work on your problem. Tell us what you need; we design, build and hand it over."
+            />
+            <ServicesShowcase on="products" />
+            <ShowcaseCta />
           </section>
 
           {/* How they connect — a green band. */}

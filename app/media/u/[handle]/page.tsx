@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { BriefcaseBusiness, CalendarDays, Clock, MapPin, SquarePen, Star, Users } from "lucide-react";
+import { BriefcaseBusiness, CalendarDays, Clock, MapPin, SquarePen, Star, StickyNote, Users } from "lucide-react";
 import { MutualLine, PeopleYouMayKnow } from "@/components/media/feed/people-you-may-know";
 import { FollowButton } from "@/components/media/feed/post-actions";
 import { HireBar } from "@/components/media/hire/hire";
@@ -19,7 +19,7 @@ import { getCategory } from "@/data/media/categories";
 import { threads } from "@/data/media/chat";
 import { listings } from "@/data/media/market";
 import { SealCheck } from "@phosphor-icons/react/ssr";
-import { PinnedNotes } from "@/components/media/notes/notes";
+import { PinnedNotes, TodayNote } from "@/components/media/notes/notes";
 import { certificatesFor } from "@/data/media/certificates";
 import { posts } from "@/data/media/posts";
 import { teamKindBn, teams } from "@/data/media/teams";
@@ -84,29 +84,39 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
             <PersonAvatar person={person} size="xl" className="ring-4 ring-white" />
             <div className="flex flex-wrap gap-2">
               {self ? (
-                <Link href="/media/post/new" className={mediaButton({ variant: "primary" })}>
-                  <SquarePen aria-hidden /> দক্ষতা পোস্ট করুন
-                </Link>
+                <>
+                  <Link href="/media/notes" className={mediaButton({ variant: "quiet" })}>
+                    <StickyNote className="text-signal-orange" aria-hidden /> নোট
+                  </Link>
+                  <Link href="/media/post/new?topic=skill" className={mediaButton({ variant: "primary" })}>
+                    <SquarePen aria-hidden /> দক্ষতা পোস্ট করুন
+                  </Link>
+                </>
               ) : (
                 <FollowButton handle={person.handle} size="md" />
               )}
             </div>
           </div>
-          <h1 className="mt-4 flex items-center gap-2 text-2xl font-bold text-white">
-            {person.nameBn}
-            {person.idVerified && <IdSeal size={24} />}
-          </h1>
-          <p className="text-sm text-white/65">
-            {person.name} · @{person.handle}
-          </p>
-          <p className="mt-2 text-[15px] font-semibold text-white/80">{person.headline}</p>
-          <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-white">{person.bio}</p>
-          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-white/65">
-            <span className="inline-flex items-center gap-1"><MapPin className="size-4" aria-hidden />{self ? <OwnLocation area={person.area} district={person.district} /> : `${person.area}, ${person.district}`}</span>
-            <span className="inline-flex items-center gap-1"><CalendarDays className="size-4" aria-hidden />যোগ দিয়েছেন {monthsBn[Number(person.joined.slice(5, 7)) - 1]} <Num value={person.joined.slice(0, 4)} /></span>
-            {person.idVerified && <IdBadge />}
+          <div className={self ? "mt-4 grid gap-4 md:grid-cols-[minmax(0,1fr)_18rem] md:items-start md:gap-8" : "mt-4"}>
+            <div className="min-w-0">
+              <h1 className="flex items-center gap-2 text-2xl font-bold text-white">
+                {person.nameBn}
+                {person.idVerified && <IdSeal size={24} />}
+              </h1>
+              <p className="text-sm text-white/65">
+                {person.name} · @{person.handle}
+              </p>
+              <p className="mt-2 text-[15px] font-semibold text-white/80">{person.headline}</p>
+              <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-white">{person.bio}</p>
+              <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-white/65">
+                <span className="inline-flex items-center gap-1"><MapPin className="size-4" aria-hidden />{self ? <OwnLocation area={person.area} district={person.district} /> : `${person.area}, ${person.district}`}</span>
+                <span className="inline-flex items-center gap-1"><CalendarDays className="size-4" aria-hidden />যোগ দিয়েছেন {monthsBn[Number(person.joined.slice(5, 7)) - 1]} <Num value={person.joined.slice(0, 4)} /></span>
+                {person.idVerified && <IdBadge />}
+              </div>
+              <MutualLine handle={person.handle} />
+            </div>
+            {self && <TodayNote />}
           </div>
-          <MutualLine handle={person.handle} />
           <dl className="mt-6 grid grid-cols-2 gap-4 border-t border-white/12 pt-5 sm:grid-cols-4">
             <Stat icon={<Users className="size-4.5" aria-hidden />} value={<FollowerCount handle={person.handle} base={person.followers} />} label="অনুসারী" />
             <Stat icon={<BriefcaseBusiness className="size-4.5" aria-hidden />} value={<Compact n={person.jobsDone} />} label="সম্পন্ন কাজ" />

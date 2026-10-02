@@ -31,7 +31,7 @@ export const mediaNavGroups: { title: string; items: MediaNavItem[] }[] = [
   {
     title: "প্রধান",
     items: [
-      { href: "/media", label: "ফিড", icon: "feed", hint: "দক্ষতা, শিক্ষা, গবেষণা ও সবার পোস্ট" },
+      { href: "/media", label: "ফিড", icon: "feed", hint: "জীবন, প্রতিভা, দক্ষতা, গবেষণা, বাজার — সবার পোস্ট এক জায়গায়" },
       { href: "/media/market", label: "বাজার", icon: "market", hint: "যা পারেন বিক্রি করুন, দরদাম করে কিনুন" },
       { href: "/media/jobs", label: "কাজ", icon: "jobs", hint: "খাত অনুযায়ী কাজ, ন্যায্য মজুরি" },
       { href: "/media/messages", label: "বার্তা", icon: "messages", badge: "messages", hint: "হায়ার, দরদাম, চুক্তি" },
@@ -50,8 +50,7 @@ export const mediaNavGroups: { title: string; items: MediaNavItem[] }[] = [
   {
     title: "আমার",
     items: [
-      { href: "/media/notes", label: "নোট", icon: "notes", hint: "দিনের সেরা কাজ ও স্মৃতি" },
-      { href: "/media/dashboard", label: "ড্যাশবোর্ড ও ওয়ালেট", icon: "dashboard", hint: "আয়, বিক্রি, অর্ডার, ব্যালান্স, উত্তোলন" },
+      { href: "/media/dashboard", label: "মাটির ব্যাংক", icon: "dashboard", hint: "আয়, বিক্রি, অর্ডার, ব্যালান্স, উত্তোলন" },
       { href: "/media/me", label: "প্রোফাইল", icon: "profile", hint: "আপনার পোর্টফোলিও" },
     ],
   },

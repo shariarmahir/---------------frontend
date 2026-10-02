@@ -74,7 +74,11 @@ export const profileSchema = z.object({
 });
 export type ProfileInput = z.infer<typeof profileSchema>;
 
-export const POST_TOPICS = ["skill", "education", "research", "team", "entertainment", "daily", "help", "rights"] as const;
+export const POST_TOPICS = ["skill", "education", "research", "team", "talent", "entertainment", "daily", "help", "rights"] as const;
+export const FEELINGS = ["happy", "grateful", "proud", "excited", "celebrating", "calm", "learning", "working", "thinking", "sad"] as const;
+export const POST_BGS = ["gold", "green", "orange", "white", "ink"] as const;
+/** Longest caption a coloured background takes. */
+export const BG_MAX = 160;
 /** Topics whose posts carry a self-rating for the community to verify. */
 export const RATED_TOPICS: readonly (typeof POST_TOPICS)[number][] = ["skill", "education", "research", "team"];
 
@@ -83,7 +87,7 @@ export const postSchema = z
     /** Omitted means "skill". */
     topic: z.enum(POST_TOPICS).optional(),
     kind: z.enum(["skill", "project"]),
-    caption: z.string().trim().min(10, "কী বলতে চান — অন্তত ১০ অক্ষরে লিখুন।").max(1200, "১২০০ অক্ষরের মধ্যে রাখুন।"),
+    caption: z.string().trim().max(1200, "১২০০ অক্ষরের মধ্যে রাখুন।"),
     skill: z.string().trim().max(40, "দক্ষতার নাম ছোট রাখুন।"),
     category: z.enum(CATEGORY_IDS, { error: "বিভাগ বেছে নিন।" }),
     selfRating: z.number().int().min(1, "১ থেকে ৫-এর মধ্যে দিন।").max(5, "১ থেকে ৫-এর মধ্যে দিন।"),
@@ -94,9 +98,19 @@ export const postSchema = z
     price: z.number().int().positive().optional(),
     unit: z.string().trim().optional(),
     negotiable: z.boolean().optional(),
+    feeling: z.enum(FEELINGS).optional(),
+    bg: z.enum(POST_BGS).optional(),
+    audience: z.enum(["public", "followers", "private"]).optional(),
+    place: z.string().trim().max(60, "জায়গার নাম ছোট রাখুন।").optional(),
   })
   .superRefine((v, ctx) => {
+    // A post can be about anything, as long as there is something to see: words, a photo or a video.
+    if (!v.caption && v.media.length === 0) ctx.addIssue({ code: "custom", path: ["caption"], message: "কিছু লিখুন, অথবা ছবি বা ভিডিও দিন।" });
+    if (v.bg && v.media.length === 0 && v.caption.length > BG_MAX) {
+      ctx.addIssue({ code: "custom", path: ["caption"], message: "রঙিন পটভূমিতে ১৬০ অক্ষর পর্যন্ত লেখা যায় — পটভূমি সরান বা লেখা ছোট করুন।" });
+    }
     if (RATED_TOPICS.includes(v.topic ?? "skill")) {
+      if (v.caption.length < 10) ctx.addIssue({ code: "custom", path: ["caption"], message: "কাজটা কী, কীভাবে করলেন — অন্তত ১০ অক্ষরে লিখুন।" });
       if (v.media.length === 0) ctx.addIssue({ code: "custom", path: ["media"], message: "অন্তত একটি ছবি বা ভিডিও দিন — প্রমাণ ছাড়া যাচাই হয় না।" });
       if (v.skill.length < 2) ctx.addIssue({ code: "custom", path: ["skill"], message: "কোন দক্ষতার প্রমাণ, তা ট্যাগ করুন।" });
     }

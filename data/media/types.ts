@@ -132,7 +132,16 @@ export interface PostLink {
  * self-rating the community verifies (unless they only share a page, see
  * Post.link); the rest are for sharing, asking and speaking up, and carry none.
  */
-export type PostTopic = "skill" | "education" | "research" | "team" | "entertainment" | "daily" | "help" | "rights";
+export type PostTopic = "skill" | "education" | "research" | "team" | "talent" | "entertainment" | "daily" | "help" | "rights";
+
+/** How the author feels, or what they are doing — shown beside their name, as on other social apps. */
+export type FeelingId = "happy" | "grateful" | "proud" | "excited" | "celebrating" | "calm" | "learning" | "working" | "thinking" | "sad";
+
+/** A short text-only post set large on a solid colour. */
+export type PostBg = "gold" | "green" | "orange" | "white" | "ink";
+
+/** Who can see a post. Omitted means everyone. */
+export type Audience = "public" | "followers" | "private";
 
 export interface Post {
   id: string;
@@ -155,6 +164,11 @@ export interface Post {
   from?: RoomRef;
   /** Shared from another part of the site. */
   link?: PostLink;
+  feeling?: FeelingId;
+  bg?: PostBg;
+  audience?: Audience;
+  /** Where it happened, as the author wrote it. */
+  place?: string;
 }
 
 export interface Listing {

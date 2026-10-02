@@ -5,7 +5,7 @@ import { NAZRUL_MOTTO } from "@/data/navigation";
 const ECOSYSTEM_LINKS = [
   { label: "SWASTI Bio-Telemetry", href: "/#swasti-section" },
   { label: "Aponjon Care Assist", href: "/#flagship" },
-  { label: "Smart Pharmacy Grid", href: "/#rural-network" },
+  { label: "Smart Pharmacy Grid", href: "/products/smart-pharmacy" },
   { label: "64-District Pixel Map", href: "/#pixel-map" },
 ];
 

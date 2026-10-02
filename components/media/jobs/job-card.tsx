@@ -91,7 +91,7 @@ export function JobCard({ job }: { job: Job }) {
   const own = job.poster === CURRENT_USER_HANDLE;
   const sector = getCategory(job.sector);
   return (
-    <article className="rounded-2xl border border-white/12 bg-text-primary p-4 story-reveal transition-[translate,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-white/25 hover:shadow-[0_24px_44px_-26px_var(--color-signal-orange)] active:scale-[0.99] motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-5">
+    <article id={job.id} className="scroll-mt-24 rounded-2xl border border-white/12 bg-text-primary p-4 story-reveal target:ring-2 target:ring-signal-orange transition-[translate,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-white/25 hover:shadow-[0_24px_44px_-26px_var(--color-signal-orange)] active:scale-[0.99] motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-xs font-semibold text-signal-orange">{sector.bn}</p>

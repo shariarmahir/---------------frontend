@@ -26,6 +26,10 @@ const logoFont = localFont({
   weight: "400",
   style: "italic",
   fallback: [],
+  // No page uses the wordmark face right now; without this, every page
+  // preloaded it and the browser warned it was never used. It still loads
+  // when LogoText renders.
+  preload: false,
 });
 
 /**

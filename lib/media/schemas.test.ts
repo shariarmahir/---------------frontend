@@ -73,6 +73,25 @@ test("post: non-skill topics need no rating or media; skill topics do", () => {
   assert.deepEqual(errPaths(postSchema.safeParse({ ...talk, topic: "education", skill: "" })), ["media", "skill"]);
 });
 
+test("post: anything goes — a short life line, a photo alone, a feeling — but never nothing", () => {
+  const life = { topic: "daily", kind: "skill", caption: "আজ খুব ভালো দিন!", skill: "", category: "other", selfRating: 3, media: [], sellable: false };
+  assert.ok(postSchema.safeParse(life).success);
+  assert.ok(postSchema.safeParse({ ...life, topic: "talent", feeling: "proud", audience: "followers", place: "নকলা, শেরপুর" }).success);
+  assert.ok(postSchema.safeParse({ ...life, caption: "", media: [{ kind: "image", label: "সাজেক" }] }).success);
+  assert.deepEqual(errPaths(postSchema.safeParse({ ...life, caption: "   " })), ["caption"]);
+  assert.deepEqual(errPaths(postSchema.safeParse({ ...life, feeling: "angry" })), ["feeling"]);
+  // A rated claim still needs words enough to judge it.
+  assert.ok(errPaths(postSchema.safeParse({ ...life, topic: "skill", caption: "দেখুন", skill: "নকশিকাঁথা", media: [{ kind: "image", label: "কাঁথা" }] })).includes("caption"));
+});
+
+test("post: a colour background takes short text only", () => {
+  const life = { topic: "daily", kind: "skill", skill: "", category: "other", selfRating: 3, media: [], sellable: false, bg: "gold" };
+  assert.ok(postSchema.safeParse({ ...life, caption: "প্রথম বেতন পেলাম!" }).success);
+  assert.deepEqual(errPaths(postSchema.safeParse({ ...life, caption: "অ".repeat(161) })), ["caption"]);
+  // With a photo the background is dropped, so long text is fine.
+  assert.ok(postSchema.safeParse({ ...life, caption: "অ".repeat(400), media: [{ kind: "image", label: "ছবি" }] }).success);
+});
+
 test("job: pay must be stated, ordered and fair", () => {
   const band = { low: 800, high: 2500, unit: "প্রতি ঘণ্টা" };
   const s = jobSchema(() => band);

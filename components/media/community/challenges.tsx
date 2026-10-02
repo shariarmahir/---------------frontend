@@ -77,7 +77,7 @@ export function ChallengeCard({ challenge, mine }: { challenge: Challenge; mine?
   const entry = useMediaState((s) => s.entries[challenge.id]);
   const by = getPerson(challenge.by);
   return (
-    <article className="flex flex-col rounded-2xl border border-white/12 bg-text-primary p-4 story-reveal transition-[translate,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-white/25 hover:shadow-[0_24px_44px_-26px_var(--color-signal-orange)] active:scale-[0.99] motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-5">
+    <article id={challenge.id} className="flex scroll-mt-24 flex-col rounded-2xl border border-white/12 bg-text-primary p-4 story-reveal target:ring-2 target:ring-signal-orange transition-[translate,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-white/25 hover:shadow-[0_24px_44px_-26px_var(--color-signal-orange)] active:scale-[0.99] motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-xs font-semibold text-signal-orange">{challengeKindBn[challenge.kind]} · {getCategory(challenge.category).bn}</p>

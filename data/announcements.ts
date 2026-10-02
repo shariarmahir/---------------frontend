@@ -124,6 +124,6 @@ export const announcements: Announcement[] = [
     kind: "news",
     text: "‘এক গ্রাম, এক স্বাস্থ্যকেন্দ্র’ — গ্রামীণ স্মার্ট ফার্মেসি পাইলটের অগ্রগতি",
     cta: "বিস্তারিত",
-    href: "/#rural-network",
+    href: "/products/smart-pharmacy",
   },
 ];
