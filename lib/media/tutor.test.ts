@@ -51,3 +51,29 @@ test("the offline answer says the AI is off, reads text files, and names the one
   assert.match(out, /“ক্লোরোফিল” কাকে বলে/);
   assert.match(offlineReply("", [{ name: "n.txt", kind: "text", media: "text/plain", data: "এক দুই তিন" }], "latn"), /3 শব্দ/);
 });
+
+test("teachers are addressed by the title in their name, else neutrally", async () => {
+  const { addressOf } = await import("./tutor.ts");
+  assert.equal(addressOf("রফিকুল ইসলাম স্যার"), "স্যার");
+  assert.equal(addressOf("সাবরিনা ইয়াসমিন ম্যাডাম"), "ম্যাডাম");
+  assert.equal(addressOf("ড. মাহমুদা আক্তার"), "শ্রদ্ধেয় শিক্ষক");
+  assert.equal(addressOf(undefined), "শ্রদ্ধেয় শিক্ষক");
+});
+
+test("the question brief names the class, the teacher and the latest thing the teacher said", async () => {
+  const { questionBrief } = await import("./tutor.ts");
+  const brief = questionBrief({ draft: " ৫ নম্বর বুঝিনি ", room: "দশম শ্রেণি", subject: "গণিত", teacher: "রফিকুল ইসলাম স্যার", lastTeacher: "অনুশীলনী ৪.২ করে আনবে।" });
+  assert.equal(brief, "শিক্ষার্থীর খসড়া: “৫ নম্বর বুঝিনি”\nক্লাস: দশম শ্রেণি\nবিষয়: গণিত\nশিক্ষক: রফিকুল ইসলাম স্যার\nশিক্ষকের সর্বশেষ কথা: “অনুশীলনী ৪.২ করে আনবে।”");
+  assert.equal(questionBrief({ draft: "" }), "শিক্ষার্থীর খসড়া: (কিছু লেখেননি)");
+});
+
+test("the offline builder keeps the student's words and leaves blanks to fill", async () => {
+  const { offlineQuestion } = await import("./tutor.ts");
+  const { hasBlanks } = await import("./class-chat.ts");
+  const own = offlineQuestion({ draft: "৫ নম্বরে নিশ্চায়ক ঋণাত্মক আসছে", subject: "গণিত", teacher: "রফিকুল ইসলাম স্যার" });
+  assert.ok(own.startsWith("স্যার, গণিত বিষয়ে ৫ নম্বরে নিশ্চায়ক ঋণাত্মক আসছে\n"));
+  assert.ok(hasBlanks(own));
+  const topic = offlineQuestion({ draft: "", lastTeacher: "AVL ট্রির রোটেশন নিয়ে স্লাইড দিয়েছি।", teacher: "ড. মাহমুদা আক্তার" });
+  assert.ok(topic.startsWith("শ্রদ্ধেয় শিক্ষক, আপনি যে বললেন “AVL ট্রির রোটেশন"));
+  assert.ok(hasBlanks(offlineQuestion({ draft: "" })));
+});

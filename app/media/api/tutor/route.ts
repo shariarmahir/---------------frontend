@@ -1,11 +1,14 @@
 import { createHash } from "node:crypto";
 import Anthropic from "@anthropic-ai/sdk";
 import { z } from "zod";
-import { IMAGE_TYPES, MAX_FILES, offlineReply, type TutorFile, type TutorTurn } from "@/lib/media/tutor";
+import { IMAGE_TYPES, MAX_FILES, offlineQuestion, offlineReply, questionBrief, type TutorFile, type TutorTurn } from "@/lib/media/tutor";
 
 /**
  * POST /media/api/tutor — the classroom's AI study helper, streamed as plain
- * text. Claude answers when a key is configured (ANTHROPIC_API_KEY or
+ * text. A body with `task: "question"` instead asks it to build one clear
+ * question for the teacher out of a student's rough draft (Discussion Room).
+ *
+ * Claude answers when a key is configured (ANTHROPIC_API_KEY or
  * ANTHROPIC_AUTH_TOKEN); with no key, when rate-limited, or when the API
  * fails before its first word, the offline helper answers instead. The
  * `X-Tutor-Mode` header says which one spoke. Members only: proxy.ts guards
@@ -47,7 +50,27 @@ const schema = z.object({
   numerals: z.enum(["bn", "latn"]).optional(),
 });
 
+const questionSchema = z.object({
+  task: z.literal("question"),
+  question: z.object({
+    draft: z.string().max(1000),
+    room: z.string().max(200).optional(),
+    subject: z.string().max(100).optional(),
+    teacher: z.string().max(120).optional(),
+    lastTeacher: z.string().max(1000).optional(),
+  }),
+});
+
 type Context = z.infer<typeof schema>["context"];
+
+const QUESTION_SYSTEM = [
+  "You help a student write ONE clear question to their teacher in a class discussion thread, inside শিক্ষিতদের মিডিয়া's classroom (Bangladesh, school to university).",
+  "Reply with the question only: no preface, no quotation marks, no markdown, no explanation.",
+  "Write in the language of the student's draft; default to simple, polite Bangla. Address the teacher by the title in their name (স্যার or ম্যাডাম) when there is one, otherwise 'শ্রদ্ধেয় শিক্ষক'.",
+  "Shape it in two to four short sentences: what the student is working on, what they already understood or tried, and exactly where they are stuck.",
+  "Use only what the draft and the class details say. Never invent marks, mistakes, attempts or facts about the student. Where the draft is silent about what they tried or where they are stuck, leave a short blank written as [ ] for the student to fill in.",
+  "If the draft is empty, use the teacher's latest message as the topic and leave [ ] blanks.",
+].join("\n");
 
 function system(ctx: Context): string {
   const where = [ctx?.room && `ক্লাস: ${ctx.room}`, ctx?.level && `স্তর: ${ctx.level}`, ctx?.subject && `বিষয়: ${ctx.subject}`].filter(Boolean).join(" · ");
@@ -78,9 +101,33 @@ function blocks(t: TutorTurn): Anthropic.ContentBlockParam[] {
 
 const headers = (mode: "claude" | "offline") => ({ "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store", "X-Tutor-Mode": mode });
 
-function offline(turns: TutorTurn[], numerals: "bn" | "latn" = "bn") {
-  const last = turns.at(-1)!;
-  return new Response(offlineReply(last.text, (last.files ?? []) as TutorFile[], numerals), { headers: headers("offline") });
+/** One request, whichever task: what to ask Claude, and what to say without it. */
+interface Job {
+  system: string;
+  messages: Anthropic.MessageParam[];
+  maxTokens: number;
+  fallback: () => string;
+}
+
+const offline = (job: Job) => new Response(job.fallback(), { headers: headers("offline") });
+
+function studyJob(data: z.infer<typeof schema>): Job {
+  const last = data.turns.at(-1)!;
+  return {
+    system: system(data.context),
+    messages: data.turns.map((t) => ({ role: t.role, content: t.role === "user" ? blocks(t) : t.text })),
+    maxTokens: 2048,
+    fallback: () => offlineReply(last.text, (last.files ?? []) as TutorFile[], data.numerals),
+  };
+}
+
+function questionJob(q: z.infer<typeof questionSchema>["question"]): Job {
+  return {
+    system: QUESTION_SYSTEM,
+    messages: [{ role: "user", content: questionBrief(q) }],
+    maxTokens: 500,
+    fallback: () => offlineQuestion(q),
+  };
 }
 
 export async function POST(request: Request) {
@@ -91,23 +138,20 @@ export async function POST(request: Request) {
   } catch {
     return Response.json({ error: "অনুরোধটি পড়া যায়নি।" }, { status: 400 });
   }
-  const parsed = schema.safeParse(body);
-  if (!parsed.success) return Response.json({ error: "অনুরোধের তথ্য ঠিক নেই।" }, { status: 400 });
-  const { turns, context, numerals } = parsed.data;
+  const asked = questionSchema.safeParse(body);
+  const parsed = asked.success ? null : schema.safeParse(body);
+  if (!asked.success && !parsed?.success) return Response.json({ error: "অনুরোধের তথ্য ঠিক নেই।" }, { status: 400 });
+  const task = asked.success ? "question" : "study";
+  const job = asked.success ? questionJob(asked.data.question) : studyJob(parsed!.data!);
 
   const hasKey = !!(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN);
   if (!hasKey || limited(ip)) {
-    console.info(`[media/tutor] ${JSON.stringify({ mode: "offline", reason: hasKey ? "rate-limit" : "no-key", ip })}`);
-    return offline(turns, numerals);
+    console.info(`[media/tutor] ${JSON.stringify({ task, mode: "offline", reason: hasKey ? "rate-limit" : "no-key", ip })}`);
+    return offline(job);
   }
 
   const client = new Anthropic({ timeout: 90_000, maxRetries: 1 });
-  const stream = client.messages.stream({
-    model: MODEL,
-    max_tokens: 2048,
-    system: system(context),
-    messages: turns.map((t) => ({ role: t.role, content: t.role === "user" ? blocks(t) : t.text })),
-  });
+  const stream = client.messages.stream({ model: MODEL, max_tokens: job.maxTokens, system: job.system, messages: job.messages });
   const events = stream[Symbol.asyncIterator]();
 
   // Wait for the first words, so a failure before any text can still fall back to the offline helper.
@@ -124,10 +168,10 @@ export async function POST(request: Request) {
     }
   } catch (err) {
     const why = err instanceof Anthropic.APIError ? `api ${err.status}` : err instanceof Error ? err.message : "unknown";
-    console.info(`[media/tutor] ${JSON.stringify({ mode: "offline", reason: why, ip })}`);
-    return offline(turns, numerals);
+    console.info(`[media/tutor] ${JSON.stringify({ task, mode: "offline", reason: why, ip })}`);
+    return offline(job);
   }
-  if (!first) return offline(turns, numerals);
+  if (!first) return offline(job);
 
   const enc = new TextEncoder();
   const body$ = new ReadableStream<Uint8Array>({
@@ -138,7 +182,7 @@ export async function POST(request: Request) {
       try {
         const next = await events.next();
         if (next.done) {
-          console.info(`[media/tutor] ${JSON.stringify({ mode: "claude", ip })}`);
+          console.info(`[media/tutor] ${JSON.stringify({ task, mode: "claude", ip })}`);
           controller.close();
           return;
         }

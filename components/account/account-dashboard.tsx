@@ -260,10 +260,11 @@ function EditProfile({ account, open, onOpenChange }: { account: Account; open: 
   const [email, setEmail] = useState(account.email ?? "");
   const [role, setRole] = useState<RoleId>(account.role);
   const [district, setDistrict] = useState(account.district);
+  const [institution, setInstitution] = useState(account.institution ?? "");
   const [photoError, setPhotoError] = useState<string>();
   const s = useSave();
   const changed =
-    (photo ?? null) !== (account.photo ?? null) || name !== account.name || email !== (account.email ?? "") || role !== account.role || district !== account.district;
+    (photo ?? null) !== (account.photo ?? null) || name !== account.name || email !== (account.email ?? "") || role !== account.role || district !== account.district || institution.trim() !== (account.institution ?? "");
   const item = (i: number) => ({ "--i": i }) as CSSProperties;
 
   async function pick(file: File | undefined) {
@@ -292,7 +293,7 @@ function EditProfile({ account, open, onOpenChange }: { account: Account; open: 
             className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain p-5"
             onSubmit={(e) => {
               e.preventDefault();
-              s.save(() => updateAccount({ photo, name, email: email.trim() || null, role, district }));
+              s.save(() => updateAccount({ photo, name, email: email.trim() || null, role, district, institution: institution.trim() || null }));
             }}
           >
             <div className="record-item flex items-start justify-between gap-3" style={item(0)}>
@@ -342,6 +343,11 @@ function EditProfile({ account, open, onOpenChange }: { account: Account; open: 
                 <span className="font-bengali text-sm font-bold">ইমেইল</span>
                 <input type="email" autoComplete="email" value={email} onChange={(e) => { setEmail(e.target.value); s.dirty(); }} className={panelField} />
                 <span className="font-bengali text-xs text-text-primary/75">খালি রাখলে ইমেইলে সাইন ইন ও খবর বন্ধ থাকবে।</span>
+              </label>
+              <label className="grid gap-1.5">
+                <span className="font-bengali text-sm font-bold">স্কুল / কলেজ / বিশ্ববিদ্যালয়</span>
+                <input autoComplete="organization" maxLength={120} placeholder="যেমন: University of Asia Pacific" value={institution} onChange={(e) => { setInstitution(e.target.value); s.dirty(); }} className={panelField} />
+                <span className="font-bengali text-xs text-text-primary/75">ক্লাসরুমে নামের নিচে দেখাবে।</span>
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <label className="grid gap-1.5">

@@ -28,6 +28,7 @@ import { Num } from "../ui/numerals";
 import { createClassroom, joinClassAsTeacher, joinClassroom, useMe } from "./use-classroom";
 import { createLab, joinLab, joinLabAsTeacher } from "./use-lab";
 import { useClassSession } from "./focus/session-context";
+import { HeroVideo } from "./hero-video";
 import { LimitField } from "./team-settings";
 
 const FEATURES = [
@@ -55,7 +56,8 @@ function ParentHub({ child }: { child: Child }) {
 
   return (
     <div className="mx-auto max-w-6xl space-y-8">
-      <section className="live-in overflow-hidden rounded-3xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-8">
+      <section className="live-in relative isolate overflow-hidden rounded-3xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-8">
+        <HeroVideo />
         <PixelMark tone="dark" />
         <p className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-signal-orange px-3 py-1 text-xs font-bold text-text-primary">
           <Eye className="size-3.5" aria-hidden /> অভিভাবক · শুধু দেখা
@@ -133,7 +135,8 @@ function StudentHub() {
   return (
     <div className="mx-auto max-w-6xl space-y-8">
       {/* Hero — the home page's ink band: claim left, colour fields right, proof strip below. */}
-      <section className="live-in overflow-hidden rounded-3xl bg-text-primary ring-1 ring-white/12">
+      <section className="live-in relative isolate overflow-hidden rounded-3xl bg-text-primary ring-1 ring-white/12">
+        <HeroVideo />
         <div className="grid gap-8 p-5 sm:p-8 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] xl:items-center">
           <div className="space-y-5">
             <PixelMark tone="dark" />

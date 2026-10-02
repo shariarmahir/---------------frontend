@@ -17,7 +17,7 @@ import { DateText, Num, useFormat } from "../ui/numerals";
 const ICON: Record<NoticeKind, LucideIcon> = { emergency: Siren, cancel: CalendarX2, leave: UserRoundX, late: ClipboardClock, custom: Megaphone };
 
 /** Each paper with ink that reads on it, and a contrasting chip for the reason and role. */
-const PAPER: Record<NoteColor | "red", { bn: string; paper: string; tag: string }> = {
+export const PAPER: Record<NoteColor | "red", { bn: string; paper: string; tag: string }> = {
   red: { bn: "লাল", paper: "bg-national-crimson text-white", tag: "bg-white text-national-crimson" },
   gold: { bn: "সোনালি", paper: "bg-signal-orange text-text-primary", tag: "bg-text-primary text-signal-orange" },
   orange: { bn: "কমলা", paper: "bg-bdorange-600 text-text-primary", tag: "bg-text-primary text-signal-orange" },

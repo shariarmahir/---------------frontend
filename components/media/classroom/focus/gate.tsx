@@ -1,7 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo, useState } from "react";
-import { CheckCircle2, Copy, Eye, GraduationCap, Power, SearchX, UserRound, X } from "lucide-react";
+import { CheckCircle2, Copy, Eye, SearchX, UserRound, X } from "lucide-react";
 import { toast } from "sonner";
 import { AccountAvatar } from "@/components/auth/account-menu";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
@@ -10,6 +11,7 @@ import { useAuth } from "@/lib/auth/client";
 import { findChild, normCode, studentCode, type ClassMode } from "@/lib/media/class-access";
 import { cn } from "@/lib/utils";
 import { useFormat } from "../../ui/numerals";
+import { PictureCaptcha } from "./picture-captcha";
 import type { RoomCard } from "./rooms";
 import type { ClassSession } from "./session-context";
 
@@ -59,30 +61,23 @@ export function ClassGate({ rooms, onEnter, onLeave }: { rooms: RoomCard[]; onEn
   return (
     <Dialog open onOpenChange={(o) => !o && onLeave()}>
       <DialogContent showCloseButton={false} className="max-h-[94dvh] overflow-y-auto !rounded-3xl !border-0 !bg-signal-orange !p-0 font-sans !text-text-primary shadow-[0_40px_90px_-30px_var(--color-signal-orange)] sm:max-w-xl">
-        <form
-          className="space-y-5 p-5 sm:p-7"
-          onSubmit={(e) => {
-            e.preventDefault();
-            enter();
-          }}
-        >
-          <div className="flex items-start gap-4">
-            <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-text-primary text-signal-orange shadow-[0_12px_24px_-12px_var(--color-text-primary)]">
-              <GraduationCap className="size-7" aria-hidden />
-            </span>
-            <div className="min-w-0 flex-1 pt-0.5">
-              <DialogTitle className="text-2xl font-bold tracking-tight">ক্লাসরুম চালু করুন</DialogTitle>
-              <DialogDescription className="mt-1 text-sm leading-relaxed font-medium text-text-primary/80">কে ঢুকছেন, বেছে নিন। অভিভাবক সব দেখতে পারবেন, কিছু বদলাতে পারবেন না।</DialogDescription>
-            </div>
-            <button type="button" onClick={onLeave} className="-mt-1 -mr-1 grid size-9 shrink-0 place-items-center rounded-xl transition-colors hover:bg-text-primary/10">
-              <X className="size-5" aria-hidden />
-              <span className="sr-only">বন্ধ করুন</span>
-            </button>
+        <div className="relative space-y-5 p-5 sm:p-7">
+          {/* The words stay for screen readers; on screen the logo says it. */}
+          <DialogTitle className="sr-only">ক্লাসরুম চালু করুন</DialogTitle>
+          <DialogDescription className="sr-only">কে ঢুকছেন বেছে নিন, তারপর ছবি মিলিয়ে ঢুকুন। অভিভাবক সব দেখতে পারবেন, কিছু বদলাতে পারবেন না।</DialogDescription>
+          <button type="button" onClick={onLeave} className="absolute top-4 right-4 grid size-9 place-items-center rounded-xl transition-colors hover:bg-text-primary/10">
+            <X className="size-5" aria-hidden />
+            <span className="sr-only">বন্ধ করুন</span>
+          </button>
+
+          <div className="flex flex-col items-center pt-1">
+            <Image src="/logo/kandari-logo.png" alt="কাণ্ডারী-ল্যাব" width={1600} height={967} sizes="160px" className="h-16 w-auto sm:h-20" priority />
+            <span className="mt-1 text-xs font-extrabold tracking-[0.32em] sm:text-sm">CLASSROOM</span>
           </div>
 
-          <div role="radiogroup" aria-label="কে ঢুকছেন" className="grid gap-3 sm:grid-cols-2">
-            <Choice on={mode === "student"} onPick={() => setMode("student")} Icon={UserRound} title="শিক্ষার্থী" body="নিজের অ্যাকাউন্টে — শিক্ষক আর সিআরও এখান দিয়েই" />
-            <Choice on={mode === "parent"} onPick={() => setMode("parent")} Icon={Eye} title="অভিভাবক" body="সন্তানের আইডি দিয়ে — শুধু দেখা, কোনো বদল নয়" />
+          <div role="radiogroup" aria-label="কে ঢুকছেন" className="mx-auto flex w-fit gap-1 rounded-full bg-text-primary/10 p-1 ring-1 ring-text-primary/20">
+            <Choice on={mode === "student"} onPick={() => setMode("student")} Icon={UserRound} title="শিক্ষার্থী" />
+            <Choice on={mode === "parent"} onPick={() => setMode("parent")} Icon={Eye} title="অভিভাবক" />
           </div>
 
           {mode === "student" ? (
@@ -154,25 +149,14 @@ export function ClassGate({ rooms, onEnter, onLeave }: { rooms: RoomCard[]; onEn
             </div>
           )}
 
-          <div className="flex flex-col-reverse gap-2 pt-1 sm:flex-row sm:justify-end">
-            <button type="button" onClick={onLeave} className="h-12 rounded-xl px-5 text-sm font-bold transition-colors hover:bg-text-primary/10">
-              এখন না
-            </button>
-            <button
-              type="submit"
-              disabled={!ready}
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-text-primary px-6 text-base font-bold text-signal-orange shadow-[0_14px_28px_-14px_var(--color-text-primary)] transition-[translate,scale,opacity] duration-200 hover:-translate-y-0.5 active:scale-[0.97] disabled:opacity-40 disabled:hover:translate-y-0 motion-reduce:transition-none"
-            >
-              <Power className="size-5" aria-hidden /> {mode === "parent" ? "দেখার জন্য খুলুন" : "ক্লাসরুম চালু করুন"}
-            </button>
-          </div>
-        </form>
+          <PictureCaptcha disabled={!ready} hint={mode === "parent" ? "আগে সন্তানের সঠিক আইডি দিন।" : "আগে কাণ্ডারী প্রোফাইলে ঢুকুন।"} onPass={enter} />
+        </div>
       </DialogContent>
     </Dialog>
   );
 }
 
-function Choice({ on, onPick, Icon, title, body }: { on: boolean; onPick: () => void; Icon: typeof Eye; title: string; body: string }) {
+function Choice({ on, onPick, Icon, title }: { on: boolean; onPick: () => void; Icon: typeof Eye; title: string }) {
   return (
     <button
       type="button"
@@ -180,17 +164,12 @@ function Choice({ on, onPick, Icon, title, body }: { on: boolean; onPick: () => 
       aria-checked={on}
       onClick={onPick}
       className={cn(
-        "flex items-start gap-3 rounded-2xl p-4 text-left transition-[background-color,box-shadow,translate] duration-200 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
-        on ? "bg-text-primary text-white shadow-[0_16px_30px_-18px_var(--color-text-primary)]" : "bg-text-primary/8 ring-1 ring-text-primary/25 hover:bg-text-primary/12",
+        "inline-flex h-9 items-center gap-1.5 rounded-full px-4 text-sm font-bold transition-[background-color,color,box-shadow] duration-200 motion-reduce:transition-none",
+        on ? "bg-text-primary text-signal-orange shadow-[0_8px_18px_-10px_var(--color-text-primary)]" : "text-text-primary/80 hover:bg-text-primary/10 hover:text-text-primary",
       )}
     >
-      <span className={cn("grid size-10 shrink-0 place-items-center rounded-xl", on ? "bg-signal-orange text-text-primary" : "bg-text-primary text-signal-orange")}>
-        <Icon className="size-5" aria-hidden />
-      </span>
-      <span className="min-w-0">
-        <span className="block text-base font-bold">{title}</span>
-        <span className={cn("mt-0.5 block text-xs leading-relaxed", on ? "text-white/70" : "text-text-primary/75")}>{body}</span>
-      </span>
+      <Icon className="size-4" aria-hidden />
+      {title}
     </button>
   );
 }

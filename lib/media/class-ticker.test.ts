@@ -63,3 +63,16 @@ test("no rooms means just the welcome and the time spent", () => {
   assert.equal(duration(20_000, num), "এক মিনিটের কম");
   assert.equal(duration(60 * 60_000, num), "1 ঘণ্টা");
 });
+
+test("every reminder has a face, and its proverb fits how far the work got", async () => {
+  const { QUIPS } = await import("./class-ticker.ts");
+  const { toBijoy } = await import("./bijoy.ts");
+  const items = tickerItems(input({ id: "l-imran", name: "ইমরান খান" }));
+  assert.ok(items.every((t) => t.mood));
+  const quips = new Set<string>(Object.values(QUIPS));
+  assert.ok(items.every((t) => !t.quip || quips.has(t.quip) || t.quip === WELCOME));
+  assert.equal(items.find((t) => t.kind === "lab")?.quip, QUIPS.undone);
+  assert.equal(items.find((t) => t.kind === "exam")?.quip, QUIPS.time);
+  // Every proverb must be drawable by the slogan font's Bijoy subset.
+  for (const q of [...quips, WELCOME]) assert.doesNotMatch(toBijoy(q), /[\u0980-\u09ff]/);
+});

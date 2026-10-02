@@ -140,6 +140,55 @@ export function offlineReply(question: string, files: TutorFile[], numerals: Num
     out.push("\nনিজেকে যাচাই করুন:");
     for (const t of terms) out.push(`• “${t}” কাকে বলে, বইয়ের দিকে না তাকিয়ে বলতে পারেন?`);
   }
-  out.push("\nআটকে গেলে বাঁ পাশের ক্লাস চ্যাটে শিক্ষককে প্রশ্নটা পাঠান।");
+  out.push("\nআটকে গেলে বাঁ পাশের Discussion Room-এ শিক্ষককে প্রশ্নটা পাঠান।");
   return out.join("\n");
+}
+
+/** What the question builder knows about the thread the student is writing in. */
+export interface QuestionContext {
+  /** What the student has typed so far, however rough; may be empty. */
+  draft: string;
+  room?: string;
+  subject?: string;
+  /** The teacher's name as the class knows it, e.g. "রফিকুল ইসলাম স্যার". */
+  teacher?: string;
+  /** The teacher's latest message: the likely topic. */
+  lastTeacher?: string;
+}
+
+const clip = (t: string, n: number) => (t.length > n ? `${t.slice(0, n).trim()}…` : t);
+
+/** How to address a teacher: by title when the name carries one, else neutrally. */
+export function addressOf(teacher?: string): string {
+  if (teacher && /স্যার|\bsir\b/i.test(teacher)) return "স্যার";
+  if (teacher && /ম্যাডাম|ম্যাম|আপা|madam|ma'am/i.test(teacher)) return "ম্যাডাম";
+  return "শ্রদ্ধেয় শিক্ষক";
+}
+
+/** The one message the AI gets when asked to build a question. */
+export function questionBrief(c: QuestionContext): string {
+  const draft = c.draft.trim();
+  return [
+    `শিক্ষার্থীর খসড়া: ${draft ? `“${clip(draft, 600)}”` : "(কিছু লেখেননি)"}`,
+    c.room && `ক্লাস: ${c.room}`,
+    c.subject && `বিষয়: ${c.subject}`,
+    c.teacher && `শিক্ষক: ${c.teacher}`,
+    c.lastTeacher && `শিক্ষকের সর্বশেষ কথা: “${clip(c.lastTeacher.trim(), 300)}”`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+/**
+ * The offline question builder: no AI, just a clear shape — what the student
+ * is on, what they understood, where they are stuck — with "[ ]" blanks to
+ * fill. The student's own words are kept as they are.
+ */
+export function offlineQuestion(c: QuestionContext): string {
+  const draft = c.draft.trim();
+  const hi = addressOf(c.teacher);
+  const topic = c.subject ? `${c.subject} বিষয়ে ` : "";
+  if (draft) return `${hi}, ${topic}${clip(draft, 600)}\n\nআমি নিজে এটুকু বুঝেছি/চেষ্টা করেছি: [ ]\nকিন্তু ঠিক এই জায়গায় আটকে যাচ্ছি: [ ]\nএকটু বুঝিয়ে দেবেন?`;
+  if (c.lastTeacher) return `${hi}, আপনি যে বললেন “${clip(c.lastTeacher.trim(), 120)}” — এ নিয়ে একটা প্রশ্ন আছে।\n\nআমি এটুকু বুঝেছি: [ ]\nযেখানে আটকে আছি: [ ]\nএকটু বুঝিয়ে দেবেন?`;
+  return `${hi}, ${topic}একটা প্রশ্ন ছিল।\n\nটপিক: [ ]\nআমি এটুকু বুঝেছি: [ ]\nযেখানে আটকে আছি: [ ]\nএকটু বুঝিয়ে দেবেন?`;
 }

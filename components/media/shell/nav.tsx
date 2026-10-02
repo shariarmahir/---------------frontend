@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import {
   BriefcaseBusiness,
   CalendarHeart,
@@ -206,15 +207,18 @@ export function BottomTabs({ me }: { me: string }) {
 export function MobileMenu({ unreadSeed, me }: { unreadSeed: UnreadSeed; me: string }) {
   const pathname = usePathname();
   const unread = useUnread(unreadSeed);
+  // The menu belongs to the page it was opened on: tapping a link closes it,
+  // so it never stays over the next page (the full-screen classroom least of all).
+  const [openOn, setOpenOn] = useState<string | null>(null);
   return (
-    <Sheet>
+    <Sheet open={openOn === pathname} onOpenChange={(o) => setOpenOn(o ? pathname : null)}>
       <SheetTrigger asChild>
         <button type="button" className={mediaButton({ variant: "tile", size: "icon", className: "lg:hidden" })}>
           <Menu aria-hidden />
           <span className="sr-only">মেনু খুলুন</span>
         </button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-80 max-w-[85vw] overflow-y-auto border-white/12 bg-black font-sans text-white">
+      <SheetContent side="left" className="w-80 max-w-[85vw] overflow-y-auto border-white/12 bg-black font-sans text-white" onClick={(e) => (e.target as HTMLElement).closest("a") && setOpenOn(null)}>
         <SheetHeader>
           <PixelMark tone="dark" className="mb-2" />
           <SheetTitle className="text-lg font-bold text-signal-orange">শিক্ষিতদের মিডিয়া</SheetTitle>

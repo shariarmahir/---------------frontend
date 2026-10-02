@@ -145,11 +145,15 @@ export function parseDb(raw: unknown): AuthDb | null {
   if (!raw || typeof raw !== "object") return null;
   const d = raw as Partial<AuthDb>;
   if (d.version !== 1 || !Array.isArray(d.accounts)) return null;
-  // Demo accounts saved before profile pictures existed pick up their seeded
-  // photo; an account that has set or removed one keeps its choice.
+  // Demo accounts saved before profile pictures (or institutions) existed pick
+  // up their seeded value; an account that has set or cleared one keeps its choice.
   const accounts = (d.accounts as StoredAccount[]).map((a) => {
     const demo = DEMO_ACCOUNTS.find((x) => x.id === a.id);
-    return demo && !("photo" in a) && demo.photo ? { ...a, photo: demo.photo } : a;
+    if (!demo) return a;
+    let next = a;
+    if (!("photo" in a) && demo.photo) next = { ...next, photo: demo.photo };
+    if (!("institution" in a) && demo.institution) next = { ...next, institution: demo.institution };
+    return next;
   });
   return { ...seed(), ...d, accounts } as AuthDb;
 }
@@ -323,7 +327,10 @@ export function signOut(db: AuthDb): AuthDb {
   return { ...db, session: null };
 }
 
-export type AccountPatch = Partial<Pick<Account, "name" | "email" | "role" | "district" | "sectors" | "products" | "notify" | "mediaHandle" | "photo">>;
+export type AccountPatch = Partial<Pick<Account, "name" | "email" | "role" | "district" | "sectors" | "products" | "notify" | "mediaHandle" | "photo" | "institution">>;
+
+/** Longest school, college or university name kept. */
+export const INSTITUTION_MAX = 120;
 
 /** Largest uploaded picture kept, as a data URL (~300 KB of JPEG). */
 export const PHOTO_MAX_CHARS = 400_000;
@@ -349,7 +356,10 @@ export function updateAccount(db: AuthDb, now: number, patch: AccountPatch): Res
   if (patch.district !== undefined && !patch.district) return fail(db, "district_missing");
   if (patch.sectors !== undefined && !patch.sectors.length) return fail(db, "sectors_missing");
   if (patch.photo !== undefined && !validPhoto(patch.photo)) return fail(db, "photo_invalid");
-  const accounts = db.accounts.map((a) => (a.id === me.id ? { ...a, ...patch, name: (patch.name ?? a.name).trim(), email } : a));
+  const institution = patch.institution === undefined ? undefined : patch.institution?.trim().slice(0, INSTITUTION_MAX) || null;
+  const accounts = db.accounts.map((a) =>
+    a.id === me.id ? { ...a, ...patch, name: (patch.name ?? a.name).trim(), email, ...(institution !== undefined && { institution }) } : a,
+  );
   const next = { ...db, accounts };
   return ok(next, publicAccount(findById(next, me.id)!));
 }

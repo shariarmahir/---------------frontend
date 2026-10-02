@@ -215,6 +215,31 @@ test("teacher codes are unique, never a class code, and sample papers are comple
   }
 });
 
+test("sample pins come from the room's people, and pinned chats match the thread", async () => {
+  const { sampleChats, samplePins } = await import("./class-chat.ts");
+  const { MAX_PINS, PIN_KINDS } = await import("../../lib/media/class-pins.ts");
+  const rooms = [...sampleClassrooms, ...sampleLabs];
+  unique(Object.values(samplePins).flat().map((p) => p.id), "pin ids");
+  for (const [id, list] of Object.entries(samplePins)) {
+    const room = rooms.find((r) => r.id === id);
+    assert.ok(room, `pins for unknown room ${id}`);
+    assert.ok(list.length <= MAX_PINS, `${id} has too many pins`);
+    for (const p of list) {
+      assert.ok(p.kind in PIN_KINDS, p.id);
+      assert.ok(p.by === room.teacherId || room.members.some((m) => m.id === p.by), `${p.id} by ${p.by}`);
+      assert.equal(p.byRole, p.by === room.teacherId ? "teacher" : p.by === room.leaderId ? "leader" : "member", p.id);
+      if (p.kind === "chat") {
+        const m = sampleChats[id]?.find((x) => x.id === p.msgId);
+        assert.ok(m, `${p.id} pins a missing message`);
+        assert.equal(p.title, m.text.trim(), p.id);
+        assert.equal(p.body, m.byName, p.id);
+      }
+      if (p.kind === "task" && p.due) assert.ok(!Number.isNaN(Date.parse(`${p.due}T00:00:00Z`)), `${p.id} due`);
+      if (p.kind === "data") assert.ok(p.body || p.url, `${p.id} has no value`);
+    }
+  }
+});
+
 test("sample class chats come from the room's people, with the right role", async () => {
   const { sampleChats } = await import("./class-chat.ts");
   const { studentCode } = await import("../../lib/media/class-access.ts");

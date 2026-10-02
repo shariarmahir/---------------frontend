@@ -1,10 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Eye, GraduationCap, LogOut, MessagesSquare, ShieldAlert, Sparkles, UserRound } from "lucide-react";
+import { Eye, LogOut, ShieldAlert } from "lucide-react";
+import { toBijoyStrict } from "@/lib/media/bijoy";
 import { useAuth } from "@/lib/auth/client";
 import { parentMaySee } from "@/lib/media/class-access";
 import { LEVELS, type ClassLevel } from "@/lib/media/classroom";
@@ -15,6 +17,7 @@ import { ClassGate } from "./gate";
 import { ClassLoader } from "./loader";
 import { roomInPath, useRooms, type RoomCard } from "./rooms";
 import { SessionContext, type ClassSession } from "./session-context";
+import { BuddyIcon, DiscussionIcon } from "./panel-icons";
 import { ClassTicker } from "./ticker";
 import { TutorPanel } from "./tutor-panel";
 
@@ -92,6 +95,15 @@ function FocusShell({ session, rooms, onLeave, children }: { session: ClassSessi
   const blocked = Boolean(parent && roomId && !parentMaySee(parent, roomId));
   const room = blocked ? undefined : rooms.find((r) => r.id === roomId);
 
+  // Who is in the top bar: the student (or the watched child), and their school.
+  // The account's own institution wins; otherwise the first class they sit in names it.
+  const sitsIn = (id: string | undefined) => rooms.find((r) => id && r.members.some((m) => m.id === id || m.accountId === id))?.institution;
+  const who = parent
+    ? { name: parent.name, school: rooms.find((r) => parentMaySee(parent, r.id))?.institution }
+    : { name: account?.name ?? "", school: account?.institution || sitsIn(account?.id) };
+  // In the brand face when every letter has a checked form; else the plain bold face.
+  const nameCodes = toBijoyStrict(who.name);
+
   // The page behind stays still while the classroom is open.
   useEffect(() => {
     const html = document.documentElement;
@@ -142,36 +154,50 @@ function FocusShell({ session, rooms, onLeave, children }: { session: ClassSessi
 
   return (
     <div className="fixed inset-0 z-[45] flex flex-col bg-black font-sans text-white print:static print:block">
-      <header className="flex h-16 shrink-0 items-center gap-2 bg-signal-orange px-3 text-text-primary sm:gap-3 sm:px-4 print:hidden">
-        <Link href="/media/classroom" className="flex items-center gap-2.5 rounded-xl pr-1 font-bold">
-          <span className="grid size-10 place-items-center rounded-xl bg-text-primary text-signal-orange">
-            <GraduationCap className="size-5" aria-hidden />
-          </span>
-          <span className="hidden text-lg sm:max-md:block xl:block">ক্লাসরুম</span>
+      <header className="flex h-16 shrink-0 items-center gap-1.5 bg-signal-orange px-2.5 text-text-primary sm:gap-3 sm:px-4 print:hidden">
+        <Link href="/media/classroom" className="flex shrink-0 flex-col items-center rounded-lg leading-none focus-visible:outline-2 focus-visible:outline-text-primary">
+          <Image src="/logo/kandari-logo.png" alt="কাণ্ডারী-ল্যাব" width={1600} height={967} sizes="96px" className="h-10 w-auto sm:h-11" priority />
+          <span className="text-[9px] font-extrabold tracking-[0.26em] sm:text-[10px]">CLASSROOM</span>
         </Link>
-        <span className="inline-flex min-w-0 items-center gap-1.5 rounded-full bg-text-primary px-3 py-1.5 text-xs font-bold text-white">
-          {parent ? <Eye className="size-3.5 shrink-0 text-signal-orange" aria-hidden /> : <UserRound className="size-3.5 shrink-0 text-signal-orange" aria-hidden />}
-          <span className="truncate md:max-xl:sr-only">{parent ? `অভিভাবক · ${parent.name}-এর ক্লাস` : `শিক্ষার্থী · ${account?.name ?? ""}`}</span>
-          {parent && <span className="hidden shrink-0 rounded-full bg-white/10 px-2 py-px text-[10px] text-signal-orange md:inline">শুধু দেখা</span>}
-        </span>
-        {wide ? (
+        <span className="h-9 w-px shrink-0 bg-text-primary/20 md:max-lg:hidden" aria-hidden />
+        <div className="min-w-0 flex-1 leading-tight md:max-lg:sr-only md:flex-none lg:max-w-56 xl:max-w-72">
+          <p className="flex items-center gap-1.5 truncate">
+            {parent && <Eye className="size-4 shrink-0" aria-label="অভিভাবক হিসেবে দেখছেন" />}
+            {nameCodes ? (
+              <>
+                {/* The brand's display face draws Bangla on Latin codes; readers get the Unicode name. */}
+                <span aria-hidden translate="no" className="font-slogan truncate text-[15px] leading-tight">
+                  {nameCodes}
+                </span>
+                <span className="sr-only">{who.name}</span>
+              </>
+            ) : (
+              <span className="truncate text-[15px] font-bold">{who.name}</span>
+            )}
+          </p>
+          {(who.school || parent) && (
+            <p className="font-garet truncate text-[11px] font-extrabold tracking-wide text-text-primary/80">
+              {parent ? `অভিভাবক দেখছেন${who.school ? ` · ${who.school}` : ""}` : who.school}
+            </p>
+          )}
+        </div>
+        {/* On phones the name takes the free space and the strip gets its own row below. */}
+        {wide && (
           <div className="min-w-0 flex-1 px-1 lg:px-4">
             <ClassTicker />
           </div>
-        ) : (
-          <span className="flex-1" />
         )}
-        <PanelButton on={shown("chat")} onClick={() => toggle("chat")} Icon={MessagesSquare} label="ক্লাস চ্যাট" />
-        <PanelButton on={shown("ai")} onClick={() => toggle("ai")} Icon={Sparkles} label="AI সহায়ক" />
-        <button type="button" onClick={onLeave} className="inline-flex h-10 items-center gap-2 rounded-xl px-3 text-sm font-bold transition-colors hover:bg-text-primary/10">
-          <LogOut className="size-4.5" aria-hidden />
+        <PanelButton on={shown("chat")} onClick={() => toggle("chat")} Icon={DiscussionIcon} label="Discussion Room" />
+        <PanelButton on={shown("ai")} onClick={() => toggle("ai")} Icon={BuddyIcon} label="মেধাবী বন্ধু" />
+        <button type="button" onClick={onLeave} className="group inline-flex h-10 shrink-0 items-center gap-2 rounded-xl px-2 text-sm font-bold sm:px-3 transition-colors hover:bg-text-primary/10">
+          <LogOut className="size-4.5 transition-transform duration-300 group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden />
           <span className="hidden xl:inline">বের হন</span>
           <span className="sr-only xl:hidden">ক্লাসরুম থেকে বের হন</span>
         </button>
       </header>
 
       {!wide && (
-        <div className="shrink-0 border-b border-white/12 bg-black px-3 py-2 print:hidden">
+        <div className="shrink-0 border-t border-text-primary/15 bg-signal-orange px-3 print:hidden">
           <ClassTicker />
         </div>
       )}
@@ -182,7 +208,7 @@ function FocusShell({ session, rooms, onLeave, children }: { session: ClassSessi
         <main
           ref={main}
           id="classroom-main"
-          className="min-w-0 flex-1 overflow-y-auto overscroll-contain px-3 pt-5 pb-16 [--sticky-top:0px] sm:px-6 print:overflow-visible print:p-0"
+          className="scrollbar-gold min-w-0 flex-1 overflow-y-auto overscroll-contain px-3 pt-5 pb-16 [--sticky-top:0px] sm:px-6 print:overflow-visible print:p-0"
         >
           {blocked ? (
             <div className="mx-auto mt-10 max-w-md space-y-4 rounded-3xl bg-text-primary p-6 text-center ring-1 ring-white/12">
@@ -218,18 +244,18 @@ function FocusShell({ session, rooms, onLeave, children }: { session: ClassSessi
   );
 }
 
-function PanelButton({ on, onClick, Icon, label }: { on: boolean; onClick: () => void; Icon: typeof Eye; label: string }) {
+function PanelButton({ on, onClick, Icon, label }: { on: boolean; onClick: () => void; Icon: (p: { className?: string }) => React.ReactNode; label: string }) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={on}
       className={cn(
-        "inline-flex h-10 items-center gap-2 rounded-xl px-3 text-sm font-bold transition-[background-color,color,scale] duration-200 active:scale-95",
-        on ? "bg-text-primary text-signal-orange" : "ring-1 ring-text-primary/30 hover:bg-text-primary/10",
+        "inline-flex h-10 shrink-0 items-center gap-2 rounded-xl px-2.5 text-sm font-bold transition-[background-color,color,scale] duration-200 active:scale-95 sm:px-3",
+        on ? "bg-text-primary text-signal-orange [--icon-bg:var(--color-text-primary)]" : "ring-1 ring-text-primary/30 [--icon-bg:var(--color-signal-orange)] hover:bg-text-primary/10",
       )}
     >
-      <Icon className="size-4.5" aria-hidden />
+      <Icon className="size-5" />
       <span className="hidden xl:inline">{label}</span>
       <span className="sr-only xl:hidden">{label}</span>
     </button>

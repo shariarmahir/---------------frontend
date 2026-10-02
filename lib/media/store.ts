@@ -6,6 +6,7 @@ import { follows } from "@/data/media/follows";
 import { CURRENT_USER_HANDLE } from "@/data/media/users";
 import { activeAccountId, subscribeAuth } from "@/lib/auth/client";
 import type { ClassMsg } from "./class-chat";
+import type { Marks, Pin } from "./class-pins";
 import type { Classroom } from "./classroom";
 import type { TutorMsg } from "./tutor";
 import type { LabRoom } from "./lab";
@@ -126,6 +127,10 @@ export interface MediaState {
   classChat: Record<string, ClassMsg[]>;
   /** The classroom AI helper's conversation (file names only, never the bytes). */
   tutor: TutorMsg[];
+  /** Discussion Room pins, by room id; a room's sample pins are copied here on its first change. */
+  classPins: Record<string, Pin[]>;
+  /** Colour markers the viewer put on Discussion Room messages: room id → message id → colour. */
+  classMarks: Record<string, Marks>;
   /** Milliseconds spent in the full-screen classroom, all visits. */
   classStay: number;
   /** অপরাধ বার্তা: the viewer's own posts, and the posts they witnessed or flagged. */
@@ -192,6 +197,8 @@ const initialState: MediaState = Object.freeze({
   projects: {},
   classChat: {},
   tutor: [],
+  classPins: {},
+  classMarks: {},
   classStay: 0,
   crimePosts: [],
   crimeWitness: {},

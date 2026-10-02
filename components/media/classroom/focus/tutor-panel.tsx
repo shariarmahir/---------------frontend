@@ -135,7 +135,7 @@ export function TutorPanel({ context, onClose }: { context: TutorContext; onClos
 
   return (
     <section
-      aria-label="AI পড়া-সহায়ক"
+      aria-label="মেধাবী বন্ধু"
       className="relative flex h-full min-h-0 flex-col bg-black"
       onDragOver={(e) => {
         if (!e.dataTransfer.types.includes("Files")) return;
@@ -156,7 +156,7 @@ export function TutorPanel({ context, onClose }: { context: TutorContext; onClos
           <Sparkles className="size-5" aria-hidden />
         </span>
         <div className="min-w-0 flex-1">
-          <h2 className="text-base font-bold text-white">AI পড়া-সহায়ক</h2>
+          <h2 className="text-base font-bold text-white">মেধাবী বন্ধু</h2>
           <p className="truncate text-xs text-white/65">{context.room ? `${context.room} খোলা আছে` : "যেকোনো বিষয়ে প্রশ্ন করুন"}</p>
         </div>
         {list.length > 0 && (
@@ -173,7 +173,7 @@ export function TutorPanel({ context, onClose }: { context: TutorContext; onClos
         )}
       </header>
 
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4" aria-live="polite">
+      <div className="scrollbar-gold min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4" aria-live="polite">
         {empty ? (
           <div className="space-y-5 pt-2">
             <div className="rounded-2xl bg-text-primary p-4 ring-1 ring-white/12">
@@ -271,7 +271,7 @@ export function TutorPanel({ context, onClose }: { context: TutorContext; onClos
         )}
         <div className={cn("rounded-2xl bg-text-primary ring-1 transition-shadow", voice.listening ? "ring-2 ring-signal-orange" : "ring-white/12 focus-within:ring-signal-orange/60")}>
           <label htmlFor="tutor-box" className="sr-only">
-            AI সহায়ককে প্রশ্ন
+            মেধাবী বন্ধুকে প্রশ্ন
           </label>
           <textarea
             id="tutor-box"

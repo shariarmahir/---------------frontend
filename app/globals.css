@@ -419,6 +419,32 @@
   }
 }
 
+/* A thin gold scrollbar for the classroom's panels. Chrome, Edge and Safari
+   take the pseudo-elements (which allow a true 6px bar); Firefox only knows
+   the standard properties, and setting those in Chrome would override the
+   pseudo-elements, so they are scoped to Firefox. */
+@utility scrollbar-gold {
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track,
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: var(--color-signal-orange);
+  }
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+  @supports (-moz-appearance: none) {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-signal-orange) transparent;
+  }
+}
+
 /* Section rhythm.
 
    Every band pays BOTH a top and a bottom inset, because each one is
@@ -865,17 +891,24 @@
 
 /* প্রতিবাদ live board and routing panel (components/complaints): a new
    item drops in from above and settles in a quarter of a second. */
-/* The classroom strip's fifteen-second progress line. */
-@keyframes ticker-bar {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
+/*
+ * Garet (Spacetype) for the school line under a name in the classroom. The
+ * font file is not in the repo yet: drop it at public/font/garet-heavy.woff2
+ * and it is picked up; until then bold Inter stands in.
+ */
+@font-face {
+  font-family: "Garet";
+  src: url("/font/garet-heavy.woff2") format("woff2");
+  font-weight: 700 900;
+  font-display: swap;
 }
-.ticker-bar {
-  animation: ticker-bar linear both;
+.font-garet {
+  font-family: "Garet", var(--font-inter), sans-serif;
+}
+
+/* The classroom's proverbs: the brand's Li Sirajee display face (Bijoy-encoded, see lib/media/bijoy.ts). */
+.font-slogan {
+  font-family: var(--font-slogan), var(--font-bengali), sans-serif;
 }
 
 @keyframes live-in {

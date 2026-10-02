@@ -50,3 +50,6 @@ export function cleanMsg(raw: string): string | null {
   const t = raw.replace(/\n{3,}/g, "\n\n").trim();
   return t && t.length <= MSG_MAX ? t : null;
 }
+
+/** An AI-built question leaves "[ ]" for the student to fill; a message still holding one is not ready. */
+export const hasBlanks = (text: string) => /\[\s*\]/.test(text);

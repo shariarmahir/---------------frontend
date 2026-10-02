@@ -12,6 +12,7 @@ export interface RoomCard {
   kind: "class" | "lab";
   id: string;
   name: string;
+  institution: string;
   leaderId: string;
   teacherId?: string;
   teacher?: string;
@@ -27,6 +28,7 @@ const fromClass = (c: Classroom, sample: Classroom | undefined, mine: boolean): 
   kind: "class",
   id: c.id,
   name: c.name,
+  institution: c.institution,
   leaderId: c.leaderId,
   teacherId: c.teacherId ?? sample?.teacherId,
   teacher: (c.teacher ?? sample?.teacher)?.name,
@@ -41,6 +43,7 @@ const fromLab = (l: LabRoom, sample: LabRoom | undefined, mine: boolean): RoomCa
   kind: "lab",
   id: l.id,
   name: l.name,
+  institution: l.institution,
   leaderId: l.leaderId,
   teacherId: l.teacherId ?? sample?.teacherId,
   teacher: l.instructor ?? sample?.instructor,

@@ -64,6 +64,8 @@ export interface Account {
    * the browser. Null or absent shows the initial on a placeholder.
    */
   photo?: string | null;
+  /** School, college or university, as the person writes it; shown in the classroom. */
+  institution?: string | null;
   createdAt: string;
   demo?: true;
 }
@@ -87,6 +89,7 @@ export const DEMO_ACCOUNTS: DemoAccount[] = [
     notify: { sms: true, email: true },
     mediaHandle: "mahir",
     photo: "/team/mahir_shariar_mahin.png",
+    institution: "University of Asia Pacific",
     createdAt: "2026-01-12T09:00:00.000Z",
     demo: true,
   },

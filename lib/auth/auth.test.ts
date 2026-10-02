@@ -235,3 +235,21 @@ test("profile pictures: seeded, uploaded, removed, rejected", () => {
   assert.equal(parseDb(JSON.parse(JSON.stringify(legacy)))!.accounts.find((a) => a.id === "acc-mahir")!.photo, "/team/mahir_shariar_mahin.png");
   assert.equal(parseDb(JSON.parse(JSON.stringify(removed.db)))!.accounts.find((a) => a.id === "acc-mahir")!.photo, null);
 });
+
+test("an account keeps its school, trimmed, and can clear it", async () => {
+  const core = await import("./core.ts");
+  const now = Date.parse("2026-10-02T00:00:00Z");
+  let db = core.seed();
+  const m = DEMO_ACCOUNTS[0];
+  const signed = core.passwordLogin(db, m.phone, m.password, now);
+  assert.ok(signed.ok);
+  db = signed.db;
+  assert.equal(core.currentAccount(db, now)?.institution, "University of Asia Pacific");
+  let r = core.updateAccount(db, now, { institution: "  Dhaka College  " });
+  assert.ok(r.ok && r.value.institution === "Dhaka College");
+  r = core.updateAccount(r.db, now, { institution: "" });
+  assert.ok(r.ok && r.value.institution === null);
+  // A demo account saved before the field existed picks it up again.
+  const old = { ...db, accounts: db.accounts.map((a) => Object.fromEntries(Object.entries(a).filter(([k]) => k !== "institution"))) };
+  assert.equal(core.parseDb(JSON.parse(JSON.stringify(old)))?.accounts[0].institution, "University of Asia Pacific");
+});

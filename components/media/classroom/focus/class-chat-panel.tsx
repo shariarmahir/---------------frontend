@@ -3,21 +3,29 @@
 import Link from "next/link";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
-import { Eye, FlaskConical, GraduationCap, HelpCircle, MessagesSquare, SendHorizontal, X } from "lucide-react";
+import { Eye, FlaskConical, GraduationCap, HelpCircle, Highlighter, LoaderCircle, MessagesSquare, SendHorizontal, WandSparkles, X } from "lucide-react";
 import { toast } from "sonner";
 import { sampleChats } from "@/data/media/class-chat";
+import { DEMO_NOW } from "@/data/media/clock";
 import { useAuth } from "@/lib/auth/client";
-import { append, bdDay, canWrite, cleanMsg, openQuestions, thread, type ClassMsg } from "@/lib/media/class-chat";
-import { roleOf } from "@/lib/media/notices";
+import { append, bdDay, canWrite, cleanMsg, hasBlanks, MSG_MAX, openQuestions, thread, type ClassMsg } from "@/lib/media/class-chat";
+import { buildPin, canAddPin, canPin, canUnpin, chatPin, type PinDraft } from "@/lib/media/class-pins";
+import { roleOf, type NoteColor } from "@/lib/media/notices";
 import { newId, updateMedia, useMediaState } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
 import { useFormat, useNumerals } from "../../ui/numerals";
+import { bdToday } from "../../research/use-research";
+import { PAPER } from "../notice-board";
+import { MessageTools } from "./message-tools";
+import { PinBoard } from "./pin-board";
 import type { RoomCard } from "./rooms";
 import { useClassSession } from "./session-context";
+import { editPins, markMessage, useMarks, usePins } from "./use-pins";
+import { useQuestionBuilder } from "./use-question";
 
 const EMPTY: ClassMsg[] = [];
 
-/** The left-hand class chat: the whole class and the teacher, one thread per room. */
+/** The left-hand Discussion Room: the whole class and the teacher, one thread per room, with pins and markers. */
 export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[]; current: string | null; onClose?: () => void }) {
   const session = useClassSession();
   const parent = session?.mode === "parent";
@@ -28,7 +36,10 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
   const [picked, setPicked] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
   const [ask, setAsk] = useState(false);
+  const [flash, setFlash] = useState<string | null>(null);
   const end = useRef<HTMLDivElement>(null);
+  const box = useRef<HTMLTextAreaElement>(null);
+  const question = useQuestionBuilder();
 
   // The room in the centre leads; otherwise the viewer's last pick, else their first room.
   const id = current && rooms.some((r) => r.id === current) ? current : picked && rooms.some((r) => r.id === picked) ? picked : (rooms.find((r) => r.mine) ?? rooms[0])?.id;
@@ -36,15 +47,26 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
   const mine = useMediaState((s) => (id ? s.classChat[id] : undefined)) ?? EMPTY;
   const list = useMemo(() => (id ? thread(sampleChats[id] ?? [], mine) : []), [id, mine]);
   const open = openQuestions(list);
+  const pins = usePins(id);
+  const marks = useMarks(id);
 
   const meId = parent ? undefined : account?.id;
   const member = Boolean(room && meId && (room.members.some((m) => m.id === meId) || room.teacherId === meId) && room.mine);
   const role = room ? roleOf(room, meId, member) : "guest";
   const writable = canWrite(role, parent ? "parent" : "student");
+  const mayPin = canPin(role, parent ? "parent" : "student");
+  const who = account && room ? { id: account.id, name: account.name, role } : null;
 
   useEffect(() => {
     end.current?.scrollIntoView({ block: "end", behavior: reduce ? "auto" : "smooth" });
   }, [list.length, id, reduce]);
+
+  // A jumped-to message stays lit for a moment.
+  useEffect(() => {
+    if (!flash) return;
+    const t = window.setTimeout(() => setFlash(null), 1800);
+    return () => window.clearTimeout(t);
+  }, [flash]);
 
   const locale = numerals === "bn" ? "bn-BD" : "bn-BD-u-nu-latn";
   const time = (iso: string) => {
@@ -55,10 +77,24 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
   };
   const day = (iso: string) => new Date(iso).toLocaleDateString(locale, { day: "numeric", month: "long", timeZone: "Asia/Dhaka" });
 
+  /** Put the cursor on the first "[ ]" the AI left, selected, so typing fills it. */
+  function selectBlank() {
+    const el = box.current;
+    if (!el) return;
+    el.focus();
+    const at = el.value.search(/\[\s*\]/);
+    if (at >= 0) el.setSelectionRange(at, at + el.value.slice(at).indexOf("]") + 1);
+  }
+
   function send() {
-    if (!room || !account || !writable) return;
+    if (!room || !account || !writable || question.building) return;
     const text = cleanMsg(draft);
     if (!text) return;
+    if (hasBlanks(text)) {
+      toast.error("[ ] ঘরগুলো আগে পূরণ করুন", { description: "নিজের কথায় লিখে তারপর পাঠান।" });
+      selectBlank();
+      return;
+    }
     const msg: ClassMsg = { id: newId("cm"), by: account.id, byName: account.name, byRole: role, text, at: new Date().toISOString(), ...(ask && { ask: true }) };
     const saved = updateMedia((s) => ({ ...s, classChat: { ...s.classChat, [room.id]: append(s.classChat[room.id] ?? [], msg) } }));
     if (!saved) toast.error("এই ব্রাউজারে সেভ হলো না", { description: "বার্তাটা এখন দেখা যাচ্ছে, পাতা বন্ধ করলে হারাবে।" });
@@ -66,15 +102,77 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
     setAsk(false);
   }
 
+  /** Turn the rough draft (or the teacher's last message, if the box is empty) into one clear question. */
+  async function buildQuestion() {
+    if (question.building) {
+      question.stop();
+      return;
+    }
+    if (!room) return;
+    const before = draft;
+    setAsk(true);
+    const lastTeacher = list.findLast((m) => m.byRole === "teacher")?.text;
+    const built = await question.build({ draft, room: room.name, subject: room.subject, teacher: room.teacher, lastTeacher }, (t) => setDraft(t.slice(0, MSG_MAX)));
+    if (!built?.text) {
+      setDraft(before);
+      toast.error("প্রশ্নটা বানানো গেল না", { description: "ইন্টারনেট দেখে আবার চেষ্টা করুন।" });
+      return;
+    }
+    setDraft(built.text.slice(0, MSG_MAX));
+    if (built.mode === "offline") toast.message("ছাঁচে সাজানো হলো", { description: "এখন AI চালু নেই, তাই প্রশ্নের কাঠামো দিলাম। [ ] ঘরগুলো নিজের কথায় পূরণ করুন।" });
+    else if (hasBlanks(built.text)) toast.message("প্রশ্ন তৈরি", { description: "[ ] ঘরগুলো নিজের কথায় পূরণ করুন, তারপর পাঠান।" });
+    requestAnimationFrame(selectBlank);
+  }
+
+  const saveFailed = () => toast.error("এই ব্রাউজারে সেভ হলো না", { description: "এখন দেখা যাচ্ছে, পাতা বন্ধ করলে হারাবে।" });
+
+  function createPin(d: PinDraft, color: NoteColor): string | null {
+    if (!room || !who) return "ক্লাসে যোগ দিলে পিন করতে পারবেন।";
+    if (!canAddPin(pins)) return "পিন ভরে গেছে — আগে একটা সরান।";
+    const made = buildPin(d, who, newId("pn"), new Date().toISOString(), color);
+    if ("problem" in made) return made.problem;
+    if (!editPins(room.id, (l) => [...l, made.pin])) saveFailed();
+    return null;
+  }
+
+  function togglePinMessage(m: ClassMsg) {
+    if (!room || !who) return;
+    const had = pins.find((p) => p.msgId === m.id);
+    if (had) {
+      if (!canUnpin(had, role, meId)) {
+        toast.message("এই পিনটা শিক্ষক বা সিআর সরাতে পারেন");
+        return;
+      }
+      if (!editPins(room.id, (l) => l.filter((p) => p.id !== had.id))) saveFailed();
+      return;
+    }
+    if (!canAddPin(pins)) {
+      toast.error("পিন ভরে গেছে", { description: "আগে একটা পিন সরান।" });
+      return;
+    }
+    if (!editPins(room.id, (l) => [...l, chatPin(m, who, newId("pn"), new Date().toISOString())])) saveFailed();
+    else toast.success("বার্তাটা পিন হলো");
+  }
+
+  function jump(msgId: string) {
+    const el = document.getElementById(`msg-${msgId}`);
+    if (!el) {
+      toast.message("বার্তাটা এখন চ্যাটে নেই");
+      return;
+    }
+    el.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
+    setFlash(msgId);
+  }
+
   return (
-    <section aria-label="ক্লাস চ্যাট" className="flex h-full min-h-0 flex-col bg-black">
+    <section aria-label="Discussion Room" className="flex h-full min-h-0 flex-col bg-black">
       <header className="space-y-2.5 border-b border-white/12 px-4 py-3">
         <div className="flex items-center gap-3">
           <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-bd-green text-white">
             <MessagesSquare className="size-5" aria-hidden />
           </span>
           <div className="min-w-0 flex-1">
-            <h2 className="text-base font-bold text-white">ক্লাস চ্যাট</h2>
+            <h2 className="text-base font-bold text-white">Discussion Room</h2>
             <p className="truncate text-xs text-white/65">{room?.teacher ? `শিক্ষক: ${room.teacher}` : "শিক্ষক আর পুরো ক্লাস"}</p>
           </div>
           {onClose && (
@@ -118,7 +216,28 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
         )}
       </header>
 
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4">
+      {room && (
+        <PinBoard
+          // A different room starts with its own strip closed.
+          key={room.id}
+          pins={pins}
+          role={role}
+          parent={parent}
+          meId={meId}
+          lab={room.kind === "lab"}
+          today={bdToday(room.sample ? DEMO_NOW : new Date())}
+          onCreate={createPin}
+          onToggle={(pid) => {
+            if (!editPins(room.id, (l) => l.map((p) => (p.id === pid ? { ...p, done: !p.done } : p)))) saveFailed();
+          }}
+          onRemove={(pid) => {
+            if (!editPins(room.id, (l) => l.filter((p) => p.id !== pid))) saveFailed();
+          }}
+          onJump={jump}
+        />
+      )}
+
+      <div className="scrollbar-gold min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4">
         {list.length === 0 ? (
           <p className="px-2 pt-6 text-center text-sm text-white/60">এখনো কেউ লেখেনি। প্রথম বার্তাটা আপনিই দিন।</p>
         ) : (
@@ -128,6 +247,8 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
               const self = m.by === meId;
               const teacher = m.byRole === "teacher";
               const waiting = m.ask && list.slice(i + 1).every((x) => x.byRole !== "teacher");
+              const mark = marks[m.id];
+              const pinned = pins.some((p) => p.msgId === m.id);
               return (
                 <Fragment key={m.id}>
                   {newDay && (
@@ -135,7 +256,7 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
                       <span className="rounded-full bg-white/8 px-3 py-0.5 text-[11px] font-semibold text-white/60">{day(m.at)}</span>
                     </li>
                   )}
-                  <li className={cn("flex flex-col gap-1", self ? "items-end" : "items-start")}>
+                  <li id={`msg-${m.id}`} className={cn("group/msg flex flex-col gap-1", self ? "items-end" : "items-start")}>
                     {!self && (
                       <p className="flex items-center gap-1.5 px-1 text-xs font-semibold text-white/70">
                         {m.byName}
@@ -145,20 +266,38 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
                     )}
                     <div
                       className={cn(
-                        "max-w-[88%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed break-words whitespace-pre-wrap",
-                        self ? "rounded-tr-md bg-signal-orange font-medium text-text-primary" : teacher ? "rounded-tl-md bg-bd-green text-white" : "rounded-tl-md bg-text-primary text-white ring-1 ring-white/12",
+                        "relative max-w-[88%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed break-words whitespace-pre-wrap transition-shadow duration-300",
+                        self ? "rounded-tr-md" : "rounded-tl-md",
+                        mark ? cn(PAPER[mark].paper, "font-medium") : self ? "bg-signal-orange font-medium text-text-primary" : teacher ? "bg-bd-green text-white" : "bg-text-primary text-white ring-1 ring-white/12",
+                        flash === m.id && "ring-2 ring-white ring-offset-2 ring-offset-black",
                       )}
                     >
                       {m.ask && (
-                        <span className={cn("mb-1 flex items-center gap-1 text-[11px] font-bold", self ? "text-text-primary/75" : "text-signal-orange")}>
+                        <span className={cn("mb-1 flex items-center gap-1 text-[11px] font-bold", mark ? "opacity-80" : self ? "text-text-primary/75" : "text-signal-orange")}>
                           <HelpCircle className="size-3.5" aria-hidden /> শিক্ষকের কাছে প্রশ্ন{waiting ? " · উত্তরের অপেক্ষায়" : ""}
                         </span>
                       )}
                       {m.text}
+                      {mark && (
+                        <span className="absolute -top-1.5 -right-1.5 grid size-5 place-items-center rounded-full bg-text-primary text-signal-orange ring-2 ring-black">
+                          <Highlighter className="size-3" aria-label={`মার্ক করা — ${PAPER[mark].bn}`} />
+                        </span>
+                      )}
                     </div>
-                    <time dateTime={m.at} className="px-1 text-[10px] text-white/45">
-                      {time(m.at)}
-                    </time>
+                    <div className={cn("flex flex-wrap items-center gap-x-1", self && "justify-end")}>
+                      <time dateTime={m.at} className="px-1 text-[10px] text-white/45">
+                        {time(m.at)}
+                      </time>
+                      {mayPin && (
+                    <MessageTools
+                      pinned={pinned}
+                      mark={mark}
+                      onPin={() => togglePinMessage(m)} onMark={(c) => {
+                        if (id && !markMessage(id, m.id, c)) saveFailed();
+                      }}
+                    />
+                  )}
+                    </div>
                   </li>
                 </Fragment>
               );
@@ -170,7 +309,7 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
 
       {parent ? (
         <p className="flex items-start gap-2 border-t border-white/12 px-4 py-3 text-xs leading-relaxed text-white/70">
-          <Eye className="mt-0.5 size-4 shrink-0 text-signal-orange" aria-hidden /> অভিভাবক হিসেবে শুধু পড়ছেন — ক্লাসের চ্যাটে লেখা যায় না। কিছু জানাতে চাইলে শিক্ষকের সঙ্গে সরাসরি যোগাযোগ করুন।
+          <Eye className="mt-0.5 size-4 shrink-0 text-signal-orange" aria-hidden /> অভিভাবক হিসেবে শুধু পড়ছেন — ক্লাসের চ্যাটে লেখা, পিন বা মার্ক করা যায় না। কিছু জানাতে চাইলে শিক্ষকের সঙ্গে সরাসরি যোগাযোগ করুন।
         </p>
       ) : !writable ? (
         <p className="border-t border-white/12 px-4 py-3 text-xs leading-relaxed text-white/70">
@@ -195,7 +334,9 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
             </label>
             <textarea
               id="class-chat-box"
+              ref={box}
               value={draft}
+              readOnly={question.building}
               onChange={(e) => setDraft(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
@@ -203,24 +344,35 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
                   send();
                 }
               }}
-              rows={2}
-              maxLength={1000}
-              placeholder={role === "teacher" ? "ক্লাসকে কিছু বলুন" : ask ? "শিক্ষককে প্রশ্নটা লিখুন" : "ক্লাসে লিখুন"}
-              className="block max-h-32 min-h-12 w-full resize-none bg-transparent px-3.5 pt-3 text-sm leading-relaxed text-white outline-none placeholder:text-white/45"
+              rows={ask ? 4 : 2}
+              maxLength={MSG_MAX}
+              placeholder={role === "teacher" ? "ক্লাসকে কিছু বলুন" : ask ? "শিক্ষককে প্রশ্নটা লিখুন — অথবা এলোমেলো কথা লিখে “AI দিয়ে বানান” চাপুন" : "ক্লাসে লিখুন"}
+              className="block max-h-40 min-h-12 w-full resize-none bg-transparent px-3.5 pt-3 text-sm leading-relaxed text-white outline-none placeholder:text-white/45"
             />
             <div className="flex items-center gap-2 px-2 pb-2">
               {role !== "teacher" && (
-                <button
-                  type="button"
-                  onClick={() => setAsk((a) => !a)}
-                  aria-pressed={ask}
-                  className={cn("inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-bold transition-colors", ask ? "bg-signal-orange text-text-primary" : "text-white/70 ring-1 ring-white/15 hover:text-white")}
-                >
-                  <HelpCircle className="size-3.5" aria-hidden /> শিক্ষককে প্রশ্ন
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setAsk((a) => !a)}
+                    aria-pressed={ask}
+                    className={cn("inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-bold transition-colors", ask ? "bg-signal-orange text-text-primary" : "text-white/70 ring-1 ring-white/15 hover:text-white")}
+                  >
+                    <HelpCircle className="size-3.5" aria-hidden /> শিক্ষককে প্রশ্ন
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void buildQuestion()}
+                    title="AI দিয়ে প্রশ্ন বানান — খসড়া বা শিক্ষকের শেষ কথা থেকে স্পষ্ট একটা প্রশ্ন সাজিয়ে দেয়"
+                    className={cn("inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-bold text-signal-orange ring-1 ring-signal-orange/50 transition-colors hover:bg-signal-orange/10", question.building && "bg-signal-orange/10")}
+                  >
+                    {question.building ? <LoaderCircle className="size-3.5 animate-spin motion-reduce:animate-none" aria-hidden /> : <WandSparkles className="size-3.5" aria-hidden />}
+                    {question.building ? "থামান" : "AI দিয়ে বানান"}
+                  </button>
+                </>
               )}
               <span className="flex-1" />
-              <button type="submit" disabled={!draft.trim()} className="grid size-9 place-items-center rounded-xl bg-signal-orange text-text-primary transition-[scale,opacity] active:scale-95 disabled:opacity-40">
+              <button type="submit" disabled={!draft.trim() || question.building} className="grid size-9 place-items-center rounded-xl bg-signal-orange text-text-primary transition-[scale,opacity] active:scale-95 disabled:opacity-40">
                 <SendHorizontal className="size-4.5" aria-hidden />
                 <span className="sr-only">পাঠান</span>
               </button>

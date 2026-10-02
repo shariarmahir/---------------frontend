@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { useReducedMotion } from "framer-motion";
-import { Activity, AtSign, CalendarClock, ChevronDown, ChevronUp, Clock, Drum, FileClock, FlaskConical, Hourglass, Microscope, TriangleAlert, type LucideIcon } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion, type Variants } from "framer-motion";
 import { sampleChats } from "@/data/media/class-chat";
 import { sampleClassrooms } from "@/data/media/classroom";
 import { DEMO_NOW } from "@/data/media/clock";
@@ -13,27 +12,16 @@ import { sampleProjects } from "@/data/media/research";
 import { useAuth } from "@/lib/auth/client";
 import { studentCode } from "@/lib/media/class-access";
 import { thread } from "@/lib/media/class-chat";
-import { TICK_MS, tickerItems, type TickKind } from "@/lib/media/class-ticker";
+import { toBijoy } from "@/lib/media/bijoy";
+import { GAP_MS, SHOW_MS, tickerItems } from "@/lib/media/class-ticker";
 import type { Classroom } from "@/lib/media/classroom";
 import type { LabRoom } from "@/lib/media/lab";
 import { updateMedia, useMediaState } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
 import { useFormat } from "../../ui/numerals";
+import { ReactionFace } from "./reaction-face";
 import { roomInPath } from "./rooms";
 import { useClassSession } from "./session-context";
-
-const ICON: Record<TickKind, LucideIcon> = {
-  welcome: Drum,
-  activity: Activity,
-  lab: FlaskConical,
-  research: Microscope,
-  missing: TriangleAlert,
-  pending: FileClock,
-  exam: CalendarClock,
-  classtime: Clock,
-  mention: AtSign,
-  stay: Hourglass,
-};
 
 const MINUTE = 60_000;
 
@@ -52,10 +40,27 @@ function useStay(): { visit: number; total: number } {
   return { visit, total: total ?? 0 };
 }
 
+/** Pop in soft and blurred, settle; leave by lifting away into a blur. */
+const CARD: Variants = {
+  hidden: { opacity: 0, y: 12, scale: 0.92, filter: "blur(8px)" },
+  shown: { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", transition: { type: "spring", stiffness: 210, damping: 22, staggerChildren: 0.09 } },
+  gone: { opacity: 0, y: -10, scale: 0.97, filter: "blur(6px)", transition: { duration: 0.55, ease: [0.4, 0, 0.2, 1] } },
+};
+const PART: Variants = {
+  hidden: { opacity: 0, y: 8 },
+  shown: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 260, damping: 24 } },
+};
+const FACE: Variants = {
+  hidden: { scale: 0, rotate: -25 },
+  shown: { scale: 1, rotate: 0, transition: { type: "spring", stiffness: 380, damping: 14 } },
+};
+const CALM: Variants = { hidden: { opacity: 0 }, shown: { opacity: 1, transition: { duration: 0.3 } }, gone: { opacity: 0, transition: { duration: 0.3 } } };
+
 /**
- * The search-bar-shaped strip in the classroom's top bar: the welcome line,
- * then one reminder every fifteen seconds, round and round. Hovering or
- * focusing it holds the current one; the arrows step through by hand.
+ * The classroom's top-bar line: the welcome first, then one reminder at a
+ * time — what it is about in bold, a face that feels it, and a proverb in
+ * the brand's display face. Each stays eight seconds, fades away, and the
+ * next pops in two seconds later, round and round. Hovering holds it.
  */
 export function ClassTicker() {
   const session = useClassSession();
@@ -69,6 +74,7 @@ export function ClassTicker() {
   const chatMap = useMediaState((s) => s.classChat);
   const stay = useStay();
   const [at, setAt] = useState(0);
+  const [shown, setShown] = useState(true);
   const [held, setHeld] = useState(false);
 
   const parent = session?.mode === "parent" ? session.child : null;
@@ -109,21 +115,32 @@ export function ClassTicker() {
   }, [parent, account, classMap, labMap, projectMap, chatMap, open]);
 
   const items = useMemo(() => tickerItems({ ...input, stay, num }), [input, stay, num]);
-  const n = items.length;
-  const i = at % n;
-  const item = items[i];
-  const Icon = ICON[item.kind];
+  const item = items[at % items.length];
 
-  // The progress line moves the strip on when it fills, so holding pauses both together.
-  // Without motion there is no line, and a timer does the same job.
   useEffect(() => {
-    if (held || !reduce) return;
-    const id = window.setTimeout(() => setAt((a) => a + 1), TICK_MS);
+    if (held) return;
+    const id = shown
+      ? window.setTimeout(() => setShown(false), SHOW_MS)
+      : window.setTimeout(() => {
+          setAt((a) => a + 1);
+          setShown(true);
+        }, GAP_MS);
     return () => window.clearTimeout(id);
-  }, [at, held, reduce]);
+  }, [shown, held]);
 
-  const step = (d: number) => setAt((a) => (a + d + n) % n);
   const welcome = item.kind === "welcome";
+  const card = reduce ? CALM : CARD;
+  const part = reduce ? CALM : PART;
+  const topic = (
+    <>
+      {item.urgent ? (
+        <span className="mr-1.5 rounded-md bg-national-crimson px-1.5 py-px text-[11px] text-white">{item.label}</span>
+      ) : (
+        <span className="text-text-primary/70">{item.label} · </span>
+      )}
+      {item.text}
+    </>
+  );
 
   return (
     <div
@@ -131,45 +148,39 @@ export function ClassTicker() {
       aria-label="ক্লাসের খবর"
       onMouseEnter={() => setHeld(true)}
       onMouseLeave={() => setHeld(false)}
-      onFocus={() => setHeld(true)}
-      onBlur={(e) => !e.currentTarget.contains(e.relatedTarget as Node) && setHeld(false)}
-      className="relative mx-auto flex h-10 w-full max-w-2xl items-center gap-2 overflow-hidden rounded-full bg-text-primary pr-1 pl-3 text-sm text-white shadow-ink"
+      className="flex h-14 w-full min-w-0 items-center justify-center text-text-primary select-none"
     >
-      <div key={at} className={cn("flex min-w-0 flex-1 items-center gap-2", !reduce && "live-in")}>
-        <Icon className={cn("size-4.5 shrink-0", item.urgent ? "text-crimson-bright" : "text-signal-orange")} aria-hidden />
-        <span className={cn("hidden shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold sm:inline", item.urgent ? "bg-national-crimson text-white" : "bg-white/10 text-signal-orange")}>{item.label}</span>
-        {item.href ? (
-          <Link href={item.href} className="min-w-0 flex-1 truncate font-medium hover:underline" title={item.text}>
-            {item.text}
-          </Link>
-        ) : (
-          <span className={cn("min-w-0 flex-1 truncate", welcome ? "font-bold tracking-wide text-signal-orange" : "font-medium")} title={item.text}>
-            {item.text}
-          </span>
+      <AnimatePresence mode="wait">
+        {shown && (
+          <motion.div key={at} variants={card} initial="hidden" animate="shown" exit="gone" className="flex max-w-full min-w-0 items-center gap-3">
+            <motion.span variants={reduce ? CALM : FACE} className="shrink-0">
+              <ReactionFace mood={item.mood} className="size-10" />
+            </motion.span>
+            <span className="flex min-w-0 flex-col justify-center">
+              {!welcome && (
+                <motion.span variants={part} className="block truncate text-[13px] leading-snug font-bold">
+                  {item.href ? (
+                    <Link href={item.href} className="hover:underline" title={item.text}>
+                      {topic}
+                    </Link>
+                  ) : (
+                    topic
+                  )}
+                </motion.span>
+              )}
+              {item.quip && (
+                <motion.span variants={part} className={cn("block", welcome ? "line-clamp-2 md:truncate" : "truncate")}>
+                  {/* The slogan face draws Bangla on Latin codes, so readers get the Unicode line instead. */}
+                  <span aria-hidden translate="no" className={cn("font-slogan", welcome ? "text-[17px] leading-[1.15] md:text-[20px] md:leading-tight 2xl:text-[24px]" : "text-[19px] leading-tight")}>
+                    {toBijoy(item.quip)}
+                  </span>
+                  <span className="sr-only">{item.quip}</span>
+                </motion.span>
+              )}
+            </span>
+          </motion.div>
         )}
-      </div>
-      <span className="hidden shrink-0 text-[11px] font-semibold text-white/50 tabular-nums lg:inline" aria-label={`${num(n)}টির মধ্যে ${num(i + 1)} নম্বর`}>
-        {num(i + 1)}/{num(n)}
-      </span>
-      <span className="flex shrink-0">
-        <button type="button" onClick={() => step(-1)} className="grid size-8 place-items-center rounded-full text-white/70 hover:bg-white/10 hover:text-white">
-          <ChevronUp className="size-4" aria-hidden />
-          <span className="sr-only">আগের খবর</span>
-        </button>
-        <button type="button" onClick={() => step(1)} className="grid size-8 place-items-center rounded-full text-white/70 hover:bg-white/10 hover:text-white">
-          <ChevronDown className="size-4" aria-hidden />
-          <span className="sr-only">পরের খবর</span>
-        </button>
-      </span>
-      {!reduce && (
-        <span
-          key={`bar-${at}`}
-          aria-hidden
-          className="ticker-bar absolute right-5 bottom-0 left-5 h-0.5 origin-left rounded-full bg-signal-orange/70"
-          style={{ animationDuration: `${TICK_MS}ms`, animationPlayState: held ? "paused" : "running" }}
-          onAnimationEnd={() => setAt((a) => a + 1)}
-        />
-      )}
+      </AnimatePresence>
     </div>
   );
 }
