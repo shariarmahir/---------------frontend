@@ -1,4 +1,5 @@
 import type { GameId } from "@/lib/media/teams";
+import type { RoomRef } from "@/lib/media/showcase";
 import type { JourneyStep, SellerStage, Tier, TradeMode } from "@/lib/media/bazaar";
 import type { PriceBand } from "@/lib/media/fair-price";
 import type { PayUnit } from "@/lib/media/fair-pay";
@@ -138,6 +139,8 @@ export interface Post {
   comments: Comment[];
   /** Present when the work is for sale. */
   listingId?: string;
+  /** Shared from a classroom or lab room. */
+  from?: RoomRef;
 }
 
 export interface Listing {
@@ -181,6 +184,8 @@ export interface Listing {
   specs?: { k: string; v: string }[];
   /** The seller's own category name under “অন্যান্য”. */
   customCategory?: string;
+  /** বাজারের উপ-বিভাগ (data/media/market-sections.ts); older items fall back by category. */
+  sub?: string;
   /** Field to buyer, hash-linked (see lib/media/bazaar). */
   journey?: JourneyStep[];
 }
@@ -196,6 +201,7 @@ export interface BoardPost {
   who: string;
   title: string;
   category: CategoryId;
+  sub?: string;
   tags: string[];
   qty: number;
   unit: string;

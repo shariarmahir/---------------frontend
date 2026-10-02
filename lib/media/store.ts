@@ -6,6 +6,8 @@ import { follows } from "@/data/media/follows";
 import { CURRENT_USER_HANDLE } from "@/data/media/users";
 import { activeAccountId, subscribeAuth } from "@/lib/auth/client";
 import type { Classroom } from "./classroom";
+import type { LabRoom } from "./lab";
+import type { ResearchEntry } from "./showcase";
 import type { CrimePost } from "./crime";
 import type { Negotiation } from "./negotiation";
 
@@ -111,6 +113,10 @@ export interface MediaState {
   privacy: Privacy;
   /** Classrooms the viewer created or joined, by id (a joined sample is copied here). */
   classrooms: Record<string, Classroom>;
+  /** Lab rooms the viewer created or joined, by id (a joined sample is copied here). */
+  labs: Record<string, LabRoom>;
+  /** Research the viewer's classrooms and labs sent to the গবেষণা page. */
+  research: ResearchEntry[];
   /** অপরাধ বার্তা: the viewer's own posts, and the posts they witnessed or flagged. */
   crimePosts: CrimePost[];
   crimeWitness: Record<string, true>;
@@ -170,6 +176,8 @@ const initialState: MediaState = Object.freeze({
   seenNotices: {},
   privacy: defaultPrivacy,
   classrooms: {},
+  labs: {},
+  research: [],
   crimePosts: [],
   crimeWitness: {},
   crimeFlags: {},

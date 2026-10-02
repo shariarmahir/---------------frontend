@@ -7,8 +7,8 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { boardPosts, MODES, SIDES, TAG_IDEAS, UNITS } from "@/data/media/bazaar";
-import { categories, getCategory } from "@/data/media/categories";
+import { boardPosts, MODES, SIDES, UNITS } from "@/data/media/bazaar";
+import { DEFAULT_SUB, formForSub, isSubId, resolveSub, tagIdeasFor } from "@/data/media/market-sections";
 import { districts } from "@/data/media/districts";
 import { listings } from "@/data/media/market";
 import type { BoardPost, CategoryId } from "@/data/media/types";
@@ -20,6 +20,7 @@ import { mediaButton } from "../ui/button-styles";
 import { choiceClass, selectClass, toNumber } from "../ui/field-styles";
 import { BoardCard } from "./board-card";
 import { Row, TagInput } from "./form-parts";
+import { SubPicker } from "./sub-picker";
 import { buyersFor, offersFrom, postOffer, sellersFor } from "./matching";
 
 type Side = BoardPost["side"];
@@ -28,6 +29,7 @@ interface Draft {
   side: Side;
   who: string;
   category: CategoryId;
+  sub: string;
   custom: string;
   title: string;
   tags: string;
@@ -42,16 +44,18 @@ interface Draft {
   note: string;
 }
 
-function blank(side: Side, from?: BoardPost): Draft {
+function blank(side: Side, from?: BoardPost, asked?: string | null): Draft {
+  const sub = asked && isSubId(asked) ? asked : (from?.sub ?? DEFAULT_SUB[from?.category ?? "farm"]);
   return {
     side,
     who: "",
-    category: from?.category ?? "farm",
+    category: resolveSub(sub).sub.base,
+    sub,
     custom: "",
     title: "",
     tags: from ? from.tags.map((t) => `#${t}`).join(" ") : "",
     qty: from ? String(from.qty) : "",
-    unit: from?.unit ?? "কেজি",
+    unit: from?.unit ?? formForSub(sub).unit,
     price: "",
     mode: from?.mode ?? (side === "sell" ? "wholesale" : "retail"),
     organic: Boolean(from?.organic),
@@ -65,7 +69,7 @@ function blank(side: Side, from?: BoardPost): Draft {
 function problems(d: Draft): Record<string, string> {
   const e: Record<string, string> = {};
   if (d.who.trim().length < 3) e.who = "কে পোস্ট করছেন, কয়েক শব্দে লিখুন";
-  if (d.category === "other" && d.custom.trim().length < 2) e.custom = "নিজের বিভাগের নাম লিখুন";
+  if (d.sub === "custom" && d.custom.trim().length < 2) e.custom = "নিজের বিভাগের নাম লিখুন";
   if (d.title.trim().length < 6) e.title = "অন্তত ৬ অক্ষরের এক লাইনের শিরোনাম দিন";
   if (parseTags(d.tags).length === 0) e.tags = "অন্তত একটি হ্যাশট্যাগ দিন — এতেই মিল হয়";
   if (toNumber(d.qty) <= 0) e.qty = d.side === "buy" ? "কতটা দরকার লিখুন" : "কতটা আছে লিখুন";
@@ -84,6 +88,7 @@ function toPost(d: Draft, id: string): BoardPost {
     who: d.who.trim(),
     title: d.title.trim() || SIDES[d.side].bn,
     category: d.category,
+    sub: d.sub,
     tags: parseTags(d.tags),
     qty: toNumber(d.qty),
     unit: d.unit,
@@ -108,7 +113,7 @@ export function BoardForm() {
   const mine = useMediaState((s) => s.listings);
   const myPosts = useMediaState((s) => s.board);
   const from = boardPosts.find((p) => p.id === params.get("for"));
-  const [d, setD] = useState<Draft>(() => blank(params.get("side") === "sell" ? "sell" : "buy", from));
+  const [d, setD] = useState<Draft>(() => blank(params.get("side") === "sell" ? "sell" : "buy", from, params.get("sub")));
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const set = <K extends keyof Draft>(k: K, v: Draft[K]) => setD((x) => ({ ...x, [k]: v }));
@@ -163,18 +168,8 @@ export function BoardForm() {
             <Input id="who" value={d.who} onChange={(e) => set("who", e.target.value)} maxLength={60} {...aria("who")} />
           </Row>
 
-          <fieldset>
-            <legend className="mb-2 text-sm font-semibold text-white">বিভাগ</legend>
-            <div className="flex flex-wrap gap-2">
-              {categories.map((c) => (
-                <label key={c.id} className={choiceClass(d.category === c.id)}>
-                  <input type="radio" name="category" className="sr-only" checked={d.category === c.id} onChange={() => set("category", c.id)} />
-                  {c.bn}
-                </label>
-              ))}
-            </div>
-          </fieldset>
-          {d.category === "other" && (
+          <SubPicker value={d.sub} onChange={(id) => setD((x) => ({ ...x, sub: id, category: resolveSub(id).sub.base, unit: formForSub(id).unit }))} />
+          {d.sub === "custom" && (
             <Row id="custom" label="আপনার বিভাগের নাম *" error={errors.custom}>
               <Input id="custom" value={d.custom} onChange={(e) => set("custom", e.target.value)} maxLength={40} {...aria("custom")} />
             </Row>
@@ -183,7 +178,7 @@ export function BoardForm() {
           <Row id="title" label="এক লাইনে *" error={errors.title}>
             <Input id="title" value={d.title} onChange={(e) => set("title", e.target.value)} maxLength={70} placeholder={buy ? "ঝুনা নারকেল — ২০টি, প্রতি সপ্তাহে" : "পাকা সুপারি — ২,০০০ পিস"} {...aria("title")} />
           </Row>
-          <TagInput value={d.tags} ideas={TAG_IDEAS[d.category] ?? []} error={errors.tags} onChange={(v) => set("tags", v)} />
+          <TagInput value={d.tags} ideas={tagIdeasFor(d.sub)} error={errors.tags} onChange={(v) => set("tags", v)} />
 
           <div className="grid gap-4 sm:grid-cols-3">
             <Row id="qty" label={buy ? "কতটা দরকার *" : "কতটা আছে *"} error={errors.qty}>
@@ -260,7 +255,7 @@ export function BoardForm() {
           {banned ? <ShieldAlert className="mt-0.5 size-4.5 shrink-0" aria-hidden /> : <ShieldCheck className="mt-0.5 size-4.5 shrink-0" aria-hidden />}
           {banned ? <span>“{banned}” আইনে নিষিদ্ধ — এই পোস্ট প্রকাশ করা যাবে না।</span> : <span>বৈধতা যাচাই: কোনো নিষিদ্ধ পণ্যের নাম নেই।</span>}
         </div>
-        <p className="text-xs leading-relaxed text-white/60">{getCategory(d.category).blurb}</p>
+        <p className="text-xs leading-relaxed text-white/60">{resolveSub(d.sub).section.hint}</p>
       </aside>
     </div>
   );

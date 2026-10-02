@@ -1,20 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Building2, Hash, Laptop, PackageSearch, Rocket, Search, ShieldCheck, Sprout, Store, type LucideIcon } from "lucide-react";
+import { Building2, Hash, Laptop, PackageSearch, Rocket, Search, Sprout, Store, type LucideIcon } from "lucide-react";
+import { SectionNav } from "@/components/media/market/section-nav";
 import { BoardCard } from "@/components/media/market/board-card";
 import { BoostBand, LogisticsBand } from "@/components/media/market/logistics";
 import { ListingCard } from "@/components/media/market/listing-card";
 import { MatchPanel } from "@/components/media/market/match-panel";
-import { buyersFor, districtOf, modesOf, offersFrom, postHit, postOffer, searchHit, sellersFor, trendingTags } from "@/components/media/market/matching";
+import { buyersFor, listingPick, modesOf, offersFrom, placeOf, postHit, postOffer, postPick, searchHit, sellersFor, trendingTags } from "@/components/media/market/matching";
 import { MyListings } from "@/components/media/market/my-listings";
 import { mediaButton } from "@/components/media/ui/button-styles";
 import { EmptyState } from "@/components/media/ui/empty-state";
 import { chipClass } from "@/components/media/ui/field-styles";
 import { Num } from "@/components/media/ui/numerals";
-import { PixelMark, SignalSeam } from "@/components/ui/section-kit";
+import { PixelMark } from "@/components/ui/section-kit";
 import { LIFT, glowStyle, surfaceAt } from "@/components/ui/surfaces";
 import { boardPosts, MODES, SIDES, STAGES } from "@/data/media/bazaar";
-import { categories, isCategoryId } from "@/data/media/categories";
+import { isCategoryId } from "@/data/media/categories";
+import { inPick, PICKS, SECTIONS, sectionById, type PickKey } from "@/data/media/market-sections";
 import { listings } from "@/data/media/market";
 import type { BoardPost } from "@/data/media/types";
 import { personOrThrow, verifiedRatingFor } from "@/data/media/users";
@@ -31,7 +33,7 @@ const sorts = [
   { key: "high", label: "দাম: বেশি থেকে" },
 ] as const;
 
-type Params = { q?: string; c?: string; m?: string; s?: string; sort?: string; view?: string; side?: string };
+type Params = { q?: string; c?: string; m?: string; s?: string; sort?: string; view?: string; side?: string; sec?: string; sub?: string; pick?: string };
 
 function href(p: Params) {
   const q = new URLSearchParams(Object.entries(p).filter(([, v]) => v) as [string, string][]);
@@ -42,20 +44,27 @@ function href(p: Params) {
 export default async function MarketPage({ searchParams }: { searchParams: Promise<Params> }) {
   const sp = await searchParams;
   const q = sp.q?.trim().slice(0, 60) ?? "";
+  const sec = sp.sec && sectionById(sp.sec) ? sp.sec : undefined;
+  const subId = sp.sub && (sectionById(sp.sec ?? "")?.subs.some((x) => x.id === sp.sub) ?? false) ? sp.sub : undefined;
+  const pick = sp.pick && sp.pick in PICKS ? (sp.pick as PickKey) : undefined;
   const cat = sp.c && isCategoryId(sp.c) ? sp.c : undefined;
   const mode = sp.m && sp.m in MODES ? (sp.m as TradeMode) : undefined;
   const stage = sp.s && sp.s in STAGES ? (sp.s as SellerStage) : undefined;
   const sort = sorts.find((s) => s.key === sp.sort)?.key ?? "trust";
   const board = sp.view === "board";
   const side = sp.side && sp.side in SIDES ? (sp.side as BoardPost["side"]) : undefined;
-  const keep = { q, c: cat, m: mode, s: stage, sort: sort === "trust" ? undefined : sort, view: board ? "board" : undefined, side };
+  const keep = { q, c: cat, m: mode, s: stage, sort: sort === "trust" ? undefined : sort, view: board ? "board" : undefined, side, sec, sub: subId, pick };
+  const browseKeep = { q, m: mode, s: stage, sort: sort === "trust" ? undefined : sort, view: board ? "board" : undefined, side, pick };
   // Boost only lifts a listing for someone already searching for it.
   const searching = Boolean(q || cat);
 
   const shown = listings
     .map((l) => ({ l, seller: personOrThrow(l.seller) }))
     .filter(({ l }) => (!cat || l.category === cat) && (!mode || modesOf(l).includes(mode)) && (!stage || l.stage === stage))
-    .filter(({ l, seller }) => searchHit(l, q, [seller.nameBn, seller.name]))
+    .filter(({ l }) => !sec || placeOf(l).section.id === sec)
+    .filter(({ l }) => !subId || placeOf(l).sub.id === subId)
+    .filter(({ l }) => !pick || inPick(listingPick(l), pick))
+    .filter(({ l, seller }) => searchHit(l, q, [seller.nameBn, seller.name, placeOf(l).sub.bn]))
     .sort((a, b) => {
       if (sort === "trust" && searching && Boolean(a.l.featured) !== Boolean(b.l.featured)) return a.l.featured ? -1 : 1;
       if (sort === "low") return a.l.price - b.l.price;
@@ -66,11 +75,21 @@ export default async function MarketPage({ searchParams }: { searchParams: Promi
     });
 
   const offers = offersFrom(listings, boardPosts);
-  const posts = boardPosts.filter((p) => (!cat || p.category === cat) && (!mode || p.mode === mode) && postHit(p, q));
+  const posts = boardPosts
+    .filter((p) => (!cat || p.category === cat) && (!mode || p.mode === mode))
+    .filter((p) => !sec || placeOf(p).section.id === sec)
+    .filter((p) => !subId || placeOf(p).sub.id === subId)
+    .filter((p) => !pick || inPick(postPick(p), pick))
+    .filter((p) => postHit(p, q, [placeOf(p).sub.bn]));
   const shownPosts = posts.filter((p) => !side || p.side === side);
-  const matchCount = boardPosts.filter((p) => p.side === "buy").reduce((n, p) => n + sellersFor(p, offers).length, 0);
-  const usedCats = categories.filter((c) => listings.some((l) => l.category === c.id) || boardPosts.some((p) => p.category === c.id));
   const stages = Object.keys(STAGES) as SellerStage[];
+  const section = sec ? sectionById(sec) : undefined;
+  // Sub-section counts for the open section (listings + board), so the chips and the browser agree.
+  const subCount = (id: string) => listings.filter((l) => placeOf(l).sub.id === id).length + boardPosts.filter((p) => placeOf(p).sub.id === id).length;
+  const sectionCount = (id: string) => listings.filter((l) => placeOf(l).section.id === id).length + boardPosts.filter((p) => placeOf(p).section.id === id).length;
+  const allCounts = Object.fromEntries(SECTIONS.flatMap((s) => s.subs).map((x) => [x.id, subCount(x.id)]));
+  const sectionCounts = Object.fromEntries(SECTIONS.map((s) => [s.id, sectionCount(s.id)]));
+  const picks = (["direct", "organic", "export", "wholesale", "heritage", "brand"] as PickKey[]).filter((k) => listings.some((l) => inPick(listingPick(l), k)) || boardPosts.some((p) => inPick(postPick(p), k)));
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
@@ -79,9 +98,6 @@ export default async function MarketPage({ searchParams }: { searchParams: Promi
         <div className="grid gap-8 p-5 sm:p-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] xl:items-center">
           <div className="space-y-5">
             <PixelMark tone="dark" />
-            <p className="inline-flex items-center gap-2 rounded-full bg-signal-orange px-3 py-1 text-xs font-bold text-text-primary">
-              <ShieldCheck className="size-4" aria-hidden /> বাজার · শুধু বৈধ পণ্য ও সেবা
-            </p>
             <h1 className="text-3xl font-bold tracking-tight text-balance text-white sm:text-5xl sm:leading-[1.1]">
               যা আছে বিক্রি করুন, <span className="text-signal-orange">যা দরকার চেয়ে নিন।</span>
             </h1>
@@ -110,22 +126,6 @@ export default async function MarketPage({ searchParams }: { searchParams: Promi
               );
             })}
           </ul>
-        </div>
-        <div className="relative">
-          <SignalSeam className="top-0" />
-          <dl className="grid grid-cols-2 divide-white/10 sm:grid-cols-4 sm:divide-x">
-            {[
-              { label: "পণ্য ও সেবা", value: listings.length },
-              { label: "বোর্ডে পোস্ট", value: boardPosts.length },
-              { label: "জেলা", value: new Set(listings.map(districtOf)).size },
-              { label: "এখনকার অটো-মিল", value: matchCount },
-            ].map((s) => (
-              <div key={s.label} className="flex flex-col items-center gap-0.5 py-4 text-center">
-                <dt className="text-xs text-white/65">{s.label}</dt>
-                <dd className="text-2xl font-bold text-signal-orange"><Num value={s.value} /></dd>
-              </div>
-            ))}
-          </dl>
         </div>
       </section>
 
@@ -161,6 +161,9 @@ export default async function MarketPage({ searchParams }: { searchParams: Promi
           {mode && <input type="hidden" name="m" value={mode} />}
           {board && <input type="hidden" name="view" value="board" />}
           {side && <input type="hidden" name="side" value={side} />}
+          {sec && <input type="hidden" name="sec" value={sec} />}
+          {subId && <input type="hidden" name="sub" value={subId} />}
+          {pick && <input type="hidden" name="pick" value={pick} />}
           <label className="relative block">
             <span className="sr-only">বাজারে খুঁজুন</span>
             <Search className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-white/65" aria-hidden />
@@ -183,28 +186,53 @@ export default async function MarketPage({ searchParams }: { searchParams: Promi
           ))}
         </p>
 
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <SectionNav
+          baseParams={{ ...keep, sec: undefined, sub: undefined }}
+          sec={sec}
+          sectionCounts={sectionCounts}
+          browseQuery={new URLSearchParams(Object.entries(browseKeep).filter(([, v]) => v) as [string, string][]).toString()}
+          counts={allCounts}
+          current={subId}
+        />
+
+        {section && (
           <div className="-mx-3 max-w-full overflow-x-auto px-3 scrollbar-none sm:mx-0 sm:px-0">
             <ul className="flex w-max gap-2">
-              {[{ id: undefined, bn: "সব বিভাগ" }, ...usedCats].map((c) => (
-                <li key={c.id ?? "all"}>
-                  <Link href={href({ ...keep, c: c.id })} scroll={false} aria-current={cat === c.id ? "page" : undefined} className={chipClass(cat === c.id)}>
-                    {c.bn}
+              {section.subs.map((x) => (
+                <li key={x.id}>
+                  <Link href={href({ ...keep, sub: subId === x.id ? undefined : x.id })} scroll={false} aria-current={subId === x.id ? "page" : undefined} className={chipClass(subId === x.id)}>
+                    {x.bn}
+                    {subCount(x.id) > 0 && <span className="text-[10px] opacity-70">(<Num value={subCount(x.id)} />)</span>}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
-          {!board && (
-            <nav aria-label="সাজান" className="flex gap-1 rounded-xl bg-white/10 p-1">
-              {sorts.map((s) => (
-                <Link key={s.key} href={href({ ...keep, sort: s.key === "trust" ? undefined : s.key })} scroll={false} aria-current={sort === s.key ? "true" : undefined} className={cn("inline-flex min-h-8 items-center rounded-lg px-2.5 text-xs font-semibold whitespace-nowrap", sort === s.key ? "bg-signal-orange text-text-primary shadow-tile" : "text-white/80 hover:text-white")}>
-                  {s.label}
-                </Link>
+        )}
+
+        {picks.length > 0 && (
+          <div className="-mx-3 max-w-full overflow-x-auto px-3 scrollbar-none sm:mx-0 sm:px-0">
+            <ul className="flex w-max gap-2">
+              {picks.map((k) => (
+                <li key={k}>
+                  <Link href={href({ ...keep, pick: pick === k ? undefined : k })} scroll={false} aria-current={pick === k ? "page" : undefined} title={PICKS[k].hint} className={chipClass(pick === k)}>
+                    {PICKS[k].bn}
+                  </Link>
+                </li>
               ))}
-            </nav>
-          )}
-        </div>
+            </ul>
+          </div>
+        )}
+
+        {!board && (
+          <nav aria-label="সাজান" className="flex gap-1 self-start rounded-xl bg-white/10 p-1">
+            {sorts.map((s) => (
+              <Link key={s.key} href={href({ ...keep, sort: s.key === "trust" ? undefined : s.key })} scroll={false} aria-current={sort === s.key ? "true" : undefined} className={cn("inline-flex min-h-8 items-center rounded-lg px-2.5 text-xs font-semibold whitespace-nowrap", sort === s.key ? "bg-signal-orange text-text-primary shadow-tile" : "text-white/80 hover:text-white")}>
+                {s.label}
+              </Link>
+            ))}
+          </nav>
+        )}
 
         {board ? (
           <>
@@ -240,7 +268,7 @@ export default async function MarketPage({ searchParams }: { searchParams: Promi
           </>
         ) : (
           <>
-            {!q && !cat && !mode && !stage && <MyListings />}
+            {!q && !cat && !mode && !stage && !sec && !subId && !pick && <MyListings />}
             {shown.length === 0 ? (
               <EmptyState
                 icon="search"

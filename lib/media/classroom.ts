@@ -4,6 +4,9 @@
  * separate classroom account. Pure rules here, tested in classroom.test.ts.
  */
 
+import type { SharedRef } from "./showcase.ts";
+import type { Rota } from "./teamwork.ts";
+
 export type ClassLevel = "school" | "college" | "university" | "job";
 
 export interface MemberStats {
@@ -113,6 +116,12 @@ export interface Classroom {
   papers: Paper[];
   /** Today's class topic, set by the leader. */
   todayTopic?: string;
+  /** Most members allowed; the leader may change it later. */
+  maxMembers?: number;
+  /** Weekly duties; class defaults when unset. */
+  rota?: Rota;
+  /** Solutions and research the class shared out. */
+  shares?: SharedRef[];
 }
 
 export const LEVELS: Record<ClassLevel, { bn: string; hint: string }> = {

@@ -16,7 +16,7 @@ export const MODES: Record<TradeMode, { bn: string; hint: string }> = {
   brand: { bn: "নিজস্ব ব্র্যান্ড", hint: "অন্যের নামে প্যাকেট করে দেওয়া" },
 };
 
-export const UNITS = ["পিস", "কেজি", "মণ", "হালি", "ডজন", "লিটার", "গজ", "ঝুড়ি", "অর্ডার", "দিন", "মাস", "ঘণ্টা", "সেশন", "প্রজেক্ট", "লাইসেন্স"];
+export const UNITS = ["পিস", "জোড়া", "সেট", "কেজি", "মণ", "টন", "হালি", "ডজন", "লিটার", "গজ", "ঝুড়ি", "বস্তা", "প্যাকেট", "শতাংশ", "অর্ডার", "অনুষ্ঠান", "দিন", "মাস", "ঘণ্টা", "সেশন", "প্রজেক্ট", "লাইসেন্স"];
 
 export const DELIVERY: Record<Delivery, string> = {
   bus: "বাসের বক্স",
@@ -248,6 +248,7 @@ export const SIDES: Record<BoardPost["side"], { bn: string; hint: string }> = {
 export const boardPosts: BoardPost[] = [
   {
     id: "bp-coconut",
+    sub: "fruit",
     author: "kamal",
     side: "buy",
     who: "মুদি ও ফলের দোকান, মোহাম্মদপুর",
@@ -264,6 +265,7 @@ export const boardPosts: BoardPost[] = [
   },
   {
     id: "bp-supari-sell",
+    sub: "orchard",
     author: "jalal",
     side: "sell",
     who: "নারকেল-সুপারির বাগান, বাগেরহাট",
@@ -280,6 +282,7 @@ export const boardPosts: BoardPost[] = [
   },
   {
     id: "bp-karwan-veg",
+    sub: "vegfarm",
     author: "selim",
     side: "buy",
     who: "কারওয়ান বাজারের আড়তদার",
@@ -297,6 +300,7 @@ export const boardPosts: BoardPost[] = [
   },
   {
     id: "bp-supari-buy",
+    sub: "orchard",
     author: "kamal",
     side: "buy",
     who: "মুদি ও ফলের দোকান, মোহাম্মদপুর",
@@ -312,6 +316,7 @@ export const boardPosts: BoardPost[] = [
   },
   {
     id: "bp-gur-export",
+    sub: "honey",
     author: "tareq",
     side: "buy",
     who: "রপ্তানিকারক, চট্টগ্রাম",
@@ -329,6 +334,7 @@ export const boardPosts: BoardPost[] = [
   },
   {
     id: "bp-kantha-sell",
+    sub: "gi-craft",
     author: "shapla",
     side: "sell",
     who: "নকশিকাঁথার কারিগর দল, জামালপুর",
@@ -345,6 +351,7 @@ export const boardPosts: BoardPost[] = [
   },
   {
     id: "bp-land-deed",
+    sub: "legal",
     author: "jalal",
     side: "buy",
     who: "বাগেরহাটের নারকেল চাষি",

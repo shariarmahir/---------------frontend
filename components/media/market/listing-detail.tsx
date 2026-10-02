@@ -11,7 +11,7 @@ import { MediaGallery } from "../ui/media-gallery";
 import { Compact, Num, Taka } from "../ui/numerals";
 import { PersonAvatar, PersonLine } from "../ui/person";
 import { RatingPair } from "../ui/trust";
-import { buyersFor, listingOffer, modesOf, tagsOf } from "./matching";
+import { buyersFor, listingOffer, modesOf, placeOf, tagsOf } from "./matching";
 import { ShipQuote } from "./ship-quote";
 import { BuyerFees, TradeButtons } from "./trade";
 
@@ -56,6 +56,7 @@ export function ListingDetail({
   children?: React.ReactNode;
 }) {
   const cat = getCategory(listing.category);
+  const place = placeOf(listing);
   const buyers = buyersFor(listingOffer(listing), boardPosts);
   const samples = (listing.gallery ?? [listing.media]).filter((m) => m.play);
   return (
@@ -78,7 +79,7 @@ export function ListingDetail({
           )}
           <Panel>
             <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-white/65">
-              <span className="font-semibold text-signal-orange">{listing.customCategory ?? cat.bn}</span>
+              <span className="font-semibold text-signal-orange">{listing.customCategory ?? place.sub.bn}</span>
               {listing.stage && <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs font-semibold text-white">{STAGES[listing.stage].bn}</span>}
               {listing.organic && <span className="inline-flex items-center gap-1 rounded-full bg-bd-green px-2 py-0.5 text-xs font-bold text-white"><Leaf className="size-3" aria-hidden />বিষমুক্ত</span>}
               <span className="inline-flex items-center gap-1"><MapPin className="size-4" aria-hidden />{listing.location}</span>

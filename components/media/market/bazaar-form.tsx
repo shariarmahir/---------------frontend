@@ -7,8 +7,9 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { boardPosts, DELIVERY, fieldsFor, MODES, PHYSICAL, PRODUCT_FORMS, STAGE_FIELDS, STAGES, TAG_IDEAS, UNITS, type Field } from "@/data/media/bazaar";
-import { categories, getCategory } from "@/data/media/categories";
+import { boardPosts, DELIVERY, MODES, STAGE_FIELDS, STAGES, UNITS, type Field } from "@/data/media/bazaar";
+import { getCategory } from "@/data/media/categories";
+import { DEFAULT_SUB, fieldsForSub, formForSub, isGoods, isSubId, resolveSub, tagIdeasFor } from "@/data/media/market-sections";
 import { districts } from "@/data/media/districts";
 import type { BoardPost, CategoryId, Delivery, Listing, MediaSlot } from "@/data/media/types";
 import { currentUser } from "@/data/media/users";
@@ -22,6 +23,7 @@ import { Num, Taka } from "../ui/numerals";
 import { Row, SpecField, Stepper, TagInput } from "./form-parts";
 import { ListingCard } from "./listing-card";
 import { MediaPicker } from "./media-picker";
+import { SubPicker } from "./sub-picker";
 import { buyersFor, listingOffer } from "./matching";
 
 const STAGE_ICON: Record<SellerStage, LucideIcon> = { solo: Sprout, new: Rocket, freelance: Laptop, running: Building2 };
@@ -31,6 +33,8 @@ const SERVICE_DELIVERY: Delivery[] = ["onsite", "digital", "pickup", "home"];
 interface Draft {
   stage: SellerStage;
   category: CategoryId;
+  /** বাজারের উপ-বিভাগ; `category` follows it. */
+  sub: string;
   custom: string;
   title: string;
   description: string;
@@ -56,16 +60,19 @@ interface Draft {
 
 const STEPS = ["আপনি কে", "পণ্য বা সেবা", "দাম ও পরিমাণ", "ডেলিভারি ও প্রকাশ"];
 
-function blank(from?: BoardPost): Draft {
+function blank(from?: BoardPost, asked?: string | null): Draft {
+  const sub = asked && isSubId(asked) ? asked : (from?.sub ?? DEFAULT_SUB[from?.category ?? "farm"]);
+  const form = formForSub(sub);
   return {
     stage: "solo",
-    category: from?.category ?? "farm",
+    category: resolveSub(sub).sub.base,
+    sub,
     custom: "",
     title: "",
     description: "",
     tags: from ? from.tags.map((t) => `#${t}`).join(" ") : "",
     price: "",
-    unit: from?.unit ?? PRODUCT_FORMS[from?.category ?? "farm"].unit,
+    unit: from?.unit ?? form.unit,
     stock: "",
     minOrder: "",
     kg: "",
@@ -75,7 +82,7 @@ function blank(from?: BoardPost): Draft {
     tiers: [],
     organic: Boolean(from?.organic),
     perishable: false,
-    delivery: PRODUCT_FORMS[from?.category ?? "farm"].delivery,
+    delivery: form.delivery,
     media: [],
     district: currentUser.district,
     area: currentUser.area,
@@ -86,21 +93,21 @@ function blank(from?: BoardPost): Draft {
 const num = toNumber;
 
 /** Specific fields for this seller, in order: stage first, then the goods. */
-const specFields = (d: Draft): Field[] => [...STAGE_FIELDS[d.stage], ...fieldsFor(d.category)];
+const specFields = (d: Draft): Field[] => [...STAGE_FIELDS[d.stage], ...fieldsForSub(d.sub)];
 
 /** Everything wrong with a step, keyed by field. */
 function problems(d: Draft, step: number): Record<string, string> {
   const e: Record<string, string> = {};
-  const physical = PHYSICAL.has(d.category);
+  const physical = isGoods(d.sub);
   const need = (f: Field) => f.required && !d.extra[f.key]?.trim() && (e[`spec-${f.key}`] = `${f.label} দিন`);
   if (step === 0) {
     STAGE_FIELDS[d.stage].forEach(need);
   }
   if (step === 1) {
-    if (d.category === "other" && d.custom.trim().length < 2) e.custom = "নিজের বিভাগের নাম লিখুন";
+    if (d.sub === "custom" && d.custom.trim().length < 2) e.custom = "নিজের বিভাগের নাম লিখুন";
     if (d.title.trim().length < 6) e.title = "অন্তত ৬ অক্ষরের এক লাইনের শিরোনাম দিন";
     if (d.description.trim().length < 20) e.description = "অন্তত ২০ অক্ষরে বিস্তারিত লিখুন";
-    const need = PRODUCT_FORMS[d.category].media.need;
+    const need = formForSub(d.sub).media.need;
     if (need && !d.media.some((m) => m.kind === need)) e.media = { image: "অন্তত একটি আসল ছবি দিন", video: "অন্তত একটি ভিডিও দিন", audio: "অন্তত একটি অডিও নমুনা দিন — ক্রেতা আগে শুনে নেবেন" }[need];
     if (parseTags(d.tags).length === 0) e.tags = "অন্তত একটি হ্যাশট্যাগ দিন — এতেই ক্রেতা খুঁজে পান";
     const banned = bannedWord([d.title, d.description, d.tags, d.custom].join(" "));
@@ -114,18 +121,18 @@ function problems(d: Draft, step: number): Record<string, string> {
     if (physical && num(d.stock) <= 0) e.stock = "কতটা আছে লিখুন";
     if (physical && num(d.kg) <= 0) e.kg = "এক এককের আনুমানিক ওজন দিন — ডেলিভারি খরচ এতে হিসাব হয়";
     if (d.tiers.some((t) => num(t.min) <= 0 || num(t.price) <= 0 || num(t.price) >= num(d.price))) e.tiers = "প্রতিটি ধাপে পরিমাণ দিন, আর দাম খুচরা দামের চেয়ে কম রাখুন";
-    fieldsFor(d.category).forEach(need);
+    fieldsForSub(d.sub).forEach(need);
   }
   if (step === 3) {
     if (!d.district) e.district = "জেলা বেছে নিন";
-    if (PRODUCT_FORMS[d.category].delivery.length > 0 && d.delivery.length === 0) e.delivery = "অন্তত একটি ডেলিভারির উপায় দিন";
+    if (formForSub(d.sub).delivery.length > 0 && d.delivery.length === 0) e.delivery = "অন্তত একটি ডেলিভারির উপায় দিন";
   }
   return e;
 }
 
 function toListing(d: Draft, id: string): Listing {
   const price = num(d.price);
-  const physical = PHYSICAL.has(d.category);
+  const physical = isGoods(d.sub);
   const tiers = d.tiers.map((t) => ({ min: num(t.min), price: num(t.price) })).filter((t) => t.min > 0 && t.price > 0).sort((a, b) => a.min - b.min);
   const specs = specFields(d)
     .filter((f) => d.extra[f.key]?.trim())
@@ -134,6 +141,7 @@ function toListing(d: Draft, id: string): Listing {
     id,
     seller: currentUser.handle,
     category: d.category,
+    sub: d.sub,
     title: d.title.trim(),
     description: d.description.trim(),
     price,
@@ -147,7 +155,7 @@ function toListing(d: Draft, id: string): Listing {
     sold: 0,
     location: d.area.trim() ? `${d.area.trim()}, ${d.district}` : d.district,
     highlights: [d.organic && "বিষমুক্ত", tiers.length > 0 && "পাইকারি দর আছে", d.modes.includes("export") && "রপ্তানিযোগ্য", d.modes.includes("brand") && "আপনার ব্র্যান্ডে প্যাকেট"].filter(Boolean).slice(0, 3) as string[],
-    skill: currentUser.skills.find((s) => s.category === d.category)?.skill ?? (d.custom.trim() || getCategory(d.category).bn),
+    skill: currentUser.skills.find((s) => s.category === d.category)?.skill ?? (d.custom.trim() || resolveSub(d.sub).sub.bn || getCategory(d.category).bn),
     stage: d.stage,
     modes: d.modes,
     tags: parseTags(d.tags),
@@ -158,7 +166,7 @@ function toListing(d: Draft, id: string): Listing {
     perishable: d.perishable || undefined,
     kg: physical ? Number(d.kg.replace(/[০-৯]/g, (c) => String("০১২৩৪৫৬৭৮৯".indexOf(c)))) || undefined : undefined,
     specs,
-    customCategory: d.category === "other" ? d.custom.trim() : undefined,
+    customCategory: d.sub === "custom" ? d.custom.trim() : undefined,
     journey: [{ at: new Date().toLocaleDateString("bn-BD", { day: "numeric", month: "short" }), step: "বাজারে তোলা হলো", by: currentUser.nameBn }],
   };
 }
@@ -173,15 +181,20 @@ export function BazaarForm() {
   const params = useSearchParams();
   const myPosts = useMediaState((s) => s.board);
   const from = boardPosts.find((p) => p.id === params.get("for") && p.side === "buy");
-  const [d, setD] = useState<Draft>(() => blank(from));
+  const [d, setD] = useState<Draft>(() => blank(from, params.get("sub")));
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const top = useRef<HTMLDivElement>(null);
 
-  const physical = PHYSICAL.has(d.category);
-  const product = PRODUCT_FORMS[d.category];
+  const physical = isGoods(d.sub);
+  const product = formForSub(d.sub);
   const farmOrFood = d.category === "farm" || d.category === "cooking";
   const set = <K extends keyof Draft>(k: K, v: Draft[K]) => setD((x) => ({ ...x, [k]: v }));
+  const pickSub = (id: string) =>
+    setD((x) => {
+      const f = formForSub(id);
+      return { ...x, sub: id, category: resolveSub(id).sub.base, unit: f.unit, delivery: f.delivery, media: x.media.filter((m) => (f.media.kinds as string[]).includes(m.kind)) };
+    });
   const setExtra = (k: string, v: string) => setD((x) => ({ ...x, extra: { ...x.extra, [k]: v } }));
   const err = (k: string) => errors[k];
   const aria = (k: string) => ({ "aria-invalid": Boolean(errors[k]) || undefined, "aria-describedby": errors[k] ? `${k}-error` : undefined });
@@ -267,19 +280,8 @@ export function BazaarForm() {
 
           {step === 1 && (
             <>
-              <fieldset>
-                <legend className="mb-2 text-sm font-semibold text-white">বিভাগ</legend>
-                <div className="flex flex-wrap gap-2">
-                  {categories.map((c) => (
-                    <label key={c.id} className={choiceClass(d.category === c.id)}>
-                      <input type="radio" name="category" className="sr-only" checked={d.category === c.id} onChange={() => setD((x) => ({ ...x, category: c.id, unit: PRODUCT_FORMS[c.id].unit, delivery: PRODUCT_FORMS[c.id].delivery, media: x.media.filter((m) => (PRODUCT_FORMS[c.id].media.kinds as string[]).includes(m.kind)) }))} />
-                      {c.bn}
-                    </label>
-                  ))}
-                </div>
-                <p className="mt-2 text-xs text-white/60">{getCategory(d.category).blurb}</p>
-              </fieldset>
-              {d.category === "other" && (
+              <SubPicker value={d.sub} onChange={pickSub} />
+              {d.sub === "custom" && (
                 <Row id="custom" label="আপনার বিভাগের নাম *" error={err("custom")} hint="যেমন: শীতলপাটি, মৃৎশিল্প, পোষা পাখির খাঁচা">
                   <Input id="custom" value={d.custom} onChange={(e) => set("custom", e.target.value)} maxLength={40} {...aria("custom")} />
                 </Row>
@@ -290,7 +292,7 @@ export function BazaarForm() {
               <Row id="description" label="বিস্তারিত *" error={err("description")} hint={`ক্রেতা জানতে চান: ${product.details}`}>
                 <Textarea id="description" rows={4} value={d.description} onChange={(e) => set("description", e.target.value)} maxLength={600} {...aria("description")} />
               </Row>
-              <TagInput value={d.tags} ideas={TAG_IDEAS[d.category] ?? []} error={err("tags")} onChange={(v) => set("tags", v)} />
+              <TagInput value={d.tags} ideas={tagIdeasFor(d.sub)} error={err("tags")} onChange={(v) => set("tags", v)} />
               <MediaPicker spec={product.media} items={d.media} error={err("media")} onChange={(v) => set("media", v)} />
             </>
           )}
@@ -388,12 +390,12 @@ export function BazaarForm() {
                 </div>
               )}
 
-              {fieldsFor(d.category).length > 0 && (
+              {fieldsForSub(d.sub).length > 0 && (
                 <div>
-                  <p className="mb-3 text-sm font-semibold text-signal-orange">{d.category === "other" ? d.custom || "আপনার বিভাগ" : getCategory(d.category).bn} — যা ক্রেতা জানতে চান</p>
+                  <p className="mb-3 text-sm font-semibold text-signal-orange">{d.sub === "custom" ? d.custom || "আপনার বিভাগ" : resolveSub(d.sub).sub.bn} — যা ক্রেতা জানতে চান</p>
                   <div className="grid gap-4 sm:grid-cols-2">
-                    {fieldsFor(d.category).map((f) => (
-                      <SpecField key={`${d.category}-${f.key}`} field={f} value={d.extra[f.key] ?? ""} error={err(`spec-${f.key}`)} onChange={(v) => setExtra(f.key, v)} />
+                    {fieldsForSub(d.sub).map((f) => (
+                      <SpecField key={`${d.sub}-${f.key}`} field={f} value={d.extra[f.key] ?? ""} error={err(`spec-${f.key}`)} onChange={(v) => setExtra(f.key, v)} />
                     ))}
                   </div>
                 </div>

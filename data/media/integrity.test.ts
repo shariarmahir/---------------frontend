@@ -6,6 +6,9 @@ import { listings } from "./market.ts";
 import { posts } from "./posts.ts";
 import { people } from "./users.ts";
 import { follows } from "./follows.ts";
+import { sampleLabs } from "./labs.ts";
+import { boardPosts, STAGE_FIELDS, UNITS } from "./bazaar.ts";
+import { DEFAULT_SUB, fieldsForSub, findSubs, formForSub, inPick, isSubId, resolveSub, SECTIONS } from "./market-sections.ts";
 import { districts, divisionOf, divisions } from "../districts.ts";
 import { walletSeed } from "./wallet.ts";
 import { RATED_TOPICS } from "../../lib/media/schemas.ts";
@@ -123,4 +126,52 @@ test("64 districts, each in one division, and every member lives in one", () => 
   assert.equal(divisions.length, 8);
   assert.equal(new Set(districts).size, 64);
   for (const p of people) assert.ok(divisionOf(p.district), `${p.handle}: ${p.district}`);
+});
+
+test("market sections: unique ids, every item lands in a real sub-section", () => {
+  unique(SECTIONS.map((s) => s.id), "section");
+  unique(SECTIONS.flatMap((s) => s.subs.map((x) => x.id)), "sub-section");
+  for (const id of Object.values(DEFAULT_SUB)) assert.ok(isSubId(id), `default ${id}`);
+  for (const l of listings) assert.ok(!l.sub || isSubId(l.sub), `${l.id}: ${l.sub}`);
+  for (const p of boardPosts) assert.ok(!p.sub || isSubId(p.sub), `${p.id}: ${p.sub}`);
+});
+
+test("market forms ask nothing twice and use known units", () => {
+  const stageKeys = new Set(Object.values(STAGE_FIELDS).flat().map((f) => f.key));
+  for (const s of SECTIONS)
+    for (const sub of s.subs) {
+      const keys = fieldsForSub(sub.id).map((f) => f.key);
+      assert.equal(new Set(keys).size, keys.length, `${sub.id} repeats a question`);
+      if (sub.fields || s.fields) for (const k of keys) assert.ok(!stageKeys.has(k), `${sub.id}.${k} clashes with a seller-stage question`);
+      assert.ok(UNITS.includes(formForSub(sub.id).unit), `${sub.id}: unit ${formForSub(sub.id).unit}`);
+    }
+});
+
+test("buyers find sub-sections by everyday words, and picks read the right signals", () => {
+  const ids = (q: string) => findSubs(q).map((r) => r.sub.id);
+  assert.ok(ids("জামদানি").includes("gi-textile"));
+  assert.ok(ids("mobile").includes("mobile"));
+  assert.ok(ids("গরু").includes("cattle"));
+  assert.deepEqual(ids(""), []);
+  const item = (id: string) => {
+    const l = listings.find((x) => x.id === id)!;
+    return { sub: resolveSub(l.sub, l.category).sub.id, modes: l.modes ?? ["retail" as const], organic: l.organic, stage: l.stage, tags: l.tags ?? [] };
+  };
+  assert.ok(inPick(item("l-onion"), "direct"));
+  assert.ok(inPick(item("l-jamdani"), "heritage"));
+  assert.ok(inPick(item("l-veg-basket"), "organic"));
+  assert.ok(!inPick(item("l-tax"), "direct"));
+});
+
+test("sample labs: unique numbers, reports due after the lab, hand-ins by members", () => {
+  for (const lab of sampleLabs) {
+    const ids = new Set(lab.members.map((m) => m.id));
+    assert.ok(ids.has(lab.leaderId), `${lab.id}: leader is a member`);
+    unique(lab.experiments.map((e) => String(e.no)), `${lab.id} experiment number`);
+    for (const e of lab.experiments) {
+      assert.ok(e.due.slice(0, 10) >= e.date, `${lab.id} #${e.no}: due before the lab`);
+      for (const s of e.submissions) assert.ok(ids.has(s.by), `${lab.id} #${e.no}: ${s.by}`);
+    }
+  }
+  assert.ok(!sampleLabs.some((l) => ["SSC27N", "CSE22B", "BCSPRE"].includes(l.code)), "lab codes never clash with class codes");
 });

@@ -25,6 +25,7 @@ export const listings: Listing[] = [
   },
   {
     id: "l-recipe",
+    sub: "homecook",
     seller: "rahima",
     category: "cooking",
     title: "পুরান ঢাকার কাচ্চি — পূর্ণ রেসিপি নোট",
@@ -226,6 +227,7 @@ export const listings: Listing[] = [
   },
   {
     id: "l-fuchka",
+    sub: "catering",
     seller: "babul",
     category: "shop",
     title: "অনুষ্ঠানে ফুচকার গাড়ি — ৫০ জনের জন্য",
@@ -246,6 +248,7 @@ export const listings: Listing[] = [
   },
   {
     id: "l-jamdani",
+    sub: "gi-textile",
     seller: "hasina",
     category: "fashion",
     title: "হাতে বোনা জামদানি শাড়ি — রূপগঞ্জের তাঁত",
@@ -308,6 +311,7 @@ export const listings: Listing[] = [
   },
   {
     id: "l-coconut",
+    sub: "fruit",
     seller: "jalal",
     category: "farm",
     title: "বাগেরহাটের ঝুনা নারকেল — গাছ থেকে সরাসরি",
@@ -342,6 +346,7 @@ export const listings: Listing[] = [
   },
   {
     id: "l-gur",
+    sub: "honey",
     seller: "rokeya",
     category: "farm",
     title: "যশোরের খাঁটি খেজুর গুড় ও পাটালি",
@@ -410,6 +415,7 @@ export const listings: Listing[] = [
   },
   {
     id: "l-onion",
+    sub: "vegfarm",
     seller: "selim",
     category: "farm",
     title: "দেশি পেঁয়াজ — পাইকারি, মণ দরে",

@@ -9,7 +9,7 @@ import { MediaFrame } from "../ui/media-frame";
 import { Compact, Num, Taka } from "../ui/numerals";
 import { PersonAvatar } from "../ui/person";
 import { IdSeal, Stars, StatusBadge } from "../ui/trust";
-import { tagsOf } from "./matching";
+import { placeOf, tagsOf } from "./matching";
 import { TradeButtons } from "./trade";
 
 /**
@@ -17,6 +17,7 @@ import { TradeButtons } from "./trade";
  * rating for the skill behind the listing — the reason to trust the buy.
  */
 export function ListingCard({ listing, seller }: { listing: Listing; seller: Person }) {
+  const place = placeOf(listing);
   const cat = getCategory(listing.category);
   const rating = verifiedRatingFor(seller, listing.skill);
   const status = skillStatus(rating.self, rating.communityAvg, rating.raters);
@@ -41,7 +42,7 @@ export function ListingCard({ listing, seller }: { listing: Listing; seller: Per
       <div className="flex flex-1 flex-col gap-3 p-4">
         <p className="flex items-center justify-between gap-2 text-xs text-white/65">
           <span className="truncate font-semibold text-signal-orange">
-            {listing.customCategory ?? cat.bn}
+            {listing.customCategory ?? place.sub.bn}
             {listing.stage && <span className="font-normal text-white/65"> · {STAGES[listing.stage].bn}</span>}
           </span>
           <span className="inline-flex items-center gap-0.5"><MapPin className="size-3.5" aria-hidden />{listing.location.split(",")[0]}</span>

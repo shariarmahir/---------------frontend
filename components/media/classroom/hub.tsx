@@ -3,25 +3,28 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { BookOpenCheck, CalendarClock, Crown, FilePenLine, GraduationCap, KeyRound, Plus, Swords, Users } from "lucide-react";
+import { BookOpenCheck, CalendarClock, Crown, FilePenLine, FlaskConical, KeyRound, Plus, Swords, Timer, Users } from "lucide-react";
 import { toast } from "sonner";
 import { AccountAvatar } from "@/components/auth/account-menu";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { PixelMark, SignalSeam } from "@/components/ui/section-kit";
+import { PixelMark } from "@/components/ui/section-kit";
 import { LIFT, glowStyle, surfaceAt } from "@/components/ui/surfaces";
 import { Textarea } from "@/components/ui/textarea";
 import { ROLES } from "@/data/auth";
 import { DEMO_NOW } from "@/data/media/clock";
 import { sampleByCode, sampleClassrooms } from "@/data/media/classroom";
+import { sampleLab, sampleLabByCode, sampleLabs } from "@/data/media/labs";
 import { useAuth } from "@/lib/auth/client";
 import { LEVELS, nextExam, syllabusProgress, validJoinCode, type ClassLevel, type Classroom } from "@/lib/media/classroom";
+import { countdown, dueAt, nextLab, type LabRoom } from "@/lib/media/lab";
 import { useMediaState } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
 import { mediaButton } from "../ui/button-styles";
 import { choiceClass } from "../ui/field-styles";
 import { Num } from "../ui/numerals";
 import { createClassroom, joinClassroom, useMe } from "./use-classroom";
+import { createLab, joinLab } from "./use-lab";
 
 const FEATURES = [
   { Icon: CalendarClock, title: "রুটিন ও কাউন্টডাউন", body: "ক্লাস আর পরীক্ষার রুটিন, কাছের পরীক্ষার সতর্কতা" },
@@ -36,8 +39,11 @@ export function ClassroomHub() {
   const mine = useMemo(() => Object.values(mineMap), [mineMap]);
   const samples = sampleClassrooms.filter((c) => !mineMap[c.id]);
   const [creating, setCreating] = useState(false);
+  const [creatingLab, setCreatingLab] = useState(false);
+  const labMap = useMediaState((s) => s.labs);
+  const myLabs = useMemo(() => Object.values(labMap), [labMap]);
+  const labSamples = sampleLabs.filter((l) => !labMap[l.id]);
   const role = ROLES.find((r) => r.id === account?.role);
-  const classmates = mine.reduce((n, c) => n + c.members.length, 0);
 
   return (
     <div className="mx-auto max-w-6xl space-y-8">
@@ -46,9 +52,6 @@ export function ClassroomHub() {
         <div className="grid gap-8 p-5 sm:p-8 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] xl:items-center">
           <div className="space-y-5">
             <PixelMark tone="dark" />
-            <p className="inline-flex items-center gap-2 rounded-full bg-signal-orange px-3 py-1 text-xs font-bold text-text-primary">
-              <GraduationCap className="size-4" aria-hidden /> ক্লাসরুম · স্কুল থেকে চাকরির প্রস্তুতি
-            </p>
             <h1 className="text-3xl font-bold tracking-tight text-balance text-white sm:text-5xl sm:leading-[1.1]">
               পুরো ক্লাস, <span className="text-signal-orange">এক জায়গায়।</span>
             </h1>
@@ -59,9 +62,9 @@ export function ClassroomHub() {
               <button type="button" onClick={() => setCreating(true)} className={mediaButton({ variant: "primary", size: "lg" })}>
                 <Crown aria-hidden /> সিআর হয়ে ক্লাস বানান
               </button>
-              <a href="#join" className={mediaButton({ variant: "outline", size: "lg" })}>
-                <KeyRound aria-hidden /> কোড দিয়ে যোগ দিন
-              </a>
+              <button type="button" onClick={() => setCreatingLab(true)} className={mediaButton({ variant: "outline", size: "lg" })}>
+                <FlaskConical aria-hidden /> ল্যাব রুম বানান
+              </button>
             </div>
             {account && (
               <p className="flex items-center gap-3 text-sm text-white/75">
@@ -90,23 +93,6 @@ export function ClassroomHub() {
             })}
           </ul>
         </div>
-
-        <div className="relative">
-          <SignalSeam className="top-0" />
-          <dl className="grid grid-cols-2 divide-white/10 sm:grid-cols-4 sm:divide-x">
-            {[
-              { label: "আমার ক্লাস", value: mine.length },
-              { label: "সহপাঠী", value: classmates },
-              { label: "নমুনা ক্লাস", value: sampleClassrooms.length },
-              { label: "স্তর", value: Object.keys(LEVELS).length },
-            ].map((s) => (
-              <div key={s.label} className="flex flex-col items-center gap-0.5 py-4">
-                <dt className="text-xs text-white/65">{s.label}</dt>
-                <dd className="text-2xl font-bold text-signal-orange"><Num value={s.value} /></dd>
-              </div>
-            ))}
-          </dl>
-        </div>
       </section>
 
       <JoinByCode />
@@ -130,7 +116,24 @@ export function ClassroomHub() {
         </section>
       )}
 
+      {(myLabs.length > 0 || labSamples.length > 0) && (
+        <section aria-labelledby="lab-title">
+          <h2 id="lab-title" className="flex items-center gap-2 text-xl font-bold text-white"><FlaskConical className="size-5 text-signal-orange" aria-hidden /> ল্যাব রুম</h2>
+          <p className="mt-1 mb-4 text-sm text-white/70">এক্সপেরিমেন্টের টপিক, টাস্ক শিট, প্রশ্ন, রিপোর্ট জমার শেষ সময় আর ল্যাব পরীক্ষা — এক জায়গায়।</p>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {myLabs.map((l) => <LabCard key={l.id} lab={l} />)}
+            {labSamples.map((l) => <LabCard key={l.id} lab={l} sample />)}
+            <button type="button" onClick={() => setCreatingLab(true)} className="story-reveal flex min-h-48 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-white/20 p-5 text-white/75 transition-colors hover:border-signal-orange hover:text-signal-orange">
+              <Plus className="size-6" aria-hidden />
+              <span className="font-bold">নতুন ল্যাব রুম</span>
+              <span className="text-xs">আপনি হবেন ল্যাব লিডার</span>
+            </button>
+          </div>
+        </section>
+      )}
+
       <CreateDialog open={creating} onOpenChange={setCreating} />
+      <CreateLabDialog open={creatingLab} onOpenChange={setCreatingLab} />
     </div>
   );
 }
@@ -176,7 +179,13 @@ function JoinByCode() {
     const valid = validJoinCode(code);
     const room = valid ? sampleByCode(valid) : undefined;
     if (!valid) return setError("কোড ৬ অক্ষরের — অক্ষর বা সংখ্যা।");
-    if (!room || !me) return setError("এই কোডের কোনো ক্লাস পাওয়া যায়নি। সিআর-এর কাছ থেকে কোডটি আবার নিন।");
+    const lab = sampleLabByCode(valid);
+    if (lab && me) {
+      joinLab(lab.id, me);
+      toast.success("ল্যাবে যোগ দিলেন", { description: lab.name });
+      return router.push(`/media/classroom/lab/${lab.id}`);
+    }
+    if (!room || !me) return setError("এই কোডের কোনো ক্লাস বা ল্যাব পাওয়া যায়নি। সিআর-এর কাছ থেকে কোডটি আবার নিন।");
     joinClassroom(room.id, me);
     toast.success("ক্লাসে যোগ দিলেন", { description: room.name });
     router.push(`/media/classroom/${room.id}`);
@@ -184,8 +193,8 @@ function JoinByCode() {
   return (
     <form id="join" onSubmit={join} className="scroll-mt-24 rounded-2xl bg-bd-green p-5 text-white sm:flex sm:items-center sm:gap-6 sm:p-6">
       <div className="mb-4 sm:mb-0">
-        <p className="flex items-center gap-2 text-lg font-bold"><KeyRound className="size-5 text-signal-orange" aria-hidden /> ক্লাস কোড দিয়ে যোগ দিন</p>
-        <p className="mt-1 text-sm text-white/80">সিআর বা ক্যাপ্টেন কোড শেয়ার করবেন। নমুনা: SSC27N, CSE22B, BCSPRE</p>
+        <p className="flex items-center gap-2 text-lg font-bold"><KeyRound className="size-5 text-signal-orange" aria-hidden /> ক্লাস বা ল্যাবের কোড দিয়ে যোগ দিন</p>
+        <p className="mt-1 text-sm text-white/80">সিআর বা ক্যাপ্টেন কোড শেয়ার করবেন। নমুনা: SSC27N, CSE22B, BCSPRE, ল্যাব EEE2LB</p>
       </div>
       <div className="flex flex-1 flex-wrap gap-2 sm:justify-end">
         <label className="min-w-0 flex-1 sm:max-w-56">
@@ -277,6 +286,107 @@ function CreateDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v:
           </div>
           <button type="submit" className={mediaButton({ variant: "primary", size: "lg", className: "w-full" })}>
             <Plus aria-hidden /> ক্লাসরুম তৈরি করুন
+          </button>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function LabCard({ lab, sample }: { lab: LabRoom; sample?: boolean }) {
+  const now = sampleLab(lab.id) ? DEMO_NOW : new Date();
+  const next = nextLab(lab.experiments, now);
+  const due = lab.experiments
+    .map((e) => ({ e, hours: (dueAt(e.due) - now.getTime()) / 3_600_000 }))
+    .filter((x) => x.hours >= 0)
+    .sort((a, b) => a.hours - b.hours)[0];
+  const left = due ? countdown(due.hours) : null;
+  return (
+    <Link href={`/media/classroom/lab/${lab.id}`} className={cn("story-reveal flex flex-col gap-4 rounded-2xl bg-text-primary p-5 text-white ring-1 ring-white/12", LIFT)}>
+      <div className="flex items-start justify-between gap-3">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-signal-orange px-2.5 py-0.5 text-xs font-bold text-text-primary"><FlaskConical className="size-3.5" aria-hidden /> ল্যাব</span>
+        {sample && <span className="font-mono text-xs font-bold tracking-widest opacity-80">{lab.code}</span>}
+      </div>
+      <div>
+        <p className="text-sm font-semibold text-signal-orange">{lab.course}</p>
+        <p className="mt-0.5 text-lg leading-snug font-bold text-balance">{lab.name}</p>
+      </div>
+      <div className="mt-auto space-y-1.5 text-xs text-white/80">
+        <p className="flex items-center gap-1.5"><CalendarClock className="size-3.5 text-signal-orange" aria-hidden />{next ? <>পরের ল্যাব: {next.exp.title} · {next.days === 0 ? "আজ" : <><Num value={next.days} /> দিন পর</>}</> : "পরের ল্যাবের তারিখ নেই"}</p>
+        <p className="flex items-center gap-1.5"><Timer className="size-3.5 text-signal-orange" aria-hidden />{due && left ? <>রিপোর্ট <Num value={due.e.no} /> জমা: {left.days > 0 && <><Num value={left.days} /> দিন </>}<Num value={left.hours} /> ঘণ্টা বাকি</> : "কোনো রিপোর্ট বাকি নেই"}</p>
+        <p className="flex items-center gap-1.5"><Users className="size-3.5 text-signal-orange" aria-hidden /><Num value={lab.members.length} /> জন · <Num value={lab.experiments.length} />টি এক্সপেরিমেন্ট</p>
+      </div>
+    </Link>
+  );
+}
+
+function CreateLabDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
+  const me = useMe();
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [course, setCourse] = useState("");
+  const [institution, setInstitution] = useState("");
+  const [instructor, setInstructor] = useState("");
+  const [students, setStudents] = useState("");
+  const [tried, setTried] = useState(false);
+  const nameOk = name.trim().length >= 3;
+  const courseOk = course.trim().length >= 3;
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setTried(true);
+    if (!nameOk || !courseOk || !me) return;
+    const id = createLab(
+      {
+        name: name.trim(),
+        course: course.trim(),
+        institution: institution.trim() || "ল্যাব",
+        instructor: instructor.trim() || undefined,
+        students: students.split("\n").map((x) => x.trim()).filter(Boolean),
+      },
+      me,
+    );
+    onOpenChange(false);
+    toast.success("ল্যাব রুম তৈরি হলো", { description: "এবার প্রথম এক্সপেরিমেন্ট যোগ করুন, তারপর কোড শেয়ার করুন।" });
+    router.push(`/media/classroom/lab/${id}`);
+  }
+
+  const label = "mb-1.5 block text-sm font-semibold text-white";
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-lg">
+        <DialogHeader>
+          <PixelMark tone="dark" />
+          <DialogTitle className="text-xl font-bold text-white">ল্যাব রুম বানান</DialogTitle>
+          <DialogDescription>আপনি হবেন ল্যাব লিডার। এক্সপেরিমেন্টের টপিক, টাস্ক শিট, প্রশ্ন, রিপোর্ট জমার শেষ সময় আর ল্যাব পরীক্ষা দেবেন — সবাই রিপোর্ট আর কাজের ছবি জমা দেবে।</DialogDescription>
+        </DialogHeader>
+        <form onSubmit={submit} noValidate className="space-y-5">
+          <label className="block">
+            <span className={label}>কোর্স *</span>
+            <Input value={course} onChange={(e) => setCourse(e.target.value)} placeholder="যেমন: EEE 102 · সার্কিট ল্যাব, রসায়ন ব্যবহারিক" aria-invalid={tried && !courseOk} />
+            {tried && !courseOk && <span className="mt-1 block text-xs font-semibold text-crimson-bright">কোর্সের কোড বা নাম দিন।</span>}
+          </label>
+          <label className="block">
+            <span className={label}>ল্যাব গ্রুপের নাম *</span>
+            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="যেমন: গ্রুপ বি, সেকশন খ" aria-invalid={tried && !nameOk} />
+            {tried && !nameOk && <span className="mt-1 block text-xs font-semibold text-crimson-bright">অন্তত ৩ অক্ষরের একটি নাম দিন।</span>}
+          </label>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="block">
+              <span className={label}>প্রতিষ্ঠান</span>
+              <Input value={institution} onChange={(e) => setInstitution(e.target.value)} placeholder="স্কুল, কলেজ, বিশ্ববিদ্যালয়" />
+            </label>
+            <label className="block">
+              <span className={label}>ল্যাব শিক্ষক</span>
+              <Input value={instructor} onChange={(e) => setInstructor(e.target.value)} placeholder="ঐচ্ছিক" />
+            </label>
+          </div>
+          <label className="block">
+            <span className={label}>ল্যাব পার্টনারদের নাম (প্রতি লাইনে একজন)</span>
+            <Textarea rows={4} value={students} onChange={(e) => setStudents(e.target.value)} placeholder={"ঋতু\nতামিম\nসাদিয়া"} />
+          </label>
+          <button type="submit" className={mediaButton({ variant: "primary", size: "lg", className: "w-full" })}>
+            <FlaskConical aria-hidden /> ল্যাব রুম তৈরি করুন
           </button>
         </form>
       </DialogContent>

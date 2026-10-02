@@ -1,4 +1,5 @@
-import type { BoardPost, Listing } from "@/data/media/types";
+import { resolveSub, type Pickable } from "@/data/media/market-sections";
+import type { BoardPost, CategoryId, Listing } from "@/data/media/types";
 import { canonTag, MATCH_MIN, matchScore, unitPrice, type MatchOffer, type Tier } from "@/lib/media/bazaar";
 
 /** Listings and board posts in the shape the match rules read. */
@@ -71,11 +72,16 @@ export function searchHit(l: Listing, needle: string, extra: string[] = []) {
   return tagsOf(l).includes(canonTag(q)) || [l.title, l.description, l.skill, l.location, l.customCategory ?? "", ...extra].some((f) => f.toLowerCase().includes(q));
 }
 
-export function postHit(p: BoardPost, needle: string) {
+export function postHit(p: BoardPost, needle: string, extra: string[] = []) {
   if (!needle) return true;
   const q = needle.toLowerCase().replace(/^#/, "");
-  return p.tags.map(canonTag).includes(canonTag(q)) || [p.title, p.who, p.note ?? ""].some((f) => f.toLowerCase().includes(q));
+  return p.tags.map(canonTag).includes(canonTag(q)) || [p.title, p.who, p.note ?? "", ...extra].some((f) => f.toLowerCase().includes(q));
 }
+
+/** The section and sub-section an item sits in; older items by category. */
+export const placeOf = (x: { sub?: string; category: CategoryId }) => resolveSub(x.sub, x.category);
+export const listingPick = (l: Listing): Pickable => ({ sub: placeOf(l).sub.id, modes: modesOf(l), organic: l.organic, stage: l.stage, tags: tagsOf(l) });
+export const postPick = (p: BoardPost): Pickable => ({ sub: placeOf(p).sub.id, modes: [p.mode], organic: p.organic, tags: p.tags.map(canonTag) });
 
 /** Most used tags first. */
 export function trendingTags(listings: Listing[], posts: BoardPost[], n = 10) {
