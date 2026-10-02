@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { BadgeCheck, BookOpen, ChevronDown, Download, FileText, Lightbulb, Lock, Paperclip, ScanLine, Send, Swords, Upload, User, Users, X } from "lucide-react";
+import { BadgeCheck, BookOpen, ChevronDown, Download, FileText, Lightbulb, Lock, Paperclip, ScanLine, Send, Share2, Swords, Upload, User, Users, X } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,6 +15,8 @@ import { choiceClass } from "../ui/field-styles";
 import { Panel } from "../ui/layout";
 import { FilePreview, NoteReader, downloadNote, kb, readerUrl, toNoteFile } from "./note-files";
 import type { ClassTab } from "./room";
+import type { SharePreset } from "./share-work";
+import { ClassShareDialog } from "./team-tabs";
 import { bump, editClassroom, nameOf } from "./use-classroom";
 
 const today = DEMO_NOW.toISOString().slice(0, 10);
@@ -184,6 +186,7 @@ export const ChallengeTab: ClassTab = ({ room, me, member, leader }) => {
   const [kind, setKind] = useState<Problem["kind"]>("class");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [sharing, setSharing] = useState<SharePreset | null>(null);
 
   function post(e: React.FormEvent) {
     e.preventDefault();
@@ -197,7 +200,26 @@ export const ChallengeTab: ClassTab = ({ room, me, member, leader }) => {
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
       <div className="space-y-4">
-        {room.problems.map((p) => <ProblemCard key={p.id} problem={p} roomId={room.id} me={me} member={member} leader={leader} name={(id) => nameOf(room, id)} />)}
+        {room.problems.map((p) => (
+          <ProblemCard
+            key={p.id}
+            problem={p}
+            roomId={room.id}
+            me={me}
+            member={member}
+            leader={leader}
+            name={(id) => nameOf(room, id)}
+            onShare={() =>
+              setSharing({
+                kind: p.kind === "innovation" ? "innovation" : "solution",
+                title: p.title,
+                question: p.body,
+                finding: p.solutions.map((s) => s.text).join("\n"),
+                team: [...new Set([...p.solutions.map((s) => s.by), ...(me ? [me.id] : [])])],
+              })
+            }
+          />
+        ))}
         {room.problems.length === 0 && <p className="rounded-2xl bg-text-primary p-6 text-center text-sm text-white/70 ring-1 ring-white/12">প্রথম চ্যালেঞ্জটা আপনিই দিন।</p>}
       </div>
       <Panel title={<span className="flex items-center gap-2"><Swords className="size-4.5" aria-hidden /> নতুন চ্যালেঞ্জ</span>} className="h-fit lg:sticky lg:top-32">
@@ -219,11 +241,12 @@ export const ChallengeTab: ClassTab = ({ room, me, member, leader }) => {
           </form>
         )}
       </Panel>
+      <ClassShareDialog room={room} me={me} preset={sharing} onClose={() => setSharing(null)} />
     </div>
   );
 };
 
-function ProblemCard({ problem: p, roomId, me, member, leader, name }: { problem: Problem; roomId: string; me: { id: string } | null; member: boolean; leader: boolean; name: (id: string) => string }) {
+function ProblemCard({ problem: p, roomId, me, member, leader, name, onShare }: { problem: Problem; roomId: string; me: { id: string } | null; member: boolean; leader: boolean; name: (id: string) => string; onShare: () => void }) {
   const [answer, setAnswer] = useState("");
   const { bn, Icon } = PROBLEM_KINDS[p.kind];
   const edit = (fn: (q: Problem) => Problem) => editClassroom(roomId, (r) => ({ ...r, problems: r.problems.map((q) => (q.id === p.id ? fn(q) : q)) }));
@@ -266,10 +289,15 @@ function ProblemCard({ problem: p, roomId, me, member, leader, name }: { problem
           <button type="submit" className={mediaButton({ variant: "primary", size: "icon" })}><Send aria-hidden /><span className="sr-only">জমা দিন</span></button>
         </form>
       )}
-      {leader && !p.solved && p.solutions.length > 0 && (
-        <div className="px-5 pb-4">
-          <button type="button" onClick={() => edit((q) => ({ ...q, solved: true }))} className={mediaButton({ variant: "green", size: "sm" })}>
-            <BadgeCheck aria-hidden /> সমাধান হয়েছে বলে চিহ্নিত করুন
+      {member && p.solutions.length > 0 && (
+        <div className="flex flex-wrap gap-2 px-5 pb-4">
+          {leader && !p.solved && (
+            <button type="button" onClick={() => edit((q) => ({ ...q, solved: true }))} className={mediaButton({ variant: "green", size: "sm" })}>
+              <BadgeCheck aria-hidden /> সমাধান হয়েছে বলে চিহ্নিত করুন
+            </button>
+          )}
+          <button type="button" onClick={onShare} className={mediaButton({ variant: p.solved ? "primary" : "outline", size: "sm" })}>
+            <Share2 aria-hidden /> {p.kind === "innovation" ? "উদ্ভাবন শেয়ার" : "সমাধান শেয়ার"}
           </button>
         </div>
       )}

@@ -7,6 +7,8 @@ import { posts } from "./posts.ts";
 import { people } from "./users.ts";
 import { follows } from "./follows.ts";
 import { sampleLabs } from "./labs.ts";
+import { sampleClassrooms } from "./classroom.ts";
+import { sampleResearch } from "./research.ts";
 import { boardPosts, STAGE_FIELDS, UNITS } from "./bazaar.ts";
 import { DEFAULT_SUB, fieldsForSub, findSubs, formForSub, inPick, isSubId, resolveSub, SECTIONS } from "./market-sections.ts";
 import { districts, divisionOf, divisions } from "../districts.ts";
@@ -174,4 +176,19 @@ test("sample labs: unique numbers, reports due after the lab, hand-ins by member
     }
   }
   assert.ok(!sampleLabs.some((l) => ["SSC27N", "CSE22B", "BCSPRE"].includes(l.code)), "lab codes never clash with class codes");
+});
+
+test("sample research comes from real rooms, by real members, and rooms point back to it", () => {
+  const rooms = [...sampleLabs.map((l) => ({ kind: "lab", ...l })), ...sampleClassrooms.map((c) => ({ kind: "classroom", ...c }))];
+  unique(sampleResearch.map((r) => r.id), "research");
+  for (const r of sampleResearch) {
+    const room = rooms.find((x) => x.id === r.from.id && x.kind === r.from.kind);
+    assert.ok(room, `${r.id} room`);
+    assert.equal(room.name, r.from.name, `${r.id} room name`);
+    for (const name of r.team) assert.ok(room.members.some((m) => m.name === name), `${r.id}: ${name} is in ${room.name}`);
+  }
+  for (const room of rooms) {
+    for (const s of room.shares ?? []) if (s.researchId) assert.ok(sampleResearch.some((r) => r.id === s.researchId && r.from.id === room.id), `${room.id} share ${s.id}`);
+    if (room.maxMembers) assert.ok(room.members.length <= room.maxMembers, `${room.id} within its member cap`);
+  }
 });

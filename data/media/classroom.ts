@@ -20,6 +20,8 @@ export const sampleClassrooms: Classroom[] = [
     institution: "নকলা, শেরপুর",
     code: "SSC27N",
     leaderId: "s-tania",
+    maxMembers: 45,
+    shares: [{ id: "sh-filter", kind: "research", title: "বালি-কাঠকয়লার ফিল্টারে ঘোলা পানি কতটা পরিষ্কার হয়", team: ["মীম খাতুন", "রাহাত হাসান", "জয়া রানী"], at: "2026-09-18T08:00:00Z", researchId: "r-filter" }],
     teacher: { name: "রফিকুল ইসলাম স্যার", subject: "গণিত" },
     todayTopic: "দ্বিঘাত সমীকরণ — মূল নির্ণয়",
     members: [

@@ -17,6 +17,9 @@ export const sampleLabs: LabRoom[] = [
     code: "EEE2LB",
     leaderId: "l-nafis",
     instructor: "সাবরিনা ইয়াসমিন ম্যাডাম",
+    maxMembers: 6,
+    labDay: 3,
+    shares: [{ id: "sh-solar", kind: "research", title: "৫০০ টাকার কমে সোলার চার্জ কন্ট্রোলার", team: ["নাফিস ইকবাল", "ঋতু সাহা", "সাদিয়া রহমান"], at: "2026-09-23T10:00:00Z", researchId: "r-solar" }],
     members: [
       { id: "l-nafis", name: "নাফিস ইকবাল" },
       { id: "l-ritu", name: "ঋতু সাহা" },

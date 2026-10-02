@@ -1,15 +1,20 @@
 "use client";
 
 import { sampleClassroom } from "@/data/media/classroom";
+import { DEMO_NOW } from "@/data/media/clock";
 import { useAuth } from "@/lib/auth/client";
 import { newJoinCode, type ClassLevel, type Classroom, type MemberStats } from "@/lib/media/classroom";
 import { newId, updateMedia, useMediaState } from "@/lib/media/store";
+import { classDuties, isFull, type Rota } from "@/lib/media/teamwork";
 
 /** The viewer as a classroom member: their Kandari Profile, nothing more. */
 export function useMe(): { id: string; name: string } | null {
   const { account } = useAuth();
   return account ? { id: account.id, name: account.name } : null;
 }
+
+/** Sample classes are dated round the demo clock; classes people make run on real time. */
+export const classNow = (id: string) => (sampleClassroom(id) ? DEMO_NOW : new Date());
 
 /** The viewer's copy when they joined or made it, else the sample. */
 export function useClassroom(id: string): { room: Classroom | undefined; joined: boolean } {
@@ -34,14 +39,15 @@ export function bump(room: Classroom, memberId: string, key: Exclude<keyof Membe
 
 const zero: MemberStats = { notes: 0, solved: 0, helped: 0, assess: 0 };
 
+/** Join unless already in; a full class turns the viewer away. */
 export function joinClassroom(id: string, me: { id: string; name: string }) {
   return editClassroom(id, (room) =>
-    room.members.some((m) => m.id === me.id) ? room : { ...room, members: [...room.members, { id: me.id, name: me.name, accountId: me.id, stats: zero }] },
+    room.members.some((m) => m.id === me.id) || isFull(room.members.length, room.maxMembers) ? room : { ...room, members: [...room.members, { id: me.id, name: me.name, accountId: me.id, stats: zero }] },
   );
 }
 
 /** A new classroom with the viewer as its leader (CR / captain). */
-export function createClassroom(input: { name: string; level: ClassLevel; institution: string; students: string[]; teacher?: { name: string; subject: string } }, me: { id: string; name: string }): string {
+export function createClassroom(input: { name: string; level: ClassLevel; institution: string; students: string[]; teacher?: { name: string; subject: string }; maxMembers: number }, me: { id: string; name: string }): string {
   const id = newId("c");
   const code = newJoinCode();
   const room: Classroom = {
@@ -62,6 +68,7 @@ export function createClassroom(input: { name: string; level: ClassLevel; instit
     notes: [],
     problems: [],
     papers: [],
+    maxMembers: input.maxMembers,
   };
   updateMedia((s) => ({ ...s, classrooms: { ...s.classrooms, [id]: room } }));
   return id;
@@ -74,6 +81,13 @@ export function withAssess(room: Classroom, memberId: string): Classroom {
   const assess = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
   return { ...room, members: room.members.map((m) => (m.id === memberId ? { ...m, stats: { ...m.stats, assess } } : m)) };
 }
+
+/** The class's duties: the leader's own, else everyday jobs on its routine days. */
+export function classRota(room: Classroom): Rota {
+  return room.rota ?? { duties: classDuties(room.routine.map((s) => s.day)), salt: 0, done: {} };
+}
+
+export const editClassRota = (id: string, fn: (r: Rota) => Rota) => editClassroom(id, (room) => ({ ...room, rota: fn(classRota(room)) }));
 
 export const nameOf = (room: Classroom, id: string) => room.members.find((m) => m.id === id)?.name ?? "প্রাক্তন সদস্য";
 

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { BookOpenCheck, CalendarClock, Crown, FilePenLine, FlaskConical, KeyRound, Plus, Swords, Timer, Users } from "lucide-react";
+import { CalendarClock, Crown, FlaskConical, KeyRound, Lightbulb, Plus, Shuffle, Swords, Timer, Users } from "lucide-react";
 import { toast } from "sonner";
 import { AccountAvatar } from "@/components/auth/account-menu";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -16,21 +16,23 @@ import { DEMO_NOW } from "@/data/media/clock";
 import { sampleByCode, sampleClassrooms } from "@/data/media/classroom";
 import { sampleLab, sampleLabByCode, sampleLabs } from "@/data/media/labs";
 import { useAuth } from "@/lib/auth/client";
-import { LEVELS, nextExam, syllabusProgress, validJoinCode, type ClassLevel, type Classroom } from "@/lib/media/classroom";
+import { LEVELS, WEEKDAYS, nextExam, syllabusProgress, validJoinCode, type ClassLevel, type Classroom } from "@/lib/media/classroom";
 import { countdown, dueAt, nextLab, type LabRoom } from "@/lib/media/lab";
 import { useMediaState } from "@/lib/media/store";
+import { TEAM_LIMITS, isFull } from "@/lib/media/teamwork";
 import { cn } from "@/lib/utils";
 import { mediaButton } from "../ui/button-styles";
 import { choiceClass } from "../ui/field-styles";
 import { Num } from "../ui/numerals";
 import { createClassroom, joinClassroom, useMe } from "./use-classroom";
 import { createLab, joinLab } from "./use-lab";
+import { LimitField } from "./team-settings";
 
 const FEATURES = [
   { Icon: CalendarClock, title: "রুটিন ও কাউন্টডাউন", body: "ক্লাস আর পরীক্ষার রুটিন, কাছের পরীক্ষার সতর্কতা" },
-  { Icon: BookOpenCheck, title: "সিলেবাস মিটার", body: "কতটা শেষ হলো, এক নজরে" },
+  { Icon: Shuffle, title: "দায়িত্বের পালা", body: "প্রতি সপ্তাহে নতুন ভাগ — সবাই সব কাজ শেখে" },
   { Icon: Swords, title: "ক্লাস চ্যালেঞ্জ", body: "পুরো ক্লাস মিলে সমস্যা সমাধান" },
-  { Icon: FilePenLine, title: "নিজের প্রশ্নপত্র", body: "প্রশ্ন বানান, নিজেই যাচাই করুন" },
+  { Icon: Lightbulb, title: "উদ্ভাবন শেয়ার", body: "সমাধান ফিডে, গবেষণা গবেষণা পাতায়" },
 ];
 
 export function ClassroomHub() {
@@ -171,6 +173,8 @@ function ClassCard({ room, i, sample }: { room: Classroom; i: number; sample?: b
 
 function JoinByCode() {
   const me = useMe();
+  const labs = useMediaState((s) => s.labs);
+  const rooms = useMediaState((s) => s.classrooms);
   const router = useRouter();
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
@@ -181,11 +185,15 @@ function JoinByCode() {
     if (!valid) return setError("কোড ৬ অক্ষরের — অক্ষর বা সংখ্যা।");
     const lab = sampleLabByCode(valid);
     if (lab && me) {
+      const held = labs[lab.id] ?? lab;
+      if (!held.members.some((m) => m.id === me.id) && isFull(held.members.length, held.maxMembers)) return setError(`${lab.name} পূর্ণ (${held.members.length}/${held.maxMembers} জন) — ল্যাব লিডারকে সীমা বাড়াতে বলুন।`);
       joinLab(lab.id, me);
       toast.success("ল্যাবে যোগ দিলেন", { description: lab.name });
       return router.push(`/media/classroom/lab/${lab.id}`);
     }
     if (!room || !me) return setError("এই কোডের কোনো ক্লাস বা ল্যাব পাওয়া যায়নি। সিআর-এর কাছ থেকে কোডটি আবার নিন।");
+    const held = rooms[room.id] ?? room;
+    if (!held.members.some((m) => m.id === me.id) && isFull(held.members.length, held.maxMembers)) return setError(`${room.name} পূর্ণ — সিআরকে সীমা বাড়াতে বলুন।`);
     joinClassroom(room.id, me);
     toast.success("ক্লাসে যোগ দিলেন", { description: room.name });
     router.push(`/media/classroom/${room.id}`);
@@ -217,20 +225,24 @@ function CreateDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v:
   const [students, setStudents] = useState("");
   const [teacher, setTeacher] = useState("");
   const [subject, setSubject] = useState("");
+  const [limit, setLimit] = useState(TEAM_LIMITS.classroom.preset);
   const [tried, setTried] = useState(false);
   const nameOk = name.trim().length >= 3;
+  const names = students.split("\n").map((s) => s.trim()).filter(Boolean);
+  const fits = names.length + 1 <= limit;
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
     setTried(true);
-    if (!nameOk || !me) return;
+    if (!nameOk || !fits || !me) return;
     const id = createClassroom(
       {
         name: name.trim(),
         level,
         institution: institution.trim() || LEVELS[level].bn,
-        students: students.split("\n").map((s) => s.trim()).filter(Boolean),
+        students: names,
         teacher: teacher.trim() ? { name: teacher.trim(), subject: subject.trim() || "তত্ত্বাবধান" } : undefined,
+        maxMembers: limit,
       },
       me,
     );
@@ -274,6 +286,13 @@ function CreateDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v:
             <span className={label}>সহপাঠীদের নাম (প্রতি লাইনে একজন)</span>
             <Textarea rows={4} value={students} onChange={(e) => setStudents(e.target.value)} placeholder={"রাহাত\nমীম\nসোহেল"} />
           </label>
+          <div>
+            <span className={label}>সর্বোচ্চ সদস্য</span>
+            <LimitField kind="classroom" value={limit} onChange={setLimit} />
+            <p className={cn("mt-1.5 text-xs", tried && !fits ? "font-semibold text-crimson-bright" : "text-white/60")}>
+              {tried && !fits ? <>আপনিসহ <Num value={names.length + 1} /> জনের নাম দিয়েছেন — সীমা বাড়ান বা নাম কমান।</> : "পূর্ণ হলে কোড দিয়ে আর কেউ যোগ দিতে পারবে না। পরে সেটিংস থেকে বদলানো যায়।"}
+            </p>
+          </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="block">
               <span className={label}>শিক্ষক (ঐচ্ছিক)</span>
@@ -314,7 +333,7 @@ function LabCard({ lab, sample }: { lab: LabRoom; sample?: boolean }) {
       <div className="mt-auto space-y-1.5 text-xs text-white/80">
         <p className="flex items-center gap-1.5"><CalendarClock className="size-3.5 text-signal-orange" aria-hidden />{next ? <>পরের ল্যাব: {next.exp.title} · {next.days === 0 ? "আজ" : <><Num value={next.days} /> দিন পর</>}</> : "পরের ল্যাবের তারিখ নেই"}</p>
         <p className="flex items-center gap-1.5"><Timer className="size-3.5 text-signal-orange" aria-hidden />{due && left ? <>রিপোর্ট <Num value={due.e.no} /> জমা: {left.days > 0 && <><Num value={left.days} /> দিন </>}<Num value={left.hours} /> ঘণ্টা বাকি</> : "কোনো রিপোর্ট বাকি নেই"}</p>
-        <p className="flex items-center gap-1.5"><Users className="size-3.5 text-signal-orange" aria-hidden /><Num value={lab.members.length} /> জন · <Num value={lab.experiments.length} />টি এক্সপেরিমেন্ট</p>
+        <p className="flex items-center gap-1.5"><Users className="size-3.5 text-signal-orange" aria-hidden /><Num value={lab.members.length} />{lab.maxMembers ? <>/<Num value={lab.maxMembers} /></> : null} জন{isFull(lab.members.length, lab.maxMembers) && <span className="font-bold text-signal-orange">· পূর্ণ</span>} · <Num value={lab.experiments.length} />টি এক্সপেরিমেন্ট</p>
       </div>
     </Link>
   );
@@ -328,21 +347,27 @@ function CreateLabDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
   const [institution, setInstitution] = useState("");
   const [instructor, setInstructor] = useState("");
   const [students, setStudents] = useState("");
+  const [limit, setLimit] = useState(TEAM_LIMITS.lab.preset);
+  const [labDay, setLabDay] = useState(1);
   const [tried, setTried] = useState(false);
   const nameOk = name.trim().length >= 3;
   const courseOk = course.trim().length >= 3;
+  const names = students.split("\n").map((x) => x.trim()).filter(Boolean);
+  const fits = names.length + 1 <= limit;
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
     setTried(true);
-    if (!nameOk || !courseOk || !me) return;
+    if (!nameOk || !courseOk || !fits || !me) return;
     const id = createLab(
       {
         name: name.trim(),
         course: course.trim(),
         institution: institution.trim() || "ল্যাব",
         instructor: instructor.trim() || undefined,
-        students: students.split("\n").map((x) => x.trim()).filter(Boolean),
+        students: names,
+        maxMembers: limit,
+        labDay,
       },
       me,
     );
@@ -385,6 +410,26 @@ function CreateLabDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
             <span className={label}>ল্যাব পার্টনারদের নাম (প্রতি লাইনে একজন)</span>
             <Textarea rows={4} value={students} onChange={(e) => setStudents(e.target.value)} placeholder={"ঋতু\nতামিম\nসাদিয়া"} />
           </label>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <span className={label}>সর্বোচ্চ সদস্য</span>
+              <LimitField kind="lab" value={limit} onChange={setLimit} />
+            </div>
+            <fieldset>
+              <legend className={label}>ল্যাব কোন দিন</legend>
+              <div className="flex flex-wrap gap-1.5">
+                {WEEKDAYS.map((w, i) => (
+                  <label key={w} className={cn(choiceClass(labDay === i), "min-h-9 px-2.5 text-xs")}>
+                    <input type="radio" name="lab-day" className="sr-only" checked={labDay === i} onChange={() => setLabDay(i)} />
+                    {w}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          </div>
+          <p className={cn("-mt-2 text-xs", tried && !fits ? "font-semibold text-crimson-bright" : "text-white/60")}>
+            {tried && !fits ? <>আপনিসহ <Num value={names.length + 1} /> জনের নাম দিয়েছেন — সীমা বাড়ান বা নাম কমান।</> : "ল্যাবের দিন ধরে দায়িত্বের পালা সাজানো হবে: বানানো, হিসাব, গ্রাফ, রিপোর্ট প্রিন্ট। সব পরে বদলানো যায়।"}
+          </p>
           <button type="submit" className={mediaButton({ variant: "primary", size: "lg", className: "w-full" })}>
             <FlaskConical aria-hidden /> ল্যাব রুম তৈরি করুন
           </button>

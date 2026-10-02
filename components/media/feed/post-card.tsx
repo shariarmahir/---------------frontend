@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { ArrowUpRight, FolderKanban, LifeBuoy, Megaphone, Tag } from "lucide-react";
+import { ArrowUpRight, FlaskConical, FolderKanban, GraduationCap, LifeBuoy, Megaphone, Tag } from "lucide-react";
 import { getCategory } from "@/data/media/categories";
 import { topicOf } from "@/data/media/topics";
 import type { Listing, Person, Post } from "@/data/media/types";
 import { CURRENT_USER_HANDLE, getPerson } from "@/data/media/users";
+import { roomHref } from "@/lib/media/showcase";
 import { cn } from "@/lib/utils";
 import { Ago, Taka } from "../ui/numerals";
 import { MediaGallery } from "../ui/media-gallery";
@@ -100,6 +101,12 @@ export function PostCard({
               className="inline-flex min-h-7 items-center rounded-full bg-white/10 px-2.5 text-xs font-semibold text-white/80 transition-colors hover:bg-white/15"
             >
               {topic.bn}
+            </Link>
+          )}
+          {post.from && (
+            <Link href={roomHref(post.from)} className="inline-flex min-h-7 items-center gap-1 rounded-full bg-bd-green px-2.5 text-xs font-semibold text-white transition-colors hover:bg-bdgreen-600">
+              {post.from.kind === "lab" ? <FlaskConical className="size-3.5" aria-hidden /> : <GraduationCap className="size-3.5" aria-hidden />}
+              {post.from.name}
             </Link>
           )}
           {post.skill && <CategoryChip id={post.category} />}

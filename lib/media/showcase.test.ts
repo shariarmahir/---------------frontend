@@ -27,8 +27,8 @@ test("empty parts are left out of the caption", () => {
 });
 
 test("tags carry the kind, the room type and the title's words", () => {
-  assert.deepEqual(shareTags(lab), ["গবেষণা", "ল্যাব", "সস্তা", "সোলার", "চার্জ"]);
-  assert.equal(shareTags({ ...lab, kind: "innovation" })[0], "নতুন_উদ্ভাবন");
+  assert.deepEqual(shareTags(lab), ["#গবেষণা", "#ল্যাব", "#সস্তা", "#সোলার", "#চার্জ"]);
+  assert.equal(shareTags({ ...lab, kind: "innovation" })[0], "#নতুন_উদ্ভাবন");
 });
 
 test("a share needs a title, a finding and a place to go", () => {

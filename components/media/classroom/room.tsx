@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowLeft, Copy, Crown, GraduationCap, LogIn, UserRoundCheck } from "lucide-react";
+import { ArrowLeft, Copy, Crown, GraduationCap, LogIn, Settings2, UserRoundCheck } from "lucide-react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { sampleClassroom } from "@/data/media/classroom";
 import { DEMO_NOW } from "@/data/media/clock";
 import { LEVELS, examAlert, nextExam, syllabusProgress } from "@/lib/media/classroom";
+import { isFull } from "@/lib/media/teamwork";
 import { useHydrated } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
 import { mediaButton } from "../ui/button-styles";
@@ -17,14 +18,18 @@ import { Num } from "../ui/numerals";
 import { BoardTab, ChallengeTab } from "./board";
 import { PapersTab } from "./papers";
 import { RankingTab } from "./ranking";
+import { TeamSettingsDialog } from "./team-settings";
+import { DutyTab, ShowTab } from "./team-tabs";
 import { PlanTab, TodayTab } from "./today-plan";
-import { joinClassroom, nameOf, useClassroom, useMe, type RoomProps } from "./use-classroom";
+import { editClassroom, joinClassroom, nameOf, useClassroom, useMe, type RoomProps } from "./use-classroom";
 
 const TABS = [
   { key: "today", label: "আজ", Tab: TodayTab },
   { key: "plan", label: "রুটিন ও সিলেবাস", Tab: PlanTab },
+  { key: "duty", label: "দায়িত্বের পালা", Tab: DutyTab },
   { key: "board", label: "নোট বোর্ড", Tab: BoardTab },
   { key: "challenge", label: "চ্যালেঞ্জ", Tab: ChallengeTab },
+  { key: "show", label: "উদ্ভাবন", Tab: ShowTab },
   { key: "papers", label: "প্রশ্নপত্র", Tab: PapersTab },
   { key: "ranking", label: "র‍্যাংকিং", Tab: RankingTab },
 ] as const;
@@ -90,6 +95,8 @@ export function ClassroomRoom({ id }: { id: string }) {
 }
 
 function Hero({ room, me, member, leader }: RoomProps) {
+  const [settings, setSettings] = useState(false);
+  const full = isFull(room.members.length, room.maxMembers);
   const progress = syllabusProgress(room.topics);
   const next = nextExam(room.exams, DEMO_NOW);
   return (
@@ -117,15 +124,43 @@ function Hero({ room, me, member, leader }: RoomProps) {
               </span>
             )}
             <CodeChip code={room.code} />
+            <span className={cn("inline-flex items-center rounded-xl px-3 py-2 font-semibold", full ? "bg-text-primary text-signal-orange" : "ring-1 ring-text-primary/35")}>
+              <Num value={room.members.length} />{room.maxMembers ? <>/<Num value={room.maxMembers} /></> : null}&nbsp;জন{full && " · পূর্ণ"}
+            </span>
+            {leader && (
+              <button type="button" onClick={() => setSettings(true)} className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 font-bold ring-1 ring-text-primary/35 transition-[background-color,scale] duration-200 hover:bg-text-primary/10 active:scale-95">
+                <Settings2 className="size-4" aria-hidden /> সেটিংস
+              </button>
+            )}
           </div>
           {!member && me && (
             <button
               type="button"
-              onClick={() => joinClassroom(room.id, me) && toast.success("ক্লাসে যোগ দিলেন", { description: "নোট, চ্যালেঞ্জ আর প্রশ্নপত্রে এখন অংশ নিতে পারবেন।" })}
+              disabled={full}
+              onClick={() => joinClassroom(room.id, me) && toast.success("ক্লাসে যোগ দিলেন", { description: "নোট, চ্যালেঞ্জ আর প্রশ্নপত্রে এখন অংশ নিতে পারবেন, দায়িত্বের পালাতেও নাম উঠবে।" })}
               className={mediaButton({ variant: "tile", size: "lg" })}
             >
-              <LogIn aria-hidden /> এই ক্লাসে যোগ দিন
+              <LogIn aria-hidden /> {full ? "ক্লাস পূর্ণ — সিআরকে বলুন" : "এই ক্লাসে যোগ দিন"}
             </button>
+          )}
+          {leader && (
+            <TeamSettingsDialog
+              open={settings}
+              onOpenChange={setSettings}
+              kind="classroom"
+              name={room.name}
+              maxMembers={room.maxMembers}
+              members={room.members}
+              leaderId={room.leaderId}
+              onSave={(d) =>
+                editClassroom(room.id, (r) => ({
+                  ...r,
+                  name: d.name,
+                  maxMembers: d.maxMembers,
+                  members: d.members.map((m) => r.members.find((x) => x.id === m.id) ?? { ...m, stats: { notes: 0, solved: 0, helped: 0, assess: 0 } }),
+                }))
+              }
+            />
           )}
           {leader && <p className="text-xs font-bold text-text-primary/75">আপনি এই ক্লাসের লিডার — রুটিন, সিলেবাস আর পরীক্ষা আপনি সাজান।</p>}
         </div>

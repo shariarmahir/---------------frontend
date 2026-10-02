@@ -83,13 +83,13 @@ export function shareCaption(s: ShareInput): string {
   return parts.join("\n\n");
 }
 
-/** A few tags to find it by: the kind, the room type, and the title's longer words. */
+/** A few hashtags to find it by: the kind, the room type, and the title's longer words. */
 export function shareTags(s: Pick<ShareInput, "kind" | "title" | "from">): string[] {
   const words = s.title
     .split(/[\s,.;:!?()\-–—।]+/)
     .filter((w) => w.length >= 4)
     .slice(0, 3);
-  return [...new Set([SHARE_KINDS[s.kind].bn.replace(/\s+/g, "_"), s.from.kind === "lab" ? "ল্যাব" : "ক্লাসরুম", ...words])];
+  return [...new Set([SHARE_KINDS[s.kind].bn.replace(/\s+/g, "_"), s.from.kind === "lab" ? "ল্যাব" : "ক্লাসরুম", ...words])].map((t) => `#${t}`);
 }
 
 /** A share needs a real title and an answer, and somewhere to go. */

@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import {
-  ArrowLeft, CalendarClock, Camera, ChevronDown, CircleHelp, ClipboardCheck, Copy, FileUp, FlaskConical, GraduationCap, ImagePlus, ListChecks, LogIn, Plus, Timer, Users,
+  ArrowLeft, CalendarClock, Camera, ChevronDown, CircleHelp, ClipboardCheck, Copy, FileUp, FlaskConical, GraduationCap, ImagePlus, ListChecks, LogIn, Plus, Settings2, Share2, Timer,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -17,14 +18,18 @@ import { sampleLab } from "@/data/media/labs";
 import type { ClassNote, NoteFile } from "@/lib/media/classroom";
 import { countdown, daysUntil, dueAt, EXAM_KINDS, handIns, nextDue, nextLab, nextNo, reportState, reportTally, type Experiment, type LabExam, type LabRoom, type ReportState } from "@/lib/media/lab";
 import { useHydrated } from "@/lib/media/store";
+import { isFull, labDuties } from "@/lib/media/teamwork";
 import { cn } from "@/lib/utils";
 import { mediaButton } from "../ui/button-styles";
 import { EmptyState } from "../ui/empty-state";
 import { choiceClass } from "../ui/field-styles";
 import { Ago, DateText, Num } from "../ui/numerals";
+import { DutyBoard } from "./duty-board";
 import { FilePreview, NoteReader, readerUrl, toNoteFile } from "./note-files";
+import { ShareDialog, ShowcasePanel, type SharePreset } from "./share-work";
+import { SeatMeter, TeamSettingsDialog } from "./team-settings";
 import { useMe } from "./use-classroom";
-import { addExperiment, addLabExam, editExperiment, handIn, joinLab, labMemberName, useLab } from "./use-lab";
+import { addExperiment, addLabExam, editExperiment, editLab, editLabRota, handIn, joinLab, labMemberName, labRota, useLab } from "./use-lab";
 
 /** The sample lab is dated around the demo clock; labs people make run on real time. */
 export const labNow = (id: string) => (sampleLab(id) ? DEMO_NOW : new Date());
@@ -83,12 +88,22 @@ function UploadButton({ label, Icon, accept, scan, onFile, variant = "outline" }
   );
 }
 
+const TABS = [
+  { key: "lab", label: "ল্যাব ও জমা" },
+  { key: "duty", label: "দায়িত্বের পালা" },
+  { key: "show", label: "উদ্ভাবন ও গবেষণা" },
+] as const;
+
 export function LabRoomView({ id }: { id: string }) {
   const hydrated = useHydrated();
   const me = useMe();
   const { lab, joined } = useLab(id);
   const [reading, setReading] = useState<{ note: ClassNote; url?: string; by: string } | null>(null);
   const [adding, setAdding] = useState<"exp" | "exam" | null>(null);
+  const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("lab");
+  const [sharing, setSharing] = useState<SharePreset | null>(null);
+  const [settings, setSettings] = useState(false);
+  const reduce = useReducedMotion();
 
   if (!lab) {
     return hydrated ? (
@@ -113,9 +128,54 @@ export function LabRoomView({ id }: { id: string }) {
         <ArrowLeft className="size-4" aria-hidden /> ক্লাসরুম
       </Link>
 
-      <Hero lab={lab} member={member} me={me} />
+      <Hero lab={lab} member={member} me={me} leader={leader} onSettings={() => setSettings(true)} />
       <Status lab={lab} me={me?.id} now={now} />
 
+      <nav aria-label="ল্যাবের অংশ" className="sticky top-16 z-30 -mx-3 bg-black/85 px-3 py-2 backdrop-blur-md sm:mx-0 sm:rounded-2xl sm:px-2">
+        <ul className="flex gap-1 overflow-x-auto scrollbar-none">
+          {TABS.map((t) => (
+            <li key={t.key} className="shrink-0">
+              <button
+                type="button"
+                onClick={() => setTab(t.key)}
+                aria-current={tab === t.key ? "page" : undefined}
+                className={cn("relative isolate min-h-10 rounded-xl px-4 text-sm font-bold whitespace-nowrap [-webkit-tap-highlight-color:transparent] transition-[color,scale] duration-200 active:scale-95", tab === t.key ? "text-text-primary" : "text-white/75 hover:text-white")}
+              >
+                {tab === t.key && (
+                  <motion.span layoutId="lab-tab" transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 520, damping: 40, mass: 0.7 }} className="absolute inset-0 -z-10 rounded-xl bg-signal-orange" aria-hidden />
+                )}
+                {t.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      {tab === "duty" && (
+        <div className="live-in">
+          <DutyBoard
+            team={lab.name}
+            members={lab.members}
+            rota={labRota(lab)}
+            seed={lab.id}
+            now={now}
+            meId={me?.id}
+            member={member}
+            leader={leader}
+            onChange={(fn) => editLabRota(lab.id, fn)}
+            defaults={labDuties(lab.labDay ?? 1)}
+          />
+        </div>
+      )}
+
+      {tab === "show" && (
+        <div className="live-in">
+          <ShowcasePanel shares={lab.shares ?? []} canShare={member} onShare={() => setSharing({ kind: "innovation" })} />
+        </div>
+      )}
+
+      {tab === "lab" && (
+      <div className="live-in space-y-6">
       <section aria-labelledby="exp-title" className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
@@ -133,7 +193,18 @@ export function LabRoomView({ id }: { id: string }) {
         ) : (
           <ol className="space-y-3">
             {lab.experiments.map((e) => (
-              <ExperimentCard key={e.id} lab={lab} exp={e} me={me} member={member} leader={leader} now={now} focus={e.id === (nextDue(lab.experiments, me?.id ?? "", now) ?? nextLab(lab.experiments, now))?.exp.id} onOpen={open} />
+              <ExperimentCard
+                key={e.id}
+                lab={lab}
+                exp={e}
+                me={me}
+                member={member}
+                leader={leader}
+                now={now}
+                focus={e.id === (nextDue(lab.experiments, me?.id ?? "", now) ?? nextLab(lab.experiments, now))?.exp.id}
+                onOpen={open}
+                onShare={() => setSharing({ kind: "research", title: `${e.title} — আমাদের ফলাফল`, question: e.topic, team: me ? [me.id] : [] })}
+              />
             ))}
           </ol>
         )}
@@ -171,7 +242,30 @@ export function LabRoomView({ id }: { id: string }) {
           </ul>
         )}
       </section>
+      </div>
+      )}
 
+      <ShareDialog
+        open={sharing !== null}
+        onOpenChange={(o) => !o && setSharing(null)}
+        from={{ kind: "lab", id: lab.id, name: lab.name }}
+        members={lab.members}
+        meId={me?.id}
+        preset={sharing ?? undefined}
+        onShared={(ref) => editLab(lab.id, (l) => ({ ...l, shares: [ref, ...(l.shares ?? [])] }))}
+      />
+      {leader && (
+        <TeamSettingsDialog
+          open={settings}
+          onOpenChange={setSettings}
+          kind="lab"
+          name={lab.name}
+          maxMembers={lab.maxMembers}
+          members={lab.members}
+          leaderId={lab.leaderId}
+          onSave={(d) => editLab(lab.id, (l) => ({ ...l, name: d.name, maxMembers: d.maxMembers, members: d.members.map((m) => l.members.find((x) => x.id === m.id) ?? m) }))}
+        />
+      )}
       <ExperimentDialog lab={lab} open={adding === "exp"} onOpenChange={(o) => setAdding(o ? "exp" : null)} />
       <ExamDialog lab={lab} open={adding === "exam"} onOpenChange={(o) => setAdding(o ? "exam" : null)} />
       <NoteReader note={reading?.note ?? null} url={reading?.url} author={reading?.by ?? ""} onClose={() => { if (reading?.url) URL.revokeObjectURL(reading.url); setReading(null); }} />
@@ -179,7 +273,8 @@ export function LabRoomView({ id }: { id: string }) {
   );
 }
 
-function Hero({ lab, member, me }: { lab: LabRoom; member: boolean; me: { id: string; name: string } | null }) {
+function Hero({ lab, member, me, leader, onSettings }: { lab: LabRoom; member: boolean; me: { id: string; name: string } | null; leader: boolean; onSettings: () => void }) {
+  const full = isFull(lab.members.length, lab.maxMembers);
   return (
     <section className="live-in overflow-hidden rounded-3xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-8">
       <PixelMark tone="dark" />
@@ -190,7 +285,7 @@ function Hero({ lab, member, me }: { lab: LabRoom; member: boolean; me: { id: st
         {lab.instructor && <> · তত্ত্বাবধানে {lab.instructor}</>}
       </p>
       <div className="mt-5 flex flex-wrap items-center gap-2">
-        <span className="inline-flex min-h-9 items-center gap-1.5 rounded-xl bg-white/10 px-3 text-sm text-white"><Users className="size-4" aria-hidden /><Num value={lab.members.length} /> জন</span>
+        <SeatMeter count={lab.members.length} limit={lab.maxMembers} />
         <button
           type="button"
           onClick={() => navigator.clipboard?.writeText(lab.code).then(() => toast.success("কোড কপি হলো", { description: "ল্যাবের সবাইকে পাঠিয়ে দিন।" }))}
@@ -201,12 +296,18 @@ function Hero({ lab, member, me }: { lab: LabRoom; member: boolean; me: { id: st
         {!member && me && (
           <button
             type="button"
+            disabled={full}
             onClick={() => {
-              if (joinLab(lab.id, me)) toast.success("ল্যাবে যোগ দিলেন", { description: "এখন রিপোর্ট আর কাজের ছবি জমা দিতে পারবেন।" });
+              if (joinLab(lab.id, me)) toast.success("ল্যাবে যোগ দিলেন", { description: "এখন রিপোর্ট আর কাজের ছবি জমা দিতে পারবেন, দায়িত্বের পালায় আপনার নামও উঠবে।" });
             }}
             className={mediaButton({ variant: "primary" })}
           >
-            <LogIn aria-hidden /> ল্যাবে যোগ দিন
+            <LogIn aria-hidden /> {full ? "দল পূর্ণ — লিডারকে বলুন" : "ল্যাবে যোগ দিন"}
+          </button>
+        )}
+        {leader && (
+          <button type="button" onClick={onSettings} className={mediaButton({ variant: "outline" })}>
+            <Settings2 aria-hidden /> দল ও সেটিংস
           </button>
         )}
       </div>
@@ -245,9 +346,10 @@ function Status({ lab, me, now }: { lab: LabRoom; me?: string; now: Date }) {
   );
 }
 
-function ExperimentCard({ lab, exp, me, member, leader, now, focus, onOpen }: {
+function ExperimentCard({ lab, exp, me, member, leader, now, focus, onOpen, onShare }: {
   lab: LabRoom; exp: Experiment; me: { id: string; name: string } | null; member: boolean; leader: boolean; now: Date; focus: boolean;
   onOpen: (file: NoteFile, title: string, by: string, at: string) => void;
+  onShare: () => void;
 }) {
   const [open, setOpen] = useState(focus);
   const [question, setQuestion] = useState("");
@@ -344,6 +446,13 @@ function ExperimentCard({ lab, exp, me, member, leader, now, focus, onOpen }: {
                 </div>
               )}
             </div>
+
+            {member && days <= 0 && (
+              <div className="flex flex-wrap items-center gap-3 rounded-xl bg-bd-green p-4 text-white">
+                <p className="min-w-0 flex-1 text-sm"><span className="block font-bold">নতুন কিছু পেলেন?</span>ফলাফল, সমস্যা বা নতুন আইডিয়া — দলের নামে ফিডে বা গবেষণা পাতায় দিন।</p>
+                <button type="button" onClick={onShare} className={mediaButton({ variant: "primary", size: "sm" })}><Share2 aria-hidden /> ফলাফল শেয়ার</button>
+              </div>
+            )}
 
             <div>
               <h3 className="mb-2 text-sm font-bold text-signal-orange">যাঁরা জমা দিয়েছেন</h3>
