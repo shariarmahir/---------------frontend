@@ -65,6 +65,8 @@
   --color-text-muted: #5b6878;
   --color-card-border: #e2e8f0;
   --color-mint-subtle: #f2f8f5;
+  /* গবেষণাকোষ reading surface: the brand off-white (CLAUDE.md §4.1). */
+  --color-paper: #fafaf8;
 
   /* চলো বাংলাদেশ গড়ি — command-centre palette (Prompt V3 §12). Series
      colours are the dataviz-validated order for the cream surface. */
@@ -911,12 +913,39 @@
   font-family: var(--font-slogan), var(--font-bengali), sans-serif;
 }
 
+/* গবেষণাকোষ titles and section heads: a serif, the way an encyclopedia reads. */
+.font-wiki {
+  font-family: var(--font-wiki), "Noto Serif", Georgia, serif;
+}
+
 @keyframes live-in {
   from { opacity: 0; transform: translateY(-14px) scale(0.97); }
   to { opacity: 1; transform: none; }
 }
 .live-in {
   animation: live-in 0.26s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* গবেষণাকোষ charts: a bar grows from its start. On the cover it runs once on
+   load (.research-grow-now); in articles it follows the scroll where view
+   timelines exist and simply stands drawn elsewhere. Still under reduced motion. */
+@keyframes research-grow {
+  from { transform: scaleX(0); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .research-grow-now {
+    transform-origin: left center;
+    animation: research-grow 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--i, 0) * 70ms + 150ms);
+  }
+  @supports (animation-timeline: view()) {
+    .research-grow {
+      transform-origin: left center;
+      animation: research-grow linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 35%;
+    }
+  }
 }
 
 /* Product hero waveform (components/products/product-art.tsx): each bar

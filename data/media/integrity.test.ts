@@ -52,7 +52,8 @@ test("every referenced person exists", () => {
 test("posts and listings tie to real skills", () => {
   for (const p of posts) {
     assert.ok(categoryIds.has(p.category), p.id);
-    const rated = RATED_TOPICS.includes(p.topic ?? "skill");
+    // Sharing a page (a link card) is not a claim of skill, so it carries no rating.
+    const rated = RATED_TOPICS.includes(p.topic ?? "skill") && !p.link;
     assert.equal(Boolean(p.skill), rated, `${p.id}: rated topics carry a skill, others none`);
     if (p.skill) {
       assert.ok(p.media.length > 0, `${p.id} needs proof media`);
@@ -280,5 +281,22 @@ test("sample team rooms belong to real teams, are written by real people, and ke
       assert.deepEqual(storyProblems(s), { title: undefined, body: undefined }, s.id);
       if (s.photo) assert.ok(existsSync(new URL(`../../public${s.photo}`, import.meta.url)), `${s.id} photo ${s.photo}`);
     }
+  }
+});
+
+test("sample team matches pit two real teams, are sent by the challenger's people, and carry a score only once played", async () => {
+  const { sampleMatches } = await import("./team-matches.ts");
+  const { FORMATS, challengeProblem, isOpen, RULES_MAX, STAKE_MAX, TITLE_MAX } = await import("../../lib/media/team-match.ts");
+  unique(sampleMatches.map((m) => m.id), "match");
+  for (const m of sampleMatches) {
+    const home = teams.find((t) => t.id === m.home);
+    const away = teams.find((t) => t.id === m.away);
+    assert.ok(home && away && m.home !== m.away, `${m.id} teams`);
+    assert.ok(m.format in FORMATS, m.id);
+    assert.ok(byHandle.has(m.by) && (home.lead === m.by || home.members.includes(m.by)), `${m.id}: ${m.by} is not in ${m.home}`);
+    assert.ok(m.title.trim().length >= 4 && m.title.length <= TITLE_MAX, m.id);
+    assert.ok((m.rules ?? "").length <= RULES_MAX && (m.stake ?? "").length <= STAKE_MAX, m.id);
+    assert.equal(m.status === "done", Boolean(m.score && m.resultAt), `${m.id}: only played matches have a score`);
+    if (isOpen(m)) assert.equal(challengeProblem(m.home, m.away, sampleMatches.filter((x) => x.id !== m.id)), undefined, `${m.id}: two open matches for one pair`);
   }
 });

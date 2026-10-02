@@ -4,11 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowLeft, Copy, Crown, Dumbbell, Flag, FlaskConical, Gamepad2, KeyRound, MapPin, Plane, Rocket, UserPlus, UsersRound, type LucideIcon } from "lucide-react";
+import { ArrowLeft, Copy, Crown, Flag, KeyRound, MapPin, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { teamKindBn } from "@/data/media/teams";
-import type { Team, TeamKind } from "@/data/media/types";
+import type { Team } from "@/data/media/types";
 import { currentUser, getPerson } from "@/data/media/users";
 import { goalProgress, type TeamRoom } from "@/lib/media/team-room";
 import { isFull } from "@/lib/media/teams";
@@ -19,14 +19,15 @@ import { EmptyState } from "../ui/empty-state";
 import { Num } from "../ui/numerals";
 import { PersonAvatar } from "../ui/person";
 import { JourneyTab, StoryDialog } from "./journey";
+import { KIND_ICON } from "./kind-icon";
+import { MatchesTab } from "./matches-tab";
 import { MissionGoalsTab } from "./mission-goals";
 import { useCanEdit, useTeam, useTeamRoom } from "./use-team-room";
-
-export const KIND_ICON: Record<TeamKind, LucideIcon> = { family: UsersRound, lab: FlaskConical, project: Rocket, travel: Plane, sports: Dumbbell, esports: Gamepad2 };
 
 const TABS = [
   { key: "journey", label: "যাত্রা ও গল্প" },
   { key: "mission", label: "মিশন ও লক্ষ্য" },
+  { key: "matches", label: "টিম বনাম টিম" },
   { key: "members", label: "সদস্য" },
 ] as const;
 type TabKey = (typeof TABS)[number]["key"];
@@ -84,6 +85,7 @@ export function TeamRoomView({ id }: { id: string }) {
       <div key={tab} className="live-in">
         {tab === "journey" && <JourneyTab team={team} room={room} canEdit={canEdit} onWrite={setWriting} />}
         {tab === "mission" && <MissionGoalsTab team={team} room={room} canEdit={canEdit} />}
+        {tab === "matches" && <MatchesTab team={team} canEdit={canEdit} />}
         {tab === "members" && <MembersTab team={team} canEdit={canEdit} />}
       </div>
 
@@ -121,7 +123,7 @@ function Hero({ team, room, canEdit, onWrite, onTab }: { team: Team; room: TeamR
           <p className="max-w-[56ch] text-[15px] leading-relaxed font-medium text-text-primary/80">{team.about}</p>
           {room.mission && (
             <button type="button" onClick={() => onTab("mission")} className="block max-w-[56ch] rounded-2xl bg-text-primary px-4 py-3 text-left text-white shadow-ink transition-[translate] duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0">
-              <span className="block text-[11px] font-bold tracking-widest text-signal-orange">মিশন</span>
+              <span className="block text-xs font-bold text-signal-orange">মিশন</span>
               <span className="mt-0.5 line-clamp-2 block text-sm leading-relaxed font-semibold">{room.mission}</span>
             </button>
           )}

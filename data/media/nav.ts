@@ -6,7 +6,7 @@ export type NavIcon =
   | "messages"
   | "events"
   | "classroom"
-  | "research"
+  | "news"
   | "teams"
   | "challenges"
   | "civic"
@@ -42,7 +42,7 @@ export const mediaNavGroups: { title: string; items: MediaNavItem[] }[] = [
     items: [
       { href: "/media/people", label: "মানুষ", icon: "people", hint: "দক্ষ মানুষ খুঁজুন, অনুসরণ করুন" },
       { href: "/media/classroom", label: "ক্লাসরুম", icon: "classroom", hint: "ব্যাচ, ল্যাব, রুটিন, দায়িত্বের পালা, ক্লাস চ্যালেঞ্জ" },
-      { href: "/media/research", label: "গবেষণা", icon: "research", hint: "ক্লাস আর ল্যাবের দলের প্রশ্ন, পদ্ধতি আর ফলাফল" },
+      { href: "/media/news", label: "নাগরিক জীবন", icon: "news", hint: "আজকের খবর — সকাল, দুপুর, সন্ধ্যা, রাতের শিরোনাম, সারাংশ আর বিনোদন" },
       { href: "/media/together", label: "টিম · উদ্যোগ · চ্যালেঞ্জ", icon: "teams", hint: "টিম রুমে যাত্রা, মিশন, লক্ষ্য; গাছ লাগানো থেকে কোড চ্যালেঞ্জ — এক পাতায়" },
       { href: "/media/civic", label: "নাগরিক বার্তা", icon: "civic", hint: "অপরাধ, এলাকার সমস্যা, সাহায্য — ছবি-ভিডিওসহ, এলাকাবাসী নিশ্চিত করেন" },
     ],

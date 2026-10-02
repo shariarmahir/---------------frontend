@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test \"lib/auth/*.test.ts\" \"lib/media/*.test.ts\" \"data/media/*.test.ts\" \"lib/gori/*.test.ts\" \"lib/gori/*/*.test.ts\" \"data/gori/*.test.ts\""
+    "test": "node --test \"lib/auth/*.test.ts\" \"lib/research/*.test.ts\" \"data/research/*.test.ts\" \"lib/media/*.test.ts\" \"data/media/*.test.ts\" \"lib/gori/*.test.ts\" \"lib/gori/*/*.test.ts\" \"data/gori/*.test.ts\""
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.128.0",

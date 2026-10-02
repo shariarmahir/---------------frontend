@@ -43,8 +43,8 @@ export const navLinks: NavLink[] = [
     shortLabel: "Products",
   },
   {
-    // "Advanced R&D Cleanroom Initiatives".
-    href: "#rd-labs",
+    // গবেষণাকোষ — the open research library (its own section, /research).
+    href: "/research",
     label: "Research",
     shortLabel: "R&D",
   },
@@ -100,8 +100,21 @@ export const productNavLinks: NavLink[] = [
   { href: "/products/aponjon", label: "Aponjon", shortLabel: "Aponjon" },
   { href: "/products/swasti", label: "SWASTI", shortLabel: "SWASTI" },
   { href: "/products/smart-pharmacy", label: "Smart Pharmacy", shortLabel: "Pharmacy" },
-  { href: "/#rd-labs", label: "Research", shortLabel: "R&D" },
+  { href: "/research", label: "Research", shortLabel: "R&D" },
   { href: "/#kandari-profile", label: "Join", shortLabel: "Join" },
+];
+
+/**
+ * Navigation for গবেষণাকোষ (/research): the library's own pages, then the
+ * company pages a researcher is most likely to want next.
+ */
+export const researchNavLinks: NavLink[] = [
+  { href: "/research", label: "গবেষণাকোষ", shortLabel: "কোষ" },
+  { href: "/research/contents", label: "সূচিপত্র", shortLabel: "সূচি" },
+  { href: "/research/submit", label: "প্রকাশ করুন", shortLabel: "প্রকাশ" },
+  { href: "/research/changes", label: "সাম্প্রতিক পরিবর্তন", shortLabel: "পরিবর্তন" },
+  { href: "/products", label: "Products", shortLabel: "Products" },
+  { href: "/team", label: "Team", shortLabel: "Team" },
 ];
 
 /**
@@ -144,6 +157,9 @@ export function navLinksFor(pathname: string): NavLink[] {
   }
   if (pathname === "/nagorik") {
     return nagorikNavLinks;
+  }
+  if (pathname === "/research" || pathname.startsWith("/research/")) {
+    return researchNavLinks;
   }
   if (pathname === "/team" || pathname.startsWith("/team/")) {
     return teamNavLinks;

@@ -35,7 +35,7 @@ const FEATURES = [
   { Icon: CalendarClock, title: "রুটিন ও কাউন্টডাউন", body: "ক্লাস আর পরীক্ষার রুটিন, কাছের পরীক্ষার সতর্কতা" },
   { Icon: Shuffle, title: "দায়িত্বের পালা", body: "প্রতি সপ্তাহে নতুন ভাগ — সবাই সব কাজ শেখে" },
   { Icon: Swords, title: "ক্লাস চ্যালেঞ্জ", body: "পুরো ক্লাস মিলে সমস্যা সমাধান" },
-  { Icon: Lightbulb, title: "উদ্ভাবন শেয়ার", body: "সমাধান ফিডে, গবেষণা গবেষণা পাতায়" },
+  { Icon: Lightbulb, title: "উদ্ভাবন শেয়ার", body: "সমাধান আর গবেষণা — দলের নামে ফিডে" },
 ];
 
 export function ClassroomHub() {

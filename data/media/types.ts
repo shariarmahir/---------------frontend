@@ -115,10 +115,22 @@ export interface Comment {
 
 export type PostKind = "skill" | "project";
 
+/** A same-site page a post points to, shown as a card under the caption (e.g. a গবেষণাকোষ article). */
+export interface PostLink {
+  /** A path on this site, always starting with a single "/". */
+  href: string;
+  title: string;
+  summary?: string;
+  /** Where it lives, e.g. "গবেষণাকোষ". */
+  source: string;
+  /** What it is, e.g. "গবেষণাপত্র". */
+  label?: string;
+}
+
 /**
  * What a post is for. Skill, education and research posts carry a
- * self-rating the community verifies; the rest are for sharing, asking and
- * speaking up, and carry none.
+ * self-rating the community verifies (unless they only share a page, see
+ * Post.link); the rest are for sharing, asking and speaking up, and carry none.
  */
 export type PostTopic = "skill" | "education" | "research" | "team" | "entertainment" | "daily" | "help" | "rights";
 
@@ -141,6 +153,8 @@ export interface Post {
   listingId?: string;
   /** Shared from a classroom or lab room. */
   from?: RoomRef;
+  /** Shared from another part of the site. */
+  link?: PostLink;
 }
 
 export interface Listing {

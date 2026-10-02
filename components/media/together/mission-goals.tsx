@@ -66,7 +66,7 @@ function Mission({ team, room, canEdit }: { team: Team; room: TeamRoom; canEdit:
   return (
     <section aria-labelledby="mission-title" className="relative isolate overflow-hidden rounded-3xl bg-signal-orange p-5 text-text-primary shadow-[0_30px_70px_-40px_var(--color-signal-orange)] sm:p-7 lg:sticky lg:top-[calc(var(--sticky-top,4rem)+4.5rem)]">
       <Compass className="pointer-events-none absolute -right-6 -bottom-8 -z-10 size-44 text-text-primary/8 motion-safe:animate-[spin_60s_linear_infinite]" aria-hidden />
-      <h2 id="mission-title" className="flex items-center gap-2 text-sm font-bold tracking-wide"><Compass className="size-4.5" aria-hidden /> আমাদের মিশন</h2>
+      <h2 id="mission-title" className="flex items-center gap-2 text-sm font-bold"><Compass className="size-4.5" aria-hidden /> আমাদের মিশন</h2>
       {editing ? (
         <form onSubmit={save} noValidate className="mt-4 space-y-3">
           <label className="block">

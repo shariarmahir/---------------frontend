@@ -8,7 +8,7 @@ import { useHydrated } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
 import { Ago } from "../ui/numerals";
 import { STORY_ICON } from "./journey";
-import { KIND_ICON } from "./team-room";
+import { KIND_ICON } from "./kind-icon";
 import { useLatestStories } from "./use-team-room";
 
 /** The newest journeys and stories from every team, one swipe wide. */

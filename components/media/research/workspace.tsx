@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import type { Post } from "@/data/media/types";
 import { currentUser } from "@/data/media/users";
 import { canShare, checklist, chosenTopic, readiness, type Check as CheckItem, type ResearchProject } from "@/lib/media/research-project";
-import { SHARE_KINDS, shareCaption, shareTags, type ResearchEntry, type SharedRef } from "@/lib/media/showcase";
+import { SHARE_KINDS, shareCaption, shareTags, type SharedRef } from "@/lib/media/showcase";
 import { newId, updateMedia, useHydrated, useMediaState } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
 import { editClassroom, useMe } from "../classroom/use-classroom";
@@ -166,28 +166,6 @@ function ShareStep({ p, inTeam, checks, onGo, onPaper }: StepProps & { checks: C
     from: p.from,
   };
 
-  function toResearch() {
-    const at = new Date().toISOString();
-    const rid = p.shared?.researchId ?? newId("r");
-    const entry: ResearchEntry = {
-      id: rid,
-      title: input.title,
-      question: input.question.trim(),
-      method: input.method.trim() || undefined,
-      finding: input.finding,
-      stage: p.milestones.length > 0 && p.milestones.every((m) => m.done) ? "done" : "running",
-      team,
-      from: p.from,
-      tags: shareTags(input),
-      postId: p.shared?.postId,
-      at,
-    };
-    const ok = updateMedia((s) => ({ ...s, research: [entry, ...s.research.filter((r) => r.id !== rid)] })) && editProject(p.id, (x) => ({ ...x, shared: { ...x.shared, researchId: rid } }));
-    if (!ok) return toast.error("এই ব্রাউজারে আর জায়গা নেই");
-    noteOnRoom(p, { id: `sh-${p.id}`, kind: "research", title: input.title, team, at, researchId: rid, postId: p.shared?.postId });
-    toast.success(p.shared?.researchId ? "গবেষণা পাতায় হালনাগাদ হলো" : "গবেষণা পাতায় উঠল", { description: input.title });
-  }
-
   function toFeed() {
     const at = new Date().toISOString();
     const post: Post = {
@@ -204,17 +182,15 @@ function ShareStep({ p, inTeam, checks, onGo, onPaper }: StepProps & { checks: C
       comments: [],
       from: p.from,
     };
-    const ok =
-      updateMedia((s) => ({ ...s, posts: [post, ...s.posts], research: s.research.map((r) => (r.id === p.shared?.researchId ? { ...r, postId: post.id } : r)) })) &&
-      editProject(p.id, (x) => ({ ...x, shared: { ...x.shared, postId: post.id } }));
+    const ok = updateMedia((s) => ({ ...s, posts: [post, ...s.posts] })) && editProject(p.id, (x) => ({ ...x, shared: { ...x.shared, postId: post.id } }));
     if (!ok) return toast.error("এই ব্রাউজারে আর জায়গা নেই");
-    noteOnRoom(p, { id: `sh-${p.id}`, kind: "research", title: input.title, team, at, researchId: p.shared?.researchId, postId: post.id });
+    noteOnRoom(p, { id: `sh-${p.id}`, kind: "research", title: input.title, team, at, postId: post.id });
     toast.success("ফিডে শেয়ার হলো", { description: "সবাই দেখবে, মন্তব্য করবে।" });
   }
 
   return (
     <div className="space-y-5">
-      <Guide title="শেয়ার ও প্রকাশ" tips={["প্রশ্ন আর ফলাফল লেখা হলেই গবেষণা পাতা আর ফিডে দেওয়া যায় — পরে হালনাগাদ করা যায়।", "সব ধাপ শেষ হলে প্রকাশনার কপি প্রিন্ট বা পিডিএফ করে শিক্ষক, মেলা বা জার্নালে পাঠান।"]} />
+      <Guide title="শেয়ার ও প্রকাশ" tips={["প্রশ্ন আর ফলাফল লেখা হলেই ফিডে দেওয়া যায় — দলের নামে, সবাই দেখবে।","সব ধাপ শেষ হলে প্রকাশনার কপি প্রিন্ট বা পিডিএফ করে শিক্ষক, মেলা বা জার্নালে পাঠান।"]} />
       <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
         {checks.map((c) => (
           <li key={c.key}>
@@ -226,16 +202,7 @@ function ShareStep({ p, inTeam, checks, onGo, onPaper }: StepProps & { checks: C
         ))}
       </ul>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <article className="flex flex-col gap-3 rounded-2xl bg-bd-green p-5 text-white">
-          <Microscope className="size-6 text-signal-orange" aria-hidden />
-          <h3 className="text-lg font-bold">গবেষণা পাতা</h3>
-          <p className="text-sm text-white/80">প্রশ্ন, পদ্ধতি, ফলাফল আর দলের নামসহ সবার জন্য খোলা থাকবে।</p>
-          <div className="mt-auto flex flex-wrap gap-2">
-            <button type="button" disabled={!ready || !inTeam} onClick={toResearch} className={mediaButton({ variant: "primary", size: "sm" })}>{p.shared?.researchId ? "হালনাগাদ করুন" : "গবেষণা পাতায় পাঠান"}</button>
-            {p.shared?.researchId && <Link href={`/media/research#${p.shared.researchId}`} className={mediaButton({ variant: "ghost", size: "sm" })}>দেখুন <ArrowUpRight aria-hidden /></Link>}
-          </div>
-        </article>
+      <div className="grid gap-4 md:grid-cols-2">
         <article className="flex flex-col gap-3 rounded-2xl bg-signal-orange p-5 text-text-primary">
           <Newspaper className="size-6" aria-hidden />
           <h3 className="text-lg font-bold">ফিডে শেয়ার</h3>

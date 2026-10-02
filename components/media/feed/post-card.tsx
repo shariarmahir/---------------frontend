@@ -11,6 +11,7 @@ import { MediaGallery } from "../ui/media-gallery";
 import { PersonAvatar } from "../ui/person";
 import { IdSeal } from "../ui/trust";
 import { CommentThread, type CommentPeople } from "./comments";
+import { LinkCard } from "./link-card";
 import { LiveRatingPair } from "./live-rating";
 import { FollowButton, PostActions } from "./post-actions";
 
@@ -87,6 +88,8 @@ export function PostCard({
         <p className="text-[15px] leading-relaxed whitespace-pre-line text-white">{post.caption}</p>
 
         <MediaGallery media={post.media} />
+
+        {post.link && <LinkCard link={post.link} />}
 
         <div className="flex flex-wrap items-center gap-2">
           {post.skill ? (

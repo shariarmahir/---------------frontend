@@ -28,6 +28,8 @@ const nextConfig: NextConfig = {
       { source: "/media/crime", destination: "/media/civic", permanent: false },
       // ওয়ালেট merged into the dashboard; ?withdraw=1 passes through.
       { source: "/media/wallet", destination: "/media/dashboard", permanent: false },
+      // The গবেষণা page made way for নাগরিক জীবন (research stays in the rooms' workspace and the feed).
+      { source: "/media/research", destination: "/media/news", permanent: false },
       // টিম ও গ্রুপ, উদ্যোগ and চ্যালেঞ্জ merged into একসাথে; ?k= passes through.
       { source: "/media/teams", destination: "/media/together?v=teams", permanent: false },
       { source: "/media/events", destination: "/media/together?v=events", permanent: false },

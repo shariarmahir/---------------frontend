@@ -13,7 +13,7 @@ import {
   Languages,
   LayoutDashboard,
   Megaphone,
-  Microscope,
+  Newspaper,
   Menu,
   MessageCircle,
   Plus,
@@ -42,7 +42,7 @@ export const navIcons: Record<NavIcon, LucideIcon> = {
   messages: MessageCircle,
   events: CalendarHeart,
   classroom: GraduationCap,
-  research: Microscope,
+  news: Newspaper,
   teams: Users,
   challenges: Trophy,
   civic: Megaphone,
@@ -56,7 +56,7 @@ export const navIcons: Record<NavIcon, LucideIcon> = {
 };
 
 /** Sections the phone's "explore" tab stands for. */
-const exploreRoutes = ["/media/explore", "/media/classroom", "/media/research", "/media/jobs", "/media/together", "/media/civic", "/media/notes", "/media/dashboard", "/media/messages", "/media/search", "/media/notifications", "/media/settings"];
+const exploreRoutes = ["/media/explore", "/media/classroom", "/media/news","/media/jobs", "/media/together", "/media/civic", "/media/notes", "/media/dashboard", "/media/messages", "/media/search", "/media/notifications", "/media/settings"];
 
 function isActive(pathname: string, href: string, me: string): boolean {
   if (href === "/media") return pathname === "/media" || (pathname.startsWith("/media/post/") && pathname !== "/media/post/new");

@@ -460,7 +460,7 @@ function ExperimentCard({ lab, exp, me, member, leader, now, focus, onOpen, onSh
 
             {member && days <= 0 && (
               <div className="flex flex-wrap items-center gap-3 rounded-xl bg-bd-green p-4 text-white">
-                <p className="min-w-0 flex-1 text-sm"><span className="block font-bold">নতুন কিছু পেলেন?</span>ফলাফল, সমস্যা বা নতুন আইডিয়া — দলের নামে ফিডে বা গবেষণা পাতায় দিন।</p>
+                <p className="min-w-0 flex-1 text-sm"><span className="block font-bold">নতুন কিছু পেলেন?</span>ফলাফল, সমস্যা বা নতুন আইডিয়া — দলের নামে ফিডে দিন।</p>
                 <button type="button" onClick={onShare} className={mediaButton({ variant: "primary", size: "sm" })}><Share2 aria-hidden /> ফলাফল শেয়ার</button>
               </div>
             )}

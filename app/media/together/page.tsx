@@ -5,6 +5,7 @@ import { ChallengeCard } from "@/components/media/community/challenges";
 import { CreateChallengeButton, MyChallenges } from "@/components/media/community/create-challenge";
 import { CreateEventButton, EventCard, MyEvents } from "@/components/media/community/events";
 import { CreateTeamButton, JoinTeamByKey, MyTeams, TeamGrid } from "@/components/media/community/teams";
+import { Arena } from "@/components/media/together/arena";
 import { StoryRail } from "@/components/media/together/story-rail";
 import { Switcher, type View } from "@/components/media/together/switcher";
 import { mediaButton } from "@/components/media/ui/button-styles";
@@ -39,7 +40,7 @@ export default async function TogetherPage({ searchParams }: { searchParams: Pro
   const pillars = [
     { key: "teams" as const, Icon: UsersRound, title: "টিম ও গ্রুপ", line: "পরিবার, ল্যাব, প্রজেক্ট, খেলা — নিজের রুম, নিজের যাত্রা", stat: <><Num value={teams.length} />টি টিম</>, tone: "bg-signal-orange text-text-primary", tile: "bg-text-primary text-signal-orange", glow: "var(--color-signal-orange)" },
     { key: "events" as const, Icon: HandHeart, title: "উদ্যোগ", line: "গাছ লাগানো, পরিষ্কার, রক্তদান — স্পনসরসহ", stat: <><Num value={volunteers} /> স্বেচ্ছাসেবক</>, tone: "bg-bd-green text-white", tile: "bg-signal-orange text-text-primary", glow: "var(--color-bd-green)" },
-    { key: "challenges" as const, Icon: Trophy, title: "চ্যালেঞ্জ", line: "কোড, ডিজাইন, গবেষণা — একা বা টিমে, পুরস্কারসহ", stat: <><Taka amount={prizes} /> পুরস্কার</>, tone: "bg-bdorange-600 text-text-primary", tile: "bg-text-primary text-signal-orange", glow: "var(--color-bdorange-600)" },
+    { key: "challenges" as const, Icon: Trophy, title: "চ্যালেঞ্জ", line: "টিম বনাম টিম লিগ, আর কোড-ডিজাইন-গবেষণার পুরস্কার", stat: <><Taka amount={prizes} /> পুরস্কার</>, tone: "bg-bdorange-600 text-text-primary", tile: "bg-text-primary text-signal-orange", glow: "var(--color-bdorange-600)" },
   ];
 
   return (
@@ -196,15 +197,18 @@ function ChallengesPart({ k }: { k?: string }) {
   const kind = k && k in challengeKindBn ? (k as ChallengeKind) : undefined;
   const shown = challenges.filter((c) => !kind || c.kind === kind).sort((a, b) => a.deadline.localeCompare(b.deadline));
   return (
-    <section className="space-y-5">
-      <PartHead title="চ্যালেঞ্জ" line="কোড, ডিজাইন, গবেষণা আর ল্যাবের চ্যালেঞ্জ — একা বা টিমে। বাস্তব সমস্যার সমাধান করে পুরস্কার জিতুন, ছোট পেইড অ্যাসাইনমেন্টে আয় করুন।" action={<CreateChallengeButton />} />
-      <p className="flex items-start gap-2 rounded-2xl bg-text-primary p-3.5 text-sm text-white/80 ring-1 ring-white/12">
-        <Scale className="mt-0.5 size-4.5 shrink-0 text-signal-orange" aria-hidden />
-        টিমে খেললে জমার সময় টিমের নাম দিন — জেতার পর টিম রুমের যাত্রায় লিখে ফিডে শেয়ার করুন।
-      </p>
-      <Kinds view="challenges" names={challengeKindBn} active={kind} label="চ্যালেঞ্জের ধরন" />
-      <MyChallenges kind={kind} />
-      <div className="grid gap-4 md:grid-cols-2">{shown.map((c) => <ChallengeCard key={c.id} challenge={c} />)}</div>
-    </section>
+    <div className="space-y-12">
+      <Arena />
+      <section className="space-y-5">
+        <PartHead title="পুরস্কারের চ্যালেঞ্জ" line="কোড, ডিজাইন, গবেষণা আর ল্যাবের চ্যালেঞ্জ — একা বা টিমে। বাস্তব সমস্যার সমাধান করে পুরস্কার জিতুন, ছোট পেইড অ্যাসাইনমেন্টে আয় করুন।" action={<CreateChallengeButton />} />
+        <p className="flex items-start gap-2 rounded-2xl bg-text-primary p-3.5 text-sm text-white/80 ring-1 ring-white/12">
+          <Scale className="mt-0.5 size-4.5 shrink-0 text-signal-orange" aria-hidden />
+          টিমে খেললে জমার সময় টিমের নাম দিন — জেতার পর টিম রুমের যাত্রায় লিখে ফিডে শেয়ার করুন।
+        </p>
+        <Kinds view="challenges" names={challengeKindBn} active={kind} label="চ্যালেঞ্জের ধরন" />
+        <MyChallenges kind={kind} />
+        <div className="grid gap-4 md:grid-cols-2">{shown.map((c) => <ChallengeCard key={c.id} challenge={c} />)}</div>
+      </section>
+    </div>
   );
 }
