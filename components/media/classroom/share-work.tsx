@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowUpRight, BookOpenCheck, ImagePlus, Lightbulb, Microscope, Newspaper, Send, Share2, X } from "lucide-react";
+import { ArrowUpRight, BookOpenCheck, ImagePlus, Lightbulb, Microscope, Newspaper, Rocket, Send, Share2, X } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -253,8 +253,8 @@ export function ShareDialog({ open, onOpenChange, from, members, meId, preset, o
   );
 }
 
-/** What the room shared out, with a way to share the next thing. */
-export function ShowcasePanel({ shares, canShare, onShare }: { shares: SharedRef[]; canShare: boolean; onShare: () => void }) {
+/** What the room shared out, with ways to start research and share the next thing. */
+export function ShowcasePanel({ shares, canShare, onShare, onStart, research }: { shares: SharedRef[]; canShare: boolean; onShare: () => void; onStart?: () => void; research?: React.ReactNode }) {
   const steps = [
     { n: 1, t: "সমস্যা বাছুন", d: "বই, ক্লাস বা এলাকার — যেটা সত্যিই কষ্ট দেয়" },
     { n: 2, t: "দল মিলে সমাধান", d: "দায়িত্ব ভাগ করে মাপুন, বানান, যাচাই করুন" },
@@ -268,10 +268,19 @@ export function ShowcasePanel({ shares, canShare, onShare }: { shares: SharedRef
             <h2 id="show-title" className="text-2xl font-bold tracking-tight">উদ্ভাবন ও গবেষণা</h2>
             <p className="mt-1 text-sm font-medium text-text-primary/80">যা শিখলেন, তা দিয়ে কিছু সমাধান করুন — তারপর সবাইকে দেখান। ভালো কাজ ফিড থেকে চাকরি আর গবেষণার সুযোগে পৌঁছায়।</p>
           </div>
-          {canShare && (
-            <button type="button" onClick={onShare} className={mediaButton({ variant: "tile", size: "lg" })}>
-              <Share2 aria-hidden /> দলের কাজ শেয়ার করুন
-            </button>
+          {(onStart || canShare) && (
+            <div className="flex flex-wrap gap-2">
+              {onStart && (
+                <button type="button" onClick={onStart} className={mediaButton({ variant: "green", size: "lg" })}>
+                  <Rocket aria-hidden /> গবেষণা শুরু করুন
+                </button>
+              )}
+              {canShare && (
+                <button type="button" onClick={onShare} className={mediaButton({ variant: "tile", size: "lg" })}>
+                  <Share2 aria-hidden /> দলের কাজ শেয়ার করুন
+                </button>
+              )}
+            </div>
           )}
         </div>
         <ol className="mt-5 grid gap-2 sm:grid-cols-3">
@@ -283,6 +292,8 @@ export function ShowcasePanel({ shares, canShare, onShare }: { shares: SharedRef
           ))}
         </ol>
       </div>
+
+      {research}
 
       {shares.length === 0 ? (
         <p className="rounded-2xl bg-text-primary p-5 text-center text-sm text-white/65 ring-1 ring-white/12">এখনো কিছু শেয়ার হয়নি। প্রথম সমাধানটা আপনার দলেরই হোক।</p>

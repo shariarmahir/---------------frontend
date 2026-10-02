@@ -17,6 +17,8 @@ export interface TeamDraft {
   name: string;
   maxMembers: number;
   members: { id: string; name: string }[];
+  /** Set when the teacher picks a new CR / leader. */
+  leaderId?: string;
 }
 
 /** "৫/৬ জন" with a thin meter; gold when the team is full. */
@@ -56,7 +58,7 @@ export function LimitField({ kind, value, onChange, floor = 0 }: { kind: TeamKin
 }
 
 /** The leader's room settings: name, member cap, and who is in. */
-export function TeamSettingsDialog({ open, onOpenChange, kind, name, maxMembers, members, leaderId, onSave }: {
+export function TeamSettingsDialog({ open, onOpenChange, kind, name, maxMembers, members, leaderId, canPickLeader, onSave }: {
   open: boolean;
   onOpenChange: (o: boolean) => void;
   kind: TeamKind;
@@ -64,9 +66,11 @@ export function TeamSettingsDialog({ open, onOpenChange, kind, name, maxMembers,
   maxMembers?: number;
   members: { id: string; name: string }[];
   leaderId: string;
+  /** The teacher chooses who leads. */
+  canPickLeader?: boolean;
   onSave: (d: TeamDraft) => boolean;
 }) {
-  const fresh = (): TeamDraft => ({ name, maxMembers: maxMembers ?? clampLimit(kind, TEAM_LIMITS[kind].preset, members.length), members });
+  const fresh = (): TeamDraft => ({ name, maxMembers: maxMembers ?? clampLimit(kind, TEAM_LIMITS[kind].preset, members.length), members, leaderId });
   const [draft, setDraft] = useState(fresh);
   const [adding, setAdding] = useState("");
   const full = draft.members.length >= draft.maxMembers;
@@ -115,12 +119,17 @@ export function TeamSettingsDialog({ open, onOpenChange, kind, name, maxMembers,
               {draft.members.map((m) => (
                 <li key={m.id} className="flex min-h-11 items-center gap-3 px-3 text-sm text-white">
                   <span className="min-w-0 flex-1 truncate">{m.name}</span>
-                  {m.id === leaderId ? (
+                  {m.id === draft.leaderId ? (
                     <span className="inline-flex items-center gap-1 text-xs font-bold text-signal-orange"><Crown className="size-3.5" aria-hidden /> লিডার</span>
                   ) : (
-                    <button type="button" onClick={() => setDraft((d) => ({ ...d, members: d.members.filter((x) => x.id !== m.id) }))} className={mediaButton({ variant: "ghost", size: "icon-sm" })} aria-label={`${m.name}-কে সরান`}>
-                      <UserMinus aria-hidden />
-                    </button>
+                    <>
+                      {canPickLeader && (
+                        <button type="button" onClick={() => setDraft((d) => ({ ...d, leaderId: m.id }))} className="text-xs font-bold text-white/60 hover:text-signal-orange">লিডার বানান</button>
+                      )}
+                      <button type="button" onClick={() => setDraft((d) => ({ ...d, members: d.members.filter((x) => x.id !== m.id) }))} className={mediaButton({ variant: "ghost", size: "icon-sm" })} aria-label={`${m.name}-কে সরান`}>
+                        <UserMinus aria-hidden />
+                      </button>
+                    </>
                   )}
                 </li>
               ))}

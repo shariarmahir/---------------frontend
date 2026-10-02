@@ -192,3 +192,25 @@ test("sample research comes from real rooms, by real members, and rooms point ba
     if (room.maxMembers) assert.ok(room.members.length <= room.maxMembers, `${room.id} within its member cap`);
   }
 });
+
+test("teacher codes are unique, never a class code, and sample papers are complete", async () => {
+  const { questionProblem } = await import("../../lib/media/exam-paper.ts");
+  const { sampleProjects } = await import("./research.ts");
+  const rooms = [...sampleClassrooms, ...sampleLabs];
+  const codes = rooms.map((r) => r.code);
+  const teacherCodes = rooms.map((r) => r.teacherCode);
+  assert.ok(teacherCodes.every((c) => typeof c === "string" && /^[A-Z0-9]{6}$/.test(c)), "every sample has a teacher code");
+  unique(teacherCodes as string[], "teacher codes");
+  assert.ok(!teacherCodes.some((c) => codes.includes(c!)), "teacher codes differ from class codes");
+  for (const c of sampleClassrooms) assert.ok(c.teacher, `${c.id} has a teacher`);
+  for (const l of sampleLabs) assert.ok(l.instructor, `${l.id} has a teacher`);
+  const papers = [...sampleClassrooms.flatMap((c) => c.exams), ...sampleLabs.flatMap((l) => l.exams)].flatMap((e) => (e.paper ? [e.paper] : []));
+  assert.ok(papers.length > 0);
+  for (const p of papers) for (const q of p.questions) assert.equal(questionProblem(q), null, q.id);
+  for (const p of sampleProjects) {
+    const room = rooms.find((r) => r.id === p.from.id)!;
+    for (const m of p.members) assert.ok(room.members.some((x) => x.id === m.id), `${p.id}: ${m.id}`);
+    for (const i of p.ideas) for (const v of Object.keys(i.votes)) assert.ok(p.members.some((m) => m.id === v), `${i.id} vote by ${v}`);
+    for (const t of p.tasks) assert.ok(p.members.some((m) => m.id === t.who), `${t.id} assignee`);
+  }
+});

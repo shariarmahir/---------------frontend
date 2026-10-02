@@ -17,19 +17,23 @@ import { DEMO_NOW } from "@/data/media/clock";
 import { sampleLab } from "@/data/media/labs";
 import type { ClassNote, NoteFile } from "@/lib/media/classroom";
 import { countdown, daysUntil, dueAt, EXAM_KINDS, handIns, nextDue, nextLab, nextNo, reportState, reportTally, type Experiment, type LabExam, type LabRoom, type ReportState } from "@/lib/media/lab";
-import { useHydrated } from "@/lib/media/store";
+import { roleOf } from "@/lib/media/notices";
+import { newId, useHydrated } from "@/lib/media/store";
 import { isFull, labDuties } from "@/lib/media/teamwork";
 import { cn } from "@/lib/utils";
 import { mediaButton } from "../ui/button-styles";
 import { EmptyState } from "../ui/empty-state";
-import { choiceClass } from "../ui/field-styles";
 import { Ago, DateText, Num } from "../ui/numerals";
 import { DutyBoard } from "./duty-board";
 import { FilePreview, NoteReader, readerUrl, toNoteFile } from "./note-files";
-import { ShareDialog, ShowcasePanel, type SharePreset } from "./share-work";
+import { InnovationTab } from "../research/start-research";
+import { bdToday } from "../research/use-research";
+import { ExamDesk } from "./exam-desk";
+import { NoticeBoard } from "./notice-board";
+import { ShareDialog, type SharePreset } from "./share-work";
 import { SeatMeter, TeamSettingsDialog } from "./team-settings";
 import { useMe } from "./use-classroom";
-import { addExperiment, addLabExam, editExperiment, editLab, editLabRota, handIn, joinLab, labMemberName, labRota, useLab } from "./use-lab";
+import { addExperiment, editExperiment, editLab, editLabRota, handIn, joinLab, labMemberName, labRota, useLab } from "./use-lab";
 
 /** The sample lab is dated around the demo clock; labs people make run on real time. */
 export const labNow = (id: string) => (sampleLab(id) ? DEMO_NOW : new Date());
@@ -115,8 +119,10 @@ export function LabRoomView({ id }: { id: string }) {
   if (!hydrated) return <Skeleton className="h-[40rem] rounded-3xl" />;
 
   const now = labNow(lab.id);
-  const member = joined && Boolean(me && lab.members.some((m) => m.id === me.id));
-  const leader = member && lab.leaderId === me?.id;
+  const member = joined && Boolean(me && (lab.members.some((m) => m.id === me.id) || lab.teacherId === me.id));
+  const role = roleOf(lab, me?.id, member);
+  const teacher = role === "teacher";
+  const leader = role === "leader" || teacher;
   const open = async (file: NoteFile, title: string, by: string, atIso: string) => {
     const note: ClassNote = { id: title, kind: "material", title, text: "", file, by, at: atIso };
     setReading({ note, url: await readerUrl(note), by });
@@ -124,14 +130,26 @@ export function LabRoomView({ id }: { id: string }) {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
-      <Link href="/media/classroom" className="inline-flex min-h-8 items-center gap-1.5 text-sm font-semibold text-signal-orange">
-        <ArrowLeft className="size-4" aria-hidden /> ক্লাসরুম
-      </Link>
+      <div className="space-y-6 print:hidden">
+        <Link href="/media/classroom" className="inline-flex min-h-8 items-center gap-1.5 text-sm font-semibold text-signal-orange">
+          <ArrowLeft className="size-4" aria-hidden /> ক্লাসরুম
+        </Link>
 
-      <Hero lab={lab} member={member} me={me} leader={leader} onSettings={() => setSettings(true)} />
-      <Status lab={lab} me={me?.id} now={now} />
+        <Hero lab={lab} member={member} me={me} leader={leader} teacher={teacher} onSettings={() => setSettings(true)} />
+        <NoticeBoard
+          notices={lab.notices ?? []}
+          role={role}
+          meId={me?.id}
+          name={(nid) => labMemberName(lab, nid)}
+          today={bdToday(now)}
+          subjects={["ল্যাব ক্লাস", ...lab.experiments.map((e) => `এক্সপেরিমেন্ট ${e.no}`)]}
+          items={lab.experiments.map((e) => `রিপোর্ট ${e.no} — ${e.title}`)}
+          onChange={(fn) => editLab(lab.id, (l) => ({ ...l, notices: fn(l.notices ?? []) }))}
+        />
+        <Status lab={lab} me={me?.id} now={now} />
+      </div>
 
-      <nav aria-label="ল্যাবের অংশ" className="sticky top-16 z-30 -mx-3 bg-black/85 px-3 py-2 backdrop-blur-md sm:mx-0 sm:rounded-2xl sm:px-2">
+      <nav aria-label="ল্যাবের অংশ" className="sticky top-16 z-30 -mx-3 bg-black/85 px-3 py-2 backdrop-blur-md sm:mx-0 sm:rounded-2xl sm:px-2 print:hidden">
         <ul className="flex gap-1 overflow-x-auto scrollbar-none">
           {TABS.map((t) => (
             <li key={t.key} className="shrink-0">
@@ -170,7 +188,7 @@ export function LabRoomView({ id }: { id: string }) {
 
       {tab === "show" && (
         <div className="live-in">
-          <ShowcasePanel shares={lab.shares ?? []} canShare={member} onShare={() => setSharing({ kind: "innovation" })} />
+          <InnovationTab from={{ kind: "lab", id: lab.id, name: lab.name }} members={lab.members} member={member} shares={lab.shares ?? []} onShare={() => setSharing({ kind: "innovation" })} />
         </div>
       )}
 
@@ -210,38 +228,19 @@ export function LabRoomView({ id }: { id: string }) {
         )}
       </section>
 
-      <section aria-labelledby="exam-title" className="space-y-4">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <h2 id="exam-title" className="text-xl font-bold text-white">ল্যাব পরীক্ষা</h2>
-          {leader && (
-            <button type="button" onClick={() => setAdding("exam")} className={mediaButton({ variant: "outline" })}>
-              <Plus aria-hidden /> পরীক্ষা যোগ করুন
-            </button>
-          )}
-        </div>
-        {lab.exams.length === 0 ? (
-          <p className="rounded-2xl bg-text-primary p-4 text-sm text-white/65 ring-1 ring-white/12">কোনো ল্যাব পরীক্ষার তারিখ এখনো দেওয়া হয়নি।</p>
-        ) : (
-          <ul className="grid gap-3 sm:grid-cols-2">
-            {lab.exams.map((x) => {
-              const days = daysUntil(x.date, now);
-              return (
-                <li key={x.id} className={cn("flex items-center gap-4 rounded-2xl p-4 ring-1", days >= 0 && days <= 7 ? "bg-signal-orange text-text-primary ring-signal-orange" : "bg-text-primary text-white ring-white/12", days < 0 && "opacity-60")}>
-                  <span className="flex size-12 shrink-0 flex-col items-center justify-center rounded-xl bg-black/20 text-center leading-none">
-                    <span className="text-lg font-bold">{days < 0 ? "✓" : <Num value={days} />}</span>
-                    {days >= 0 && <span className="mt-0.5 text-[10px] font-semibold">দিন</span>}
-                  </span>
-                  <span className="min-w-0">
-                    <span className="block font-bold">{x.title}</span>
-                    <span className="block text-xs opacity-80">{EXAM_KINDS[x.kind]} · <DateText iso={at(x.date, x.time)} time={Boolean(x.time)} weekday /></span>
-                    {x.syllabus && <span className="block text-xs opacity-80">সিলেবাস: {x.syllabus}</span>}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </section>
+      <ExamDesk
+        exams={lab.exams}
+        kinds={EXAM_KINDS}
+        now={now}
+        meId={me?.id}
+        member={member}
+        manager={leader}
+        teacher={teacher}
+        teacherName={lab.instructor}
+        name={(id) => labMemberName(lab, id)}
+        onAdd={(e) => editLab(lab.id, (l) => ({ ...l, exams: [...l.exams, { ...e, id: newId("le"), kind: e.kind as LabExam["kind"] }].sort((a, b) => a.date.localeCompare(b.date)) }))}
+        onPaper={(id, paper) => editLab(lab.id, (l) => ({ ...l, exams: l.exams.map((x) => (x.id === id ? { ...x, paper } : x)) }))}
+      />
       </div>
       )}
 
@@ -263,17 +262,17 @@ export function LabRoomView({ id }: { id: string }) {
           maxMembers={lab.maxMembers}
           members={lab.members}
           leaderId={lab.leaderId}
-          onSave={(d) => editLab(lab.id, (l) => ({ ...l, name: d.name, maxMembers: d.maxMembers, members: d.members.map((m) => l.members.find((x) => x.id === m.id) ?? m) }))}
+          canPickLeader={teacher}
+          onSave={(d) => editLab(lab.id, (l) => ({ ...l, name: d.name, leaderId: d.leaderId ?? l.leaderId, maxMembers: d.maxMembers, members: d.members.map((m) => l.members.find((x) => x.id === m.id) ?? m) }))}
         />
       )}
       <ExperimentDialog lab={lab} open={adding === "exp"} onOpenChange={(o) => setAdding(o ? "exp" : null)} />
-      <ExamDialog lab={lab} open={adding === "exam"} onOpenChange={(o) => setAdding(o ? "exam" : null)} />
       <NoteReader note={reading?.note ?? null} url={reading?.url} author={reading?.by ?? ""} onClose={() => { if (reading?.url) URL.revokeObjectURL(reading.url); setReading(null); }} />
     </div>
   );
 }
 
-function Hero({ lab, member, me, leader, onSettings }: { lab: LabRoom; member: boolean; me: { id: string; name: string } | null; leader: boolean; onSettings: () => void }) {
+function Hero({ lab, member, me, leader, teacher, onSettings }: { lab: LabRoom; member: boolean; me: { id: string; name: string } | null; leader: boolean; teacher: boolean; onSettings: () => void }) {
   const full = isFull(lab.members.length, lab.maxMembers);
   return (
     <section className="live-in overflow-hidden rounded-3xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-8">
@@ -282,8 +281,10 @@ function Hero({ lab, member, me, leader, onSettings }: { lab: LabRoom; member: b
       <h1 className="mt-1 text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl">{lab.name}</h1>
       <p className="mt-2 text-sm text-white/75">
         {lab.institution}
-        {lab.instructor && <> · তত্ত্বাবধানে {lab.instructor}</>}
+        {lab.instructor && <> · ল্যাব শিক্ষক: <span className="font-semibold text-white">{lab.instructor}</span></>}
       </p>
+      {teacher && <p className="mt-2 text-xs font-bold text-signal-orange">আপনি এই ল্যাবের শিক্ষক — প্রশ্নপত্র, পরীক্ষা, নোটিশ, এক্সপেরিমেন্ট আর সেটিংস সবই আপনার হাতে।</p>}
+      {leader && !teacher && !lab.instructor && <p className="mt-2 rounded-xl bg-national-crimson px-3 py-2 text-sm font-bold text-white">ল্যাব শিক্ষক যোগ করা বাধ্যতামূলক — শিক্ষক কোডটি শিক্ষককে দিন।</p>}
       <div className="mt-5 flex flex-wrap items-center gap-2">
         <SeatMeter count={lab.members.length} limit={lab.maxMembers} />
         <button
@@ -293,6 +294,15 @@ function Hero({ lab, member, me, leader, onSettings }: { lab: LabRoom; member: b
         >
           {lab.code} <Copy className="size-4" aria-hidden /><span className="sr-only">ল্যাব কোড কপি করুন</span>
         </button>
+        {leader && !teacher && lab.teacherCode && (
+          <button
+            type="button"
+            onClick={() => navigator.clipboard?.writeText(lab.teacherCode!).then(() => toast.success("শিক্ষক কোড কপি হলো", { description: "শুধু ল্যাব শিক্ষককে দিন।" }))}
+            className="inline-flex min-h-9 items-center gap-2 rounded-xl bg-white/10 px-3 text-sm font-bold text-white hover:bg-white/20"
+          >
+            শিক্ষক কোড <span className="font-mono tracking-widest">{lab.teacherCode}</span> <Copy className="size-4" aria-hidden />
+          </button>
+        )}
         {!member && me && (
           <button
             type="button"
@@ -589,63 +599,3 @@ function ExperimentDialog({ lab, open, onOpenChange }: { lab: LabRoom; open: boo
   );
 }
 
-function ExamDialog({ lab, open, onOpenChange }: { lab: LabRoom; open: boolean; onOpenChange: (o: boolean) => void }) {
-  const [title, setTitle] = useState("");
-  const [kind, setKind] = useState<LabExam["kind"]>("quiz");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("10:00");
-  const [syllabus, setSyllabus] = useState("");
-  const [tried, setTried] = useState(false);
-  const ok = date !== "";
-
-  function submit(e: React.FormEvent) {
-    e.preventDefault();
-    setTried(true);
-    if (!ok) return;
-    addLabExam(lab.id, { title: title.trim() || EXAM_KINDS[kind], kind, date, time: time || undefined, syllabus: syllabus.trim() || undefined });
-    toast.success("ল্যাব পরীক্ষা যোগ হলো");
-    setTitle(""); setDate(""); setSyllabus(""); setTried(false);
-    onOpenChange(false);
-  }
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="rounded-3xl font-sans sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-white">ল্যাব পরীক্ষা যোগ করুন</DialogTitle>
-          <DialogDescription>কুইজ, ভাইভা বা ফাইনাল — দিন আর সিলেবাস দিন, কাউন্টডাউন সবাই দেখবে।</DialogDescription>
-        </DialogHeader>
-        <form onSubmit={submit} noValidate className="space-y-4">
-          <fieldset>
-            <legend className={label}>ধরন</legend>
-            <div className="flex flex-wrap gap-2">
-              {(Object.keys(EXAM_KINDS) as LabExam["kind"][]).map((k) => (
-                <label key={k} className={choiceClass(kind === k)}>
-                  <input type="radio" name="kind" className="sr-only" checked={kind === k} onChange={() => setKind(k)} />
-                  {EXAM_KINDS[k]}
-                </label>
-              ))}
-            </div>
-          </fieldset>
-          <label className="block">
-            <span className={label}>নাম</span>
-            <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={EXAM_KINDS[kind]} />
-          </label>
-          <label className="block">
-            <span className={label}>দিন ও সময় *</span>
-            <div className="flex gap-2">
-              <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} aria-invalid={tried && !ok} />
-              <Input type="time" value={time} onChange={(e) => setTime(e.target.value)} aria-label="সময়" className="w-28" />
-            </div>
-            {tried && !ok && <span className="mt-1 block text-xs font-semibold text-crimson-bright">পরীক্ষার দিন দিন</span>}
-          </label>
-          <label className="block">
-            <span className={label}>সিলেবাস</span>
-            <Input value={syllabus} onChange={(e) => setSyllabus(e.target.value)} placeholder="যেমন: এক্সপেরিমেন্ট ১–৪" />
-          </label>
-          <button type="submit" className={mediaButton({ variant: "primary", size: "lg", className: "w-full" })}><Plus aria-hidden /> যোগ করুন</button>
-        </form>
-      </DialogContent>
-    </Dialog>
-  );
-}

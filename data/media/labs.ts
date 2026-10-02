@@ -17,6 +17,12 @@ export const sampleLabs: LabRoom[] = [
     code: "EEE2LB",
     leaderId: "l-nafis",
     instructor: "সাবরিনা ইয়াসমিন ম্যাডাম",
+    teacherId: "t-sabrina",
+    teacherCode: "TEEE2L",
+    notices: [
+      { id: "lb1", kind: "late", title: "রিপোর্ট ২ — দেরিতে জমা", body: "সোমবার সকালে জমা দেব।", reason: "অসুস্থ", date: "2026-09-28", by: "l-tamim", byName: "তামিম আহমেদ", byRole: "member", at: "2026-09-21T04:00:00Z" },
+      { id: "lb2", kind: "custom", title: "ল্যাব কোট ও জুতা ছাড়া ঢোকা যাবে না", body: "নিরাপত্তার জন্য — মঙ্গলবার থেকে কড়াকড়ি।", by: "t-sabrina", byName: "সাবরিনা ইয়াসমিন ম্যাডাম", byRole: "teacher", at: "2026-09-22T05:00:00Z", pinned: true },
+    ],
     maxMembers: 6,
     labDay: 3,
     shares: [{ id: "sh-solar", kind: "research", title: "৫০০ টাকার কমে সোলার চার্জ কন্ট্রোলার", team: ["নাফিস ইকবাল", "ঋতু সাহা", "সাদিয়া রহমান"], at: "2026-09-23T10:00:00Z", researchId: "r-solar" }],
@@ -102,7 +108,24 @@ export const sampleLabs: LabRoom[] = [
       },
     ],
     exams: [
-      { id: "q1", title: "ল্যাব কুইজ ১", kind: "quiz", date: "2026-10-01", time: "10:00", syllabus: "এক্সপেরিমেন্ট ১–৩" },
+      {
+        id: "q1",
+        title: "ল্যাব কুইজ ১",
+        kind: "quiz",
+        date: "2026-10-01",
+        time: "10:00",
+        syllabus: "এক্সপেরিমেন্ট ১–৩",
+        paper: {
+          duration: 20,
+          released: true,
+          questions: [
+            { id: "lq1", kind: "mcq", q: "V–I লেখচিত্রের ঢাল কী দেয়?", options: ["প্রবাহ", "রোধ", "ক্ষমতা", "শক্তি"], answer: 1, marks: 2 },
+            { id: "lq2", kind: "mcq", q: "KVL কোন সংরক্ষণ নীতি থেকে আসে?", options: ["আধান", "ভরবেগ", "শক্তি", "ভর"], answer: 2, marks: 2 },
+            { id: "lq3", kind: "short", q: "থেভেনিন রোধ মাপার সময় উৎসকে কী করতে হয়?", marks: 3 },
+            { id: "lq4", kind: "written", q: "তোমার এক্সপেরিমেন্ট ৩-এর ডেটা থেকে থেভেনিন সমতুল্য সার্কিট আঁকো ও ব্যাখ্যা করো।", marks: 8 },
+          ],
+        },
+      },
       { id: "f1", title: "ল্যাব ফাইনাল ও ভাইভা", kind: "final", date: "2026-11-12", time: "09:30", syllabus: "সব এক্সপেরিমেন্ট" },
     ],
   },

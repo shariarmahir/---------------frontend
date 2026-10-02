@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { CalendarClock, Crown, FlaskConical, KeyRound, Lightbulb, Plus, Shuffle, Swords, Timer, Users } from "lucide-react";
+import { CalendarClock, Crown, FlaskConical, GraduationCap, KeyRound, Lightbulb, Plus, Shuffle, Swords, Timer, Users } from "lucide-react";
 import { toast } from "sonner";
 import { AccountAvatar } from "@/components/auth/account-menu";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -24,8 +24,8 @@ import { cn } from "@/lib/utils";
 import { mediaButton } from "../ui/button-styles";
 import { choiceClass } from "../ui/field-styles";
 import { Num } from "../ui/numerals";
-import { createClassroom, joinClassroom, useMe } from "./use-classroom";
-import { createLab, joinLab } from "./use-lab";
+import { createClassroom, joinClassAsTeacher, joinClassroom, useMe } from "./use-classroom";
+import { createLab, joinLab, joinLabAsTeacher } from "./use-lab";
 import { LimitField } from "./team-settings";
 
 const FEATURES = [
@@ -183,6 +183,14 @@ function JoinByCode() {
     const valid = validJoinCode(code);
     const room = valid ? sampleByCode(valid) : undefined;
     if (!valid) return setError("কোড ৬ অক্ষরের — অক্ষর বা সংখ্যা।");
+    const teachLab = sampleLabs.find((l) => l.teacherCode === valid);
+    const teachClass = sampleClassrooms.find((c) => c.teacherCode === valid);
+    if (me && (teachLab || teachClass)) {
+      if (teachLab) joinLabAsTeacher(teachLab.id, me);
+      else joinClassAsTeacher(teachClass!.id, me);
+      toast.success("শিক্ষক হিসেবে যুক্ত হলেন", { description: `${(teachLab ?? teachClass)!.name} — প্রশ্নপত্র, নোটিশ, সেটিংস সব আপনার হাতে।` });
+      return router.push(teachLab ? `/media/classroom/lab/${teachLab.id}` : `/media/classroom/${teachClass!.id}`);
+    }
     const lab = sampleLabByCode(valid);
     if (lab && me) {
       const held = labs[lab.id] ?? lab;
@@ -203,6 +211,7 @@ function JoinByCode() {
       <div className="mb-4 sm:mb-0">
         <p className="flex items-center gap-2 text-lg font-bold"><KeyRound className="size-5 text-signal-orange" aria-hidden /> ক্লাস বা ল্যাবের কোড দিয়ে যোগ দিন</p>
         <p className="mt-1 text-sm text-white/80">সিআর বা ক্যাপ্টেন কোড শেয়ার করবেন। নমুনা: SSC27N, CSE22B, BCSPRE, ল্যাব EEE2LB</p>
+        <p className="mt-1 text-sm text-white/80">শিক্ষক? সিআর-এর দেওয়া শিক্ষক কোড দিন — নমুনা: TSSC27, ল্যাব TEEE2L</p>
       </div>
       <div className="flex flex-1 flex-wrap gap-2 sm:justify-end">
         <label className="min-w-0 flex-1 sm:max-w-56">
@@ -225,29 +234,33 @@ function CreateDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v:
   const [students, setStudents] = useState("");
   const [teacher, setTeacher] = useState("");
   const [subject, setSubject] = useState("");
+  const [asTeacher, setAsTeacher] = useState(false);
   const [limit, setLimit] = useState(TEAM_LIMITS.classroom.preset);
   const [tried, setTried] = useState(false);
   const nameOk = name.trim().length >= 3;
+  const teacherOk = asTeacher || teacher.trim().length >= 3;
+  const subjectOk = subject.trim().length >= 2;
   const names = students.split("\n").map((s) => s.trim()).filter(Boolean);
-  const fits = names.length + 1 <= limit;
+  const fits = names.length + (asTeacher ? 0 : 1) <= limit;
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
     setTried(true);
-    if (!nameOk || !fits || !me) return;
+    if (!nameOk || !teacherOk || !subjectOk || !fits || !me) return;
     const id = createClassroom(
       {
         name: name.trim(),
         level,
         institution: institution.trim() || LEVELS[level].bn,
         students: names,
-        teacher: teacher.trim() ? { name: teacher.trim(), subject: subject.trim() || "তত্ত্বাবধান" } : undefined,
+        teacher: { name: teacher.trim(), subject: subject.trim() },
+        asTeacher,
         maxMembers: limit,
       },
       me,
     );
     onOpenChange(false);
-    toast.success("ক্লাসরুম তৈরি হলো", { description: "আপনি এই ক্লাসের সিআর। কোড শেয়ার করে সবাইকে ডাকুন।" });
+    toast.success("ক্লাসরুম তৈরি হলো", { description: asTeacher ? "আপনি এই ক্লাসের শিক্ষক। ক্লাস কোড শিক্ষার্থীদের দিন।" : "আপনি এই ক্লাসের সিআর। শিক্ষক কোড শিক্ষককে দিন, ক্লাস কোড সবাইকে।" });
     router.push(`/media/classroom/${id}`);
   }
 
@@ -257,10 +270,11 @@ function CreateDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v:
       <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-lg">
         <DialogHeader>
           <PixelMark tone="dark" />
-          <DialogTitle className="text-xl font-bold text-white">সিআর হয়ে ক্লাস বানান</DialogTitle>
-          <DialogDescription>আপনি হবেন ক্লাস লিডার। ব্যাচের নাম দিন, সহপাঠীদের নাম যোগ করুন — পরে কোড দিয়েও সবাই আসতে পারবে।</DialogDescription>
+          <DialogTitle className="text-xl font-bold text-white">ক্লাস বানান</DialogTitle>
+          <DialogDescription>প্রতিটি ক্লাসে একজন শিক্ষক থাকবেন — প্রশ্নপত্র, পরীক্ষা আর নোটিশ তাঁর হাতে। সিআর রুটিন আর দল সামলান।</DialogDescription>
         </DialogHeader>
         <form onSubmit={submit} noValidate className="space-y-5">
+          <RolePick asTeacher={asTeacher} onChange={setAsTeacher} />
           <fieldset>
             <legend className={label}>স্তর</legend>
             <div className="flex flex-wrap gap-2">
@@ -290,17 +304,21 @@ function CreateDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v:
             <span className={label}>সর্বোচ্চ সদস্য</span>
             <LimitField kind="classroom" value={limit} onChange={setLimit} />
             <p className={cn("mt-1.5 text-xs", tried && !fits ? "font-semibold text-crimson-bright" : "text-white/60")}>
-              {tried && !fits ? <>আপনিসহ <Num value={names.length + 1} /> জনের নাম দিয়েছেন — সীমা বাড়ান বা নাম কমান।</> : "পূর্ণ হলে কোড দিয়ে আর কেউ যোগ দিতে পারবে না। পরে সেটিংস থেকে বদলানো যায়।"}
+              {tried && !fits ? <><Num value={names.length + (asTeacher ? 0 : 1)} /> জনের নাম দিয়েছেন — সীমা বাড়ান বা নাম কমান।</> : "পূর্ণ হলে কোড দিয়ে আর কেউ যোগ দিতে পারবে না। পরে সেটিংস থেকে বদলানো যায়।"}
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
+            {!asTeacher && (
+              <label className="block">
+                <span className={label}>শিক্ষকের নাম *</span>
+                <Input value={teacher} onChange={(e) => setTeacher(e.target.value)} placeholder="যেমন: রফিকুল ইসলাম স্যার" aria-invalid={tried && !teacherOk} />
+                {tried && !teacherOk && <span className="mt-1 block text-xs font-semibold text-crimson-bright">শিক্ষকের নাম দিতেই হবে।</span>}
+              </label>
+            )}
             <label className="block">
-              <span className={label}>শিক্ষক (ঐচ্ছিক)</span>
-              <Input value={teacher} onChange={(e) => setTeacher(e.target.value)} placeholder="তত্ত্বাবধানের জন্য" />
-            </label>
-            <label className="block">
-              <span className={label}>বিষয়</span>
-              <Input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="যেমন: গণিত" />
+              <span className={label}>{asTeacher ? "আপনার বিষয় *" : "বিষয় *"}</span>
+              <Input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="যেমন: গণিত" aria-invalid={tried && !subjectOk} />
+              {tried && !subjectOk && <span className="mt-1 block text-xs font-semibold text-crimson-bright">বিষয় দিন।</span>}
             </label>
           </div>
           <button type="submit" className={mediaButton({ variant: "primary", size: "lg", className: "w-full" })}>
@@ -349,22 +367,25 @@ function CreateLabDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
   const [students, setStudents] = useState("");
   const [limit, setLimit] = useState(TEAM_LIMITS.lab.preset);
   const [labDay, setLabDay] = useState(1);
+  const [asTeacher, setAsTeacher] = useState(false);
   const [tried, setTried] = useState(false);
   const nameOk = name.trim().length >= 3;
   const courseOk = course.trim().length >= 3;
+  const teacherOk = asTeacher || instructor.trim().length >= 3;
   const names = students.split("\n").map((x) => x.trim()).filter(Boolean);
-  const fits = names.length + 1 <= limit;
+  const fits = names.length + (asTeacher ? 0 : 1) <= limit;
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
     setTried(true);
-    if (!nameOk || !courseOk || !fits || !me) return;
+    if (!nameOk || !courseOk || !teacherOk || !fits || !me) return;
     const id = createLab(
       {
         name: name.trim(),
         course: course.trim(),
         institution: institution.trim() || "ল্যাব",
-        instructor: instructor.trim() || undefined,
+        instructor: instructor.trim(),
+        asTeacher,
         students: names,
         maxMembers: limit,
         labDay,
@@ -383,9 +404,10 @@ function CreateLabDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
         <DialogHeader>
           <PixelMark tone="dark" />
           <DialogTitle className="text-xl font-bold text-white">ল্যাব রুম বানান</DialogTitle>
-          <DialogDescription>আপনি হবেন ল্যাব লিডার। এক্সপেরিমেন্টের টপিক, টাস্ক শিট, প্রশ্ন, রিপোর্ট জমার শেষ সময় আর ল্যাব পরীক্ষা দেবেন — সবাই রিপোর্ট আর কাজের ছবি জমা দেবে।</DialogDescription>
+          <DialogDescription>এক্সপেরিমেন্টের টপিক, টাস্ক শিট, প্রশ্ন, রিপোর্ট জমার শেষ সময় আর ল্যাব পরীক্ষা — সবাই রিপোর্ট আর কাজের ছবি জমা দেবে। প্রতিটি ল্যাবে একজন শিক্ষক থাকবেন।</DialogDescription>
         </DialogHeader>
         <form onSubmit={submit} noValidate className="space-y-5">
+          <RolePick asTeacher={asTeacher} onChange={setAsTeacher} lab />
           <label className="block">
             <span className={label}>কোর্স *</span>
             <Input value={course} onChange={(e) => setCourse(e.target.value)} placeholder="যেমন: EEE 102 · সার্কিট ল্যাব, রসায়ন ব্যবহারিক" aria-invalid={tried && !courseOk} />
@@ -401,10 +423,13 @@ function CreateLabDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
               <span className={label}>প্রতিষ্ঠান</span>
               <Input value={institution} onChange={(e) => setInstitution(e.target.value)} placeholder="স্কুল, কলেজ, বিশ্ববিদ্যালয়" />
             </label>
-            <label className="block">
-              <span className={label}>ল্যাব শিক্ষক</span>
-              <Input value={instructor} onChange={(e) => setInstructor(e.target.value)} placeholder="ঐচ্ছিক" />
-            </label>
+            {!asTeacher && (
+              <label className="block">
+                <span className={label}>ল্যাব শিক্ষক *</span>
+                <Input value={instructor} onChange={(e) => setInstructor(e.target.value)} placeholder="যেমন: সাবরিনা ম্যাডাম" aria-invalid={tried && !teacherOk} />
+                {tried && !teacherOk && <span className="mt-1 block text-xs font-semibold text-crimson-bright">ল্যাব শিক্ষকের নাম দিতেই হবে।</span>}
+              </label>
+            )}
           </div>
           <label className="block">
             <span className={label}>ল্যাব পার্টনারদের নাম (প্রতি লাইনে একজন)</span>
@@ -428,7 +453,7 @@ function CreateLabDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
             </fieldset>
           </div>
           <p className={cn("-mt-2 text-xs", tried && !fits ? "font-semibold text-crimson-bright" : "text-white/60")}>
-            {tried && !fits ? <>আপনিসহ <Num value={names.length + 1} /> জনের নাম দিয়েছেন — সীমা বাড়ান বা নাম কমান।</> : "ল্যাবের দিন ধরে দায়িত্বের পালা সাজানো হবে: বানানো, হিসাব, গ্রাফ, রিপোর্ট প্রিন্ট। সব পরে বদলানো যায়।"}
+            {tried && !fits ? <><Num value={names.length + (asTeacher ? 0 : 1)} /> জনের নাম দিয়েছেন — সীমা বাড়ান বা নাম কমান।</> : "ল্যাবের দিন ধরে দায়িত্বের পালা সাজানো হবে: বানানো, হিসাব, গ্রাফ, রিপোর্ট প্রিন্ট। সব পরে বদলানো যায়।"}
           </p>
           <button type="submit" className={mediaButton({ variant: "primary", size: "lg", className: "w-full" })}>
             <FlaskConical aria-hidden /> ল্যাব রুম তৈরি করুন
@@ -436,5 +461,27 @@ function CreateLabDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+/** Who is creating: the CR / lab leader (names the teacher), or the teacher (runs it). */
+function RolePick({ asTeacher, onChange, lab }: { asTeacher: boolean; onChange: (v: boolean) => void; lab?: boolean }) {
+  const options = [
+    { v: false, title: lab ? "আমি ল্যাব লিডার" : "আমি সিআর", hint: "শিক্ষকের নাম দেবেন; শিক্ষক কোড দিয়ে তিনি যুক্ত হবেন" },
+    { v: true, title: "আমি শিক্ষক", hint: "প্রশ্নপত্র, পরীক্ষা, নোটিশ — সব আপনার হাতে" },
+  ];
+  return (
+    <fieldset>
+      <legend className="mb-1.5 block text-sm font-semibold text-white">আপনি কে?</legend>
+      <div className="grid gap-2 sm:grid-cols-2">
+        {options.map((o) => (
+          <label key={String(o.v)} className={cn(choiceClass(asTeacher === o.v), "flex-col items-start gap-0.5 py-2")}>
+            <input type="radio" name="creator-role" className="sr-only" checked={asTeacher === o.v} onChange={() => onChange(o.v)} />
+            <span className="flex items-center gap-1.5">{o.v ? <GraduationCap className="size-4" aria-hidden /> : <Crown className="size-4" aria-hidden />} {o.title}</span>
+            <span className="text-[11px] leading-snug font-normal opacity-75">{o.hint}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
   );
 }

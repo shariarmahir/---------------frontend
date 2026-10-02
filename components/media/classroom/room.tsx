@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowLeft, Copy, Crown, GraduationCap, LogIn, Settings2, UserRoundCheck } from "lucide-react";
+import { ArrowLeft, Copy, Crown, GraduationCap, KeyRound, LogIn, Settings2, UserRoundCheck } from "lucide-react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { sampleClassroom } from "@/data/media/classroom";
 import { DEMO_NOW } from "@/data/media/clock";
 import { LEVELS, examAlert, nextExam, syllabusProgress } from "@/lib/media/classroom";
+import { roleOf } from "@/lib/media/notices";
 import { isFull } from "@/lib/media/teamwork";
 import { useHydrated } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
@@ -18,10 +19,12 @@ import { Num } from "../ui/numerals";
 import { BoardTab, ChallengeTab } from "./board";
 import { PapersTab } from "./papers";
 import { RankingTab } from "./ranking";
+import { NoticeBoard } from "./notice-board";
 import { TeamSettingsDialog } from "./team-settings";
-import { DutyTab, ShowTab } from "./team-tabs";
+import { DutyTab, ExamTab, ShowTab } from "./team-tabs";
 import { PlanTab, TodayTab } from "./today-plan";
-import { editClassroom, joinClassroom, nameOf, useClassroom, useMe, type RoomProps } from "./use-classroom";
+import { bdToday } from "../research/use-research";
+import { classNow, editClassroom, joinClassroom, nameOf, useClassroom, useMe, type RoomProps } from "./use-classroom";
 
 const TABS = [
   { key: "today", label: "আজ", Tab: TodayTab },
@@ -30,6 +33,7 @@ const TABS = [
   { key: "board", label: "নোট বোর্ড", Tab: BoardTab },
   { key: "challenge", label: "চ্যালেঞ্জ", Tab: ChallengeTab },
   { key: "show", label: "উদ্ভাবন", Tab: ShowTab },
+  { key: "exam", label: "পরীক্ষা", Tab: ExamTab },
   { key: "papers", label: "প্রশ্নপত্র", Tab: PapersTab },
   { key: "ranking", label: "র‍্যাংকিং", Tab: RankingTab },
 ] as const;
@@ -51,15 +55,28 @@ export function ClassroomRoom({ id }: { id: string }) {
     );
   }
 
-  const member = joined && Boolean(me && room.members.some((m) => m.id === me.id));
-  const props: RoomProps = { room, me, member, leader: member && room.leaderId === me?.id };
+  const member = joined && Boolean(me && (room.members.some((m) => m.id === me.id) || room.teacherId === me.id));
+  const role = roleOf(room, me?.id, member);
+  const props: RoomProps = { room, me, member, leader: role === "leader" || role === "teacher", teacher: role === "teacher", role };
   const Active = TABS.find((t) => t.key === tab)!.Tab;
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
-      <Hero {...props} />
+      <div className="space-y-6 print:hidden">
+        <Hero {...props} />
+        <NoticeBoard
+          notices={room.notices ?? []}
+          role={role}
+          meId={me?.id}
+          name={(nid) => nameOf(room, nid)}
+          today={bdToday(classNow(room.id))}
+          subjects={[...new Set(room.routine.map((s) => s.subject))]}
+          items={[...room.notes.filter((n) => n.kind === "homework").map((n) => n.title), ...room.exams.map((e) => e.title)]}
+          onChange={(fn) => editClassroom(room.id, (r) => ({ ...r, notices: fn(r.notices ?? []) }))}
+        />
+      </div>
 
-      <nav aria-label="ক্লাসরুমের অংশ" className="sticky top-16 z-30 -mx-3 bg-black/85 px-3 py-2 backdrop-blur-md sm:mx-0 sm:rounded-2xl sm:px-2">
+      <nav aria-label="ক্লাসরুমের অংশ" className="sticky top-16 z-30 -mx-3 bg-black/85 px-3 py-2 backdrop-blur-md sm:mx-0 sm:rounded-2xl sm:px-2 print:hidden">
         <ul className="flex gap-1 overflow-x-auto scrollbar-none">
           {TABS.map((t) => (
             <li key={t.key} className="shrink-0">
@@ -94,7 +111,7 @@ export function ClassroomRoom({ id }: { id: string }) {
   );
 }
 
-function Hero({ room, me, member, leader }: RoomProps) {
+function Hero({ room, me, member, leader, teacher }: RoomProps) {
   const [settings, setSettings] = useState(false);
   const full = isFull(room.members.length, room.maxMembers);
   const progress = syllabusProgress(room.topics);
@@ -120,10 +137,11 @@ function Hero({ room, me, member, leader }: RoomProps) {
             </span>
             {room.teacher && (
               <span className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 font-semibold ring-1 ring-text-primary/35">
-                <UserRoundCheck className="size-4" aria-hidden /> {room.teacher.name} · {room.teacher.subject}
+                <UserRoundCheck className="size-4" aria-hidden /> শিক্ষক: {room.teacher.name} · {room.teacher.subject}
               </span>
             )}
             <CodeChip code={room.code} />
+            {leader && room.teacherCode && !teacher && <CodeChip code={room.teacherCode} label="শিক্ষক কোড" />}
             <span className={cn("inline-flex items-center rounded-xl px-3 py-2 font-semibold", full ? "bg-text-primary text-signal-orange" : "ring-1 ring-text-primary/35")}>
               <Num value={room.members.length} />{room.maxMembers ? <>/<Num value={room.maxMembers} /></> : null}&nbsp;জন{full && " · পূর্ণ"}
             </span>
@@ -152,17 +170,24 @@ function Hero({ room, me, member, leader }: RoomProps) {
               maxMembers={room.maxMembers}
               members={room.members}
               leaderId={room.leaderId}
+              canPickLeader={teacher}
               onSave={(d) =>
                 editClassroom(room.id, (r) => ({
                   ...r,
                   name: d.name,
+                  leaderId: d.leaderId ?? r.leaderId,
                   maxMembers: d.maxMembers,
                   members: d.members.map((m) => r.members.find((x) => x.id === m.id) ?? { ...m, stats: { notes: 0, solved: 0, helped: 0, assess: 0 } }),
                 }))
               }
             />
           )}
-          {leader && <p className="text-xs font-bold text-text-primary/75">আপনি এই ক্লাসের লিডার — রুটিন, সিলেবাস আর পরীক্ষা আপনি সাজান।</p>}
+          {teacher ? (
+            <p className="text-xs font-bold text-text-primary/75">আপনি এই ক্লাসের শিক্ষক — প্রশ্নপত্র, পরীক্ষা, নোটিশ আর সেটিংস সবই আপনার হাতে।</p>
+          ) : leader ? (
+            <p className="text-xs font-bold text-text-primary/75">আপনি এই ক্লাসের লিডার — রুটিন, সিলেবাস আর পরীক্ষা আপনি সাজান। শিক্ষককে “শিক্ষক কোড” দিন।</p>
+          ) : null}
+          {leader && !room.teacher && <p className="rounded-xl bg-national-crimson px-3 py-2 text-sm font-bold text-white">শিক্ষক যোগ করা বাধ্যতামূলক — র‍্যাংকিং ট্যাবের “শিক্ষকের নজরে” থেকে যোগ করুন।</p>}
         </div>
 
         <div className="grid grid-cols-2 gap-3 sm:gap-4">
@@ -213,15 +238,16 @@ function Meter({ value, big, unit, caption, tone }: { value: number; big: React.
   );
 }
 
-function CodeChip({ code }: { code: string }) {
+function CodeChip({ code, label }: { code: string; label?: string }) {
   return (
     <button
       type="button"
-      onClick={() => navigator.clipboard?.writeText(code).then(() => toast.success("কোড কপি হলো", { description: code }), () => {})}
+      onClick={() => navigator.clipboard?.writeText(code).then(() => toast.success(`${label ?? "ক্লাস কোড"} কপি হলো`, { description: code }), () => {})}
       className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 font-mono font-bold tracking-widest ring-1 ring-text-primary/35 transition-[background-color,scale] duration-200 hover:bg-text-primary/10 active:scale-95"
-      title="ক্লাস কোড কপি করুন"
+      title={`${label ?? "ক্লাস কোড"} কপি করুন`}
     >
-      <Copy className="size-4" aria-hidden /> {code}
+      {label ? <KeyRound className="size-4" aria-hidden /> : <Copy className="size-4" aria-hidden />}
+      {label && <span className="font-sans text-xs tracking-normal">{label}</span>} {code}
     </button>
   );
 }

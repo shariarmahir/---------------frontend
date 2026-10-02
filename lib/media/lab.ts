@@ -6,6 +6,8 @@
  */
 
 import type { NoteFile } from "./classroom.ts";
+import type { ExamPaper } from "./exam-paper.ts";
+import type { Notice } from "./notices.ts";
 import type { SharedRef } from "./showcase.ts";
 import type { Rota } from "./teamwork.ts";
 
@@ -56,6 +58,8 @@ export interface LabExam {
   time?: string;
   /** Experiments it covers, as text. */
   syllabus?: string;
+  /** The teacher's question paper. */
+  paper?: ExamPaper;
 }
 
 export interface LabRoom {
@@ -66,7 +70,13 @@ export interface LabRoom {
   institution: string;
   code: string;
   leaderId: string;
+  /** The lab teacher; required for every new lab. */
   instructor?: string;
+  /** Set once the teacher's own account runs the lab. */
+  teacherId?: string;
+  /** The teacher joins with this code instead of the lab code. */
+  teacherCode?: string;
+  notices?: Notice[];
   members: LabMember[];
   experiments: Experiment[];
   exams: LabExam[];

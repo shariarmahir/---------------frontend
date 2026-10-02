@@ -20,6 +20,13 @@ export const sampleClassrooms: Classroom[] = [
     institution: "নকলা, শেরপুর",
     code: "SSC27N",
     leaderId: "s-tania",
+    teacherId: "t-rafiq",
+    teacherCode: "TSSC27",
+    notices: [
+      { id: "nb1", kind: "cancel", title: "রবিবারের রসায়ন ক্লাস হবে না", body: "স্যার বোর্ডের মিটিংয়ে থাকবেন। পর্যায় সারণি সোমবার।", date: "2026-09-27", by: "t-rafiq", byName: "রফিকুল ইসলাম স্যার", byRole: "teacher", at: "2026-09-24T09:00:00Z" },
+      { id: "nb2", kind: "leave", title: "ছুটি", reason: "জ্বর", date: "2026-09-26", days: 2, by: "s-joya", byName: "জয়া রানী", byRole: "member", at: "2026-09-25T02:00:00Z" },
+      { id: "nb3", kind: "custom", title: "প্রাক-নির্বাচনী পরীক্ষার ফি", body: "১০ অক্টোবরের মধ্যে অফিসে জমা দিতে হবে।", by: "s-tania", byName: "তানিয়া আক্তার", byRole: "leader", at: "2026-09-23T08:00:00Z", pinned: true },
+    ],
     maxMembers: 45,
     shares: [{ id: "sh-filter", kind: "research", title: "বালি-কাঠকয়লার ফিল্টারে ঘোলা পানি কতটা পরিষ্কার হয়", team: ["মীম খাতুন", "রাহাত হাসান", "জয়া রানী"], at: "2026-09-18T08:00:00Z", researchId: "r-filter" }],
     teacher: { name: "রফিকুল ইসলাম স্যার", subject: "গণিত" },
@@ -42,7 +49,23 @@ export const sampleClassrooms: Classroom[] = [
       { id: "t7", subject: "জীববিজ্ঞান", title: "কোষ বিভাজন", done: true },
     ],
     exams: [
-      { id: "e1", title: "সাপ্তাহিক গণিত পরীক্ষা", date: "2026-09-29", kind: "class" },
+      {
+        id: "e1",
+        title: "সাপ্তাহিক গণিত পরীক্ষা",
+        date: "2026-09-29",
+        kind: "class",
+        paper: {
+          duration: 40,
+          instructions: "বহুনির্বাচনি অংশ এখানেই দাও; বাকিটা খাতায় লিখে জমা দেবে।",
+          released: true,
+          questions: [
+            { id: "eq1", kind: "mcq", q: "x² − 5x + 6 = 0 সমীকরণের মূল দুটি কী?", options: ["১ ও ৬", "২ ও ৩", "−২ ও −৩", "৫ ও ৬"], answer: 1, marks: 1 },
+            { id: "eq2", kind: "mcq", q: "ax² + bx + c = 0 সমীকরণের নিশ্চায়ক কোনটি?", options: ["b² − 4ac", "b² + 4ac", "4ac − b²", "2a"], answer: 0, marks: 1 },
+            { id: "eq3", kind: "short", q: "নিশ্চায়ক শূন্য হলে মূল দুটি সম্পর্কে কী বলা যায়?", marks: 2 },
+            { id: "eq4", kind: "written", q: "মধ্যপদ বিশ্লেষণ করে সমাধান করো: 2x² − 7x + 3 = 0। প্রতিটি ধাপ দেখাও।", marks: 6 },
+          ],
+        },
+      },
       { id: "e2", title: "প্রাক-নির্বাচনী পরীক্ষা", date: "2026-10-18", kind: "class" },
       { id: "e3", title: "এসএসসি ২০২৭ (সম্ভাব্য তারিখ)", date: "2027-02-15", kind: "public" },
     ],
@@ -97,6 +120,9 @@ export const sampleClassrooms: Classroom[] = [
     institution: "সেমিস্টার ৫ · ডেটা স্ট্রাকচার ও অ্যালগরিদম",
     code: "CSE22B",
     leaderId: "u-nafis",
+    teacher: { name: "ড. মাহমুদা আক্তার", subject: "ডেটা স্ট্রাকচার" },
+    teacherId: "t-mahmuda",
+    teacherCode: "TCSE22",
     members: [
       m("u-nafis", "নাফিস ইকবাল", [12, 9, 10, 91]),
       m("u-ritu", "ঋতু সাহা", [8, 7, 6, 86]),
@@ -156,6 +182,8 @@ export const sampleClassrooms: Classroom[] = [
     institution: "অনলাইন · সারা দেশ",
     code: "BCSPRE",
     leaderId: "j-sabbir",
+    teacherId: "t-shahana",
+    teacherCode: "TBCS01",
     teacher: { name: "শাহানা পারভীন (মেন্টর)", subject: "বাংলাদেশ বিষয়াবলি" },
     members: [
       m("j-sabbir", "সাব্বির রহমান", [10, 8, 9, 84]),

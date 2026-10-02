@@ -4,6 +4,8 @@
  * separate classroom account. Pure rules here, tested in classroom.test.ts.
  */
 
+import type { ExamPaper } from "./exam-paper.ts";
+import type { Notice } from "./notices.ts";
 import type { SharedRef } from "./showcase.ts";
 import type { Rota } from "./teamwork.ts";
 
@@ -41,6 +43,11 @@ export interface Exam {
   /** YYYY-MM-DD */
   date: string;
   kind: "class" | "public";
+  /** "10:00" */
+  time?: string;
+  syllabus?: string;
+  /** The teacher's question paper. */
+  paper?: ExamPaper;
 }
 
 /** One weekly slot: day 0 = Saturday (the Bangladeshi week). */
@@ -106,7 +113,13 @@ export interface Classroom {
   institution: string;
   code: string;
   leaderId: string;
+  /** Required for every new class; rooms saved before it was required may lack it. */
   teacher?: { name: string; subject: string };
+  /** Set once the teacher's own account runs the class. */
+  teacherId?: string;
+  /** The teacher joins with this code instead of the class code. */
+  teacherCode?: string;
+  notices?: Notice[];
   members: Member[];
   topics: Topic[];
   exams: Exam[];
