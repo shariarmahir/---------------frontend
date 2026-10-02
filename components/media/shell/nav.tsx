@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   BriefcaseBusiness,
   CalendarHeart,
+  GraduationCap,
   CircleUserRound,
   Compass,
   House,
@@ -22,8 +23,10 @@ import {
   Wallet,
   type LucideIcon,
 } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { mediaNavGroups, mediaTabs, type NavIcon } from "@/data/media/nav";
+import { PixelMark } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
 import { mediaButton } from "../ui/button-styles";
 import { Num, useNumerals } from "../ui/numerals";
@@ -35,6 +38,7 @@ export const navIcons: Record<NavIcon, LucideIcon> = {
   jobs: BriefcaseBusiness,
   messages: MessageCircle,
   events: CalendarHeart,
+  classroom: GraduationCap,
   teams: Users,
   challenges: Trophy,
   civic: Megaphone,
@@ -47,7 +51,7 @@ export const navIcons: Record<NavIcon, LucideIcon> = {
 };
 
 /** Sections the phone's "explore" tab stands for. */
-const exploreRoutes = ["/media/explore", "/media/jobs", "/media/events", "/media/teams", "/media/challenges", "/media/civic", "/media/notes", "/media/dashboard", "/media/wallet", "/media/messages", "/media/search", "/media/notifications", "/media/settings"];
+const exploreRoutes = ["/media/explore", "/media/classroom", "/media/jobs", "/media/events", "/media/teams", "/media/challenges", "/media/civic", "/media/notes", "/media/dashboard", "/media/wallet", "/media/messages", "/media/search", "/media/notifications", "/media/settings"];
 
 function isActive(pathname: string, href: string, me: string): boolean {
   if (href === "/media") return pathname === "/media" || (pathname.startsWith("/media/post/") && pathname !== "/media/post/new");
@@ -72,26 +76,27 @@ export function NumeralsToggle({ className }: { className?: string }) {
       type="button"
       onClick={() => setNumerals(numerals === "bn" ? "latn" : "bn")}
       className={cn(
-        "inline-flex h-9 items-center gap-1.5 rounded-full border border-card-border bg-white px-3 text-xs font-bold text-text-secondary transition-colors hover:border-bd-green/40 hover:text-bd-green",
+        "inline-flex h-9 items-center gap-1.5 rounded-full border border-white/12 bg-text-primary px-3 text-xs font-bold text-white/80 transition-colors hover:border-signal-orange/40 hover:text-signal-orange",
         className,
       )}
       aria-label={numerals === "bn" ? "ইংরেজি সংখ্যা দেখান" : "বাংলা সংখ্যা দেখান"}
       title="সংখ্যার ধরন"
     >
       <Languages className="size-4" aria-hidden />
-      <span className={numerals === "bn" ? "text-bd-green" : ""}>১২৩</span>
-      <span className="text-slate-300">/</span>
-      <span className={numerals === "latn" ? "text-bd-green" : ""}>123</span>
+      <span className={numerals === "bn" ? "text-signal-orange" : ""}>১২৩</span>
+      <span className="text-white/40">/</span>
+      <span className={numerals === "latn" ? "text-signal-orange" : ""}>123</span>
     </button>
   );
 }
 
 function NavGroups({ pathname, me, unread, size }: { pathname: string; me: string; unread: number; size: "rail" | "sheet" }) {
+  const reduce = useReducedMotion();
   return (
     <div className={size === "rail" ? "space-y-5" : "space-y-4"}>
       {mediaNavGroups.map((g) => (
         <div key={g.title}>
-          <p className="mb-1 px-3 text-[11px] font-bold tracking-wide text-text-muted">{g.title}</p>
+          <p className="mb-1 px-3 text-[11px] font-bold tracking-wide text-white/65">{g.title}</p>
           <ul className="space-y-0.5">
             {g.items.map((item) => {
               const Icon = navIcons[item.icon];
@@ -102,15 +107,22 @@ function NavGroups({ pathname, me, unread, size }: { pathname: string; me: strin
                     href={item.href}
                     aria-current={on ? "page" : undefined}
                     className={cn(
-                      "flex items-center gap-3 rounded-xl px-3 font-semibold transition-colors",
+                      "relative isolate flex items-center gap-3 rounded-xl px-3 font-semibold transition-[color,background-color,translate] duration-200 active:scale-[0.97]",
                       size === "rail" ? "min-h-10 text-[15px]" : "min-h-11 text-base",
-                      on ? "bg-bd-green text-white" : "text-text-secondary hover:bg-white hover:text-text-primary",
-                      size === "sheet" && !on && "hover:bg-slate-50",
+                      on ? "text-text-primary" : "text-white/80 hover:translate-x-0.5 hover:bg-white/10 hover:text-white",
                     )}
                   >
+                    {on && (
+                      <motion.span
+                        layoutId={`media-nav-${size}`}
+                        transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 520, damping: 40, mass: 0.7 }}
+                        aria-hidden
+                        className="absolute inset-0 -z-10 rounded-xl bg-signal-orange shadow-[0_10px_24px_-14px_var(--color-signal-orange)]"
+                      />
+                    )}
                     <Icon className="size-5" strokeWidth={on ? 2.25 : 1.75} aria-hidden />
                     <span className="flex-1">{item.label}</span>
-                    {item.badge && <CountBadge n={unread} className={on ? "bg-white text-bd-green" : undefined} />}
+                    {item.badge && <CountBadge n={unread} className={on ? "bg-text-primary text-signal-orange" : undefined} />}
                   </Link>
                 </li>
               );
@@ -131,19 +143,20 @@ export function LeftRail({ unreadSeed, me }: { unreadSeed: UnreadSeed; me: strin
         <Plus aria-hidden /> পোস্ট করুন
       </Link>
       <NavGroups pathname={pathname} me={me} unread={unread} size="rail" />
-      <div className="mt-6 space-y-2 rounded-2xl border border-card-border bg-white p-4">
-        <p className="flex items-center gap-2 text-sm font-bold text-text-primary">
-          <ShieldCheck className="size-4.5 text-bd-green" aria-hidden /> এক এনআইডি, এক অ্যাকাউন্ট
+      <div className="mt-6 space-y-2 rounded-2xl bg-text-primary p-4 ring-1 ring-white/12">
+        <PixelMark tone="dark" className="mb-3" />
+        <p className="flex items-center gap-2 text-sm font-bold text-white">
+          <ShieldCheck className="size-4.5 text-signal-orange" aria-hidden /> এক এনআইডি, এক অ্যাকাউন্ট
         </p>
-        <p className="text-xs leading-relaxed text-text-muted">ভুয়া প্রোফাইল নেই — তাই প্রতিটি রেটিং একজন সত্যিকারের মানুষের।</p>
-        <Link href="/media/onboarding" className="text-xs font-semibold text-bd-green hover:underline">
+        <p className="text-xs leading-relaxed text-white/65">ভুয়া প্রোফাইল নেই — তাই প্রতিটি রেটিং একজন সত্যিকারের মানুষের।</p>
+        <Link href="/media/onboarding" className="text-xs font-semibold text-signal-orange hover:underline">
           দক্ষতা-প্রোফাইল খুলুন →
         </Link>
       </div>
-      <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 px-1 text-[11px] text-text-muted">
-        <Link href="/" className="hover:text-bd-green">কাণ্ডারী-ল্যাব</Link>
-        <Link href="/media/settings" className="hover:text-bd-green">গোপনীয়তা</Link>
-        <Link href="/media/credits" className="hover:text-bd-green">ছবির কৃতজ্ঞতা</Link>
+      <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 px-1 text-[11px] text-white/65">
+        <Link href="/" className="hover:text-signal-orange">কাণ্ডারী-ল্যাব</Link>
+        <Link href="/media/settings" className="hover:text-signal-orange">গোপনীয়তা</Link>
+        <Link href="/media/credits" className="hover:text-signal-orange">ছবির কৃতজ্ঞতা</Link>
       </p>
     </nav>
   );
@@ -152,7 +165,7 @@ export function LeftRail({ unreadSeed, me }: { unreadSeed: UnreadSeed; me: strin
 export function BottomTabs({ me }: { me: string }) {
   const pathname = usePathname();
   return (
-    <nav aria-label="প্রধান ট্যাব" className="media-safe-bottom fixed inset-x-0 bottom-0 z-40 border-t border-card-border bg-white/95 backdrop-blur lg:hidden print:hidden">
+    <nav aria-label="প্রধান ট্যাব" className="media-safe-bottom fixed inset-x-0 bottom-0 z-40 border-t border-white/12 bg-black/85 backdrop-blur-md lg:hidden print:hidden">
       <ul className="mx-auto grid max-w-lg grid-cols-5 px-1 pt-1.5">
         {mediaTabs.map((t) => {
           const Icon = navIcons[t.icon];
@@ -163,10 +176,14 @@ export function BottomTabs({ me }: { me: string }) {
               <Link
                 href={t.href}
                 aria-current={on ? "page" : undefined}
-                className={cn("relative flex min-h-12 w-full flex-col items-center justify-center gap-0.5 text-[11px] font-semibold", on ? "text-bd-green" : "text-text-muted")}
+                className={cn(
+                  "relative flex min-h-12 w-full flex-col items-center justify-center gap-0.5 text-[11px] font-semibold [-webkit-tap-highlight-color:transparent] transition-[color,scale] duration-150 active:scale-90",
+                  on ? "text-signal-orange" : "text-white/65",
+                )}
               >
+                {on && <span aria-hidden className="live-in absolute -top-1.5 h-0.5 w-8 rounded-full bg-signal-orange" />}
                 {create ? (
-                  <span className="-mt-5 flex size-12 items-center justify-center rounded-full bg-signal-orange text-text-primary shadow-[0_4px_12px_-2px_rgb(234_88_12/0.5)] ring-4 ring-white">
+                  <span className="-mt-5 flex size-12 items-center justify-center rounded-full bg-signal-orange text-text-primary shadow-[0_8px_20px_-6px_var(--color-signal-orange)] ring-4 ring-black transition-transform duration-200 active:rotate-90">
                     <Icon className="size-6" strokeWidth={2.5} aria-hidden />
                   </span>
                 ) : (
@@ -188,25 +205,26 @@ export function MobileMenu({ unreadSeed, me }: { unreadSeed: UnreadSeed; me: str
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <button type="button" className={mediaButton({ variant: "ghost", size: "icon", className: "lg:hidden" })}>
+        <button type="button" className={mediaButton({ variant: "tile", size: "icon", className: "lg:hidden" })}>
           <Menu aria-hidden />
           <span className="sr-only">মেনু খুলুন</span>
         </button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-80 max-w-[85vw] overflow-y-auto bg-white font-sans">
+      <SheetContent side="left" className="w-80 max-w-[85vw] overflow-y-auto border-white/12 bg-black font-sans text-white">
         <SheetHeader>
-          <SheetTitle className="text-lg font-bold text-bd-green">শিক্ষিতদের মিডিয়া</SheetTitle>
-          <SheetDescription className="text-sm text-text-muted">শিখুন · বানান · আয় করুন · এলাকার জন্য কিছু করুন</SheetDescription>
+          <PixelMark tone="dark" className="mb-2" />
+          <SheetTitle className="text-lg font-bold text-signal-orange">শিক্ষিতদের মিডিয়া</SheetTitle>
+          <SheetDescription className="text-sm text-white/65">শিখুন · বানান · আয় করুন · এলাকার জন্য কিছু করুন</SheetDescription>
         </SheetHeader>
         <div className="px-2">
           <NavGroups pathname={pathname} me={me} unread={unread} size="sheet" />
         </div>
-        <div className="mt-2 space-y-3 border-t border-card-border px-4 py-4">
+        <div className="mt-2 space-y-3 border-t border-white/12 px-4 py-4">
           <NumeralsToggle />
-          <Link href="/media/onboarding" className="block text-sm font-semibold text-bd-green">দক্ষতা-প্রোফাইল খুলুন →</Link>
-          <Link href="/media/settings" className="block text-sm text-text-muted">গোপনীয়তা ও সময়</Link>
-          <Link href="/media/credits" className="block text-sm text-text-muted">ছবির কৃতজ্ঞতা</Link>
-          <Link href="/" className="block text-sm text-text-muted">কাণ্ডারী-ল্যাব হোম</Link>
+          <Link href="/media/onboarding" className="block text-sm font-semibold text-signal-orange">দক্ষতা-প্রোফাইল খুলুন →</Link>
+          <Link href="/media/settings" className="block text-sm text-white/65">গোপনীয়তা ও সময়</Link>
+          <Link href="/media/credits" className="block text-sm text-white/65">ছবির কৃতজ্ঞতা</Link>
+          <Link href="/" className="block text-sm text-white/65">কাণ্ডারী-ল্যাব হোম</Link>
         </div>
       </SheetContent>
     </Sheet>

@@ -50,30 +50,30 @@ function TxnRow({ t, live }: { t: Txn; live?: boolean }) {
   const incoming = amount >= 0;
   return (
     <li className="flex gap-3 py-3.5">
-      <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-full", incoming ? "bg-bd-green-light text-bd-green" : "bg-slate-100 text-text-secondary")}>
+      <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-full", incoming ? "bg-white/10 text-signal-orange" : "bg-white/10 text-white/80")}>
         <k.Icon className="size-4.5" aria-hidden />
       </span>
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-3">
-          <p className="min-w-0 text-sm font-semibold text-text-primary">{t.label}</p>
-          <p className={cn("shrink-0 text-sm font-bold", incoming ? "text-bd-green" : "text-text-primary")}>
+          <p className="min-w-0 text-sm font-semibold text-white">{t.label}</p>
+          <p className={cn("shrink-0 text-sm font-bold", incoming ? "text-signal-orange" : "text-white")}>
             {incoming ? "+" : ""}
             <Taka amount={amount} />
           </p>
         </div>
-        <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-text-muted">
+        <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-white/65">
           {k.bn} · <Ago iso={t.at} live={live} />
           {outside && t.paidVia && <span>· {payBn[t.paidVia]} থেকে</span>}
-          {t.status !== "done" && <span className={cn("rounded-full px-1.5 font-semibold", t.status === "held" ? "bg-amber-50 text-amber-900" : "bg-slate-100 text-slate-700")}>{statusBn[t.status]}</span>}
+          {t.status !== "done" && <span className={cn("rounded-full px-1.5 font-semibold", t.status === "held" ? "bg-signal-orange text-text-primary" : "bg-white/10 text-white/80")}>{statusBn[t.status]}</span>}
         </p>
         {t.feeSide !== "none" && (
-          <p className="mt-1.5 inline-flex flex-wrap items-center gap-x-1.5 rounded-lg bg-slate-50 px-2 py-1 text-xs text-text-secondary">
+          <p className="mt-1.5 inline-flex flex-wrap items-center gap-x-1.5 rounded-lg bg-white/10 px-2 py-1 text-xs text-white/80">
             দাম <Taka amount={t.gross} />
             <span aria-hidden>·</span>
-            {t.feeSide === "seller" ? "প্ল্যাটফর্ম ফি ৫%" : "ক্রেতার সেবা চার্জ ৫%"} <span className="font-semibold text-text-primary"><Taka amount={t.fee} /></span>
+            {t.feeSide === "seller" ? "প্ল্যাটফর্ম ফি ৫%" : "ক্রেতার সেবা চার্জ ৫%"} <span className="font-semibold text-white"><Taka amount={t.fee} /></span>
           </p>
         )}
-        {t.feeSide === "none" && t.kind === "withdraw" && <p className="mt-1 text-xs text-text-muted">উত্তোলনে কোনো ফি নেই</p>}
+        {t.feeSide === "none" && t.kind === "withdraw" && <p className="mt-1 text-xs text-white/65">উত্তোলনে কোনো ফি নেই</p>}
         {t.kind === "escrow" && t.status === "held" && (
           <button
             type="button"
@@ -112,10 +112,10 @@ function WithdrawDialog({ available, linked, open, onOpenChange }: { available: 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-white font-sans sm:max-w-md">
+      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-text-primary font-sans sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-lg font-bold text-text-primary">টাকা তুলুন</DialogTitle>
-          <DialogDescription className="text-sm text-text-secondary">
+          <DialogTitle className="text-lg font-bold text-white">টাকা তুলুন</DialogTitle>
+          <DialogDescription className="text-sm text-white/80">
             তোলা যাবে <Taka amount={available} />। উত্তোলনে ফি নেই।
           </DialogDescription>
         </DialogHeader>
@@ -132,8 +132,8 @@ function WithdrawDialog({ available, linked, open, onOpenChange }: { available: 
                       <label
                         key={key}
                         className={cn(
-                          "flex min-h-16 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 text-sm font-semibold transition-colors has-focus-visible:ring-3 has-focus-visible:ring-bd-green/30",
-                          field.value === key ? "border-bd-green bg-bd-green-light text-bd-green-dark" : "border-card-border text-text-secondary hover:border-slate-300",
+                          "flex min-h-16 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 text-sm font-semibold transition-colors has-focus-visible:ring-3 has-focus-visible:ring-signal-orange/30",
+                          field.value === key ? "border-signal-orange bg-white/10 text-signal-orange" : "border-white/12 text-white/80 hover:border-white/12",
                         )}
                       >
                         <input
@@ -263,10 +263,10 @@ export function WalletView({ seed }: { seed: WalletSeed }) {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-card-border bg-white p-4 sm:p-6">
+      <section className="rounded-2xl border border-white/12 bg-text-primary p-4 sm:p-6">
         <Tabs defaultValue="all">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-base font-bold text-text-primary">লেনদেন</h2>
+            <h2 className="text-base font-bold text-white">লেনদেন</h2>
             <TabsList>
               {groups.map((g) => (
                 <TabsTrigger key={g.key} value={g.key}>
@@ -282,7 +282,7 @@ export function WalletView({ seed }: { seed: WalletSeed }) {
                 {rows.length === 0 ? (
                   <div className="pt-4"><EmptyState icon="wallet" title="এই ধরনের লেনদেন নেই" /></div>
                 ) : (
-                  <ul className="divide-y divide-card-border">
+                  <ul className="divide-y divide-white/12">
                     {rows.map((t) => (
                       <TxnRow key={t.id} t={t} live={!seedIds.has(t.id)} />
                     ))}

@@ -11,10 +11,10 @@ export const ratioClass: Record<MediaSlot["ratio"], string> = {
 };
 
 export const kindStyle: Record<MediaSlot["kind"], { surface: string; ink: string; Icon: typeof ImageIcon; tag: string }> = {
-  image: { surface: "bg-bd-green-light media-slot-pattern", ink: "text-bd-green/70", Icon: ImageIcon, tag: "ছবি" },
+  image: { surface: "bg-white/10", ink: "text-signal-orange/70", Icon: ImageIcon, tag: "ছবি" },
   video: { surface: "bg-bd-green-dark", ink: "text-white/85", Icon: Play, tag: "ভিডিও" },
-  project: { surface: "bg-slate-100 media-slot-pattern", ink: "text-slate-600", Icon: FolderKanban, tag: "প্রজেক্ট ডেমো" },
-  audio: { surface: "bg-orange-50", ink: "text-orange-800", Icon: AudioLines, tag: "অডিও" },
+  project: { surface: "bg-white/10", ink: "text-white/80", Icon: FolderKanban, tag: "প্রজেক্ট ডেমো" },
+  audio: { surface: "bg-bdorange-600", ink: "text-text-primary", Icon: AudioLines, tag: "অডিও" },
 };
 
 /** Deterministic bar heights so server and client draw the same waveform. */
@@ -77,7 +77,7 @@ export function MediaFrame({
 
       {playable && (
         <span className="absolute inset-0 flex items-center justify-center">
-          <span className={cn("flex size-10 items-center justify-center rounded-full shadow-lg ring-1 ring-black/5 @xs:size-14", slot.kind === "video" ? "bg-white/95 text-bd-green-dark" : "bg-signal-orange text-text-primary")}>
+          <span className={cn("flex size-10 items-center justify-center rounded-full shadow-lg ring-1 ring-black/5 @xs:size-14", slot.kind === "video" ? "bg-black/70 text-signal-orange" : "bg-signal-orange text-text-primary")}>
             <Play className="ml-0.5 size-4.5 fill-current @xs:size-6" aria-hidden />
           </span>
         </span>
@@ -87,7 +87,7 @@ export function MediaFrame({
         <span
           className={cn(
             "inline-flex max-w-full min-w-0 items-center gap-1 truncate rounded-md px-1.5 py-0.5 text-[11px] font-semibold",
-            photo || slot.kind === "video" ? "bg-black/55 text-white" : "bg-white/90 text-text-secondary",
+            photo || slot.kind === "video" ? "bg-black/55 text-white" : "bg-black/70 text-white/80",
           )}
         >
           <Icon className="size-3 shrink-0" aria-hidden />

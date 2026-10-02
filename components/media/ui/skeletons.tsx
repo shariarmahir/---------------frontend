@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function PostSkeleton() {
   return (
-    <div className="rounded-2xl border border-card-border bg-white p-4 sm:p-6" role="status" aria-label="লোড হচ্ছে">
+    <div className="rounded-2xl border border-white/12 bg-text-primary p-4 sm:p-6" role="status" aria-label="লোড হচ্ছে">
       <div className="flex items-center gap-3">
         <Skeleton className="size-10 rounded-full" />
         <div className="flex-1 space-y-2">
@@ -35,7 +35,7 @@ export function FeedSkeleton({ count = 2 }: { count?: number }) {
 
 export function ListingSkeleton() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-card-border bg-white" role="status" aria-label="লোড হচ্ছে">
+    <div className="overflow-hidden rounded-2xl border border-white/12 bg-text-primary" role="status" aria-label="লোড হচ্ছে">
       <Skeleton className="aspect-4/3 w-full rounded-none" />
       <div className="space-y-2.5 p-4">
         <Skeleton className="h-3 w-24" />
@@ -50,7 +50,7 @@ export function ListingSkeleton() {
 export function ProfileSkeleton() {
   return (
     <div className="space-y-5" role="status" aria-label="লোড হচ্ছে">
-      <div className="rounded-2xl border border-card-border bg-white p-6">
+      <div className="rounded-2xl border border-white/12 bg-text-primary p-6">
         <div className="flex items-center gap-4">
           <Skeleton className="size-24 rounded-full" />
           <div className="flex-1 space-y-2.5">
@@ -93,7 +93,7 @@ export function WalletSkeleton() {
   return (
     <div className="space-y-5" role="status" aria-label="লোড হচ্ছে">
       <Skeleton className="h-40 rounded-2xl" />
-      <div className="space-y-3 rounded-2xl border border-card-border bg-white p-5">
+      <div className="space-y-3 rounded-2xl border border-white/12 bg-text-primary p-5">
         {Array.from({ length: 5 }, (_, i) => (
           <div key={i} className="flex items-center gap-3">
             <Skeleton className="size-10 rounded-full" />

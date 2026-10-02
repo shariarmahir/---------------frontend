@@ -200,12 +200,26 @@ export const sponsorSchema = z.object({
 });
 export type SponsorInput = z.infer<typeof sponsorSchema>;
 
+const short = z.string().trim().max(80);
+
 export const teamSchema = z.object({
-  kind: z.enum(["family", "lab", "project", "travel", "sports"]),
+  kind: z.enum(["family", "lab", "project", "travel", "sports", "esports"]),
   name: z.string().trim().min(3, "টিমের নাম দিন।").max(50),
   district: z.string().trim().min(1, "জেলা বেছে নিন।"),
   about: z.string().trim().min(20, "টিম কী করে, অন্তত ২০ অক্ষরে লিখুন।").max(500),
   tags: z.string().trim().max(100),
+  limit: z.number({ error: "সদস্যসংখ্যা লিখুন।" }).int().min(2, "অন্তত ২ জন।").max(100, "সর্বোচ্চ ১০০ জন।"),
+  game: z.enum(["pubgm", "freefire", "mlbb", "valorant", "dota2", "cs2"]),
+  rank: short,
+  scrims: short,
+  university: short,
+  supervisor: short,
+  /** Comma-separated lists: research areas, open roles or positions. */
+  focus: short,
+  roles: short,
+  sport: short,
+  ageGroup: short,
+  practice: short,
 });
 export type TeamInput = z.infer<typeof teamSchema>;
 

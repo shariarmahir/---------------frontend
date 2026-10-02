@@ -11,6 +11,9 @@ import { safeNext } from "@/lib/auth/validate";
  */
 export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
+  // public/media/*.webp shares the /media prefix; the image optimizer fetches
+  // those without cookies, so files are never gated (pages have no extension).
+  if (/\.[a-z0-9]+$/i.test(pathname)) return NextResponse.next();
   const signedIn = request.cookies.get(SESSION_COOKIE)?.value === "1";
 
   if (!signedIn && isProtected(pathname)) {

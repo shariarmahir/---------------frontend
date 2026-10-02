@@ -19,20 +19,20 @@ export default function WalletPage() {
         </Suspense>
         <aside className="space-y-4">
           <Panel title="ফি কীভাবে কাটে">
-            <p className="mb-3 text-sm text-text-secondary"><Taka amount={1000} />-এর একটি বিক্রিতে ক্রেতা দেন ও বিক্রেতা পান:</p>
+            <p className="mb-3 text-sm text-white/80"><Taka amount={1000} />-এর একটি বিক্রিতে ক্রেতা দেন ও বিক্রেতা পান:</p>
             <BuyerFees price={1000} />
-            <p className="mt-3 text-xs leading-relaxed text-text-muted">
+            <p className="mt-3 text-xs leading-relaxed text-white/65">
               বিক্রেতার দিক থেকে ৫% প্ল্যাটফর্ম ফি, ক্রেতার দিক থেকে ৫% সেবা চার্জ (পেমেন্ট গেটওয়েসহ)। টাকা তোলায় ফি নেই, লুকানো চার্জ নেই।
             </p>
           </Panel>
           <Panel title="এসক্রো কীভাবে কাজ করে">
-            <ol className="space-y-2 text-sm text-text-secondary">
+            <ol className="space-y-2 text-sm text-white/80">
               <li>১. চুক্তি বা কেনার সময় টাকা প্ল্যাটফর্মে জমা থাকে।</li>
               <li>২. বিক্রেতা কাজ বা পণ্য ডেলিভারি দেন।</li>
               <li>৩. আপনি ‘বুঝে পেয়েছি’ চাপলে বিক্রেতার ওয়ালেটে যায়।</li>
             </ol>
           </Panel>
-          <p className="rounded-xl bg-amber-50 p-3 text-xs text-amber-950">ডেমো: আসল টাকা লেনদেন হয় না। আসল সংস্করণে এসএসএলকমার্জ, বিকাশ, নগদ ও বাংলা কিউআর যুক্ত হবে।</p>
+          <p className="rounded-xl bg-signal-orange p-3 text-xs text-text-primary">ডেমো: আসল টাকা লেনদেন হয় না। আসল সংস্করণে এসএসএলকমার্জ, বিকাশ, নগদ ও বাংলা কিউআর যুক্ত হবে।</p>
         </aside>
       </div>
     </div>

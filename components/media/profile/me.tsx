@@ -46,30 +46,30 @@ export function MyProfile({ handles, categoryNames }: { handles: string[]; categ
   }
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-card-border bg-white">
+    <article className="overflow-hidden rounded-2xl border border-white/12 bg-text-primary">
       <div className="h-24 bg-linear-to-r from-bd-green to-emerald-700" />
       <div className="px-5 pb-6 sm:px-8">
         <AccountAvatar name={profile.displayName} className="-mt-10 size-20 border-4 border-white text-3xl" />
         <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h1 className="flex items-center gap-2 text-2xl font-bold text-text-primary">
+            <h1 className="flex items-center gap-2 text-2xl font-bold text-white">
               {profile.displayName}
-              <SealCheck size={24} weight="duotone" className="text-bd-green" aria-label="পরিচয় যাচাইকৃত" />
+              <SealCheck size={24} weight="duotone" className="text-signal-orange" aria-label="পরিচয় যাচাইকৃত" />
             </h1>
-            <p className="text-sm text-text-muted">@{profile.handle}</p>
+            <p className="text-sm text-white/65">@{profile.handle}</p>
           </div>
           <Link href="/media/settings" className={mediaButton({ variant: "quiet", size: "sm" })}>
             <Settings aria-hidden /> সেটিংস
           </Link>
         </div>
-        {profile.headline ? <p className="mt-3 font-semibold text-text-primary">{profile.headline}</p> : null}
-        <p className="mt-1 flex items-center gap-1 text-sm text-text-secondary">
-          <MapPin className="size-4 text-bd-green" aria-hidden /> {profile.district}
+        {profile.headline ? <p className="mt-3 font-semibold text-white">{profile.headline}</p> : null}
+        <p className="mt-1 flex items-center gap-1 text-sm text-white/80">
+          <MapPin className="size-4 text-signal-orange" aria-hidden /> {profile.district}
         </p>
-        {profile.bio ? <p className="mt-3 max-w-prose text-[15px] leading-relaxed whitespace-pre-line text-text-secondary">{profile.bio}</p> : null}
+        {profile.bio ? <p className="mt-3 max-w-prose text-[15px] leading-relaxed whitespace-pre-line text-white/80">{profile.bio}</p> : null}
         <ul className="mt-4 flex flex-wrap gap-2" aria-label="দক্ষতার বিভাগ">
           {profile.categories.map((c) => (
-            <li key={c} className="rounded-full bg-bd-green-light px-3 py-1 text-sm font-semibold text-bd-green-dark">
+            <li key={c} className="rounded-full bg-white/10 px-3 py-1 text-sm font-semibold text-signal-orange">
               {categoryNames[c] ?? c}
             </li>
           ))}

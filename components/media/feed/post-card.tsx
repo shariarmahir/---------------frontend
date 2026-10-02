@@ -29,7 +29,7 @@ export function CategoryChip({ id, className }: { id: Post["category"]; classNam
   return (
     <Link
       href={`/media?c=${c.id}`}
-      className={cn("inline-flex min-h-7 items-center rounded-full border border-card-border bg-white px-2.5 text-xs font-semibold text-text-secondary transition-colors hover:border-bd-green/40 hover:text-bd-green", className)}
+      className={cn("inline-flex min-h-7 items-center rounded-full border border-white/12 bg-text-primary px-2.5 text-xs font-semibold text-white/80 transition-colors hover:border-signal-orange/40 hover:text-signal-orange", className)}
     >
       {c.bn}
     </Link>
@@ -57,19 +57,19 @@ export function PostCard({
   const replies = post.comments.reduce((n, c) => n + (c.replies?.length ?? 0), 0);
   const topic = topicOf(post);
   return (
-    <article id={post.id} className="scroll-mt-24 rounded-2xl border border-card-border bg-white shadow-[0_1px_2px_rgb(15_23_42/0.04)] transition-shadow duration-200 hover:shadow-[0_6px_20px_-12px_rgb(15_23_42/0.18)]">
+    <article id={post.id} className="scroll-mt-24 rounded-2xl border border-white/12 bg-text-primary story-reveal transition-[translate,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-white/25 hover:shadow-[0_24px_44px_-26px_var(--color-signal-orange)] active:scale-[0.99] motion-reduce:transition-none motion-reduce:hover:translate-y-0">
       <header className="flex items-start gap-3 p-4 pb-0 sm:p-6 sm:pb-0">
-        <Link href={`/media/u/${author.handle}`} className="shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bd-green">
+        <Link href={`/media/u/${author.handle}`} className="shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-orange">
           <PersonAvatar person={author} />
         </Link>
         <div className="min-w-0 flex-1">
           <p className="flex items-center gap-1">
-            <Link href={`/media/u/${author.handle}`} className="truncate text-[15px] font-bold text-text-primary hover:text-bd-green">
+            <Link href={`/media/u/${author.handle}`} className="truncate text-[15px] font-bold text-white hover:text-signal-orange">
               {author.nameBn}
             </Link>
             {author.idVerified && <IdSeal />}
           </p>
-          <p className="truncate text-xs text-text-muted">
+          <p className="truncate text-xs text-white/65">
             {author.headline} · <Ago iso={post.createdAt} live={live} />
           </p>
         </div>
@@ -78,12 +78,12 @@ export function PostCard({
 
       <div className="space-y-4 p-4 sm:p-6">
         {post.topic === "help" && (
-          <p className="flex items-center gap-2 rounded-xl bg-red-50 px-3 py-2 text-sm font-semibold text-national-crimson">
+          <p className="flex items-center gap-2 rounded-xl bg-national-crimson px-3 py-2 text-sm font-semibold text-white">
             <LifeBuoy className="size-4.5 shrink-0" aria-hidden /> সাহায্য চাই — পারলে শেয়ার করুন, কেউ হয়তো কাছেই আছেন
           </p>
         )}
 
-        <p className="text-[15px] leading-relaxed whitespace-pre-line text-text-primary">{post.caption}</p>
+        <p className="text-[15px] leading-relaxed whitespace-pre-line text-white">{post.caption}</p>
 
         <MediaGallery media={post.media} />
 
@@ -97,14 +97,14 @@ export function PostCard({
           {topic.id !== "skill" && (
             <Link
               href={`/media?t=${topic.id}`}
-              className="inline-flex min-h-7 items-center rounded-full bg-slate-100 px-2.5 text-xs font-semibold text-text-secondary transition-colors hover:bg-slate-200"
+              className="inline-flex min-h-7 items-center rounded-full bg-white/10 px-2.5 text-xs font-semibold text-white/80 transition-colors hover:bg-white/15"
             >
               {topic.bn}
             </Link>
           )}
           {post.skill && <CategoryChip id={post.category} />}
           {post.tags.map((t) => (
-            <span key={t} className="text-xs font-medium text-bd-green">
+            <span key={t} className="text-xs font-medium text-signal-orange">
               {t}
             </span>
           ))}
@@ -115,29 +115,29 @@ export function PostCard({
         {post.topic === "rights" && (
           <Link
             href="/media/civic"
-            className="flex items-center justify-between gap-3 rounded-xl border border-card-border bg-slate-50 px-4 py-3 text-sm transition-colors hover:border-bd-green/40"
+            className="flex items-center justify-between gap-3 rounded-xl border border-white/12 bg-white/10 px-4 py-3 text-sm transition-colors hover:border-signal-orange/40"
           >
-            <span className="flex items-center gap-2 font-semibold text-text-primary">
-              <Megaphone className="size-4.5 text-bd-green" aria-hidden /> নাগরিক বিভাগে এলাকার সমস্যা দেখুন ও নিশ্চিত করুন
+            <span className="flex items-center gap-2 font-semibold text-white">
+              <Megaphone className="size-4.5 text-signal-orange" aria-hidden /> নাগরিক বার্তায় অপরাধ ও এলাকার সমস্যা দেখুন, নিশ্চিত করুন
             </span>
-            <ArrowUpRight className="size-4.5 shrink-0 text-text-muted" aria-hidden />
+            <ArrowUpRight className="size-4.5 shrink-0 text-white/65" aria-hidden />
           </Link>
         )}
 
         {listing && (
           <Link
             href={`/media/market/${listing.id}`}
-            className="flex items-center justify-between gap-3 rounded-xl border border-orange-200 bg-orange-50/60 px-4 py-3 transition-colors hover:border-orange-300 hover:bg-orange-50"
+            className="flex items-center justify-between gap-3 rounded-xl border border-bdorange-600/60 bg-bdorange-600 px-4 py-3 transition-colors hover:border-bdorange-600/60 hover:bg-bdorange-600"
           >
             <span className="min-w-0">
-              <span className="block text-xs font-semibold text-orange-900">বিক্রির জন্য</span>
+              <span className="block text-xs font-semibold text-text-primary">বিক্রির জন্য</span>
               <span className="block truncate text-sm font-semibold text-text-primary">{listing.title}</span>
             </span>
             <span className="flex shrink-0 items-center gap-2">
               <span className="text-base font-bold text-text-primary">
                 <Taka amount={listing.price} />
               </span>
-              <ArrowUpRight className="size-4.5 text-orange-800" aria-hidden />
+              <ArrowUpRight className="size-4.5 text-text-primary" aria-hidden />
             </span>
           </Link>
         )}
@@ -149,8 +149,8 @@ export function PostCard({
           seedVerdict={post.comments.find((c) => c.author === CURRENT_USER_HANDLE && c.verdict)?.verdict}
         />
 
-        <section id={full ? "discussion" : undefined} aria-label="আলোচনা" className={cn(full && "scroll-mt-24 border-t border-card-border pt-5")}>
-          {full && <h2 className="mb-4 text-base font-bold text-text-primary">আলোচনা</h2>}
+        <section id={full ? "discussion" : undefined} aria-label="আলোচনা" className={cn(full && "scroll-mt-24 border-t border-white/12 pt-5")}>
+          {full && <h2 className="mb-4 text-base font-bold text-white">আলোচনা</h2>}
           <CommentThread postId={post.id} seed={post.comments} people={commentPeopleFor(post)} limit={full ? undefined : commentPreview} />
         </section>
       </div>

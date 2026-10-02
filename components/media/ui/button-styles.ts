@@ -2,22 +2,22 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 /**
- * Button looks for শিক্ষিতদের মিডিয়া, for <button> and <Link> alike.
- *
- * Buttons never move: hover and press change colour, border and shadow
- * only. Primary is orange with near-black text (white on #E4B027 is ~2:1).
+ * Button looks for শিক্ষিতদের মিডিয়া, for <button> and <Link> alike, in the
+ * home page's language: gold for the main action (ink text — white on gold
+ * is ~2:1), ink and outline for the rest, a short lift on hover and press.
  */
 const buttonVariants = cva(
-  "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border font-semibold whitespace-nowrap transition-[background-color,border-color,color,box-shadow] duration-150 outline-none select-none focus-visible:ring-3 focus-visible:ring-bd-green/35 disabled:pointer-events-none disabled:opacity-50 [&_svg]:shrink-0",
+  "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border font-semibold whitespace-nowrap outline-none select-none [-webkit-tap-highlight-color:transparent] touch-manipulation transition-[translate,scale,background-color,border-color,color,box-shadow] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.96] active:duration-100 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:ring-offset-2 focus-visible:ring-offset-black disabled:pointer-events-none disabled:opacity-50 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        primary: "border-transparent bg-signal-orange text-text-primary shadow-[0_1px_2px_rgb(154_52_18/0.25)] hover:brightness-95 active:brightness-90",
-        green: "border-transparent bg-bd-green text-white shadow-[0_1px_2px_rgb(0_71_49/0.3)] hover:bg-bd-green-dark",
-        outline: "border-bd-green/30 bg-white text-bd-green hover:border-bd-green hover:bg-bd-green-light",
-        quiet: "border-card-border bg-white text-text-primary hover:border-slate-300 hover:bg-slate-50",
-        ghost: "border-transparent bg-transparent text-text-secondary hover:bg-slate-100 hover:text-text-primary",
-        danger: "border-red-200 bg-white text-national-crimson hover:border-red-300 hover:bg-red-50",
+        primary: "border-transparent bg-signal-orange text-text-primary shadow-tile hover:shadow-[0_14px_28px_-14px_var(--color-signal-orange)]",
+        green: "border-transparent bg-bd-green text-white shadow-ink hover:bg-bdgreen-600 hover:shadow-[0_14px_28px_-14px_var(--color-bdgreen-500)]",
+        outline: "border-signal-orange/50 bg-transparent text-signal-orange hover:border-signal-orange hover:bg-signal-orange/10",
+        quiet: "border-white/12 bg-text-primary text-white hover:border-white/30 hover:bg-bd-green-dark",
+        tile: "border-transparent bg-text-primary text-signal-orange shadow-ink hover:bg-bd-green-dark",
+        ghost: "border-transparent bg-transparent text-white/80 hover:bg-white/10 hover:text-white",
+        danger: "border-crimson-bright/50 bg-transparent text-crimson-bright hover:border-crimson-bright hover:bg-national-crimson hover:text-white",
       },
       size: {
         sm: "h-9 px-3 text-sm [&_svg]:size-4",

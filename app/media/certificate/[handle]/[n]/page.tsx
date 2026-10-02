@@ -33,7 +33,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ ha
       <div className="print:hidden">
         <PageHeader title="দক্ষতার সার্টিফিকেট" back={{ href: `/media/u/${person.handle}`, label: person.nameBn }} actions={<PrintButton />} />
       </div>
-      <article className="relative overflow-hidden rounded-2xl border-2 border-bd-green/40 bg-white p-6 text-center shadow-[0_10px_30px_-18px_rgb(0_71_49/0.45)] sm:p-12 print:border-bd-green print:shadow-none">
+      <article className="relative overflow-hidden rounded-2xl live-in border-2 border-signal-orange bg-white p-6 text-center shadow-[0_30px_70px_-30px_var(--color-signal-orange)] sm:p-12 print:border-bd-green print:shadow-none">
         <div className="absolute inset-3 rounded-xl border border-bd-green/15" aria-hidden />
         <Image src="/logo/kandari-logo.png" alt="কাণ্ডারী-ল্যাব (Kandari Lab)" width={1600} height={967} sizes="120px" className="mx-auto h-16 w-auto" />
         <p className="mt-3 text-sm font-bold tracking-wide text-bd-green">শিক্ষিতদের মিডিয়া</p>
@@ -66,7 +66,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ ha
           </div>
         </div>
       </article>
-      <p className="mt-4 text-center text-xs text-text-muted print:hidden">
+      <p className="mt-4 text-center text-xs text-white/65 print:hidden">
         ৫ বা তার বেশি জনের রেটিং দাবির আধা তারার মধ্যে থাকলে সনদ তৈরি হয়। রেটিং কমে গেলে সনদ বাতিল হয়।
       </p>
     </div>

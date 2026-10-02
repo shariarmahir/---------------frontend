@@ -149,7 +149,7 @@ export function PostForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
-        <div className="space-y-6 rounded-2xl border border-card-border bg-white p-4 sm:p-6">
+        <div className="space-y-6 rounded-2xl border border-white/12 bg-text-primary p-4 sm:p-6">
           <FormField
             control={form.control}
             name="topic"
@@ -164,8 +164,8 @@ export function PostForm() {
                         key={t.id}
                         title={t.hint}
                         className={cn(
-                          "inline-flex min-h-10 cursor-pointer items-center rounded-full border-2 px-3.5 text-sm font-semibold transition-colors has-focus-visible:ring-3 has-focus-visible:ring-bd-green/30",
-                          on ? "border-bd-green bg-bd-green-light text-bd-green-dark" : "border-card-border text-text-secondary hover:border-slate-300",
+                          "inline-flex min-h-10 cursor-pointer items-center rounded-full border-2 px-3.5 text-sm font-semibold transition-colors has-focus-visible:ring-3 has-focus-visible:ring-signal-orange/30",
+                          on ? "border-signal-orange bg-white/10 text-signal-orange" : "border-white/12 text-white/80 hover:border-white/12",
                         )}
                       >
                         <input type="radio" className="sr-only" name={field.name} checked={on} onChange={() => field.onChange(t.id)} />
@@ -194,15 +194,15 @@ export function PostForm() {
                     <label
                       key={value}
                       className={cn(
-                        "flex cursor-pointer gap-3 rounded-xl border-2 p-3 transition-colors has-focus-visible:ring-3 has-focus-visible:ring-bd-green/30",
-                        field.value === value ? "border-bd-green bg-bd-green-light" : "border-card-border hover:border-slate-300",
+                        "flex cursor-pointer gap-3 rounded-xl border-2 p-3 transition-colors has-focus-visible:ring-3 has-focus-visible:ring-signal-orange/30",
+                        field.value === value ? "border-signal-orange bg-white/10" : "border-white/12 hover:border-white/12",
                       )}
                     >
                       <input type="radio" className="sr-only" name={field.name} checked={field.value === value} onChange={() => field.onChange(value)} />
-                      <Icon className="mt-0.5 size-5 shrink-0 text-bd-green" aria-hidden />
+                      <Icon className="mt-0.5 size-5 shrink-0 text-signal-orange" aria-hidden />
                       <span>
-                        <span className="block text-sm font-bold text-text-primary">{label}</span>
-                        <span className="block text-xs text-text-muted">{hint}</span>
+                        <span className="block text-sm font-bold text-white">{label}</span>
+                        <span className="block text-xs text-white/65">{hint}</span>
                       </span>
                     </label>
                   ))}
@@ -230,7 +230,7 @@ export function PostForm() {
                       <button
                         type="button"
                         onClick={() => media.remove(i)}
-                        className="absolute top-1.5 right-1.5 flex size-8 items-center justify-center rounded-full bg-white/95 text-text-primary shadow-sm hover:bg-white"
+                        className="absolute top-1.5 right-1.5 flex size-8 items-center justify-center rounded-full bg-black/70 text-white shadow-sm hover:bg-white/10"
                       >
                         <X className="size-4" aria-hidden />
                         <span className="sr-only">{m.label} সরান</span>
@@ -238,8 +238,8 @@ export function PostForm() {
                     </div>
                   ))}
                   {Array.from({ length: Math.min(reading, MAX_MEDIA - media.fields.length) }, (_, i) => (
-                    <div key={`reading-${i}`} className="skeleton-shimmer flex aspect-square items-center justify-center rounded-xl bg-slate-100" role="status">
-                      <Loader2 className="size-6 animate-spin text-bd-green" aria-hidden />
+                    <div key={`reading-${i}`} className="skeleton-shimmer flex aspect-square items-center justify-center rounded-xl bg-white/10" role="status">
+                      <Loader2 className="size-6 animate-spin text-signal-orange" aria-hidden />
                       <span className="sr-only">ছবি প্রস্তুত হচ্ছে</span>
                     </div>
                   ))}
@@ -249,7 +249,7 @@ export function PostForm() {
                         type="button"
                         autoFocus={preset === "image"}
                         onClick={() => photoInput.current?.click()}
-                        className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-card-border text-sm font-semibold text-text-secondary transition-colors hover:border-bd-green/50 hover:bg-bd-green-light/40 hover:text-bd-green focus-visible:border-bd-green focus-visible:outline-none"
+                        className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-white/12 text-sm font-semibold text-white/80 transition-colors hover:border-signal-orange/50 hover:bg-white/10 hover:text-signal-orange focus-visible:border-signal-orange focus-visible:outline-none"
                       >
                         <ImagePlus className="size-6" aria-hidden /> ছবি যোগ
                       </button>
@@ -257,7 +257,7 @@ export function PostForm() {
                         type="button"
                         autoFocus={preset === "video"}
                         onClick={() => videoInput.current?.click()}
-                        className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-card-border text-sm font-semibold text-text-secondary transition-colors hover:border-bd-green/50 hover:bg-bd-green-light/40 hover:text-bd-green focus-visible:border-bd-green focus-visible:outline-none"
+                        className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-white/12 text-sm font-semibold text-white/80 transition-colors hover:border-signal-orange/50 hover:bg-white/10 hover:text-signal-orange focus-visible:border-signal-orange focus-visible:outline-none"
                       >
                         <Video className="size-6" aria-hidden /> ভিডিও যোগ
                       </button>
@@ -276,7 +276,7 @@ export function PostForm() {
               <FormItem>
                 <FormLabel className="flex justify-between">
                   বিবরণ
-                  <span className="text-xs font-normal text-text-muted tabular-nums">
+                  <span className="text-xs font-normal text-white/65 tabular-nums">
                     <Num value={field.value.length} />/<Num value={1200} />
                   </span>
                 </FormLabel>
@@ -303,7 +303,7 @@ export function PostForm() {
                   <FormControl>
                     <select
                       {...field}
-                      className="h-11 w-full rounded-lg border border-card-border bg-white px-3 text-[15px] text-text-primary focus-visible:border-bd-green focus-visible:ring-2 focus-visible:ring-bd-green/20 focus-visible:outline-none"
+                      className="h-11 w-full rounded-lg border border-white/12 bg-text-primary px-3 text-[15px] text-white focus-visible:border-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange/20 focus-visible:outline-none"
                     >
                       {categories.map((c) => (
                         <option key={c.id} value={c.id}>
@@ -334,7 +334,7 @@ export function PostForm() {
                         onClick={() => form.setValue("skill", s, { shouldValidate: true })}
                         className={cn(
                           "min-h-8 rounded-full border px-2.5 text-xs font-semibold transition-colors",
-                          field.value === s ? "border-bd-green bg-bd-green text-white" : "border-card-border text-text-secondary hover:border-bd-green/40 hover:text-bd-green",
+                          field.value === s ? "border-signal-orange bg-signal-orange text-text-primary shadow-[0_8px_20px_-12px_var(--color-signal-orange)]" : "border-white/12 text-white/80 hover:border-signal-orange/40 hover:text-signal-orange",
                         )}
                       >
                         {s}
@@ -356,7 +356,7 @@ export function PostForm() {
             render={({ field }) => (
               <FormItem>
                 <FormGroupLabel>নিজেকে সৎভাবে রেটিং দিন</FormGroupLabel>
-                <div className="rounded-xl border border-orange-200 bg-orange-50/60 p-4">
+                <div className="rounded-xl border border-bdorange-600/60 bg-bdorange-600 p-4">
                   <div className="mb-4 flex items-center justify-between gap-3">
                     <span className="flex items-center gap-2">
                       <span className="text-3xl font-bold tabular-nums text-text-primary">
@@ -364,10 +364,10 @@ export function PostForm() {
                       </span>
                       <Stars value={field.value} size={18} />
                     </span>
-                    <span className="rounded-full bg-white px-3 py-1 text-sm font-semibold text-orange-900">{ratingWords[field.value]}</span>
+                    <span className="rounded-full bg-text-primary px-3 py-1 text-sm font-semibold text-text-primary">{ratingWords[field.value]}</span>
                   </div>
                   <Slider min={1} max={5} step={1} value={[field.value]} onValueChange={([n]) => field.onChange(n)} aria-label="নিজের রেটিং" />
-                  <div className="mt-2 flex justify-between text-[11px] font-semibold text-orange-900/70" aria-hidden>
+                  <div className="mt-2 flex justify-between text-[11px] font-semibold text-text-primary" aria-hidden>
                     {[1, 2, 3, 4, 5].map((n) => (
                       <span key={n}>
                         <Num value={n} />
@@ -381,7 +381,7 @@ export function PostForm() {
             )}
           />
 
-          <div className="space-y-4 rounded-xl border border-card-border p-4">
+          <div className="space-y-4 rounded-xl border border-white/12 p-4">
             <FormField
               control={form.control}
               name="sellable"
@@ -446,10 +446,10 @@ export function PostForm() {
                   )}
                 />
                 {fees && (
-                  <dl className="space-y-1 rounded-lg bg-slate-50 p-3 text-sm sm:col-span-2">
-                    <div className="flex justify-between"><dt className="text-text-secondary">বিক্রয়মূল্য</dt><dd><Taka amount={fees.price} /></dd></div>
-                    <div className="flex justify-between"><dt className="text-text-secondary">প্ল্যাটফর্ম ফি ৫%</dt><dd>− <Taka amount={fees.sellerFee} /></dd></div>
-                    <div className="flex justify-between border-t border-card-border pt-1 font-bold"><dt>আপনি পাবেন</dt><dd className="text-bd-green-dark"><Taka amount={fees.sellerReceives} /></dd></div>
+                  <dl className="space-y-1 rounded-lg bg-white/10 p-3 text-sm sm:col-span-2">
+                    <div className="flex justify-between"><dt className="text-white/80">বিক্রয়মূল্য</dt><dd><Taka amount={fees.price} /></dd></div>
+                    <div className="flex justify-between"><dt className="text-white/80">প্ল্যাটফর্ম ফি ৫%</dt><dd>− <Taka amount={fees.sellerFee} /></dd></div>
+                    <div className="flex justify-between border-t border-white/12 pt-1 font-bold"><dt>আপনি পাবেন</dt><dd className="text-signal-orange"><Taka amount={fees.sellerReceives} /></dd></div>
                   </dl>
                 )}
               </div>
@@ -467,36 +467,36 @@ export function PostForm() {
 
         <aside className="hidden lg:block">
           <div className="sticky top-22 space-y-3">
-            <p className="text-xs font-bold tracking-wide text-text-muted">প্রিভিউ</p>
-            <div className="rounded-2xl border border-card-border bg-white p-4">
-              <p className="text-sm font-bold text-text-primary">{currentUser.nameBn}</p>
-              <p className="mt-2 line-clamp-4 text-sm text-text-secondary">{v.caption || "আপনার বিবরণ এখানে দেখাবে।"}</p>
+            <p className="text-xs font-bold tracking-wide text-white/65">প্রিভিউ</p>
+            <div className="rounded-2xl border border-white/12 bg-text-primary p-4">
+              <p className="text-sm font-bold text-white">{currentUser.nameBn}</p>
+              <p className="mt-2 line-clamp-4 text-sm text-white/80">{v.caption || "আপনার বিবরণ এখানে দেখাবে।"}</p>
               <div className="mt-3">
                 {v.media[0] ? (
                   <MediaFrame slot={{ kind: v.media[0].kind, label: v.media[0].label, ratio: "16/9", src: v.media[0].src, duration: v.media[0].duration }} sizes="300px" />
                 ) : (
-                  <div className="media-slot-pattern aspect-video rounded-xl bg-slate-50" />
+                  <div className="aspect-video rounded-xl bg-white/10" />
                 )}
               </div>
               {!rated ? (
-                <p className="mt-3 inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-text-secondary">{topicInfo.bn}</p>
+                <p className="mt-3 inline-flex rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/80">{topicInfo.bn}</p>
               ) : (
               <>
               <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-bd-green px-3 py-1 text-xs font-bold text-white">
                 <Tag className="size-3.5" aria-hidden /> {v.skill || "দক্ষতা"}
               </p>
               <div className="mt-3 flex gap-2 text-xs">
-                <span className="flex-1 rounded-lg bg-orange-50 p-2">
-                  <span className="block font-semibold text-orange-900">নিজের দাবি</span>
+                <span className="flex-1 rounded-lg bg-bdorange-600 p-2">
+                  <span className="block font-semibold text-text-primary">নিজের দাবি</span>
                   <span className="text-lg font-bold"><Num value={v.selfRating} decimals={1} /></span>
                 </span>
-                <span className="flex-1 rounded-lg bg-amber-50 p-2">
-                  <span className="block font-semibold text-amber-900">কমিউনিটি</span>
-                  <span className="text-sm font-semibold text-amber-900">যাচাই বাকি</span>
+                <span className="flex-1 rounded-lg bg-signal-orange p-2">
+                  <span className="block font-semibold text-text-primary">কমিউনিটি</span>
+                  <span className="text-sm font-semibold text-text-primary">যাচাই বাকি</span>
                 </span>
               </div>
               {v.sellable && v.price ? (
-                <p className="mt-3 rounded-lg border border-orange-200 bg-orange-50/60 px-3 py-2 text-sm font-bold">
+                <p className="mt-3 rounded-lg border border-bdorange-600/60 bg-bdorange-600 px-3 py-2 text-sm font-bold">
                   <Taka amount={v.price} />
                 </p>
               ) : null}

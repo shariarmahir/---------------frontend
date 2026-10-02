@@ -30,17 +30,17 @@ type TradeListing = Pick<Listing, "id" | "title" | "price" | "unit" | "negotiabl
 export function BuyerFees({ price, className }: { price: number; className?: string }) {
   const f = computeFees(price);
   return (
-    <dl className={cn("space-y-1.5 rounded-xl bg-slate-50 p-3.5 text-sm", className)}>
-      <div className="flex justify-between gap-3"><dt className="text-text-secondary">দাম</dt><dd><Taka amount={f.price} /></dd></div>
+    <dl className={cn("space-y-1.5 rounded-xl bg-white/10 p-3.5 text-sm", className)}>
+      <div className="flex justify-between gap-3"><dt className="text-white/80">দাম</dt><dd><Taka amount={f.price} /></dd></div>
       <div className="flex justify-between gap-3">
-        <dt className="text-text-secondary">সেবা চার্জ ৫% <span className="text-xs">(পেমেন্ট গেটওয়েসহ)</span></dt>
+        <dt className="text-white/80">সেবা চার্জ ৫% <span className="text-xs">(পেমেন্ট গেটওয়েসহ)</span></dt>
         <dd><Taka amount={f.buyerCharge} /></dd>
       </div>
-      <div className="flex justify-between gap-3 border-t border-card-border pt-1.5 font-bold">
+      <div className="flex justify-between gap-3 border-t border-white/12 pt-1.5 font-bold">
         <dt>আপনি দেবেন</dt>
-        <dd className="text-bd-green-dark"><Taka amount={f.buyerPays} /></dd>
+        <dd className="text-signal-orange"><Taka amount={f.buyerPays} /></dd>
       </div>
-      <p className="pt-1 text-xs text-text-muted">বিক্রেতা পাবেন <Taka amount={f.sellerReceives} /> (তাঁর দিক থেকে ৫% প্ল্যাটফর্ম ফি)।</p>
+      <p className="pt-1 text-xs text-white/65">বিক্রেতা পাবেন <Taka amount={f.sellerReceives} /> (তাঁর দিক থেকে ৫% প্ল্যাটফর্ম ফি)।</p>
     </dl>
   );
 }
@@ -72,14 +72,14 @@ export function BuyDialog({ listing, open, onOpenChange }: { listing: TradeListi
         }
       }}
     >
-      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-white font-sans sm:max-w-md">
+      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-text-primary font-sans sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-lg font-bold text-text-primary">{done ? "অর্ডার নিশ্চিত" : "কিনুন"}</DialogTitle>
-          <DialogDescription className="text-sm text-text-secondary">{listing.title}</DialogDescription>
+          <DialogTitle className="text-lg font-bold text-white">{done ? "অর্ডার নিশ্চিত" : "কিনুন"}</DialogTitle>
+          <DialogDescription className="text-sm text-white/80">{listing.title}</DialogDescription>
         </DialogHeader>
         {done ? (
           <div className="space-y-4" role="status">
-            <p className="flex gap-2 rounded-xl bg-bd-green-light p-3 text-sm text-bd-green-dark">
+            <p className="flex gap-2 rounded-xl bg-white/10 p-3 text-sm text-signal-orange">
               <Lock className="mt-0.5 size-4 shrink-0" aria-hidden />
               <span>
                 <Taka amount={f.buyerPays} /> {payBn[done]} থেকে এসক্রোতে জমা হয়েছে। পণ্য বা কাজ বুঝে পেয়ে নিশ্চিত করলে তবেই বিক্রেতার কাছে যাবে।
@@ -97,7 +97,7 @@ export function BuyDialog({ listing, open, onOpenChange }: { listing: TradeListi
             <button type="button" onClick={confirm} className={mediaButton({ variant: "primary", size: "lg", className: "w-full" })}>
               <ShoppingBag aria-hidden /> <Taka amount={f.buyerPays} /> পরিশোধ করুন
             </button>
-            <p className="text-center text-xs text-text-muted">ডেমো: আসল টাকা কাটা হবে না।</p>
+            <p className="text-center text-xs text-white/65">ডেমো: আসল টাকা কাটা হবে না।</p>
           </div>
         )}
       </DialogContent>
@@ -146,10 +146,10 @@ export function OfferDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="rounded-2xl bg-white font-sans sm:max-w-md">
+      <DialogContent className="rounded-2xl bg-text-primary font-sans sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-lg font-bold text-text-primary">দাম প্রস্তাব করুন</DialogTitle>
-          <DialogDescription className="text-sm text-text-secondary">
+          <DialogTitle className="text-lg font-bold text-white">দাম প্রস্তাব করুন</DialogTitle>
+          <DialogDescription className="text-sm text-white/80">
             চাওয়া দাম <Taka amount={listing.price} />। সর্বোচ্চ তিনবার প্রস্তাব দেওয়া যায়; বিক্রেতা রাজি, পাল্টা দাম বা না বলবেন।
           </DialogDescription>
         </DialogHeader>
@@ -170,7 +170,7 @@ export function OfferDialog({
                         key={r}
                         type="button"
                         onClick={() => form.setValue("amount", Math.round((listing.price * r) / 10) * 10, { shouldValidate: true })}
-                        className="mr-1.5 mt-1 inline-flex min-h-8 items-center rounded-full border border-card-border px-2.5 text-xs font-semibold text-text-secondary hover:border-bd-green/40 hover:text-bd-green"
+                        className="mr-1.5 mt-1 inline-flex min-h-8 items-center rounded-full border border-white/12 px-2.5 text-xs font-semibold text-white/80 hover:border-signal-orange/40 hover:text-signal-orange"
                       >
                         <Taka amount={Math.round((listing.price * r) / 10) * 10} />
                       </button>
@@ -181,7 +181,7 @@ export function OfferDialog({
               )}
             />
             {verdict === "unfair" && (
-              <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-national-crimson">
+              <p role="alert" className="rounded-xl border border-crimson-bright/60 bg-national-crimson p-3 text-sm text-white">
                 এই দাম এ ধরনের কাজের ন্যায্য দামের অনেক নিচে — সম্ভবত প্রত্যাখ্যাত হবে।
               </p>
             )}
@@ -202,8 +202,8 @@ export function TradeButtons({ listing, band, size = "sm", stacked }: { listing:
   const [offer, setOffer] = useState(false);
   if (listing.seller === CURRENT_USER_HANDLE) {
     return (
-      <p className="relative z-10 flex min-h-10 items-center gap-2 rounded-xl bg-slate-50 px-3 text-sm font-semibold text-text-secondary">
-        <Store className="size-4.5 text-bd-green" aria-hidden /> আপনার তালিকা — ক্রেতারা এখান থেকে কিনবেন
+      <p className="relative z-10 flex min-h-10 items-center gap-2 rounded-xl bg-white/10 px-3 text-sm font-semibold text-white/80">
+        <Store className="size-4.5 text-signal-orange" aria-hidden /> আপনার তালিকা — ক্রেতারা এখান থেকে কিনবেন
       </p>
     );
   }

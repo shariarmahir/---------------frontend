@@ -12,7 +12,7 @@ import { Num } from "./numerals";
 /** Small seal after a name: identity checked with NID/passport. */
 export function IdSeal({ size = 18, className }: { size?: number; className?: string }) {
   return (
-    <span title="এনআইডি/পাসপোর্ট দিয়ে পরিচয় যাচাইকৃত — এক ব্যক্তি, এক অ্যাকাউন্ট" className={cn("inline-flex shrink-0 text-bd-green", className)}>
+    <span title="এনআইডি/পাসপোর্ট দিয়ে পরিচয় যাচাইকৃত — এক ব্যক্তি, এক অ্যাকাউন্ট" className={cn("inline-flex shrink-0 text-signal-orange", className)}>
       <SealCheck size={size} weight="duotone" aria-hidden />
       <span className="sr-only">পরিচয় যাচাইকৃত</span>
     </span>
@@ -21,7 +21,7 @@ export function IdSeal({ size = 18, className }: { size?: number; className?: st
 
 export function IdBadge() {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-bd-green-light py-1 pr-3 pl-1.5 text-xs font-semibold text-bd-green-dark">
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 py-1 pr-3 pl-1.5 text-xs font-semibold text-signal-orange">
       <IdentificationCard size={18} weight="duotone" aria-hidden />
       এনআইডি যাচাইকৃত
     </span>
@@ -30,9 +30,9 @@ export function IdBadge() {
 
 const statusInfo: Record<SkillStatus, { bn: string; className: string; hint: string }> = {
   verified: { bn: "কমিউনিটি যাচাইকৃত", className: "bg-bd-green text-white", hint: "৫+ জনের রেটিং দাবির আধা তারার মধ্যে" },
-  challenged: { bn: "চ্যালেঞ্জড", className: "bg-red-50 text-national-crimson ring-1 ring-red-200", hint: "কমিউনিটির রেটিং দাবির চেয়ে ১.৫+ তারা কম" },
-  rated: { bn: "যাচাই চলছে", className: "bg-slate-100 text-slate-700", hint: "আরও রেটিং দরকার" },
-  unrated: { bn: "যাচাই বাকি", className: "bg-amber-50 text-amber-900 ring-1 ring-amber-200", hint: "এখনো কেউ রেটিং দেয়নি" },
+  challenged: { bn: "চ্যালেঞ্জড", className: "bg-national-crimson text-white ring-1 ring-national-crimson/60", hint: "কমিউনিটির রেটিং দাবির চেয়ে ১.৫+ তারা কম" },
+  rated: { bn: "যাচাই চলছে", className: "bg-white/10 text-white/80", hint: "আরও রেটিং দরকার" },
+  unrated: { bn: "যাচাই বাকি", className: "bg-signal-orange text-text-primary ring-1 ring-signal-orange/60", hint: "এখনো কেউ রেটিং দেয়নি" },
 };
 
 export function StatusBadge({ status, size = "md" }: { status: SkillStatus; size?: "sm" | "md" }) {
@@ -110,8 +110,8 @@ export function RatingPair({
   const challenged = status === "challenged";
   return (
     <div className={cn("flex flex-wrap items-stretch gap-2", compact && "gap-1.5")}>
-      <div className={cn("flex min-w-0 flex-1 flex-col rounded-xl border border-orange-200 bg-orange-50/70", compact ? "px-2.5 py-1.5" : "px-3 py-2")}>
-        <span className="text-[11px] font-semibold text-orange-900">নিজের দাবি</span>
+      <div className={cn("flex min-w-0 flex-1 flex-col rounded-xl border border-bdorange-600/60 bg-bdorange-600", compact ? "px-2.5 py-1.5" : "px-3 py-2")}>
+        <span className="text-[11px] font-semibold text-text-primary">নিজের দাবি</span>
         <span className="flex items-center gap-1.5">
           <span className={cn("font-bold tabular-nums text-text-primary", compact ? "text-base" : "text-xl")}>
             <Num value={self} decimals={1} />
@@ -122,15 +122,15 @@ export function RatingPair({
       <div
         className={cn(
           "flex min-w-0 flex-1 flex-col rounded-xl border",
-          challenged ? "border-red-200 bg-red-50/60" : "border-bd-green/25 bg-bd-green-light/60",
+          challenged ? "border-crimson-bright/60 bg-national-crimson" : "border-signal-orange/25 bg-white/10",
           compact ? "px-2.5 py-1.5" : "px-3 py-2",
         )}
       >
-        <span className={cn("text-[11px] font-semibold", challenged ? "text-national-crimson" : "text-bd-green-dark")}>
+        <span className={cn("text-[11px] font-semibold", challenged ? "text-crimson-bright" : "text-signal-orange")}>
           কমিউনিটি · <Num value={raters} /> জন
         </span>
         <span className="flex items-center gap-1.5">
-          <span className={cn("font-bold tabular-nums", challenged ? "text-national-crimson" : "text-bd-green-dark", compact ? "text-base" : "text-xl")}>
+          <span className={cn("font-bold tabular-nums", challenged ? "text-crimson-bright" : "text-signal-orange", compact ? "text-base" : "text-xl")}>
             {raters > 0 ? <Num value={communityAvg} decimals={1} /> : "—"}
           </span>
           {raters > 0 && <Stars value={communityAvg} size={compact ? 12 : 14} animate={animate} />}

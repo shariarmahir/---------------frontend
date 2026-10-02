@@ -50,10 +50,10 @@ function coverFor(handle: string) {
 function Stat({ icon, value, label }: { icon: React.ReactNode; value: React.ReactNode; label: string }) {
   return (
     <div className="flex items-center gap-2.5">
-      <span className="flex size-9 items-center justify-center rounded-xl bg-slate-100 text-text-secondary">{icon}</span>
+      <span className="flex size-9 items-center justify-center rounded-xl bg-white/10 text-white/80">{icon}</span>
       <span>
-        <span className="block text-base leading-tight font-bold text-text-primary">{value}</span>
-        <span className="block text-xs text-text-muted">{label}</span>
+        <span className="block text-base leading-tight font-bold text-white">{value}</span>
+        <span className="block text-xs text-white/65">{label}</span>
       </span>
     </div>
   );
@@ -73,8 +73,8 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 pb-20 lg:pb-0">
-      <section className="overflow-hidden rounded-2xl border border-card-border bg-white">
-        <div className="relative h-28 bg-bd-green-light sm:h-40" aria-hidden>
+      <section className="overflow-hidden rounded-2xl border border-white/12 bg-text-primary">
+        <div className="relative h-28 bg-white/10 sm:h-40" aria-hidden>
           <Image src={coverFor(person.handle)} alt="" fill priority sizes="(min-width: 1152px) 1152px, 100vw" className="object-cover" />
           <span className="absolute inset-0 bg-linear-to-t from-black/25 to-transparent" />
         </div>
@@ -91,21 +91,21 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
               )}
             </div>
           </div>
-          <h1 className="mt-4 flex items-center gap-2 text-2xl font-bold text-text-primary">
+          <h1 className="mt-4 flex items-center gap-2 text-2xl font-bold text-white">
             {person.nameBn}
             {person.idVerified && <IdSeal size={24} />}
           </h1>
-          <p className="text-sm text-text-muted">
+          <p className="text-sm text-white/65">
             {person.name} · @{person.handle}
           </p>
-          <p className="mt-2 text-[15px] font-semibold text-text-secondary">{person.headline}</p>
-          <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-text-primary">{person.bio}</p>
-          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-text-muted">
+          <p className="mt-2 text-[15px] font-semibold text-white/80">{person.headline}</p>
+          <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-white">{person.bio}</p>
+          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-white/65">
             <span className="inline-flex items-center gap-1"><MapPin className="size-4" aria-hidden />{self ? <OwnLocation area={person.area} district={person.district} /> : `${person.area}, ${person.district}`}</span>
             <span className="inline-flex items-center gap-1"><CalendarDays className="size-4" aria-hidden />যোগ দিয়েছেন {monthsBn[Number(person.joined.slice(5, 7)) - 1]} <Num value={person.joined.slice(0, 4)} /></span>
             {person.idVerified && <IdBadge />}
           </div>
-          <dl className="mt-6 grid grid-cols-2 gap-4 border-t border-card-border pt-5 sm:grid-cols-4">
+          <dl className="mt-6 grid grid-cols-2 gap-4 border-t border-white/12 pt-5 sm:grid-cols-4">
             <Stat icon={<Users className="size-4.5" aria-hidden />} value={<FollowerCount handle={person.handle} base={person.followers} />} label="অনুসারী" />
             <Stat icon={<BriefcaseBusiness className="size-4.5" aria-hidden />} value={<Compact n={person.jobsDone} />} label="সম্পন্ন কাজ" />
             <Stat
@@ -129,8 +129,8 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
               {person.skills.map((s) => (
                 <li key={s.skill} className="space-y-2.5">
                   <p className="flex items-center justify-between gap-2">
-                    <span className="text-[15px] font-bold text-text-primary">{s.skill}</span>
-                    <span className="text-xs text-text-muted">{getCategory(s.category).bn}</span>
+                    <span className="text-[15px] font-bold text-white">{s.skill}</span>
+                    <span className="text-xs text-white/65">{getCategory(s.category).bn}</span>
                   </p>
                   <RatingPair self={s.self} communityAvg={s.communityAvg} raters={s.raters} />
                 </li>
@@ -145,11 +145,11 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
                   <ul className="space-y-2">
                     {certs.map((c) => (
                       <li key={c.id}>
-                        <Link href={`/media/certificate/${person.handle}/${c.n}`} className="flex items-center gap-2.5 rounded-xl p-2 -m-2 hover:bg-slate-50">
-                          <SealCheck size={28} weight="duotone" className="shrink-0 text-bd-green" aria-hidden />
+                        <Link href={`/media/certificate/${person.handle}/${c.n}`} className="flex items-center gap-2.5 rounded-xl p-2 -m-2 hover:bg-white/10">
+                          <SealCheck size={28} weight="duotone" className="shrink-0 text-signal-orange" aria-hidden />
                           <span className="min-w-0">
-                            <span className="block text-sm font-semibold text-text-primary">{c.skill.skill}</span>
-                            <span className="block text-xs text-text-muted">কমিউনিটি-যাচাইকৃত · {c.id}</span>
+                            <span className="block text-sm font-semibold text-white">{c.skill.skill}</span>
+                            <span className="block text-xs text-white/65">কমিউনিটি-যাচাইকৃত · {c.id}</span>
                           </span>
                         </Link>
                       </li>
@@ -162,9 +162,9 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
                   <ul className="space-y-2">
                     {theirTeams.map((t) => (
                       <li key={t.id}>
-                        <Link href={`/media/teams?k=${t.kind}`} className="block rounded-xl p-2 -m-2 hover:bg-slate-50">
-                          <span className="block text-sm font-semibold text-text-primary">{t.name}</span>
-                          <span className="block text-xs text-text-muted">{teamKindBn[t.kind]}{t.lead === person.handle ? " · নেতৃত্বে" : ""}</span>
+                        <Link href={`/media/teams?k=${t.kind}`} className="block rounded-xl p-2 -m-2 hover:bg-white/10">
+                          <span className="block text-sm font-semibold text-white">{t.name}</span>
+                          <span className="block text-xs text-white/65">{teamKindBn[t.kind]}{t.lead === person.handle ? " · নেতৃত্বে" : ""}</span>
                         </Link>
                       </li>
                     ))}
@@ -202,15 +202,15 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
               ) : (
                 <ul className="space-y-3">
                   {person.workHistory.map((w) => (
-                    <li key={w.id} className="rounded-2xl border border-card-border bg-white p-4 sm:p-5">
+                    <li key={w.id} className="rounded-2xl border border-white/12 bg-text-primary p-4 sm:p-5">
                       <div className="flex flex-wrap items-start justify-between gap-2">
                         <div>
-                          <p className="font-bold text-text-primary">{w.title}</p>
-                          <p className="text-sm text-text-muted">
+                          <p className="font-bold text-white">{w.title}</p>
+                          <p className="text-sm text-white/65">
                             {w.client} · <Num value={w.date} />
                           </p>
                         </div>
-                        <p className="text-base font-bold text-text-primary">
+                        <p className="text-base font-bold text-white">
                           <Taka amount={w.amount} />
                         </p>
                       </div>
@@ -218,7 +218,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
                         <Stars value={w.rating} size={14} />
                         <span className="text-sm font-semibold"><Num value={w.rating} decimals={1} /></span>
                       </p>
-                      <p className="mt-1.5 text-sm leading-relaxed text-text-secondary">“{w.review}”</p>
+                      <p className="mt-1.5 text-sm leading-relaxed text-white/80">“{w.review}”</p>
                     </li>
                   ))}
                 </ul>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { PixelMark } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
 
 /** Page title row for /media screens. */
@@ -15,16 +16,17 @@ export function PageHeader({
   back?: { href: string; label: string };
 }) {
   return (
-    <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
+    <header className="live-in mb-6 flex flex-wrap items-end justify-between gap-4">
       <div className="min-w-0">
         {back && (
-          <Link href={back.href} className="mb-2 inline-flex min-h-8 items-center gap-1.5 text-sm font-semibold text-bd-green hover:underline">
-            <ArrowLeft className="size-4" aria-hidden />
+          <Link href={back.href} className="group mb-2 inline-flex min-h-8 items-center gap-1.5 text-sm font-semibold text-signal-orange">
+            <ArrowLeft className="size-4 transition-transform duration-200 group-hover:-translate-x-1" aria-hidden />
             {back.label}
           </Link>
         )}
-        <h1 className="text-2xl font-bold text-balance text-text-primary sm:text-[1.75rem] sm:leading-tight">{title}</h1>
-        {subtitle && <p className="mt-2 max-w-2xl text-sm leading-relaxed text-text-secondary">{subtitle}</p>}
+        <PixelMark tone="dark" className="mb-2" />
+        <h1 className="text-2xl font-bold tracking-tight text-balance text-white sm:text-[2rem] sm:leading-tight">{title}</h1>
+        {subtitle && <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/80">{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
     </header>
@@ -46,10 +48,10 @@ export function Panel({
   as?: "section" | "div" | "aside" | "article";
 }) {
   return (
-    <Tag className={cn("rounded-2xl border border-card-border bg-white p-4 sm:p-6", className)}>
+    <Tag className={cn("story-reveal rounded-2xl bg-text-primary p-4 ring-1 ring-white/12 sm:p-6", className)}>
       {(title || action) && (
         <div className="mb-4 flex items-center justify-between gap-2">
-          {title && <h2 className="text-base font-bold text-text-primary">{title}</h2>}
+          {title && <h2 className="text-base font-bold text-signal-orange">{title}</h2>}
           {action}
         </div>
       )}

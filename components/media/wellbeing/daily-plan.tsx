@@ -40,14 +40,14 @@ export function DailyPlan({ compact }: { compact?: boolean }) {
   const count = Object.keys(done).length;
 
   return (
-    <section aria-labelledby="plan-title" className="rounded-2xl border border-card-border bg-white p-4 sm:p-5">
+    <section aria-labelledby="plan-title" className="rounded-2xl border border-white/12 bg-text-primary p-4 sm:p-5">
       <div className="flex items-baseline justify-between gap-2">
-        <h2 id="plan-title" className="text-base font-bold text-text-primary">আজকের পরিকল্পনা</h2>
-        <span className="text-xs text-text-muted">
+        <h2 id="plan-title" className="text-base font-bold text-white">আজকের পরিকল্পনা</h2>
+        <span className="text-xs text-white/65">
           <Num value={count} />/<Num value={planSteps.length} /> · আজ <Num value={minutes} /> মিনিট
         </span>
       </div>
-      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100" aria-hidden>
+      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10" aria-hidden>
         <div className="h-full rounded-full bg-bd-green transition-[width] duration-500" style={{ width: `${(count / planSteps.length) * 100}%` }} />
       </div>
       <ol className={cn("mt-3", compact ? "space-y-1" : "space-y-1.5")}>
@@ -63,16 +63,16 @@ export function DailyPlan({ compact }: { compact?: boolean }) {
                 onClick={() => ensure("দিনের পরিকল্পনা রাখতে") && toggleStep(id)}
                 className={cn(
                   "flex size-7 shrink-0 items-center justify-center rounded-lg border-2 transition-colors",
-                  on ? "border-bd-green bg-bd-green text-white" : "border-card-border text-transparent hover:border-bd-green/50",
+                  on ? "border-signal-orange bg-bd-green text-white" : "border-white/12 text-transparent hover:border-signal-orange/50",
                 )}
               >
                 <Check className="size-4" strokeWidth={3} aria-hidden />
               </button>
-              <Link href={href} className="group flex min-h-10 min-w-0 flex-1 items-center gap-2 rounded-lg px-1 hover:bg-slate-50">
-                <Icon className={cn("size-4.5 shrink-0", on ? "text-text-muted" : "text-bd-green")} aria-hidden />
+              <Link href={href} className="group flex min-h-10 min-w-0 flex-1 items-center gap-2 rounded-lg px-1 hover:bg-white/10">
+                <Icon className={cn("size-4.5 shrink-0", on ? "text-white/65" : "text-signal-orange")} aria-hidden />
                 <span className="min-w-0">
-                  <span className={cn("block text-sm font-semibold", on ? "text-text-muted line-through" : "text-text-primary group-hover:text-bd-green")}>{bn}</span>
-                  {!compact && <span className="block truncate text-xs text-text-muted">{hint}</span>}
+                  <span className={cn("block text-sm font-semibold", on ? "text-white/65 line-through" : "text-white group-hover:text-signal-orange")}>{bn}</span>
+                  {!compact && <span className="block truncate text-xs text-white/65">{hint}</span>}
                 </span>
               </Link>
             </li>
@@ -80,7 +80,7 @@ export function DailyPlan({ compact }: { compact?: boolean }) {
         })}
       </ol>
       {count === planSteps.length && (
-        <p className="fade-in mt-3 rounded-xl bg-bd-green-light px-3 py-2 text-sm font-semibold text-bd-green-dark">চমৎকার দিন! এবার অ্যাপ বন্ধ করে বিশ্রাম নিন।</p>
+        <p className="fade-in mt-3 rounded-xl bg-white/10 px-3 py-2 text-sm font-semibold text-signal-orange">চমৎকার দিন! এবার অ্যাপ বন্ধ করে বিশ্রাম নিন।</p>
       )}
     </section>
   );

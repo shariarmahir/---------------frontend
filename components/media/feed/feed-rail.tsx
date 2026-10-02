@@ -32,27 +32,27 @@ export function FeedRail() {
         <ol className="space-y-4">
           {loop.map(({ Icon, title, body }) => (
             <li key={title} className="flex gap-3">
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-bd-green-light text-bd-green">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white/10 text-signal-orange">
                 <Icon className="size-4.5" aria-hidden />
               </span>
               <span>
-                <span className="block text-sm font-bold text-text-primary">{title}</span>
-                <span className="block text-xs leading-relaxed text-text-muted">{body}</span>
+                <span className="block text-sm font-bold text-white">{title}</span>
+                <span className="block text-xs leading-relaxed text-white/65">{body}</span>
               </span>
             </li>
           ))}
         </ol>
       </Panel>
 
-      <Panel title="আপনার চোখ দরকার" action={<Link href="/media?tab=verify" className="text-xs font-semibold text-bd-green hover:underline">সব</Link>}>
+      <Panel title="আপনার চোখ দরকার" action={<Link href="/media?tab=verify" className="text-xs font-semibold text-signal-orange hover:underline">সব</Link>}>
         <ul className="space-y-3">
           {needsEyes.map((p) => {
             const a = people.find((x) => x.handle === p.author)!;
             return (
               <li key={p.id}>
-                <Link href={`/media/post/${p.id}`} className="group block rounded-xl p-2 -m-2 hover:bg-slate-50">
-                  <span className="block text-sm font-semibold text-text-primary group-hover:text-bd-green">{p.skill.name}</span>
-                  <span className="mt-0.5 flex items-center gap-2 text-xs text-text-muted">
+                <Link href={`/media/post/${p.id}`} className="group block rounded-xl p-2 -m-2 hover:bg-white/10">
+                  <span className="block text-sm font-semibold text-white group-hover:text-signal-orange">{p.skill.name}</span>
+                  <span className="mt-0.5 flex items-center gap-2 text-xs text-white/65">
                     {a.nameBn} · দাবি <Num value={p.skill.self} />★ · <Num value={p.skill.raters} /> জন
                   </span>
                 </Link>
@@ -69,7 +69,7 @@ export function FeedRail() {
               <PersonLine person={p} size="sm" meta={s.skill} />
               <span className="flex shrink-0 flex-col items-end">
                 <Stars value={s.communityAvg} size={11} />
-                <span className="text-[11px] text-text-muted">
+                <span className="text-[11px] text-white/65">
                   <Num value={s.raters} /> জন
                 </span>
               </span>

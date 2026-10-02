@@ -58,13 +58,13 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
             {student && <input type="hidden" name="st" value="1" />}
             <label className="relative block">
               <span className="sr-only">কাজ খুঁজুন</span>
-              <Search className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-text-muted" aria-hidden />
+              <Search className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-white/65" aria-hidden />
               <input
                 type="search"
                 name="q"
                 defaultValue={q}
                 placeholder="পদ, প্রতিষ্ঠান বা #হ্যাশট্যাগ"
-                className="h-12 w-full rounded-2xl border border-card-border bg-white pr-4 pl-12 text-[15px] focus:border-bd-green focus:ring-3 focus:ring-bd-green/15 focus:outline-none"
+                className="h-12 w-full rounded-2xl border border-white/12 bg-text-primary pr-4 pl-12 text-[15px] focus:border-signal-orange focus:ring-3 focus:ring-signal-orange/15 focus:outline-none"
               />
             </label>
           </form>
@@ -83,7 +83,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
               </ul>
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <div className="flex flex-wrap gap-1 rounded-xl bg-slate-100 p-1">
+              <div className="flex flex-wrap gap-1 rounded-xl bg-white/10 p-1">
                 {[undefined, ...(Object.keys(jobTypeBn) as JobType[])].map((t) => (
                   <Link
                     key={t ?? "all"}
@@ -92,8 +92,8 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
                     aria-current={type === t ? "true" : undefined}
                     className={
                       type === t
-                        ? "inline-flex min-h-8 items-center rounded-lg bg-white px-2.5 text-xs font-semibold text-bd-green shadow-[0_1px_2px_rgb(15_23_42/0.08)]"
-                        : "inline-flex min-h-8 items-center rounded-lg px-2.5 text-xs font-semibold text-text-secondary hover:text-text-primary"
+                        ? "inline-flex min-h-8 items-center rounded-lg bg-signal-orange px-2.5 text-xs font-semibold text-text-primary shadow-tile"
+                        : "inline-flex min-h-8 items-center rounded-lg px-2.5 text-xs font-semibold text-white/80 hover:text-white"
                     }
                   >
                     {t ? jobTypeBn[t] : "সব ধরন"}
@@ -109,7 +109,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
           {!sector && !type && !student && !q && <MyJobs />}
 
           {shown.length === 0 ? (
-            <EmptyState icon="search" title="এই ফিল্টারে কাজ নেই" body="অন্য খাত বা ধরন বেছে নিন।" action={<Link href="/media/jobs" className="text-sm font-semibold text-bd-green hover:underline">সব কাজ দেখুন</Link>} />
+            <EmptyState icon="search" title="এই ফিল্টারে কাজ নেই" body="অন্য খাত বা ধরন বেছে নিন।" action={<Link href="/media/jobs" className="text-sm font-semibold text-signal-orange hover:underline">সব কাজ দেখুন</Link>} />
           ) : (
             <div className="space-y-4">
               {shown.map((j) => (
@@ -124,15 +124,15 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
             <ul className="space-y-3">
               {forYou.map((j) => (
                 <li key={j.id}>
-                  <p className="text-sm font-semibold text-text-primary">{j.title}</p>
-                  <p className="text-xs text-text-muted">{j.org}</p>
+                  <p className="text-sm font-semibold text-white">{j.title}</p>
+                  <p className="text-xs text-white/65">{j.org}</p>
                 </li>
               ))}
             </ul>
           </Panel>
           <Panel title="ন্যায্য মজুরির নিয়ম">
-            <p className="flex gap-2 text-sm leading-relaxed text-text-secondary">
-              <Scale className="mt-0.5 size-4.5 shrink-0 text-bd-green" aria-hidden />
+            <p className="flex gap-2 text-sm leading-relaxed text-white/80">
+              <Scale className="mt-0.5 size-4.5 shrink-0 text-signal-orange" aria-hidden />
               <span>
                 মাসিক বেতন অন্তত <Taka amount={PAY_FLOOR.month} />, ঘণ্টায় অন্তত <Taka amount={PAY_FLOOR.hour} />; এককালীন কাজ ওই খাতের ন্যায্য দামের কাছাকাছি। এর নিচে পোস্ট হয় না।
               </span>

@@ -17,7 +17,7 @@ export function MediaGallery({ media, className }: { media: MediaSlot[]; classNa
   if (media.length === 0) return null;
   const shown = media.slice(0, 4);
   const square = shown.length > 2;
-  const tile = "group relative block w-full cursor-zoom-in rounded-xl text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bd-green";
+  const tile = "group relative block w-full cursor-zoom-in rounded-xl text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-orange";
 
   return (
     <>
@@ -49,12 +49,12 @@ function MediaViewer({ media, index, onIndex }: { media: MediaSlot[]; index: num
   const m = index === null ? undefined : media[index];
   const many = media.length > 1;
   const go = (d: number) => index !== null && onIndex((index + d + media.length) % media.length);
-  const nav = "absolute top-1/2 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-text-primary shadow-lg transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-white";
+  const nav = "absolute top-1/2 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/70 text-white shadow-lg transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white";
 
   return (
     <Dialog open={index !== null} onOpenChange={(o) => !o && onIndex(null)}>
       <DialogContent
-        className="max-w-[min(64rem,calc(100vw-1.5rem))] gap-0 overflow-hidden border-0 bg-slate-950 p-0 font-sans text-white sm:max-w-[min(64rem,calc(100vw-3rem))] [&>button:last-child]:z-10 [&>button:last-child]:bg-white/90 [&>button:last-child]:text-text-primary"
+        className="max-w-[min(64rem,calc(100vw-1.5rem))] gap-0 overflow-hidden border-0 bg-slate-950 p-0 font-sans text-white sm:max-w-[min(64rem,calc(100vw-3rem))] [&>button:last-child]:z-10 [&>button:last-child]:bg-black/70 [&>button:last-child]:text-white"
         onKeyDown={(e) => {
           if (!many) return;
           if (e.key === "ArrowRight") go(1);

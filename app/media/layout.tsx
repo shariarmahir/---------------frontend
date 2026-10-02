@@ -37,10 +37,10 @@ export default async function MediaLayout({ children }: { children: React.ReactN
       {/* Members only: proxy.ts redirects signed-out visitors to /login before
           this renders; the guard re-checks the browser session. */}
       <RouteGuard>
-        <div className={`${notoBengali.variable} min-h-dvh w-full bg-mint-subtle/50 font-sans text-text-primary`}>
+        <div className={`${notoBengali.variable} media-shell min-h-dvh w-full bg-black font-sans text-white`}>
           <a
             href="#media-main"
-            className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:font-semibold focus:text-bd-green"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-signal-orange focus:px-4 focus:py-2 focus:font-semibold focus:text-text-primary"
           >
             মূল বিষয়ে যান
           </a>
@@ -53,7 +53,16 @@ export default async function MediaLayout({ children }: { children: React.ReactN
           </div>
           <BottomTabs me={CURRENT_USER_HANDLE} />
           <UsageTracker />
-          <Toaster />
+          <Toaster
+            toastOptions={{
+              classNames: {
+                toast: "!rounded-2xl !border-white/12 !bg-text-primary !font-sans !text-white !shadow-[0_18px_40px_-16px_rgb(0_0_0/0.8)]",
+                description: "!text-white/75",
+                success: "[&_[data-icon]]:!text-signal-orange",
+                error: "[&_[data-icon]]:!text-crimson-bright",
+              },
+            }}
+          />
         </div>
       </RouteGuard>
     </NumeralsProvider>

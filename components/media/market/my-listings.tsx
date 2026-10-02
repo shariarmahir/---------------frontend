@@ -10,7 +10,7 @@ export function MyListings() {
   if (mine.length === 0) return null;
   return (
     <section className="mb-8">
-      <h2 className="mb-3 text-base font-bold text-text-primary">আপনার বিক্রির তালিকা</h2>
+      <h2 className="mb-3 text-base font-bold text-white">আপনার বিক্রির তালিকা</h2>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {mine.map((l) => (
           <ListingCard key={l.id} listing={l} seller={currentUser} />

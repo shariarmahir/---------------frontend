@@ -5,6 +5,7 @@ export type NavIcon =
   | "jobs"
   | "messages"
   | "events"
+  | "classroom"
   | "teams"
   | "challenges"
   | "civic"
@@ -37,10 +38,11 @@ export const mediaNavGroups: { title: string; items: MediaNavItem[] }[] = [
   {
     title: "কমিউনিটি",
     items: [
+      { href: "/media/classroom", label: "ক্লাসরুম", icon: "classroom", hint: "ব্যাচ, রুটিন, সিলেবাস, পরীক্ষার কাউন্টডাউন, ক্লাস চ্যালেঞ্জ" },
       { href: "/media/events", label: "উদ্যোগ", icon: "events", hint: "গাছ লাগানো, পরিষ্কার, রক্তদান — স্পনসরসহ" },
       { href: "/media/teams", label: "টিম ও গ্রুপ", icon: "teams", hint: "প্রোডাক্টিভ ফ্যামিলি, ল্যাব, ভ্রমণ দল" },
       { href: "/media/challenges", label: "চ্যালেঞ্জ", icon: "challenges", hint: "কোড, ডিজাইন, গবেষণা — পুরস্কারসহ" },
-      { href: "/media/civic", label: "নাগরিক", icon: "civic", hint: "এলাকার সমস্যা, সতর্কতা, সমাধান" },
+      { href: "/media/civic", label: "নাগরিক বার্তা", icon: "civic", hint: "অপরাধ, এলাকার সমস্যা, সাহায্য — ছবি-ভিডিওসহ, এলাকাবাসী নিশ্চিত করেন" },
     ],
   },
   {

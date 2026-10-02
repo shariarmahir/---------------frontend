@@ -7,16 +7,17 @@
  * every flow can be tried without signing up.
  */
 
-export type RoleId = "citizen" | "researcher" | "provider";
+export type RoleId = "citizen" | "researcher" | "provider" | "student";
 
 /** The three tiers offered on the home page's "Join Kandari Profile" band. */
 export const ROLES: { id: RoleId; bn: string; en: string; blurb: string }[] = [
   { id: "citizen", bn: "নাগরিক / রোগী", en: "Citizen / Patient", blurb: "আপনজন ব্যান্ডের ভাইটাল সিঙ্ক, টেলিমেডিসিনে অগ্রাধিকার, গ্রামের ফার্মেসির খবর।" },
   { id: "researcher", bn: "গবেষক / প্রকৌশলী", en: "Researcher / Engineer", blurb: "হার্ডওয়্যার SDK, গবেষণার আপডেট, ডেভ-কিট ও ওপেন ডেটাসেটের খবর।" },
+  { id: "student", bn: "শিক্ষার্থী / চাকরিপ্রার্থী", en: "Student / Job seeker", blurb: "শিক্ষিতদের মিডিয়ার ক্লাসরুম — ব্যাচ বানান, রুটিন, সিলেবাস, নোট, পরীক্ষার কাউন্টডাউন আর ক্লাস চ্যালেঞ্জ।" },
   { id: "provider", bn: "স্বাস্থ্যসেবা প্রদানকারী", en: "Healthcare Provider / Clinic", blurb: "ফার্মেসি নোডে যুক্ত হওয়া, যাচাইকৃত যন্ত্রের তালিকা, ডাক্তার-ট্রায়াজ।" },
 ];
 
-export type SectorId = "health" | "semiconductor" | "iot" | "robotics" | "ai" | "assistive" | "environment" | "civic";
+export type SectorId = "health" | "semiconductor" | "iot" | "robotics" | "ai" | "assistive" | "environment" | "civic" | "education";
 
 /** Sectors a subscriber can follow — Kandari-Lab works sector by sector. */
 export const SECTORS: { id: SectorId; bn: string; en: string }[] = [
@@ -28,6 +29,7 @@ export const SECTORS: { id: SectorId; bn: string; en: string }[] = [
   { id: "assistive", bn: "সহায়ক প্রযুক্তি", en: "Assistive tech" },
   { id: "environment", bn: "পরিবেশ ও কৃষি", en: "Environment & soil" },
   { id: "civic", bn: "নাগরিক সেবা", en: "Public services" },
+  { id: "education", bn: "শিক্ষা ও ক্লাসরুম", en: "Education" },
 ];
 
 /** Products a subscriber can follow for release news. Slugs match data/products.ts. */

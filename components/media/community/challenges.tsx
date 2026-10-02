@@ -29,10 +29,10 @@ function EntryDialog({ challenge, open, onOpenChange }: { challenge: Challenge; 
   }
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-white font-sans sm:max-w-lg">
+      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-text-primary font-sans sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-lg font-bold text-text-primary">জমা দিন — {challenge.title}</DialogTitle>
-          <DialogDescription className="text-sm text-text-secondary">সমাধানের সংক্ষেপ আর কাজের লিংক (গিটহাব, ড্রাইভ, ভিডিও)।</DialogDescription>
+          <DialogTitle className="text-lg font-bold text-white">জমা দিন — {challenge.title}</DialogTitle>
+          <DialogDescription className="text-sm text-white/80">সমাধানের সংক্ষেপ আর কাজের লিংক (গিটহাব, ড্রাইভ, ভিডিও)।</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-5">
@@ -42,7 +42,7 @@ function EntryDialog({ challenge, open, onOpenChange }: { challenge: Challenge; 
                   <FormLabel>টিমের নাম (ঐচ্ছিক)</FormLabel>
                   <FormControl><Input placeholder="একা হলে ফাঁকা রাখুন" {...field} /></FormControl>
                   <FormDescription>
-                    টিম নেই? <Link href="/media/teams" className="font-semibold text-bd-green hover:underline">টিম খুঁজুন বা বানান</Link>
+                    টিম নেই? <Link href="/media/teams" className="font-semibold text-signal-orange hover:underline">টিম খুঁজুন বা বানান</Link>
                   </FormDescription>
                 </FormItem>
               )} />
@@ -77,35 +77,35 @@ export function ChallengeCard({ challenge }: { challenge: Challenge }) {
   const entry = useMediaState((s) => s.entries[challenge.id]);
   const by = getPerson(challenge.by);
   return (
-    <article className="flex flex-col rounded-2xl border border-card-border bg-white p-4 transition-shadow duration-200 hover:shadow-[0_6px_20px_-12px_rgb(15_23_42/0.18)] sm:p-5">
+    <article className="flex flex-col rounded-2xl border border-white/12 bg-text-primary p-4 story-reveal transition-[translate,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-white/25 hover:shadow-[0_24px_44px_-26px_var(--color-signal-orange)] active:scale-[0.99] motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-5">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-semibold text-bd-green">{challengeKindBn[challenge.kind]} · {getCategory(challenge.category).bn}</p>
-          <h3 className="mt-0.5 text-base font-bold text-text-primary">{challenge.title}</h3>
-          <p className="text-sm text-text-secondary">
+          <p className="text-xs font-semibold text-signal-orange">{challengeKindBn[challenge.kind]} · {getCategory(challenge.category).bn}</p>
+          <h3 className="mt-0.5 text-base font-bold text-white">{challenge.title}</h3>
+          <p className="text-sm text-white/80">
             {challenge.host}
             {by && (
               <>
                 {" · "}
-                <Link href={`/media/u/${by.handle}`} className="hover:text-bd-green hover:underline">{by.nameBn}</Link>
+                <Link href={`/media/u/${by.handle}`} className="hover:text-signal-orange hover:underline">{by.nameBn}</Link>
               </>
             )}
           </p>
         </div>
-        <div className="shrink-0 rounded-xl bg-orange-50 px-3 py-2 text-center ring-1 ring-orange-200">
-          <Trophy className="mx-auto size-4.5 text-orange-800" aria-hidden />
+        <div className="shrink-0 rounded-xl bg-bdorange-600 px-3 py-2 text-center ring-1 ring-bdorange-600/60">
+          <Trophy className="mx-auto size-4.5 text-text-primary" aria-hidden />
           <p className="text-sm font-bold text-text-primary"><Taka amount={challenge.prize} /></p>
         </div>
       </div>
-      <p className="mt-3 text-sm leading-relaxed text-text-primary">{challenge.description}</p>
-      <p className="mt-3 flex flex-wrap gap-x-2 text-xs font-medium text-bd-green">{challenge.tags.map((t) => <span key={t}>{t}</span>)}</p>
-      <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-card-border pt-3">
-        <p className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-text-muted">
+      <p className="mt-3 text-sm leading-relaxed text-white">{challenge.description}</p>
+      <p className="mt-3 flex flex-wrap gap-x-2 text-xs font-medium text-signal-orange">{challenge.tags.map((t) => <span key={t}>{t}</span>)}</p>
+      <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-white/12 pt-3">
+        <p className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-white/65">
           <span className="inline-flex items-center gap-1"><CalendarClock className="size-3.5" aria-hidden /><DateText iso={challenge.deadline} /> পর্যন্ত</span>
           <span className="inline-flex items-center gap-1"><Users className="size-3.5" aria-hidden /><Num value={challenge.entries + (entry ? 1 : 0)} /> জমা{challenge.teams ? " · টিমে চলবে" : ""}</span>
         </p>
         {entry ? (
-          <span className="inline-flex min-h-9 items-center gap-1.5 rounded-xl bg-bd-green-light px-3 text-sm font-semibold text-bd-green-dark">
+          <span className="inline-flex min-h-9 items-center gap-1.5 rounded-xl bg-white/10 px-3 text-sm font-semibold text-signal-orange">
             <CircleCheck className="size-4" aria-hidden /> জমা দিয়েছেন
           </span>
         ) : (

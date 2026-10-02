@@ -3,6 +3,8 @@
 import { useSyncExternalStore } from "react";
 import type { CategoryId, CivicReport, Comment, CommunityEvent, Job, Listing, Message, Post, Sponsor, Team, Txn } from "@/data/media/types";
 import { activeAccountId, subscribeAuth } from "@/lib/auth/client";
+import type { Classroom } from "./classroom";
+import type { CrimePost } from "./crime";
 import type { Negotiation } from "./negotiation";
 
 /**
@@ -103,6 +105,12 @@ export interface MediaState {
   notes: MyNote[];
   seenNotices: Record<string, true>;
   privacy: Privacy;
+  /** Classrooms the viewer created or joined, by id (a joined sample is copied here). */
+  classrooms: Record<string, Classroom>;
+  /** অপরাধ বার্তা: the viewer's own posts, and the posts they witnessed or flagged. */
+  crimePosts: CrimePost[];
+  crimeWitness: Record<string, true>;
+  crimeFlags: Record<string, true>;
   /** Today's Learn → Connect → Create → Apply → Relax steps, keyed by date. */
   plan: { date: string; done: Record<string, true> };
 
@@ -152,6 +160,10 @@ const initialState: MediaState = Object.freeze({
   notes: [],
   seenNotices: {},
   privacy: defaultPrivacy,
+  classrooms: {},
+  crimePosts: [],
+  crimeWitness: {},
+  crimeFlags: {},
   plan: { date: "", done: {} },
   liked: {},
   commentLikes: {},
@@ -283,7 +295,7 @@ export function newId(prefix: string): string {
 }
 
 /** Toggle a key in a Record<string, true> slice. */
-export function toggleKey<K extends "liked" | "commentLikes" | "following" | "joinedEvents" | "confirmedReports" | "solutionVotes">(key: K, id: string) {
+export function toggleKey<K extends "liked" | "commentLikes" | "following" | "joinedEvents" | "confirmedReports" | "solutionVotes" | "crimeWitness" | "crimeFlags">(key: K, id: string) {
   updateMedia((s) => {
     const next: Record<string, true> = { ...s[key] };
     if (next[id]) delete next[id];

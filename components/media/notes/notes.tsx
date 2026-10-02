@@ -16,10 +16,10 @@ import { Ago, Num } from "../ui/numerals";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const noteColor: Record<MyNote["color"], string> = {
-  yellow: "bg-amber-100 ring-amber-200",
-  green: "bg-bd-green-light ring-bd-green/20",
-  orange: "bg-orange-100 ring-orange-200",
-  blue: "bg-sky-100 ring-sky-200",
+  yellow: "bg-signal-orange ring-signal-orange/60",
+  green: "bg-white/10 ring-signal-orange/20",
+  orange: "bg-bdorange-600 ring-bdorange-600/60",
+  blue: "bg-sky-300 ring-sky-300/60",
 };
 
 const colorBn: Record<MyNote["color"], string> = { yellow: "হলুদ", green: "সবুজ", orange: "কমলা", blue: "নীল" };
@@ -35,12 +35,12 @@ export function NoteCard({ note, readOnly }: { note: MyNote; readOnly?: boolean 
   return (
     <li className={cn("fade-in relative flex min-h-36 flex-col rounded-xl p-4 shadow-[0_2px_6px_-2px_rgb(15_23_42/0.15)] ring-1", noteColor[note.color])}>
       {note.best && (
-        <span className="mb-2 inline-flex w-fit items-center gap-1 rounded-full bg-white/80 px-2 py-0.5 text-[11px] font-bold text-orange-900">
+        <span className="mb-2 inline-flex w-fit items-center gap-1 rounded-full bg-black/70 px-2 py-0.5 text-[11px] font-bold text-signal-orange">
           <Star className="size-3 fill-current" aria-hidden /> দিনের সেরা কাজ
         </span>
       )}
-      <p className="flex-1 text-[15px] leading-relaxed whitespace-pre-line text-text-primary">{note.text}</p>
-      <div className="mt-3 flex items-center justify-between gap-2 text-xs text-text-secondary">
+      <p className="flex-1 text-[15px] leading-relaxed whitespace-pre-line text-white">{note.text}</p>
+      <div className="mt-3 flex items-center justify-between gap-2 text-xs text-white/80">
         <Ago iso={note.at} live />
         {!readOnly && (
           <span className="flex gap-1">
@@ -48,7 +48,7 @@ export function NoteCard({ note, readOnly }: { note: MyNote; readOnly?: boolean 
               type="button"
               aria-pressed={note.pinned}
               onClick={() => patchNote(note.id, (n) => ({ ...n, pinned: !n.pinned }))}
-              className="flex size-8 items-center justify-center rounded-lg hover:bg-white/70"
+              className="flex size-8 items-center justify-center rounded-lg hover:bg-black/70"
               title={note.pinned ? "প্রোফাইল থেকে সরান" : "প্রোফাইলে দেখান"}
             >
               {note.pinned ? <PinOff className="size-4" aria-hidden /> : <Pin className="size-4" aria-hidden />}
@@ -60,7 +60,7 @@ export function NoteCard({ note, readOnly }: { note: MyNote; readOnly?: boolean 
                 updateMedia((s) => ({ ...s, notes: s.notes.filter((n) => n.id !== note.id) }));
                 toast("নোট মুছে ফেলা হলো");
               }}
-              className="flex size-8 items-center justify-center rounded-lg hover:bg-white/70 hover:text-national-crimson"
+              className="flex size-8 items-center justify-center rounded-lg hover:bg-black/70 hover:text-crimson-bright"
             >
               <Trash2 className="size-4" aria-hidden />
               <span className="sr-only">মুছুন</span>
@@ -68,7 +68,7 @@ export function NoteCard({ note, readOnly }: { note: MyNote; readOnly?: boolean 
           </span>
         )}
       </div>
-      {note.pinned && <Pin className="absolute top-3 right-3 size-4 rotate-45 text-text-muted" aria-hidden />}
+      {note.pinned && <Pin className="absolute top-3 right-3 size-4 rotate-45 text-white/65" aria-hidden />}
     </li>
   );
 }
@@ -97,7 +97,7 @@ export function NotesBoard() {
   return (
     <div className="space-y-6">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="rounded-2xl border border-card-border bg-white p-4 sm:p-5">
+        <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="rounded-2xl border border-white/12 bg-text-primary p-4 sm:p-5">
           <FormField control={form.control} name="text" render={({ field }) => (
             <FormItem>
               <FormControl>
@@ -106,12 +106,12 @@ export function NotesBoard() {
               <FormMessage />
             </FormItem>
           )} />
-          <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-card-border pt-3">
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-white/12 pt-3">
             <div className="flex flex-wrap items-center gap-4">
               <FormField control={form.control} name="color" render={({ field }) => (
                 <div role="radiogroup" aria-label="রং" className="flex gap-1.5">
                   {(Object.keys(noteColor) as MyNote["color"][]).map((c) => (
-                    <label key={c} className={cn("flex size-8 cursor-pointer items-center justify-center rounded-full ring-1 has-focus-visible:ring-3 has-focus-visible:ring-bd-green/40", noteColor[c], field.value === c && "ring-2 ring-text-primary")}>
+                    <label key={c} className={cn("flex size-8 cursor-pointer items-center justify-center rounded-full ring-1 has-focus-visible:ring-3 has-focus-visible:ring-signal-orange/40", noteColor[c], field.value === c && "ring-2 ring-text-primary")}>
                       <input type="radio" className="sr-only" name={field.name} checked={field.value === c} onChange={() => field.onChange(c)} />
                       <span className="sr-only">{colorBn[c]}</span>
                     </label>
@@ -119,7 +119,7 @@ export function NotesBoard() {
                 </div>
               )} />
               <FormField control={form.control} name="best" render={({ field }) => (
-                <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-text-secondary">
+                <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-white/80">
                   <Switch checked={field.value} onCheckedChange={field.onChange} /> দিনের সেরা কাজ
                 </label>
               )} />
@@ -137,7 +137,7 @@ export function NotesBoard() {
         <EmptyState icon="posts" title="এখনো কোনো নোট নেই" body="দিনের শেষে এক লাইন লিখে রাখুন — কী শিখলেন, কাকে সাহায্য করলেন। সেরা কাজগুলো প্রোফাইলে জমবে।" />
       ) : (
         <>
-          <p className="text-sm text-text-muted">
+          <p className="text-sm text-white/65">
             <Num value={notes.length} />টি নোট · <Num value={best} />টি দিনের সেরা কাজ
           </p>
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -154,8 +154,8 @@ export function PinnedNotes() {
   const pinned = useMediaState((s) => s.notes).filter((n) => n.pinned).slice(0, 6);
   if (pinned.length === 0) return null;
   return (
-    <section aria-labelledby="pinned-notes" className="rounded-2xl border border-card-border bg-white p-4 sm:p-6">
-      <h2 id="pinned-notes" className="mb-4 text-base font-bold text-text-primary">নোট — সেরা কাজ ও স্মৃতি</h2>
+    <section aria-labelledby="pinned-notes" className="rounded-2xl border border-white/12 bg-text-primary p-4 sm:p-6">
+      <h2 id="pinned-notes" className="mb-4 text-base font-bold text-white">নোট — সেরা কাজ ও স্মৃতি</h2>
       <ul className="grid gap-3 sm:grid-cols-2">{pinned.map((n) => <NoteCard key={n.id} note={n} readOnly />)}</ul>
     </section>
   );

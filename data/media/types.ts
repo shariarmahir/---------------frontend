@@ -1,3 +1,4 @@
+import type { GameId } from "@/lib/media/teams";
 import type { PriceBand } from "@/lib/media/fair-price";
 import type { PayUnit } from "@/lib/media/fair-pay";
 
@@ -208,7 +209,37 @@ export interface CommunityEvent {
   cover?: string;
 }
 
-export type TeamKind = "family" | "lab" | "project" | "travel" | "sports";
+export type TeamKind = "family" | "lab" | "project" | "travel" | "sports" | "esports";
+
+export interface LabProfile {
+  type: "lab";
+  university: string;
+  supervisor: string;
+  focus: string[];
+  /** Positions the lab is recruiting for. */
+  roles: string[];
+  equipment: string[];
+  meets: string;
+}
+
+export interface SportsProfile {
+  type: "sports";
+  sport: string;
+  ageGroup: string;
+  record: { w: number; d: number; l: number };
+  practice: string;
+  positions: string[];
+}
+
+export interface EsportsProfile {
+  type: "esports";
+  game: GameId;
+  rank: string;
+  scrims: string;
+  wins: number;
+  /** Filled seats; substitutes after the starters. */
+  roster: { name: string; role: string; sub?: boolean }[];
+}
 
 export interface Team {
   id: string;
@@ -224,6 +255,11 @@ export interface Team {
   /** Taking new members? */
   open: boolean;
   cover?: string;
+  /** Secret key: anyone holding it joins, open or not. Older saved teams may lack one. */
+  code?: string;
+  /** Seat limit; none means no cap. */
+  limit?: number;
+  profile?: LabProfile | SportsProfile | EsportsProfile;
 }
 
 export type CivicKind = "sanitation" | "road" | "crime" | "extortion" | "harassment" | "utility" | "environment" | "help";

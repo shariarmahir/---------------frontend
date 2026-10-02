@@ -1367,21 +1367,97 @@
   -webkit-font-feature-settings: "liga";
   -webkit-font-smoothing: antialiased;
 }
+
 /* ── শিক্ষিতদের মিডিয়া ─────────────────────────────────────────────── */
 
-/* Empty media slot: a faint diagonal hatch so a placeholder reads as
-   "an upload goes here" rather than a broken image. */
-.media-slot-pattern {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    rgb(0 103 71 / 0.06) 0 1px,
-    transparent 1px 12px
-  );
+/* Classroom meters draw in from empty (circumference of r=52 ≈ 327). */
+@keyframes meter-draw {
+  from { stroke-dashoffset: 327; }
+}
+.meter-fill {
+  animation: meter-draw 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /* Bottom tab bar clears the iPhone home indicator. */
 .media-safe-bottom {
   padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+/*
+ * শিক্ষিতদের মিডিয়া sits on the home page's black ground. The shared shadcn
+ * pieces are white for the rest of the site, so they are re-toned here
+ * rather than forked. Unlayered, so these win over the utility layer; the
+ * `body:has()` prefix also reaches dialogs and sheets portalled out of the
+ * shell.
+ */
+.media-shell,
+body:has(.media-shell) :is([data-slot="dialog-content"], [data-slot="sheet-content"]) {
+  color-scheme: dark;
+}
+body:has(.media-shell) :is([data-slot="input"], [data-slot="textarea"], input[data-slot="form-control"], textarea[data-slot="form-control"], [data-slot="select-trigger"]) {
+  border-color: rgb(255 255 255 / 0.15);
+  background-color: var(--color-black);
+  color: var(--color-white);
+  box-shadow: none;
+}
+body:has(.media-shell) :is([data-slot="input"], [data-slot="textarea"], input[data-slot="form-control"], textarea[data-slot="form-control"])::placeholder {
+  color: rgb(255 255 255 / 0.5);
+}
+body:has(.media-shell) :is([data-slot="input"], [data-slot="textarea"], input[data-slot="form-control"], textarea[data-slot="form-control"]):hover {
+  border-color: rgb(255 255 255 / 0.3);
+}
+body:has(.media-shell) :is([data-slot="input"], [data-slot="textarea"], input[data-slot="form-control"], textarea[data-slot="form-control"]):focus-visible {
+  border-color: var(--color-signal-orange);
+  box-shadow: 0 0 0 3px rgb(228 176 39 / 0.25);
+}
+body:has(.media-shell) :is([data-slot="input"], [data-slot="textarea"], input[data-slot="form-control"], textarea[data-slot="form-control"])[aria-invalid="true"] {
+  border-color: var(--color-crimson-bright);
+}
+body:has(.media-shell) :is([data-slot="dialog-content"], [data-slot="sheet-content"]) {
+  border-color: rgb(255 255 255 / 0.12);
+  background-color: var(--color-text-primary);
+  color: var(--color-white);
+}
+body:has(.media-shell) [data-slot="dialog-content"] {
+  animation: live-in 0.26s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+body:has(.media-shell) :is([data-slot="dialog-overlay"], [data-slot="sheet-overlay"]) {
+  background-color: rgb(0 0 0 / 0.7);
+}
+body:has(.media-shell) :is([data-slot="dialog-description"], [data-slot="sheet-description"], [data-slot="form-description"]) {
+  color: rgb(255 255 255 / 0.7);
+}
+body:has(.media-shell) :is([data-slot="form-label"], [data-slot="form-group-label"]) {
+  color: var(--color-white);
+}
+body:has(.media-shell) [data-slot="form-message"] {
+  color: var(--color-crimson-bright);
+}
+body:has(.media-shell) [data-slot="tabs-list"] {
+  background-color: rgb(255 255 255 / 0.08);
+  color: rgb(255 255 255 / 0.75);
+}
+body:has(.media-shell) [data-slot="tabs-trigger"][data-state="active"] {
+  background-color: var(--color-signal-orange);
+  color: var(--color-text-primary);
+}
+body:has(.media-shell) [role="switch"][data-state="checked"] {
+  background-color: var(--color-signal-orange);
+}
+body:has(.media-shell) [role="switch"][data-state="unchecked"],
+body:has(.media-shell) [data-slot="slider-track"] {
+  background-color: rgb(255 255 255 / 0.2);
+}
+body:has(.media-shell) [role="switch"][data-state="checked"] [data-slot="switch-thumb"] {
+  background-color: var(--color-text-primary);
+}
+body:has(.media-shell) [data-slot="avatar-fallback"] {
+  background-color: rgb(255 255 255 / 0.15);
+  color: var(--color-white);
+}
+body:has(.media-shell) [data-slot="skeleton"] {
+  background-color: rgb(255 255 255 / 0.08);
+  background-image: linear-gradient(90deg, transparent 0%, rgb(255 255 255 / 0.08) 50%, transparent 100%);
 }
 
 /* Skeleton shimmer: a light band sweeping across a grey block. */
@@ -1459,6 +1535,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .skeleton-shimmer,
+  .meter-fill,
   .seal-shine::after,
   .star-in,
   .like-pop,

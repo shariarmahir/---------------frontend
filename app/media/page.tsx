@@ -50,7 +50,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
   const chip = (on: boolean) =>
     cn(
       "inline-flex min-h-9 items-center rounded-full border px-3.5 text-sm font-medium whitespace-nowrap transition-colors",
-      on ? "border-bd-green bg-bd-green text-white" : "border-card-border bg-white text-text-secondary hover:border-bd-green/40 hover:text-bd-green",
+      on ? "border-signal-orange bg-signal-orange text-text-primary shadow-[0_8px_20px_-12px_var(--color-signal-orange)]" : "border-white/12 bg-text-primary text-white/80 hover:border-signal-orange/40 hover:text-signal-orange",
     );
 
   return (
@@ -58,12 +58,12 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
       <div className="mx-auto w-full max-w-170 min-w-0 space-y-4">
         <h1 className="sr-only">ফিড</h1>
 
-        <div className="rounded-2xl border border-card-border bg-white p-4 sm:p-5">
+        <div className="rounded-2xl border border-white/12 bg-text-primary p-4 sm:p-5">
           <div className="flex items-center gap-3">
             <PersonAvatar person={currentUser} />
             <Link
               href="/media/post/new"
-              className="flex h-11 flex-1 items-center rounded-full border border-card-border bg-slate-50 px-4 text-sm text-text-muted transition-colors hover:border-bd-green/40 hover:bg-white"
+              className="flex h-11 flex-1 items-center rounded-full border border-white/12 bg-white/10 px-4 text-sm text-white/65 transition-colors hover:border-signal-orange/40 hover:bg-white/10"
             >
               আজ কী বানালেন, শিখলেন বা দেখলেন?
             </Link>
@@ -75,7 +75,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
               { Icon: FolderKanban, label: "প্রজেক্ট ডেমো", kind: "project" },
             ].map(({ Icon, label, kind }) => (
               <Link key={kind} href={`/media/post/new?kind=${kind}`} className={mediaButton({ variant: "ghost", size: "sm", className: "w-full" })}>
-                <Icon className="text-bd-green" aria-hidden />
+                <Icon className="text-signal-orange" aria-hidden />
                 {label}
               </Link>
             ))}
@@ -83,7 +83,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
         </div>
 
         <nav aria-label="ফিড ফিল্টার" className="space-y-3">
-          <div role="tablist" className="grid grid-cols-3 gap-1 rounded-xl bg-slate-100 p-1">
+          <div role="tablist" className="grid grid-cols-3 gap-1 rounded-xl bg-white/10 p-1">
             {tabs.map((t) => (
               <Link
                 key={t.key}
@@ -93,7 +93,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
                 scroll={false}
                 className={cn(
                   "flex min-h-9 items-center justify-center rounded-lg text-sm font-semibold transition-[background-color,color,box-shadow]",
-                  tab === t.key ? "bg-white text-bd-green shadow-[0_1px_2px_rgb(15_23_42/0.08)]" : "text-text-secondary hover:text-text-primary",
+                  tab === t.key ? "bg-signal-orange text-text-primary shadow-tile" : "text-white/80 hover:text-white",
                 )}
               >
                 {t.label}
@@ -117,9 +117,9 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
             </ul>
           </div>
           {cat && (
-            <p className="flex items-center gap-2 text-sm text-text-secondary">
+            <p className="flex items-center gap-2 text-sm text-white/80">
               বিভাগ:
-              <Link href={href({ tab, t: topic })} scroll={false} className="inline-flex min-h-8 items-center gap-1 rounded-full bg-bd-green-light px-3 font-semibold text-bd-green-dark hover:bg-bd-green-light/70">
+              <Link href={href({ tab, t: topic })} scroll={false} className="inline-flex min-h-8 items-center gap-1 rounded-full bg-white/10 px-3 font-semibold text-signal-orange hover:bg-white/10">
                 {getCategory(cat).bn} <X className="size-3.5" aria-hidden />
                 <span className="sr-only">বিভাগের ফিল্টার সরান</span>
               </Link>

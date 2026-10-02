@@ -23,12 +23,12 @@ export function EmptyState({
 }) {
   const Icon = icons[icon];
   return (
-    <div className="flex flex-col items-center rounded-2xl border border-dashed border-card-border bg-white px-6 py-12 text-center">
-      <span className="mb-4 text-bd-green">
+    <div className="flex flex-col items-center rounded-2xl border border-dashed border-white/12 bg-text-primary px-6 py-12 text-center">
+      <span className="mb-4 text-signal-orange">
         <Icon size={56} weight="duotone" aria-hidden />
       </span>
-      <p className="text-base font-bold text-text-primary">{title}</p>
-      {body && <p className="mt-1.5 max-w-sm text-sm leading-relaxed text-text-muted">{body}</p>}
+      <p className="text-base font-bold text-white">{title}</p>
+      {body && <p className="mt-1.5 max-w-sm text-sm leading-relaxed text-white/65">{body}</p>}
       {action && <div className="mt-5">{action}</div>}
     </div>
   );

@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { MessageCircle, Search, Wallet } from "lucide-react";
 import { LabelText } from "@/components/brand/kandari-wordmark";
 import { LABEL_TEXT } from "@/data/logo-text";
+import { SignalSeam } from "@/components/ui/section-kit";
 import { AccountMenu } from "@/components/auth/account-menu";
 import { CURRENT_USER_HANDLE } from "@/data/media/users";
 import { NotificationBell } from "../notifications/notifications";
@@ -14,42 +15,43 @@ import type { UnreadSeed } from "./unread";
 
 export function TopBar({ unreadSeed }: { unreadSeed: UnreadSeed }) {
   return (
-    <header className="sticky top-0 z-40 border-b print:hidden border-card-border bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/85">
+    <header className="sticky top-0 z-40 bg-signal-orange text-text-primary print:hidden">
       <div className="mx-auto flex h-16 max-w-350 items-center gap-2 px-3 sm:gap-3 lg:px-6">
         <MobileMenu unreadSeed={unreadSeed} me={CURRENT_USER_HANDLE} />
-        <Link href="/media" className="flex shrink-0 items-center gap-2 rounded-lg focus-visible:outline-2 focus-visible:outline-bd-green">
-          <Image src="/logo/kandari-logo.png" alt="" width={1600} height={967} sizes="64px" className="h-8 w-auto sm:h-9" priority />
+        <Link href="/media" className="flex shrink-0 items-center gap-2 rounded-lg focus-visible:outline-2 focus-visible:outline-text-primary">
+          <Image src="/logo/kandari-logo.png" alt="" width={1600} height={967} sizes="64px" className="hidden h-9 w-auto sm:block" priority />
           <span className="flex flex-col leading-none">
-            <span className="text-[18px] text-bd-green sm:text-[21px]">
+            <span className="text-[18px] text-text-primary sm:text-[21px]">
               <LabelText text={LABEL_TEXT.media} />
             </span>
-            <span className="mt-1 hidden text-[11px] font-semibold text-text-muted sm:block">দক্ষতা · প্রমাণ · সুযোগ</span>
+            <span className="mt-1 hidden text-[11px] font-bold text-text-primary/75 sm:block">দক্ষতা · প্রমাণ · সুযোগ</span>
           </span>
         </Link>
 
-        <Suspense fallback={<div className="mx-auto hidden h-10 w-full max-w-md rounded-full border border-card-border bg-slate-50 md:block" />}>
+        <Suspense fallback={<div className="mx-auto hidden h-10 w-full max-w-md rounded-full bg-text-primary md:block" />}>
           <SearchBox />
         </Suspense>
 
-        <div className="ml-auto flex items-center gap-1 md:ml-0">
+        <div className="ml-auto flex items-center gap-1.5 md:ml-0">
           <NumeralsToggle className="hidden sm:inline-flex" />
-          <Link href="/media/search" className={mediaButton({ variant: "ghost", size: "icon", className: "hidden sm:inline-flex md:hidden" })}>
+          <Link href="/media/search" className={mediaButton({ variant: "tile", size: "icon", className: "hidden sm:inline-flex md:hidden" })}>
             <Search aria-hidden />
             <span className="sr-only">খুঁজুন</span>
           </Link>
           <NotificationBell />
-          <Link href="/media/messages" className={mediaButton({ variant: "ghost", size: "icon", className: "relative" })}>
+          <Link href="/media/messages" className={mediaButton({ variant: "tile", size: "icon", className: "relative" })}>
             <MessageCircle aria-hidden />
             <span className="sr-only">বার্তা</span>
             <UnreadBubble seed={unreadSeed} />
           </Link>
-          <Link href="/media/wallet" className={mediaButton({ variant: "ghost", size: "icon", className: "hidden sm:inline-flex" })}>
+          <Link href="/media/wallet" className={mediaButton({ variant: "tile", size: "icon", className: "hidden sm:inline-flex" })}>
             <Wallet aria-hidden />
             <span className="sr-only">ওয়ালেট</span>
           </Link>
           <AccountMenu variant="media" className="ml-1" />
         </div>
       </div>
+      <SignalSeam className="bottom-0 bg-text-primary/25" />
     </header>
   );
 }

@@ -14,15 +14,15 @@ export default function CreditsPage() {
         subtitle="ডেমোর ছবিগুলো উইকিমিডিয়া কমন্সের মুক্ত লাইসেন্সের কাজ। প্রতিটির আলোকচিত্রী, লাইসেন্স ও মূল উৎস নিচে দেওয়া হলো।"
         back={{ href: "/media", label: "ফিড" }}
       />
-      <ul className="divide-y divide-card-border overflow-hidden rounded-2xl border border-card-border bg-white">
+      <ul className="divide-y divide-white/12 overflow-hidden rounded-2xl border border-white/12 bg-text-primary">
         {imageCredits.map((c) => (
           <li key={c.src} className="flex items-center gap-4 p-3 sm:p-4">
-            <span className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-slate-100">
+            <span className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-white/10">
               <Image src={c.src} alt="" fill sizes="64px" className="object-cover" />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-sm font-semibold text-text-primary" lang="en">{c.title}</span>
-              <span className="block truncate text-xs text-text-muted" lang="en">
+              <span className="block truncate text-sm font-semibold text-white" lang="en">{c.title}</span>
+              <span className="block truncate text-xs text-white/65" lang="en">
                 {c.author} · {c.license}
               </span>
             </span>
@@ -30,7 +30,7 @@ export default function CreditsPage() {
               href={c.source}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-10 shrink-0 items-center gap-1 rounded-lg px-2.5 text-xs font-semibold text-bd-green hover:bg-bd-green-light"
+              className="inline-flex min-h-10 shrink-0 items-center gap-1 rounded-lg px-2.5 text-xs font-semibold text-signal-orange hover:bg-white/10"
             >
               উৎস <ExternalLink className="size-3.5" aria-hidden />
             </a>

@@ -47,10 +47,10 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
         </div>
         <aside className="space-y-4 lg:sticky lg:top-22 lg:self-start">
           <Panel title="যেভাবে চলে">
-            <ol className="space-y-3 text-sm text-text-secondary">
-              <li className="flex gap-2.5"><Sprout className="mt-0.5 size-4.5 shrink-0 text-bd-green" aria-hidden />একজন উদ্যোগ খোলেন — কী, কোথায়, কবে, কী লাগবে।</li>
-              <li className="flex gap-2.5"><Shirt className="mt-0.5 size-4.5 shrink-0 text-bd-green" aria-hidden />এলাকার মানুষ যোগ দেন; সবাই পরিচয়-যাচাইকৃত।</li>
-              <li className="flex gap-2.5"><Building2 className="mt-0.5 size-4.5 shrink-0 text-bd-green" aria-hidden />প্রতিষ্ঠান স্পনসর করে; খরচের হিসাব সবার সামনে।</li>
+            <ol className="space-y-3 text-sm text-white/80">
+              <li className="flex gap-2.5"><Sprout className="mt-0.5 size-4.5 shrink-0 text-signal-orange" aria-hidden />একজন উদ্যোগ খোলেন — কী, কোথায়, কবে, কী লাগবে।</li>
+              <li className="flex gap-2.5"><Shirt className="mt-0.5 size-4.5 shrink-0 text-signal-orange" aria-hidden />এলাকার মানুষ যোগ দেন; সবাই পরিচয়-যাচাইকৃত।</li>
+              <li className="flex gap-2.5"><Building2 className="mt-0.5 size-4.5 shrink-0 text-signal-orange" aria-hidden />প্রতিষ্ঠান স্পনসর করে; খরচের হিসাব সবার সামনে।</li>
             </ol>
           </Panel>
         </aside>

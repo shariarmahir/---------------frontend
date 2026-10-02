@@ -34,17 +34,17 @@ export function ListingDetail({
         <div className="min-w-0 space-y-6">
           <MediaFrame slot={{ ...listing.media, ratio: "16/9" }} priority sizes="(min-width: 1024px) 720px, 100vw" />
           <Panel>
-            <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-text-muted">
-              <span className="font-semibold text-bd-green">{cat.bn}</span>
+            <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-white/65">
+              <span className="font-semibold text-signal-orange">{cat.bn}</span>
               <span className="inline-flex items-center gap-1"><MapPin className="size-4" aria-hidden />{listing.location}</span>
               <span><Compact n={listing.sold} /> বার বিক্রি</span>
             </p>
-            <p className="mt-3 text-[15px] leading-relaxed whitespace-pre-line text-text-primary">{listing.description}</p>
+            <p className="mt-3 text-[15px] leading-relaxed whitespace-pre-line text-white">{listing.description}</p>
             {listing.highlights.length > 0 && (
               <ul className="mt-4 grid gap-2 sm:grid-cols-3">
                 {listing.highlights.map((h) => (
-                  <li key={h} className="flex items-start gap-1.5 text-sm text-text-secondary">
-                    <CircleCheck className="mt-0.5 size-4 shrink-0 text-bd-green" aria-hidden />
+                  <li key={h} className="flex items-start gap-1.5 text-sm text-white/80">
+                    <CircleCheck className="mt-0.5 size-4 shrink-0 text-signal-orange" aria-hidden />
                     {h}
                   </li>
                 ))}
@@ -52,7 +52,7 @@ export function ListingDetail({
             )}
             <p className="mt-4 flex flex-wrap gap-2">
               {listing.delivery.map((d) => (
-                <span key={d} className="inline-flex items-center gap-1.5 rounded-lg border border-card-border px-2.5 py-1 text-xs font-medium text-text-secondary">
+                <span key={d} className="inline-flex items-center gap-1.5 rounded-lg border border-white/12 px-2.5 py-1 text-xs font-medium text-white/80">
                   <Truck className="size-3.5" aria-hidden />
                   {deliveryBn[d]}
                 </span>
@@ -61,10 +61,10 @@ export function ListingDetail({
           </Panel>
           <Panel title="বিক্রেতার দক্ষতা — কেন বিশ্বাস করবেন">
             <PersonLine person={seller} size="lg" meta={seller.headline} />
-            <p className="mt-4 mb-2 text-sm font-semibold text-text-primary">{listing.skill}</p>
+            <p className="mt-4 mb-2 text-sm font-semibold text-white">{listing.skill}</p>
             <RatingPair self={rating.self} communityAvg={rating.communityAvg} raters={rating.raters} />
             {proofHref && (
-              <Link href={proofHref} className="mt-4 inline-flex text-sm font-semibold text-bd-green hover:underline">
+              <Link href={proofHref} className="mt-4 inline-flex text-sm font-semibold text-signal-orange hover:underline">
                 এই কাজের প্রমাণ-পোস্ট ও আলোচনা দেখুন →
               </Link>
             )}
@@ -73,17 +73,17 @@ export function ListingDetail({
 
         <aside className="space-y-4 lg:sticky lg:top-22 lg:self-start">
           <Panel>
-            <p className="text-3xl font-bold text-text-primary">
+            <p className="text-3xl font-bold text-white">
               <Taka amount={listing.price} />
             </p>
-            <p className="text-sm text-text-muted">
+            <p className="text-sm text-white/65">
               {listing.unit} · {listing.negotiable ? "দরদাম চলে" : "নির্ধারিত দাম"}
             </p>
             <BuyerFees price={listing.price} className="mt-4" />
             <div className="mt-4">
               <TradeButtons listing={listing} band={cat.band} size="lg" stacked />
             </div>
-            <p className="mt-3 flex items-start gap-2 text-xs text-text-muted">
+            <p className="mt-3 flex items-start gap-2 text-xs text-white/65">
               <Lock className="mt-0.5 size-3.5 shrink-0" aria-hidden />
               <span>
                 টাকা এসক্রোতে থাকে; পণ্য বা সেবা বুঝে পেয়ে নিশ্চিত করলে বিক্রেতা পান। <Num value={7} /> দিনের মধ্যে সমস্যা জানালে মধ্যস্থতা।

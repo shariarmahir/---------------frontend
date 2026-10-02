@@ -19,10 +19,10 @@ import { useWallet } from "../wallet/use-wallet";
 export function PortfolioTile({ post }: { post: RatedPost }) {
   const status = skillStatus(post.skill.self, post.skill.communityAvg, post.skill.raters);
   return (
-    <Link href={`/media/post/${post.id}`} className="group block overflow-hidden rounded-xl border border-card-border bg-white transition-[border-color,box-shadow] hover:border-bd-green/35 hover:shadow-[0_6px_18px_-10px_rgb(15_23_42/0.25)]">
+    <Link href={`/media/post/${post.id}`} className="group block overflow-hidden rounded-xl border border-white/12 bg-text-primary transition-[border-color,box-shadow] hover:border-signal-orange/35 hover:shadow-[0_6px_18px_-10px_rgb(15_23_42/0.25)]">
       <MediaFrame slot={{ ...post.media[0], ratio: "1/1" }} rounded={false} sizes="(min-width: 1024px) 220px, 45vw" />
       <span className="block space-y-1.5 p-3">
-        <span className="block truncate text-sm font-bold text-text-primary group-hover:text-bd-green">{post.skill.name}</span>
+        <span className="block truncate text-sm font-bold text-white group-hover:text-signal-orange">{post.skill.name}</span>
         <StatusBadge status={status} size="sm" />
       </span>
     </Link>

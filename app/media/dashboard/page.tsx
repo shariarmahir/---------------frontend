@@ -32,23 +32,23 @@ export default function DashboardPage() {
 
           <Panel title={<span id="certificates">সার্টিফিকেট</span>}>
             {certs.length === 0 ? (
-              <p className="text-sm text-text-muted">কোনো দক্ষতা এখনো কমিউনিটি-যাচাইকৃত হয়নি। কাজের প্রমাণ পোস্ট করুন — ৫ জনের রেটিং মিললেই সনদ।</p>
+              <p className="text-sm text-white/65">কোনো দক্ষতা এখনো কমিউনিটি-যাচাইকৃত হয়নি। কাজের প্রমাণ পোস্ট করুন — ৫ জনের রেটিং মিললেই সনদ।</p>
             ) : (
               <ul className="grid gap-3 sm:grid-cols-2">
                 {certs.map((c) => (
                   <li key={c.id}>
                     <Link
                       href={`/media/certificate/${currentUser.handle}/${c.n}`}
-                      className="flex items-center gap-3 rounded-xl border border-bd-green/25 bg-bd-green-light/40 p-3 transition-colors hover:border-bd-green/50"
+                      className="flex items-center gap-3 rounded-xl border border-signal-orange/25 bg-white/10 p-3 transition-colors hover:border-signal-orange/50"
                     >
-                      <SealCheck size={36} weight="duotone" className="shrink-0 text-bd-green" aria-hidden />
+                      <SealCheck size={36} weight="duotone" className="shrink-0 text-signal-orange" aria-hidden />
                       <span className="min-w-0 flex-1">
-                        <span className="block text-sm font-bold text-text-primary">{c.skill.skill}</span>
-                        <span className="block text-xs text-text-muted">
+                        <span className="block text-sm font-bold text-white">{c.skill.skill}</span>
+                        <span className="block text-xs text-white/65">
                           <Num value={c.skill.raters} /> জনের যাচাই · {c.id}
                         </span>
                       </span>
-                      <ArrowUpRight className="size-4 text-text-muted" aria-hidden />
+                      <ArrowUpRight className="size-4 text-white/65" aria-hidden />
                     </Link>
                   </li>
                 ))}
@@ -60,7 +60,7 @@ export default function DashboardPage() {
             <ul className="grid gap-5 md:grid-cols-2">
               {currentUser.skills.map((s) => (
                 <li key={s.skill} className="space-y-2">
-                  <p className="text-sm font-bold text-text-primary">{s.skill}</p>
+                  <p className="text-sm font-bold text-white">{s.skill}</p>
                   <RatingPair self={s.self} communityAvg={s.communityAvg} raters={s.raters} />
                 </li>
               ))}

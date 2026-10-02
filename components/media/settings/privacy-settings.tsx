@@ -16,10 +16,10 @@ function Row({ icon, title, body, children }: { icon: React.ReactNode; title: st
   return (
     <div className="flex flex-wrap items-start justify-between gap-4 py-4">
       <div className="flex max-w-lg gap-3">
-        <span className="mt-0.5 text-bd-green">{icon}</span>
+        <span className="mt-0.5 text-signal-orange">{icon}</span>
         <div>
-          <p className="text-sm font-semibold text-text-primary">{title}</p>
-          <p className="mt-0.5 text-xs leading-relaxed text-text-muted">{body}</p>
+          <p className="text-sm font-semibold text-white">{title}</p>
+          <p className="mt-0.5 text-xs leading-relaxed text-white/65">{body}</p>
         </div>
       </div>
       {children}
@@ -35,9 +35,9 @@ export function PrivacySettings() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-2xl border border-card-border bg-white px-4 sm:px-6">
-        <h2 className="pt-5 text-base font-bold text-text-primary">গোপনীয়তা</h2>
-        <div className="divide-y divide-card-border">
+      <section className="rounded-2xl border border-white/12 bg-text-primary px-4 sm:px-6">
+        <h2 className="pt-5 text-base font-bold text-white">গোপনীয়তা</h2>
+        <div className="divide-y divide-white/12">
           <Row icon={<MapPin className="size-5" aria-hidden />} title="শুধু জেলা দেখান" body="প্রোফাইলে এলাকার নাম লুকানো থাকবে, শুধু জেলা দেখা যাবে।">
             <Switch checked={p.districtOnly} onCheckedChange={(v) => set("districtOnly", v)} aria-label="শুধু জেলা দেখান" />
           </Row>
@@ -64,8 +64,8 @@ export function PrivacySettings() {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-card-border bg-white px-4 pb-5 sm:px-6">
-        <h2 className="pt-5 text-base font-bold text-text-primary">সময়</h2>
+      <section className="rounded-2xl border border-white/12 bg-text-primary px-4 pb-5 sm:px-6">
+        <h2 className="pt-5 text-base font-bold text-white">সময়</h2>
         <Row icon={<Clock className="size-5" aria-hidden />} title="বিরতির কথা মনে করিয়ে দিন" body={`আজ এখন পর্যন্ত এখানে কাটিয়েছেন ${minutes} মিনিট। নির্দিষ্ট সময় পর একবার মনে করিয়ে দেওয়া হবে।`}>
           <div role="radiogroup" aria-label="বিরতির সময়" className="flex flex-wrap gap-2">
             {[0, 15, 30, 45, 60].map((m) => (
@@ -78,8 +78,8 @@ export function PrivacySettings() {
         </Row>
       </section>
 
-      <p className="flex gap-2 rounded-xl bg-white p-4 text-sm leading-relaxed text-text-secondary ring-1 ring-card-border">
-        <ShieldCheck className="size-5 shrink-0 text-bd-green" aria-hidden />
+      <p className="flex gap-2 rounded-xl bg-text-primary p-4 text-sm leading-relaxed text-white/80 ring-1 ring-white/12">
+        <ShieldCheck className="size-5 shrink-0 text-signal-orange" aria-hidden />
         এই ডেমোতে আপনার সব তথ্য — পোস্ট, নোট, লেনদেন, এই সেটিংস — শুধু এই ব্রাউজারেই থাকে, কোনো সার্ভারে যায় না।
       </p>
     </div>

@@ -77,7 +77,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         {tab !== "all" && <input type="hidden" name="tab" value={tab} />}
         <label className="relative block">
           <span className="sr-only">খুঁজুন</span>
-          <Search className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-text-muted" aria-hidden />
+          <Search className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-white/65" aria-hidden />
           <input
             key={q}
             type="search"
@@ -86,20 +86,20 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
             autoFocus={!q}
             enterKeyHint="search"
             placeholder="যেমন: নকশিকাঁথা, রান্না, আর্কিটেক্ট, জামালপুর…"
-            className="h-12 w-full rounded-2xl border border-card-border bg-white pr-4 pl-12 text-[15px] focus:border-bd-green focus:ring-3 focus:ring-bd-green/15 focus:outline-none"
+            className="h-12 w-full rounded-2xl border border-white/12 bg-text-primary pr-4 pl-12 text-[15px] focus:border-signal-orange focus:ring-3 focus:ring-signal-orange/15 focus:outline-none"
           />
         </label>
       </form>
 
       {!q ? (
-        <section aria-labelledby="popular" className="rounded-2xl border border-card-border bg-white p-4 sm:p-6">
-          <h2 id="popular" className="mb-3 text-base font-bold text-text-primary">জনপ্রিয় দক্ষতা</h2>
+        <section aria-labelledby="popular" className="rounded-2xl border border-white/12 bg-text-primary p-4 sm:p-6">
+          <h2 id="popular" className="mb-3 text-base font-bold text-white">জনপ্রিয় দক্ষতা</h2>
           <ul className="flex flex-wrap gap-2">
             {suggestions.map((s) => (
               <li key={s}>
                 <Link
                   href={`/media/search?q=${encodeURIComponent(s)}`}
-                  className="inline-flex min-h-9 items-center rounded-full border border-card-border px-3.5 text-sm font-medium text-text-secondary transition-colors hover:border-bd-green/40 hover:text-bd-green"
+                  className="inline-flex min-h-9 items-center rounded-full border border-white/12 px-3.5 text-sm font-medium text-white/80 transition-colors hover:border-signal-orange/40 hover:text-signal-orange"
                 >
                   {s}
                 </Link>
@@ -109,7 +109,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         </section>
       ) : (
         <>
-          <nav aria-label="ফলাফলের ধরন" className="mb-5 flex gap-1 overflow-x-auto rounded-xl bg-slate-100 p-1 [scrollbar-width:none]">
+          <nav aria-label="ফলাফলের ধরন" className="mb-5 flex gap-1 overflow-x-auto rounded-xl bg-white/10 p-1 [scrollbar-width:none]">
             {tabs.map((t) => (
               <Link
                 key={t.key}
@@ -118,11 +118,11 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                 aria-current={tab === t.key ? "page" : undefined}
                 className={cn(
                   "inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-sm font-semibold whitespace-nowrap",
-                  tab === t.key ? "bg-white text-bd-green shadow-[0_1px_2px_rgb(15_23_42/0.08)]" : "text-text-secondary hover:text-text-primary",
+                  tab === t.key ? "bg-signal-orange text-text-primary shadow-tile" : "text-white/80 hover:text-white",
                 )}
               >
                 {t.bn}
-                <span className="text-xs font-medium text-text-muted"><Num value={counts[t.key]} /></span>
+                <span className="text-xs font-medium text-white/65"><Num value={counts[t.key]} /></span>
               </Link>
             ))}
           </nav>
@@ -132,22 +132,22 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
               icon="search"
               title={`“${q}” পাওয়া যায়নি`}
               body="বানান বদলে বা আরও সাধারণ শব্দে খুঁজুন — যেমন ‘রান্না’, ‘ডিজাইন’।"
-              action={<Link href="/media/search" className="text-sm font-semibold text-bd-green hover:underline">নতুন করে খুঁজুন</Link>}
+              action={<Link href="/media/search" className="text-sm font-semibold text-signal-orange hover:underline">নতুন করে খুঁজুন</Link>}
             />
           ) : (
             <div className="space-y-8">
               {show("people") && foundPeople.length > 0 && (
                 <section aria-labelledby="r-people">
-                  <h2 id="r-people" className="mb-3 text-base font-bold text-text-primary">মানুষ</h2>
+                  <h2 id="r-people" className="mb-3 text-base font-bold text-white">মানুষ</h2>
                   <ul className="grid gap-3 sm:grid-cols-2">
                     {foundPeople.map((p) => {
                       const s = topSkill(p);
                       return (
-                        <li key={p.handle} className="flex min-w-0 items-center justify-between gap-3 rounded-2xl border border-card-border bg-white p-4">
+                        <li key={p.handle} className="flex min-w-0 items-center justify-between gap-3 rounded-2xl border border-white/12 bg-text-primary p-4">
                           <div className="min-w-0 flex-1 space-y-2">
                             <PersonLine person={p} size="lg" meta={p.headline} />
                             {s && (
-                              <p className="flex flex-wrap items-center gap-2 text-xs text-text-secondary">
+                              <p className="flex flex-wrap items-center gap-2 text-xs text-white/80">
                                 <span className="font-semibold">{s.skill}</span>
                                 <StatusBadge status={skillStatus(s.self, s.communityAvg, s.raters)} size="sm" />
                               </p>
@@ -163,7 +163,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
               {show("posts") && foundPosts.length > 0 && (
                 <section aria-labelledby="r-posts">
-                  <h2 id="r-posts" className="mb-3 text-base font-bold text-text-primary">দক্ষতার পোস্ট</h2>
+                  <h2 id="r-posts" className="mb-3 text-base font-bold text-white">দক্ষতার পোস্ট</h2>
                   <ul className="grid gap-3 sm:grid-cols-2">
                     {foundPosts.map((p) => {
                       const a = personOrThrow(p.author);
@@ -171,16 +171,16 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                         <li key={p.id}>
                           <Link
                             href={`/media/post/${p.id}`}
-                            className="flex gap-3 rounded-2xl border border-card-border bg-white p-3 transition-[border-color,box-shadow] hover:border-bd-green/35 hover:shadow-[0_6px_18px_-10px_rgb(15_23_42/0.25)]"
+                            className="flex gap-3 rounded-2xl border border-white/12 bg-text-primary p-3 transition-[border-color,box-shadow] hover:border-signal-orange/35 hover:shadow-[0_6px_18px_-10px_rgb(15_23_42/0.25)]"
                           >
                             {p.media[0] && <MediaFrame bare slot={{ ...p.media[0], ratio: "1/1" }} className="w-24 shrink-0 self-start sm:w-28" sizes="112px" />}
                             <span className="min-w-0 flex-1 space-y-1.5">
-                              <span className="block text-sm font-bold text-text-primary">{p.skill?.name ?? topicOf(p).bn}</span>
-                              <span className="block truncate text-xs text-text-muted">{a.nameBn} · {getCategory(p.category).bn}</span>
+                              <span className="block text-sm font-bold text-white">{p.skill?.name ?? topicOf(p).bn}</span>
+                              <span className="block truncate text-xs text-white/65">{a.nameBn} · {getCategory(p.category).bn}</span>
                               {p.skill ? (
                                 <RatingPair self={p.skill.self} communityAvg={p.skill.communityAvg} raters={p.skill.raters} compact />
                               ) : (
-                                <span className="line-clamp-2 text-xs text-text-secondary">{p.caption}</span>
+                                <span className="line-clamp-2 text-xs text-white/80">{p.caption}</span>
                               )}
                             </span>
                           </Link>
@@ -193,21 +193,21 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
               {show("jobs") && foundJobs.length > 0 && (
                 <section aria-labelledby="r-jobs">
-                  <h2 id="r-jobs" className="mb-3 text-base font-bold text-text-primary">কাজ</h2>
+                  <h2 id="r-jobs" className="mb-3 text-base font-bold text-white">কাজ</h2>
                   <div className="space-y-3">{foundJobs.map((j) => <JobCard key={j.id} job={j} />)}</div>
                 </section>
               )}
 
               {show("events") && foundEvents.length > 0 && (
                 <section aria-labelledby="r-events">
-                  <h2 id="r-events" className="mb-3 text-base font-bold text-text-primary">উদ্যোগ</h2>
+                  <h2 id="r-events" className="mb-3 text-base font-bold text-white">উদ্যোগ</h2>
                   <div className="grid gap-4 md:grid-cols-2">{foundEvents.map((e) => <EventCard key={e.id} event={e} />)}</div>
                 </section>
               )}
 
               {show("market") && foundListings.length > 0 && (
                 <section aria-labelledby="r-market">
-                  <h2 id="r-market" className="mb-3 text-base font-bold text-text-primary">বাজার</h2>
+                  <h2 id="r-market" className="mb-3 text-base font-bold text-white">বাজার</h2>
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {foundListings.map((l) => (
                       <ListingCard key={l.id} listing={l} seller={personOrThrow(l.seller)} />

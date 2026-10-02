@@ -66,13 +66,13 @@ export default async function MarketPage({ searchParams }: { searchParams: Promi
         {cat && <input type="hidden" name="c" value={cat} />}
         <label className="relative block">
           <span className="sr-only">বাজারে খুঁজুন</span>
-          <Search className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-text-muted" aria-hidden />
+          <Search className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-white/65" aria-hidden />
           <input
             type="search"
             name="q"
             defaultValue={q}
             placeholder="যেমন: নকশিকাঁথা, মেহেদি, বাড়ির নকশা…"
-            className="h-12 w-full rounded-2xl border border-card-border bg-white pr-4 pl-12 text-[15px] focus:border-bd-green focus:ring-3 focus:ring-bd-green/15 focus:outline-none"
+            className="h-12 w-full rounded-2xl border border-white/12 bg-text-primary pr-4 pl-12 text-[15px] focus:border-signal-orange focus:ring-3 focus:ring-signal-orange/15 focus:outline-none"
           />
         </label>
       </form>
@@ -90,7 +90,7 @@ export default async function MarketPage({ searchParams }: { searchParams: Promi
                     aria-current={on ? "page" : undefined}
                     className={cn(
                       "inline-flex min-h-9 items-center rounded-full border px-3.5 text-sm font-medium whitespace-nowrap transition-colors",
-                      on ? "border-bd-green bg-bd-green text-white" : "border-card-border bg-white text-text-secondary hover:border-bd-green/40 hover:text-bd-green",
+                      on ? "border-signal-orange bg-signal-orange text-text-primary shadow-[0_8px_20px_-12px_var(--color-signal-orange)]" : "border-white/12 bg-text-primary text-white/80 hover:border-signal-orange/40 hover:text-signal-orange",
                     )}
                   >
                     {c.bn}
@@ -100,7 +100,7 @@ export default async function MarketPage({ searchParams }: { searchParams: Promi
             })}
           </ul>
         </div>
-        <nav aria-label="সাজান" className="flex gap-1 rounded-xl bg-slate-100 p-1">
+        <nav aria-label="সাজান" className="flex gap-1 rounded-xl bg-white/10 p-1">
           {sorts.map((s) => (
             <Link
               key={s.key}
@@ -109,7 +109,7 @@ export default async function MarketPage({ searchParams }: { searchParams: Promi
               aria-current={sort === s.key ? "true" : undefined}
               className={cn(
                 "inline-flex min-h-8 items-center rounded-lg px-2.5 text-xs font-semibold whitespace-nowrap",
-                sort === s.key ? "bg-white text-bd-green shadow-[0_1px_2px_rgb(15_23_42/0.08)]" : "text-text-secondary hover:text-text-primary",
+                sort === s.key ? "bg-signal-orange text-text-primary shadow-tile" : "text-white/80 hover:text-white",
               )}
             >
               {s.label}
@@ -119,9 +119,9 @@ export default async function MarketPage({ searchParams }: { searchParams: Promi
       </div>
 
       <ul className="mb-6 grid gap-2 text-sm sm:grid-cols-3">
-        <li className="flex items-center gap-2 rounded-xl border border-card-border bg-white px-3 py-2.5 text-text-secondary"><ShieldCheck className="size-4.5 shrink-0 text-bd-green" aria-hidden />প্রতিটি বিক্রেতা এনআইডি যাচাইকৃত</li>
-        <li className="flex items-center gap-2 rounded-xl border border-card-border bg-white px-3 py-2.5 text-text-secondary"><Lock className="size-4.5 shrink-0 text-bd-green" aria-hidden />টাকা এসক্রোতে, বুঝে পেলে ছাড়</li>
-        <li className="flex items-center gap-2 rounded-xl border border-card-border bg-white px-3 py-2.5 text-text-secondary"><Percent className="size-4.5 shrink-0 text-bd-green" aria-hidden />ফি খোলাখুলি: বিক্রেতা ৫%, ক্রেতা ৫%</li>
+        <li className="flex items-center gap-2 rounded-xl border border-white/12 bg-text-primary px-3 py-2.5 text-white/80"><ShieldCheck className="size-4.5 shrink-0 text-signal-orange" aria-hidden />প্রতিটি বিক্রেতা এনআইডি যাচাইকৃত</li>
+        <li className="flex items-center gap-2 rounded-xl border border-white/12 bg-text-primary px-3 py-2.5 text-white/80"><Lock className="size-4.5 shrink-0 text-signal-orange" aria-hidden />টাকা এসক্রোতে, বুঝে পেলে ছাড়</li>
+        <li className="flex items-center gap-2 rounded-xl border border-white/12 bg-text-primary px-3 py-2.5 text-white/80"><Percent className="size-4.5 shrink-0 text-signal-orange" aria-hidden />ফি খোলাখুলি: বিক্রেতা ৫%, ক্রেতা ৫%</li>
       </ul>
 
       {!q && !cat && <MyListings />}

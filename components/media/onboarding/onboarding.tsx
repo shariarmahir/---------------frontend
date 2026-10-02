@@ -46,7 +46,7 @@ function Capture({ label, done, onDone, Icon, invalid }: { label: string; done: 
       }}
       className={cn(
         "flex aspect-[1.6] w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed text-sm font-semibold transition-colors",
-        done ? "border-bd-green bg-bd-green-light text-bd-green-dark" : invalid ? "border-red-300 bg-red-50/50 text-national-crimson" : "media-slot-pattern border-card-border bg-white text-text-secondary hover:border-bd-green/50",
+        done ? "border-signal-orange bg-white/10 text-signal-orange" : invalid ? "border-crimson-bright/60 bg-national-crimson text-white" : "border-white/12 bg-text-primary text-white/80 hover:border-signal-orange/50",
       )}
     >
       {busy ? <Skeleton className="size-9 rounded-full" /> : done ? <CircleCheck className="size-9" aria-hidden /> : <Icon className="size-9" strokeWidth={1.5} aria-hidden />}
@@ -91,15 +91,15 @@ function IdentityStep({ defaultName, onNext }: { defaultName: string; onNext: (v
                   <label
                     key={value}
                     className={cn(
-                      "flex cursor-pointer gap-3 rounded-xl border-2 p-4 transition-colors has-focus-visible:ring-3 has-focus-visible:ring-bd-green/30",
-                      field.value === value ? "border-bd-green bg-bd-green-light" : "border-card-border hover:border-slate-300",
+                      "flex cursor-pointer gap-3 rounded-xl border-2 p-4 transition-colors has-focus-visible:ring-3 has-focus-visible:ring-signal-orange/30",
+                      field.value === value ? "border-signal-orange bg-white/10" : "border-white/12 hover:border-white/12",
                     )}
                   >
                     <input type="radio" className="sr-only" name={field.name} checked={field.value === value} onChange={() => field.onChange(value)} />
-                    <IdentificationCard size={28} weight="duotone" className="shrink-0 text-bd-green" aria-hidden />
+                    <IdentificationCard size={28} weight="duotone" className="shrink-0 text-signal-orange" aria-hidden />
                     <span>
-                      <span className="block font-bold text-text-primary">{label}</span>
-                      <span className="block text-xs text-text-muted">{hint}</span>
+                      <span className="block font-bold text-white">{label}</span>
+                      <span className="block text-xs text-white/65">{hint}</span>
                     </span>
                   </label>
                 ))}
@@ -152,14 +152,14 @@ function IdentityStep({ defaultName, onNext }: { defaultName: string; onNext: (v
         </div>
 
         <div>
-          <p className="mb-2 text-sm font-semibold text-text-primary">কাগজ ও মুখের ছবি</p>
+          <p className="mb-2 text-sm font-semibold text-white">কাগজ ও মুখের ছবি</p>
           <div className={cn("grid gap-3", doc === "nid" ? "sm:grid-cols-3" : "sm:grid-cols-2")}>
             <Capture label={doc === "nid" ? "সামনের পাশ" : "তথ্য-পাতা"} Icon={Camera} done={front} invalid={!!errors.front} onDone={() => form.setValue("front", true, { shouldValidate: form.formState.isSubmitted })} />
             {doc === "nid" && <Capture label="পেছনের পাশ" Icon={Camera} done={back} invalid={!!errors.back} onDone={() => form.setValue("back", true, { shouldValidate: form.formState.isSubmitted })} />}
             <Capture label="সেলফি" Icon={ScanFace} done={selfie === true} invalid={!!errors.selfie} onDone={() => form.setValue("selfie", true, { shouldValidate: form.formState.isSubmitted })} />
           </div>
           {(errors.front || errors.back || errors.selfie) && (
-            <p role="alert" className="mt-2 text-xs font-semibold text-national-crimson">
+            <p role="alert" className="mt-2 text-xs font-semibold text-crimson-bright">
               {errors.front?.message ?? errors.back?.message ?? errors.selfie?.message}
             </p>
           )}
@@ -170,8 +170,8 @@ function IdentityStep({ defaultName, onNext }: { defaultName: string; onNext: (v
           name="consent"
           render={({ field }) => (
             <FormItem>
-              <label className="flex cursor-pointer items-start gap-3 text-sm text-text-secondary">
-                <input type="checkbox" checked={field.value === true} onChange={(e) => field.onChange(e.target.checked)} className="mt-0.5 size-5 shrink-0 accent-bd-green" />
+              <label className="flex cursor-pointer items-start gap-3 text-sm text-white/80">
+                <input type="checkbox" checked={field.value === true} onChange={(e) => field.onChange(e.target.checked)} className="mt-0.5 size-5 shrink-0 accent-signal-orange" />
                 <span>এই কাগজ আমার নিজের। এক কাগজে একটিই অ্যাকাউন্ট — আমি জানি। ছবি শুধু যাচাইয়ে ব্যবহার হবে।</span>
               </label>
               <FormMessage />
@@ -179,10 +179,10 @@ function IdentityStep({ defaultName, onNext }: { defaultName: string; onNext: (v
           )}
         />
 
-        <ul className="grid gap-2 text-xs text-text-muted sm:grid-cols-3">
-          <li className="flex items-center gap-1.5"><UserRoundX className="size-4 text-bd-green" aria-hidden />ভুয়া ও দ্বিতীয় অ্যাকাউন্ট বন্ধ</li>
-          <li className="flex items-center gap-1.5"><Lock className="size-4 text-bd-green" aria-hidden />নম্বর ও ছবি গোপন থাকে</li>
-          <li className="flex items-center gap-1.5"><SealCheck size={16} weight="duotone" className="text-bd-green" aria-hidden />প্রোফাইলে শুধু সিল দেখায়</li>
+        <ul className="grid gap-2 text-xs text-white/65 sm:grid-cols-3">
+          <li className="flex items-center gap-1.5"><UserRoundX className="size-4 text-signal-orange" aria-hidden />ভুয়া ও দ্বিতীয় অ্যাকাউন্ট বন্ধ</li>
+          <li className="flex items-center gap-1.5"><Lock className="size-4 text-signal-orange" aria-hidden />নম্বর ও ছবি গোপন থাকে</li>
+          <li className="flex items-center gap-1.5"><SealCheck size={16} weight="duotone" className="text-signal-orange" aria-hidden />প্রোফাইলে শুধু সিল দেখায়</li>
         </ul>
 
         <button type="submit" className={mediaButton({ variant: "primary", size: "lg", className: "w-full" })}>
@@ -199,7 +199,7 @@ function CategoryStep({ categories, onBack, onNext }: { categories: { id: Catego
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onNext)} noValidate className="space-y-5">
-        <div className="flex items-center gap-3 rounded-2xl bg-bd-green-light p-4 text-bd-green-dark">
+        <div className="flex items-center gap-3 rounded-2xl bg-white/10 p-4 text-signal-orange">
           <SealCheck size={32} weight="duotone" className="seal-shine shrink-0 rounded-full" aria-hidden />
           <p className="text-sm font-semibold">পরিচয় যাচাই হয়েছে। এবার বলুন আপনি কোন কাজে দক্ষ — সর্বোচ্চ ৫টি।</p>
         </div>
@@ -210,7 +210,7 @@ function CategoryStep({ categories, onBack, onNext }: { categories: { id: Catego
             <FormItem>
               <FormGroupLabel className="flex justify-between">
                 দক্ষতার বিভাগ
-                <span className="text-xs font-normal text-text-muted">
+                <span className="text-xs font-normal text-white/65">
                   <Num value={chosen.length} />/<Num value={5} /> বাছাই
                 </span>
               </FormGroupLabel>
@@ -227,15 +227,15 @@ function CategoryStep({ categories, onBack, onNext }: { categories: { id: Catego
                       onClick={() => field.onChange(on ? field.value.filter((x) => x !== c.id) : [...field.value, c.id])}
                       className={cn(
                         "flex min-h-16 items-start gap-3 rounded-xl border-2 p-3 text-left transition-colors disabled:opacity-40",
-                        on ? "border-bd-green bg-bd-green-light" : "border-card-border hover:border-slate-300",
+                        on ? "border-signal-orange bg-white/10" : "border-white/12 hover:border-white/12",
                       )}
                     >
-                      <span className={cn("mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md border-2", on ? "border-bd-green bg-bd-green text-white" : "border-slate-300")}>
+                      <span className={cn("mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md border-2", on ? "border-signal-orange bg-signal-orange text-text-primary shadow-[0_8px_20px_-12px_var(--color-signal-orange)]" : "border-white/12")}>
                         {on && <CircleCheck className="size-3.5" aria-hidden />}
                       </span>
                       <span>
-                        <span className="block text-sm font-bold text-text-primary">{c.bn}</span>
-                        <span className="block text-xs leading-relaxed text-text-muted">{c.blurb}</span>
+                        <span className="block text-sm font-bold text-white">{c.bn}</span>
+                        <span className="block text-xs leading-relaxed text-white/65">{c.blurb}</span>
                       </span>
                     </button>
                   );
@@ -297,7 +297,7 @@ function ProfileStep({ takenHandles, defaultName, onBack, onDone }: { takenHandl
               <FormItem>
                 <FormLabel>হ্যান্ডেল</FormLabel>
                 <div className="relative">
-                  <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-text-muted">@</span>
+                  <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-white/65">@</span>
                   <FormControl>
                     <Input {...field} autoComplete="username" className="pl-7" onChange={(e) => field.onChange(e.target.value.toLowerCase())} />
                   </FormControl>
@@ -313,7 +313,7 @@ function ProfileStep({ takenHandles, defaultName, onBack, onDone }: { takenHandl
               <FormItem>
                 <FormLabel>জেলা</FormLabel>
                 <FormControl>
-                  <select {...field} className="h-11 w-full rounded-lg border border-card-border bg-white px-3 text-[15px] focus-visible:border-bd-green focus-visible:ring-2 focus-visible:ring-bd-green/20 focus-visible:outline-none">
+                  <select {...field} className="h-11 w-full rounded-lg border border-white/12 bg-text-primary px-3 text-[15px] focus-visible:border-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange/20 focus-visible:outline-none">
                     <option value="">বেছে নিন</option>
                     {districts.map((d) => (
                       <option key={d} value={d}>
@@ -378,13 +378,13 @@ export function Onboarding({ categories, takenHandles }: { categories: { id: Cat
 
   if (profile) {
     return (
-      <div className="rounded-2xl border border-card-border bg-white p-6 text-center sm:p-10" role="status">
-        <SealCheck size={72} weight="duotone" className="seal-shine mx-auto rounded-full text-bd-green" aria-hidden />
-        <h2 className="mt-4 text-2xl font-bold text-text-primary">স্বাগতম, {profile.displayName}</h2>
-        <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-text-secondary">
+      <div className="rounded-2xl border border-white/12 bg-text-primary p-6 text-center sm:p-10" role="status">
+        <SealCheck size={72} weight="duotone" className="seal-shine mx-auto rounded-full text-signal-orange" aria-hidden />
+        <h2 className="mt-4 text-2xl font-bold text-white">স্বাগতম, {profile.displayName}</h2>
+        <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-white/80">
           @{profile.handle} · {profile.district} — পরিচয় যাচাইকৃত। এবার প্রথম দক্ষতার প্রমাণ পোস্ট করুন; কমিউনিটি যাচাই করলেই কাজ আসতে শুরু করবে।
         </p>
-        <p className="mx-auto mt-3 max-w-md rounded-xl bg-slate-50 px-3 py-2 text-xs text-text-muted">
+        <p className="mx-auto mt-3 max-w-md rounded-xl bg-white/10 px-3 py-2 text-xs text-white/65">
           ডেমো: ব্যাকএন্ড যুক্ত না হওয়া পর্যন্ত ফিড, ড্যাশবোর্ড ও ওয়ালেটের নমুনা তথ্য প্রতিষ্ঠাতার (মাহির) প্রোফাইল থেকে দেখানো হয়; আপনার লাইক, পোস্ট ও বার্তা আপনার অ্যাকাউন্টেই জমা থাকে।
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
@@ -392,7 +392,7 @@ export function Onboarding({ categories, takenHandles }: { categories: { id: Cat
           <Link href="/media/me" className={mediaButton({ variant: "quiet" })}>আমার প্রোফাইল</Link>
           <Link href="/media" className={mediaButton({ variant: "quiet" })}>ফিড দেখুন</Link>
         </div>
-        <button type="button" onClick={() => { resetMedia(); setStep(0); }} className="mt-6 text-xs font-semibold text-text-muted underline-offset-2 hover:underline">
+        <button type="button" onClick={() => { resetMedia(); setStep(0); }} className="mt-6 text-xs font-semibold text-white/65 underline-offset-2 hover:underline">
           প্রোফাইল মুছে আবার শুরু করুন (এই অ্যাকাউন্টের মিডিয়া-তথ্য মুছবে)
         </button>
       </div>
@@ -400,12 +400,12 @@ export function Onboarding({ categories, takenHandles }: { categories: { id: Cat
   }
 
   return (
-    <div className="rounded-2xl border border-card-border bg-white p-4 sm:p-6">
+    <div className="rounded-2xl border border-white/12 bg-text-primary p-4 sm:p-6">
       <ol className="mb-6 grid grid-cols-3 gap-2" aria-label="ধাপ">
         {steps.map((s, i) => (
           <li key={s} aria-current={i === step ? "step" : undefined}>
-            <span className={cn("block h-1.5 rounded-full transition-colors", i < step ? "bg-bd-green" : i === step ? "bg-signal-orange" : "bg-slate-200")} />
-            <span className={cn("mt-2 block text-xs", i === step ? "font-bold text-text-primary" : "text-text-muted")}>
+            <span className={cn("block h-1.5 rounded-full transition-colors", i < step ? "bg-bd-green" : i === step ? "bg-signal-orange" : "bg-white/15")} />
+            <span className={cn("mt-2 block text-xs", i === step ? "font-bold text-white" : "text-white/65")}>
               <Num value={i + 1} />. {s}
             </span>
           </li>

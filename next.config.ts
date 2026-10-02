@@ -24,6 +24,8 @@ const nextConfig: NextConfig = {
       // The issue dossier and the news index merged into the country page.
       { source: "/amar-bangladesh", destination: "/bangladesh", permanent: false },
       { source: "/ajker-bangladesh", destination: "/bangladesh", permanent: false },
+      // অপরাধ বার্তা merged into নাগরিক বার্তা.
+      { source: "/media/crime", destination: "/media/civic", permanent: false },
     ];
   },
 };
