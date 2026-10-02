@@ -42,7 +42,7 @@ function EntryDialog({ challenge, open, onOpenChange }: { challenge: Challenge; 
                   <FormLabel>টিমের নাম (ঐচ্ছিক)</FormLabel>
                   <FormControl><Input placeholder="একা হলে ফাঁকা রাখুন" {...field} /></FormControl>
                   <FormDescription>
-                    টিম নেই? <Link href="/media/teams" className="font-semibold text-signal-orange hover:underline">টিম খুঁজুন বা বানান</Link>
+                    টিম নেই? <Link href="/media/together?v=teams" className="font-semibold text-signal-orange hover:underline">টিম খুঁজুন বা বানান</Link>
                   </FormDescription>
                 </FormItem>
               )} />

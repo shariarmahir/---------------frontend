@@ -25,7 +25,7 @@ export function FeedEnd() {
         অনলাইনে শেখা কাজে লাগে বাস্তবে — কিছু বানান, কারো সাথে দেখা করুন, এলাকার জন্য কিছু করুন।
       </p>
       <div className="mt-5 flex flex-wrap justify-center gap-2">
-        <Link href="/media/events" className={mediaButton({ variant: "green", size: "sm" })}>
+        <Link href="/media/together?v=events" className={mediaButton({ variant: "green", size: "sm" })}>
           <CalendarHeart aria-hidden /> কাছের উদ্যোগ
         </Link>
         <Link href="/media/notes" className={mediaButton({ variant: "quiet", size: "sm" })}>

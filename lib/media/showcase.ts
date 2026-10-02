@@ -18,14 +18,18 @@ export type ResearchStage = "idea" | "running" | "done";
 
 export const STAGES: Record<ResearchStage, string> = { idea: "প্রস্তাব", running: "চলমান", done: "সম্পন্ন" };
 
-/** The room a share came from. */
+/** The room a share came from: a classroom, a lab, or a team's room. */
 export interface RoomRef {
-  kind: "classroom" | "lab";
+  kind: "classroom" | "lab" | "team";
   id: string;
   name: string;
 }
 
-export const roomHref = (r: RoomRef) => (r.kind === "lab" ? `/media/classroom/lab/${r.id}` : `/media/classroom/${r.id}`);
+export const roomHref = (r: RoomRef) =>
+  r.kind === "lab" ? `/media/classroom/lab/${r.id}` : r.kind === "team" ? `/media/together/team/${r.id}` : `/media/classroom/${r.id}`;
+
+/** What to call the room in a caption or a tag. */
+export const roomKindBn = (r: Pick<RoomRef, "kind">) => (r.kind === "lab" ? "ল্যাব" : r.kind === "team" ? "টিম" : "ক্লাসরুম");
 
 export interface ResearchEntry {
   id: string;
@@ -79,7 +83,7 @@ export function shareCaption(s: ShareInput): string {
   if (s.method?.trim()) parts.push(`পদ্ধতি: ${s.method.trim()}`);
   parts.push(`${result[s.kind]}: ${s.finding.trim()}`);
   const team = s.team.length > 0 ? `দল: ${s.team.join(", ")} · ` : "";
-  parts.push(`${team}${s.from.kind === "lab" ? "ল্যাব" : "ক্লাসরুম"}: ${s.from.name}`);
+  parts.push(`${team}${roomKindBn(s.from)}: ${s.from.name}`);
   return parts.join("\n\n");
 }
 
@@ -89,7 +93,7 @@ export function shareTags(s: Pick<ShareInput, "kind" | "title" | "from">): strin
     .split(/[\s,.;:!?()\-–—।]+/)
     .filter((w) => w.length >= 4)
     .slice(0, 3);
-  return [...new Set([SHARE_KINDS[s.kind].bn.replace(/\s+/g, "_"), s.from.kind === "lab" ? "ল্যাব" : "ক্লাসরুম", ...words])].map((t) => `#${t}`);
+  return [...new Set([SHARE_KINDS[s.kind].bn.replace(/\s+/g, "_"), roomKindBn(s.from), ...words])].map((t) => `#${t}`);
 }
 
 /** A share needs a real title and an answer, and somewhere to go. */

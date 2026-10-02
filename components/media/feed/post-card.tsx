@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, FlaskConical, FolderKanban, GraduationCap, LifeBuoy, Megaphone, Tag } from "lucide-react";
+import { ArrowUpRight, FlaskConical, FolderKanban, GraduationCap, LifeBuoy, Megaphone, Tag, UsersRound } from "lucide-react";
 import { getCategory } from "@/data/media/categories";
 import { topicOf } from "@/data/media/topics";
 import type { Listing, Person, Post } from "@/data/media/types";
@@ -105,7 +105,7 @@ export function PostCard({
           )}
           {post.from && (
             <Link href={roomHref(post.from)} className="inline-flex min-h-7 items-center gap-1 rounded-full bg-bd-green px-2.5 text-xs font-semibold text-white transition-colors hover:bg-bdgreen-600">
-              {post.from.kind === "lab" ? <FlaskConical className="size-3.5" aria-hidden /> : <GraduationCap className="size-3.5" aria-hidden />}
+              {post.from.kind === "lab" ? <FlaskConical className="size-3.5" aria-hidden /> : post.from.kind === "team" ? <UsersRound className="size-3.5" aria-hidden /> : <GraduationCap className="size-3.5" aria-hidden />}
               {post.from.name}
             </Link>
           )}

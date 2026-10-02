@@ -35,7 +35,7 @@ export function DashboardStats() {
   return (
     <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
       <Tile i={0} href="/media/jobs" Icon={BriefcaseBusiness} label="কাজে আবেদন"><Num value={applied} /></Tile>
-      <Tile i={1} href="/media/events" Icon={CalendarHeart} label="উদ্যোগে অংশ"><Num value={joined} /></Tile>
+      <Tile i={1} href="/media/together?v=events" Icon={CalendarHeart} label="উদ্যোগে অংশ"><Num value={joined} /></Tile>
       <Tile i={2} href="/media/settings" Icon={Clock} label="আজ এখানে"><Num value={minutes} /> মিনিট</Tile>
       <Tile i={3} href="/media/notes" Icon={StickyNote} label="নোট"><Num value={notes} /></Tile>
     </div>

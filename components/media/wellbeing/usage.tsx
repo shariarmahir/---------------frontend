@@ -71,7 +71,7 @@ export function UsageTracker() {
       toast(`আজ ${breakAfter.toLocaleString("bn-BD")} মিনিট হলো`, {
         description: "যা শিখলেন, বাস্তবে একটু প্রয়োগ করে আসুন — বা এলাকার কোনো উদ্যোগে যোগ দিন।",
         duration: 12000,
-        action: { label: "উদ্যোগ দেখুন", onClick: () => router.push("/media/events") },
+        action: { label: "উদ্যোগ দেখুন", onClick: () => router.push("/media/together?v=events") },
       });
     }
     write(next);

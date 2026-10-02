@@ -164,7 +164,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
                   <ul className="space-y-2">
                     {theirTeams.map((t) => (
                       <li key={t.id}>
-                        <Link href={`/media/teams?k=${t.kind}`} className="block rounded-xl p-2 -m-2 hover:bg-white/10">
+                        <Link href={`/media/together/team/${t.id}`} className="block rounded-xl p-2 -m-2 hover:bg-white/10">
                           <span className="block text-sm font-semibold text-white">{t.name}</span>
                           <span className="block text-xs text-white/65">{teamKindBn[t.kind]}{t.lead === person.handle ? " · নেতৃত্বে" : ""}</span>
                         </Link>

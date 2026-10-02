@@ -257,3 +257,28 @@ test("sample class chats come from the room's people, with the right role", asyn
   // Two different students must never share the ID a parent types.
   unique([...new Set(rooms.flatMap((r) => r.members.map((m) => m.id)))].map(studentCode), "student codes");
 });
+
+test("sample team rooms belong to real teams, are written by real people, and keep the room's own rules", async () => {
+  const { sampleTeamRooms } = await import("./team-rooms.ts");
+  const { MAX_GOALS, MAX_STORIES, MISSION_MAX, missionProblem, storyProblems, validDay } = await import("../../lib/media/team-room.ts");
+  const { existsSync } = await import("node:fs");
+  unique(Object.values(sampleTeamRooms).flatMap((r) => [...r.goals.map((g) => g.id), ...r.stories.map((s) => s.id)]), "team room");
+  for (const [id, room] of Object.entries(sampleTeamRooms)) {
+    const team = teams.find((t) => t.id === id);
+    assert.ok(team, `room for unknown team ${id}`);
+    assert.ok(room.mission.length <= MISSION_MAX && !missionProblem(room.mission), `${id} mission`);
+    assert.ok(room.goals.length <= MAX_GOALS && room.stories.length <= MAX_STORIES, `${id} too long`);
+    for (const g of room.goals) {
+      if (g.due) assert.equal(validDay(g.due), g.due, g.id);
+      assert.equal(Boolean(g.doneAt), g.done, `${g.id}: a met goal has a day, an open one none`);
+    }
+    for (const s of room.stories) {
+      const person = byHandle.get(s.by);
+      assert.ok(person, `${s.id} by unknown ${s.by}`);
+      assert.equal(s.byName, person.nameBn, s.id);
+      assert.ok(team.lead === s.by || team.members.includes(s.by), `${s.id}: ${s.by} is not in ${id}`);
+      assert.deepEqual(storyProblems(s), { title: undefined, body: undefined }, s.id);
+      if (s.photo) assert.ok(existsSync(new URL(`../../public${s.photo}`, import.meta.url)), `${s.id} photo ${s.photo}`);
+    }
+  }
+});

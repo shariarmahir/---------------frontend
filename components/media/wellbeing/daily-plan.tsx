@@ -11,9 +11,9 @@ import { useRequireAccount } from "@/components/auth/use-require-account";
 /** Learn → Connect → Create → Apply → Relax: a day on the platform, then off it. */
 export const planSteps: { id: string; bn: string; hint: string; href: string; Icon: LucideIcon }[] = [
   { id: "learn", bn: "শিখুন", hint: "২০ মিনিট — একটা শিক্ষা পোস্ট", href: "/media?t=education", Icon: BookOpen },
-  { id: "connect", bn: "যুক্ত হোন", hint: "১০ মিনিট — একটা টিম বা মানুষ", href: "/media/teams", Icon: Handshake },
+  { id: "connect", bn: "যুক্ত হোন", hint: "১০ মিনিট — একটা টিম বা মানুষ", href: "/media/together?v=teams", Icon: Handshake },
   { id: "create", bn: "বানান", hint: "২০ মিনিট — কাজের প্রমাণ দিন", href: "/media/post/new", Icon: Hammer },
-  { id: "apply", bn: "প্রয়োগ করুন", hint: "অফলাইনে — উদ্যোগ বা কাজ", href: "/media/events", Icon: Sprout },
+  { id: "apply", bn: "প্রয়োগ করুন", hint: "অফলাইনে — উদ্যোগ বা কাজ", href: "/media/together?v=events", Icon: Sprout },
   { id: "relax", bn: "বিশ্রাম", hint: "অ্যাপ বন্ধ করুন, পরিবারের সাথে সময়", href: "/media/notes", Icon: Coffee },
 ];
 

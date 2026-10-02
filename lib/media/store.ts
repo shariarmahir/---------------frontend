@@ -13,6 +13,7 @@ import type { LabRoom } from "./lab";
 import type { ResearchProject } from "./research-project";
 import type { ResearchEntry } from "./showcase";
 import type { CrimePost } from "./crime";
+import type { TeamRoom } from "./team-room";
 import type { Negotiation } from "./negotiation";
 
 /**
@@ -105,6 +106,8 @@ export interface MediaState {
   /** Team id → join request sent or member. */
   teamStatus: Record<string, "requested" | "member">;
   myTeams: Team[];
+  /** Team rooms the viewer's teams wrote in, by team id (a sample room is copied here on its first change). */
+  teamRooms: Record<string, TeamRoom>;
   confirmedReports: Record<string, true>;
   myReports: CivicReport[];
   mySolutions: Record<string, CivicReport["solutions"]>;
@@ -182,6 +185,7 @@ const initialState: MediaState = Object.freeze({
   sponsorships: {},
   teamStatus: {},
   myTeams: [],
+  teamRooms: {},
   confirmedReports: {},
   myReports: [],
   mySolutions: {},

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarClock, Clock, Copy, Eye, EyeOff, FlaskConical, Gamepad2, KeyRound, Lock, MapPin, Medal, Plus, Trophy, UserPlus, Users } from "lucide-react";
+import { ArrowRight, CalendarClock, Clock, Copy, DoorOpen, Eye, EyeOff, FlaskConical, Gamepad2, KeyRound, Lock, MapPin, Medal, Plus, Trophy, UserPlus, Users } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormDescription, FormField, FormGroup, FormGroupLabel, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -66,7 +66,7 @@ export function TeamCard({ team }: { team: Team }) {
       </div>
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div>
-          <h3 className="text-base font-bold text-white">{team.name}</h3>
+          <h3 className="text-base font-bold text-white"><Link href={`/media/together/team/${team.id}`} className="transition-colors hover:text-signal-orange">{team.name}</Link></h3>
           <p className="mt-0.5 flex flex-wrap gap-x-3 text-xs text-white/65">
             <span className="inline-flex items-center gap-1"><Users className="size-3.5" aria-hidden /><Num value={count} />{team.limit ? <>/<Num value={team.limit} /></> : null} জন</span>
             <span className="inline-flex items-center gap-1"><MapPin className="size-3.5" aria-hidden />{team.district}</span>
@@ -78,6 +78,10 @@ export function TeamCard({ team }: { team: Team }) {
         {team.profile?.type === "sports" && <SportsDetails sports={team.profile} />}
         {esports && <Roster esports={esports} you={joined} />}
         <p className="flex flex-wrap gap-x-2 text-xs font-medium text-signal-orange">{team.tags.map((t) => <span key={t}>{t}</span>)}</p>
+        <Link href={`/media/together/team/${team.id}`} className="group inline-flex min-h-9 items-center gap-1.5 self-start rounded-xl text-sm font-bold text-signal-orange">
+          <DoorOpen className="size-4" aria-hidden /> {mine ? "টিম রুমে ঢুকুন" : "যাত্রা ও মিশন দেখুন"}
+          <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden />
+        </Link>
         <div className="mt-auto flex items-center justify-between gap-2 border-t border-white/12 pt-3">
           <span className="flex -space-x-2">
             {known.map((p) => (
@@ -258,7 +262,7 @@ export function CreateTeamButton() {
     updateMedia((s) => ({ ...s, myTeams: [team, ...s.myTeams], teamStatus: { ...s.teamStatus, [team.id]: "member" } }));
     setOpen(false);
     form.reset(defaults);
-    toast.success("টিম তৈরি হলো", { description: `গোপন কী ${team.code} — যাদের দেবেন, শুধু তারাই সরাসরি যোগ দিতে পারবে।` });
+    toast.success("টিম তৈরি হলো", { description: `গোপন কী ${team.code} — যাদের দেবেন, শুধু তারাই সরাসরি যোগ দিতে পারবে। টিম রুমে মিশন আর প্রথম লক্ষ্য লিখুন।` });
   }
 
   const text = (name: "rank" | "scrims" | "university" | "supervisor" | "focus" | "roles" | "sport" | "ageGroup" | "practice", label: string, placeholder: string) => (
@@ -458,7 +462,7 @@ export function JoinTeamByKey() {
     if (status[team.id] !== "member" && isFull(team.limit, team.memberCount)) return setError(`${team.name} পূর্ণ — লিডার আসন বাড়ালে আবার চেষ্টা করুন।`);
     updateMedia((s) => ({ ...s, teamStatus: { ...s.teamStatus, [team.id]: "member" } }));
     setKey("");
-    toast.success(`${team.name}-এ যোগ দিলেন`, { description: "আমার টিম-এ দেখতে পাবেন।" });
+    toast.success(`${team.name}-এ যোগ দিলেন`, { description: "এখন টিম রুমে যাত্রা আর লক্ষ্য লিখতে পারবেন।" });
     setTimeout(() => document.getElementById(team.id)?.scrollIntoView({ behavior: "smooth", block: "center" }), 150);
   }
 
