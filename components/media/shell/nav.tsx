@@ -23,6 +23,7 @@ import {
   Trophy,
   Users,
   Wallet,
+  Library,
   type LucideIcon,
   UsersRound,
 } from "lucide-react";
@@ -53,10 +54,11 @@ export const navIcons: Record<NavIcon, LucideIcon> = {
   create: Plus,
   explore: Compass,
   people: UsersRound,
+  academy: Library,
 };
 
 /** Sections the phone's "explore" tab stands for. */
-const exploreRoutes = ["/media/explore", "/media/classroom", "/media/news","/media/jobs", "/media/together", "/media/civic", "/media/notes", "/media/dashboard", "/media/messages", "/media/search", "/media/notifications", "/media/settings"];
+const exploreRoutes = ["/media/explore", "/media/classroom", "/media/academy", "/media/news","/media/jobs", "/media/together", "/media/civic", "/media/notes", "/media/dashboard", "/media/messages", "/media/search", "/media/notifications", "/media/settings"];
 
 function isActive(pathname: string, href: string, me: string): boolean {
   if (href === "/media") return pathname === "/media" || (pathname.startsWith("/media/post/") && pathname !== "/media/post/new");

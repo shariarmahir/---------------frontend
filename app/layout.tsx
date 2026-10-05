@@ -18,7 +18,6 @@ import "./globals.css";
 // fallback keeps the layout from jumping while they do.
 const sora = Sora({
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
   variable: "--font-sora",
   display: "swap",
   preload: false,
@@ -32,7 +31,6 @@ const inter = Inter({
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
   variable: "--font-mono",
   display: "swap",
   preload: false,

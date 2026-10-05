@@ -16,7 +16,8 @@ export type NavIcon =
   | "profile"
   | "create"
   | "explore"
-  | "people";
+  | "people"
+  | "academy";
 
 export interface MediaNavItem {
   href: string;
@@ -40,6 +41,7 @@ export const mediaNavGroups: { title: string; items: MediaNavItem[] }[] = [
   {
     title: "কমিউনিটি",
     items: [
+      { href: "/media/academy", label: "একাডেমি", icon: "academy", hint: "কান্ডারি তৈরি একাডেমি — বাস্তব দক্ষতা ও প্রফেশনাল প্ল্যাটফর্ম" },
       { href: "/media/people", label: "মানুষ", icon: "people", hint: "দক্ষ মানুষ খুঁজুন, অনুসরণ করুন" },
       { href: "/media/classroom", label: "ক্লাসরুম", icon: "classroom", hint: "ব্যাচ, ল্যাব, রুটিন, দায়িত্বের পালা, ক্লাস চ্যালেঞ্জ" },
       { href: "/media/news", label: "নাগরিক জীবন", icon: "news", hint: "আজকের খবর — সকাল, দুপুর, সন্ধ্যা, রাতের শিরোনাম, সারাংশ আর বিনোদন" },
