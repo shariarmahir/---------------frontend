@@ -39,11 +39,11 @@ import { addExperiment, editExperiment, editLab, editLabRota, handIn, joinLab, l
 export const labNow = (id: string) => (sampleLab(id) ? DEMO_NOW : new Date());
 
 const STATE: Record<ReportState, { bn: string; cls: string }> = {
-  submitted: { bn: "জমা হয়েছে", cls: "bg-bd-green text-white" },
-  late: { bn: "দেরিতে জমা", cls: "bg-bdorange-600 text-white" },
-  missing: { bn: "জমা পড়েনি", cls: "bg-national-crimson text-white" },
-  "due-soon": { bn: "শিগগির জমা দিন", cls: "bg-signal-orange text-text-primary" },
-  open: { bn: "জমা খোলা", cls: "bg-white/10 text-white/80" },
+  submitted: { bn: "জমা হয়েছে", cls: "bg-m-blue-soft text-m-ink" },
+  late: { bn: "দেরিতে জমা", cls: "bg-m-red-soft text-m-ink" },
+  missing: { bn: "জমা পড়েনি", cls: "bg-m-red text-m-on" },
+  "due-soon": { bn: "শিগগির জমা দিন", cls: "bg-m-yellow text-m-ink" },
+  open: { bn: "জমা খোলা", cls: "bg-m-ink/6 text-m-ink/80" },
 };
 
 const at = (date: string, time?: string) => `${date}T${time && /^\d{2}:\d{2}$/.test(time) ? time : "00:00"}:00+06:00`;
@@ -132,7 +132,7 @@ export function LabRoomView({ id }: { id: string }) {
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       <div className="space-y-6 print:hidden">
-        <Link href="/media/classroom" className="inline-flex min-h-8 items-center gap-1.5 text-sm font-semibold text-signal-orange">
+        <Link href="/media/classroom" className="inline-flex min-h-8 items-center gap-1.5 text-sm font-semibold text-m-blue">
           <ArrowLeft className="size-4" aria-hidden /> ক্লাসরুম
         </Link>
 
@@ -150,7 +150,7 @@ export function LabRoomView({ id }: { id: string }) {
         <Status lab={lab} me={me?.id} now={now} />
       </div>
 
-      <nav aria-label="ল্যাবের অংশ" className="sticky top-[var(--sticky-top,4rem)] z-30 -mx-3 bg-black/85 px-3 py-2 backdrop-blur-md sm:mx-0 sm:rounded-2xl sm:px-2 print:hidden">
+      <nav aria-label="ল্যাবের অংশ" className="sticky top-[var(--sticky-top,4rem)] z-30 -mx-3 bg-white/90 px-3 py-2 backdrop-blur-md sm:mx-0 sm:rounded-2xl sm:px-2 print:hidden">
         <ul className="flex gap-1 overflow-x-auto scrollbar-none">
           {TABS.map((t) => (
             <li key={t.key} className="shrink-0">
@@ -158,10 +158,10 @@ export function LabRoomView({ id }: { id: string }) {
                 type="button"
                 onClick={() => setTab(t.key)}
                 aria-current={tab === t.key ? "page" : undefined}
-                className={cn("relative isolate min-h-10 rounded-xl px-4 text-sm font-bold whitespace-nowrap [-webkit-tap-highlight-color:transparent] transition-[color,scale] duration-200 active:scale-95", tab === t.key ? "text-text-primary" : "text-white/75 hover:text-white")}
+                className={cn("relative isolate min-h-10 rounded-xl px-4 text-sm font-bold whitespace-nowrap [-webkit-tap-highlight-color:transparent] transition-[color,scale] duration-200 active:scale-95", tab === t.key ? "text-m-ink" : "text-m-ink/75 hover:text-m-ink")}
               >
                 {tab === t.key && (
-                  <motion.span layoutId="lab-tab" transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 520, damping: 40, mass: 0.7 }} className="absolute inset-0 -z-10 rounded-xl bg-signal-orange" aria-hidden />
+                  <motion.span layoutId="lab-tab" transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 520, damping: 40, mass: 0.7 }} className="absolute inset-0 -z-10 rounded-xl bg-m-yellow" aria-hidden />
                 )}
                 {t.label}
               </button>
@@ -198,8 +198,8 @@ export function LabRoomView({ id }: { id: string }) {
       <section aria-labelledby="exp-title" className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 id="exp-title" className="text-xl font-bold text-white">এক্সপেরিমেন্ট</h2>
-            <p className="text-sm text-white/65">টপিক, কাজ, প্রশ্ন আর জমা — প্রতিটি ল্যাব এক কার্ডে।</p>
+            <h2 id="exp-title" className="text-xl font-bold text-m-ink">এক্সপেরিমেন্ট</h2>
+            <p className="text-sm text-m-ink/65">টপিক, কাজ, প্রশ্ন আর জমা — প্রতিটি ল্যাব এক কার্ডে।</p>
           </div>
           {leader && (
             <button type="button" onClick={() => setAdding("exp")} className={mediaButton({ variant: "primary" })}>
@@ -276,22 +276,22 @@ export function LabRoomView({ id }: { id: string }) {
 function Hero({ lab, member, me, leader, teacher, onSettings }: { lab: LabRoom; member: boolean; me: { id: string; name: string } | null; leader: boolean; teacher: boolean; onSettings: () => void }) {
   const full = isFull(lab.members.length, lab.maxMembers);
   return (
-    <section className="live-in overflow-hidden rounded-3xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-8">
+    <section className="live-in overflow-hidden rounded-3xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-8 shadow-m-tile">
       <PixelMark tone="dark" />
-      <p className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-signal-orange"><FlaskConical className="size-4" aria-hidden /> {lab.course}</p>
-      <h1 className="mt-1 text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl">{lab.name}</h1>
-      <p className="mt-2 text-sm text-white/75">
+      <p className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-m-blue"><FlaskConical className="size-4" aria-hidden /> {lab.course}</p>
+      <h1 className="mt-1 text-3xl font-bold tracking-tight text-balance text-m-ink sm:text-4xl">{lab.name}</h1>
+      <p className="mt-2 text-sm text-m-ink/75">
         {lab.institution}
-        {lab.instructor && <> · ল্যাব শিক্ষক: <span className="font-semibold text-white">{lab.instructor}</span></>}
+        {lab.instructor && <> · ল্যাব শিক্ষক: <span className="font-semibold text-m-ink">{lab.instructor}</span></>}
       </p>
-      {teacher && <p className="mt-2 text-xs font-bold text-signal-orange">আপনি এই ল্যাবের শিক্ষক — প্রশ্নপত্র, পরীক্ষা, নোটিশ, এক্সপেরিমেন্ট আর সেটিংস সবই আপনার হাতে।</p>}
-      {leader && !teacher && !lab.instructor && <p className="mt-2 rounded-xl bg-national-crimson px-3 py-2 text-sm font-bold text-white">ল্যাব শিক্ষক যোগ করা বাধ্যতামূলক — শিক্ষক কোডটি শিক্ষককে দিন।</p>}
+      {teacher && <p className="mt-2 text-xs font-bold text-m-blue">আপনি এই ল্যাবের শিক্ষক — প্রশ্নপত্র, পরীক্ষা, নোটিশ, এক্সপেরিমেন্ট আর সেটিংস সবই আপনার হাতে।</p>}
+      {leader && !teacher && !lab.instructor && <p className="mt-2 rounded-xl bg-m-red px-3 py-2 text-sm font-bold text-m-on">ল্যাব শিক্ষক যোগ করা বাধ্যতামূলক — শিক্ষক কোডটি শিক্ষককে দিন।</p>}
       <div className="mt-5 flex flex-wrap items-center gap-2">
         <SeatMeter count={lab.members.length} limit={lab.maxMembers} />
         <button
           type="button"
           onClick={() => navigator.clipboard?.writeText(lab.code).then(() => toast.success("কোড কপি হলো", { description: "ল্যাবের সবাইকে পাঠিয়ে দিন।" }))}
-          className="inline-flex min-h-9 items-center gap-2 rounded-xl bg-white/10 px-3 font-mono text-sm font-bold tracking-widest text-white hover:bg-white/20"
+          className="inline-flex min-h-9 items-center gap-2 rounded-xl bg-m-ink/6 px-3 font-mono text-sm font-bold tracking-widest text-m-ink hover:bg-m-ink/11"
         >
           {lab.code} <Copy className="size-4" aria-hidden /><span className="sr-only">ল্যাব কোড কপি করুন</span>
         </button>
@@ -299,7 +299,7 @@ function Hero({ lab, member, me, leader, teacher, onSettings }: { lab: LabRoom; 
           <button
             type="button"
             onClick={() => navigator.clipboard?.writeText(lab.teacherCode!).then(() => toast.success("শিক্ষক কোড কপি হলো", { description: "শুধু ল্যাব শিক্ষককে দিন।" }))}
-            className="inline-flex min-h-9 items-center gap-2 rounded-xl bg-white/10 px-3 text-sm font-bold text-white hover:bg-white/20"
+            className="inline-flex min-h-9 items-center gap-2 rounded-xl bg-m-ink/6 px-3 text-sm font-bold text-m-ink hover:bg-m-ink/11"
           >
             শিক্ষক কোড <span className="font-mono tracking-widest">{lab.teacherCode}</span> <Copy className="size-4" aria-hidden />
           </button>
@@ -373,44 +373,44 @@ function ExperimentCard({ lab, exp, me, member, leader, now, focus, onOpen, onSh
   const submit = (kind: "report" | "done") => (file: NoteFile) => me && save(handIn(lab.id, exp.id, { by: me.id, kind, file, at: new Date().toISOString() }), kind === "report" ? "রিপোর্ট জমা হলো" : "কাজের ছবি জমা হলো");
 
   return (
-    <li className={cn("story-reveal overflow-hidden rounded-2xl bg-text-primary ring-1 transition-[box-shadow] duration-300", focus ? "ring-signal-orange/60" : "ring-white/12")}>
+    <li className={cn("story-reveal overflow-hidden rounded-2xl bg-m-card ring-1 transition-[box-shadow] duration-300 shadow-m-tile", focus ? "ring-m-blue/60" : "ring-m-ink/10")}>
       <button type="button" onClick={() => setOpen((v) => !v)} aria-expanded={open} className="flex w-full items-start gap-4 p-4 text-left sm:p-5">
-        <span className={cn("flex size-11 shrink-0 items-center justify-center rounded-xl text-lg font-bold", days < 0 ? "bg-white/10 text-white" : "bg-signal-orange text-text-primary")}><Num value={exp.no} /></span>
+        <span className={cn("flex size-11 shrink-0 items-center justify-center rounded-xl text-lg font-bold", days < 0 ? "bg-m-ink/6 text-m-ink" : "bg-m-yellow text-m-ink")}><Num value={exp.no} /></span>
         <span className="min-w-0 flex-1">
-          <span className="block text-lg leading-snug font-bold text-white">{exp.title}</span>
-          <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-white/70">
+          <span className="block text-lg leading-snug font-bold text-m-ink">{exp.title}</span>
+          <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-m-ink/70">
             <span className="inline-flex items-center gap-1"><CalendarClock className="size-3.5" aria-hidden />ল্যাব: <DateText iso={at(exp.date, exp.time)} time={Boolean(exp.time)} weekday /></span>
-            <span className="inline-flex items-center gap-1"><Timer className="size-3.5" aria-hidden />জমা: <DateText iso={`${exp.due}:00+06:00`} time />{hoursLeft > 0 && hoursLeft < 24 * 7 && <span className="font-semibold text-signal-orange">· <Left hours={hoursLeft} /></span>}</span>
+            <span className="inline-flex items-center gap-1"><Timer className="size-3.5" aria-hidden />জমা: <DateText iso={`${exp.due}:00+06:00`} time />{hoursLeft > 0 && hoursLeft < 24 * 7 && <span className="font-semibold text-m-blue">· <Left hours={hoursLeft} /></span>}</span>
           </span>
           <span className="mt-2 flex flex-wrap items-center gap-2 text-xs">
             {state && <span className={cn("rounded-full px-2.5 py-0.5 font-bold", STATE[state].cls)}>{STATE[state].bn}</span>}
-            <span className="text-white/60">রিপোর্ট <Num value={counts.report} />/<Num value={counts.of} /> · কাজের ছবি <Num value={counts.done} />/<Num value={counts.of} /></span>
+            <span className="text-m-ink/60">রিপোর্ট <Num value={counts.report} />/<Num value={counts.of} /> · কাজের ছবি <Num value={counts.done} />/<Num value={counts.of} /></span>
           </span>
         </span>
-        <ChevronDown className={cn("mt-2 size-5 shrink-0 text-white/60 transition-transform duration-300", open && "rotate-180")} aria-hidden />
+        <ChevronDown className={cn("mt-2 size-5 shrink-0 text-m-ink/60 transition-transform duration-300", open && "rotate-180")} aria-hidden />
       </button>
 
       {open && (
-        <div className="live-in grid gap-5 border-t border-white/10 p-4 sm:p-5 lg:grid-cols-2">
+        <div className="live-in grid gap-5 border-t border-m-ink/9 p-4 sm:p-5 lg:grid-cols-2">
           <div className="space-y-5">
             <div>
-              <h3 className="mb-1.5 text-sm font-bold text-signal-orange">টপিক</h3>
-              <p className="text-[15px] leading-relaxed whitespace-pre-line text-white/85">{exp.topic}</p>
+              <h3 className="mb-1.5 text-sm font-bold text-m-blue">টপিক</h3>
+              <p className="text-[15px] leading-relaxed whitespace-pre-line text-m-ink/85">{exp.topic}</p>
             </div>
             <div>
-              <h3 className="mb-1.5 flex items-center justify-between gap-2 text-sm font-bold text-signal-orange">
+              <h3 className="mb-1.5 flex items-center justify-between gap-2 text-sm font-bold text-m-blue">
                 ল্যাবের কাজ
                 {leader && <UploadButton label={exp.task?.file ? "টাস্ক শিট বদলান" : "টাস্ক শিটের ছবি"} Icon={ImagePlus} accept="image/*,application/pdf" scan onFile={(file) => save(editExperiment(lab.id, exp.id, (e) => ({ ...e, task: { text: e.task?.text ?? "", file } })), "টাস্ক শিট যোগ হলো")} variant="quiet" />}
               </h3>
-              {exp.task?.text ? <p className="text-[15px] leading-relaxed whitespace-pre-line text-white/85">{exp.task.text}</p> : <p className="text-sm text-white/55">কাজের বিবরণ দেওয়া হয়নি।</p>}
+              {exp.task?.text ? <p className="text-[15px] leading-relaxed whitespace-pre-line text-m-ink/85">{exp.task.text}</p> : <p className="text-sm text-m-ink/55">কাজের বিবরণ দেওয়া হয়নি।</p>}
               {exp.task?.file && <FilePreview file={exp.task.file} onOpen={() => onOpen(exp.task!.file!, `টাস্ক শিট — ${exp.title}`, "ল্যাব লিডার", exp.date)} />}
             </div>
             <div>
-              <h3 className="mb-1.5 flex items-center gap-1.5 text-sm font-bold text-signal-orange"><CircleHelp className="size-4" aria-hidden /> প্রি-ল্যাব ও ভাইভা প্রশ্ন</h3>
+              <h3 className="mb-1.5 flex items-center gap-1.5 text-sm font-bold text-m-blue"><CircleHelp className="size-4" aria-hidden /> প্রি-ল্যাব ও ভাইভা প্রশ্ন</h3>
               {exp.questions.length === 0 ? (
-                <p className="text-sm text-white/55">প্রশ্ন দেওয়া হয়নি।</p>
+                <p className="text-sm text-m-ink/55">প্রশ্ন দেওয়া হয়নি।</p>
               ) : (
-                <ol className="list-decimal space-y-1.5 pl-5 text-[15px] text-white/85 marker:font-bold marker:text-signal-orange">
+                <ol className="list-decimal space-y-1.5 pl-5 text-[15px] text-m-ink/85 marker:font-bold marker:text-m-blue">
                   {exp.questions.map((q, i) => <li key={i}>{q}</li>)}
                 </ol>
               )}
@@ -433,19 +433,19 @@ function ExperimentCard({ lab, exp, me, member, leader, now, focus, onOpen, onSh
           </div>
 
           <div className="space-y-5">
-            <div className="rounded-xl bg-white/5 p-4">
-              <h3 className="mb-3 flex items-center gap-1.5 text-sm font-bold text-signal-orange"><ListChecks className="size-4" aria-hidden /> আমার জমা</h3>
+            <div className="rounded-xl bg-m-ink/3 p-4">
+              <h3 className="mb-3 flex items-center gap-1.5 text-sm font-bold text-m-blue"><ListChecks className="size-4" aria-hidden /> আমার জমা</h3>
               {!member ? (
-                <p className="text-sm text-white/65">রিপোর্ট আর কাজের ছবি জমা দিতে ওপরে “ল্যাবে যোগ দিন” চাপুন।</p>
+                <p className="text-sm text-m-ink/65">রিপোর্ট আর কাজের ছবি জমা দিতে ওপরে “ল্যাবে যোগ দিন” চাপুন।</p>
               ) : (
                 <div className="space-y-3">
                   {(["report", "done"] as const).map((kind) => {
                     const s = mine(kind);
                     return (
                       <div key={kind} className="flex flex-wrap items-center justify-between gap-2">
-                        <span className="text-sm text-white">
+                        <span className="text-sm text-m-ink">
                           {kind === "report" ? "ল্যাব রিপোর্ট" : "কাজ শেষের ছবি"}
-                          <span className="block text-xs text-white/55">{s ? <>জমা <Ago iso={s.at} live /></> : kind === "report" ? "পিডিএফ বা পাতার ছবি — স্ক্যানের মতো সাদা-কালো হবে" : "সার্কিট বা সেটআপের ছবি, ল্যাবেই তুলুন"}</span>
+                          <span className="block text-xs text-m-ink/55">{s ? <>জমা <Ago iso={s.at} live /></> : kind === "report" ? "পিডিএফ বা পাতার ছবি — স্ক্যানের মতো সাদা-কালো হবে" : "সার্কিট বা সেটআপের ছবি, ল্যাবেই তুলুন"}</span>
                         </span>
                         <span className="flex gap-2">
                           {s?.file && <button type="button" onClick={() => onOpen(s.file!, `${kind === "report" ? "রিপোর্ট" : "কাজের ছবি"} — ${exp.title}`, me!.name, s.at)} className={mediaButton({ variant: "quiet", size: "sm" })}>দেখুন</button>}
@@ -459,29 +459,29 @@ function ExperimentCard({ lab, exp, me, member, leader, now, focus, onOpen, onSh
             </div>
 
             {member && days <= 0 && (
-              <div className="flex flex-wrap items-center gap-3 rounded-xl bg-bd-green p-4 text-white">
+              <div className="flex flex-wrap items-center gap-3 rounded-xl bg-m-blue-soft p-4 text-m-ink">
                 <p className="min-w-0 flex-1 text-sm"><span className="block font-bold">নতুন কিছু পেলেন?</span>ফলাফল, সমস্যা বা নতুন আইডিয়া — দলের নামে ফিডে দিন।</p>
                 <button type="button" onClick={onShare} className={mediaButton({ variant: "primary", size: "sm" })}><Share2 aria-hidden /> ফলাফল শেয়ার</button>
               </div>
             )}
 
             <div>
-              <h3 className="mb-2 text-sm font-bold text-signal-orange">যাঁরা জমা দিয়েছেন</h3>
+              <h3 className="mb-2 text-sm font-bold text-m-blue">যাঁরা জমা দিয়েছেন</h3>
               {exp.submissions.length === 0 ? (
-                <p className="text-sm text-white/55">এখনো কেউ জমা দেননি।</p>
+                <p className="text-sm text-m-ink/55">এখনো কেউ জমা দেননি।</p>
               ) : (
-                <ul className="divide-y divide-white/10">
+                <ul className="divide-y divide-m-ink/9">
                   {[...exp.submissions].sort((a, b) => b.at.localeCompare(a.at)).map((s) => {
                     const late = s.kind === "report" && Date.parse(s.at) > dueAt(exp.due);
                     const name = labMemberName(lab, s.by);
                     return (
                       <li key={s.id} className="flex items-center gap-3 py-2.5 text-sm">
-                        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-signal-orange">{s.kind === "report" ? <FileUp className="size-4" aria-hidden /> : <Camera className="size-4" aria-hidden />}</span>
+                        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-m-ink/6 text-m-blue">{s.kind === "report" ? <FileUp className="size-4" aria-hidden /> : <Camera className="size-4" aria-hidden />}</span>
                         <span className="min-w-0 flex-1">
-                          <span className="block truncate font-semibold text-white">{name}</span>
-                          <span className="text-xs text-white/55">{s.kind === "report" ? "রিপোর্ট" : "কাজের ছবি"} · <Ago iso={s.at} live={s.at > DEMO_NOW.toISOString()} />{late && <span className="ml-1 rounded bg-bdorange-600 px-1 font-bold text-white">দেরিতে</span>}</span>
+                          <span className="block truncate font-semibold text-m-ink">{name}</span>
+                          <span className="text-xs text-m-ink/55">{s.kind === "report" ? "রিপোর্ট" : "কাজের ছবি"} · <Ago iso={s.at} live={s.at > DEMO_NOW.toISOString()} />{late && <span className="ml-1 rounded bg-m-red-soft px-1 font-bold text-m-ink">দেরিতে</span>}</span>
                         </span>
-                        {s.file && <button type="button" onClick={() => onOpen(s.file!, `${s.kind === "report" ? "রিপোর্ট" : "কাজের ছবি"} — ${name}`, name, s.at)} className="text-xs font-bold text-signal-orange hover:underline">দেখুন</button>}
+                        {s.file && <button type="button" onClick={() => onOpen(s.file!, `${s.kind === "report" ? "রিপোর্ট" : "কাজের ছবি"} — ${name}`, name, s.at)} className="text-xs font-bold text-m-blue hover:underline">দেখুন</button>}
                       </li>
                     );
                   })}
@@ -495,7 +495,7 @@ function ExperimentCard({ lab, exp, me, member, leader, now, focus, onOpen, onSh
   );
 }
 
-const label = "mb-1.5 block text-sm font-semibold text-white";
+const label = "mb-1.5 block text-sm font-semibold text-m-ink";
 
 function ExperimentDialog({ lab, open, onOpenChange }: { lab: LabRoom; open: boolean; onOpenChange: (o: boolean) => void }) {
   const [no, setNo] = useState("");
@@ -536,13 +536,13 @@ function ExperimentDialog({ lab, open, onOpenChange }: { lab: LabRoom; open: boo
     onOpenChange(false);
   }
 
-  const err = (k: keyof typeof problems) => tried && problems[k] ? <span className="mt-1 block text-xs font-semibold text-crimson-bright">{problems[k]}</span> : null;
+  const err = (k: keyof typeof problems) => tried && problems[k] ? <span className="mt-1 block text-xs font-semibold text-m-red">{problems[k]}</span> : null;
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-xl">
         <DialogHeader>
           <PixelMark tone="dark" />
-          <DialogTitle className="text-xl font-bold text-white">নতুন এক্সপেরিমেন্ট</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-m-ink">নতুন এক্সপেরিমেন্ট</DialogTitle>
           <DialogDescription>টপিক, ল্যাবের দিন, রিপোর্ট জমার শেষ সময়, কাজ আর প্রশ্ন — সবাই এক কার্ডে দেখবে।</DialogDescription>
         </DialogHeader>
         <form onSubmit={submit} noValidate className="space-y-4">
@@ -585,7 +585,7 @@ function ExperimentDialog({ lab, open, onOpenChange }: { lab: LabRoom; open: boo
           </label>
           <div className="flex flex-wrap items-center gap-3">
             <UploadButton label={sheet ? "টাস্ক শিট বদলান" : "টাস্ক শিটের ছবি দিন"} Icon={ImagePlus} accept="image/*,application/pdf" scan onFile={setSheet} variant="quiet" />
-            {sheet && <span className="text-xs text-white/70">{sheet.name}</span>}
+            {sheet && <span className="text-xs text-m-ink/70">{sheet.name}</span>}
           </div>
           <label className="block">
             <span className={label}>প্রি-ল্যাব ও ভাইভা প্রশ্ন (প্রতি লাইনে একটি)</span>

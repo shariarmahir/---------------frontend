@@ -45,12 +45,12 @@ export function ComplaintBox({ teacher, teacherName, course }: { teacher: string
       <button type="button" onClick={() => ensure("অভিযোগ জানাতে") && setOpen(true)} className={mediaButton({ variant: "quiet", size: "sm" })}>
         <ShieldAlert aria-hidden /> অভিযোগ বাক্স
       </button>
-      {mine > 0 && <p className="mt-2 text-xs text-white/70">আপনার <Num value={mine} />টি অভিযোগ প্যানেলে পর্যালোচনায়।</p>}
+      {mine > 0 && <p className="mt-2 text-xs text-m-ink/70">আপনার <Num value={mine} />টি অভিযোগ প্যানেলে পর্যালোচনায়।</p>}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-text-primary font-sans sm:max-w-lg">
+        <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-m-card font-sans sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle className="text-lg font-bold text-white">{teacherName} — অভিযোগ</DialogTitle>
-            <DialogDescription className="text-sm text-white/80">শিক্ষক আপনার নাম দেখবেন না। প্যানেল ৭২ ঘণ্টার মধ্যে দেখে দুই পক্ষের কথা শোনে।</DialogDescription>
+            <DialogTitle className="text-lg font-bold text-m-ink">{teacherName} — অভিযোগ</DialogTitle>
+            <DialogDescription className="text-sm text-m-ink/80">শিক্ষক আপনার নাম দেখবেন না। প্যানেল ৭২ ঘণ্টার মধ্যে দেখে দুই পক্ষের কথা শোনে।</DialogDescription>
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-5">
@@ -69,7 +69,7 @@ export function ComplaintBox({ teacher, teacherName, course }: { teacher: string
                 </FormItem>
               )} />
               {kind === "safety" && (
-                <div role="alert" className="rounded-xl bg-national-crimson p-4 text-sm leading-relaxed text-white">
+                <div role="alert" className="rounded-xl bg-m-red p-4 text-sm leading-relaxed text-m-on">
                   <p className="flex items-center gap-2 font-bold"><Phone className="size-4" aria-hidden /> এখনই বিপদে থাকলে ৯৯৯-এ ফোন করুন।</p>
                   <p className="mt-1">নারী ও শিশু নির্যাতন প্রতিরোধ হেল্পলাইন ১০৯ — বিনামূল্যে, ২৪ ঘণ্টা। হয়রানির অভিযোগ প্যানেল সবার আগে দেখে।</p>
                 </div>

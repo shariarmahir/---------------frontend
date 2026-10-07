@@ -65,7 +65,7 @@ export function AdmissionTest({ initialDept, lockDept }: { initialDept?: string;
     return (
       <div ref={top} className="scroll-mt-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit((v) => ensure("বিভাগে যোগ দিতে") && setAnswers(v))} noValidate className="space-y-5 rounded-2xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-7">
+          <form onSubmit={form.handleSubmit((v) => ensure("বিভাগে যোগ দিতে") && setAnswers(v))} noValidate className="space-y-5 rounded-2xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-7 shadow-m-tile">
             <StepHead n={1} title={lockDept ? "আপনার কথা" : "কী শিখতে চান"} />
             {!lockDept && (
               <FormField control={form.control} name="dept" render={({ field }) => (
@@ -135,14 +135,14 @@ export function AdmissionTest({ initialDept, lockDept }: { initialDept?: string;
   }
 
   return (
-    <div ref={top} className="scroll-mt-6 space-y-5 rounded-2xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-7">
+    <div ref={top} className="scroll-mt-6 space-y-5 rounded-2xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-7 shadow-m-tile">
       <StepHead n={2} title={`${SCHOOLS[dept.school]} — চারটি প্রশ্ন`} />
-      <p className="text-sm text-white/75">ভুল হলে ক্ষতি নেই — শুধু ঠিক হয় কোন স্তর থেকে শুরু করবেন।</p>
+      <p className="text-sm text-m-ink/75">ভুল হলে ক্ষতি নেই — শুধু ঠিক হয় কোন স্তর থেকে শুরু করবেন।</p>
       <ol className="space-y-6">
         {questions.map((q, i) => (
           <li key={q.q}>
             <fieldset>
-              <legend className="mb-2.5 font-semibold text-white"><Num value={i + 1} />. {q.q}</legend>
+              <legend className="mb-2.5 font-semibold text-m-ink"><Num value={i + 1} />. {q.q}</legend>
               <div className="grid gap-2 sm:grid-cols-2">
                 {q.options.map((o, j) => (
                   <label key={o} className={choiceClass(picks[i] === j)}>
@@ -161,12 +161,12 @@ export function AdmissionTest({ initialDept, lockDept }: { initialDept?: string;
           </li>
         ))}
       </ol>
-      <div className="flex flex-wrap items-center gap-3 border-t border-white/10 pt-5">
+      <div className="flex flex-wrap items-center gap-3 border-t border-m-ink/9 pt-5">
         <button type="button" disabled={!answered} onClick={submit} className={mediaButton({ variant: "primary", size: "lg" })}>
           জমা দিন ও যোগ দিন
         </button>
         <button type="button" onClick={() => setAnswers(null)} className={mediaButton({ variant: "ghost" })}>আগের ধাপে</button>
-        {!answered && <span className="text-sm text-white/65">সব প্রশ্নের উত্তর দিন</span>}
+        {!answered && <span className="text-sm text-m-ink/65">সব প্রশ্নের উত্তর দিন</span>}
       </div>
     </div>
   );
@@ -174,8 +174,8 @@ export function AdmissionTest({ initialDept, lockDept }: { initialDept?: string;
 
 function StepHead({ n, title }: { n: number; title: string }) {
   return (
-    <h2 className="flex items-center gap-3 text-lg font-bold text-white">
-      <span className="inline-flex size-8 items-center justify-center rounded-lg bg-signal-orange text-sm text-text-primary"><Num value={n} /></span>
+    <h2 className="flex items-center gap-3 text-lg font-bold text-m-ink">
+      <span className="inline-flex size-8 items-center justify-center rounded-lg bg-m-yellow text-sm text-m-ink"><Num value={n} /></span>
       {title}
     </h2>
   );
@@ -190,27 +190,27 @@ function Result({ admission, compact, onAgain }: { admission: Admission; compact
 
   return (
     <div className="space-y-8">
-      <section className="live-in rounded-2xl bg-text-primary p-5 ring-1 ring-signal-orange/40 sm:p-7">
-        <p className="text-sm font-semibold text-signal-orange">আপনি এই বিভাগের শিক্ষার্থী — কোনো ফি লাগেনি</p>
-        <h2 className="mt-2 text-2xl font-bold text-white">{dept?.name}</h2>
+      <section className="live-in rounded-2xl bg-m-card p-5 ring-1 ring-m-blue/40 sm:p-7 shadow-m-tile">
+        <p className="text-sm font-semibold text-m-blue">আপনি এই বিভাগের শিক্ষার্থী — কোনো ফি লাগেনি</p>
+        <h2 className="mt-2 text-2xl font-bold text-m-ink">{dept?.name}</h2>
         <dl className="mt-5 grid grid-cols-3 gap-3">
           {[
             ["শুরুর স্তর", LEVELS[admission.level]],
             ["পরীক্ষায়", <><Num key="s" value={admission.score} />%</>],
             ["অভিজ্ঞতা", <><Num key="y" value={admission.years} /> বছর</>],
           ].map(([k, v]) => (
-            <div key={String(k)} className="rounded-xl bg-black/40 p-3">
-              <dt className="text-xs text-white/65">{k}</dt>
-              <dd className="mt-1 text-lg font-bold text-white">{v}</dd>
+            <div key={String(k)} className="rounded-xl bg-white/65 p-3">
+              <dt className="text-xs text-m-ink/65">{k}</dt>
+              <dd className="mt-1 text-lg font-bold text-m-ink">{v}</dd>
             </div>
           ))}
         </dl>
         {admission.fastTrack ? (
-          <p className="mt-5 text-sm leading-relaxed text-white/85">
-            আপনার অভিজ্ঞতা আর কাজের প্রমাণ আছে। এই বিভাগের কোর্সে হাজিরা-হোমওয়ার্ক মাফ — প্রজেক্ট জমা দিলেই <Link href="/media/academy/exam" className="font-semibold text-signal-orange hover:underline">প্যানেল ইন্টারভিউ</Link>, সরকারের আরপিএল (পূর্ব-অভিজ্ঞতার স্বীকৃতি) যেভাবে কাজ করে।
+          <p className="mt-5 text-sm leading-relaxed text-m-ink/85">
+            আপনার অভিজ্ঞতা আর কাজের প্রমাণ আছে। এই বিভাগের কোর্সে হাজিরা-হোমওয়ার্ক মাফ — প্রজেক্ট জমা দিলেই <Link href="/media/academy/exam" className="font-semibold text-m-blue hover:underline">প্যানেল ইন্টারভিউ</Link>, সরকারের আরপিএল (পূর্ব-অভিজ্ঞতার স্বীকৃতি) যেভাবে কাজ করে।
           </p>
         ) : (
-          <p className="mt-5 text-sm leading-relaxed text-white/85">আপনার স্তরের সবচেয়ে কাছের কোর্স দিয়ে শুরু করুন। কোর্সে ঢুকলে শুধু সেই কোর্সের ফি।</p>
+          <p className="mt-5 text-sm leading-relaxed text-m-ink/85">আপনার স্তরের সবচেয়ে কাছের কোর্স দিয়ে শুরু করুন। কোর্সে ঢুকলে শুধু সেই কোর্সের ফি।</p>
         )}
         <div className="mt-5 flex flex-wrap items-center gap-3">
           {suggested[0] && (
@@ -223,11 +223,11 @@ function Result({ admission, compact, onAgain }: { admission: Admission; compact
           </button>
         </div>
         <details className="mt-5 text-sm">
-          <summary className="cursor-pointer font-semibold text-signal-orange">সঠিক উত্তরগুলো দেখুন</summary>
+          <summary className="cursor-pointer font-semibold text-m-blue">সঠিক উত্তরগুলো দেখুন</summary>
           <ol className="mt-3 space-y-2">
             {questions.map((q) => (
-              <li key={q.q} className="text-white/85">
-                {q.q} <span className="font-semibold text-bdgreen-500">{q.options[q.answer]}</span>
+              <li key={q.q} className="text-m-ink/85">
+                {q.q} <span className="font-semibold text-m-green">{q.options[q.answer]}</span>
               </li>
             ))}
           </ol>
@@ -236,9 +236,9 @@ function Result({ admission, compact, onAgain }: { admission: Admission; compact
 
       {!compact && suggested.length > 0 && (
         <section aria-labelledby="suggested">
-          <h2 id="suggested" className="mb-4 text-lg font-bold text-white">আপনার জন্য কোর্স</h2>
+          <h2 id="suggested" className="mb-4 text-lg font-bold text-m-ink">আপনার জন্য কোর্স</h2>
           <div className="grid gap-5 sm:grid-cols-2">
-            {suggested.map((c) => <CourseCard key={c.id} course={c} className={cn(c.level === admission.level && "ring-signal-orange/60")} />)}
+            {suggested.map((c) => <CourseCard key={c.id} course={c} className={cn(c.level === admission.level && "ring-m-blue/60")} />)}
           </div>
         </section>
       )}

@@ -92,7 +92,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
   const chip = (on: boolean) =>
     cn(
       "inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3.5 text-sm font-semibold whitespace-nowrap transition-colors",
-      on ? "border-signal-orange bg-signal-orange text-text-primary shadow-[0_8px_20px_-12px_var(--color-signal-orange)]" : "border-white/12 bg-text-primary text-white/80 hover:border-signal-orange/40 hover:text-signal-orange",
+      on ? "border-m-blue bg-m-yellow text-m-ink shadow-[0_8px_20px_-12px_var(--color-signal-orange)]" : "border-m-ink/10 bg-m-card text-m-ink/80 hover:border-m-blue/40 hover:text-m-blue",
     );
 
   return (
@@ -105,7 +105,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
         {unfiltered && <Highlights />}
 
         <nav aria-label="ফিড ফিল্টার" className="space-y-3">
-          <div className="grid grid-cols-4 gap-1 rounded-2xl border border-white/12 bg-text-primary p-1">
+          <div className="grid grid-cols-4 gap-1 rounded-2xl border border-m-ink/10 bg-m-card p-1 shadow-m-tile">
             {tabs.map(({ key, label, Icon }) => (
               <Link
                 key={key}
@@ -114,7 +114,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
                 scroll={false}
                 className={cn(
                   "flex min-h-11 flex-col items-center justify-center gap-0.5 rounded-xl px-1 text-xs font-semibold transition-[background-color,color,box-shadow] sm:flex-row sm:gap-1.5 sm:text-sm",
-                  tab === key ? "bg-signal-orange text-text-primary shadow-tile" : "text-white/75 hover:bg-white/5 hover:text-white",
+                  tab === key ? "bg-m-yellow text-m-ink shadow-m-tile" : "text-m-ink/75 hover:bg-m-ink/3 hover:text-m-ink",
                 )}
               >
                 <Icon className="size-4.5 shrink-0" aria-hidden />
@@ -153,8 +153,8 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
                 <span className="sr-only sm:hidden">বিভাগ বেছে নিন</span>
                 <ChevronDown className="size-4 transition-transform group-open/cat:rotate-180" aria-hidden />
               </summary>
-              <div className="absolute top-full right-0 z-30 mt-2 w-[min(34rem,calc(100vw-1.5rem))] rounded-2xl border border-white/15 bg-text-primary p-3 shadow-ink">
-                <p className="mb-2 px-1 text-xs font-bold text-white/60">বিভাগ অনুযায়ী দেখুন</p>
+              <div className="absolute top-full right-0 z-30 mt-2 w-[min(34rem,calc(100vw-1.5rem))] rounded-2xl border border-m-ink/13 bg-m-card p-3 shadow-m-ink">
+                <p className="mb-2 px-1 text-xs font-bold text-m-ink/60">বিভাগ অনুযায়ী দেখুন</p>
                 <ul className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
                   {categories.map((c) => (
                     <li key={c.id}>
@@ -162,7 +162,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
                         href={href({ tab, t: topic, c: c.id })}
                         scroll={false}
                         aria-current={cat === c.id ? "page" : undefined}
-                        className={cn("flex min-h-10 items-center rounded-xl px-3 text-sm font-semibold transition-colors", cat === c.id ? "bg-signal-orange text-text-primary" : "text-white/85 hover:bg-white/10")}
+                        className={cn("flex min-h-10 items-center rounded-xl px-3 text-sm font-semibold transition-colors", cat === c.id ? "bg-m-yellow text-m-ink" : "text-m-ink/85 hover:bg-m-ink/6")}
                       >
                         {c.bn}
                       </Link>
@@ -174,9 +174,9 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
           </div>
 
           {cat && (
-            <p className="flex items-center gap-2 text-sm text-white/80">
+            <p className="flex items-center gap-2 text-sm text-m-ink/80">
               বিভাগ:
-              <Link href={href({ tab, t: topic })} scroll={false} className="inline-flex min-h-8 items-center gap-1 rounded-full bg-white/10 px-3 font-semibold text-signal-orange hover:bg-white/15">
+              <Link href={href({ tab, t: topic })} scroll={false} className="inline-flex min-h-8 items-center gap-1 rounded-full bg-m-ink/6 px-3 font-semibold text-m-blue hover:bg-m-ink/8">
                 {getCategory(cat).bn} <X className="size-3.5" aria-hidden />
                 <span className="sr-only">বিভাগের ফিল্টার সরান</span>
               </Link>

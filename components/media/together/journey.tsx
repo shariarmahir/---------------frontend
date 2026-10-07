@@ -32,10 +32,10 @@ export function JourneyTab({ team, room, canEdit, onWrite }: { team: Team; room:
     <section aria-labelledby="journey-title" className="space-y-5">
       <h2 id="journey-title" className="sr-only">যাত্রা ও গল্প</h2>
       {canEdit && (
-        <div className="flex flex-col gap-4 rounded-3xl bg-text-primary p-5 ring-1 ring-white/12 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+        <div className="flex flex-col gap-4 rounded-3xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:flex-row sm:items-center sm:justify-between sm:p-6 shadow-m-tile">
           <div>
-            <p className="text-lg font-bold text-white">আজ দলের কী ঘটল?</p>
-            <p className="mt-0.5 text-sm text-white/70">একটা মাইলফলক বা একটা মুহূর্ত — লিখে রাখুন, চাইলে ফিডেও যাক।</p>
+            <p className="text-lg font-bold text-m-ink">আজ দলের কী ঘটল?</p>
+            <p className="mt-0.5 text-sm text-m-ink/70">একটা মাইলফলক বা একটা মুহূর্ত — লিখে রাখুন, চাইলে ফিডেও যাক।</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <button type="button" onClick={() => onWrite("journey")} className={mediaButton({ variant: "primary" })}><Flag aria-hidden /> যাত্রা লিখুন</button>
@@ -47,7 +47,7 @@ export function JourneyTab({ team, room, canEdit, onWrite }: { team: Team; room:
       {list.length === 0 ? (
         <EmptyState icon="posts" title="যাত্রা এখনো লেখা হয়নি" body={canEdit ? "প্রথম দিনটা দিয়ে শুরু করুন — কেন, কে কে, কোথা থেকে।" : "দলটা লিখলেই এখানে দেখা যাবে।"} />
       ) : (
-        <ol className="relative space-y-5 pl-7 before:absolute before:top-2 before:bottom-2 before:left-[11px] before:w-0.5 before:rounded-full before:bg-gradient-to-b before:from-signal-orange before:via-bd-green before:to-white/10 sm:pl-10 sm:before:left-[15px]">
+        <ol className="relative space-y-5 pl-7 before:absolute before:top-2 before:bottom-2 before:left-[11px] before:w-0.5 before:rounded-full before:bg-gradient-to-b before:from-m-yellow before:via-m-blue before:to-white/10 sm:pl-10 sm:before:left-[15px]">
           {list.map((s) => <StoryItem key={s.id} story={s} team={team} canEdit={canEdit} />)}
         </ol>
       )}
@@ -71,21 +71,21 @@ function StoryItem({ story, team, canEdit }: { story: TeamStory; team: Team; can
 
   return (
     <li id={story.id} className="story-reveal relative scroll-mt-28">
-      <span className={cn("absolute top-1 -left-7 flex size-6 items-center justify-center rounded-full ring-4 ring-black sm:-left-10 sm:size-8", journey ? "bg-signal-orange text-text-primary" : "bg-bd-green text-white")} aria-hidden>
+      <span className={cn("absolute top-1 -left-7 flex size-6 items-center justify-center rounded-full ring-4 ring-white sm:-left-10 sm:size-8", journey ? "bg-m-yellow text-m-ink" : "bg-m-blue-soft text-m-ink")} aria-hidden>
         <Icon className="size-3.5 sm:size-4" />
       </span>
-      <article className={cn("overflow-hidden rounded-2xl bg-text-primary ring-1 ring-white/12 transition-[box-shadow,translate] duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_40px_-26px_var(--color-signal-orange)] motion-reduce:transition-none motion-reduce:hover:translate-y-0", story.photo && "sm:grid sm:grid-cols-[minmax(0,1fr)_14rem]")}>
+      <article className={cn("overflow-hidden rounded-2xl bg-m-card ring-1 ring-m-ink/10 transition-[box-shadow,translate] duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_40px_-26px_var(--color-signal-orange)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 shadow-m-tile", story.photo && "sm:grid sm:grid-cols-[minmax(0,1fr)_14rem]")}>
         <div className="space-y-2.5 p-4 sm:p-5">
           <p className="flex flex-wrap items-center gap-2 text-xs font-bold">
-            <span className={cn("rounded-full px-2.5 py-0.5", journey ? "bg-signal-orange text-text-primary" : "bg-bd-green text-white")}>{STORY_KINDS[story.kind].bn}</span>
-            <span className="font-medium text-white/60"><DateText iso={story.at} /></span>
+            <span className={cn("rounded-full px-2.5 py-0.5", journey ? "bg-m-yellow text-m-ink" : "bg-m-blue-soft text-m-ink")}>{STORY_KINDS[story.kind].bn}</span>
+            <span className="font-medium text-m-ink/60"><DateText iso={story.at} /></span>
           </p>
-          <h3 className="text-lg leading-snug font-bold text-white">{story.title}</h3>
-          <p className="text-[15px] leading-relaxed whitespace-pre-line text-white/85">{story.body}</p>
+          <h3 className="text-lg leading-snug font-bold text-m-ink">{story.title}</h3>
+          <p className="text-[15px] leading-relaxed whitespace-pre-line text-m-ink/85">{story.body}</p>
           <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
-            <Link href={`/media/u/${story.by}`} className="text-xs font-semibold text-white/65 hover:text-signal-orange">লিখেছেন {story.byName}</Link>
+            <Link href={`/media/u/${story.by}`} className="text-xs font-semibold text-m-ink/65 hover:text-m-blue">লিখেছেন {story.byName}</Link>
             {story.postId ? (
-              <Link href={`/media/post/${story.postId}`} className="inline-flex items-center gap-1 text-sm font-bold text-signal-orange hover:underline">ফিডে দেখুন <ArrowUpRight className="size-4" aria-hidden /></Link>
+              <Link href={`/media/post/${story.postId}`} className="inline-flex items-center gap-1 text-sm font-bold text-m-blue hover:underline">ফিডে দেখুন <ArrowUpRight className="size-4" aria-hidden /></Link>
             ) : canEdit ? (
               <button type="button" onClick={share} className={mediaButton({ variant: "outline", size: "sm" })}><Share2 aria-hidden /> ফিডে শেয়ার</button>
             ) : null}
@@ -148,14 +148,14 @@ export function StoryDialog({ team, kind, onOpenChange }: { team: Team; kind: Ki
     toast.success(postId ? "যাত্রায় যোগ হলো, ফিডেও গেল" : "যাত্রায় যোগ হলো", postId ? { action: { label: "ফিডে দেখুন", onClick: () => router.push(`/media/post/${postId}`) } } : undefined);
   }
 
-  const label = "mb-1.5 block text-sm font-semibold text-white";
-  const err = (m?: string) => tried && m && <span className="mt-1 block text-xs font-semibold text-crimson-bright">{m}</span>;
+  const label = "mb-1.5 block text-sm font-semibold text-m-ink";
+  const err = (m?: string) => tried && m && <span className="mt-1 block text-xs font-semibold text-m-red">{m}</span>;
   return (
     <Dialog open={kind !== null} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-xl">
         <DialogHeader>
           <PixelMark tone="dark" />
-          <DialogTitle className="flex items-center gap-2 text-xl font-bold text-white"><PenLine className="size-5 text-signal-orange" aria-hidden /> {team.name}-এর যাত্রা</DialogTitle>
+          <DialogTitle className="flex items-center gap-2 text-xl font-bold text-m-ink"><PenLine className="size-5 text-m-blue" aria-hidden /> {team.name}-এর যাত্রা</DialogTitle>
           <DialogDescription>যা ঘটল, সত্যি করে লিখুন — নাম, জায়গা, সংখ্যা থাকলে গল্পটা বিশ্বাস করা সহজ।</DialogDescription>
         </DialogHeader>
         <form onSubmit={submit} noValidate className="space-y-5">
@@ -166,12 +166,12 @@ export function StoryDialog({ team, kind, onOpenChange }: { team: Team; kind: Ki
                 const Icon = STORY_ICON[x];
                 const on = k === x;
                 return (
-                  <label key={x} className={cn("flex cursor-pointer items-start gap-3 rounded-xl p-3 ring-2 transition-colors", on ? "bg-signal-orange/10 ring-signal-orange" : "ring-white/12 hover:ring-white/30")}>
+                  <label key={x} className={cn("flex cursor-pointer items-start gap-3 rounded-xl p-3 ring-2 transition-colors", on ? "bg-m-yellow/10 ring-m-blue" : "ring-m-ink/10 hover:ring-m-ink/26")}>
                     <input type="radio" name="story-kind" className="sr-only" checked={on} onChange={() => setK(x)} />
-                    <Icon className={cn("mt-0.5 size-5 shrink-0", on ? "text-signal-orange" : "text-white/60")} aria-hidden />
+                    <Icon className={cn("mt-0.5 size-5 shrink-0", on ? "text-m-blue" : "text-m-ink/60")} aria-hidden />
                     <span>
-                      <span className={cn("block text-sm font-bold", on ? "text-signal-orange" : "text-white")}>{STORY_KINDS[x].bn}</span>
-                      <span className="block text-xs leading-snug text-white/65">{STORY_KINDS[x].hint}</span>
+                      <span className={cn("block text-sm font-bold", on ? "text-m-blue" : "text-m-ink")}>{STORY_KINDS[x].bn}</span>
+                      <span className="block text-xs leading-snug text-m-ink/65">{STORY_KINDS[x].hint}</span>
                     </span>
                   </label>
                 );
@@ -192,8 +192,8 @@ export function StoryDialog({ team, kind, onOpenChange }: { team: Team; kind: Ki
             <span className={label}>ছবি (ঐচ্ছিক)</span>
             {photo ? (
               <div className="relative w-fit">
-                <Image src={photo.data} alt="" width={240} height={180} unoptimized className="h-36 w-auto rounded-xl object-cover ring-1 ring-white/12" />
-                <button type="button" onClick={() => setPhoto(undefined)} className="absolute top-2 right-2 flex size-8 items-center justify-center rounded-full bg-black/70 text-white" aria-label="ছবি সরান"><X className="size-4" aria-hidden /></button>
+                <Image src={photo.data} alt="" width={240} height={180} unoptimized className="h-36 w-auto rounded-xl object-cover ring-1 ring-m-ink/10" />
+                <button type="button" onClick={() => setPhoto(undefined)} className="absolute top-2 right-2 flex size-8 items-center justify-center rounded-full bg-white/90 text-m-ink" aria-label="ছবি সরান"><X className="size-4" aria-hidden /></button>
               </div>
             ) : (
               <button type="button" disabled={busy} onClick={() => pick.current?.click()} className={mediaButton({ variant: "quiet", size: "sm" })}>
@@ -221,7 +221,7 @@ export function StoryDialog({ team, kind, onOpenChange }: { team: Team; kind: Ki
               }}
             />
           </div>
-          <button type="button" aria-pressed={toFeed} onClick={() => setToFeed((x) => !x)} className={cn("flex min-h-14 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-bold ring-2 transition-colors", toFeed ? "bg-signal-orange/10 text-signal-orange ring-signal-orange" : "text-white/70 ring-white/12 hover:ring-white/30")}>
+          <button type="button" aria-pressed={toFeed} onClick={() => setToFeed((x) => !x)} className={cn("flex min-h-14 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-bold ring-2 transition-colors", toFeed ? "bg-m-yellow/10 text-m-blue ring-m-blue" : "text-m-ink/70 ring-m-ink/10 hover:ring-m-ink/26")}>
             <Newspaper className="size-5 shrink-0" aria-hidden />
             <span>ফিডেও শেয়ার করুন<span className="block text-xs font-normal opacity-80">{toFeed ? "সবাই দেখবে, আর টিমের নাম থেকে রুমে আসবে" : "শুধু টিম রুমের যাত্রায় থাকবে"}</span></span>
           </button>

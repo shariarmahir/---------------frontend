@@ -12,17 +12,17 @@ export function AudienceStrip() {
     { href: "/media/academy/panel", label: "প্যানেলের জন্য" },
   ];
   return (
-    <nav aria-label="কার জন্য" className="-mx-3 -mt-6 bg-text-primary px-3 sm:-mx-6 sm:px-6">
+    <nav aria-label="কার জন্য" className="-mx-3 -mt-6 border-b border-m-ink/7 bg-white/60 px-3 backdrop-blur-xl sm:-mx-6 sm:px-6">
       <ul className="mx-auto flex h-10 max-w-7xl gap-1 overflow-x-auto scrollbar-none">
         {items.map((it) => (
           <li key={it.href} className="shrink-0">
             <Link
               href={it.href}
               aria-current={it.on ? "page" : undefined}
-              className={cn("relative flex h-10 items-center px-3 text-sm transition-colors", it.on ? "font-bold text-white" : "text-white/75 hover:text-white")}
+              className={cn("relative flex h-10 items-center px-3 text-sm transition-colors", it.on ? "font-bold text-m-ink" : "text-m-ink/75 hover:text-m-ink")}
             >
               {it.label}
-              {it.on && <span className="absolute inset-x-3 bottom-0 h-[3px] rounded-t bg-white" aria-hidden />}
+              {it.on && <span className="absolute inset-x-3 bottom-0 h-[3px] rounded-t bg-m-blue" aria-hidden />}
             </Link>
           </li>
         ))}
@@ -81,15 +81,16 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
 /** The big footer: link columns over two rows, the apps to come, and the line at the bottom. */
 export function DeptFooter() {
   return (
-    <footer className="-mx-3 -mb-24 bg-text-primary px-3 sm:-mx-6 sm:px-6 lg:-mb-12">
+    <footer className="frost-foot relative -mx-3 -mb-24 px-3 sm:-mx-6 sm:px-6 lg:-mb-12">
+      <span aria-hidden className="frost-seam absolute inset-x-0 top-0 h-px" />
       <div className="mx-auto grid max-w-7xl gap-x-8 gap-y-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
         {COLUMNS.map((col) => (
           <nav key={col.title} aria-label={col.title}>
-            <h2 className="text-lg font-bold text-white">{col.title}</h2>
+            <h2 className="text-lg font-bold text-m-ink after:mt-2 after:block after:h-[3px] after:w-8 after:rounded-full after:bg-m-yellow">{col.title}</h2>
             <ul className="mt-3 space-y-2">
               {col.links.map((l) => (
                 <li key={l.href + l.label}>
-                  <Link href={l.href} className="text-sm text-white/75 transition-colors hover:text-signal-orange hover:underline">
+                  <Link href={l.href} className="text-sm text-m-ink/75 transition-colors hover:text-m-blue hover:underline">
                     {l.label}
                   </Link>
                 </li>
@@ -98,21 +99,21 @@ export function DeptFooter() {
           </nav>
         ))}
         <div className="space-y-3">
-          <h2 className="text-lg font-bold text-white">অ্যাপ</h2>
+          <h2 className="text-lg font-bold text-m-ink after:mt-2 after:block after:h-[3px] after:w-8 after:rounded-full after:bg-m-yellow">অ্যাপ</h2>
           {["অ্যান্ড্রয়েড অ্যাপ", "আইফোন অ্যাপ"].map((a) => (
-            <p key={a} className="flex w-48 items-center gap-3 rounded-xl bg-black px-4 py-2.5 ring-1 ring-white/20">
-              <Smartphone className="size-6 text-signal-orange" aria-hidden />
+            <p key={a} className="frost-tile flex w-48 items-center gap-3 rounded-xl px-4 py-2.5">
+              <Smartphone className="size-6 text-m-blue" aria-hidden />
               <span className="leading-tight">
-                <span className="block text-[11px] text-white/60">শিগগিরই আসছে</span>
-                <span className="block text-sm font-bold text-white">{a}</span>
+                <span className="block text-[11px] text-m-ink/60">শিগগিরই আসছে</span>
+                <span className="block text-sm font-bold text-m-ink">{a}</span>
               </span>
             </p>
           ))}
         </div>
       </div>
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 border-t border-white/12 py-6 text-sm text-white/65">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 border-t border-m-ink/8 py-6 text-sm text-m-ink/65">
         <p>© ২০২৬ কাণ্ডারী-ল্যাব · কাণ্ডারী তৈরি একাডেমি</p>
-        <p className="font-semibold text-signal-orange">সবার আমি ছাত্র</p>
+        <p className="font-semibold text-m-blue">সবার আমি ছাত্র</p>
       </div>
     </footer>
   );

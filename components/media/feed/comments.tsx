@@ -64,7 +64,7 @@ function CommentForm({
                       })();
                     }
                   }}
-                  className={cn("min-h-10 resize-none rounded-2xl bg-white/10 py-2", compact && "text-sm")}
+                  className={cn("min-h-10 resize-none rounded-2xl bg-m-ink/6 py-2", compact && "text-sm")}
                 />
               </FormControl>
               <FormMessage />
@@ -107,16 +107,16 @@ function CommentRow({
         <PersonAvatar person={author} size={depth ? "xs" : "sm"} />
       </Link>
       <div className="min-w-0 flex-1">
-        <div className="rounded-2xl rounded-tl-md bg-white/10 px-3.5 py-2.5">
+        <div className="rounded-2xl rounded-tl-md bg-m-ink/6 px-3.5 py-2.5">
           <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <Link href={`/media/u/${author.handle}`} className="text-sm font-semibold text-white hover:text-signal-orange">
+            <Link href={`/media/u/${author.handle}`} className="text-sm font-semibold text-m-ink hover:text-m-blue">
               {author.nameBn}
             </Link>
             {c.verdict && (
               <span
                 className={cn(
                   "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-bold",
-                  c.verdict.kind === "verify" ? "bg-white/10 text-signal-orange" : "bg-national-crimson text-white",
+                  c.verdict.kind === "verify" ? "bg-m-ink/6 text-m-blue" : "bg-m-red text-m-on",
                 )}
               >
                 {c.verdict.kind === "verify" ? <SealCheck size={13} weight="duotone" aria-hidden /> : <SealWarning size={13} weight="duotone" aria-hidden />}
@@ -124,22 +124,22 @@ function CommentRow({
               </span>
             )}
           </p>
-          <p className="mt-1 text-[15px] leading-relaxed whitespace-pre-line text-white">{c.text}</p>
+          <p className="mt-1 text-[15px] leading-relaxed whitespace-pre-line text-m-ink">{c.text}</p>
         </div>
-        <div className="mt-1 flex items-center gap-3 px-2 text-xs text-white/65">
+        <div className="mt-1 flex items-center gap-3 px-2 text-xs text-m-ink/65">
           <Ago iso={c.at} live={live} />
           <button
             type="button"
             aria-pressed={liked}
             onClick={() => ensure("পছন্দ করতে") && toggleKey("commentLikes", key)}
-            className={cn("inline-flex min-h-8 items-center gap-1 font-semibold hover:text-crimson-bright", liked && "text-crimson-bright")}
+            className={cn("inline-flex min-h-8 items-center gap-1 font-semibold hover:text-m-red", liked && "text-m-red")}
           >
             <Heart className={cn("size-3.5", liked && "like-pop fill-current")} aria-hidden />
             {c.likes + (liked ? 1 : 0) > 0 && <Compact n={c.likes + (liked ? 1 : 0)} />}
             <span className="sr-only">পছন্দ</span>
           </button>
           {onReply && (
-            <button type="button" onClick={onReply} className="inline-flex min-h-8 items-center font-semibold hover:text-signal-orange">
+            <button type="button" onClick={onReply} className="inline-flex min-h-8 items-center font-semibold hover:text-m-blue">
               উত্তর দিন
             </button>
           )}
@@ -196,7 +196,7 @@ export function CommentThread({
   return (
     <div className="space-y-4">
       {limit && hidden > 0 && (
-        <Link href={`/media/post/${postId}#discussion`} className="inline-flex items-center gap-1.5 text-sm font-semibold text-white/80 hover:text-signal-orange">
+        <Link href={`/media/post/${postId}#discussion`} className="inline-flex items-center gap-1.5 text-sm font-semibold text-m-ink/80 hover:text-m-blue">
           <MessageCircle className="size-4" aria-hidden /> আরও <Num value={hidden} />টি মন্তব্য দেখুন
         </Link>
       )}
@@ -207,7 +207,7 @@ export function CommentThread({
           <div key={c.id} className="fade-in space-y-3">
             <CommentRow postId={postId} c={c} people={people} live={liveIds.has(c.id)} onReply={() => setReplyTo(replyTo === c.id ? null : c.id)} />
             {(allReplies.length > 0 || replyTo === c.id) && (
-              <div className="ml-10 space-y-3 border-l-2 border-white/12 pl-3">
+              <div className="ml-10 space-y-3 border-l-2 border-m-ink/10 pl-3">
                 {allReplies.map((r) => (
                   <CommentRow key={r.id} postId={postId} c={r} people={people} depth={1} live={myReplies.includes(r)} />
                 ))}

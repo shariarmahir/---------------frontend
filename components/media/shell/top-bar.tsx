@@ -15,47 +15,49 @@ import type { UnreadSeed } from "./unread";
 
 export function TopBar({ unreadSeed }: { unreadSeed: UnreadSeed }) {
   return (
-    <header className="sticky top-0 z-40 bg-signal-orange text-text-primary print:hidden">
+    <header className="frost-pane sticky top-0 z-40 text-m-ink print:hidden">
       <div className="mx-auto flex h-16 max-w-350 items-center gap-2 px-3 sm:gap-3 lg:px-6">
         <MobileMenu unreadSeed={unreadSeed} me={CURRENT_USER_HANDLE} />
-        <Link href="/media" className="flex min-w-0 items-center gap-2 rounded-lg sm:shrink-0 focus-visible:outline-2 focus-visible:outline-text-primary">
-          <Image src="/logo/kandari-logo.png" alt="" width={1600} height={967} sizes="64px" className="hidden h-9 w-auto sm:block" priority />
+        <Link href="/media" className="flex min-w-0 items-center gap-2 rounded-lg sm:shrink-0 focus-visible:outline-2 focus-visible:outline-m-blue">
+          <span className="frost-tile hidden rounded-xl px-1.5 py-1 sm:block">
+            <Image src="/logo/kandari-logo.png" alt="" width={1600} height={967} sizes="64px" className="h-7 w-auto" priority />
+          </span>
           <span className="flex min-w-0 flex-col leading-none">
-            <span className="truncate text-[16px] text-text-primary sm:text-[21px]">
+            <span className="truncate text-[16px] text-m-ink sm:text-[21px]">
               <LabelText text={LABEL_TEXT.media} />
             </span>
-            <span className="mt-1 hidden text-[11px] font-bold text-text-primary/75 sm:block">দক্ষতা · প্রমাণ · সুযোগ</span>
+            <span className="mt-1 hidden text-[11px] font-bold text-m-blue sm:block">দক্ষতা · প্রমাণ · সুযোগ</span>
           </span>
         </Link>
 
-        <Suspense fallback={<div className="mx-auto hidden h-10 w-full max-w-md rounded-full bg-text-primary md:block" />}>
+        <Suspense fallback={<div className="mx-auto hidden h-10 w-full max-w-md rounded-full bg-m-ink/6 md:block" />}>
           <SearchBox />
         </Suspense>
 
         <div className="ml-auto flex items-center gap-1 sm:gap-1.5 md:ml-0 max-sm:[&>a]:size-9">
-          <NumeralsToggle className="hidden sm:inline-flex" />
-          <Link href="/media/search" className={mediaButton({ variant: "tile", size: "icon", className: "hidden sm:inline-flex md:hidden" })}>
+          <NumeralsToggle className="frost-tile hidden border-transparent text-m-ink/80 hover:text-m-blue sm:inline-flex" />
+          <Link href="/media/search" className={mediaButton({ variant: "frame", size: "icon", className: "hidden sm:inline-flex md:hidden" })}>
             <Search aria-hidden />
             <span className="sr-only">খুঁজুন</span>
           </Link>
-          <Link href="/media/people" title="মানুষ খুঁজুন ও অনুসরণ করুন" className={mediaButton({ variant: "tile", size: "icon" })}>
+          <Link href="/media/people" title="মানুষ খুঁজুন ও অনুসরণ করুন" className={mediaButton({ variant: "frame", size: "icon" })}>
             <UsersRound aria-hidden />
             <span className="sr-only">মানুষ</span>
           </Link>
           <NotificationBell />
-          <Link href="/media/messages" className={mediaButton({ variant: "tile", size: "icon", className: "relative" })}>
+          <Link href="/media/messages" className={mediaButton({ variant: "frame", size: "icon", className: "relative" })}>
             <MessageCircle aria-hidden />
             <span className="sr-only">বার্তা</span>
             <UnreadBubble seed={unreadSeed} />
           </Link>
-          <Link href="/media/dashboard" className={mediaButton({ variant: "tile", size: "icon", className: "hidden sm:inline-flex" })}>
+          <Link href="/media/dashboard" className={mediaButton({ variant: "frame", size: "icon", className: "hidden sm:inline-flex" })}>
             <Wallet aria-hidden />
             <span className="sr-only">মাটির ব্যাংক</span>
           </Link>
           <AccountMenu variant="media" className="ml-1" />
         </div>
       </div>
-      <SignalSeam className="bottom-0 bg-text-primary/25" />
+      <SignalSeam className="frost-seam bottom-0 bg-transparent" />
     </header>
   );
 }

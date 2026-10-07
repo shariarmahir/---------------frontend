@@ -61,7 +61,7 @@ export function TeachApply({ initialDept }: { initialDept?: string }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-6 rounded-2xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-7">
+      <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-6 rounded-2xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-7 shadow-m-tile">
         <FormField control={form.control} name="kind" render={({ field }) => (
           <FormItem>
             <FormGroupLabel>কোন ধরনের একাডেমি</FormGroupLabel>
@@ -70,7 +70,7 @@ export function TeachApply({ initialDept }: { initialDept?: string }) {
                 <label key={k} className={cn(choiceClass(field.value === k), "flex-col items-start py-3")}>
                   <input type="radio" className="sr-only" name={field.name} checked={field.value === k} onChange={() => field.onChange(k)} />
                   <span>{DEPT_KINDS[k]}</span>
-                  <span className="text-xs font-normal text-white/70">{KIND_HINT[k]}</span>
+                  <span className="text-xs font-normal text-m-ink/70">{KIND_HINT[k]}</span>
                 </label>
               ))}
             </FormGroup>
@@ -197,11 +197,11 @@ function Status({ application }: { application: TeachApplication }) {
   const dept = application.dept === "new" ? application.newDept : getDepartment(application.dept)?.name;
 
   return (
-    <section className="live-in space-y-5 rounded-2xl bg-text-primary p-5 ring-1 ring-signal-orange/40 sm:p-7">
+    <section className="live-in space-y-5 rounded-2xl bg-m-card p-5 ring-1 ring-m-blue/40 sm:p-7 shadow-m-tile">
       <div>
-        <p className="text-sm font-semibold text-signal-orange">আবেদন জমা · <DateText iso={application.at} /></p>
-        <h2 className="mt-1 text-xl font-bold text-white">{application.skill}</h2>
-        <p className="text-sm text-white/80">{application.academy && `${application.academy} · `}{dept} · {DEPT_KINDS[application.kind]}{application.team.length > 0 && ` · দলে @${application.team.join(", @")}`}</p>
+        <p className="text-sm font-semibold text-m-blue">আবেদন জমা · <DateText iso={application.at} /></p>
+        <h2 className="mt-1 text-xl font-bold text-m-ink">{application.skill}</h2>
+        <p className="text-sm text-m-ink/80">{application.academy && `${application.academy} · `}{dept} · {DEPT_KINDS[application.kind]}{application.team.length > 0 && ` · দলে @${application.team.join(", @")}`}</p>
       </div>
       <ol className="space-y-2 text-sm">
         {[
@@ -211,19 +211,19 @@ function Status({ application }: { application: TeachApplication }) {
           ["প্রথম ব্যাচ", false],
         ].map(([label, done]) => (
           <li key={String(label)} className="flex items-center gap-2">
-            <span className={cn("inline-block size-2.5 rounded-full", done ? "bg-bdgreen-500" : "bg-white/25")} />
-            <span className={done ? "text-white" : "text-white/70"}>{label}</span>
+            <span className={cn("inline-block size-2.5 rounded-full", done ? "bg-m-green-soft" : "bg-m-ink/14")} />
+            <span className={done ? "text-m-ink" : "text-m-ink/70"}>{label}</span>
           </li>
         ))}
       </ol>
       {application.interview ? (
-        <p className="flex items-start gap-3 text-sm leading-relaxed text-white/85">
-          <CalendarCheck className="mt-0.5 size-5 shrink-0 text-signal-orange" aria-hidden />
-          <span>ইন্টারভিউ <strong className="text-white"><DateText iso={application.interview} time weekday /></strong>। প্যানেলে থাকবেন ওই বিভাগের একজন প্রধান শিক্ষক আর একজন বহিরাগত পেশাদার — আপনি ১৫ মিনিটে একটা কিছু শিখিয়ে দেখাবেন।</span>
+        <p className="flex items-start gap-3 text-sm leading-relaxed text-m-ink/85">
+          <CalendarCheck className="mt-0.5 size-5 shrink-0 text-m-blue" aria-hidden />
+          <span>ইন্টারভিউ <strong className="text-m-ink"><DateText iso={application.interview} time weekday /></strong>। প্যানেলে থাকবেন ওই বিভাগের একজন প্রধান শিক্ষক আর একজন বহিরাগত পেশাদার — আপনি ১৫ মিনিটে একটা কিছু শিখিয়ে দেখাবেন।</span>
         </p>
       ) : (
         <fieldset>
-          <legend className="mb-3 text-sm font-semibold text-white">প্যানেল ইন্টারভিউয়ের সময় বেছে নিন</legend>
+          <legend className="mb-3 text-sm font-semibold text-m-ink">প্যানেল ইন্টারভিউয়ের সময় বেছে নিন</legend>
           <div className="flex flex-wrap gap-2">
             {slots.map((s) => (
               <label key={s} className={choiceClass(slot === s)}>

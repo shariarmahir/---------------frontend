@@ -11,12 +11,12 @@ import { choiceClass, selectClass } from "../ui/field-styles";
 export function Row({ id, label, error, hint, children, className }: { id: string; label: string; error?: string; hint?: string; children: React.ReactNode; className?: string }) {
   return (
     <div className={cn("space-y-1.5", className)}>
-      <label htmlFor={id} className="block text-sm font-semibold text-white">{label}</label>
+      <label htmlFor={id} className="block text-sm font-semibold text-m-ink">{label}</label>
       {children}
       {error ? (
-        <p id={`${id}-error`} className="text-xs font-medium text-crimson-bright">{error}</p>
+        <p id={`${id}-error`} className="text-xs font-medium text-m-red">{error}</p>
       ) : hint ? (
-        <p className="text-xs text-white/60">{hint}</p>
+        <p className="text-xs text-m-ink/60">{hint}</p>
       ) : null}
     </div>
   );
@@ -35,7 +35,7 @@ export function SpecField({ field, value, error, onChange }: { field: Field; val
     };
     return (
       <fieldset className="space-y-1.5 sm:col-span-2" {...aria}>
-        <legend className="text-sm font-semibold text-white">{label}</legend>
+        <legend className="text-sm font-semibold text-m-ink">{label}</legend>
         <div className="flex flex-wrap gap-2">
           {field.options!.map((o) => (
             <label key={o} className={choiceClass(picked.has(o))}>
@@ -45,7 +45,7 @@ export function SpecField({ field, value, error, onChange }: { field: Field; val
             </label>
           ))}
         </div>
-        {error && <p id={`${id}-error`} className="text-xs font-medium text-crimson-bright">{error}</p>}
+        {error && <p id={`${id}-error`} className="text-xs font-medium text-m-red">{error}</p>}
       </fieldset>
     );
   }
@@ -70,16 +70,16 @@ export function TagInput({ value, ideas, error, onChange }: { value: string; ide
   return (
     <Row id="tags" label="হ্যাশট্যাগ *" error={error} hint="বাংলা বা ইংরেজি, যেভাবে খুশি — #coconut আর #ডাব দুটোই #নারকেল হয়ে মিলবে।">
       <div className="relative">
-        <Hash className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-signal-orange" aria-hidden />
+        <Hash className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-m-blue" aria-hidden />
         <Input id="tags" value={value} onChange={(e) => onChange(e.target.value)} placeholder={ideas.length ? ideas.slice(0, 3).map((t) => `#${t}`).join(" ") : "#পণ্যেরনাম #জেলা"} className="pl-9" aria-invalid={Boolean(error) || undefined} aria-describedby={error ? "tags-error" : undefined} />
       </div>
       {(tags.length > 0 || ideas.length > 0) && (
         <div className="flex flex-wrap gap-1.5 pt-1">
           {tags.map((t) => (
-            <span key={t} className="live-in rounded-md bg-signal-orange px-2 py-0.5 text-xs font-bold text-text-primary">#{t}</span>
+            <span key={t} className="live-in rounded-md bg-m-yellow px-2 py-0.5 text-xs font-bold text-m-ink">#{t}</span>
           ))}
           {ideas.filter((t) => !tags.includes(t)).map((t) => (
-            <button key={t} type="button" onClick={() => add(t)} className="rounded-md border border-dashed border-white/25 px-2 py-0.5 text-xs text-white/75 transition-colors hover:border-signal-orange hover:text-signal-orange">
+            <button key={t} type="button" onClick={() => add(t)} className="rounded-md border border-dashed border-m-ink/21 px-2 py-0.5 text-xs text-m-ink/75 transition-colors hover:border-m-blue hover:text-m-blue">
               + #{t}
             </button>
           ))}
@@ -96,10 +96,10 @@ export function Stepper({ steps, at, onJump }: { steps: string[]; at: number; on
       {steps.map((s, i) => (
         <li key={s}>
           <button type="button" disabled={i > at} onClick={() => onJump(i)} aria-current={i === at ? "step" : undefined} className="group w-full text-left disabled:cursor-default">
-            <span className="block h-1.5 overflow-hidden rounded-full bg-white/12">
-              <span className={cn("block h-full rounded-full bg-signal-orange transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none", i < at ? "w-full" : i === at ? "w-1/2" : "w-0")} />
+            <span className="block h-1.5 overflow-hidden rounded-full bg-m-ink/7">
+              <span className={cn("block h-full rounded-full bg-m-yellow transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none", i < at ? "w-full" : i === at ? "w-1/2" : "w-0")} />
             </span>
-            <span className={cn("mt-2 hidden text-xs font-semibold sm:block", i === at ? "text-signal-orange" : i < at ? "text-white group-hover:text-signal-orange" : "text-white/45")}>
+            <span className={cn("mt-2 hidden text-xs font-semibold sm:block", i === at ? "text-m-blue" : i < at ? "text-m-ink group-hover:text-m-blue" : "text-m-ink/45")}>
               {i + 1}. {s}
             </span>
           </button>

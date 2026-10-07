@@ -50,20 +50,20 @@ function StartResearchDialog({ open, onOpenChange, from, members, onStarted }: {
     onStarted(id);
   }
 
-  const label = "mb-1.5 block text-sm font-semibold text-white";
+  const label = "mb-1.5 block text-sm font-semibold text-m-ink";
   return (
     <Dialog open={open} onOpenChange={reset}>
       <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-lg">
         <DialogHeader>
           <PixelMark tone="dark" />
-          <DialogTitle className="flex items-center gap-2 text-xl font-bold text-white"><Rocket className="size-5 text-signal-orange" aria-hidden /> গবেষণা শুরু করুন</DialogTitle>
+          <DialogTitle className="flex items-center gap-2 text-xl font-bold text-m-ink"><Rocket className="size-5 text-m-blue" aria-hidden /> গবেষণা শুরু করুন</DialogTitle>
           <DialogDescription>ছয় ধাপে শুরু থেকে শেষ: বিষয় বাছাই ভোট → সময়সূচি → কাজ ভাগ → ফাইল ও ডেটা → লেখা → শেয়ার ও প্রকাশ।</DialogDescription>
         </DialogHeader>
         <form onSubmit={submit} className="space-y-5">
           <label className="block">
             <span className={label}>বিষয় বাছাইয়ের ভোট চলবে যতদিন</span>
             <Input type="date" min={today} value={deadline || addDays(today, 3)} onChange={(e) => setDeadline(e.target.value)} />
-            <span className="mt-1 block text-xs text-white/60">এর মধ্যে সবাই মিলে সর্বোচ্চ তিনটি বিষয় প্রস্তাব করবে আর 👍 🤔 👎 দিয়ে মত দেবে।</span>
+            <span className="mt-1 block text-xs text-m-ink/60">এর মধ্যে সবাই মিলে সর্বোচ্চ তিনটি বিষয় প্রস্তাব করবে আর 👍 🤔 👎 দিয়ে মত দেবে।</span>
           </label>
           <label className="block">
             <span className={label}>প্রথম বিষয়ের প্রস্তাব (ঐচ্ছিক)</span>
@@ -103,7 +103,7 @@ export function InnovationTab({ from, members, member, shares, onShare }: {
 
   const research = projects.length > 0 && (
     <div className="space-y-3">
-      <h3 className="text-lg font-bold text-white">চলমান গবেষণা</h3>
+      <h3 className="text-lg font-bold text-m-ink">চলমান গবেষণা</h3>
       <ul className="grid gap-3 sm:grid-cols-2">
         {projects.map((p) => {
           const topic = chosenTopic(p) ?? (pollOpen(p, today) ? null : leading(p.ideas));
@@ -111,16 +111,16 @@ export function InnovationTab({ from, members, member, shares, onShare }: {
           const Icon = p.from.kind === "lab" ? FlaskConical : GraduationCap;
           return (
             <li key={p.id}>
-              <button type="button" onClick={() => setOpen(p.id)} className="story-reveal group flex h-full w-full flex-col gap-3 rounded-2xl bg-text-primary p-4 text-left ring-1 ring-white/12 transition-[box-shadow,translate] duration-300 hover:-translate-y-1 hover:ring-signal-orange/50">
+              <button type="button" onClick={() => setOpen(p.id)} className="story-reveal group flex h-full w-full flex-col gap-3 rounded-2xl bg-m-card p-4 text-left ring-1 ring-m-ink/10 transition-[box-shadow,translate] duration-300 hover:-translate-y-1 hover:ring-m-blue/50 shadow-m-tile">
                 <span className="flex items-center gap-2 text-xs font-bold">
-                  <span className={cn("rounded-full px-2.5 py-0.5", p.topicId ? "bg-bd-green text-white" : "bg-signal-orange text-text-primary")}>{p.topicId ? "কাজ চলছে" : "বিষয় বাছাই"}</span>
-                  <Icon className="size-3.5 text-white/55" aria-hidden />
-                  <span className="ml-auto text-signal-orange">খুলুন →</span>
+                  <span className={cn("rounded-full px-2.5 py-0.5", p.topicId ? "bg-m-blue-soft text-m-ink" : "bg-m-yellow text-m-ink")}>{p.topicId ? "কাজ চলছে" : "বিষয় বাছাই"}</span>
+                  <Icon className="size-3.5 text-m-ink/55" aria-hidden />
+                  <span className="ml-auto text-m-blue">খুলুন →</span>
                 </span>
-                <span className="font-bold text-white">{topic?.title ?? "তিনটি বিষয়ের ভোট চলছে"}</span>
-                {!p.topicId && <span className="text-xs text-white/65"><Num value={p.ideas.length} />/৩ প্রস্তাব · ভোট শেষ <DateText iso={p.topicDeadline} /></span>}
-                <span className="mt-auto flex items-center gap-3 text-xs text-white/70">
-                  <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/10"><span className="block h-full rounded-full bg-signal-orange" style={{ width: `${pct}%` }} /></span>
+                <span className="font-bold text-m-ink">{topic?.title ?? "তিনটি বিষয়ের ভোট চলছে"}</span>
+                {!p.topicId && <span className="text-xs text-m-ink/65"><Num value={p.ideas.length} />/৩ প্রস্তাব · ভোট শেষ <DateText iso={p.topicDeadline} /></span>}
+                <span className="mt-auto flex items-center gap-3 text-xs text-m-ink/70">
+                  <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-m-ink/6"><span className="block h-full rounded-full bg-m-yellow" style={{ width: `${pct}%` }} /></span>
                   <Num value={pct} />% প্রস্তুত
                 </span>
               </button>

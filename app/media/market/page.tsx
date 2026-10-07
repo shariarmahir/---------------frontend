@@ -94,14 +94,14 @@ export default async function MarketPage({ searchParams }: { searchParams: Promi
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       {/* Hero: the claim left, the four kinds of seller as colour fields right. */}
-      <section className="live-in overflow-hidden rounded-3xl bg-text-primary ring-1 ring-white/12">
+      <section className="live-in overflow-hidden rounded-3xl bg-m-card ring-1 ring-m-ink/10 shadow-m-tile">
         <div className="grid gap-8 p-5 sm:p-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] xl:items-center">
           <div className="space-y-5">
             <PixelMark tone="dark" />
-            <h1 className="text-3xl font-bold tracking-tight text-balance text-white sm:text-5xl sm:leading-[1.1]">
-              যা আছে বিক্রি করুন, <span className="text-signal-orange">যা দরকার চেয়ে নিন।</span>
+            <h1 className="text-3xl font-bold tracking-tight text-balance text-m-ink sm:text-5xl sm:leading-[1.1]">
+              যা আছে বিক্রি করুন, <span className="text-m-blue">যা দরকার চেয়ে নিন।</span>
             </h1>
-            <p className="max-w-[48ch] text-[15px] leading-relaxed text-white/80">
+            <p className="max-w-[48ch] text-[15px] leading-relaxed text-m-ink/80">
               কৃষকের ২০টি নারকেল থেকে আড়তের টনের চালান, নকশিকাঁথা থেকে আইনি পরামর্শ। হ্যাশট্যাগ দিন — ক্রেতা আর বিক্রেতা নিজেরাই মিলে যায়, বিজ্ঞাপন লাগে না।
             </p>
             <div className="flex flex-wrap gap-3">
@@ -133,23 +133,23 @@ export default async function MarketPage({ searchParams }: { searchParams: Promi
 
       <section className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <nav aria-label="বাজারের দিক" className="flex gap-1 rounded-2xl bg-white/10 p-1">
+          <nav aria-label="বাজারের দিক" className="flex gap-1 rounded-2xl bg-m-ink/6 p-1">
             {[
               { v: undefined, label: "বিক্রি হচ্ছে", n: shown.length },
               { v: "board", label: "চাহিদা বোর্ড", n: posts.length },
             ].map((t) => {
               const on = (t.v === "board") === board;
               return (
-                <Link key={t.label} href={href({ ...keep, view: t.v, side: undefined })} scroll={false} aria-current={on ? "page" : undefined} className={cn("inline-flex min-h-10 items-center gap-2 rounded-xl px-4 text-sm font-bold transition-colors", on ? "bg-signal-orange text-text-primary shadow-tile" : "text-white/80 hover:text-white")}>
+                <Link key={t.label} href={href({ ...keep, view: t.v, side: undefined })} scroll={false} aria-current={on ? "page" : undefined} className={cn("inline-flex min-h-10 items-center gap-2 rounded-xl px-4 text-sm font-bold transition-colors", on ? "bg-m-yellow text-m-ink shadow-m-tile" : "text-m-ink/80 hover:text-m-ink")}>
                   {t.label}
-                  <span className={cn("rounded-md px-1.5 text-xs", on ? "bg-text-primary text-signal-orange" : "bg-white/10")}><Num value={t.n} /></span>
+                  <span className={cn("rounded-md px-1.5 text-xs", on ? "bg-m-card text-m-blue" : "bg-m-ink/6")}><Num value={t.n} /></span>
                 </Link>
               );
             })}
           </nav>
-          <nav aria-label="কেনাবেচার ধরন" className="flex gap-1 overflow-x-auto rounded-xl bg-white/10 p-1 scrollbar-none">
+          <nav aria-label="কেনাবেচার ধরন" className="flex gap-1 overflow-x-auto rounded-xl bg-m-ink/6 p-1 scrollbar-none">
             {[{ key: undefined, bn: "সব" }, ...(Object.keys(MODES) as TradeMode[]).map((key) => ({ key, bn: MODES[key].bn }))].map((m) => (
-              <Link key={m.bn} href={href({ ...keep, m: m.key })} scroll={false} aria-current={mode === m.key ? "true" : undefined} className={cn("inline-flex min-h-8 items-center rounded-lg px-2.5 text-xs font-semibold whitespace-nowrap", mode === m.key ? "bg-bd-green text-white" : "text-white/80 hover:text-white")}>
+              <Link key={m.bn} href={href({ ...keep, m: m.key })} scroll={false} aria-current={mode === m.key ? "true" : undefined} className={cn("inline-flex min-h-8 items-center rounded-lg px-2.5 text-xs font-semibold whitespace-nowrap", mode === m.key ? "bg-m-blue-soft text-m-ink" : "text-m-ink/80 hover:text-m-ink")}>
                 {m.bn}
               </Link>
             ))}
@@ -166,21 +166,21 @@ export default async function MarketPage({ searchParams }: { searchParams: Promi
           {pick && <input type="hidden" name="pick" value={pick} />}
           <label className="relative block">
             <span className="sr-only">বাজারে খুঁজুন</span>
-            <Search className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-white/65" aria-hidden />
+            <Search className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-m-ink/65" aria-hidden />
             <input
               type="search"
               name="q"
               defaultValue={q}
               placeholder="নাম বা হ্যাশট্যাগ: #নারকেল, coconut, জামদানি…"
-              className="h-12 w-full rounded-2xl border border-white/12 bg-text-primary pr-4 pl-12 text-[15px] focus:border-signal-orange focus:ring-3 focus:ring-signal-orange/15 focus:outline-none"
+              className="h-12 w-full rounded-2xl border border-m-ink/10 bg-m-card pr-4 pl-12 text-[15px] focus:border-m-blue focus:ring-3 focus:ring-m-blue/15 focus:outline-none shadow-m-tile"
             />
           </label>
         </form>
 
         <p className="flex flex-wrap items-center gap-1.5 text-xs">
-          <span className="inline-flex items-center gap-1 font-semibold text-white/65"><Hash className="size-3.5" aria-hidden />চলছে</span>
+          <span className="inline-flex items-center gap-1 font-semibold text-m-ink/65"><Hash className="size-3.5" aria-hidden />চলছে</span>
           {trendingTags(listings, boardPosts).map((t) => (
-            <Link key={t} href={href({ ...keep, q: `#${t}` })} scroll={false} className={cn("rounded-full px-2.5 py-1 font-medium transition-colors", q === `#${t}` ? "bg-signal-orange text-text-primary" : "bg-white/10 text-white/80 hover:bg-white/20 hover:text-white")}>
+            <Link key={t} href={href({ ...keep, q: `#${t}` })} scroll={false} className={cn("rounded-full px-2.5 py-1 font-medium transition-colors", q === `#${t}` ? "bg-m-yellow text-m-ink" : "bg-m-ink/6 text-m-ink/80 hover:bg-m-ink/11 hover:text-m-ink")}>
               #{t}
             </Link>
           ))}
@@ -225,9 +225,9 @@ export default async function MarketPage({ searchParams }: { searchParams: Promi
         )}
 
         {!board && (
-          <nav aria-label="সাজান" className="flex gap-1 self-start rounded-xl bg-white/10 p-1">
+          <nav aria-label="সাজান" className="flex gap-1 self-start rounded-xl bg-m-ink/6 p-1">
             {sorts.map((s) => (
-              <Link key={s.key} href={href({ ...keep, sort: s.key === "trust" ? undefined : s.key })} scroll={false} aria-current={sort === s.key ? "true" : undefined} className={cn("inline-flex min-h-8 items-center rounded-lg px-2.5 text-xs font-semibold whitespace-nowrap", sort === s.key ? "bg-signal-orange text-text-primary shadow-tile" : "text-white/80 hover:text-white")}>
+              <Link key={s.key} href={href({ ...keep, sort: s.key === "trust" ? undefined : s.key })} scroll={false} aria-current={sort === s.key ? "true" : undefined} className={cn("inline-flex min-h-8 items-center rounded-lg px-2.5 text-xs font-semibold whitespace-nowrap", sort === s.key ? "bg-m-yellow text-m-ink shadow-m-tile" : "text-m-ink/80 hover:text-m-ink")}>
                 {s.label}
               </Link>
             ))}
@@ -242,8 +242,8 @@ export default async function MarketPage({ searchParams }: { searchParams: Promi
                 const on = side === k;
                 const n = posts.filter((p) => p.side === k).length;
                 return (
-                  <div key={k} className={cn("flex items-center gap-3 rounded-2xl p-4 ring-2 transition-colors", on ? (k === "sell" ? "bg-bd-green ring-bd-green" : "bg-signal-orange ring-signal-orange") : "bg-text-primary ring-white/12")}>
-                    <Link href={href({ ...keep, side: on ? undefined : k })} scroll={false} aria-current={on ? "true" : undefined} className={cn("min-w-0 flex-1", on && k === "buy" ? "text-text-primary" : "text-white")}>
+                  <div key={k} className={cn("flex items-center gap-3 rounded-2xl p-4 ring-2 transition-colors", on ? (k === "sell" ? "bg-m-blue-soft ring-m-blue" : "bg-m-yellow ring-m-blue") : "bg-m-card ring-m-ink/10")}>
+                    <Link href={href({ ...keep, side: on ? undefined : k })} scroll={false} aria-current={on ? "true" : undefined} className={cn("min-w-0 flex-1", on && k === "buy" ? "text-m-ink" : "text-m-ink")}>
                       <span className="block text-lg font-bold">{SIDES[k].bn} <span className="text-sm font-semibold opacity-75">(<Num value={n} />)</span></span>
                       <span className="text-xs opacity-80">{SIDES[k].hint}</span>
                     </Link>

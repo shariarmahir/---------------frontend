@@ -45,7 +45,7 @@ export function StarInput({
               style={{ width: size, height: size }}
               strokeWidth={1.5}
               className={cn(
-                "rounded-md transition-colors duration-100 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-signal-orange",
+                "rounded-md transition-colors duration-100 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-m-blue",
                 n <= shown ? "fill-amber-400 text-amber-400" : "text-slate-300",
               )}
             />
@@ -55,7 +55,7 @@ export function StarInput({
           </label>
         ))}
       </div>
-      <span className="min-w-16 text-sm font-semibold text-white/80" aria-hidden>
+      <span className="min-w-16 text-sm font-semibold text-m-ink/80" aria-hidden>
         {shown ? labels[shown] : "বেছে নিন"}
       </span>
     </div>

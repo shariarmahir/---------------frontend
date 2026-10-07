@@ -38,16 +38,16 @@ export default async function TogetherPage({ searchParams }: { searchParams: Pro
   const prizes = challenges.reduce((n, c) => n + c.prize, 0);
 
   const pillars = [
-    { key: "teams" as const, Icon: UsersRound, title: "টিম ও গ্রুপ", line: "পরিবার, ল্যাব, প্রজেক্ট, খেলা — নিজের রুম, নিজের যাত্রা", stat: <><Num value={teams.length} />টি টিম</>, tone: "bg-signal-orange text-text-primary", tile: "bg-text-primary text-signal-orange", glow: "var(--color-signal-orange)" },
-    { key: "events" as const, Icon: HandHeart, title: "উদ্যোগ", line: "গাছ লাগানো, পরিষ্কার, রক্তদান — স্পনসরসহ", stat: <><Num value={volunteers} /> স্বেচ্ছাসেবক</>, tone: "bg-bd-green text-white", tile: "bg-signal-orange text-text-primary", glow: "var(--color-bd-green)" },
-    { key: "challenges" as const, Icon: Trophy, title: "চ্যালেঞ্জ", line: "টিম বনাম টিম লিগ, আর কোড-ডিজাইন-গবেষণার পুরস্কার", stat: <><Taka amount={prizes} /> পুরস্কার</>, tone: "bg-bdorange-600 text-text-primary", tile: "bg-text-primary text-signal-orange", glow: "var(--color-bdorange-600)" },
+    { key: "teams" as const, Icon: UsersRound, title: "টিম ও গ্রুপ", line: "পরিবার, ল্যাব, প্রজেক্ট, খেলা — নিজের রুম, নিজের যাত্রা", stat: <><Num value={teams.length} />টি টিম</>, tone: "bg-m-yellow text-m-ink", tile: "bg-m-card text-m-blue", glow: "var(--color-signal-orange)" },
+    { key: "events" as const, Icon: HandHeart, title: "উদ্যোগ", line: "গাছ লাগানো, পরিষ্কার, রক্তদান — স্পনসরসহ", stat: <><Num value={volunteers} /> স্বেচ্ছাসেবক</>, tone: "bg-m-blue-soft text-m-ink", tile: "bg-m-yellow text-m-ink", glow: "var(--color-bd-green)" },
+    { key: "challenges" as const, Icon: Trophy, title: "চ্যালেঞ্জ", line: "টিম বনাম টিম লিগ, আর কোড-ডিজাইন-গবেষণার পুরস্কার", stat: <><Taka amount={prizes} /> পুরস্কার</>, tone: "bg-m-red-soft text-m-ink", tile: "bg-m-card text-m-blue", glow: "var(--color-bdorange-600)" },
   ];
 
   return (
     <div className="mx-auto max-w-6xl space-y-8">
       {/* Hero: the claim on ink, the three parts as colour fields that open them. */}
-      <section className="live-in relative isolate overflow-hidden rounded-3xl bg-text-primary ring-1 ring-white/12">
-        <svg className="pointer-events-none absolute -top-24 -right-24 -z-10 size-[28rem] text-signal-orange/10 motion-safe:animate-[spin_90s_linear_infinite]" viewBox="0 0 200 200" aria-hidden>
+      <section className="live-in relative isolate overflow-hidden rounded-3xl bg-m-card ring-1 ring-m-ink/10 shadow-m-tile">
+        <svg className="pointer-events-none absolute -top-24 -right-24 -z-10 size-[28rem] text-m-blue/10 motion-safe:animate-[spin_90s_linear_infinite]" viewBox="0 0 200 200" aria-hidden>
           <circle cx="100" cy="100" r="96" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="2 6" />
           <circle cx="100" cy="100" r="70" fill="none" stroke="currentColor" strokeWidth="1" />
           <circle cx="100" cy="100" r="44" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="1 4" />
@@ -55,10 +55,10 @@ export default async function TogetherPage({ searchParams }: { searchParams: Pro
         <div className="grid gap-8 p-5 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
           <div className="space-y-5">
             <PixelMark tone="dark" />
-            <h1 className="text-4xl font-bold tracking-tight text-balance text-white sm:text-6xl sm:leading-[1.05]">
-              একা নয়, <span className="text-signal-orange">একসাথে।</span>
+            <h1 className="text-4xl font-bold tracking-tight text-balance text-m-ink sm:text-6xl sm:leading-[1.05]">
+              একা নয়, <span className="text-m-blue">একসাথে।</span>
             </h1>
-            <p className="max-w-[44ch] text-[15px] leading-relaxed text-white/80 sm:text-base">
+            <p className="max-w-[44ch] text-[15px] leading-relaxed text-m-ink/80 sm:text-base">
               দল গড়ুন, উদ্যোগে নামুন, চ্যালেঞ্জ জিতুন — আর পুরো যাত্রাটা টিম রুমে লিখে রাখুন, সবাইকে ফিডে দেখান।
             </p>
             <div className="flex flex-wrap gap-3">
@@ -74,7 +74,7 @@ export default async function TogetherPage({ searchParams }: { searchParams: Pro
                   scroll={false}
                   aria-current={view === p.key ? "true" : undefined}
                   style={glowStyle(p.glow)}
-                  className={cn("group flex items-center gap-4 rounded-2xl p-4 ring-offset-2 ring-offset-text-primary sm:p-5", p.tone, LIFT, view === p.key && "ring-2 ring-white/70")}
+                  className={cn("group flex items-center gap-4 rounded-2xl p-4 ring-offset-2 ring-offset-text-primary sm:p-5", p.tone, LIFT, view === p.key && "ring-2 ring-m-ink/60")}
                 >
                   <span className={cn("flex size-12 shrink-0 items-center justify-center rounded-xl transition-transform duration-500 group-hover:-rotate-6 motion-reduce:transition-none", p.tile)}>
                     <p.Icon className="size-6" aria-hidden />
@@ -91,7 +91,7 @@ export default async function TogetherPage({ searchParams }: { searchParams: Pro
         </div>
         <div className="relative">
           <SignalSeam className="top-0" />
-          <dl className="grid grid-cols-2 divide-white/10 sm:grid-cols-4 sm:divide-x">
+          <dl className="grid grid-cols-2 divide-m-ink/9 sm:grid-cols-4 sm:divide-x">
             {[
               { label: "টিম", value: <Num value={teams.length} /> },
               { label: "টিমের সদস্য", value: <Num value={members} /> },
@@ -99,8 +99,8 @@ export default async function TogetherPage({ searchParams }: { searchParams: Pro
               { label: "চ্যালেঞ্জের পুরস্কার", value: <Taka amount={prizes} /> },
             ].map((s) => (
               <div key={s.label} className="flex flex-col items-center gap-0.5 py-4 text-center">
-                <dt className="text-xs text-white/65">{s.label}</dt>
-                <dd className="text-2xl font-bold text-signal-orange">{s.value}</dd>
+                <dt className="text-xs text-m-ink/65">{s.label}</dt>
+                <dd className="text-2xl font-bold text-m-blue">{s.value}</dd>
               </div>
             ))}
           </dl>
@@ -138,8 +138,8 @@ function PartHead({ title, line, action }: { title: string; line: string; action
   return (
     <div className="flex flex-wrap items-end justify-between gap-3">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight text-white">{title}</h2>
-        <p className="mt-0.5 max-w-[60ch] text-sm text-white/70">{line}</p>
+        <h2 className="text-2xl font-bold tracking-tight text-m-ink">{title}</h2>
+        <p className="mt-0.5 max-w-[60ch] text-sm text-m-ink/70">{line}</p>
       </div>
       {action}
     </div>
@@ -155,7 +155,7 @@ function TeamsPart({ k }: { k?: string }) {
       <JoinTeamByKey />
       {!kind && <MyTeams />}
       <div className="space-y-4">
-        {!kind && <h3 className="text-xl font-bold text-white">সব টিম</h3>}
+        {!kind && <h3 className="text-xl font-bold text-m-ink">সব টিম</h3>}
         <Kinds view="teams" names={teamKindBn} active={kind} label="টিমের ধরন" />
         <TeamGrid list={shown} hideMine={!kind} />
       </div>
@@ -176,8 +176,8 @@ function EventsPart({ k }: { k?: string }) {
       <PartHead title="উদ্যোগ" line="চলো ১০০টা গাছ লাগাই, এলাকাটা পরিষ্কার করি — যে কেউ নেতৃত্ব দিতে পারেন, যে কেউ যোগ দিতে পারেন। টিম নিয়েও নামা যায়।" action={<CreateEventButton />} />
       <ol className="grid gap-2 sm:grid-cols-3">
         {steps.map(({ Icon, text }, i) => (
-          <li key={i} className="flex items-start gap-3 rounded-2xl bg-bd-green p-3.5 text-sm text-white">
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-signal-orange text-text-primary"><Icon className="size-4.5" aria-hidden /></span>
+          <li key={i} className="flex items-start gap-3 rounded-2xl bg-m-blue-soft p-3.5 text-sm text-m-ink">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-m-yellow text-m-ink"><Icon className="size-4.5" aria-hidden /></span>
             <span className="leading-relaxed">{text}</span>
           </li>
         ))}
@@ -201,8 +201,8 @@ function ChallengesPart({ k }: { k?: string }) {
       <Arena />
       <section className="space-y-5">
         <PartHead title="পুরস্কারের চ্যালেঞ্জ" line="কোড, ডিজাইন, গবেষণা আর ল্যাবের চ্যালেঞ্জ — একা বা টিমে। বাস্তব সমস্যার সমাধান করে পুরস্কার জিতুন, ছোট পেইড অ্যাসাইনমেন্টে আয় করুন।" action={<CreateChallengeButton />} />
-        <p className="flex items-start gap-2 rounded-2xl bg-text-primary p-3.5 text-sm text-white/80 ring-1 ring-white/12">
-          <Scale className="mt-0.5 size-4.5 shrink-0 text-signal-orange" aria-hidden />
+        <p className="flex items-start gap-2 rounded-2xl bg-m-card p-3.5 text-sm text-m-ink/80 ring-1 ring-m-ink/10 shadow-m-tile">
+          <Scale className="mt-0.5 size-4.5 shrink-0 text-m-blue" aria-hidden />
           টিমে খেললে জমার সময় টিমের নাম দিন — জেতার পর টিম রুমের যাত্রায় লিখে ফিডে শেয়ার করুন।
         </p>
         <Kinds view="challenges" names={challengeKindBn} active={kind} label="চ্যালেঞ্জের ধরন" />

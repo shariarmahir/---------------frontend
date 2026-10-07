@@ -54,8 +54,8 @@ export function ExamDesk({ exams, kinds, now, meId, member, manager, teacher, te
     <section aria-labelledby="desk-title" className="space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 id="desk-title" className="text-xl font-bold text-white">পরীক্ষা ও প্রশ্নপত্র</h2>
-          <p className="text-sm text-white/65">
+          <h2 id="desk-title" className="text-xl font-bold text-m-ink">পরীক্ষা ও প্রশ্নপত্র</h2>
+          <p className="text-sm text-m-ink/65">
             {teacher ? "আপনি শিক্ষক — প্রশ্ন বানান, সময় হলে প্রকাশ করুন, বহুনির্বাচনির ফল এখানেই দেখুন।" : `প্রশ্নপত্র বানান শিক্ষক${teacherName ? ` (${teacherName})` : ""}; প্রকাশ হলে এখানে আসবে।`}
           </p>
         </div>
@@ -67,7 +67,7 @@ export function ExamDesk({ exams, kinds, now, meId, member, manager, teacher, te
       </div>
 
       {sorted.length === 0 ? (
-        <p className="rounded-2xl bg-text-primary p-5 text-sm text-white/65 ring-1 ring-white/12">কোনো পরীক্ষার তারিখ এখনো দেওয়া হয়নি।</p>
+        <p className="rounded-2xl bg-m-card p-5 text-sm text-m-ink/65 ring-1 ring-m-ink/10 shadow-m-tile">কোনো পরীক্ষার তারিখ এখনো দেওয়া হয়নি।</p>
       ) : (
         <ul className="grid gap-3 md:grid-cols-2">
           {sorted.map((x) => {
@@ -76,9 +76,9 @@ export function ExamDesk({ exams, kinds, now, meId, member, manager, teacher, te
             const seen = canSeePaper(p, teacher);
             const mine = meId ? p?.mcq?.[meId] : undefined;
             return (
-              <li key={x.id} className={cn("story-reveal flex flex-col gap-3 rounded-2xl p-4 ring-1", days >= 0 && days <= 7 ? "bg-signal-orange text-text-primary ring-signal-orange" : "bg-text-primary text-white ring-white/12", days < 0 && "opacity-70")}>
+              <li key={x.id} className={cn("story-reveal flex flex-col gap-3 rounded-2xl p-4 ring-1", days >= 0 && days <= 7 ? "bg-m-yellow text-m-ink ring-m-blue" : "bg-m-card text-m-ink ring-m-ink/10", days < 0 && "opacity-70")}>
                 <div className="flex items-start gap-4">
-                  <span className="flex size-12 shrink-0 flex-col items-center justify-center rounded-xl bg-black/20 text-center leading-none">
+                  <span className="flex size-12 shrink-0 flex-col items-center justify-center rounded-xl bg-white/45 text-center leading-none">
                     <span className="text-lg font-bold">{days < 0 ? "✓" : <Num value={days} />}</span>
                     {days >= 0 && <span className="mt-0.5 text-[10px] font-semibold">দিন</span>}
                   </span>
@@ -90,16 +90,16 @@ export function ExamDesk({ exams, kinds, now, meId, member, manager, teacher, te
                 </div>
                 <div className="flex flex-wrap items-center gap-2 text-xs font-bold">
                   {!p ? (
-                    <span className="rounded-full bg-black/20 px-2.5 py-1">প্রশ্নপত্র তৈরি হয়নি</span>
+                    <span className="rounded-full bg-white/45 px-2.5 py-1">প্রশ্নপত্র তৈরি হয়নি</span>
                   ) : (
                     <>
-                      <span className={cn("inline-flex items-center gap-1 rounded-full px-2.5 py-1", p.released ? "bg-bd-green text-white" : "bg-black/25")}>
+                      <span className={cn("inline-flex items-center gap-1 rounded-full px-2.5 py-1", p.released ? "bg-m-blue-soft text-m-ink" : "bg-white/50")}>
                         {p.released ? <Eye className="size-3.5" aria-hidden /> : <EyeOff className="size-3.5" aria-hidden />} {p.released ? "প্রকাশিত" : "গোপন"}
                       </span>
-                      <span className="rounded-full bg-black/20 px-2.5 py-1"><Num value={p.questions.length} />টি প্রশ্ন · <Num value={totalMarks(p.questions)} /> নম্বর{p.duration ? <> · <Num value={p.duration} /> মিনিট</> : null}</span>
+                      <span className="rounded-full bg-white/45 px-2.5 py-1"><Num value={p.questions.length} />টি প্রশ্ন · <Num value={totalMarks(p.questions)} /> নম্বর{p.duration ? <> · <Num value={p.duration} /> মিনিট</> : null}</span>
                     </>
                   )}
-                  {mine !== undefined && p && <span className="rounded-full bg-text-primary px-2.5 py-1 text-signal-orange">আমার বহুনির্বাচনি: <Num value={mine} />/<Num value={mcqTotal(p.questions)} /></span>}
+                  {mine !== undefined && p && <span className="rounded-full bg-m-card px-2.5 py-1 text-m-blue">আমার বহুনির্বাচনি: <Num value={mine} />/<Num value={mcqTotal(p.questions)} /></span>}
                 </div>
                 <div className="mt-auto flex flex-wrap gap-2">
                   {teacher && (
@@ -147,7 +147,7 @@ export function ExamDesk({ exams, kinds, now, meId, member, manager, teacher, te
   );
 }
 
-const label = "mb-1.5 block text-sm font-semibold text-white";
+const label = "mb-1.5 block text-sm font-semibold text-m-ink";
 
 function AddExam({ open, onOpenChange, kinds, onAdd }: { open: boolean; onOpenChange: (o: boolean) => void; kinds: Record<string, string>; onAdd: (e: Omit<DeskExam, "id">) => boolean }) {
   const first = Object.keys(kinds)[0];
@@ -163,7 +163,7 @@ function AddExam({ open, onOpenChange, kinds, onAdd }: { open: boolean; onOpenCh
       <DialogContent className="rounded-3xl font-sans sm:max-w-lg">
         <DialogHeader>
           <PixelMark tone="dark" />
-          <DialogTitle className="text-xl font-bold text-white">পরীক্ষা যোগ করুন</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-m-ink">পরীক্ষা যোগ করুন</DialogTitle>
           <DialogDescription>তারিখ দিলে সবার কাউন্টডাউন শুরু; প্রশ্নপত্র শিক্ষক পরে বানাবেন।</DialogDescription>
         </DialogHeader>
         <form
@@ -196,7 +196,7 @@ function AddExam({ open, onOpenChange, kinds, onAdd }: { open: boolean; onOpenCh
             <label className="block"><span className={label}>সময়</span><Input type="time" value={time} onChange={(e) => setTime(e.target.value)} /></label>
           </div>
           <label className="block"><span className={label}>সিলেবাস</span><Input value={syllabus} onChange={(e) => setSyllabus(e.target.value)} placeholder="যেমন: অধ্যায় ৯–১১" /></label>
-          {tried && !ok && <p className="text-xs font-semibold text-crimson-bright">নাম আর তারিখ দিন।</p>}
+          {tried && !ok && <p className="text-xs font-semibold text-m-red">নাম আর তারিখ দিন।</p>}
           <button type="submit" className={mediaButton({ variant: "primary", size: "lg", className: "w-full" })}>যোগ করুন</button>
         </form>
       </DialogContent>
@@ -232,7 +232,7 @@ function PaperBuilder({ exam, onClose, onSave }: { exam: DeskExam; onClose: () =
       <DialogContent className="max-h-[94dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-2xl">
         <DialogHeader>
           <PixelMark tone="dark" />
-          <DialogTitle className="text-xl font-bold text-white">প্রশ্নপত্র — {exam.title}</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-m-ink">প্রশ্নপত্র — {exam.title}</DialogTitle>
           <DialogDescription>
             মোট <Num value={totalMarks(qs)} /> নম্বর · বহুনির্বাচনি <Num value={mcqTotal(qs)} /> নম্বর (এখানেই মূল্যায়ন), বাকিটা খাতায়।
           </DialogDescription>
@@ -243,13 +243,13 @@ function PaperBuilder({ exam, onClose, onSave }: { exam: DeskExam; onClose: () =
         </div>
         <ol className="space-y-3">
           {qs.map((q, i) => (
-            <li key={q.id} className={cn("space-y-3 rounded-2xl bg-white/5 p-3 ring-1", tried && bad[i] ? "ring-crimson-bright" : "ring-white/10")}>
+            <li key={q.id} className={cn("space-y-3 rounded-2xl bg-m-ink/3 p-3 ring-1", tried && bad[i] ? "ring-m-red" : "ring-m-ink/9")}>
               <div className="flex flex-wrap items-center gap-2">
-                <span className="flex size-7 items-center justify-center rounded-full bg-signal-orange text-xs font-bold text-text-primary"><Num value={i + 1} /></span>
+                <span className="flex size-7 items-center justify-center rounded-full bg-m-yellow text-xs font-bold text-m-ink"><Num value={i + 1} /></span>
                 <select value={q.kind} onChange={(e) => { const k = e.target.value as QuestionKind; set(q.id, { kind: k, options: k === "mcq" ? q.options ?? ["", "", "", ""] : undefined, answer: k === "mcq" ? q.answer : undefined }); }} className={cn(selectClass, "h-9 w-auto")} aria-label="প্রশ্নের ধরন">
                   {(Object.keys(QUESTION_KINDS) as QuestionKind[]).map((k) => <option key={k} value={k}>{QUESTION_KINDS[k]}</option>)}
                 </select>
-                <label className="flex items-center gap-1.5 text-sm text-white/80">
+                <label className="flex items-center gap-1.5 text-sm text-m-ink/80">
                   নম্বর
                   <Input inputMode="numeric" value={q.marks ? num(q.marks) : ""} onChange={(e) => set(q.id, { marks: toNumber(e.target.value) })} className="h-9 w-16" aria-label="নম্বর" />
                 </label>
@@ -259,15 +259,15 @@ function PaperBuilder({ exam, onClose, onSave }: { exam: DeskExam; onClose: () =
               {q.kind === "mcq" && (
                 <div className="grid gap-2 sm:grid-cols-2">
                   {(q.options ?? []).map((o, k) => (
-                    <label key={k} className={cn("flex items-center gap-2 rounded-xl px-2 py-1 ring-1", q.answer === k ? "bg-bd-green/30 ring-bd-green" : "ring-white/10")}>
-                      <input type="radio" name={`ans-${q.id}`} checked={q.answer === k} onChange={() => set(q.id, { answer: k })} className="size-4 accent-signal-orange" aria-label={`${LETTERS[k]} সঠিক উত্তর`} />
-                      <span className="text-sm font-bold text-white/80">{LETTERS[k]}</span>
+                    <label key={k} className={cn("flex items-center gap-2 rounded-xl px-2 py-1 ring-1", q.answer === k ? "bg-m-blue/15 ring-m-blue" : "ring-m-ink/9")}>
+                      <input type="radio" name={`ans-${q.id}`} checked={q.answer === k} onChange={() => set(q.id, { answer: k })} className="size-4 accent-m-blue" aria-label={`${LETTERS[k]} সঠিক উত্তর`} />
+                      <span className="text-sm font-bold text-m-ink/80">{LETTERS[k]}</span>
                       <Input value={o} onChange={(e) => set(q.id, { options: q.options!.map((x, j) => (j === k ? e.target.value : x)) })} className="h-9 border-0 bg-transparent" aria-label={`অপশন ${LETTERS[k]}`} />
                     </label>
                   ))}
                 </div>
               )}
-              {tried && bad[i] && <p className="text-xs font-semibold text-crimson-bright">{bad[i]}</p>}
+              {tried && bad[i] && <p className="text-xs font-semibold text-m-red">{bad[i]}</p>}
             </li>
           ))}
         </ol>
@@ -276,11 +276,11 @@ function PaperBuilder({ exam, onClose, onSave }: { exam: DeskExam; onClose: () =
             <button key={k} type="button" onClick={() => setQs((all) => [...all, blank(k)])} className={mediaButton({ variant: "quiet", size: "sm" })}><Plus aria-hidden /> {QUESTION_KINDS[k]}</button>
           ))}
         </div>
-        <label className="flex items-center gap-2 rounded-xl bg-white/5 p-3 text-sm text-white ring-1 ring-white/10">
-          <input type="checkbox" checked={released} onChange={(e) => setReleased(e.target.checked)} className="size-4 accent-signal-orange" />
+        <label className="flex items-center gap-2 rounded-xl bg-m-ink/3 p-3 text-sm text-m-ink ring-1 ring-m-ink/9">
+          <input type="checkbox" checked={released} onChange={(e) => setReleased(e.target.checked)} className="size-4 accent-m-blue" />
           এখনই প্রকাশ করুন — শিক্ষার্থীরা প্রশ্ন দেখবে ও বহুনির্বাচনি দিতে পারবে
         </label>
-        {tried && qs.length === 0 && <p className="text-xs font-semibold text-crimson-bright">অন্তত একটি প্রশ্ন দিন।</p>}
+        {tried && qs.length === 0 && <p className="text-xs font-semibold text-m-red">অন্তত একটি প্রশ্ন দিন।</p>}
         <button type="button" onClick={save} className={mediaButton({ variant: "primary", size: "lg", className: "w-full" })}>সংরক্ষণ করুন</button>
       </DialogContent>
     </Dialog>
@@ -303,7 +303,7 @@ function PaperView({ exam, paper, teacher, canTake, name, onClose, onScore }: {
       <DialogContent className="max-h-[94dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-2xl">
         <DialogHeader>
           <PixelMark tone="dark" />
-          <DialogTitle className="flex items-center gap-2 text-xl font-bold text-white"><GraduationCap className="size-5 text-signal-orange" aria-hidden /> {exam.title}</DialogTitle>
+          <DialogTitle className="flex items-center gap-2 text-xl font-bold text-m-ink"><GraduationCap className="size-5 text-m-blue" aria-hidden /> {exam.title}</DialogTitle>
           <DialogDescription>
             পূর্ণমান <Num value={totalMarks(paper.questions)} />{paper.duration ? <> · সময় <Num value={paper.duration} /> মিনিট</> : null}
             {paper.instructions && <span className="mt-1 block">{paper.instructions}</span>}
@@ -311,11 +311,11 @@ function PaperView({ exam, paper, teacher, canTake, name, onClose, onScore }: {
         </DialogHeader>
         <ol className="space-y-4">
           {paper.questions.map((q, i) => (
-            <li key={q.id} className="rounded-2xl bg-white/5 p-4 ring-1 ring-white/10">
-              <p className="flex gap-2 text-[15px] font-semibold text-white">
-                <span className="text-signal-orange"><Num value={i + 1} />.</span>
+            <li key={q.id} className="rounded-2xl bg-m-ink/3 p-4 ring-1 ring-m-ink/9">
+              <p className="flex gap-2 text-[15px] font-semibold text-m-ink">
+                <span className="text-m-blue"><Num value={i + 1} />.</span>
                 <span className="flex-1 whitespace-pre-line">{q.q}</span>
-                <span className="shrink-0 text-xs font-bold text-white/60">[<Num value={q.marks} />] · {QUESTION_KINDS[q.kind]}</span>
+                <span className="shrink-0 text-xs font-bold text-m-ink/60">[<Num value={q.marks} />] · {QUESTION_KINDS[q.kind]}</span>
               </p>
               {q.kind === "mcq" && (
                 <div className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -330,7 +330,7 @@ function PaperView({ exam, paper, teacher, canTake, name, onClose, onScore }: {
                         onClick={() => setPicks((p) => { const n = [...p]; n[i] = k; return n; })}
                         className={cn(
                           "flex min-h-10 items-center gap-2 rounded-xl px-3 text-left text-sm ring-1 transition-colors disabled:cursor-default",
-                          right ? "bg-bd-green text-white ring-bd-green" : wrong ? "bg-national-crimson text-white ring-national-crimson" : picks[i] === k ? "bg-signal-orange text-text-primary ring-signal-orange" : "text-white/85 ring-white/12 hover:ring-white/30",
+                          right ? "bg-m-blue-soft text-m-ink ring-m-blue" : wrong ? "bg-m-red text-m-on ring-m-red" : picks[i] === k ? "bg-m-yellow text-m-ink ring-m-blue" : "text-m-ink/85 ring-m-ink/10 hover:ring-m-ink/26",
                         )}
                       >
                         <span className="font-bold">{LETTERS[k]}</span> {o}
@@ -341,7 +341,7 @@ function PaperView({ exam, paper, teacher, canTake, name, onClose, onScore }: {
                   })}
                 </div>
               )}
-              {q.kind !== "mcq" && <p className="mt-2 text-xs text-white/55">খাতায় লিখে জমা দিন।</p>}
+              {q.kind !== "mcq" && <p className="mt-2 text-xs text-m-ink/55">খাতায় লিখে জমা দিন।</p>}
             </li>
           ))}
         </ol>
@@ -361,17 +361,17 @@ function PaperView({ exam, paper, teacher, canTake, name, onClose, onScore }: {
           </button>
         )}
         {done !== null && (
-          <p className="rounded-xl bg-bd-green p-4 text-center font-bold text-white">আপনার বহুনির্বাচনি: <Num value={done} />/<Num value={mcqTotal(paper.questions)} /> — বাকি অংশ শিক্ষক খাতা দেখে দেবেন।</p>
+          <p className="rounded-xl bg-m-blue-soft p-4 text-center font-bold text-m-ink">আপনার বহুনির্বাচনি: <Num value={done} />/<Num value={mcqTotal(paper.questions)} /> — বাকি অংশ শিক্ষক খাতা দেখে দেবেন।</p>
         )}
         {teacher && (
-          <div className="rounded-2xl bg-text-primary p-4 ring-1 ring-white/12">
-            <h3 className="mb-2 flex items-center gap-2 font-bold text-white"><Trophy className="size-4 text-signal-orange" aria-hidden /> বহুনির্বাচনির ফল</h3>
+          <div className="rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 shadow-m-tile">
+            <h3 className="mb-2 flex items-center gap-2 font-bold text-m-ink"><Trophy className="size-4 text-m-blue" aria-hidden /> বহুনির্বাচনির ফল</h3>
             {results.length === 0 ? (
-              <p className="text-sm text-white/60">এখনো কেউ দেয়নি।</p>
+              <p className="text-sm text-m-ink/60">এখনো কেউ দেয়নি।</p>
             ) : (
-              <ul className="divide-y divide-white/10 text-sm">
+              <ul className="divide-y divide-m-ink/9 text-sm">
                 {results.map(([id, s]) => (
-                  <li key={id} className="flex items-center justify-between py-2 text-white"><span>{name(id)}</span><span className="font-bold text-signal-orange"><Num value={s} />/<Num value={mcqTotal(paper.questions)} /></span></li>
+                  <li key={id} className="flex items-center justify-between py-2 text-m-ink"><span>{name(id)}</span><span className="font-bold text-m-blue"><Num value={s} />/<Num value={mcqTotal(paper.questions)} /></span></li>
                 ))}
               </ul>
             )}

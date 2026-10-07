@@ -43,13 +43,13 @@ export default async function CoursePage({ params }: Props) {
       <RememberCourse id={course.id} />
       <PageHeader back={{ href: `/media/academy/dept/${dept.id}`, label: dept.name }} title={course.title} subtitle={course.outcome} />
 
-      <div className="relative mb-8 aspect-21/9 overflow-hidden rounded-3xl bg-black sm:aspect-3/1">
+      <div className="relative mb-8 aspect-21/9 overflow-hidden rounded-3xl bg-m-canvas sm:aspect-3/1">
         <Image src={course.image} alt="" fill priority sizes="(min-width: 1152px) 72rem, 100vw" className="object-cover" />
-        <div className="absolute inset-x-0 bottom-0 flex flex-wrap items-center gap-2 bg-black/75 px-4 py-3 sm:px-6">
-          <span className="font-mono text-sm font-bold text-signal-orange">{course.id}</span>
-          <span className="rounded-md bg-signal-orange px-2 py-0.5 text-xs font-bold text-text-primary">{LEVELS[course.level]}</span>
-          <span className="text-sm text-white"><Num value={COURSE_DAYS} /> দিন · <Num value={CLASS_MINUTES} /> মিনিটের ক্লাস</span>
-          {modesOf(course).map((m) => <ModeTag key={m} mode={m} className="text-white" />)}
+        <div className="absolute inset-x-0 bottom-0 flex flex-wrap items-center gap-2 bg-white/90 px-4 py-3 sm:px-6">
+          <span className="font-mono text-sm font-bold text-m-blue">{course.id}</span>
+          <span className="rounded-md bg-m-yellow px-2 py-0.5 text-xs font-bold text-m-ink">{LEVELS[course.level]}</span>
+          <span className="text-sm text-m-ink"><Num value={COURSE_DAYS} /> দিন · <Num value={CLASS_MINUTES} /> মিনিটের ক্লাস</span>
+          {modesOf(course).map((m) => <ModeTag key={m} mode={m} className="text-m-ink" />)}
         </div>
       </div>
 
@@ -61,12 +61,12 @@ export default async function CoursePage({ params }: Props) {
             <Link href={`/media/academy/teachers/${teacher.handle}`} className="group flex items-center gap-3">
               <PersonAvatar person={teacher} size="lg" />
               <span className="min-w-0">
-                <span className="block font-semibold text-white group-hover:text-signal-orange">{teacher.nameBn}</span>
-                <span className="block text-xs text-white/70">{record.title}</span>
+                <span className="block font-semibold text-m-ink group-hover:text-m-blue">{teacher.nameBn}</span>
+                <span className="block text-xs text-m-ink/70">{record.title}</span>
               </span>
             </Link>
-            <p className="mt-3 flex items-center gap-2 text-sm text-white/80">
-              <span className="text-lg font-bold text-white tabular-nums"><Num value={points.total} /></span> পয়েন্ট <TierBadge tier={tier} />
+            <p className="mt-3 flex items-center gap-2 text-sm text-m-ink/80">
+              <span className="text-lg font-bold text-m-ink tabular-nums"><Num value={points.total} /></span> পয়েন্ট <TierBadge tier={tier} />
             </p>
             <div className="mt-4">
               <ComplaintBox teacher={teacher.handle} teacherName={teacher.nameBn} course={course.id} />
@@ -75,33 +75,33 @@ export default async function CoursePage({ params }: Props) {
 
           <Panel title={dept.academy.name}>
             <dl className="space-y-1.5 text-sm">
-              <div className="flex justify-between gap-3"><dt className="text-white/75">বিভাগ</dt><dd className="text-right text-white">{dept.name} · {DEPT_KINDS[dept.kind]}</dd></div>
-              <div className="flex justify-between gap-3"><dt className="text-white/75">ব্যাচ শুরু</dt><dd className="text-white"><DateText iso={course.starts} /></dd></div>
-              <div className="flex justify-between gap-3"><dt className="text-white/75">শেষ (<Num value={COURSE_DAYS} /> দিনে)</dt><dd className="text-white"><DateText iso={timeline.ends} /></dd></div>
-              <div className="flex justify-between gap-3"><dt className="text-white/75">প্রজেক্ট ও প্যানেল</dt><dd className="text-white"><DateText iso={timeline.final.from} /> – <DateText iso={timeline.final.to} /></dd></div>
-              <div className="flex justify-between gap-3"><dt className="text-white/75">এক ব্যাচে</dt><dd className="text-white"><Num value={course.seats} /> জন (সর্বোচ্চ <Num value={BATCH_MAX[dept.kind]} />)</dd></div>
+              <div className="flex justify-between gap-3"><dt className="text-m-ink/75">বিভাগ</dt><dd className="text-right text-m-ink">{dept.name} · {DEPT_KINDS[dept.kind]}</dd></div>
+              <div className="flex justify-between gap-3"><dt className="text-m-ink/75">ব্যাচ শুরু</dt><dd className="text-m-ink"><DateText iso={course.starts} /></dd></div>
+              <div className="flex justify-between gap-3"><dt className="text-m-ink/75">শেষ (<Num value={COURSE_DAYS} /> দিনে)</dt><dd className="text-m-ink"><DateText iso={timeline.ends} /></dd></div>
+              <div className="flex justify-between gap-3"><dt className="text-m-ink/75">প্রজেক্ট ও প্যানেল</dt><dd className="text-m-ink"><DateText iso={timeline.final.from} /> – <DateText iso={timeline.final.to} /></dd></div>
+              <div className="flex justify-between gap-3"><dt className="text-m-ink/75">এক ব্যাচে</dt><dd className="text-m-ink"><Num value={course.seats} /> জন (সর্বোচ্চ <Num value={BATCH_MAX[dept.kind]} />)</dd></div>
             </dl>
           </Panel>
 
           <Panel title="কোর্সের কাগজ">
             <ul className="space-y-2 text-sm">
               {[{ label: "সিলেবাস", paper: course.syllabus, Icon: FileText }, { label: "কাজের ক্যালেন্ডার", paper: course.calendar, Icon: CalendarRange }].map(({ label, paper, Icon }) => (
-                <li key={label} className="flex items-center gap-2.5 rounded-xl bg-black/40 px-3 py-2.5">
-                  <Icon className="size-4.5 shrink-0 text-signal-orange" aria-hidden />
+                <li key={label} className="flex items-center gap-2.5 rounded-xl bg-white/65 px-3 py-2.5">
+                  <Icon className="size-4.5 shrink-0 text-m-blue" aria-hidden />
                   <span className="min-w-0 flex-1">
-                    <span className="block font-semibold text-white">{label}</span>
-                    <span className="block truncate text-xs text-white/60">{paper.title} · {paper.size}</span>
+                    <span className="block font-semibold text-m-ink">{label}</span>
+                    <span className="block truncate text-xs text-m-ink/60">{paper.title} · {paper.size}</span>
                   </span>
-                  {paper.href && <a href={paper.href} download={paper.file} className="text-xs font-semibold text-signal-orange hover:underline">নামান</a>}
+                  {paper.href && <a href={paper.href} download={paper.file} className="text-xs font-semibold text-m-blue hover:underline">নামান</a>}
                 </li>
               ))}
-              <li className="flex items-center gap-2.5 rounded-xl bg-black/40 px-3 py-2.5">
-                <FileVideo className="size-4.5 shrink-0 text-signal-orange" aria-hidden />
+              <li className="flex items-center gap-2.5 rounded-xl bg-white/65 px-3 py-2.5">
+                <FileVideo className="size-4.5 shrink-0 text-m-blue" aria-hidden />
                 <span className="min-w-0 flex-1">
-                  <span className="block font-semibold text-white">প্রোমো ভিডিও</span>
-                  <span className="block text-xs text-white/60">পুরো কোর্স আড়াই মিনিটে</span>
+                  <span className="block font-semibold text-m-ink">প্রোমো ভিডিও</span>
+                  <span className="block text-xs text-m-ink/60">পুরো কোর্স আড়াই মিনিটে</span>
                 </span>
-                {short && <Link href={`/media/academy/videos/${encodeURIComponent(short.id)}`} className="text-xs font-semibold text-signal-orange hover:underline">শর্ট দেখুন</Link>}
+                {short && <Link href={`/media/academy/videos/${encodeURIComponent(short.id)}`} className="text-xs font-semibold text-m-blue hover:underline">শর্ট দেখুন</Link>}
               </li>
             </ul>
           </Panel>
@@ -109,9 +109,9 @@ export default async function CoursePage({ params }: Props) {
           {course.fee > 0 && (
             <Panel title="ফি কোথায় যায়">
               <dl className="space-y-1.5 text-sm">
-                <div className="flex justify-between"><dt className="text-white/75">শিক্ষক পান</dt><dd className="tabular-nums text-white"><Taka amount={fees.sellerReceives} /></dd></div>
-                <div className="flex justify-between"><dt className="text-white/75">প্ল্যাটফর্ম (দুই পক্ষে ৫%)</dt><dd className="tabular-nums text-white"><Taka amount={fees.platformTotal} /></dd></div>
-                <div className="flex justify-between border-t border-white/10 pt-1.5 font-semibold"><dt className="text-white">আপনি দেন</dt><dd className="tabular-nums text-signal-orange"><Taka amount={fees.buyerPays} /></dd></div>
+                <div className="flex justify-between"><dt className="text-m-ink/75">শিক্ষক পান</dt><dd className="tabular-nums text-m-ink"><Taka amount={fees.sellerReceives} /></dd></div>
+                <div className="flex justify-between"><dt className="text-m-ink/75">প্ল্যাটফর্ম (দুই পক্ষে ৫%)</dt><dd className="tabular-nums text-m-ink"><Taka amount={fees.platformTotal} /></dd></div>
+                <div className="flex justify-between border-t border-m-ink/9 pt-1.5 font-semibold"><dt className="text-m-ink">আপনি দেন</dt><dd className="tabular-nums text-m-blue"><Taka amount={fees.buyerPays} /></dd></div>
               </dl>
             </Panel>
           )}
@@ -122,7 +122,7 @@ export default async function CoursePage({ params }: Props) {
 
           {dept.place && (
             <Panel title="হাতে-কলমে ক্লাসের জায়গা">
-              <p className="flex gap-2 text-sm text-white/85"><MapPin className="mt-0.5 size-4 shrink-0 text-signal-orange" aria-hidden />{dept.place}</p>
+              <p className="flex gap-2 text-sm text-m-ink/85"><MapPin className="mt-0.5 size-4 shrink-0 text-m-blue" aria-hidden />{dept.place}</p>
             </Panel>
           )}
         </aside>

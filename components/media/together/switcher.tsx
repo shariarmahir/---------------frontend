@@ -17,7 +17,7 @@ export const VIEWS: { key: View; label: string; Icon: LucideIcon }[] = [
 export function Switcher({ view }: { view: View }) {
   const reduce = useReducedMotion();
   return (
-    <nav id="parts" aria-label="একসাথে — অংশ" className="sticky top-[var(--sticky-top,4rem)] z-30 -mx-3 scroll-mt-20 bg-black/85 px-3 py-2 backdrop-blur-md sm:mx-0 sm:rounded-2xl sm:px-2">
+    <nav id="parts" aria-label="একসাথে — অংশ" className="sticky top-[var(--sticky-top,4rem)] z-30 -mx-3 scroll-mt-20 bg-white/90 px-3 py-2 backdrop-blur-md sm:mx-0 sm:rounded-2xl sm:px-2">
       <ul className="grid grid-cols-3 gap-1">
         {VIEWS.map(({ key, label, Icon }) => {
           const on = view === key;
@@ -29,14 +29,14 @@ export function Switcher({ view }: { view: View }) {
                 aria-current={on ? "page" : undefined}
                 className={cn(
                   "relative isolate flex min-h-11 items-center justify-center gap-2 rounded-xl px-2 text-sm font-bold whitespace-nowrap [-webkit-tap-highlight-color:transparent] transition-[color,scale] duration-200 active:scale-95 sm:text-base",
-                  on ? "text-text-primary" : "text-white/75 hover:text-white",
+                  on ? "text-m-ink" : "text-m-ink/75 hover:text-m-ink",
                 )}
               >
                 {on && (
                   <motion.span
                     layoutId="together-tab"
                     transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 520, damping: 40, mass: 0.7 }}
-                    className="absolute inset-0 -z-10 rounded-xl bg-signal-orange shadow-[0_10px_24px_-14px_var(--color-signal-orange)]"
+                    className="absolute inset-0 -z-10 rounded-xl bg-m-yellow shadow-[0_10px_24px_-14px_var(--color-signal-orange)]"
                     aria-hidden
                   />
                 )}

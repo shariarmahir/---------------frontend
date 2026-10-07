@@ -40,7 +40,7 @@ export function Credentials({ dept, level, setLevel }: { dept: Department; level
 
   return (
     <section id="courses" aria-labelledby="cred-title" className="scroll-mt-20">
-      <h2 id="cred-title" className="text-2xl font-bold text-white sm:text-[1.9rem]">
+      <h2 id="cred-title" className="text-2xl font-bold text-m-ink sm:text-[1.9rem]">
         প্রস্তাবিত কোর্স
       </h2>
       <div role="tablist" aria-label="স্তর" className="mt-3 flex flex-wrap gap-2">
@@ -51,7 +51,7 @@ export function Credentials({ dept, level, setLevel }: { dept: Department; level
             role="tab"
             aria-selected={l === level}
             onClick={() => (setLevel(l), setMore(false))}
-            className={cn("relative h-9 rounded-full px-4 text-sm font-semibold transition-colors", l === level ? "text-text-primary" : "text-white ring-1 ring-white/30 hover:bg-white/10")}
+            className={cn("relative h-9 rounded-full px-4 text-sm font-semibold transition-colors", l === level ? "text-m-ink" : "text-m-ink ring-1 ring-m-ink/26 hover:bg-m-ink/6")}
           >
             {l === level && <motion.span layoutId="cred-level" className="absolute inset-0 rounded-full bg-white" transition={{ type: "spring", stiffness: 500, damping: 40 }} />}
             <span className="relative">{LEVELS[l]}</span>
@@ -101,49 +101,49 @@ function CredentialCard({ course, dept, top }: { course: Course; dept: Departmen
   ].filter(Boolean) as string[];
 
   return (
-    <article className="relative grid gap-8 rounded-3xl bg-text-primary p-6 ring-1 ring-white/15 sm:p-8 lg:grid-cols-[minmax(0,25rem)_minmax(0,1fr)]">
-      {top && <span className="absolute top-3 left-3 rounded-full bg-bd-green px-2.5 py-0.5 text-xs font-bold text-white">শীর্ষ প্রস্তাব</span>}
+    <article className="relative grid gap-8 rounded-3xl bg-m-card p-6 ring-1 ring-m-ink/13 sm:p-8 lg:grid-cols-[minmax(0,25rem)_minmax(0,1fr)] shadow-m-tile">
+      {top && <span className="absolute top-3 left-3 rounded-full bg-m-blue-soft px-2.5 py-0.5 text-xs font-bold text-m-ink">শীর্ষ প্রস্তাব</span>}
       <div className="min-w-0 pt-3">
-        <span className="grid size-10 place-items-center rounded-lg bg-white ring-1 ring-white/20">
+        <span className="grid size-10 place-items-center rounded-lg bg-white ring-1 ring-m-ink/17">
           <DeptIcon dept={dept.id} school={dept.school} className="size-7" />
         </span>
-        <h3 className="mt-3 text-2xl leading-tight font-bold text-balance text-white sm:text-[1.85rem]">
+        <h3 className="mt-3 text-2xl leading-tight font-bold text-balance text-m-ink sm:text-[1.85rem]">
           <Link href={`/media/academy/course/${course.id}`} className="underline-offset-4 hover:underline">
             {course.title}
           </Link>
         </h3>
-        <p className="mt-4 line-clamp-2 text-sm leading-relaxed text-white/75">
-          <span className="font-bold text-white">যা শিখবেন:</span> {lessons.join(", ")}
+        <p className="mt-4 line-clamp-2 text-sm leading-relaxed text-m-ink/75">
+          <span className="font-bold text-m-ink">যা শিখবেন:</span> {lessons.join(", ")}
         </p>
         {record && (
-          <p className="mt-2 flex items-center gap-1.5 text-sm text-white/70">
-            <Star className="size-4 fill-signal-orange text-signal-orange" aria-hidden />
-            <span className="font-bold text-white">
+          <p className="mt-2 flex items-center gap-1.5 text-sm text-m-ink/70">
+            <Star className="size-4 fill-m-yellow text-m-gold" aria-hidden />
+            <span className="font-bold text-m-ink">
               <Num value={record.rating.avg} decimals={1} />
             </span>
             (<Compact n={record.rating.count} />টি রেটিং)
           </p>
         )}
-        <p className="mt-1 text-sm text-white/70">
+        <p className="mt-1 text-sm text-m-ink/70">
           {LEVELS[course.level]} · <Num value={COURSE_DAYS} /> দিন · {course.fee === 0 ? "বিনা ফি" : <Taka amount={course.fee} />} · {left > 0 ? <><Num value={left} />টি আসন বাকি</> : "আসন পূর্ণ"}
         </p>
         <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
           <Link href={`/media/academy/course/${course.id}`} className={mediaButton()}>
             {hydrated && enrolled ? "কোর্সে যান" : "ভর্তি হন"}
           </Link>
-          <Link href={`/media/academy/course/${course.id}`} className="text-sm font-semibold text-signal-orange hover:underline">
+          <Link href={`/media/academy/course/${course.id}`} className="text-sm font-semibold text-m-blue hover:underline">
             কোর্স দেখুন
           </Link>
-          <button type="button" aria-expanded={why} onClick={() => setWhy((w) => !w)} className="group inline-flex items-center gap-1.5 text-sm font-semibold text-signal-orange hover:underline">
+          <button type="button" aria-expanded={why} onClick={() => setWhy((w) => !w)} className="group inline-flex items-center gap-1.5 text-sm font-semibold text-m-blue hover:underline">
             <Sparkles className="size-4 transition-transform group-hover:rotate-12 motion-reduce:transition-none" aria-hidden /> কেন এটা আপনার জন্য?
           </button>
         </div>
         <AnimatePresence initial={false}>
           {why && (
-            <motion.ul initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.25 }} className="mt-4 space-y-1.5 overflow-hidden rounded-xl bg-black/50 p-4 text-sm text-white/85">
+            <motion.ul initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.25 }} className="mt-4 space-y-1.5 overflow-hidden rounded-xl bg-white/75 p-4 text-sm text-m-ink/85">
               {reasons.map((r) => (
                 <li key={r} className="flex gap-2">
-                  <Sparkles className="mt-0.5 size-3.5 shrink-0 text-signal-orange" aria-hidden /> {r}
+                  <Sparkles className="mt-0.5 size-3.5 shrink-0 text-m-blue" aria-hidden /> {r}
                 </li>
               ))}
             </motion.ul>
@@ -181,29 +181,29 @@ function WeekTrack({ course, videos }: { course: Course; videos: ClassVideo[] })
     track.current?.scrollBy({ left: dir * (track.current.clientWidth * 0.75), behavior: reduce ? "auto" : "smooth" });
   }
 
-  const arrow = "grid size-9 place-items-center rounded-full text-white transition-colors hover:bg-white/10 disabled:text-white/25 disabled:hover:bg-transparent";
+  const arrow = "grid size-9 place-items-center rounded-full text-m-ink transition-colors hover:bg-m-ink/6 disabled:text-m-ink/25 disabled:hover:bg-transparent";
   return (
     <div className="min-w-0 self-center">
       <ol ref={track} onScroll={measure} aria-label="সপ্তাহ ধরে" className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-1 scrollbar-none">
         {course.lessons.map((l, i) => {
           const v = videos.find((x) => x.course === course.id && x.week === l.week && !x.short);
           const thumb = (
-            <span className="relative block aspect-[3/2] overflow-hidden rounded-xl bg-bd-green-dark ring-1 ring-white/15">
+            <span className="relative block aspect-[3/2] overflow-hidden rounded-xl bg-m-blue-soft ring-1 ring-m-ink/13">
               {v ? (
                 <>
                   {/* One course picture, framed differently each week, so the weeks read as separate classes. */}
                   <Image src={course.image} alt="" fill sizes="176px" style={{ objectPosition: `${(l.week * 37) % 100}% ${(l.week * 23) % 100}%` }} className="scale-[1.35] object-cover transition-transform duration-500 group-hover:scale-[1.45] motion-reduce:transition-none" />
                   <span className="absolute inset-0 grid place-items-center">
-                    <span className="grid size-10 place-items-center rounded-full bg-black/70 text-white transition-transform group-hover:scale-110">
+                    <span className="grid size-10 place-items-center rounded-full bg-white/90 text-m-ink transition-transform group-hover:scale-110">
                       <Play className="size-4.5 fill-current" aria-hidden />
                     </span>
                   </span>
-                  {v.access === "free" && <span className="absolute top-2 left-2 rounded-md bg-bd-green px-1.5 py-0.5 text-[10px] font-bold text-white">বিনামূল্যে</span>}
+                  {v.access === "free" && <span className="absolute top-2 left-2 rounded-md bg-m-blue-soft px-1.5 py-0.5 text-[10px] font-bold text-m-ink">বিনামূল্যে</span>}
                 </>
               ) : (
                 <span className="absolute inset-0 grid place-items-center">
                   <span className="text-center">
-                    <span className="block text-3xl font-extrabold text-white/90">
+                    <span className="block text-3xl font-extrabold text-m-ink/90">
                       <Num value={l.week} />
                     </span>
                     <ModeTag mode={l.mode} className="mt-1 justify-center" />
@@ -214,16 +214,16 @@ function WeekTrack({ course, videos }: { course: Course; videos: ClassVideo[] })
           );
           return (
             <li key={l.week} className="relative w-40 shrink-0 snap-start sm:w-44">
-              {i < course.lessons.length - 1 && <span className="absolute top-[3.33rem] -right-4 h-0.5 w-4 bg-white/25 sm:top-[3.67rem]" aria-hidden />}
+              {i < course.lessons.length - 1 && <span className="absolute top-[3.33rem] -right-4 h-0.5 w-4 bg-m-ink/14 sm:top-[3.67rem]" aria-hidden />}
               {v ? (
-                <Link href={watchHref(v)} className="group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-orange" aria-label={`সপ্তাহ ${l.week}: ${l.title} — ভিডিও দেখুন`}>
+                <Link href={watchHref(v)} className="group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-m-blue" aria-label={`সপ্তাহ ${l.week}: ${l.title} — ভিডিও দেখুন`}>
                   {thumb}
                 </Link>
               ) : (
                 thumb
               )}
-              <p className="mt-3 line-clamp-2 text-sm leading-snug font-semibold text-white">{l.title}</p>
-              <p className="mt-1.5 text-xs text-white/60">
+              <p className="mt-3 line-clamp-2 text-sm leading-snug font-semibold text-m-ink">{l.title}</p>
+              <p className="mt-1.5 text-xs text-m-ink/60">
                 সপ্তাহ <Num value={l.week} /> / <Num value={course.lessons.length} /> · {MODES[l.mode]}
               </p>
             </li>

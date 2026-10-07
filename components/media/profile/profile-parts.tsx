@@ -19,10 +19,10 @@ import { useWallet } from "../wallet/use-wallet";
 export function PortfolioTile({ post }: { post: RatedPost }) {
   const status = skillStatus(post.skill.self, post.skill.communityAvg, post.skill.raters);
   return (
-    <Link href={`/media/post/${post.id}`} className="group block overflow-hidden rounded-xl border border-white/12 bg-text-primary transition-[border-color,box-shadow] hover:border-signal-orange/35 hover:shadow-[0_6px_18px_-10px_rgb(15_23_42/0.25)]">
+    <Link href={`/media/post/${post.id}`} className="group block overflow-hidden rounded-xl border border-m-ink/10 bg-m-card transition-[border-color,box-shadow] hover:border-m-blue/35 hover:shadow-[0_6px_18px_-10px_rgb(15_23_42/0.25)]">
       <MediaFrame slot={{ ...post.media[0], ratio: "1/1" }} rounded={false} sizes="(min-width: 1024px) 220px, 45vw" />
       <span className="block space-y-1.5 p-3">
-        <span className="block truncate text-sm font-bold text-white group-hover:text-signal-orange">{post.skill.name}</span>
+        <span className="block truncate text-sm font-bold text-m-ink group-hover:text-m-blue">{post.skill.name}</span>
         <StatusBadge status={status} size="sm" />
       </span>
     </Link>
@@ -72,8 +72,8 @@ export function WalletCard({ seed }: { seed: WalletSeed }) {
   const hydrated = useHydrated();
   const w = useWallet(seed);
   return (
-    <div className="rounded-2xl bg-bd-green p-5 text-white">
-      <p className="flex items-center gap-2 text-sm text-white/85">
+    <div className="rounded-2xl bg-m-blue-soft p-5 text-m-ink">
+      <p className="flex items-center gap-2 text-sm text-m-ink/85">
         <Wallet className="size-4" aria-hidden /> ওয়ালেট ব্যালান্স
       </p>
       {hydrated ? (
@@ -81,20 +81,20 @@ export function WalletCard({ seed }: { seed: WalletSeed }) {
           <Taka amount={w.available} />
         </p>
       ) : (
-        <Skeleton className="mt-2 h-8 w-36 bg-white/25" />
+        <Skeleton className="mt-2 h-8 w-36 bg-m-ink/14" />
       )}
-      <p className="mt-1 text-xs text-white/80">
+      <p className="mt-1 text-xs text-m-ink/80">
         এসক্রোতে <Taka amount={w.escrow} /> · মোট আয় <Taka amount={w.lifetime} />
       </p>
       <div className="mt-4 grid grid-cols-2 gap-2">
         <Link href="/media/dashboard?withdraw=1" className={mediaButton({ variant: "primary", size: "sm" })}>
           টাকা তুলুন
         </Link>
-        <Link href="/media/dashboard" className="inline-flex h-9 items-center justify-center gap-1 rounded-xl border border-white/30 text-sm font-semibold text-white transition-colors hover:bg-white/10">
+        <Link href="/media/dashboard" className="inline-flex h-9 items-center justify-center gap-1 rounded-xl border border-m-ink/26 text-sm font-semibold text-m-ink transition-colors hover:bg-m-ink/6">
           লেনদেন <ArrowUpRight className="size-4" aria-hidden />
         </Link>
       </div>
-      <p className="mt-3 text-[11px] text-white/70">
+      <p className="mt-3 text-[11px] text-m-ink/70">
         বিকাশ · নগদ · বাংলা কিউআর — উত্তোলনে ফি <Num value={0} />
       </p>
     </div>

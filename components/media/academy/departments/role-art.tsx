@@ -51,21 +51,21 @@ export function RoleArt({ dept, tone, className }: { dept: Department; tone: Art
   const ease = [0.22, 1, 0.36, 1] as const;
 
   return (
-    <div ref={ref} className={cn("relative aspect-[2/1] overflow-hidden rounded-xl", tone === "gold" ? "bg-bd-green-dark" : "bg-text-primary", className)}>
+    <div ref={ref} className={cn("relative aspect-[2/1] overflow-hidden rounded-xl", tone === "gold" ? "bg-m-blue-soft" : "bg-m-card", className)}>
       <svg viewBox="0 0 300 150" className="absolute inset-0 size-full" aria-hidden>
-        <path d={sector(R + 36, 214, 332)} className="fill-white/6" />
+        <path d={sector(R + 36, 214, 332)} className="fill-m-ink/6" />
         <g className="transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:rotate-[7deg] motion-reduce:transition-none" style={{ transformBox: "view-box", transformOrigin: `${CX}px ${CY}px` }}>
           <motion.path
             d={sector(R, 198, 334)}
-            className={tone === "gold" ? "fill-signal-orange" : "fill-bd-green"}
+            className={tone === "gold" ? "fill-m-yellow" : "fill-m-blue"}
             style={{ originX: 0.5, originY: 1 }}
             initial={reduce ? false : { rotate: -38, opacity: 0 }}
             animate={show ? { rotate: 0, opacity: 1 } : undefined}
             transition={{ duration: 0.9, ease }}
           />
         </g>
-        <motion.path d={arc(R + 15, 204, 342)} fill="none" strokeWidth="2.5" strokeLinecap="round" className="stroke-white/55" initial={reduce ? false : { pathLength: 0 }} animate={show ? { pathLength: 1 } : undefined} transition={{ duration: 1.2, delay: 0.25, ease }} />
-        <motion.path d={arc(R + 26, 222, 300)} fill="none" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="2 6" className="stroke-white/40" initial={reduce ? false : { pathLength: 0 }} animate={show ? { pathLength: 1 } : undefined} transition={{ duration: 1.4, delay: 0.4, ease }} />
+        <motion.path d={arc(R + 15, 204, 342)} fill="none" strokeWidth="2.5" strokeLinecap="round" className="stroke-m-ink/55" initial={reduce ? false : { pathLength: 0 }} animate={show ? { pathLength: 1 } : undefined} transition={{ duration: 1.2, delay: 0.25, ease }} />
+        <motion.path d={arc(R + 26, 222, 300)} fill="none" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="2 6" className="stroke-m-ink/40" initial={reduce ? false : { pathLength: 0 }} animate={show ? { pathLength: 1 } : undefined} transition={{ duration: 1.4, delay: 0.4, ease }} />
       </svg>
 
       <motion.span
@@ -76,7 +76,7 @@ export function RoleArt({ dept, tone, className }: { dept: Department; tone: Art
         aria-hidden
       >
         <motion.span className="inline-grid" animate={show && !reduce ? { scale: [1, 1.18, 1], rotate: [0, -8, 0] } : undefined} transition={{ duration: 1.2, repeat: Infinity, repeatDelay: 2.2, ease: "easeInOut", delay: 1.5 }}>
-          <Glyph className={cn("size-6", tone === "gold" ? "text-text-primary" : "text-signal-orange")} strokeWidth={2.4} />
+          <Glyph className={cn("size-6", tone === "gold" ? "text-m-ink" : "text-m-blue")} strokeWidth={2.4} />
         </motion.span>
       </motion.span>
 
@@ -87,7 +87,7 @@ export function RoleArt({ dept, tone, className }: { dept: Department; tone: Art
         transition={{ delay: 0.35, type: "spring", stiffness: 170, damping: 17 }}
         aria-hidden
       >
-        <span className={cn("grid aspect-square place-items-center rounded-2xl bg-white shadow-tile ring-4 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-1.5 group-hover:-rotate-3 motion-reduce:transition-none", tone === "gold" ? "ring-bd-green-dark" : "ring-text-primary")}>
+        <span className={cn("grid aspect-square place-items-center rounded-2xl bg-white shadow-m-tile ring-4 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-1.5 group-hover:-rotate-3 motion-reduce:transition-none", tone === "gold" ? "ring-m-blue-soft" : "ring-m-card")}>
           <DeptIcon dept={dept.id} school={dept.school} className="size-[64%]" />
         </span>
       </motion.span>

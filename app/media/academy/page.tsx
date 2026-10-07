@@ -41,10 +41,10 @@ export default function AcademyPage() {
   const schools = (Object.keys(SCHOOLS) as School[]).filter((s) => departments.some((d) => d.school === s));
 
   const stats = [
-    { label: "বিভাগ", value: departments.length, tone: "text-signal-orange" },
-    { label: "কোর্স", value: courses.length, tone: "text-bdgreen-500" },
-    { label: "ইন্টারভিউ-উত্তীর্ণ শিক্ষক", value: teacherRecords.length, tone: "text-white" },
-    { label: "গ্র্যাজুয়েট", value: graduates, tone: "text-bdgreen-200" },
+    { label: "বিভাগ", value: departments.length, tone: "text-m-blue" },
+    { label: "কোর্স", value: courses.length, tone: "text-m-green" },
+    { label: "ইন্টারভিউ-উত্তীর্ণ শিক্ষক", value: teacherRecords.length, tone: "text-m-ink" },
+    { label: "গ্র্যাজুয়েট", value: graduates, tone: "text-m-green" },
   ];
 
   const features: Feature[] = [
@@ -111,7 +111,7 @@ export default function AcademyPage() {
           <ul className="mt-2 space-y-1.5 text-sm">
             {reading.materials.slice(0, 3).map((m) => (
               <li key={m.title} className="flex gap-2">
-                <span className="shrink-0 rounded bg-bd-green px-1.5 text-[11px] leading-5 font-bold text-white">{MATERIAL_KINDS[m.kind]}</span>
+                <span className="shrink-0 rounded bg-m-blue-soft px-1.5 text-[11px] leading-5 font-bold text-m-ink">{MATERIAL_KINDS[m.kind]}</span>
                 <span className="truncate">{m.title}</span>
               </li>
             ))}
@@ -207,7 +207,7 @@ export default function AcademyPage() {
       a: (
         <>
           <Kicker>সনদ</Kicker>
-          <p className="mt-1 font-mono text-[15px] font-bold text-bd-green">{passed.certificate}</p>
+          <p className="mt-1 font-mono text-[15px] font-bold text-m-blue">{passed.certificate}</p>
           <CardMeta>
             {passed.learner} · {getCourse(passed.course)!.title}
           </CardMeta>
@@ -251,19 +251,19 @@ export default function AcademyPage() {
   return (
     <div className="-mx-3 -mt-6 -mb-24 sm:-mx-6 lg:-mb-12">
       {/* Hero, with the numbers card riding over its lower edge. */}
-      <section aria-labelledby="academy-title" className="bg-signal-orange pb-28 text-text-primary sm:pb-32">
+      <section aria-labelledby="academy-title" className="bg-m-yellow pb-28 text-m-ink sm:pb-32">
         <div className={`${WRAP} grid items-center gap-10 pt-10 sm:pt-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]`}>
           <Reveal className="text-center lg:text-left">
             <p className="text-sm font-bold">শিক্ষিতদের মিডিয়া · দক্ষতার একাডেমি</p>
             <h1 id="academy-title" className="mt-3 text-[clamp(2.4rem,6vw,4.25rem)] leading-[1.1] font-bold">
               কাণ্ডারী তৈরি একাডেমি
             </h1>
-            <p className="mt-4 text-[clamp(1.35rem,3vw,2.1rem)] leading-snug font-bold text-bd-green-dark">“সবার আমি ছাত্র” — দেশের দক্ষ মানুষদের কাছে হাতে-কলমে শিখুন</p>
+            <p className="mt-4 text-[clamp(1.35rem,3vw,2.1rem)] leading-snug font-bold text-m-blue-deep">“সবার আমি ছাত্র” — দেশের দক্ষ মানুষদের কাছে হাতে-কলমে শিখুন</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center lg:justify-start">
               <Link href="/media/academy/departments" className={mediaButton({ variant: "tile", size: "lg", className: "h-14 px-7" })}>
                 বিভাগে যোগ দিন — বিনামূল্যে <ArrowRight aria-hidden />
               </Link>
-              <a href="#courses" className={mediaButton({ size: "lg", className: "h-14 border-text-primary bg-transparent px-7 text-text-primary shadow-none hover:bg-text-primary/10" })}>
+              <a href="#courses" className={mediaButton({ size: "lg", className: "h-14 border-m-card bg-transparent px-7 text-m-ink shadow-none hover:bg-m-card/10" })}>
                 <Play className="fill-current" aria-hidden /> কোর্স দেখুন
               </a>
             </div>
@@ -274,10 +274,10 @@ export default function AcademyPage() {
 
       <div className={`${WRAP} relative z-10 -mt-16 sm:-mt-20`}>
         <Reveal>
-          <dl className="grid grid-cols-2 gap-y-8 rounded-3xl bg-text-primary px-6 py-8 shadow-[0_30px_60px_-30px_rgb(0_0_0/0.9)] ring-1 ring-white/12 sm:px-12 lg:grid-cols-4">
+          <dl className="grid grid-cols-2 gap-y-8 rounded-3xl bg-m-card px-6 py-8 shadow-[0_30px_60px_-30px_rgb(16_24_40/0.27)] ring-1 ring-m-ink/10 sm:px-12 lg:grid-cols-4">
             {stats.map((s) => (
               <div key={s.label} className="flex flex-col-reverse">
-                <dt className="mt-1 text-[15px] font-semibold text-white/75">{s.label}</dt>
+                <dt className="mt-1 text-[15px] font-semibold text-m-ink/75">{s.label}</dt>
                 <dd className={`text-[clamp(1.9rem,3.2vw,2.4rem)] leading-none font-bold ${s.tone}`}>
                   <CountUp value={s.value} />
                 </dd>
@@ -288,13 +288,13 @@ export default function AcademyPage() {
       </div>
 
       {/* What the academy includes. */}
-      <section aria-labelledby="features" className="mt-16 bg-text-primary py-16 sm:mt-20 sm:py-20">
+      <section aria-labelledby="features" className="mt-16 bg-m-card py-16 sm:mt-20 sm:py-20">
         <div className={WRAP}>
           <Reveal className="mx-auto max-w-3xl text-center">
-            <h2 id="features" className={`${H2} text-white`}>
+            <h2 id="features" className={`${H2} text-m-ink`}>
               কাণ্ডারী তৈরি একাডেমিতে যা যা থাকছে
             </h2>
-            <p className="mt-3 text-lg text-white/80">যোগ দেওয়া থেকে সনদ হাতে পাওয়া পর্যন্ত — প্রতিটি ধাপ এক জায়গায়</p>
+            <p className="mt-3 text-lg text-m-ink/80">যোগ দেওয়া থেকে সনদ হাতে পাওয়া পর্যন্ত — প্রতিটি ধাপ এক জায়গায়</p>
           </Reveal>
           <div className="mt-10">
             <FeatureTabs items={features} />
@@ -306,10 +306,10 @@ export default function AcademyPage() {
       <section id="courses" aria-labelledby="courses-title" className="scroll-mt-4 py-16 sm:py-20">
         <div className={WRAP}>
           <Reveal className="mx-auto max-w-4xl text-center">
-            <h2 id="courses-title" className={`${H2} text-white`}>
+            <h2 id="courses-title" className={`${H2} text-m-ink`}>
               পেশাদারদের হাতে তৈরি কোর্সে শেখা আরও সহজ
             </h2>
-            <p className="mt-3 text-lg text-white/80">ক্লাস হয় অনলাইনে, লাইভে আর সত্যিকারের গ্যারেজ, রান্নাঘর আর ল্যাবে — নিজের স্তর থেকে শুরু করুন</p>
+            <p className="mt-3 text-lg text-m-ink/80">ক্লাস হয় অনলাইনে, লাইভে আর সত্যিকারের গ্যারেজ, রান্নাঘর আর ল্যাবে — নিজের স্তর থেকে শুরু করুন</p>
           </Reveal>
           <div className="mt-10">
             <CourseCarousel courses={shelf} schools={schools.map((s) => ({ id: s, name: SCHOOLS[s] }))} />
@@ -324,12 +324,12 @@ export default function AcademyPage() {
             <StoryReplay />
           </Reveal>
           <Reveal delay={0.1}>
-            <h2 id="about" className={`${H2} text-white`}>
+            <h2 id="about" className={`${H2} text-m-ink`}>
               যে জানে সে শেখায়,
               <br />
-              <span className="text-signal-orange">যে শেখে সে জেতে</span>
+              <span className="text-m-blue">যে শেখে সে জেতে</span>
             </h2>
-            <p className="mt-5 text-lg leading-relaxed text-white/80">
+            <p className="mt-5 text-lg leading-relaxed text-m-ink/80">
               ইঞ্জিনিয়ার থেকে মেকানিক, শেফ থেকে শিল্পী — যে কাজ জানে সে শেখায়, যে শিখতে চায় সে শেখে। কোনো বয়স বা লিঙ্গের ভাগ নেই। শেষে পেশাদারদের প্যানেলের সামনে প্রমাণ, তারপর কাজ।
             </p>
             <Link href="/media/academy/admission" className={mediaButton({ size: "lg", className: "mt-8 h-13 px-7" })}>
@@ -341,13 +341,13 @@ export default function AcademyPage() {
 
       {/* Why trust it, and learners in their own words over the band's lower edge. */}
       <section aria-labelledby="trust" className="px-3 sm:px-6">
-        <div className="mx-auto max-w-7xl rounded-[2.5rem] bg-bd-green px-6 pt-12 pb-44 sm:px-12 sm:pt-16">
+        <div className="mx-auto max-w-7xl rounded-[2.5rem] bg-m-blue-soft px-6 pt-12 pb-44 sm:px-12 sm:pt-16">
           <div className="grid items-center gap-10 lg:grid-cols-2">
             <Reveal>
-              <h2 id="trust" className={`${H2} text-white`}>
+              <h2 id="trust" className={`${H2} text-m-ink`}>
                 কেন ভরসা করবেন?
               </h2>
-              <p className="mt-4 max-w-xl text-lg leading-relaxed text-white/85">
+              <p className="mt-4 max-w-xl text-lg leading-relaxed text-m-ink/85">
                 প্রতিটি শিক্ষক পেশাদার প্যানেলের সামনে প্রমাণ দিয়ে এসেছেন, ফি থাকে এসক্রোতে, আর ফাইনাল হয় সবার সামনে — তাই <Num value={graduates} /> জন গ্র্যাজুয়েটের সনদ যে কেউ যাচাই করতে পারেন।
               </p>
             </Reveal>
@@ -355,11 +355,11 @@ export default function AcademyPage() {
               {trust.map((t, i) => (
                 <li key={t.title}>
                   <Reveal delay={i * 0.08} className="h-full">
-                    <div className="group flex h-full flex-col gap-3 rounded-2xl bg-white p-4 text-text-primary transition-[translate,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-tile-lift motion-reduce:transition-none sm:flex-row sm:items-center sm:p-5">
-                      <span className="size-12 shrink-0 transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none sm:size-14">{t.icon}</span>
+                    <div className="blue-band group flex h-full flex-col gap-3 rounded-2xl p-4 shadow-m-tile transition-[translate,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-m-lift motion-reduce:transition-none sm:flex-row sm:items-center sm:p-5">
+                      <span className="size-12 shrink-0 rounded-xl bg-white p-1.5 shadow-[inset_0_-2px_0_rgb(0_31_107/0.08),0_6px_14px_-6px_rgb(0_0_0/0.35)] transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none sm:size-14 sm:p-2">{t.icon}</span>
                       <span>
                         <span className="block leading-snug font-bold">{t.title}</span>
-                        <span className="mt-0.5 block text-xs leading-snug text-text-muted">{t.body}</span>
+                        <span className="mt-0.5 block text-xs leading-snug text-white/75">{t.body}</span>
                       </span>
                     </div>
                   </Reveal>
@@ -368,7 +368,7 @@ export default function AcademyPage() {
             </ul>
           </div>
           <Reveal className="mt-16 text-center">
-            <h2 className={`${H2} text-white`}>যাঁরা শিখে কাজ পেয়েছেন — তাঁদের মুখেই শুনুন</h2>
+            <h2 className={`${H2} text-m-ink`}>যাঁরা শিখে কাজ পেয়েছেন — তাঁদের মুখেই শুনুন</h2>
           </Reveal>
         </div>
         <div className="mx-auto -mt-32 max-w-6xl sm:px-10">
@@ -377,26 +377,26 @@ export default function AcademyPage() {
       </section>
 
       {/* Where to get help. */}
-      <section aria-labelledby="help" className="mt-20 bg-text-primary py-16 sm:py-20">
+      <section aria-labelledby="help" className="mt-20 bg-m-card py-16 sm:py-20">
         <div className={`${WRAP} grid gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]`}>
           <Reveal className="h-full">
-            <div className="relative flex h-full overflow-hidden rounded-3xl bg-signal-orange text-text-primary">
+            <div className="relative flex h-full overflow-hidden rounded-3xl bg-m-yellow text-m-ink">
               <div className="relative z-10 p-6 sm:max-w-[60%] sm:p-9">
                 <h2 id="help" className="text-[clamp(1.5rem,3vw,2rem)] leading-tight font-bold">
                   যেকোনো প্রশ্নে বা অভিযোগে, সরাসরি জানান
                 </h2>
                 <p className="mt-3 leading-relaxed">ক্লাস, ফি বা শিক্ষক নিয়ে কিছু বলার থাকলে শিক্ষকের পাতায় অভিযোগ বাক্স আছে। প্রতিটি অভিযোগ প্যানেল খতিয়ে দেখে।</p>
-                <p className="mt-5 border-l-4 border-text-primary pl-3 text-lg font-bold">আপনার নাম শিক্ষক দেখেন না</p>
+                <p className="mt-5 w-fit rounded-full bg-white/75 px-4 py-1.5 text-base font-bold shadow-[inset_0_1px_0_white]">আপনার নাম শিক্ষক দেখেন না</p>
                 <Link href="/media/academy/teachers" className={mediaButton({ variant: "tile", size: "lg", className: "mt-7 h-13 px-7" })}>
                   শিক্ষক বেছে জানান <ArrowRight aria-hidden />
                 </Link>
               </div>
-              <div className="absolute right-6 bottom-0 hidden h-[82%] w-[34%] rounded-t-full bg-text-primary sm:block" aria-hidden>
+              <div className="absolute right-6 bottom-0 hidden h-[82%] w-[34%] rounded-t-full bg-m-card sm:block" aria-hidden>
                 <ChatIcon className="absolute top-[22%] left-1/2 size-[58%] -translate-x-1/2" />
-                <span className="absolute top-[8%] -left-6 size-16 rounded-2xl bg-white p-2.5 shadow-tile">
+                <span className="absolute top-[8%] -left-6 size-16 rounded-2xl bg-white p-2.5 shadow-m-tile">
                   <LockIcon className="size-full" />
                 </span>
-                <span className="absolute bottom-[14%] -left-8 size-16 rounded-2xl bg-white p-2.5 shadow-tile">
+                <span className="absolute bottom-[14%] -left-8 size-16 rounded-2xl bg-white p-2.5 shadow-m-tile">
                   <ShieldIcon className="size-full" />
                 </span>
               </div>
@@ -415,7 +415,7 @@ export default function AcademyPage() {
 }
 
 function Kicker({ children }: { children: React.ReactNode }) {
-  return <p className="text-xs font-bold text-bd-green">{children}</p>;
+  return <p className="text-xs font-bold text-m-blue">{children}</p>;
 }
 
 function CardTitle({ children }: { children: React.ReactNode }) {
@@ -428,7 +428,7 @@ function CardMeta({ children }: { children: React.ReactNode }) {
 
 function CardAction({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link href={href} className="mt-3 flex h-10 items-center justify-center rounded-lg bg-text-primary text-sm font-bold text-signal-orange transition-colors hover:bg-bd-green-dark">
+    <Link href={href} className="mt-3 flex h-10 items-center justify-center rounded-lg bg-m-card text-sm font-bold text-m-blue transition-colors hover:bg-m-blue-soft">
       {children}
     </Link>
   );
@@ -444,9 +444,9 @@ function Meter({ label, value, min }: { label: string; value: number; min: numbe
           <Num value={value} />%
         </span>
       </p>
-      <div className="relative mt-1 h-2 rounded-full bg-text-primary/10">
-        <div className="h-full rounded-full bg-bd-green" style={{ width: `${value}%` }} />
-        <span className="absolute -top-0.5 h-3 w-0.5 rounded-full bg-text-primary" style={{ left: `${min}%` }} aria-hidden />
+      <div className="relative mt-1 h-2 rounded-full bg-m-card/10">
+        <div className="h-full rounded-full bg-m-blue-soft" style={{ width: `${value}%` }} />
+        <span className="absolute -top-0.5 h-3 w-0.5 rounded-full bg-m-card" style={{ left: `${min}%` }} aria-hidden />
       </div>
     </div>
   );
@@ -456,11 +456,11 @@ function HelpCard({ tone, title, body, href, action, icon, delay }: { tone: "lig
   const light = tone === "light";
   return (
     <Reveal delay={delay} className="h-full">
-      <div className={`group relative flex h-full flex-col justify-between gap-5 overflow-hidden rounded-3xl p-6 ${light ? "bg-white text-text-primary" : "bg-bd-green text-white"}`}>
-        <span className="absolute top-5 right-5 size-16 rounded-2xl bg-white p-2.5 shadow-tile transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110 motion-reduce:transition-none">{icon}</span>
+      <div className={`group relative flex h-full flex-col justify-between gap-5 overflow-hidden rounded-3xl p-6 ${light ? "blue-band" : "bg-m-blue-soft text-m-ink"}`}>
+        <span className="absolute top-5 right-5 size-16 rounded-2xl bg-white p-2.5 shadow-m-tile transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110 motion-reduce:transition-none">{icon}</span>
         <div className="pr-20">
           <h3 className="text-xl leading-snug font-bold">{title}</h3>
-          <p className={`mt-1.5 text-sm leading-relaxed ${light ? "text-text-muted" : "text-white/80"}`}>{body}</p>
+          <p className={`mt-1.5 text-sm leading-relaxed ${light ? "text-white/80" : "text-m-ink/80"}`}>{body}</p>
         </div>
         <Link href={href} className={mediaButton({ variant: light ? "tile" : "primary", className: "w-fit" })}>
           {action} <ArrowRight aria-hidden />
@@ -495,15 +495,16 @@ function AcademyFooter() {
     </>,
   ];
   return (
-    <footer className="bg-black pt-16 pb-28 lg:pb-14">
+    <footer className="frost-foot relative pt-16 pb-28 lg:pb-14">
+      <span aria-hidden className="frost-seam absolute inset-x-0 top-0 h-px" />
       <div className={`${WRAP} grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.3fr]`}>
         <div>
-          <span className="inline-flex flex-col items-center rounded-2xl bg-signal-orange px-4 pt-2.5 pb-2 text-text-primary">
+          <span className="inline-flex flex-col items-center rounded-2xl bg-m-yellow px-4 pt-2.5 pb-2 text-m-ink">
             <Image src="/logo/kandari-logo.png" alt="কাণ্ডারী-ল্যাব" width={1600} height={967} sizes="100px" className="h-12 w-auto" />
             <span className="text-[10px] font-extrabold tracking-[0.3em]">ACADEMY</span>
           </span>
-          <p className="mt-4 text-lg font-bold text-white">কাণ্ডারী তৈরি একাডেমি</p>
-          <p className="text-sm font-semibold text-signal-orange">সবার আমি ছাত্র</p>
+          <p className="mt-4 text-lg font-bold text-m-ink">কাণ্ডারী তৈরি একাডেমি</p>
+          <p className="text-sm font-semibold text-m-blue">সবার আমি ছাত্র</p>
           <Link href="/media/academy/departments" className={mediaButton({ className: "mt-5" })}>
             বিভাগে যোগ দিন <ArrowRight aria-hidden />
           </Link>
@@ -511,11 +512,11 @@ function AcademyFooter() {
         <FooterLinks title="শিখুন" links={learn} />
         <FooterLinks title="শেখান" links={teach} />
         <div>
-          <h2 className="text-lg font-bold text-white">নিয়ম এক নজরে</h2>
-          <ul className="mt-4 space-y-2.5 text-[15px] text-white/75">
+          <h2 className="text-lg font-bold text-m-ink after:mt-2 after:block after:h-[3px] after:w-8 after:rounded-full after:bg-m-yellow">নিয়ম এক নজরে</h2>
+          <ul className="mt-4 space-y-2.5 text-[15px] text-m-ink/75">
             {rules.map((r, i) => (
               <li key={i} className="flex gap-2.5">
-                <span className="mt-2 size-1.5 shrink-0 rounded-full bg-signal-orange" aria-hidden />
+                <span className="mt-2 size-1.5 shrink-0 rounded-full bg-m-yellow" aria-hidden />
                 <span>{r}</span>
               </li>
             ))}
@@ -523,7 +524,7 @@ function AcademyFooter() {
         </div>
       </div>
       <div className={`${WRAP} mt-12`}>
-        <p className="flex flex-wrap justify-between gap-3 border-t border-white/12 pt-6 text-sm text-white/65">
+        <p className="flex flex-wrap justify-between gap-3 border-t border-m-ink/8 pt-6 text-sm text-m-ink/65">
           <span>
             © <Num value={2026} /> কাণ্ডারী-ল্যাব · শিক্ষিতদের মিডিয়া
           </span>
@@ -537,11 +538,11 @@ function AcademyFooter() {
 function FooterLinks({ title, links }: { title: string; links: { href: string; label: string }[] }) {
   return (
     <nav aria-label={title}>
-      <h2 className="text-lg font-bold text-white">{title}</h2>
+      <h2 className="text-lg font-bold text-m-ink after:mt-2 after:block after:h-[3px] after:w-8 after:rounded-full after:bg-m-yellow">{title}</h2>
       <ul className="mt-4 space-y-2.5">
         {links.map((l) => (
           <li key={l.href}>
-            <Link href={l.href} className="group inline-flex items-center gap-1.5 text-[15px] text-white/75 transition-colors hover:text-signal-orange">
+            <Link href={l.href} className="group inline-flex items-center gap-1.5 text-[15px] text-m-ink/75 transition-colors hover:text-m-blue">
               {l.label}
               <ArrowRight className="size-3.5 -translate-x-1 opacity-0 transition-[translate,opacity] duration-200 group-hover:translate-x-0 group-hover:opacity-100 motion-reduce:transition-none" aria-hidden />
             </Link>

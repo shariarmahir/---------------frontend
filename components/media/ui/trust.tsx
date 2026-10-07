@@ -12,7 +12,7 @@ import { Num } from "./numerals";
 /** Small seal after a name: identity checked with NID/passport. */
 export function IdSeal({ size = 18, className }: { size?: number; className?: string }) {
   return (
-    <span title="এনআইডি/পাসপোর্ট দিয়ে পরিচয় যাচাইকৃত — এক ব্যক্তি, এক অ্যাকাউন্ট" className={cn("inline-flex shrink-0 text-signal-orange", className)}>
+    <span title="এনআইডি/পাসপোর্ট দিয়ে পরিচয় যাচাইকৃত — এক ব্যক্তি, এক অ্যাকাউন্ট" className={cn("inline-flex shrink-0 text-m-blue", className)}>
       <SealCheck size={size} weight="duotone" aria-hidden />
       <span className="sr-only">পরিচয় যাচাইকৃত</span>
     </span>
@@ -21,7 +21,7 @@ export function IdSeal({ size = 18, className }: { size?: number; className?: st
 
 export function IdBadge() {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 py-1 pr-3 pl-1.5 text-xs font-semibold text-signal-orange">
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-m-ink/6 py-1 pr-3 pl-1.5 text-xs font-semibold text-m-blue">
       <IdentificationCard size={18} weight="duotone" aria-hidden />
       এনআইডি যাচাইকৃত
     </span>
@@ -29,10 +29,10 @@ export function IdBadge() {
 }
 
 const statusInfo: Record<SkillStatus, { bn: string; className: string; hint: string }> = {
-  verified: { bn: "কমিউনিটি যাচাইকৃত", className: "bg-bd-green text-white", hint: "৫+ জনের রেটিং দাবির আধা তারার মধ্যে" },
-  challenged: { bn: "চ্যালেঞ্জড", className: "bg-national-crimson text-white ring-1 ring-national-crimson/60", hint: "কমিউনিটির রেটিং দাবির চেয়ে ১.৫+ তারা কম" },
-  rated: { bn: "যাচাই চলছে", className: "bg-white/10 text-white/80", hint: "আরও রেটিং দরকার" },
-  unrated: { bn: "যাচাই বাকি", className: "bg-signal-orange text-text-primary ring-1 ring-signal-orange/60", hint: "এখনো কেউ রেটিং দেয়নি" },
+  verified: { bn: "কমিউনিটি যাচাইকৃত", className: "bg-m-blue-soft text-m-ink", hint: "৫+ জনের রেটিং দাবির আধা তারার মধ্যে" },
+  challenged: { bn: "চ্যালেঞ্জড", className: "bg-m-red text-m-on ring-1 ring-m-red/60", hint: "কমিউনিটির রেটিং দাবির চেয়ে ১.৫+ তারা কম" },
+  rated: { bn: "যাচাই চলছে", className: "bg-m-ink/6 text-m-ink/80", hint: "আরও রেটিং দরকার" },
+  unrated: { bn: "যাচাই বাকি", className: "bg-m-yellow text-m-ink ring-1 ring-m-blue/60", hint: "এখনো কেউ রেটিং দেয়নি" },
 };
 
 export function StatusBadge({ status, size = "md" }: { status: SkillStatus; size?: "sm" | "md" }) {
@@ -110,10 +110,10 @@ export function RatingPair({
   const challenged = status === "challenged";
   return (
     <div className={cn("flex flex-wrap items-stretch gap-2", compact && "gap-1.5")}>
-      <div className={cn("flex min-w-0 flex-1 flex-col rounded-xl border border-bdorange-600/60 bg-bdorange-600", compact ? "px-2.5 py-1.5" : "px-3 py-2")}>
-        <span className="text-[11px] font-semibold text-text-primary">নিজের দাবি</span>
+      <div className={cn("flex min-w-0 flex-1 flex-col rounded-xl border border-m-red/60 bg-m-red-soft", compact ? "px-2.5 py-1.5" : "px-3 py-2")}>
+        <span className="text-[11px] font-semibold text-m-ink">নিজের দাবি</span>
         <span className="flex items-center gap-1.5">
-          <span className={cn("font-bold tabular-nums text-text-primary", compact ? "text-base" : "text-xl")}>
+          <span className={cn("font-bold tabular-nums text-m-ink", compact ? "text-base" : "text-xl")}>
             <Num value={self} decimals={1} />
           </span>
           <Stars value={self} size={compact ? 12 : 14} />
@@ -122,15 +122,15 @@ export function RatingPair({
       <div
         className={cn(
           "flex min-w-0 flex-1 flex-col rounded-xl border",
-          challenged ? "border-crimson-bright/60 bg-national-crimson" : "border-signal-orange/25 bg-white/10",
+          challenged ? "border-m-red/60 bg-m-red" : "border-m-blue/25 bg-m-ink/6",
           compact ? "px-2.5 py-1.5" : "px-3 py-2",
         )}
       >
-        <span className={cn("text-[11px] font-semibold", challenged ? "text-crimson-bright" : "text-signal-orange")}>
+        <span className={cn("text-[11px] font-semibold", challenged ? "text-m-red" : "text-m-blue")}>
           কমিউনিটি · <Num value={raters} /> জন
         </span>
         <span className="flex items-center gap-1.5">
-          <span className={cn("font-bold tabular-nums", challenged ? "text-crimson-bright" : "text-signal-orange", compact ? "text-base" : "text-xl")}>
+          <span className={cn("font-bold tabular-nums", challenged ? "text-m-red" : "text-m-blue", compact ? "text-base" : "text-xl")}>
             {raters > 0 ? <Num value={communityAvg} decimals={1} /> : "—"}
           </span>
           {raters > 0 && <Stars value={communityAvg} size={compact ? 12 : 14} animate={animate} />}

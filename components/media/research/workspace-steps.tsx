@@ -33,10 +33,10 @@ export interface StepProps {
 /** What to do on this step, in a few plain lines. */
 export function Guide({ title, tips }: { title: string; tips: string[] }) {
   return (
-    <aside className="story-reveal rounded-2xl bg-bd-green p-4 text-white sm:p-5">
-      <h3 className="text-sm font-bold text-signal-orange">{title}</h3>
-      <ul className="mt-2 space-y-1.5 text-sm text-white/90">
-        {tips.map((t) => <li key={t} className="flex gap-2"><Check className="mt-0.5 size-4 shrink-0 text-signal-orange" aria-hidden />{t}</li>)}
+    <aside className="story-reveal rounded-2xl bg-m-blue-soft p-4 text-m-ink sm:p-5">
+      <h3 className="text-sm font-bold text-m-blue">{title}</h3>
+      <ul className="mt-2 space-y-1.5 text-sm text-m-ink/90">
+        {tips.map((t) => <li key={t} className="flex gap-2"><Check className="mt-0.5 size-4 shrink-0 text-m-blue" aria-hidden />{t}</li>)}
       </ul>
     </aside>
   );
@@ -78,18 +78,18 @@ export function TopicStep({ p, meId, inTeam, lead, today, edit, name }: StepProp
         ]}
       />
 
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-text-primary p-4 ring-1 ring-white/12">
-        <p className="text-sm text-white">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 shadow-m-tile">
+        <p className="text-sm text-m-ink">
           {p.topicId ? (
-            <span className="font-bold text-bdgreen-500">বিষয় চূড়ান্ত হয়েছে।</span>
+            <span className="font-bold text-m-green">বিষয় চূড়ান্ত হয়েছে।</span>
           ) : open ? (
-            <>ভোট চলছে — শেষ দিন <span className="font-bold text-signal-orange"><DateText iso={p.topicDeadline} weekday /></span> ({left === 0 ? "আজই" : <><Num value={left} /> দিন বাকি</>})</>
+            <>ভোট চলছে — শেষ দিন <span className="font-bold text-m-blue"><DateText iso={p.topicDeadline} weekday /></span> ({left === 0 ? "আজই" : <><Num value={left} /> দিন বাকি</>})</>
           ) : (
-            <span className="font-bold text-signal-orange">ভোটের সময় শেষ — লিড এখন বিষয় চূড়ান্ত করবেন।</span>
+            <span className="font-bold text-m-blue">ভোটের সময় শেষ — লিড এখন বিষয় চূড়ান্ত করবেন।</span>
           )}
         </p>
         {lead && !p.topicId && (
-          <label className="flex items-center gap-2 text-xs text-white/70">
+          <label className="flex items-center gap-2 text-xs text-m-ink/70">
             শেষ দিন বদলান
             <Input type="date" min={today} value={p.topicDeadline} onChange={(e) => e.target.value && edit((x) => ({ ...x, topicDeadline: e.target.value }))} className="h-9 w-auto" />
           </label>
@@ -106,11 +106,11 @@ export function TopicStep({ p, meId, inTeam, lead, today, edit, name }: StepProp
           const dim = Boolean(p.topicId) && !chosen;
           const mine = meId ? idea.votes[meId] : undefined;
           return (
-            <li key={idea.id} className={cn("story-reveal flex flex-col gap-3 rounded-2xl p-5 ring-2 transition-[opacity,box-shadow] duration-300", chosen ? "bg-signal-orange text-text-primary ring-signal-orange" : "bg-text-primary text-white ring-white/12", dim && "opacity-55")}>
+            <li key={idea.id} className={cn("story-reveal flex flex-col gap-3 rounded-2xl p-5 ring-2 transition-[opacity,box-shadow] duration-300", chosen ? "bg-m-yellow text-m-ink ring-m-blue" : "bg-m-card text-m-ink ring-m-ink/10", dim && "opacity-55")}>
               <span className="flex items-center gap-2 text-xs font-bold">
-                <span className={cn("rounded-full px-2.5 py-0.5", chosen ? "bg-text-primary text-signal-orange" : "bg-white/10")}>বিষয় <Num value={n + 1} /></span>
+                <span className={cn("rounded-full px-2.5 py-0.5", chosen ? "bg-m-card text-m-blue" : "bg-m-ink/6")}>বিষয় <Num value={n + 1} /></span>
                 {chosen && <span className="inline-flex items-center gap-1"><Crown className="size-3.5" aria-hidden /> চূড়ান্ত</span>}
-                {!p.topicId && top?.id === idea.id && <span className="rounded-full bg-bd-green px-2.5 py-0.5 text-white">এগিয়ে</span>}
+                {!p.topicId && top?.id === idea.id && <span className="rounded-full bg-m-blue-soft px-2.5 py-0.5 text-m-ink">এগিয়ে</span>}
                 <span className="ml-auto font-medium opacity-65">{name(idea.by)}</span>
               </span>
               <h3 className="text-lg leading-snug font-bold">{idea.title}</h3>
@@ -128,7 +128,7 @@ export function TopicStep({ p, meId, inTeam, lead, today, edit, name }: StepProp
                       title={VOTES[v].bn}
                       className={cn(
                         "flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-xl text-sm font-bold ring-1 transition-[transform,background-color] duration-150 active:scale-90 disabled:cursor-default motion-reduce:active:scale-100",
-                        on ? (chosen ? "bg-text-primary text-white ring-text-primary" : "bg-signal-orange text-text-primary ring-signal-orange") : chosen ? "ring-text-primary/25" : "ring-white/15 hover:ring-white/40",
+                        on ? (chosen ? "bg-m-card text-m-ink ring-m-card" : "bg-m-yellow text-m-ink ring-m-blue") : chosen ? "ring-m-ink/25" : "ring-m-ink/13 hover:ring-m-ink/34",
                       )}
                     >
                       <span className={cn("text-lg leading-none transition-transform duration-200", on && "scale-125 motion-reduce:scale-100")} aria-hidden>{VOTES[v].emoji}</span>
@@ -138,8 +138,8 @@ export function TopicStep({ p, meId, inTeam, lead, today, edit, name }: StepProp
                   );
                 })}
               </div>
-              <div className="h-1.5 overflow-hidden rounded-full bg-black/20" aria-hidden>
-                <div className={cn("h-full rounded-full transition-[width] duration-500", chosen ? "bg-text-primary" : "bg-bdgreen-500")} style={{ width: `${(t.agree / Math.max(1, p.members.length)) * 100}%` }} />
+              <div className="h-1.5 overflow-hidden rounded-full bg-white/45" aria-hidden>
+                <div className={cn("h-full rounded-full transition-[width] duration-500", chosen ? "bg-m-card" : "bg-m-green-soft")} style={{ width: `${(t.agree / Math.max(1, p.members.length)) * 100}%` }} />
               </div>
               <span className="text-xs opacity-70"><Num value={t.agree} />/<Num value={p.members.length} /> জন একমত</span>
               {lead && !p.topicId && (
@@ -152,8 +152,8 @@ export function TopicStep({ p, meId, inTeam, lead, today, edit, name }: StepProp
         })}
         {!p.topicId &&
           Array.from({ length: MAX_IDEAS - p.ideas.length }, (_, k) => (
-            <li key={`slot${k}`} className="flex flex-col gap-3 rounded-2xl border-2 border-dashed border-white/15 p-5">
-              <span className="text-xs font-bold text-white/55">বিষয় <Num value={p.ideas.length + k + 1} /> — ফাঁকা</span>
+            <li key={`slot${k}`} className="flex flex-col gap-3 rounded-2xl border-2 border-dashed border-m-ink/13 p-5">
+              <span className="text-xs font-bold text-m-ink/55">বিষয় <Num value={p.ideas.length + k + 1} /> — ফাঁকা</span>
               {k === 0 && inTeam ? (
                 <form
                   className="space-y-2"
@@ -170,7 +170,7 @@ export function TopicStep({ p, meId, inTeam, lead, today, edit, name }: StepProp
                   <button type="submit" disabled={title.trim().length < 5} className={mediaButton({ variant: "primary", size: "sm", className: "w-full" })}><Plus aria-hidden /> প্রস্তাব দিন</button>
                 </form>
               ) : (
-                <p className="text-sm text-white/45">আরেকটি প্রস্তাবের জায়গা</p>
+                <p className="text-sm text-m-ink/45">আরেকটি প্রস্তাবের জায়গা</p>
               )}
             </li>
           ))}
@@ -198,24 +198,24 @@ export function PlanStep({ p, inTeam, lead, today, edit }: StepProps) {
         tips={["প্রতিটি ধাপের একটি শেষ তারিখ দিন — ছয় সপ্তাহের খসড়া আগেই বসানো আছে, বদলে নিন।", "পরীক্ষার সপ্তাহ এড়িয়ে চলুন; ডেটা সংগ্রহে সবচেয়ে বেশি সময় রাখুন।", "ধাপ শেষ হলে টিক দিন — সবাই অগ্রগতি দেখবে।"]}
       />
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-start">
-        <div className="story-reveal rounded-2xl bg-text-primary p-4 ring-1 ring-white/12">
+        <div className="story-reveal rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 shadow-m-tile">
           <div className="mb-3 flex items-center justify-between">
             <button type="button" onClick={() => setMonth((m) => shiftMonth(m, -1))} className={mediaButton({ variant: "ghost", size: "icon-sm" })} aria-label="আগের মাস"><ChevronLeft aria-hidden /></button>
-            <span className="font-bold text-white">{monthName}</span>
+            <span className="font-bold text-m-ink">{monthName}</span>
             <button type="button" onClick={() => setMonth((m) => shiftMonth(m, 1))} className={mediaButton({ variant: "ghost", size: "icon-sm" })} aria-label="পরের মাস"><ChevronRight aria-hidden /></button>
           </div>
-          <div className="grid grid-cols-7 gap-1 text-center text-[11px] font-bold text-white/55">{WEEKDAYS.map((w) => <span key={w}>{w}</span>)}</div>
+          <div className="grid grid-cols-7 gap-1 text-center text-[11px] font-bold text-m-ink/55">{WEEKDAYS.map((w) => <span key={w}>{w}</span>)}</div>
           <div className="mt-1 grid grid-cols-7 gap-1">
             {monthGrid(month).flat().map((d, i) => {
               const ms = d ? on.get(d) ?? [] : [];
               const vote = d === p.topicDeadline && !p.topicId;
               return (
-                <div key={d ?? `x${i}`} className={cn("min-h-16 rounded-lg p-1 text-left", !d ? "" : d === today ? "bg-signal-orange/15 ring-2 ring-signal-orange" : "bg-white/5")}>
-                  {d && <span className={cn("text-xs font-bold", d === today ? "text-signal-orange" : "text-white/70")}><Num value={Number(d.slice(8))} /></span>}
+                <div key={d ?? `x${i}`} className={cn("min-h-16 rounded-lg p-1 text-left", !d ? "" : d === today ? "bg-m-yellow/15 ring-2 ring-m-blue" : "bg-m-ink/3")}>
+                  {d && <span className={cn("text-xs font-bold", d === today ? "text-m-blue" : "text-m-ink/70")}><Num value={Number(d.slice(8))} /></span>}
                   {ms.map((m) => (
-                    <span key={m.id} className={cn("mt-0.5 block truncate rounded px-1 text-[10px] leading-4 font-semibold", m.done ? "bg-bd-green text-white" : "bg-signal-orange text-text-primary")} title={m.title}>{m.title}</span>
+                    <span key={m.id} className={cn("mt-0.5 block truncate rounded px-1 text-[10px] leading-4 font-semibold", m.done ? "bg-m-blue-soft text-m-ink" : "bg-m-yellow text-m-ink")} title={m.title}>{m.title}</span>
                   ))}
-                  {vote && <span className="mt-0.5 block truncate rounded bg-white px-1 text-[10px] leading-4 font-semibold text-text-primary">ভোট শেষ</span>}
+                  {vote && <span className="mt-0.5 block truncate rounded bg-m-ink px-1 text-[10px] leading-4 font-semibold text-m-on">ভোট শেষ</span>}
                 </div>
               );
             })}
@@ -224,19 +224,19 @@ export function PlanStep({ p, inTeam, lead, today, edit }: StepProps) {
 
         <div className="space-y-3">
           {next && (
-            <p className="rounded-2xl bg-signal-orange p-4 text-sm font-semibold text-text-primary">
+            <p className="rounded-2xl bg-m-yellow p-4 text-sm font-semibold text-m-ink">
               পরের ধাপ: <span className="font-bold">{next.title}</span> — <DateText iso={next.date} weekday /> ({daysUntil(next.date, new Date(`${today}T12:00:00+06:00`)) === 0 ? "আজ" : <><Num value={daysUntil(next.date, new Date(`${today}T12:00:00+06:00`))} /> দিন বাকি</>})
             </p>
           )}
           <ol className="space-y-2">
             {sorted.map((m) => (
-              <li key={m.id} className="flex items-center gap-3 rounded-xl bg-text-primary px-3 py-2 ring-1 ring-white/12">
-                <input type="checkbox" disabled={!inTeam} checked={Boolean(m.done)} onChange={() => edit((x) => ({ ...x, milestones: x.milestones.map((y) => (y.id === m.id ? { ...y, done: !y.done } : y)) }))} className="size-4 accent-signal-orange" aria-label={`${m.title} শেষ`} />
-                <span className={cn("min-w-0 flex-1 truncate text-sm", m.done ? "text-white/50 line-through" : "text-white")}>{m.title}</span>
+              <li key={m.id} className="flex items-center gap-3 rounded-xl bg-m-card px-3 py-2 ring-1 ring-m-ink/10">
+                <input type="checkbox" disabled={!inTeam} checked={Boolean(m.done)} onChange={() => edit((x) => ({ ...x, milestones: x.milestones.map((y) => (y.id === m.id ? { ...y, done: !y.done } : y)) }))} className="size-4 accent-m-blue" aria-label={`${m.title} শেষ`} />
+                <span className={cn("min-w-0 flex-1 truncate text-sm", m.done ? "text-m-ink/50 line-through" : "text-m-ink")}>{m.title}</span>
                 {lead ? (
                   <Input type="date" value={m.date} onChange={(e) => e.target.value && edit((x) => ({ ...x, milestones: x.milestones.map((y) => (y.id === m.id ? { ...y, date: e.target.value } : y)) }))} className="h-9 w-auto" aria-label={`${m.title} তারিখ`} />
                 ) : (
-                  <span className="text-xs text-white/65"><DateText iso={m.date} /></span>
+                  <span className="text-xs text-m-ink/65"><DateText iso={m.date} /></span>
                 )}
                 {lead && <button type="button" onClick={() => edit((x) => ({ ...x, milestones: x.milestones.filter((y) => y.id !== m.id) }))} className={mediaButton({ variant: "ghost", size: "icon-sm" })} aria-label={`${m.title} মুছুন`}><Trash2 aria-hidden /></button>}
               </li>
@@ -282,10 +282,10 @@ export function TasksStep({ p, meId, inTeam, lead, today, edit, name }: StepProp
         {p.members.map((m) => {
           const mine = p.tasks.filter((t) => t.who === m.id);
           return (
-            <li key={m.id} className={cn("inline-flex min-h-9 items-center gap-2 rounded-full py-1 pr-3 pl-1 text-sm", mine.length === 0 ? "bg-national-crimson/20 text-white ring-1 ring-crimson-bright/50" : "bg-white/8 text-white ring-1 ring-white/10")}>
-              <span className="flex size-7 items-center justify-center rounded-full bg-signal-orange text-xs font-bold text-text-primary">{initial(m.name)}</span>
+            <li key={m.id} className={cn("inline-flex min-h-9 items-center gap-2 rounded-full py-1 pr-3 pl-1 text-sm", mine.length === 0 ? "bg-m-red/20 text-m-on ring-1 ring-m-red/50" : "bg-m-ink/4 text-m-ink ring-1 ring-m-ink/9")}>
+              <span className="flex size-7 items-center justify-center rounded-full bg-m-yellow text-xs font-bold text-m-ink">{initial(m.name)}</span>
               {m.id === meId ? "আপনি" : m.name.split(/\s+/)[0]}
-              <span className="text-xs text-white/65">{mine.length === 0 ? "কাজ নেই" : <><Num value={mine.filter((t) => t.status === "done").length} />/<Num value={mine.length} /></>}</span>
+              <span className="text-xs text-m-ink/65">{mine.length === 0 ? "কাজ নেই" : <><Num value={mine.filter((t) => t.status === "done").length} />/<Num value={mine.length} /></>}</span>
             </li>
           );
         })}
@@ -293,7 +293,7 @@ export function TasksStep({ p, meId, inTeam, lead, today, edit, name }: StepProp
 
       {inTeam && (
         <form
-          className="grid gap-2 rounded-2xl bg-text-primary p-4 ring-1 ring-white/12 sm:grid-cols-[minmax(0,1fr)_12rem_10rem_auto]"
+          className="grid gap-2 rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 sm:grid-cols-[minmax(0,1fr)_12rem_10rem_auto] shadow-m-tile"
           onSubmit={(e) => {
             e.preventDefault();
             if (title.trim().length < 3 || !who) return;
@@ -316,21 +316,21 @@ export function TasksStep({ p, meId, inTeam, lead, today, edit, name }: StepProp
         {ORDER.map((status) => {
           const list = p.tasks.filter((t) => t.status === status);
           return (
-            <section key={status} aria-label={TASK_STATUS[status]} className="rounded-2xl bg-white/5 p-3 ring-1 ring-white/10">
-              <h3 className="mb-3 flex items-center justify-between px-1 text-sm font-bold text-white">
+            <section key={status} aria-label={TASK_STATUS[status]} className="rounded-2xl bg-m-ink/3 p-3 ring-1 ring-m-ink/9">
+              <h3 className="mb-3 flex items-center justify-between px-1 text-sm font-bold text-m-ink">
                 {TASK_STATUS[status]}
-                <span className="rounded-full bg-white/10 px-2 text-xs"><Num value={list.length} /></span>
+                <span className="rounded-full bg-m-ink/6 px-2 text-xs"><Num value={list.length} /></span>
               </h3>
               <ul className="space-y-2">
                 {list.map((t) => {
                   const mayMove = lead || t.who === meId;
                   const late = t.due && t.due < today && t.status !== "done";
                   return (
-                    <li key={t.id} className={cn("live-in rounded-xl p-3 text-sm ring-1", status === "done" ? "bg-bd-green/25 ring-bd-green/50" : "bg-text-primary ring-white/12")}>
-                      <p className={cn("font-semibold", status === "done" ? "text-white/70 line-through" : "text-white")}>{t.title}</p>
-                      <p className="mt-1 flex items-center gap-2 text-xs text-white/65">
-                        <span className="font-semibold text-signal-orange">{t.who === meId ? "আপনি" : name(t.who)}</span>
-                        {t.due && <span className={cn(late && "font-bold text-crimson-bright")}>· <DateText iso={t.due} />{late && " · দেরি"}</span>}
+                    <li key={t.id} className={cn("live-in rounded-xl p-3 text-sm ring-1", status === "done" ? "bg-m-blue/13 ring-m-blue/50" : "bg-m-card ring-m-ink/10")}>
+                      <p className={cn("font-semibold", status === "done" ? "text-m-ink/70 line-through" : "text-m-ink")}>{t.title}</p>
+                      <p className="mt-1 flex items-center gap-2 text-xs text-m-ink/65">
+                        <span className="font-semibold text-m-blue">{t.who === meId ? "আপনি" : name(t.who)}</span>
+                        {t.due && <span className={cn(late && "font-bold text-m-red")}>· <DateText iso={t.due} />{late && " · দেরি"}</span>}
                       </p>
                       {mayMove && (
                         <div className="mt-2 flex gap-1">
@@ -342,7 +342,7 @@ export function TasksStep({ p, meId, inTeam, lead, today, edit, name }: StepProp
                     </li>
                   );
                 })}
-                {list.length === 0 && <li className="px-1 py-3 text-xs text-white/45">ফাঁকা</li>}
+                {list.length === 0 && <li className="px-1 py-3 text-xs text-m-ink/45">ফাঁকা</li>}
               </ul>
             </section>
           );
@@ -398,8 +398,8 @@ export function FilesStep({ p, meId, inTeam, lead, edit, name }: StepProps) {
       <Guide title="ফাইল ও ডেটা এক জায়গায়" tips={["উপস্থাপনার স্লাইড, পড়া পেপারের পিডিএফ আর মাপা ডেটা এখানে রাখুন।", "এক্সেলের ডেটা দলে মিলে লিখতে গুগল শিটের শেয়ার লিংক দিন — সবাই একই শিটে কাজ করবে।", "প্রতিটি ফাইল ১.৫ MB পর্যন্ত; বড় হলে ড্রাইভের লিংক দিন।"]} />
       {inTeam && (
         <div className="grid gap-4 lg:grid-cols-2">
-          <div className="rounded-2xl bg-text-primary p-4 ring-1 ring-white/12">
-            <h3 className="mb-3 text-sm font-bold text-white">ফাইল তুলুন</h3>
+          <div className="rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 shadow-m-tile">
+            <h3 className="mb-3 text-sm font-bold text-m-ink">ফাইল তুলুন</h3>
             <div className="flex flex-wrap gap-2">
               {ACCEPT.map((a) => {
                 const Icon = FILE_ICON[a.kind];
@@ -411,10 +411,10 @@ export function FilesStep({ p, meId, inTeam, lead, edit, name }: StepProps) {
               })}
             </div>
             <input ref={input} type="file" accept={accept} className="sr-only" tabIndex={-1} onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) pick(f); }} />
-            {busy && <p className="mt-2 text-xs text-signal-orange">পড়া হচ্ছে…</p>}
+            {busy && <p className="mt-2 text-xs text-m-blue">পড়া হচ্ছে…</p>}
           </div>
           <form
-            className="rounded-2xl bg-text-primary p-4 ring-1 ring-white/12"
+            className="rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 shadow-m-tile"
             onSubmit={(e) => {
               e.preventDefault();
               if (!meId) return;
@@ -423,7 +423,7 @@ export function FilesStep({ p, meId, inTeam, lead, edit, name }: StepProps) {
               setLink("");
             }}
           >
-            <h3 className="mb-3 text-sm font-bold text-white">গুগল শিটের লিংক (এক্সেল ডেটা)</h3>
+            <h3 className="mb-3 text-sm font-bold text-m-ink">গুগল শিটের লিংক (এক্সেল ডেটা)</h3>
             <div className="flex gap-2">
               <Input value={link} onChange={(e) => setLink(e.target.value)} placeholder="https://docs.google.com/spreadsheets/d/…" inputMode="url" aria-label="গুগল শিটের লিংক" />
               <button type="submit" className={mediaButton({ variant: "primary" })}><Link2 aria-hidden /> যোগ</button>
@@ -433,17 +433,17 @@ export function FilesStep({ p, meId, inTeam, lead, edit, name }: StepProps) {
       )}
 
       {p.files.length === 0 ? (
-        <p className="rounded-2xl border-2 border-dashed border-white/15 p-6 text-center text-sm text-white/60">এখনো কোনো ফাইল বা লিংক নেই।</p>
+        <p className="rounded-2xl border-2 border-dashed border-m-ink/13 p-6 text-center text-sm text-m-ink/60">এখনো কোনো ফাইল বা লিংক নেই।</p>
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2">
           {p.files.map((f) => {
             const Icon = FILE_ICON[f.kind];
             return (
-              <li key={f.id} className="story-reveal flex items-center gap-3 rounded-2xl bg-text-primary p-3 ring-1 ring-white/12">
-                <span className={cn("flex size-11 shrink-0 items-center justify-center rounded-xl", f.kind === "sheet" || f.kind === "data" ? "bg-bd-green text-white" : f.kind === "pdf" ? "bg-national-crimson text-white" : "bg-signal-orange text-text-primary")}><Icon className="size-5" aria-hidden /></span>
+              <li key={f.id} className="story-reveal flex items-center gap-3 rounded-2xl bg-m-card p-3 ring-1 ring-m-ink/10 shadow-m-tile">
+                <span className={cn("flex size-11 shrink-0 items-center justify-center rounded-xl", f.kind === "sheet" || f.kind === "data" ? "bg-m-blue-soft text-m-ink" : f.kind === "pdf" ? "bg-m-red text-m-on" : "bg-m-yellow text-m-ink")}><Icon className="size-5" aria-hidden /></span>
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-semibold text-white">{f.name}</span>
-                  <span className="text-xs text-white/60">{FILE_KINDS[f.kind]}{f.file ? ` · ${kb(f.file.size)}` : ""} · {name(f.by)}</span>
+                  <span className="block truncate text-sm font-semibold text-m-ink">{f.name}</span>
+                  <span className="text-xs text-m-ink/60">{FILE_KINDS[f.kind]}{f.file ? ` · ${kb(f.file.size)}` : ""} · {name(f.by)}</span>
                 </span>
                 {f.url ? (
                   <a href={f.url} target="_blank" rel="noopener noreferrer" className={mediaButton({ variant: "ghost", size: "icon-sm" })} aria-label="শিট খুলুন"><ExternalLink aria-hidden /></a>
@@ -456,7 +456,7 @@ export function FilesStep({ p, meId, inTeam, lead, edit, name }: StepProps) {
           })}
         </ul>
       )}
-      {!inTeam && <p className="text-xs text-white/55"><Upload className="mr-1 inline size-3.5" aria-hidden />দলে থাকলে ফাইল তুলতে পারবেন।</p>}
+      {!inTeam && <p className="text-xs text-m-ink/55"><Upload className="mr-1 inline size-3.5" aria-hidden />দলে থাকলে ফাইল তুলতে পারবেন।</p>}
     </div>
   );
 }
@@ -472,7 +472,7 @@ export function WriteStep({ p, inTeam, edit }: StepProps) {
     <div className="space-y-5">
       <Guide title="গবেষণার কাঠামো" tips={["পাঁচটি অংশ — প্রতিটির নিচে কী লিখবেন বলা আছে।", "সংখ্যা আর সূত্র দিন; অনুমান হলে বলুন অনুমান।", "লেখা ঘর ছাড়লেই সংরক্ষণ হয়; দলের সবাই একই লেখা দেখে।"]} />
       {topic && (
-        <p className="rounded-2xl bg-signal-orange p-4 text-sm font-semibold text-text-primary">
+        <p className="rounded-2xl bg-m-yellow p-4 text-sm font-semibold text-m-ink">
           বিষয়: <span className="font-bold">{topic.title}</span>
           {inTeam && !draft.question && (
             <button type="button" onClick={() => setDraft((d) => ({ ...d, question: `${topic.title} — ` }))} className="ml-2 underline">প্রশ্নে বসান</button>
@@ -483,14 +483,14 @@ export function WriteStep({ p, inTeam, edit }: StepProps) {
         {SECTIONS.map((s, i) => {
           const done = draft[s.key].trim().length >= s.min;
           return (
-            <li key={s.key} className="story-reveal rounded-2xl bg-text-primary p-4 ring-1 ring-white/12 sm:p-5">
+            <li key={s.key} className="story-reveal rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 sm:p-5 shadow-m-tile">
               <label className="block">
-                <span className="flex items-center gap-2 font-bold text-white">
-                  <span className={cn("flex size-7 items-center justify-center rounded-full text-xs", done ? "bg-bd-green text-white" : "bg-white/10 text-white")}>{done ? <Check className="size-4" aria-hidden /> : <Num value={i + 1} />}</span>
+                <span className="flex items-center gap-2 font-bold text-m-ink">
+                  <span className={cn("flex size-7 items-center justify-center rounded-full text-xs", done ? "bg-m-blue-soft text-m-ink" : "bg-m-ink/6 text-m-ink")}>{done ? <Check className="size-4" aria-hidden /> : <Num value={i + 1} />}</span>
                   {s.bn}
-                  <span className="ml-auto text-xs font-medium text-white/50"><Num value={draft[s.key].trim().length} /> অক্ষর</span>
+                  <span className="ml-auto text-xs font-medium text-m-ink/50"><Num value={draft[s.key].trim().length} /> অক্ষর</span>
                 </span>
-                <span className="mt-1 mb-2 block text-sm text-white/60">{s.guide}</span>
+                <span className="mt-1 mb-2 block text-sm text-m-ink/60">{s.guide}</span>
                 <Textarea rows={s.key === "question" ? 2 : 4} readOnly={!inTeam} value={draft[s.key]} onChange={(e) => setDraft((d) => ({ ...d, [s.key]: e.target.value }))} onBlur={() => save(s.key)} />
               </label>
             </li>
@@ -500,7 +500,7 @@ export function WriteStep({ p, inTeam, edit }: StepProps) {
       {inTeam && SECTIONS.some((s) => draft[s.key] !== p.write[s.key]) && (
         <button type="button" onClick={() => edit((x) => ({ ...x, write: draft })) && toast.success("লেখা সংরক্ষণ হলো")} className={mediaButton({ variant: "primary" })}>সব সংরক্ষণ করুন</button>
       )}
-      <p className="text-xs text-white/50">সব অংশ পূর্ণ: {SECTIONS.every((s) => writeDone(p.write, s.key)) ? "হ্যাঁ" : "এখনো না"}</p>
+      <p className="text-xs text-m-ink/50">সব অংশ পূর্ণ: {SECTIONS.every((s) => writeDone(p.write, s.key)) ? "হ্যাঁ" : "এখনো না"}</p>
     </div>
   );
 }

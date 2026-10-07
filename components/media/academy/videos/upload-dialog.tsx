@@ -58,10 +58,10 @@ export function UploadDialog({ open, onOpenChange, owes }: { open: boolean; onOp
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-text-primary font-sans sm:max-w-lg">
+      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-m-card font-sans sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-xl text-white">ক্লাস ভিডিও তুলুন</DialogTitle>
-          <DialogDescription className="text-white/75">
+          <DialogTitle className="text-xl text-m-ink">ক্লাস ভিডিও তুলুন</DialogTitle>
+          <DialogDescription className="text-m-ink/75">
             {owes ? "এ সপ্তাহের বিনামূল্যের ক্লাসটা এখনো বাকি — প্রতি সপ্তাহে একটা, সবার জন্য।" : "ভিডিওটা ইউটিউবে (আনলিস্টেড হলেও চলে) বা ড্রাইভে তুলে লিংক দিন।"}
           </DialogDescription>
         </DialogHeader>

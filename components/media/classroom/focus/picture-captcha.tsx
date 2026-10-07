@@ -46,7 +46,7 @@ export function PictureCaptcha({ disabled, hint, opening = "ক্লাসর�
   }
 
   return (
-    <fieldset disabled={disabled} className="rounded-2xl bg-text-primary p-4 text-white disabled:opacity-60">
+    <fieldset disabled={disabled} className="rounded-2xl bg-m-card p-4 text-m-ink disabled:opacity-60">
       <legend className="sr-only">ছবি মিলিয়ে ঢুকুন</legend>
       <div className="flex items-center justify-between gap-3">
         <p className="text-sm font-bold">ছবি মিলিয়ে ঢুকুন</p>
@@ -56,7 +56,7 @@ export function PictureCaptcha({ disabled, hint, opening = "ক্লাসর�
             setMiss(0);
             setPuzzle(makeCaptcha(Math.random, puzzle.target));
           }}
-          className="inline-flex h-8 items-center gap-1.5 rounded-lg px-2 text-xs font-semibold text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+          className="inline-flex h-8 items-center gap-1.5 rounded-lg px-2 text-xs font-semibold text-m-ink/70 transition-colors hover:bg-m-ink/6 hover:text-m-ink"
         >
           <RotateCw className="size-3.5" aria-hidden /> নতুন ছবি
         </button>
@@ -64,10 +64,10 @@ export function PictureCaptcha({ disabled, hint, opening = "ক্লাসর�
 
       <div className="mt-3 flex items-center justify-center gap-4 sm:gap-6">
         <div className="flex shrink-0 flex-col items-center gap-1.5">
-          <span className="grid size-18 place-items-center rounded-2xl bg-signal-orange text-text-primary shadow-[0_12px_28px_-14px_var(--color-signal-orange)]">
+          <span className="grid size-18 place-items-center rounded-2xl bg-m-yellow text-m-ink shadow-[0_12px_28px_-14px_var(--color-signal-orange)]">
             <Target className="size-10" strokeWidth={2} aria-hidden />
           </span>
-          <span className="text-[11px] font-semibold text-white/70">এটা খুঁজুন</span>
+          <span className="text-[11px] font-semibold text-m-ink/70">এটা খুঁজুন</span>
         </div>
 
         <motion.div
@@ -89,10 +89,10 @@ export function PictureCaptcha({ disabled, hint, opening = "ক্লাসর�
                 aria-label={ITEM_BN[item]}
                 className={cn(
                   "grid size-14 place-items-center rounded-xl ring-1 sm:size-16 transition-[background-color,box-shadow,scale] duration-200 active:scale-95 disabled:cursor-not-allowed",
-                  won ? "bg-bd-green ring-bd-green" : "bg-white/6 ring-white/12 enabled:hover:bg-white/12 enabled:hover:ring-signal-orange/60",
+                  won ? "bg-m-blue-soft ring-m-blue" : "bg-m-ink/3 ring-m-ink/10 enabled:hover:bg-m-ink/7 enabled:hover:ring-m-blue/60",
                 )}
               >
-                {won ? <Check className="size-7 text-white" strokeWidth={3} aria-hidden /> : <Icon className="size-6 text-white sm:size-7" style={{ transform: `rotate(${turn}deg)` }} aria-hidden />}
+                {won ? <Check className="size-7 text-m-ink" strokeWidth={3} aria-hidden /> : <Icon className="size-6 text-m-ink sm:size-7" style={{ transform: `rotate(${turn}deg)` }} aria-hidden />}
               </button>
             );
           })}
@@ -101,13 +101,13 @@ export function PictureCaptcha({ disabled, hint, opening = "ক্লাসর�
 
       <p aria-live="polite" className="mt-3 min-h-5 text-xs font-semibold">
         {passed ? (
-          <span className="text-bdgreen-200">মিলেছে — {opening}</span>
+          <span className="text-m-green">মিলেছে — {opening}</span>
         ) : disabled && hint ? (
-          <span className="text-white/65">{hint}</span>
+          <span className="text-m-ink/65">{hint}</span>
         ) : miss > 0 ? (
-          <span className="text-signal-orange">মেলেনি — নতুন ছবি দিলাম, আবার চেষ্টা করুন।</span>
+          <span className="text-m-blue">মেলেনি — নতুন ছবি দিলাম, আবার চেষ্টা করুন।</span>
         ) : (
-          <span className="text-white/65">বাঁ পাশের ছবির মতো একই ছবিতে চাপ দিন।</span>
+          <span className="text-m-ink/65">বাঁ পাশের ছবির মতো একই ছবিতে চাপ দিন।</span>
         )}
       </p>
     </fieldset>

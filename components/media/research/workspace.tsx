@@ -66,18 +66,18 @@ export function ResearchWorkspace({ id, onBack }: { id: string; onBack: () => vo
 
   return (
     <div className="space-y-6">
-      <button type="button" onClick={onBack} className="inline-flex min-h-8 items-center gap-1.5 text-sm font-semibold text-signal-orange">
+      <button type="button" onClick={onBack} className="inline-flex min-h-8 items-center gap-1.5 text-sm font-semibold text-m-blue">
         <ArrowLeft className="size-4" aria-hidden /> উদ্ভাবনে ফিরুন
       </button>
 
-      <section className="live-in grid gap-5 overflow-hidden rounded-3xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-7 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+      <section className="live-in grid gap-5 overflow-hidden rounded-3xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-7 md:grid-cols-[minmax(0,1fr)_auto] md:items-center shadow-m-tile">
         <div className="min-w-0">
-          <p className="inline-flex items-center gap-2 text-sm font-semibold text-signal-orange"><Microscope className="size-4" aria-hidden /> দলের গবেষণা</p>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight text-balance text-white sm:text-3xl">{topic?.title ?? "বিষয় এখনো ঠিক হয়নি — ভোট চলছে"}</h1>
+          <p className="inline-flex items-center gap-2 text-sm font-semibold text-m-blue"><Microscope className="size-4" aria-hidden /> দলের গবেষণা</p>
+          <h1 className="mt-2 text-2xl font-bold tracking-tight text-balance text-m-ink sm:text-3xl">{topic?.title ?? "বিষয় এখনো ঠিক হয়নি — ভোট চলছে"}</h1>
           <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="দল">
             {p.members.map((m) => (
-              <li key={m.id} className={cn("inline-flex min-h-8 items-center gap-1.5 rounded-full py-0.5 pr-3 pl-0.5 text-xs font-semibold", m.id === me?.id ? "bg-signal-orange text-text-primary" : "bg-white/8 text-white ring-1 ring-white/10")}>
-                <span className={cn("flex size-7 items-center justify-center rounded-full text-xs font-bold", m.id === me?.id ? "bg-text-primary text-signal-orange" : "bg-white/15")}>{Array.from(m.name)[0]}</span>
+              <li key={m.id} className={cn("inline-flex min-h-8 items-center gap-1.5 rounded-full py-0.5 pr-3 pl-0.5 text-xs font-semibold", m.id === me?.id ? "bg-m-yellow text-m-ink" : "bg-m-ink/4 text-m-ink ring-1 ring-m-ink/9")}>
+                <span className={cn("flex size-7 items-center justify-center rounded-full text-xs font-bold", m.id === me?.id ? "bg-m-card text-m-blue" : "bg-m-ink/8")}>{Array.from(m.name)[0]}</span>
                 {m.id === me?.id ? "আপনি" : m.name.split(/\s+/)[0]}
                 {m.id === p.leadId && <span className="opacity-70">· লিড</span>}
               </li>
@@ -92,7 +92,7 @@ export function ResearchWorkspace({ id, onBack }: { id: string; onBack: () => vo
               দলে যোগ দিন
             </button>
           )}
-          {!inTeam && !inRoom && <p className="mt-4 text-xs text-white/55">শুধু দেখছেন — অংশ নিতে আগে এই {p.from.kind === "lab" ? "ল্যাবে" : "ক্লাসে"} যোগ দিন।</p>}
+          {!inTeam && !inRoom && <p className="mt-4 text-xs text-m-ink/55">শুধু দেখছেন — অংশ নিতে আগে এই {p.from.kind === "lab" ? "ল্যাবে" : "ক্লাসে"} যোগ দিন।</p>}
         </div>
         <figure className="flex items-center gap-3 md:flex-col md:text-center">
           <div className="relative size-24">
@@ -100,13 +100,13 @@ export function ResearchWorkspace({ id, onBack }: { id: string; onBack: () => vo
               <circle cx="40" cy="40" r={r} fill="none" stroke="rgb(255 255 255 / 0.12)" strokeWidth="8" />
               <circle cx="40" cy="40" r={r} fill="none" stroke="var(--color-signal-orange)" strokeWidth="8" strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c * (1 - pct / 100)} className="meter-fill" />
             </svg>
-            <span className="absolute inset-0 flex items-center justify-center text-xl font-bold text-white"><Num value={pct} />%</span>
+            <span className="absolute inset-0 flex items-center justify-center text-xl font-bold text-m-ink"><Num value={pct} />%</span>
           </div>
-          <figcaption className="text-xs font-semibold text-white/70">শেয়ারের জন্য প্রস্তুত</figcaption>
+          <figcaption className="text-xs font-semibold text-m-ink/70">শেয়ারের জন্য প্রস্তুত</figcaption>
         </figure>
       </section>
 
-      <nav aria-label="গবেষণার ধাপ" className="rounded-2xl bg-text-primary p-1.5 ring-1 ring-white/12">
+      <nav aria-label="গবেষণার ধাপ" className="rounded-2xl bg-m-card p-1.5 ring-1 ring-m-ink/10 shadow-m-tile">
         <ol className="flex gap-1 overflow-x-auto scrollbar-none">
           {STEPS.map((s, i) => {
             const on = s.key === step;
@@ -117,14 +117,14 @@ export function ResearchWorkspace({ id, onBack }: { id: string; onBack: () => vo
                   type="button"
                   onClick={() => setPicked(s.key)}
                   aria-current={on ? "step" : undefined}
-                  className={cn("flex min-h-11 items-center gap-2 rounded-xl px-3 text-sm font-bold whitespace-nowrap transition-colors", on ? "bg-signal-orange text-text-primary" : "text-white/75 hover:text-white")}
+                  className={cn("flex min-h-11 items-center gap-2 rounded-xl px-3 text-sm font-bold whitespace-nowrap transition-colors", on ? "bg-m-yellow text-m-ink" : "text-m-ink/75 hover:text-m-ink")}
                 >
-                  <span className={cn("flex size-6 items-center justify-center rounded-full text-xs", ok ? "bg-bd-green text-white" : on ? "bg-text-primary text-signal-orange" : "bg-white/10")}>
+                  <span className={cn("flex size-6 items-center justify-center rounded-full text-xs", ok ? "bg-m-blue-soft text-m-ink" : on ? "bg-m-card text-m-blue" : "bg-m-ink/6")}>
                     {ok ? <Check className="size-3.5" aria-label="শেষ" /> : <Num value={i + 1} />}
                   </span>
                   {s.bn}
                 </button>
-                {i < STEPS.length - 1 && <span className={cn("mx-0.5 h-0.5 w-4", ok ? "bg-bd-green" : "bg-white/15")} aria-hidden />}
+                {i < STEPS.length - 1 && <span className={cn("mx-0.5 h-0.5 w-4", ok ? "bg-m-blue-soft" : "bg-m-ink/8")} aria-hidden />}
               </li>
             );
           })}
@@ -194,8 +194,8 @@ function ShareStep({ p, inTeam, checks, onGo, onPaper }: StepProps & { checks: C
       <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
         {checks.map((c) => (
           <li key={c.key}>
-            <button type="button" onClick={() => onGo(CHECK_STEP[c.key])} className={cn("flex h-full w-full items-start gap-2 rounded-xl p-3 text-left text-sm ring-1 transition-colors", c.done ? "bg-bd-green/25 text-white ring-bd-green/60" : "bg-text-primary text-white/80 ring-white/12 hover:ring-signal-orange/50")}>
-              {c.done ? <Check className="mt-0.5 size-4 shrink-0 text-bdgreen-500" aria-hidden /> : <X className="mt-0.5 size-4 shrink-0 text-crimson-bright" aria-hidden />}
+            <button type="button" onClick={() => onGo(CHECK_STEP[c.key])} className={cn("flex h-full w-full items-start gap-2 rounded-xl p-3 text-left text-sm ring-1 transition-colors", c.done ? "bg-m-blue/13 text-m-ink ring-m-blue/60" : "bg-m-card text-m-ink/80 ring-m-ink/10 hover:ring-m-blue/50")}>
+              {c.done ? <Check className="mt-0.5 size-4 shrink-0 text-m-green" aria-hidden /> : <X className="mt-0.5 size-4 shrink-0 text-m-red" aria-hidden />}
               {c.bn}
             </button>
           </li>
@@ -203,10 +203,10 @@ function ShareStep({ p, inTeam, checks, onGo, onPaper }: StepProps & { checks: C
       </ul>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <article className="flex flex-col gap-3 rounded-2xl bg-signal-orange p-5 text-text-primary">
+        <article className="flex flex-col gap-3 rounded-2xl bg-m-yellow p-5 text-m-ink">
           <Newspaper className="size-6" aria-hidden />
           <h3 className="text-lg font-bold">ফিডে শেয়ার</h3>
-          <p className="text-sm text-text-primary/80">দলের নামে পোস্ট — কেউ হয়তো ডেটা দেবে, কেউ যোগ দিতে চাইবে।</p>
+          <p className="text-sm text-m-ink/80">দলের নামে পোস্ট — কেউ হয়তো ডেটা দেবে, কেউ যোগ দিতে চাইবে।</p>
           <div className="mt-auto flex flex-wrap gap-2">
             {p.shared?.postId ? (
               <Link href={`/media/post/${p.shared.postId}`} className={mediaButton({ variant: "tile", size: "sm" })}>ফিডে দেখুন <ArrowUpRight aria-hidden /></Link>
@@ -215,22 +215,22 @@ function ShareStep({ p, inTeam, checks, onGo, onPaper }: StepProps & { checks: C
             )}
           </div>
         </article>
-        <article className="flex flex-col gap-3 rounded-2xl bg-text-primary p-5 text-white ring-1 ring-white/12">
-          <BookOpenText className="size-6 text-signal-orange" aria-hidden />
+        <article className="flex flex-col gap-3 rounded-2xl bg-m-card p-5 text-m-ink ring-1 ring-m-ink/10 shadow-m-tile">
+          <BookOpenText className="size-6 text-m-blue" aria-hidden />
           <h3 className="text-lg font-bold">প্রকাশনা</h3>
-          <p className="text-sm text-white/75">{complete ? "গবেষণাপত্রের কাঠামোয় সাজানো কপি — প্রিন্ট বা পিডিএফ করুন।" : "সব ধাপ শেষ হলে গবেষণাপত্রের কপি তৈরি হবে।"}</p>
+          <p className="text-sm text-m-ink/75">{complete ? "গবেষণাপত্রের কাঠামোয় সাজানো কপি — প্রিন্ট বা পিডিএফ করুন।" : "সব ধাপ শেষ হলে গবেষণাপত্রের কপি তৈরি হবে।"}</p>
           <div className="mt-auto">
             {complete ? (
               <button type="button" onClick={onPaper} className={mediaButton({ variant: "outline", size: "sm" })}>
                 <Printer aria-hidden /> প্রকাশনার কপি
               </button>
             ) : (
-              <span className="text-xs font-semibold text-white/55"><Num value={checks.filter((c) => c.done).length} />/<Num value={checks.length} /> ধাপ শেষ</span>
+              <span className="text-xs font-semibold text-m-ink/55"><Num value={checks.filter((c) => c.done).length} />/<Num value={checks.length} /> ধাপ শেষ</span>
             )}
           </div>
         </article>
       </div>
-      {!ready && <p className="text-sm text-white/60">শেয়ারের আগে বিষয় চূড়ান্ত করুন আর লেখায় প্রশ্ন ও ফলাফল দিন।</p>}
+      {!ready && <p className="text-sm text-m-ink/60">শেয়ারের আগে বিষয় চূড়ান্ত করুন আর লেখায় প্রশ্ন ও ফলাফল দিন।</p>}
     </div>
   );
 }

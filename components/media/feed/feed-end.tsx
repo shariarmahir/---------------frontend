@@ -13,10 +13,10 @@ import { useMinutesToday } from "../wellbeing/usage";
 export function FeedEnd() {
   const minutes = useMinutesToday();
   return (
-    <section className="rounded-2xl border border-dashed border-signal-orange/35 bg-text-primary px-5 py-8 text-center">
-      <Sparkles className="mx-auto size-8 text-signal-orange" strokeWidth={1.5} aria-hidden />
-      <h2 className="mt-3 text-lg font-bold text-white">আজকের জন্য এটুকুই</h2>
-      <p className="mx-auto mt-1.5 max-w-sm text-sm leading-relaxed text-white/80">
+    <section className="rounded-2xl border border-dashed border-m-blue/35 bg-m-card px-5 py-8 text-center shadow-m-tile">
+      <Sparkles className="mx-auto size-8 text-m-blue" strokeWidth={1.5} aria-hidden />
+      <h2 className="mt-3 text-lg font-bold text-m-ink">আজকের জন্য এটুকুই</h2>
+      <p className="mx-auto mt-1.5 max-w-sm text-sm leading-relaxed text-m-ink/80">
         {minutes > 0 ? (
           <>
             আজ <Num value={minutes} /> মিনিট এখানে কাটালেন।{" "}

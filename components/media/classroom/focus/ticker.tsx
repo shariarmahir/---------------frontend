@@ -134,9 +134,9 @@ export function ClassTicker() {
   const topic = (
     <>
       {item.urgent ? (
-        <span className="mr-1.5 rounded-md bg-national-crimson px-1.5 py-px text-[11px] text-white">{item.label}</span>
+        <span className="mr-1.5 rounded-md bg-m-red px-1.5 py-px text-[11px] text-m-on">{item.label}</span>
       ) : (
-        <span className="text-text-primary/70">{item.label} · </span>
+        <span className="text-m-ink/70">{item.label} · </span>
       )}
       {item.text}
     </>
@@ -148,7 +148,7 @@ export function ClassTicker() {
       aria-label="ক্লাসের খবর"
       onMouseEnter={() => setHeld(true)}
       onMouseLeave={() => setHeld(false)}
-      className="flex h-14 w-full min-w-0 items-center justify-center text-text-primary select-none"
+      className="flex h-14 w-full min-w-0 items-center justify-center text-m-ink select-none"
     >
       <AnimatePresence mode="wait">
         {shown && (

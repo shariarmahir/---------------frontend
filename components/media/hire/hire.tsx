@@ -63,10 +63,10 @@ export function HireDialog({ target, open, onOpenChange }: { target: HireTarget;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-text-primary font-sans sm:max-w-lg">
+      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-m-card font-sans sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-lg font-bold text-white">{target.nameBn}-কে হায়ার করুন</DialogTitle>
-          <DialogDescription className="text-sm leading-relaxed text-white/80">
+          <DialogTitle className="text-lg font-bold text-m-ink">{target.nameBn}-কে হায়ার করুন</DialogTitle>
+          <DialogDescription className="text-sm leading-relaxed text-m-ink/80">
             প্রস্তাব পাঠালে দরদামের একটি কথোপকথন খুলবে। দুজনে রাজি হলে চুক্তি নিশ্চিত করবেন, টাকা এসক্রোতে থাকবে — কাজ বুঝে পেলে ছাড়।
           </DialogDescription>
         </DialogHeader>
@@ -87,8 +87,8 @@ export function HireDialog({ target, open, onOpenChange }: { target: HireTarget;
                         onClick={() => field.onChange(s)}
                         className={
                           field.value === s
-                            ? "min-h-10 rounded-xl border-2 border-signal-orange bg-white/10 px-3 text-sm font-semibold text-signal-orange"
-                            : "min-h-10 rounded-xl border-2 border-white/12 px-3 text-sm font-semibold text-white/80 hover:border-white/12"
+                            ? "min-h-10 rounded-xl border-2 border-m-blue bg-m-ink/6 px-3 text-sm font-semibold text-m-blue"
+                            : "min-h-10 rounded-xl border-2 border-m-ink/10 px-3 text-sm font-semibold text-m-ink/80 hover:border-m-ink/10"
                         }
                       >
                         {s}
@@ -146,7 +146,7 @@ export function HireDialog({ target, open, onOpenChange }: { target: HireTarget;
               />
             </div>
             {verdict === "unfair" && (
-              <p role="alert" className="rounded-xl border border-crimson-bright/60 bg-national-crimson p-3 text-sm text-white">
+              <p role="alert" className="rounded-xl border border-m-red/60 bg-m-red p-3 text-sm text-m-on">
                 এই বাজেট এই কাজের ন্যায্য দামের (<Taka amount={target.band.low} />–<Taka amount={target.band.high} />) অনেক নিচে। কম দামে শ্রম কেনা এই প্ল্যাটফর্মের নিয়মের বিরুদ্ধে।
               </p>
             )}
@@ -170,14 +170,14 @@ export function HireBar({ target }: { target: HireTarget }) {
   const message = `/media/messages${target.threadId ? `?t=${target.threadId}` : ""}`;
   return (
     <>
-      <div id="hire" className="hidden scroll-mt-24 rounded-2xl border border-white/12 bg-text-primary p-5 lg:block">
+      <div id="hire" className="hidden scroll-mt-24 rounded-2xl border border-m-ink/10 bg-m-card p-5 lg:block shadow-m-tile">
         {target.rate && (
-          <p className="text-2xl font-bold text-white">
+          <p className="text-2xl font-bold text-m-ink">
             <Taka amount={target.rate.amount} />
-            <span className="ml-1 text-sm font-medium text-white/65">/ {target.rate.unit}</span>
+            <span className="ml-1 text-sm font-medium text-m-ink/65">/ {target.rate.unit}</span>
           </p>
         )}
-        <p className="mt-1 flex items-center gap-1.5 text-sm text-white/80">
+        <p className="mt-1 flex items-center gap-1.5 text-sm text-m-ink/80">
           <Clock className="size-4" aria-hidden /> সাধারণত {target.responseTime} উত্তর দেন
         </p>
         <div className="mt-4 space-y-2">
@@ -188,17 +188,17 @@ export function HireBar({ target }: { target: HireTarget }) {
             <MessageCircle aria-hidden /> বার্তা পাঠান
           </Link>
         </div>
-        <p className="mt-3 text-xs leading-relaxed text-white/65">টাকা এসক্রোতে থাকে; কাজ বুঝে পেলে ছাড়। প্ল্যাটফর্মের বাইরে অগ্রিম দেবেন না।</p>
+        <p className="mt-3 text-xs leading-relaxed text-m-ink/65">টাকা এসক্রোতে থাকে; কাজ বুঝে পেলে ছাড়। প্ল্যাটফর্মের বাইরে অগ্রিম দেবেন না।</p>
       </div>
 
-      <div className="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-30 border-t border-white/12 bg-black/70 px-3 py-2.5 backdrop-blur lg:hidden">
+      <div className="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-30 border-t border-m-ink/10 bg-white/90 px-3 py-2.5 backdrop-blur lg:hidden">
         <div className="mx-auto flex max-w-lg items-center gap-2">
           {target.rate && (
             <p className="min-w-0 flex-1 leading-tight">
-              <span className="block text-base font-bold text-white">
+              <span className="block text-base font-bold text-m-ink">
                 <Taka amount={target.rate.amount} />
               </span>
-              <span className="block truncate text-xs text-white/65">{target.rate.unit}</span>
+              <span className="block truncate text-xs text-m-ink/65">{target.rate.unit}</span>
             </p>
           )}
           <Link href={message} className={mediaButton({ variant: "quiet", size: "icon", className: "size-11" })}>

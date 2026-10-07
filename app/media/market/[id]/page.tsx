@@ -29,7 +29,7 @@ export default async function ListingPage({ params }: { params: Promise<{ id: st
     <ListingDetail listing={listing} seller={seller} rating={verifiedRatingFor(seller, listing.skill)} proofHref={proof ? `/media/post/${proof.id}` : undefined}>
       {more.length > 0 && (
         <section className="mt-10">
-          <h2 className="mb-4 text-lg font-bold text-white">একই বিভাগে আরও</h2>
+          <h2 className="mb-4 text-lg font-bold text-m-ink">একই বিভাগে আরও</h2>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {more.map((l) => (
               <ListingCard key={l.id} listing={l} seller={personOrThrow(l.seller)} />

@@ -181,27 +181,27 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
 
   const fees = v.sellable && v.price ? computeFees(v.price) : null;
   const Aud = AUDIENCE[(v.audience ?? "public") as Audience];
-  const chip = "inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 text-sm font-semibold transition-colors has-focus-visible:ring-3 has-focus-visible:ring-signal-orange/30";
-  const tool = "grid size-10 place-items-center rounded-full transition-colors hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none disabled:opacity-40";
+  const chip = "inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3 text-sm font-semibold transition-colors has-focus-visible:ring-3 has-focus-visible:ring-m-blue/30";
+  const tool = "grid size-10 place-items-center rounded-full transition-colors hover:bg-m-ink/6 focus-visible:ring-2 focus-visible:ring-m-blue focus-visible:outline-none disabled:opacity-40";
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} noValidate className={cn("flex min-h-0 flex-1 flex-col", variant === "page" && "rounded-3xl border border-white/12 bg-text-primary")}>
+      <form onSubmit={form.handleSubmit(onSubmit)} noValidate className={cn("flex min-h-0 flex-1 flex-col", variant === "page" && "rounded-3xl border border-m-ink/10 bg-m-card shadow-m-tile")}>
         <div className={cn("space-y-5", variant === "page" ? "p-4 sm:p-6" : "min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5")}>
           {/* Who is posting, how they feel, where, and for whom. */}
           <div className="flex items-start gap-3">
             <PersonAvatar person={currentUser} />
             <div className="min-w-0 flex-1">
-              <p className="text-[15px] leading-snug text-white">
+              <p className="text-[15px] leading-snug text-m-ink">
                 <span className="font-bold">{currentUser.nameBn}</span>
                 {feeling && (
-                  <span className="text-white/75">
+                  <span className="text-m-ink/75">
                     {" "}— {feeling.emoji} {feeling.line}
                   </span>
                 )}
                 {v.place && (
-                  <span className="text-white/75">
-                    {" "}· <MapPin className="inline size-3.5 align-[-2px] text-signal-orange" aria-hidden /> {v.place}
+                  <span className="text-m-ink/75">
+                    {" "}· <MapPin className="inline size-3.5 align-[-2px] text-m-blue" aria-hidden /> {v.place}
                   </span>
                 )}
               </p>
@@ -210,10 +210,10 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
                   control={form.control}
                   name="audience"
                   render={({ field }) => (
-                    <label className="relative inline-flex min-h-8 items-center gap-1.5 rounded-lg bg-white/10 pr-2 pl-2.5 text-xs font-semibold text-white has-focus-visible:ring-2 has-focus-visible:ring-signal-orange">
+                    <label className="relative inline-flex min-h-8 items-center gap-1.5 rounded-lg bg-m-ink/6 pr-2 pl-2.5 text-xs font-semibold text-m-ink has-focus-visible:ring-2 has-focus-visible:ring-m-blue">
                       <Aud.Icon className="size-3.5" aria-hidden />
                       <span className="sr-only">কে দেখবে</span>
-                      <select value={field.value} onChange={(e) => field.onChange(e.target.value)} className="appearance-none bg-transparent pr-3 outline-none [&>option]:bg-text-primary">
+                      <select value={field.value} onChange={(e) => field.onChange(e.target.value)} className="appearance-none bg-transparent pr-3 outline-none [&>option]:bg-m-card">
                         {(Object.keys(AUDIENCE) as Audience[]).map((a) => (
                           <option key={a} value={a}>
                             {AUDIENCE[a].bn}
@@ -224,7 +224,7 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
                     </label>
                   )}
                 />
-                <span className="inline-flex min-h-8 items-center gap-1.5 rounded-lg bg-bd-green px-2.5 text-xs font-bold text-white">
+                <span className="inline-flex min-h-8 items-center gap-1.5 rounded-lg bg-m-blue-soft px-2.5 text-xs font-bold text-m-ink">
                   {(() => {
                     const I = TOPIC_ICON[(v.topic ?? "daily") as PostTopic];
                     return <I className="size-3.5" aria-hidden />;
@@ -252,7 +252,7 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
                     autoFocus={!preset?.open}
                     placeholder={rated ? "কাজটা কী, কীভাবে করলেন, কতদিন লাগল — যা দেখে অন্যরা বিচার করতে পারবে।" : `কী ভাবছেন, ${firstName(currentUser.nameBn)}?`}
                     className={cn(
-                      "w-full resize-none rounded-2xl border-0 bg-transparent text-white outline-none placeholder:text-white/45",
+                      "w-full resize-none rounded-2xl border-0 bg-transparent text-m-ink outline-none placeholder:text-m-ink/45",
                       bg ? cn("min-h-56 px-6 pt-16 pb-12 text-center text-2xl leading-snug font-bold placeholder:text-current/60 sm:text-[1.7rem]", bg.className) : "px-1 text-lg leading-relaxed sm:text-xl",
                     )}
                   />
@@ -276,7 +276,7 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
                       onClick={() => field.onChange(undefined)}
                       aria-pressed={!field.value}
                       aria-label="পটভূমি ছাড়া"
-                      className={cn("grid size-8 place-items-center rounded-lg border text-white transition-transform hover:scale-110", !field.value ? "border-signal-orange bg-white/10" : "border-white/20")}
+                      className={cn("grid size-8 place-items-center rounded-lg border text-m-ink transition-transform hover:scale-110", !field.value ? "border-m-blue bg-m-ink/6" : "border-m-ink/17")}
                     >
                       <Type className="size-4" aria-hidden />
                     </button>
@@ -297,7 +297,7 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
             ) : (
               <span />
             )}
-            <span className={cn("text-xs tabular-nums", v.caption.length > (bg ? BG_MAX : 1100) ? "text-crimson-bright" : "text-white/50")}>
+            <span className={cn("text-xs tabular-nums", v.caption.length > (bg ? BG_MAX : 1100) ? "text-m-red" : "text-m-ink/50")}>
               <Num value={v.caption.length} />/<Num value={bg ? BG_MAX : 1200} />
             </span>
           </div>
@@ -311,19 +311,19 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
                 <input ref={photoInput} type="file" accept="image/*" multiple hidden onChange={(e) => { void addFiles("image", e.target.files); e.target.value = ""; }} />
                 <input ref={videoInput} type="file" accept="video/*" hidden onChange={(e) => { void addFiles("video", e.target.files); e.target.value = ""; }} />
                 {(media.fields.length > 0 || reading > 0) && (
-                  <div className="grid grid-cols-2 gap-2 rounded-2xl border border-white/12 p-2 sm:grid-cols-4">
+                  <div className="grid grid-cols-2 gap-2 rounded-2xl border border-m-ink/10 p-2 sm:grid-cols-4">
                     {media.fields.map((m, i) => (
                       <div key={m.id} className="fade-in relative">
                         <MediaFrame slot={{ kind: m.kind, label: m.label, ratio: "1/1", src: m.src, duration: m.duration }} sizes="160px" />
-                        <button type="button" onClick={() => media.remove(i)} className="absolute top-1.5 right-1.5 flex size-8 items-center justify-center rounded-full bg-black/75 text-white hover:bg-black">
+                        <button type="button" onClick={() => media.remove(i)} className="absolute top-1.5 right-1.5 flex size-8 items-center justify-center rounded-full bg-white/90 text-m-ink hover:bg-m-canvas">
                           <X className="size-4" aria-hidden />
                           <span className="sr-only">{m.label} সরান</span>
                         </button>
                       </div>
                     ))}
                     {Array.from({ length: Math.min(reading, MAX_MEDIA - media.fields.length) }, (_, i) => (
-                      <div key={`reading-${i}`} className="skeleton-shimmer flex aspect-square items-center justify-center rounded-xl bg-white/10" role="status">
-                        <Loader2 className="size-6 animate-spin text-signal-orange" aria-hidden />
+                      <div key={`reading-${i}`} className="skeleton-shimmer flex aspect-square items-center justify-center rounded-xl bg-m-ink/6" role="status">
+                        <Loader2 className="size-6 animate-spin text-m-blue" aria-hidden />
                         <span className="sr-only">ছবি প্রস্তুত হচ্ছে</span>
                       </div>
                     ))}
@@ -331,7 +331,7 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
                       <button
                         type="button"
                         onClick={() => photoInput.current?.click()}
-                        className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-white/15 text-sm font-semibold text-white/75 transition-colors hover:border-signal-orange/50 hover:text-signal-orange"
+                        className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-m-ink/13 text-sm font-semibold text-m-ink/75 transition-colors hover:border-m-blue/50 hover:text-m-blue"
                       >
                         <ImagePlus className="size-6" aria-hidden /> আরও যোগ
                       </button>
@@ -350,18 +350,18 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
               control={form.control}
               name="feeling"
               render={({ field }) => (
-                <FormItem className="fade-in rounded-2xl border border-white/12 p-3">
+                <FormItem className="fade-in rounded-2xl border border-m-ink/10 p-3">
                   <div className="mb-2 flex items-center justify-between">
                     <FormGroupLabel>কেমন লাগছে?</FormGroupLabel>
                     {field.value && (
-                      <button type="button" onClick={() => field.onChange(undefined)} className="inline-flex items-center gap-1 text-xs font-semibold text-white/65 hover:text-white">
+                      <button type="button" onClick={() => field.onChange(undefined)} className="inline-flex items-center gap-1 text-xs font-semibold text-m-ink/65 hover:text-m-ink">
                         <Ban className="size-3.5" aria-hidden /> সরান
                       </button>
                     )}
                   </div>
                   <FormGroup className="grid grid-cols-2 gap-1.5 sm:grid-cols-5">
                     {feelings.map((f) => (
-                      <label key={f.id} className={cn(chip, "justify-center rounded-xl", field.value === f.id ? "border-signal-orange bg-signal-orange text-text-primary" : "border-white/12 text-white/85 hover:border-white/30")}>
+                      <label key={f.id} className={cn(chip, "justify-center rounded-xl", field.value === f.id ? "border-m-blue bg-m-yellow text-m-ink" : "border-m-ink/10 text-m-ink/85 hover:border-m-ink/26")}>
                         <input type="radio" className="sr-only" name={field.name} checked={field.value === f.id} onChange={() => { field.onChange(f.id); setPanel(null); }} />
                         <span aria-hidden>{f.emoji}</span> {f.bn}
                       </label>
@@ -400,11 +400,11 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
                     const on = (field.value ?? "daily") === t.id;
                     const I = TOPIC_ICON[t.id];
                     return (
-                      <label key={t.id} title={t.hint} className={cn(chip, "cursor-pointer", on ? "border-signal-orange bg-signal-orange text-text-primary" : "border-white/12 text-white/80 hover:border-white/30")}>
+                      <label key={t.id} title={t.hint} className={cn(chip, "cursor-pointer", on ? "border-m-blue bg-m-yellow text-m-ink" : "border-m-ink/10 text-m-ink/80 hover:border-m-ink/26")}>
                         <input type="radio" className="sr-only" name={field.name} checked={on} onChange={() => field.onChange(t.id)} />
                         <I className="size-4" aria-hidden />
                         {t.bn}
-                        {t.rated && <span className={cn("rounded-full px-1.5 text-[10px] font-bold", on ? "bg-text-primary text-signal-orange" : "bg-bd-green text-white")}>যাচাই</span>}
+                        {t.rated && <span className={cn("rounded-full px-1.5 text-[10px] font-bold", on ? "bg-m-card text-m-blue" : "bg-m-blue-soft text-m-ink")}>যাচাই</span>}
                       </label>
                     );
                   })}
@@ -418,7 +418,7 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
           />
 
           {v.topic === "research" && (
-            <Link href="/research/submit" className="flex items-center justify-between gap-3 rounded-2xl bg-signal-orange px-4 py-3 text-sm font-bold text-text-primary transition-transform hover:-translate-y-0.5">
+            <Link href="/research/submit" className="flex items-center justify-between gap-3 rounded-2xl bg-m-yellow px-4 py-3 text-sm font-bold text-m-ink transition-transform hover:-translate-y-0.5">
               পুরো গবেষণাপত্র? গবেষণাকোষে প্রকাশ করুন, তারপর ফিডে শেয়ার
               <ArrowUpRight className="size-4.5 shrink-0" aria-hidden />
             </Link>
@@ -426,7 +426,7 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
 
           {/* The claim the community will check, only on rated topics. */}
           {rated && (
-            <div className="fade-in space-y-5 rounded-2xl border border-signal-orange/40 p-4">
+            <div className="fade-in space-y-5 rounded-2xl border border-m-blue/40 p-4">
               <FormField
                 control={form.control}
                 name="kind"
@@ -438,12 +438,12 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
                         ["skill", "দক্ষতার প্রমাণ", "হাতের কাজ, রান্না, গান, মেরামত…", Tag],
                         ["project", "প্রজেক্ট ডেমো", "প্রোটোটাইপ, নকশা, কোড…", FolderKanban],
                       ] as const).map(([value, label, hint, Icon]) => (
-                        <label key={value} className={cn("flex cursor-pointer gap-3 rounded-xl border-2 p-3 transition-colors has-focus-visible:ring-3 has-focus-visible:ring-signal-orange/30", field.value === value ? "border-signal-orange bg-white/10" : "border-white/12")}>
+                        <label key={value} className={cn("flex cursor-pointer gap-3 rounded-xl border-2 p-3 transition-colors has-focus-visible:ring-3 has-focus-visible:ring-m-blue/30", field.value === value ? "border-m-blue bg-m-ink/6" : "border-m-ink/10")}>
                           <input type="radio" className="sr-only" name={field.name} checked={field.value === value} onChange={() => field.onChange(value)} />
-                          <Icon className="mt-0.5 size-5 shrink-0 text-signal-orange" aria-hidden />
+                          <Icon className="mt-0.5 size-5 shrink-0 text-m-blue" aria-hidden />
                           <span>
-                            <span className="block text-sm font-bold text-white">{label}</span>
-                            <span className="block text-xs text-white/65">{hint}</span>
+                            <span className="block text-sm font-bold text-m-ink">{label}</span>
+                            <span className="block text-xs text-m-ink/65">{hint}</span>
                           </span>
                         </label>
                       ))}
@@ -460,7 +460,7 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
                     <FormItem>
                       <FormLabel>বিভাগ</FormLabel>
                       <FormControl>
-                        <select {...field} className="h-11 w-full rounded-lg border border-white/12 bg-text-primary px-3 text-[15px] text-white focus-visible:border-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange/20 focus-visible:outline-none">
+                        <select {...field} className="h-11 w-full rounded-lg border border-m-ink/10 bg-m-card px-3 text-[15px] text-m-ink focus-visible:border-m-blue focus-visible:ring-2 focus-visible:ring-m-blue/20 focus-visible:outline-none">
                           {categories.map((c) => (
                             <option key={c.id} value={c.id}>
                               {c.bn}
@@ -487,7 +487,7 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
                             key={s}
                             type="button"
                             onClick={() => form.setValue("skill", s, { shouldValidate: true })}
-                            className={cn("min-h-8 rounded-full border px-2.5 text-xs font-semibold transition-colors", field.value === s ? "border-signal-orange bg-signal-orange text-text-primary" : "border-white/12 text-white/80 hover:border-signal-orange/40 hover:text-signal-orange")}
+                            className={cn("min-h-8 rounded-full border px-2.5 text-xs font-semibold transition-colors", field.value === s ? "border-m-blue bg-m-yellow text-m-ink" : "border-m-ink/10 text-m-ink/80 hover:border-m-blue/40 hover:text-m-blue")}
                           >
                             {s}
                           </button>
@@ -505,15 +505,15 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
                 render={({ field }) => (
                   <FormItem>
                     <FormGroupLabel>নিজেকে সৎভাবে রেটিং দিন</FormGroupLabel>
-                    <div className="rounded-xl bg-bdorange-600 p-4">
+                    <div className="rounded-xl bg-m-red-soft p-4">
                       <div className="mb-4 flex items-center justify-between gap-3">
                         <span className="flex items-center gap-2">
-                          <span className="text-3xl font-bold text-text-primary tabular-nums">
+                          <span className="text-3xl font-bold text-m-ink tabular-nums">
                             <Num value={field.value} />
                           </span>
                           <Stars value={field.value} size={18} />
                         </span>
-                        <span className="rounded-full bg-text-primary px-3 py-1 text-sm font-semibold text-white">{ratingWords[field.value]}</span>
+                        <span className="rounded-full bg-m-card px-3 py-1 text-sm font-semibold text-m-ink">{ratingWords[field.value]}</span>
                       </div>
                       <Slider min={1} max={5} step={1} value={[field.value]} onValueChange={([n]) => field.onChange(n)} aria-label="নিজের রেটিং" />
                     </div>
@@ -522,7 +522,7 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
                 )}
               />
 
-              <div className="space-y-4 rounded-xl border border-white/12 p-4">
+              <div className="space-y-4 rounded-xl border border-m-ink/10 p-4">
                 <FormField
                   control={form.control}
                   name="sellable"
@@ -587,10 +587,10 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
                       )}
                     />
                     {fees && (
-                      <dl className="space-y-1 rounded-lg bg-white/10 p-3 text-sm sm:col-span-2">
-                        <div className="flex justify-between"><dt className="text-white/80">বিক্রয়মূল্য</dt><dd><Taka amount={fees.price} /></dd></div>
-                        <div className="flex justify-between"><dt className="text-white/80">প্ল্যাটফর্ম ফি ৫%</dt><dd>− <Taka amount={fees.sellerFee} /></dd></div>
-                        <div className="flex justify-between border-t border-white/12 pt-1 font-bold"><dt>আপনি পাবেন</dt><dd className="text-signal-orange"><Taka amount={fees.sellerReceives} /></dd></div>
+                      <dl className="space-y-1 rounded-lg bg-m-ink/6 p-3 text-sm sm:col-span-2">
+                        <div className="flex justify-between"><dt className="text-m-ink/80">বিক্রয়মূল্য</dt><dd><Taka amount={fees.price} /></dd></div>
+                        <div className="flex justify-between"><dt className="text-m-ink/80">প্ল্যাটফর্ম ফি ৫%</dt><dd>− <Taka amount={fees.sellerFee} /></dd></div>
+                        <div className="flex justify-between border-t border-m-ink/10 pt-1 font-bold"><dt>আপনি পাবেন</dt><dd className="text-m-blue"><Taka amount={fees.sellerReceives} /></dd></div>
                       </dl>
                     )}
                   </div>
@@ -601,24 +601,24 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
         </div>
 
         {/* Add to the post, then post. */}
-        <div className={cn("space-y-3 border-t border-white/12 p-4", variant === "dialog" && "sm:px-5")}>
-          <div className="flex items-center gap-1 rounded-2xl border border-white/12 py-1 pr-1 pl-3">
-            <span className="min-w-0 flex-1 truncate text-sm font-bold text-white">পোস্টে যোগ করুন</span>
+        <div className={cn("space-y-3 border-t border-m-ink/10 p-4", variant === "dialog" && "sm:px-5")}>
+          <div className="flex items-center gap-1 rounded-2xl border border-m-ink/10 py-1 pr-1 pl-3">
+            <span className="min-w-0 flex-1 truncate text-sm font-bold text-m-ink">পোস্টে যোগ করুন</span>
             <span className="flex shrink-0 gap-0.5">
               <button type="button" title="ছবি" onClick={() => photoInput.current?.click()} disabled={media.fields.length >= MAX_MEDIA} className={tool}>
-                <ImagePlus className="size-5 text-bdgreen-500" aria-hidden /> <span className="sr-only">ছবি</span>
+                <ImagePlus className="size-5 text-m-green" aria-hidden /> <span className="sr-only">ছবি</span>
               </button>
               <button type="button" title="ভিডিও" onClick={() => videoInput.current?.click()} disabled={media.fields.length >= MAX_MEDIA} className={tool}>
-                <Video className="size-5 text-bdorange-600" aria-hidden /> <span className="sr-only">ভিডিও</span>
+                <Video className="size-5 text-m-red" aria-hidden /> <span className="sr-only">ভিডিও</span>
               </button>
-              <button type="button" title="অনুভূতি" onClick={() => setPanel((p) => (p === "feeling" ? null : "feeling"))} aria-expanded={panel === "feeling"} className={cn(tool, panel === "feeling" && "bg-white/10")}>
-                <SmilePlus className="size-5 text-signal-orange" aria-hidden /> <span className="sr-only">অনুভূতি</span>
+              <button type="button" title="অনুভূতি" onClick={() => setPanel((p) => (p === "feeling" ? null : "feeling"))} aria-expanded={panel === "feeling"} className={cn(tool, panel === "feeling" && "bg-m-ink/6")}>
+                <SmilePlus className="size-5 text-m-blue" aria-hidden /> <span className="sr-only">অনুভূতি</span>
               </button>
-              <button type="button" title="জায়গা" onClick={() => setPanel((p) => (p === "place" ? null : "place"))} aria-expanded={panel === "place"} className={cn(tool, panel === "place" && "bg-white/10")}>
-                <MapPin className="size-5 text-white" aria-hidden /> <span className="sr-only">জায়গা</span>
+              <button type="button" title="জায়গা" onClick={() => setPanel((p) => (p === "place" ? null : "place"))} aria-expanded={panel === "place"} className={cn(tool, panel === "place" && "bg-m-ink/6")}>
+                <MapPin className="size-5 text-m-ink" aria-hidden /> <span className="sr-only">জায়গা</span>
               </button>
               <Link href="/media/market/new" title="বাজারে বিক্রি করুন" className={tool}>
-                <Store className="size-5 text-white" aria-hidden /> <span className="sr-only">বিক্রি</span>
+                <Store className="size-5 text-m-ink" aria-hidden /> <span className="sr-only">বিক্রি</span>
               </Link>
             </span>
           </div>

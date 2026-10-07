@@ -69,7 +69,7 @@ export function AttendanceSheet({ course }: { course: Course }) {
                   aria-pressed={on}
                   className={cn(
                     "inline-flex h-10 items-center gap-1.5 rounded-xl border px-3 text-sm font-semibold transition-colors",
-                    on ? "border-signal-orange bg-signal-orange text-text-primary" : held[l.week] ? "border-bdgreen-500/50 text-bdgreen-500" : "border-white/12 text-white/80 hover:border-white/30",
+                    on ? "border-m-blue bg-m-yellow text-m-ink" : held[l.week] ? "border-m-green/50 text-m-green" : "border-m-ink/10 text-m-ink/80 hover:border-m-ink/26",
                   )}
                 >
                   {held[l.week] && <Check className="size-4" aria-label="হয়েছে" />}
@@ -81,45 +81,45 @@ export function AttendanceSheet({ course }: { course: Course }) {
         </ul>
       </nav>
 
-      <div className="rounded-2xl bg-text-primary ring-1 ring-white/12">
-        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-white/10 p-4 sm:p-5">
+      <div className="rounded-2xl bg-m-card ring-1 ring-m-ink/10 shadow-m-tile">
+        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-m-ink/9 p-4 sm:p-5">
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-signal-orange">সপ্তাহ <Num value={week} />{saved && " · জমা হয়েছে"}</p>
-            <h3 className="text-lg font-bold text-white">{lesson.title}</h3>
+            <p className="text-sm font-semibold text-m-blue">সপ্তাহ <Num value={week} />{saved && " · জমা হয়েছে"}</p>
+            <h3 className="text-lg font-bold text-m-ink">{lesson.title}</h3>
             <ModeTag mode={lesson.mode} className="mt-1" />
           </div>
-          <p className="text-right text-sm text-white/80">
-            <span className="block text-2xl font-bold text-white tabular-nums"><Num value={present.size} /> / <Num value={roster.length} /></span>
+          <p className="text-right text-sm text-m-ink/80">
+            <span className="block text-2xl font-bold text-m-ink tabular-nums"><Num value={present.size} /> / <Num value={roster.length} /></span>
             উপস্থিত
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 border-b border-white/10 p-3 sm:px-5">
+        <div className="flex flex-wrap items-center gap-2 border-b border-m-ink/9 p-3 sm:px-5">
           <label className="relative min-w-0 flex-1">
             <span className="sr-only">নাম খুঁজুন</span>
-            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-white/60" aria-hidden />
-            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="নাম খুঁজুন" className="h-10 w-full rounded-lg border border-white/12 bg-black pr-3 pl-9 text-sm focus-visible:border-signal-orange focus-visible:outline-none" />
+            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-m-ink/60" aria-hidden />
+            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="নাম খুঁজুন" className="h-10 w-full rounded-lg border border-m-ink/10 bg-m-canvas pr-3 pl-9 text-sm focus-visible:border-m-blue focus-visible:outline-none" />
           </label>
           <button type="button" onClick={() => setPresent(new Set(roster.map((s) => s.id)))} className={mediaButton({ variant: "quiet", size: "sm" })}>সবাই উপস্থিত</button>
           <button type="button" onClick={() => setPresent(new Set())} className={mediaButton({ variant: "ghost", size: "sm" })}>সব মুছুন</button>
         </div>
 
-        <ul className="max-h-[28rem] divide-y divide-white/8 overflow-y-auto scrollbar-gold">
+        <ul className="max-h-[28rem] divide-y divide-m-ink/7 overflow-y-auto scrollbar-gold">
           {shown.map((s) => {
             const on = present.has(s.id);
             const rec = attendanceOf(held, s.id);
             const risk = rec.held >= 2 && rec.rate < MIN_ATTENDANCE;
             return (
               <li key={s.id}>
-                <label className="flex cursor-pointer items-center gap-3 px-4 py-2.5 hover:bg-white/5 sm:px-5">
+                <label className="flex cursor-pointer items-center gap-3 px-4 py-2.5 hover:bg-m-ink/3 sm:px-5">
                   <input type="checkbox" className="sr-only" checked={on} onChange={() => toggle(s.id)} />
-                  <span className={cn("grid size-7 shrink-0 place-items-center rounded-lg border-2 transition-colors", on ? "border-bdgreen-500 bg-bdgreen-500 text-text-primary" : "border-white/25")} aria-hidden>
+                  <span className={cn("grid size-7 shrink-0 place-items-center rounded-lg border-2 transition-colors", on ? "border-m-green bg-m-green-soft text-m-ink" : "border-m-ink/21")} aria-hidden>
                     {on && <Check className="size-4" strokeWidth={3} />}
                   </span>
-                  <span className="w-7 shrink-0 text-xs text-white/55 tabular-nums"><Num value={position.get(s.id) ?? 0} /></span>
-                  <span className="min-w-0 flex-1 truncate text-[15px] text-white">{s.name}</span>
+                  <span className="w-7 shrink-0 text-xs text-m-ink/55 tabular-nums"><Num value={position.get(s.id) ?? 0} /></span>
+                  <span className="min-w-0 flex-1 truncate text-[15px] text-m-ink">{s.name}</span>
                   {rec.held > 0 && (
-                    <span className={cn("shrink-0 text-xs font-semibold tabular-nums", risk ? "text-signal-orange" : "text-white/65")}>
+                    <span className={cn("shrink-0 text-xs font-semibold tabular-nums", risk ? "text-m-blue" : "text-m-ink/65")}>
                       {risk && "ঝুঁকিতে · "}
                       <Num value={Math.round(rec.rate * 100)} />%
                     </span>
@@ -130,8 +130,8 @@ export function AttendanceSheet({ course }: { course: Course }) {
           })}
         </ul>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 p-4 sm:px-5">
-          <p className="text-xs text-white/65">হাজিরা <Num value={Math.round(MIN_ATTENDANCE * 100)} />%-এর নিচে নামলে শিক্ষার্থী ফাইনালে বসতে পারে না — ঝুঁকিতে থাকা কাউকে আগে একটা বার্তা দিন।</p>
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-m-ink/9 p-4 sm:px-5">
+          <p className="text-xs text-m-ink/65">হাজিরা <Num value={Math.round(MIN_ATTENDANCE * 100)} />%-এর নিচে নামলে শিক্ষার্থী ফাইনালে বসতে পারে না — ঝুঁকিতে থাকা কাউকে আগে একটা বার্তা দিন।</p>
           <button type="button" onClick={save} className={mediaButton({ variant: "primary" })}>
             {saved ? "হাজিরা হালনাগাদ করুন" : "হাজিরা জমা দিন"}
           </button>

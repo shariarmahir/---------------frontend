@@ -22,10 +22,10 @@ import { bump, editClassroom, nameOf } from "./use-classroom";
 const today = DEMO_NOW.toISOString().slice(0, 10);
 
 const NOTE_KINDS: Record<ClassNote["kind"], { bn: string; chip: string }> = {
-  note: { bn: "নোট", chip: "bg-bd-green text-white" },
-  homework: { bn: "হোমওয়ার্ক", chip: "bg-signal-orange text-text-primary" },
-  material: { bn: "ম্যাটেরিয়াল", chip: "bg-bdorange-600 text-text-primary" },
-  rule: { bn: "ক্লাসের নিয়ম", chip: "bg-white text-text-primary" },
+  note: { bn: "নোট", chip: "bg-m-blue-soft text-m-ink" },
+  homework: { bn: "হোমওয়ার্ক", chip: "bg-m-yellow text-m-ink" },
+  material: { bn: "ম্যাটেরিয়াল", chip: "bg-m-red-soft text-m-ink" },
+  rule: { bn: "ক্লাসের নিয়ম", chip: "bg-m-ink text-m-on" },
 };
 
 const PROBLEM_KINDS: Record<Problem["kind"], { bn: string; Icon: typeof Users }> = {
@@ -34,7 +34,7 @@ const PROBLEM_KINDS: Record<Problem["kind"], { bn: string; Icon: typeof Users }>
   innovation: { bn: "উদ্ভাবন", Icon: Lightbulb },
 };
 
-const JoinFirst = () => <p className="rounded-xl bg-white/5 px-4 py-3 text-sm text-white/70 ring-1 ring-white/10">অংশ নিতে আগে ক্লাসে যোগ দিন।</p>;
+const JoinFirst = () => <p className="rounded-xl bg-m-ink/3 px-4 py-3 text-sm text-m-ink/70 ring-1 ring-m-ink/9">অংশ নিতে আগে ক্লাসে যোগ দিন।</p>;
 
 export const BoardTab: ClassTab = ({ room, me, member, leader }) => {
   const [filter, setFilter] = useState<ClassNote["kind"] | "all">("all");
@@ -84,7 +84,7 @@ export const BoardTab: ClassTab = ({ room, me, member, leader }) => {
     setReading(null);
   };
   const tool =
-    "flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl text-sm font-bold ring-1 transition-[background-color,scale] duration-200 active:scale-95 has-focus-visible:ring-2 has-focus-visible:ring-signal-orange";
+    "flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl text-sm font-bold ring-1 transition-[background-color,scale] duration-200 active:scale-95 has-focus-visible:ring-2 has-focus-visible:ring-m-blue";
 
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_21rem]">
@@ -99,30 +99,30 @@ export const BoardTab: ClassTab = ({ room, me, member, leader }) => {
           ))}
         </ul>
         {shown.map((n) => (
-          <article key={n.id} className="story-reveal rounded-2xl bg-text-primary p-4 ring-1 ring-white/12 transition-[translate,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_-26px_var(--color-signal-orange)]">
+          <article key={n.id} className="story-reveal rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 transition-[translate,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_40px_-26px_var(--color-signal-orange)] shadow-m-tile">
             <div className="mb-2 flex flex-wrap items-center gap-2 text-xs">
               <span className={cn("rounded-full px-2.5 py-0.5 font-bold", NOTE_KINDS[n.kind].chip)}>{NOTE_KINDS[n.kind].bn}</span>
-              {n.file && <span className="inline-flex items-center gap-1 text-white/65"><Paperclip className="size-3.5" aria-hidden /> {kb(n.file.size)}</span>}
-              {n.private && <span className="inline-flex items-center gap-1 text-white/65"><Lock className="size-3.5" aria-hidden /> শুধু আমার</span>}
-              <span className="ml-auto text-white/55">{nameOf(room, n.by)}</span>
+              {n.file && <span className="inline-flex items-center gap-1 text-m-ink/65"><Paperclip className="size-3.5" aria-hidden /> {kb(n.file.size)}</span>}
+              {n.private && <span className="inline-flex items-center gap-1 text-m-ink/65"><Lock className="size-3.5" aria-hidden /> শুধু আমার</span>}
+              <span className="ml-auto text-m-ink/55">{nameOf(room, n.by)}</span>
             </div>
-            <h3 className="truncate text-lg font-bold text-white" title={n.title}>{n.title}</h3>
+            <h3 className="truncate text-lg font-bold text-m-ink" title={n.title}>{n.title}</h3>
             {n.file && <FilePreview file={n.file} onOpen={() => open(n)} />}
             {n.text && (
               <details className="group mt-2">
-                <summary className="inline-flex cursor-pointer list-none items-center gap-1 text-sm font-semibold text-signal-orange [&::-webkit-details-marker]:hidden">
+                <summary className="inline-flex cursor-pointer list-none items-center gap-1 text-sm font-semibold text-m-blue [&::-webkit-details-marker]:hidden">
                   বিস্তারিত <ChevronDown className="size-4 transition-transform duration-200 group-open:rotate-180" aria-hidden />
                 </summary>
-                <p className="live-in mt-2 leading-relaxed whitespace-pre-line text-white/90">{n.text}</p>
+                <p className="live-in mt-2 leading-relaxed whitespace-pre-line text-m-ink/90">{n.text}</p>
               </details>
             )}
-            <div className="mt-3 flex gap-2 border-t border-white/10 pt-3">
+            <div className="mt-3 flex gap-2 border-t border-m-ink/9 pt-3">
               <button type="button" onClick={() => open(n)} className={mediaButton({ variant: "quiet", size: "sm" })}><BookOpen aria-hidden /> পড়ুন</button>
               <button type="button" onClick={() => downloadNote(n)} className={mediaButton({ variant: "ghost", size: "sm" })}><Download aria-hidden /> ডাউনলোড</button>
             </div>
           </article>
         ))}
-        {shown.length === 0 && <p className="rounded-2xl bg-text-primary p-6 text-center text-sm text-white/70 ring-1 ring-white/12">এখানে এখনো কিছু নেই।</p>}
+        {shown.length === 0 && <p className="rounded-2xl bg-m-card p-6 text-center text-sm text-m-ink/70 ring-1 ring-m-ink/10 shadow-m-tile">এখানে এখনো কিছু নেই।</p>}
       </div>
 
       <Panel title="বোর্ডে লিখুন" className="h-fit lg:sticky lg:top-32">
@@ -142,34 +142,34 @@ export const BoardTab: ClassTab = ({ room, me, member, leader }) => {
             <Textarea rows={3} value={text} onChange={(e) => setText(e.target.value)} placeholder="বিস্তারিত (ঐচ্ছিক) — সূত্র, ধাপ, লিংক" aria-label="বিস্তারিত" />
 
             <div className="grid grid-cols-2 gap-2">
-              <label className={cn(tool, "bg-signal-orange text-text-primary ring-transparent hover:brightness-105")}>
+              <label className={cn(tool, "bg-m-yellow text-m-ink ring-transparent hover:brightness-105")}>
                 <input type="file" accept="image/*" capture="environment" className="sr-only" onChange={(e) => attach(e, true)} disabled={busy} />
                 <ScanLine className="size-4.5" aria-hidden /> স্ক্যান করুন
               </label>
-              <label className={cn(tool, "text-white ring-white/20 hover:bg-white/10")}>
+              <label className={cn(tool, "text-m-ink ring-m-ink/17 hover:bg-m-ink/6")}>
                 <input type="file" accept="image/*,application/pdf" className="sr-only" onChange={(e) => attach(e, false)} disabled={busy} />
                 <Upload className="size-4.5" aria-hidden /> ফাইল আপলোড
               </label>
             </div>
-            {busy && <p className="live-in text-sm font-semibold text-signal-orange">পাতা ঠিক করা হচ্ছে…</p>}
+            {busy && <p className="live-in text-sm font-semibold text-m-blue">পাতা ঠিক করা হচ্ছে…</p>}
             {file && (
-              <div className="live-in flex items-center gap-3 rounded-xl bg-black/40 p-2 ring-1 ring-white/10">
+              <div className="live-in flex items-center gap-3 rounded-xl bg-white/65 p-2 ring-1 ring-m-ink/9">
                 {file.type === "application/pdf" ? (
-                  <span className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-national-crimson text-white"><FileText className="size-5" aria-hidden /></span>
+                  <span className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-m-red text-m-on"><FileText className="size-5" aria-hidden /></span>
                 ) : (
                   <Image src={file.data} alt="" width={48} height={48} unoptimized className="size-12 shrink-0 rounded-lg bg-white object-cover" />
                 )}
                 <span className="min-w-0 flex-1 text-sm">
-                  <span className="block truncate font-semibold text-white">{file.name}</span>
-                  <span className="text-xs text-white/60">{kb(file.size)}</span>
+                  <span className="block truncate font-semibold text-m-ink">{file.name}</span>
+                  <span className="text-xs text-m-ink/60">{kb(file.size)}</span>
                 </span>
                 <button type="button" onClick={() => setFile(undefined)} className={mediaButton({ variant: "ghost", size: "icon-sm" })} aria-label="ফাইল সরান"><X aria-hidden /></button>
               </div>
             )}
-            <p className="text-xs text-white/55">ছবি বা পিডিএফ, সর্বোচ্চ ১.৫ MB। স্ক্যান পাতাকে সাদা-কালো পরিষ্কার কপি বানায়।</p>
+            <p className="text-xs text-m-ink/55">ছবি বা পিডিএফ, সর্বোচ্চ ১.৫ MB। স্ক্যান পাতাকে সাদা-কালো পরিষ্কার কপি বানায়।</p>
 
-            <label className="flex items-center gap-2 text-sm text-white/80">
-              <input type="checkbox" checked={only} onChange={(e) => setOnly(e.target.checked)} className="size-4 accent-signal-orange" />
+            <label className="flex items-center gap-2 text-sm text-m-ink/80">
+              <input type="checkbox" checked={only} onChange={(e) => setOnly(e.target.checked)} className="size-4 accent-m-blue" />
               শুধু নিজের জন্য রাখুন
             </label>
             <button type="submit" disabled={busy || title.trim().length < 3} className={mediaButton({ variant: "primary", className: "w-full" })}><Send aria-hidden /> {only ? "রাখুন" : "শেয়ার করুন"}</button>
@@ -220,7 +220,7 @@ export const ChallengeTab: ClassTab = ({ room, me, member, leader }) => {
             }
           />
         ))}
-        {room.problems.length === 0 && <p className="rounded-2xl bg-text-primary p-6 text-center text-sm text-white/70 ring-1 ring-white/12">প্রথম চ্যালেঞ্জটা আপনিই দিন।</p>}
+        {room.problems.length === 0 && <p className="rounded-2xl bg-m-card p-6 text-center text-sm text-m-ink/70 ring-1 ring-m-ink/10 shadow-m-tile">প্রথম চ্যালেঞ্জটা আপনিই দিন।</p>}
       </div>
       <Panel title={<span className="flex items-center gap-2"><Swords className="size-4.5" aria-hidden /> নতুন চ্যালেঞ্জ</span>} className="h-fit lg:sticky lg:top-32">
         {!member ? (
@@ -252,29 +252,29 @@ function ProblemCard({ problem: p, roomId, me, member, leader, name, onShare }: 
   const edit = (fn: (q: Problem) => Problem) => editClassroom(roomId, (r) => ({ ...r, problems: r.problems.map((q) => (q.id === p.id ? fn(q) : q)) }));
 
   return (
-    <article className="story-reveal overflow-hidden rounded-2xl bg-text-primary ring-1 ring-white/12">
+    <article className="story-reveal overflow-hidden rounded-2xl bg-m-card ring-1 ring-m-ink/10 shadow-m-tile">
       <div className="space-y-2 p-5">
         <div className="flex flex-wrap items-center gap-2 text-xs font-bold">
-          <span className="inline-flex items-center gap-1 rounded-full bg-signal-orange px-2.5 py-0.5 text-text-primary"><Icon className="size-3.5" aria-hidden /> {bn}</span>
-          {p.solved && <span className="live-in inline-flex items-center gap-1 rounded-full bg-bd-green px-2.5 py-0.5 text-white"><BadgeCheck className="size-3.5" aria-hidden /> সমাধান হয়েছে</span>}
-          <span className="ml-auto font-medium text-white/55">{name(p.by)}</span>
+          <span className="inline-flex items-center gap-1 rounded-full bg-m-yellow px-2.5 py-0.5 text-m-ink"><Icon className="size-3.5" aria-hidden /> {bn}</span>
+          {p.solved && <span className="live-in inline-flex items-center gap-1 rounded-full bg-m-blue-soft px-2.5 py-0.5 text-m-ink"><BadgeCheck className="size-3.5" aria-hidden /> সমাধান হয়েছে</span>}
+          <span className="ml-auto font-medium text-m-ink/55">{name(p.by)}</span>
         </div>
-        <h3 className="text-lg font-bold text-white">{p.title}</h3>
-        {p.body && <p className="text-sm leading-relaxed text-white/80">{p.body}</p>}
+        <h3 className="text-lg font-bold text-m-ink">{p.title}</h3>
+        {p.body && <p className="text-sm leading-relaxed text-m-ink/80">{p.body}</p>}
       </div>
       {p.solutions.length > 0 && (
-        <ul className="space-y-2 border-t border-white/10 bg-black/30 px-5 py-4">
+        <ul className="space-y-2 border-t border-m-ink/9 bg-white/55 px-5 py-4">
           {p.solutions.map((s, i) => (
             <li key={i} className="text-sm">
-              <span className="font-bold text-signal-orange">{name(s.by)}</span>
-              <p className="mt-0.5 leading-relaxed whitespace-pre-line text-white/90">{s.text}</p>
+              <span className="font-bold text-m-blue">{name(s.by)}</span>
+              <p className="mt-0.5 leading-relaxed whitespace-pre-line text-m-ink/90">{s.text}</p>
             </li>
           ))}
         </ul>
       )}
       {member && me && !p.solved && (
         <form
-          className="flex gap-2 border-t border-white/10 px-5 py-4"
+          className="flex gap-2 border-t border-m-ink/9 px-5 py-4"
           onSubmit={(e) => {
             e.preventDefault();
             if (answer.trim().length < 3) return;

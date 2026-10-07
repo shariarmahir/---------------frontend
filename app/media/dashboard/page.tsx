@@ -46,16 +46,16 @@ export default function DashboardPage() {
           <BusinessOverview />
 
           <section aria-labelledby="activity" className="space-y-3">
-            <h2 id="activity" className="text-lg font-bold text-white">কার্যকলাপ</h2>
+            <h2 id="activity" className="text-lg font-bold text-m-ink">কার্যকলাপ</h2>
             <DashboardStats />
           </section>
 
           <Panel title="দক্ষতার রেটিং">
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              <span className="text-4xl font-bold text-signal-orange"><Num value={rating} decimals={1} /></span>
+              <span className="text-4xl font-bold text-m-blue"><Num value={rating} decimals={1} /></span>
               <span className="space-y-1">
                 <Stars value={rating} size={22} />
-                <span className="block text-sm text-white/70">
+                <span className="block text-sm text-m-ink/70">
                   <Num value={currentUser.skills.length} />টি দক্ষতা · <Num value={raters} /> জনের যাচাই
                 </span>
               </span>
@@ -65,20 +65,20 @@ export default function DashboardPage() {
         <aside className="space-y-4 lg:sticky lg:top-22 lg:self-start">
           <DailyPlan />
           <Panel title="ফি কীভাবে কাটে">
-            <p className="mb-3 text-sm text-white/80"><Taka amount={1000} />-এর একটি বিক্রিতে ক্রেতা দেন ও বিক্রেতা পান:</p>
+            <p className="mb-3 text-sm text-m-ink/80"><Taka amount={1000} />-এর একটি বিক্রিতে ক্রেতা দেন ও বিক্রেতা পান:</p>
             <BuyerFees price={1000} />
-            <p className="mt-3 text-xs leading-relaxed text-white/65">
+            <p className="mt-3 text-xs leading-relaxed text-m-ink/65">
               বিক্রেতার দিক থেকে ৫% প্ল্যাটফর্ম ফি, ক্রেতার দিক থেকে ৫% সেবা চার্জ (পেমেন্ট গেটওয়েসহ)। টাকা তোলায় ফি নেই, লুকানো চার্জ নেই।
             </p>
           </Panel>
           <Panel title="এসক্রো কীভাবে কাজ করে">
-            <ol className="space-y-2 text-sm text-white/80">
+            <ol className="space-y-2 text-sm text-m-ink/80">
               <li>১. চুক্তি বা কেনার সময় টাকা প্ল্যাটফর্মে জমা থাকে।</li>
               <li>২. বিক্রেতা কাজ বা পণ্য ডেলিভারি দেন।</li>
               <li>৩. আপনি ‘বুঝে পেয়েছি’ চাপলে বিক্রেতার ওয়ালেটে যায়।</li>
             </ol>
           </Panel>
-          <p className="rounded-xl bg-signal-orange p-3 text-xs text-text-primary">ডেমো: আসল টাকা লেনদেন হয় না। আসল সংস্করণে এসএসএলকমার্জ, বিকাশ, নগদ ও বাংলা কিউআর যুক্ত হবে।</p>
+          <p className="rounded-xl bg-m-yellow p-3 text-xs text-m-ink">ডেমো: আসল টাকা লেনদেন হয় না। আসল সংস্করণে এসএসএলকমার্জ, বিকাশ, নগদ ও বাংলা কিউআর যুক্ত হবে।</p>
         </aside>
       </div>
     </div>

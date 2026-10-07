@@ -47,12 +47,12 @@ const TOPICS: { key: Topic; bn: string }[] = [
 ];
 
 const HOTLINES = [
-  { tel: "999", bn: "জরুরি সেবা", card: "bg-national-crimson text-white", glow: "var(--color-national-crimson)" },
-  { tel: "109", bn: "নারী ও শিশু নির্যাতন", card: "bg-bd-green text-white", glow: "var(--color-bd-green)" },
-  { tel: "16121", bn: "ভোক্তা অধিকার", card: "bg-signal-orange text-text-primary", glow: "var(--color-signal-orange)" },
-  { tel: "106", bn: "দুদক", card: "bg-bdorange-600 text-text-primary", glow: "var(--color-bdorange-600)" },
-  { tel: "333", bn: "সরকারি তথ্য ও সেবা", card: "bg-text-primary text-white ring-1 ring-white/15", glow: "var(--color-bdgreen-500)" },
-  { tel: "1090", bn: "দুর্যোগের আগাম বার্তা", card: "bg-text-primary text-white ring-1 ring-white/15", glow: "var(--color-bdgreen-500)" },
+  { tel: "999", bn: "জরুরি সেবা", card: "bg-m-red text-m-on", glow: "var(--color-national-crimson)" },
+  { tel: "109", bn: "নারী ও শিশু নির্যাতন", card: "bg-m-blue-soft text-m-ink", glow: "var(--color-bd-green)" },
+  { tel: "16121", bn: "ভোক্তা অধিকার", card: "bg-m-yellow text-m-ink", glow: "var(--color-signal-orange)" },
+  { tel: "106", bn: "দুদক", card: "bg-m-red-soft text-m-ink", glow: "var(--color-bdorange-600)" },
+  { tel: "333", bn: "সরকারি তথ্য ও সেবা", card: "bg-m-card text-m-ink ring-1 ring-m-ink/13", glow: "var(--color-bdgreen-500)" },
+  { tel: "1090", bn: "দুর্যোগের আগাম বার্তা", card: "bg-m-card text-m-ink ring-1 ring-m-ink/13", glow: "var(--color-bdgreen-500)" },
 ];
 
 const RULES = [
@@ -100,18 +100,18 @@ export function CitizenHub() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
-      <section className="live-in overflow-hidden rounded-3xl bg-text-primary ring-1 ring-white/12">
+      <section className="live-in overflow-hidden rounded-3xl bg-m-card ring-1 ring-m-ink/10 shadow-m-tile">
         <div className="grid gap-8 p-5 sm:p-8 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] xl:items-center">
           <div className="space-y-5">
             <PixelMark tone="dark" />
-            <p className="inline-flex items-center gap-2 rounded-full bg-national-crimson px-3 py-1 text-xs font-bold text-white">
-              <span className="relative flex size-2"><span className="absolute inset-0 animate-ping rounded-full bg-white/70 motion-reduce:hidden" /><span className="relative size-2 rounded-full bg-white" /></span>
+            <p className="inline-flex items-center gap-2 rounded-full bg-m-red px-3 py-1 text-xs font-bold text-m-on">
+              <span className="relative flex size-2"><span className="absolute inset-0 animate-ping rounded-full bg-m-ink/39 motion-reduce:hidden" /><span className="relative size-2 rounded-full bg-white" /></span>
               নাগরিক বার্তা · নাগরিক সাংবাদিকতা
             </p>
-            <h1 className="text-3xl font-bold tracking-tight text-balance text-white sm:text-5xl sm:leading-[1.1]">
-              দেখেছেন? <span className="text-signal-orange">চুপ থাকবেন না।</span>
+            <h1 className="text-3xl font-bold tracking-tight text-balance text-m-ink sm:text-5xl sm:leading-[1.1]">
+              দেখেছেন? <span className="text-m-blue">চুপ থাকবেন না।</span>
             </h1>
-            <p className="max-w-[48ch] text-[15px] leading-relaxed text-white/80">
+            <p className="max-w-[48ch] text-[15px] leading-relaxed text-m-ink/80">
               চাঁদাবাজি, ভেজাল পণ্য, ছিনতাই থেকে ময়লা, ভাঙা রাস্তা, বিদ্যুৎ-পানির সমস্যা — ছবি-ভিডিওসহ জানান। আশপাশের মানুষ নিশ্চিত করেন, সবাই মিলে সমাধান খোঁজেন, আর আপনার নাম গোপন থাকে।
             </p>
             <div className="flex flex-wrap gap-3">
@@ -137,7 +137,7 @@ export function CitizenHub() {
         </div>
         <div className="relative">
           <SignalSeam className="top-0" />
-          <dl className="grid grid-cols-2 divide-white/10 sm:grid-cols-4 sm:divide-x">
+          <dl className="grid grid-cols-2 divide-m-ink/9 sm:grid-cols-4 sm:divide-x">
             {[
               { label: "বার্তা", value: items.length },
               { label: "নিশ্চিত", value: items.filter(isConfirmed).length },
@@ -145,8 +145,8 @@ export function CitizenHub() {
               { label: "জেলা", value: districts.length },
             ].map((s) => (
               <div key={s.label} className="flex flex-col items-center gap-0.5 py-4 text-center">
-                <dt className="text-xs text-white/65">{s.label}</dt>
-                <dd className="text-2xl font-bold text-signal-orange"><Num value={s.value} /></dd>
+                <dt className="text-xs text-m-ink/65">{s.label}</dt>
+                <dd className="text-2xl font-bold text-m-blue"><Num value={s.value} /></dd>
               </div>
             ))}
           </dl>
@@ -163,15 +163,15 @@ export function CitizenHub() {
           </ul>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <label className="flex items-center gap-2 text-sm font-semibold text-white/80">
+          <label className="flex items-center gap-2 text-sm font-semibold text-m-ink/80">
             জেলা
             <select value={district} onChange={(e) => setDistrict(e.target.value)} className={cn(selectClass, "h-10 w-auto")}>
               <option value="">সব জেলা</option>
               {districts.map((d) => <option key={d}>{d}</option>)}
             </select>
           </label>
-          <label className="ml-auto flex items-center gap-2 text-sm font-semibold text-white/80">
-            <input type="checkbox" checked={onlyConfirmed} onChange={(e) => setOnlyConfirmed(e.target.checked)} className="size-4 accent-signal-orange" /> শুধু নিশ্চিত
+          <label className="ml-auto flex items-center gap-2 text-sm font-semibold text-m-ink/80">
+            <input type="checkbox" checked={onlyConfirmed} onChange={(e) => setOnlyConfirmed(e.target.checked)} className="size-4 accent-m-blue" /> শুধু নিশ্চিত
           </label>
         </div>
       </div>
@@ -185,21 +185,21 @@ export function CitizenHub() {
               <CivicCard key={it.id} report={it.report} live={it.live} />
             ),
           )}
-          {shown.length === 0 && <p className="rounded-2xl bg-text-primary p-8 text-center text-sm text-white/70 ring-1 ring-white/12">এই ফিল্টারে কোনো বার্তা নেই।</p>}
+          {shown.length === 0 && <p className="rounded-2xl bg-m-card p-8 text-center text-sm text-m-ink/70 ring-1 ring-m-ink/10 shadow-m-tile">এই ফিল্টারে কোনো বার্তা নেই।</p>}
         </div>
 
         <aside className="space-y-4 lg:sticky lg:top-22">
           {areas.length > 0 && (
-            <section className="story-reveal rounded-2xl bg-text-primary p-5 ring-1 ring-white/12">
-              <h2 className="mb-3 flex items-center gap-2 font-bold text-signal-orange"><TriangleAlert className="size-4.5 text-crimson-bright" aria-hidden /> এলাকার সতর্কতা</h2>
+            <section className="story-reveal rounded-2xl bg-m-card p-5 ring-1 ring-m-ink/10 shadow-m-tile">
+              <h2 className="mb-3 flex items-center gap-2 font-bold text-m-blue"><TriangleAlert className="size-4.5 text-m-red" aria-hidden /> এলাকার সতর্কতা</h2>
               <ul className="space-y-3">
                 {areas.map((a) => (
                   <li key={`${a.area}-${a.district}`} className="flex items-start justify-between gap-2">
                     <button type="button" onClick={() => setDistrict(a.district)} className="min-w-0 text-left">
-                      <span className="block text-sm font-semibold text-white hover:text-signal-orange">{a.area}, {a.district}</span>
-                      <span className="block truncate text-xs text-white/65">{[...a.kinds].map((k) => civicKindBn[k]).join(" · ")}</span>
+                      <span className="block text-sm font-semibold text-m-ink hover:text-m-blue">{a.area}, {a.district}</span>
+                      <span className="block truncate text-xs text-m-ink/65">{[...a.kinds].map((k) => civicKindBn[k]).join(" · ")}</span>
                     </button>
-                    <span className={cn("shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold", a.high > 0 ? "bg-national-crimson text-white" : "bg-signal-orange text-text-primary")}>
+                    <span className={cn("shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold", a.high > 0 ? "bg-m-red text-m-on" : "bg-m-yellow text-m-ink")}>
                       {a.high > 0 ? "ঝুঁকিপূর্ণ" : "সতর্ক থাকুন"} · <Num value={a.total} />
                     </span>
                   </li>
@@ -207,17 +207,17 @@ export function CitizenHub() {
               </ul>
             </section>
           )}
-          <section id="rules" className="story-reveal scroll-mt-24 space-y-3 rounded-2xl bg-bd-green p-5 text-white">
-            <h2 className="flex items-center gap-2 text-lg font-bold"><ShieldCheck className="size-5 text-signal-orange" aria-hidden /> নিরাপদে পোস্টের নিয়ম</h2>
+          <section id="rules" className="story-reveal scroll-mt-24 space-y-3 rounded-2xl bg-m-blue-soft p-5 text-m-ink">
+            <h2 className="flex items-center gap-2 text-lg font-bold"><ShieldCheck className="size-5 text-m-blue" aria-hidden /> নিরাপদে পোস্টের নিয়ম</h2>
             <ul className="space-y-3">
               {RULES.map(({ Icon, text }) => (
                 <li key={text} className="flex gap-3 text-sm leading-relaxed">
-                  <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-signal-orange text-text-primary"><Icon className="size-4" aria-hidden /></span>
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-m-yellow text-m-ink"><Icon className="size-4" aria-hidden /></span>
                   {text}
                 </li>
               ))}
             </ul>
-            <p className="border-t border-white/15 pt-3 text-xs text-white/75">
+            <p className="border-t border-m-ink/13 pt-3 text-xs text-m-ink/75">
               নাম গোপন রাখলেও প্রতিটি বার্তার পেছনে একজন পরিচয়-যাচাইকৃত মানুষ থাকেন। মিথ্যা অভিযোগ বা কারো সম্মানহানি এখানে চলে না — <Num value={FLAG_THRESHOLD} /> জন ভুল বলে জানালে পোস্ট পর্যালোচনায় যায়।
             </p>
           </section>
@@ -237,8 +237,8 @@ function CrimeCard({ post: p, witnesses, flags, saw, flagged }: { post: CrimePos
 
   if (status === "review" && !reveal) {
     return (
-      <article className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-text-primary p-5 text-sm text-white/75 ring-1 ring-white/12">
-        <span className="flex items-center gap-2"><Flag className="size-4 text-crimson-bright" aria-hidden /> পর্যালোচনায় — কয়েকজন পোস্টটি ভুল বা ক্ষতিকর বলে জানিয়েছেন।</span>
+      <article className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-m-card p-5 text-sm text-m-ink/75 ring-1 ring-m-ink/10 shadow-m-tile">
+        <span className="flex items-center gap-2"><Flag className="size-4 text-m-red" aria-hidden /> পর্যালোচনায় — কয়েকজন পোস্টটি ভুল বা ক্ষতিকর বলে জানিয়েছেন।</span>
         <button type="button" onClick={() => setReveal(true)} className={mediaButton({ variant: "ghost", size: "sm" })}>তবুও দেখুন</button>
       </article>
     );
@@ -258,24 +258,24 @@ function CrimeCard({ post: p, witnesses, flags, saw, flagged }: { post: CrimePos
   }
 
   return (
-    <article id={p.id} className="story-reveal scroll-mt-24 overflow-hidden rounded-2xl bg-text-primary ring-1 ring-white/12 transition-[translate,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_44px_-26px_var(--color-national-crimson)]">
+    <article id={p.id} className="story-reveal scroll-mt-24 overflow-hidden rounded-2xl bg-m-card ring-1 ring-m-ink/10 transition-[translate,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_44px_-26px_var(--color-national-crimson)] shadow-m-tile">
       <div className="space-y-3 p-5">
         <div className="flex flex-wrap items-center gap-2 text-xs font-bold">
-          <span className="rounded-full bg-signal-orange px-2.5 py-0.5 text-text-primary">{meta.bn}</span>
+          <span className="rounded-full bg-m-yellow px-2.5 py-0.5 text-m-ink">{meta.bn}</span>
           {status === "witnessed" ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-bd-green px-2.5 py-0.5 text-white"><ShieldCheck className="size-3.5" aria-hidden /> প্রত্যক্ষদর্শী নিশ্চিত</span>
+            <span className="inline-flex items-center gap-1 rounded-full bg-m-blue-soft px-2.5 py-0.5 text-m-ink"><ShieldCheck className="size-3.5" aria-hidden /> প্রত্যক্ষদর্শী নিশ্চিত</span>
           ) : (
-            <span className="rounded-full px-2.5 py-0.5 text-white/80 ring-1 ring-white/20">দাবি · যাচাই চলছে <Num value={witnesses} />/<Num value={WITNESS_THRESHOLD} /></span>
+            <span className="rounded-full px-2.5 py-0.5 text-m-ink/80 ring-1 ring-m-ink/17">দাবি · যাচাই চলছে <Num value={witnesses} />/<Num value={WITNESS_THRESHOLD} /></span>
           )}
-          {p.reportedTo && <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-white/85"><Num value={p.reportedTo} />-এ জানানো হয়েছে</span>}
+          {p.reportedTo && <span className="rounded-full bg-m-ink/6 px-2.5 py-0.5 text-m-ink/85"><Num value={p.reportedTo} />-এ জানানো হয়েছে</span>}
         </div>
-        <h2 className="text-lg leading-snug font-bold text-balance text-white">{p.title}</h2>
-        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-white/60">
+        <h2 className="text-lg leading-snug font-bold text-balance text-m-ink">{p.title}</h2>
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-m-ink/60">
           <span className="inline-flex items-center gap-1"><MapPin className="size-3.5" aria-hidden /> {p.area}, {p.district}</span>
           <Ago iso={p.at} />
           <span>{author ?? "নাম গোপন · যাচাইকৃত সদস্য"}</span>
         </p>
-        {p.body && <p className="leading-relaxed whitespace-pre-line text-white/90">{p.body}</p>}
+        {p.body && <p className="leading-relaxed whitespace-pre-line text-m-ink/90">{p.body}</p>}
       </div>
 
       {p.media.length > 0 && (
@@ -283,21 +283,21 @@ function CrimeCard({ post: p, witnesses, flags, saw, flagged }: { post: CrimePos
           <div className={cn("grid gap-2", p.media.length > 1 && "grid-cols-2", p.sensitive && !reveal && "pointer-events-none blur-2xl")}>
             {p.media.map((m, i) =>
               m.kind === "video" && m.src ? (
-                <video key={i} src={m.src} controls playsInline preload="metadata" className="aspect-video w-full rounded-xl bg-black" aria-label={m.label} />
+                <video key={i} src={m.src} controls playsInline preload="metadata" className="aspect-video w-full rounded-xl bg-m-canvas" aria-label={m.label} />
               ) : (
                 <MediaFrame key={i} slot={{ kind: m.kind, label: m.label, ratio: p.media.length > 1 ? "1/1" : "16/9", src: m.src }} sizes="(min-width: 1024px) 560px, 100vw" />
               ),
             )}
           </div>
           {p.sensitive && !reveal && (
-            <button type="button" onClick={() => setReveal(true)} className="absolute inset-0 m-auto flex h-fit w-fit items-center gap-2 rounded-xl bg-black/80 px-4 py-2.5 text-sm font-bold text-white ring-1 ring-white/20">
+            <button type="button" onClick={() => setReveal(true)} className="absolute inset-0 m-auto flex h-fit w-fit items-center gap-2 rounded-xl bg-white/90 px-4 py-2.5 text-sm font-bold text-m-ink ring-1 ring-m-ink/17">
               <EyeOff className="size-4" aria-hidden /> সংবেদনশীল — দেখুন
             </button>
           )}
         </div>
       )}
 
-      <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-white/10 px-5 py-3">
+      <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-m-ink/9 px-5 py-3">
         <button
           type="button"
           onClick={() => {

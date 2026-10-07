@@ -38,11 +38,11 @@ export function MatchesTab({ team, canEdit }: { team: Team; canEdit: boolean }) 
   return (
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
       <div className="min-w-0 space-y-5">
-        <div className="flex flex-col gap-4 rounded-3xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-6">
+        <div className="flex flex-col gap-4 rounded-3xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-6 shadow-m-tile">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="flex items-center gap-2 text-lg font-bold text-white"><Swords className="size-5 text-signal-orange" aria-hidden /> {team.name}-এর লড়াই</p>
-              <p className="mt-0.5 text-sm text-white/65">{canEdit ? "অন্য দলকে ডাকুন — খেলা, কুইজ, বানানোর লড়াই বা ভালো কাজের প্রতিযোগিতা।" : "এই দলের সাথে লড়তে চান? আপনার দল থেকে চ্যালেঞ্জ পাঠান।"}</p>
+              <p className="flex items-center gap-2 text-lg font-bold text-m-ink"><Swords className="size-5 text-m-blue" aria-hidden /> {team.name}-এর লড়াই</p>
+              <p className="mt-0.5 text-sm text-m-ink/65">{canEdit ? "অন্য দলকে ডাকুন — খেলা, কুইজ, বানানোর লড়াই বা ভালো কাজের প্রতিযোগিতা।" : "এই দলের সাথে লড়তে চান? আপনার দল থেকে চ্যালেঞ্জ পাঠান।"}</p>
             </div>
             {hydrated && canChallenge ? (
               <button type="button" onClick={() => setOpen(true)} className={mediaButton({ variant: "primary" })}><Swords aria-hidden /> {canEdit ? "অন্য দলকে চ্যালেঞ্জ দিন" : "এই দলকে চ্যালেঞ্জ দিন"}</button>
@@ -52,16 +52,16 @@ export function MatchesTab({ team, canEdit }: { team: Team; canEdit: boolean }) 
           </div>
           <dl className="grid grid-cols-3 gap-2 sm:grid-cols-6">
             {stats.map((s) => (
-              <div key={s.label} className="rounded-2xl bg-white/5 py-3 text-center ring-1 ring-white/8">
-                <dt className="text-[11px] font-semibold text-white/60">{s.label}</dt>
-                <dd className={s.gold ? "text-2xl font-bold text-signal-orange" : "text-2xl font-bold text-white"}>{s.value}</dd>
+              <div key={s.label} className="rounded-2xl bg-m-ink/3 py-3 text-center ring-1 ring-m-ink/7">
+                <dt className="text-[11px] font-semibold text-m-ink/60">{s.label}</dt>
+                <dd className={s.gold ? "text-2xl font-bold text-m-blue" : "text-2xl font-bold text-m-ink"}>{s.value}</dd>
               </div>
             ))}
           </dl>
         </div>
 
         {list.length === 0 ? (
-          <p className="rounded-2xl border border-dashed border-white/12 p-6 text-center text-sm text-white/65">এখনো কোনো লড়াই হয়নি। প্রথম চ্যালেঞ্জটা দিয়ে দেখুন, কে জেতে!</p>
+          <p className="rounded-2xl border border-dashed border-m-ink/10 p-6 text-center text-sm text-m-ink/65">এখনো কোনো লড়াই হয়নি। প্রথম চ্যালেঞ্জটা দিয়ে দেখুন, কে জেতে!</p>
         ) : (
           <div className="grid gap-4 xl:grid-cols-2">{list.map((m) => <VersusCard key={m.id} match={m} all={all} mine={mine} />)}</div>
         )}

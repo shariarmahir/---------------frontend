@@ -21,10 +21,10 @@ export function StoryRail() {
     <section aria-labelledby="rail-title" className="space-y-3">
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
-          <h2 id="rail-title" className="text-xl font-bold text-white">টিমের যাত্রা</h2>
-          <p className="text-sm text-white/65">দলগুলো কী পার হলো, কী শিখল — প্রতিটি গল্প টিম রুমে, চাইলে ফিডেও।</p>
+          <h2 id="rail-title" className="text-xl font-bold text-m-ink">টিমের যাত্রা</h2>
+          <p className="text-sm text-m-ink/65">দলগুলো কী পার হলো, কী শিখল — প্রতিটি গল্প টিম রুমে, চাইলে ফিডেও।</p>
         </div>
-        <Link href="/media?t=team" className="inline-flex items-center gap-1.5 text-sm font-bold text-signal-orange hover:underline">
+        <Link href="/media?t=team" className="inline-flex items-center gap-1.5 text-sm font-bold text-m-blue hover:underline">
           <Newspaper className="size-4" aria-hidden /> ফিডে টিমের পোস্ট
         </Link>
       </div>
@@ -38,8 +38,8 @@ export function StoryRail() {
               <Link
                 href={`/media/together/team/${team.id}#${story.id}`}
                 className={cn(
-                  "group relative flex h-64 flex-col justify-end overflow-hidden rounded-2xl p-4 ring-1 ring-white/12 transition-[translate,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-[0_24px_44px_-24px_var(--color-signal-orange)] motion-reduce:transition-none motion-reduce:hover:translate-y-0",
-                  story.photo ? "bg-black" : journey ? "bg-signal-orange" : "bg-bd-green",
+                  "group relative flex h-64 flex-col justify-end overflow-hidden rounded-2xl p-4 ring-1 ring-m-ink/10 transition-[translate,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-[0_24px_44px_-24px_var(--color-signal-orange)] motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+                  story.photo ? "bg-m-canvas" : journey ? "bg-m-yellow" : "bg-m-blue-soft",
                 )}
               >
                 {story.photo && (
@@ -49,14 +49,14 @@ export function StoryRail() {
                   </>
                 )}
                 <span className="relative flex items-center gap-2 text-xs font-bold">
-                  <span className={cn("inline-flex items-center gap-1 rounded-full px-2.5 py-0.5", story.photo ? (journey ? "bg-signal-orange text-text-primary" : "bg-bd-green text-white") : "bg-text-primary text-signal-orange")}>
+                  <span className={cn("inline-flex items-center gap-1 rounded-full px-2.5 py-0.5", story.photo ? (journey ? "bg-m-yellow text-m-ink" : "bg-m-blue-soft text-m-ink") : "bg-m-card text-m-blue")}>
                     <Kind className="size-3.5" aria-hidden /> {STORY_KINDS[story.kind].bn}
                   </span>
-                  {hydrated && <span className={cn("font-medium", !story.photo && journey ? "text-text-primary/70" : "text-white/70")}><Ago iso={story.at} /></span>}
+                  {hydrated && <span className={cn("font-medium", story.photo ? "text-white/80" : "text-m-ink/70")}><Ago iso={story.at} /></span>}
                 </span>
-                <span className={cn("relative mt-2 line-clamp-2 text-lg leading-snug font-bold", !story.photo && journey ? "text-text-primary" : "text-white")}>{story.title}</span>
-                <span className={cn("relative mt-1 line-clamp-2 text-sm", !story.photo && journey ? "text-text-primary/80" : "text-white/80")}>{story.body}</span>
-                <span className={cn("relative mt-3 flex items-center gap-1.5 border-t pt-2.5 text-xs font-bold", !story.photo && journey ? "border-text-primary/20 text-text-primary" : "border-white/15 text-white")}>
+                <span className={cn("relative mt-2 line-clamp-2 text-lg leading-snug font-bold", story.photo ? "text-m-on" : "text-m-ink")}>{story.title}</span>
+                <span className={cn("relative mt-1 line-clamp-2 text-sm", story.photo ? "text-white/85" : "text-m-ink/80")}>{story.body}</span>
+                <span className={cn("relative mt-3 flex items-center gap-1.5 border-t pt-2.5 text-xs font-bold", !story.photo && journey ? "border-m-ink/20 text-m-ink" : "border-m-ink/13 text-m-ink")}>
                   <TeamIcon className="size-3.5 shrink-0" aria-hidden />
                   <span className="truncate">{team.name}</span>
                   <ArrowRight className="ml-auto size-4 shrink-0 transition-transform duration-200 group-hover:translate-x-1" aria-hidden />

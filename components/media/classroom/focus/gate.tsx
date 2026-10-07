@@ -60,12 +60,12 @@ export function ClassGate({ rooms, onEnter, onLeave }: { rooms: RoomCard[]; onEn
 
   return (
     <Dialog open onOpenChange={(o) => !o && onLeave()}>
-      <DialogContent showCloseButton={false} className="max-h-[94dvh] overflow-y-auto !rounded-3xl !border-0 !bg-signal-orange !p-0 font-sans !text-text-primary shadow-[0_40px_90px_-30px_var(--color-signal-orange)] sm:max-w-xl">
+      <DialogContent showCloseButton={false} className="max-h-[94dvh] overflow-y-auto !rounded-3xl !border-0 !bg-m-yellow !p-0 font-sans !text-m-ink shadow-[0_40px_90px_-30px_var(--color-signal-orange)] sm:max-w-xl">
         <div className="relative space-y-5 p-5 sm:p-7">
           {/* The words stay for screen readers; on screen the logo says it. */}
           <DialogTitle className="sr-only">ক্লাসরুম চালু করুন</DialogTitle>
           <DialogDescription className="sr-only">কে ঢুকছেন বেছে নিন, তারপর ছবি মিলিয়ে ঢুকুন। অভিভাবক সব দেখতে পারবেন, কিছু বদলাতে পারবেন না।</DialogDescription>
-          <button type="button" onClick={onLeave} className="absolute top-4 right-4 grid size-9 place-items-center rounded-xl transition-colors hover:bg-text-primary/10">
+          <button type="button" onClick={onLeave} className="absolute top-4 right-4 grid size-9 place-items-center rounded-xl transition-colors hover:bg-m-card/10">
             <X className="size-5" aria-hidden />
             <span className="sr-only">বন্ধ করুন</span>
           </button>
@@ -75,36 +75,36 @@ export function ClassGate({ rooms, onEnter, onLeave }: { rooms: RoomCard[]; onEn
             <span className="mt-1 text-xs font-extrabold tracking-[0.32em] sm:text-sm">CLASSROOM</span>
           </div>
 
-          <div role="radiogroup" aria-label="কে ঢুকছেন" className="mx-auto flex w-fit gap-1 rounded-full bg-text-primary/10 p-1 ring-1 ring-text-primary/20">
+          <div role="radiogroup" aria-label="কে ঢুকছেন" className="mx-auto flex w-fit gap-1 rounded-full bg-m-card/10 p-1 ring-1 ring-m-ink/20">
             <Choice on={mode === "student"} onPick={() => setMode("student")} Icon={UserRound} title="শিক্ষার্থী" />
             <Choice on={mode === "parent"} onPick={() => setMode("parent")} Icon={Eye} title="অভিভাবক" />
           </div>
 
           {mode === "student" ? (
-            <div className="rounded-2xl bg-text-primary p-4 text-white">
+            <div className="rounded-2xl bg-m-card p-4 text-m-ink">
               {account ? (
                 <>
                   <div className="flex items-center gap-3">
-                    <AccountAvatar name={account.name} photo={account.photo} sizes="44px" className="size-11 text-base ring-2 ring-signal-orange" />
+                    <AccountAvatar name={account.name} photo={account.photo} sizes="44px" className="size-11 text-base ring-2 ring-m-blue" />
                     <div className="min-w-0">
                       <p className="truncate font-bold">{account.name}</p>
-                      <p className="text-xs text-white/65">কাণ্ডারী প্রোফাইল দিয়ে ঢুকছেন</p>
+                      <p className="text-xs text-m-ink/65">কাণ্ডারী প্রোফাইল দিয়ে ঢুকছেন</p>
                     </div>
                   </div>
-                  <div className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-white/8 px-3 py-2.5">
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-m-ink/4 px-3 py-2.5">
                     <div>
-                      <p className="text-[11px] font-semibold text-white/65">আপনার শিক্ষার্থী আইডি</p>
-                      <p className="font-mono text-lg font-bold tracking-widest text-signal-orange">{myCode}</p>
+                      <p className="text-[11px] font-semibold text-m-ink/65">আপনার শিক্ষার্থী আইডি</p>
+                      <p className="font-mono text-lg font-bold tracking-widest text-m-blue">{myCode}</p>
                     </div>
                     <button
                       type="button"
                       onClick={() => navigator.clipboard?.writeText(myCode).then(() => toast.success("আইডি কপি হলো", { description: "অভিভাবককে দিন — তিনি শুধু দেখতে পারবেন।" }))}
-                      className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-white/10 px-3 text-xs font-bold transition-colors hover:bg-white/20"
+                      className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-m-ink/6 px-3 text-xs font-bold transition-colors hover:bg-m-ink/11"
                     >
                       <Copy className="size-3.5" aria-hidden /> কপি
                     </button>
                   </div>
-                  <p className="mt-2 text-xs leading-relaxed text-white/65">এই আইডি অভিভাবককে দিলে তিনি আপনার ক্লাস, নোটিশ আর পরীক্ষার খবর দেখতে পারবেন।</p>
+                  <p className="mt-2 text-xs leading-relaxed text-m-ink/65">এই আইডি অভিভাবককে দিলে তিনি আপনার ক্লাস, নোটিশ আর পরীক্ষার খবর দেখতে পারবেন।</p>
                 </>
               ) : (
                 <p className="text-sm">আগে কাণ্ডারী প্রোফাইলে ঢুকুন।</p>
@@ -125,12 +125,12 @@ export function ClassGate({ rooms, onEnter, onLeave }: { rooms: RoomCard[]; onEn
                 maxLength={12}
                 placeholder="ST-XXXXXX"
                 aria-describedby="child-code-status"
-                className="h-13 w-full rounded-xl bg-text-primary px-4 font-mono text-lg font-bold tracking-widest text-signal-orange outline-none placeholder:text-white/30 focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:ring-offset-2 focus-visible:ring-offset-signal-orange"
+                className="h-13 w-full rounded-xl bg-m-card px-4 font-mono text-lg font-bold tracking-widest text-m-blue outline-none placeholder:text-m-ink/30 focus-visible:ring-2 focus-visible:ring-m-card focus-visible:ring-offset-2 focus-visible:ring-offset-signal-orange"
               />
               <div id="child-code-status" aria-live="polite" className="min-h-6 text-sm font-semibold">
                 {child ? (
                   <p className="flex items-center gap-1.5">
-                    <CheckCircle2 className="size-4.5 text-bd-green" aria-hidden /> {child.name} · {num(child.classes.length)}টি ক্লাস
+                    <CheckCircle2 className="size-4.5 text-m-blue" aria-hidden /> {child.name} · {num(child.classes.length)}টি ক্লাস
                     {child.labs.length > 0 && <>, {num(child.labs.length)}টি ল্যাব</>}
                   </p>
                 ) : typed ? (
@@ -138,11 +138,11 @@ export function ClassGate({ rooms, onEnter, onLeave }: { rooms: RoomCard[]; onEn
                     <SearchX className="mt-0.5 size-4.5 shrink-0" aria-hidden /> এই আইডির কাউকে কোনো ক্লাসে পাওয়া গেল না — সন্তানের কাছ থেকে আইডিটা আবার দেখে নিন।
                   </p>
                 ) : (
-                  <p className="text-text-primary/75">সন্তান ক্লাসরুমে ঢোকার সময় নিজের আইডি দেখতে পায়।</p>
+                  <p className="text-m-ink/75">সন্তান ক্লাসরুমে ঢোকার সময় নিজের আইডি দেখতে পায়।</p>
                 )}
               </div>
               {!child && (
-                <button type="button" onClick={() => setCode(studentCode(SAMPLE_CHILD.id))} className="text-left text-xs font-semibold text-text-primary/80 underline decoration-text-primary/40 underline-offset-4 hover:decoration-text-primary">
+                <button type="button" onClick={() => setCode(studentCode(SAMPLE_CHILD.id))} className="text-left text-xs font-semibold text-m-ink/80 underline decoration-m-ink/40 underline-offset-4 hover:decoration-m-ink">
                   নমুনা দেখুন: {studentCode(SAMPLE_CHILD.id)} ({SAMPLE_CHILD.name})
                 </button>
               )}
@@ -165,7 +165,7 @@ function Choice({ on, onPick, Icon, title }: { on: boolean; onPick: () => void; 
       onClick={onPick}
       className={cn(
         "inline-flex h-9 items-center gap-1.5 rounded-full px-4 text-sm font-bold transition-[background-color,color,box-shadow] duration-200 motion-reduce:transition-none",
-        on ? "bg-text-primary text-signal-orange shadow-[0_8px_18px_-10px_var(--color-text-primary)]" : "text-text-primary/80 hover:bg-text-primary/10 hover:text-text-primary",
+        on ? "bg-m-card text-m-blue shadow-[0_8px_18px_-10px_var(--color-text-primary)]" : "text-m-ink/80 hover:bg-m-card/10 hover:text-m-ink",
       )}
     >
       <Icon className="size-4" aria-hidden />

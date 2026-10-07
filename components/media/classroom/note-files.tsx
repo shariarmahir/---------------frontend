@@ -76,13 +76,13 @@ export async function downloadNote(note: ClassNote) {
 /** The attachment as it sits on a card: a page preview or a PDF tile. */
 export function FilePreview({ file, onOpen }: { file: NoteFile; onOpen: () => void }) {
   return (
-    <button type="button" onClick={onOpen} className="group mt-3 block w-full overflow-hidden rounded-xl bg-black/40 text-left ring-1 ring-white/10 transition-[box-shadow] hover:ring-signal-orange/60">
+    <button type="button" onClick={onOpen} className="group mt-3 block w-full overflow-hidden rounded-xl bg-white/65 text-left ring-1 ring-m-ink/9 transition-[box-shadow] hover:ring-m-blue/60">
       {isPdf(file) ? (
         <span className="flex items-center gap-3 p-3">
-          <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-national-crimson text-white"><FileText className="size-5" aria-hidden /></span>
+          <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-m-red text-m-on"><FileText className="size-5" aria-hidden /></span>
           <span className="min-w-0">
-            <span className="block truncate text-sm font-semibold text-white">{file.name}</span>
-            <span className="text-xs text-white/60">পিডিএফ · {kb(file.size)}</span>
+            <span className="block truncate text-sm font-semibold text-m-ink">{file.name}</span>
+            <span className="text-xs text-m-ink/60">পিডিএফ · {kb(file.size)}</span>
           </span>
         </span>
       ) : (
@@ -101,8 +101,8 @@ export function NoteReader({ note, url, author, onClose }: { note: ClassNote | n
       <DialogContent className="flex max-h-[94dvh] w-[calc(100vw-1.5rem)] flex-col gap-4 overflow-hidden rounded-3xl p-0 font-sans sm:max-w-4xl">
         {note && (
           <>
-            <DialogHeader className="border-b border-white/10 px-5 pt-5 pb-4 pr-12">
-              <DialogTitle className="text-xl leading-snug font-bold text-white">{note.title}</DialogTitle>
+            <DialogHeader className="border-b border-m-ink/9 px-5 pt-5 pb-4 pr-12">
+              <DialogTitle className="text-xl leading-snug font-bold text-m-ink">{note.title}</DialogTitle>
               <DialogDescription>{author}{note.file ? ` · ${note.file.name} · ${kb(note.file.size)}` : ""}</DialogDescription>
             </DialogHeader>
             <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-5 pb-2">
@@ -113,9 +113,9 @@ export function NoteReader({ note, url, author, onClose }: { note: ClassNote | n
                   // A note page is read top to bottom, so it keeps its own width.
                   <Image src={note.file.data} alt={note.title} width={1600} height={2200} unoptimized className="h-auto w-full rounded-xl bg-white" />
                 ))}
-              {note.text && <p className="text-[17px] leading-loose whitespace-pre-line text-white/90">{note.text}</p>}
+              {note.text && <p className="text-[17px] leading-loose whitespace-pre-line text-m-ink/90">{note.text}</p>}
             </div>
-            <div className="flex justify-end gap-2 border-t border-white/10 px-5 py-4">
+            <div className="flex justify-end gap-2 border-t border-m-ink/9 px-5 py-4">
               <button type="button" onClick={() => downloadNote(note)} className={mediaButton({ variant: "primary" })}>
                 <Download aria-hidden /> ডাউনলোড
               </button>

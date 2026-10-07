@@ -104,8 +104,8 @@ export function CourseBuilder() {
   if (!hydrated) return null;
   if (!t.record || !first) {
     return (
-      <p className="mx-auto max-w-md rounded-2xl bg-text-primary p-6 text-center text-white/85 ring-1 ring-white/12">
-        কোর্স বানাতে আগে শিক্ষক হিসেবে প্যানেল ইন্টারভিউ পাস করে একটা একাডেমিতে থাকতে হয়। <Link href="/media/academy/teach" className="font-semibold text-signal-orange hover:underline">আবেদন করুন</Link>
+      <p className="mx-auto max-w-md rounded-2xl bg-m-card p-6 text-center text-m-ink/85 ring-1 ring-m-ink/10 shadow-m-tile">
+        কোর্স বানাতে আগে শিক্ষক হিসেবে প্যানেল ইন্টারভিউ পাস করে একটা একাডেমিতে থাকতে হয়। <Link href="/media/academy/teach" className="font-semibold text-m-blue hover:underline">আবেদন করুন</Link>
       </p>
     );
   }
@@ -167,19 +167,19 @@ export function CourseBuilder() {
 
   return (
     <div className="mx-auto max-w-6xl">
-      <Link href="/media/academy/desk" className="group mb-3 inline-flex min-h-8 items-center gap-1.5 text-sm font-semibold text-signal-orange">
+      <Link href="/media/academy/desk" className="group mb-3 inline-flex min-h-8 items-center gap-1.5 text-sm font-semibold text-m-blue">
         <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" aria-hidden /> শিক্ষক ডেস্ক
       </Link>
-      <h1 className="text-2xl font-bold text-white sm:text-[2rem]">নতুন কোর্স</h1>
-      <p className="mt-1 mb-6 max-w-2xl text-sm leading-relaxed text-white/80">
+      <h1 className="text-2xl font-bold text-m-ink sm:text-[2rem]">নতুন কোর্স</h1>
+      <p className="mt-1 mb-6 max-w-2xl text-sm leading-relaxed text-m-ink/80">
         প্রতিটা কোর্স শুরুর <Num value={COURSE_DAYS} /> দিনে শেষ — <Num value={CLASS_WEEKS} /> সপ্তাহের ক্লাস, তারপর প্রজেক্ট আর প্যানেল। অনলাইন ক্লাস <Num value={CLASS_MINUTES} /> মিনিটের। সিলেবাস, কাজের ক্যালেন্ডার আর আড়াই মিনিটের প্রোমো ছাড়া কোর্স খোলে না।
       </p>
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_21rem]">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="min-w-0 space-y-8">
-            <section className="space-y-5 rounded-2xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-6">
-              <h2 className="text-lg font-bold text-white">মূল তথ্য</h2>
+            <section className="space-y-5 rounded-2xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-6 shadow-m-tile">
+              <h2 className="text-lg font-bold text-m-ink">মূল তথ্য</h2>
               <FormField control={form.control} name="title" render={({ field }) => (
                 <FormItem><FormLabel>কোর্সের নাম</FormLabel><FormControl><Input placeholder="যেমন: ইলেকট্রিক গিটার — শুরু থেকে" {...field} /></FormControl><FormMessage /></FormItem>
               )} />
@@ -222,15 +222,15 @@ export function CourseBuilder() {
                 )} />
               </div>
               {full && (
-                <div className="rounded-xl bg-black/40 p-4 ring-1 ring-signal-orange/40">
-                  <label htmlFor="replaces" className="text-sm font-semibold text-white">
+                <div className="rounded-xl bg-white/65 p-4 ring-1 ring-m-blue/40">
+                  <label htmlFor="replaces" className="text-sm font-semibold text-m-ink">
                     এই বিভাগে <Num value={DEPT_COURSES} />টি কোর্সই আছে — নতুনটি কোনটির জায়গা নেবে?
                   </label>
                   <select id="replaces" value={replaces} onChange={(e) => setReplaces(e.target.value)} className={cn(selectClass, "mt-2")}>
                     <option value="">বেছে নিন</option>
                     {live.map((c) => <option key={c.id} value={c.id}>{c.id} · {c.title}</option>)}
                   </select>
-                  <p className="mt-1.5 text-xs text-white/65">প্যানেল অনুমোদন দিলে পুরোনোটির চলমান ব্যাচ শেষ হওয়ার পর বদল হবে।</p>
+                  <p className="mt-1.5 text-xs text-m-ink/65">প্যানেল অনুমোদন দিলে পুরোনোটির চলমান ব্যাচ শেষ হওয়ার পর বদল হবে।</p>
                 </div>
               )}
               <div className="grid gap-4 sm:grid-cols-3">
@@ -268,10 +268,10 @@ export function CourseBuilder() {
                   <FormGroupLabel>প্রচ্ছদ</FormGroupLabel>
                   <FormGroup className="grid grid-cols-4 gap-2 sm:grid-cols-6">
                     {COVERS.map((src) => (
-                      <label key={src} className={cn("relative aspect-video cursor-pointer overflow-hidden rounded-lg ring-2 has-focus-visible:ring-signal-orange", field.value === src ? "ring-signal-orange" : "ring-transparent hover:ring-white/40")}>
+                      <label key={src} className={cn("relative aspect-video cursor-pointer overflow-hidden rounded-lg ring-2 has-focus-visible:ring-m-blue", field.value === src ? "ring-m-blue" : "ring-transparent hover:ring-m-ink/34")}>
                         <input type="radio" className="sr-only" name={field.name} checked={field.value === src} onChange={() => field.onChange(src)} />
                         <Image src={src} alt="" fill sizes="8rem" className="object-cover" />
-                        {field.value === src && <span className="absolute top-1 right-1 grid size-5 place-items-center rounded-full bg-signal-orange text-text-primary"><Check className="size-3.5" strokeWidth={3} aria-label="বাছাই" /></span>}
+                        {field.value === src && <span className="absolute top-1 right-1 grid size-5 place-items-center rounded-full bg-m-yellow text-m-ink"><Check className="size-3.5" strokeWidth={3} aria-label="বাছাই" /></span>}
                       </label>
                     ))}
                   </FormGroup>
@@ -279,10 +279,10 @@ export function CourseBuilder() {
               )} />
             </section>
 
-            <section className="space-y-5 rounded-2xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-6">
+            <section className="space-y-5 rounded-2xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-6 shadow-m-tile">
               <div>
-                <h2 className="text-lg font-bold text-white">কোর্সের কাগজ</h2>
-                <p className="mt-1 text-sm text-white/70">তিনটিই লাগবে — প্যানেল এগুলো দেখেই অনুমোদন দেয়।</p>
+                <h2 className="text-lg font-bold text-m-ink">কোর্সের কাগজ</h2>
+                <p className="mt-1 text-sm text-m-ink/70">তিনটিই লাগবে — প্যানেল এগুলো দেখেই অনুমোদন দেয়।</p>
               </div>
               <div className="grid gap-4 sm:grid-cols-3">
                 <PaperField name="syllabus" label="সিলেবাস" hint="পিডিএফ বা ওয়ার্ড" accept=".pdf,.doc,.docx" form={form} />
@@ -291,8 +291,8 @@ export function CourseBuilder() {
               </div>
             </section>
 
-            <section className="space-y-5 rounded-2xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-6">
-              <h2 className="text-lg font-bold text-white">শেষে কী হবে</h2>
+            <section className="space-y-5 rounded-2xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-6 shadow-m-tile">
+              <h2 className="text-lg font-bold text-m-ink">শেষে কী হবে</h2>
               <FormField control={form.control} name="outcome" render={({ field }) => (
                 <FormItem><FormLabel>শিক্ষার্থী শেষে কী পারবে</FormLabel><FormControl><Textarea rows={2} placeholder="যেমন: মূল কর্ডগুলো বদলে বদলে একটা পুরো গান বাজাতে পারবে।" {...field} /></FormControl><FormMessage /></FormItem>
               )} />
@@ -301,12 +301,12 @@ export function CourseBuilder() {
               )} />
             </section>
 
-            <section className="rounded-2xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-6">
+            <section className="rounded-2xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-6 shadow-m-tile">
               <div className="mb-4">
-                <h2 className="text-lg font-bold text-white">
+                <h2 className="text-lg font-bold text-m-ink">
                   <Num value={CLASS_WEEKS} /> সপ্তাহের বিষয়
                 </h2>
-                <p className="mt-1 text-sm text-white/70">
+                <p className="mt-1 text-sm text-m-ink/70">
                   প্রতি সপ্তাহে একটা বিষয়, অনলাইন ক্লাস <Num value={CLASS_MINUTES} /> মিনিটের। {team ? "দলীয় একাডেমিতে আলাদা বিষয় আলাদা জন পড়ান।" : ""}
                 </p>
               </div>
@@ -315,11 +315,11 @@ export function CourseBuilder() {
               </datalist>
               <ol className="space-y-3">
                 {Array.from({ length: CLASS_WEEKS }, (_, i) => (
-                  <li key={i} className={cn("grid gap-2 rounded-xl bg-black/40 p-3 sm:items-start", team ? "sm:grid-cols-[4.5rem_minmax(0,1fr)_9rem_9rem]" : "sm:grid-cols-[4.5rem_minmax(0,1fr)_9.5rem]")}>
-                    <span className="flex h-11 flex-col justify-center text-sm font-bold text-signal-orange">
+                  <li key={i} className={cn("grid gap-2 rounded-xl bg-white/65 p-3 sm:items-start", team ? "sm:grid-cols-[4.5rem_minmax(0,1fr)_9rem_9rem]" : "sm:grid-cols-[4.5rem_minmax(0,1fr)_9.5rem]")}>
+                    <span className="flex h-11 flex-col justify-center text-sm font-bold text-m-blue">
                       সপ্তাহ <Num value={i + 1} />
                       {timeline && (
-                        <span className="text-[11px] font-normal text-white/55">
+                        <span className="text-[11px] font-normal text-m-ink/55">
                           <DateText iso={`${timeline.weeks[i].from}T00:00:00Z`} />
                         </span>
                       )}
@@ -361,7 +361,7 @@ export function CourseBuilder() {
                 ))}
               </ol>
               {form.formState.errors.lessons?.root?.message || form.formState.errors.lessons?.message ? (
-                <p role="alert" className="mt-3 text-sm text-crimson-bright">{form.formState.errors.lessons?.root?.message ?? form.formState.errors.lessons?.message}</p>
+                <p role="alert" className="mt-3 text-sm text-m-red">{form.formState.errors.lessons?.root?.message ?? form.formState.errors.lessons?.message}</p>
               ) : null}
             </section>
 
@@ -370,26 +370,26 @@ export function CourseBuilder() {
         </Form>
 
         <aside className="space-y-4 lg:sticky lg:top-0 lg:self-start">
-          <p className="text-sm font-semibold text-white/80">শিক্ষার্থীরা যেভাবে দেখবে</p>
+          <p className="text-sm font-semibold text-m-ink/80">শিক্ষার্থীরা যেভাবে দেখবে</p>
           <CourseCard course={preview} preview />
           {timeline && (
-            <div className="rounded-2xl bg-text-primary p-4 text-sm ring-1 ring-white/12">
-              <p className="flex items-center gap-2 font-semibold text-white">
-                <CalendarRange className="size-4 text-signal-orange" aria-hidden /> <Num value={COURSE_DAYS} /> দিনের সময়রেখা
+            <div className="rounded-2xl bg-m-card p-4 text-sm ring-1 ring-m-ink/10 shadow-m-tile">
+              <p className="flex items-center gap-2 font-semibold text-m-ink">
+                <CalendarRange className="size-4 text-m-blue" aria-hidden /> <Num value={COURSE_DAYS} /> দিনের সময়রেখা
               </p>
-              <p className="mt-2 flex justify-between"><span className="text-white/75">ক্লাস</span><span className="text-white"><DateText iso={`${timeline.weeks[0].from}T00:00:00Z`} /> – <DateText iso={`${timeline.weeks[CLASS_WEEKS - 1].to}T00:00:00Z`} /></span></p>
-              <p className="mt-1 flex justify-between"><span className="text-white/75">প্রজেক্ট ও প্যানেল</span><span className="text-white"><DateText iso={`${timeline.final.from}T00:00:00Z`} /> – <DateText iso={`${timeline.final.to}T00:00:00Z`} /></span></p>
+              <p className="mt-2 flex justify-between"><span className="text-m-ink/75">ক্লাস</span><span className="text-m-ink"><DateText iso={`${timeline.weeks[0].from}T00:00:00Z`} /> – <DateText iso={`${timeline.weeks[CLASS_WEEKS - 1].to}T00:00:00Z`} /></span></p>
+              <p className="mt-1 flex justify-between"><span className="text-m-ink/75">প্রজেক্ট ও প্যানেল</span><span className="text-m-ink"><DateText iso={`${timeline.final.from}T00:00:00Z`} /> – <DateText iso={`${timeline.final.to}T00:00:00Z`} /></span></p>
             </div>
           )}
-          <div className="rounded-2xl bg-text-primary p-4 text-sm ring-1 ring-white/12">
+          <div className="rounded-2xl bg-m-card p-4 text-sm ring-1 ring-m-ink/10 shadow-m-tile">
             {preview.fee > 0 ? (
               <>
-                <p className="flex justify-between"><span className="text-white/75">প্রতি শিক্ষার্থী আপনি পান</span><span className="font-semibold text-white"><Taka amount={fees.sellerReceives} /></span></p>
-                <p className="mt-1 flex justify-between"><span className="text-white/75">শিক্ষার্থী দেয়</span><span className="font-semibold text-white"><Taka amount={fees.buyerPays} /></span></p>
-                <p className="mt-1 flex justify-between"><span className="text-white/75">পুরো ব্যাচ ভরলে</span><span className="font-semibold text-signal-orange"><Taka amount={fees.sellerReceives * Math.min(preview.seats, max)} /></span></p>
+                <p className="flex justify-between"><span className="text-m-ink/75">প্রতি শিক্ষার্থী আপনি পান</span><span className="font-semibold text-m-ink"><Taka amount={fees.sellerReceives} /></span></p>
+                <p className="mt-1 flex justify-between"><span className="text-m-ink/75">শিক্ষার্থী দেয়</span><span className="font-semibold text-m-ink"><Taka amount={fees.buyerPays} /></span></p>
+                <p className="mt-1 flex justify-between"><span className="text-m-ink/75">পুরো ব্যাচ ভরলে</span><span className="font-semibold text-m-blue"><Taka amount={fees.sellerReceives * Math.min(preview.seats, max)} /></span></p>
               </>
             ) : (
-              <p className="text-white/85">বিনা ফির কোর্স — শিক্ষার্থীদের কোনো খরচ নেই।</p>
+              <p className="text-m-ink/85">বিনা ফির কোর্স — শিক্ষার্থীদের কোনো খরচ নেই।</p>
             )}
           </div>
         </aside>
@@ -424,16 +424,16 @@ function PaperField({ name, label, hint, accept, form }: { name: "syllabus" | "c
 
   return (
     <div>
-      <p className="text-sm font-semibold text-white">{label}</p>
-      <button type="button" onClick={() => input.current?.click()} className={cn("mt-2 flex w-full items-center gap-2.5 rounded-xl px-3 py-3 text-left text-sm ring-1 transition-colors", paper?.title ? "bg-bd-green/25 ring-bd-green" : "bg-black/40 ring-white/15 hover:ring-signal-orange/60", error && "ring-crimson-bright")}>
-        {paper?.title ? <Check className="size-4.5 shrink-0 text-signal-orange" aria-hidden /> : <Upload className="size-4.5 shrink-0 text-white/70" aria-hidden />}
+      <p className="text-sm font-semibold text-m-ink">{label}</p>
+      <button type="button" onClick={() => input.current?.click()} className={cn("mt-2 flex w-full items-center gap-2.5 rounded-xl px-3 py-3 text-left text-sm ring-1 transition-colors", paper?.title ? "bg-m-blue/13 ring-m-blue" : "bg-white/65 ring-m-ink/13 hover:ring-m-blue/60", error && "ring-m-red")}>
+        {paper?.title ? <Check className="size-4.5 shrink-0 text-m-blue" aria-hidden /> : <Upload className="size-4.5 shrink-0 text-m-ink/70" aria-hidden />}
         <span className="min-w-0">
-          <span className="block truncate font-semibold text-white">{paper?.title || "ফাইল দিন"}</span>
-          <span className="block text-xs text-white/60">{paper?.title ? paper.size : hint}</span>
+          <span className="block truncate font-semibold text-m-ink">{paper?.title || "ফাইল দিন"}</span>
+          <span className="block text-xs text-m-ink/60">{paper?.title ? paper.size : hint}</span>
         </span>
       </button>
       <input ref={input} type="file" accept={accept} className="sr-only" tabIndex={-1} aria-label={label} onChange={(e) => pick(e.target.files?.[0])} />
-      {error && <p role="alert" className="mt-1.5 text-xs text-crimson-bright">{error}</p>}
+      {error && <p role="alert" className="mt-1.5 text-xs text-m-red">{error}</p>}
     </div>
   );
 }
@@ -460,17 +460,17 @@ function PromoField({ form }: { form: BuilderForm }) {
 
   return (
     <div>
-      <p className="text-sm font-semibold text-white">প্রোমো ভিডিও</p>
-      <button type="button" onClick={() => input.current?.click()} className={cn("mt-2 flex w-full items-center gap-2.5 rounded-xl px-3 py-3 text-left text-sm ring-1 transition-colors", ok ? "bg-bd-green/25 ring-bd-green" : "bg-black/40 ring-white/15 hover:ring-signal-orange/60", error && "ring-crimson-bright")}>
-        {ok ? <Check className="size-4.5 shrink-0 text-signal-orange" aria-hidden /> : promo?.file ? <FileVideo className="size-4.5 shrink-0 text-white/70" aria-hidden /> : <Upload className="size-4.5 shrink-0 text-white/70" aria-hidden />}
+      <p className="text-sm font-semibold text-m-ink">প্রোমো ভিডিও</p>
+      <button type="button" onClick={() => input.current?.click()} className={cn("mt-2 flex w-full items-center gap-2.5 rounded-xl px-3 py-3 text-left text-sm ring-1 transition-colors", ok ? "bg-m-blue/13 ring-m-blue" : "bg-white/65 ring-m-ink/13 hover:ring-m-blue/60", error && "ring-m-red")}>
+        {ok ? <Check className="size-4.5 shrink-0 text-m-blue" aria-hidden /> : promo?.file ? <FileVideo className="size-4.5 shrink-0 text-m-ink/70" aria-hidden /> : <Upload className="size-4.5 shrink-0 text-m-ink/70" aria-hidden />}
         <span className="min-w-0">
-          <span className="block truncate font-semibold text-white">{promo?.file || "ভিডিও দিন"}</span>
-          <span className="block text-xs text-white/60">{promo?.file ? `${clock(promo.seconds)} মিনিট` : `পুরো কোর্সের সারাংশ, ${clock(PROMO_SECONDS)} মিনিট`}</span>
+          <span className="block truncate font-semibold text-m-ink">{promo?.file || "ভিডিও দিন"}</span>
+          <span className="block text-xs text-m-ink/60">{promo?.file ? `${clock(promo.seconds)} মিনিট` : `পুরো কোর্সের সারাংশ, ${clock(PROMO_SECONDS)} মিনিট`}</span>
         </span>
       </button>
       <input ref={input} type="file" accept="video/*" className="sr-only" tabIndex={-1} aria-label="প্রোমো ভিডিও" onChange={(e) => pick(e.target.files?.[0])} />
-      {error && <p role="alert" className="mt-1.5 text-xs text-crimson-bright">{error}</p>}
-      <p className="mt-1.5 flex items-start gap-1.5 text-[11px] leading-snug text-white/55">
+      {error && <p role="alert" className="mt-1.5 text-xs text-m-red">{error}</p>}
+      <p className="mt-1.5 flex items-start gap-1.5 text-[11px] leading-snug text-m-ink/55">
         <FileText className="mt-px size-3 shrink-0" aria-hidden /> ভিডিও এই ফোন থেকে কোথাও যায় না — নাম আর দৈর্ঘ্য প্যানেলে যায়।
       </p>
     </div>

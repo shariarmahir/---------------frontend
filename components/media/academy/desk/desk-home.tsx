@@ -26,14 +26,14 @@ export function DeskHome() {
   const application = useAcademy((a) => a.application);
   const videos = useVideos();
 
-  if (!hydrated) return <Skeleton className="h-96 rounded-2xl bg-text-primary/40" />;
+  if (!hydrated) return <Skeleton className="h-96 rounded-2xl bg-m-card/40" />;
 
   if (!t.record) {
     return (
-      <section className="mx-auto max-w-xl rounded-3xl bg-text-primary p-6 text-center ring-1 ring-white/12 sm:p-8">
+      <section className="mx-auto max-w-xl rounded-3xl bg-m-card p-6 text-center ring-1 ring-m-ink/10 sm:p-8 shadow-m-tile">
         <Presenter />
-        <h1 className="mt-4 text-2xl font-bold text-white">ডেস্ক খোলে প্যানেল ইন্টারভিউয়ের পর</h1>
-        <p className="mt-2 text-sm leading-relaxed text-white/80">
+        <h1 className="mt-4 text-2xl font-bold text-m-ink">ডেস্ক খোলে প্যানেল ইন্টারভিউয়ের পর</h1>
+        <p className="mt-2 text-sm leading-relaxed text-m-ink/80">
           {application ? "আপনার আবেদন জমা আছে। প্যানেল পাস করলেই এখানে কোর্স বানানো, হাজিরা আর উপকরণ খুলে যাবে।" : "শিক্ষক হতে আবেদন করুন — নমুনা ক্লাস আর প্যানেল ইন্টারভিউয়ের পর ডেস্ক আপনার।"}
         </p>
         <Link href="/media/academy/teach" className={mediaButton({ variant: "primary", className: "mt-5" })}>
@@ -60,8 +60,8 @@ export function DeskHome() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-8">
-      <section className="live-in flex flex-wrap items-center gap-5 rounded-3xl bg-signal-orange p-5 text-text-primary sm:p-7">
-        <PersonAvatar person={t.person} size="xl" className="ring-4 ring-text-primary" />
+      <section className="live-in flex flex-wrap items-center gap-5 rounded-3xl bg-m-yellow p-5 text-m-ink sm:p-7">
+        <PersonAvatar person={t.person} size="xl" className="ring-4 ring-m-card" />
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold">শিক্ষক ডেস্ক</p>
           <h1 className="text-[clamp(1.6rem,3.5vw,2.25rem)] leading-tight font-bold">{t.person.nameBn}</h1>
@@ -74,74 +74,74 @@ export function DeskHome() {
           <Link href="/media/academy/desk/new" className={mediaButton({ variant: "tile", size: "lg" })}>
             <Plus aria-hidden /> নতুন কোর্স
           </Link>
-          <Link href={`/media/academy/teachers/${t.handle}`} className={mediaButton({ size: "lg", className: "border-text-primary bg-transparent text-text-primary shadow-none hover:bg-text-primary/10" })}>
+          <Link href={`/media/academy/teachers/${t.handle}`} className={mediaButton({ size: "lg", className: "border-m-card bg-transparent text-m-ink shadow-none hover:bg-m-card/10" })}>
             আমার শিক্ষক-প্রোফাইল
           </Link>
         </div>
       </section>
 
-      <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-white/12 lg:grid-cols-4">
+      <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-m-ink/7 lg:grid-cols-4">
         {[
           ["শিক্ষার্থী", <Num key="s" value={students} />, "সব কোর্স মিলিয়ে"],
           ["ক্লাস নেওয়া হয়েছে", <><Num key="h" value={heldAll} /> / <Num value={lessons} /></>, "হাজিরা জমা মানেই ক্লাস হয়েছে"],
           ["আয় ছাড় হয়েছে", <Taka key="r" amount={money.released} />, "প্রতিটি ক্লাসে সেই সপ্তাহের ভাগ"],
           ["এসক্রোতে অপেক্ষায়", <Taka key="w" amount={money.waiting} />, "বাকি ক্লাস হলে ছাড় পাবে"],
         ].map(([k, v, hint]) => (
-          <div key={String(k)} className="bg-text-primary p-4 sm:p-5">
-            <dt className="text-xs font-semibold text-white/70">{k}</dt>
-            <dd className="mt-1 text-2xl font-bold text-white tabular-nums">{v}</dd>
-            <dd className="mt-0.5 text-xs text-white/60">{hint}</dd>
+          <div key={String(k)} className="bg-m-card p-4 sm:p-5">
+            <dt className="text-xs font-semibold text-m-ink/70">{k}</dt>
+            <dd className="mt-1 text-2xl font-bold text-m-ink tabular-nums">{v}</dd>
+            <dd className="mt-0.5 text-xs text-m-ink/60">{hint}</dd>
           </div>
         ))}
       </dl>
 
       <section aria-labelledby="today">
-        <h2 id="today" className="mb-3 text-lg font-bold text-white">আজকের কাজ</h2>
-        <ul className="divide-y divide-white/10 overflow-hidden rounded-2xl bg-text-primary ring-1 ring-white/12">
+        <h2 id="today" className="mb-3 text-lg font-bold text-m-ink">আজকের কাজ</h2>
+        <ul className="divide-y divide-m-ink/9 overflow-hidden rounded-2xl bg-m-card ring-1 ring-m-ink/10 shadow-m-tile">
           {t.live.length > 0 && !freeClassDone(videos, t.handle, DEMO_NOW.toISOString()) && (
             <li>
-              <Link href="/media/academy/videos?upload=1" className="group flex items-center gap-3 px-4 py-3.5 hover:bg-white/5 sm:px-5">
-                <MonitorPlay className="size-5 shrink-0 text-signal-orange" aria-hidden />
+              <Link href="/media/academy/videos?upload=1" className="group flex items-center gap-3 px-4 py-3.5 hover:bg-m-ink/3 sm:px-5">
+                <MonitorPlay className="size-5 shrink-0 text-m-blue" aria-hidden />
                 <span className="min-w-0 flex-1">
-                  <span className="block font-semibold text-white group-hover:text-signal-orange">এ সপ্তাহের বিনামূল্যের ক্লাস ভিডিও তুলুন</span>
-                  <span className="text-xs text-white/65">প্রতি সপ্তাহে একটা, সবার জন্য — সপ্তাহ শেষ শুক্রবার রাতে</span>
+                  <span className="block font-semibold text-m-ink group-hover:text-m-blue">এ সপ্তাহের বিনামূল্যের ক্লাস ভিডিও তুলুন</span>
+                  <span className="text-xs text-m-ink/65">প্রতি সপ্তাহে একটা, সবার জন্য — সপ্তাহ শেষ শুক্রবার রাতে</span>
                 </span>
-                <ArrowRight className="size-4 shrink-0 text-white/60 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                <ArrowRight className="size-4 shrink-0 text-m-ink/60 transition-transform group-hover:translate-x-0.5" aria-hidden />
               </Link>
             </li>
           )}
           {nextWeeks.map(({ course, lesson }) => (
             <li key={course.id}>
-              <Link href={`/media/academy/desk/${course.id}`} className="group flex items-center gap-3 px-4 py-3.5 hover:bg-white/5 sm:px-5">
-                <ListChecks className="size-5 shrink-0 text-signal-orange" aria-hidden />
+              <Link href={`/media/academy/desk/${course.id}`} className="group flex items-center gap-3 px-4 py-3.5 hover:bg-m-ink/3 sm:px-5">
+                <ListChecks className="size-5 shrink-0 text-m-blue" aria-hidden />
                 <span className="min-w-0 flex-1">
-                  <span className="block font-semibold text-white group-hover:text-signal-orange">সপ্তাহ <Num value={lesson!.week} />-এর হাজিরা নিন — {lesson!.title}</span>
-                  <span className="text-xs text-white/65">{course.id} · {course.title}</span>
+                  <span className="block font-semibold text-m-ink group-hover:text-m-blue">সপ্তাহ <Num value={lesson!.week} />-এর হাজিরা নিন — {lesson!.title}</span>
+                  <span className="text-xs text-m-ink/65">{course.id} · {course.title}</span>
                 </span>
-                <ArrowRight className="size-4 shrink-0 text-white/60 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                <ArrowRight className="size-4 shrink-0 text-m-ink/60 transition-transform group-hover:translate-x-0.5" aria-hidden />
               </Link>
             </li>
           ))}
           {toMark.length > 0 && (
             <li>
-              <Link href="/media/academy/panel" className="group flex items-center gap-3 px-4 py-3.5 hover:bg-white/5 sm:px-5">
-                <ClipboardCheck className="size-5 shrink-0 text-signal-orange" aria-hidden />
-                <span className="min-w-0 flex-1 font-semibold text-white group-hover:text-signal-orange"><Num value={toMark.length} />টি ফাইনাল ইন্টারভিউয়ে নম্বর দেওয়া বাকি</span>
-                <ArrowRight className="size-4 shrink-0 text-white/60" aria-hidden />
+              <Link href="/media/academy/panel" className="group flex items-center gap-3 px-4 py-3.5 hover:bg-m-ink/3 sm:px-5">
+                <ClipboardCheck className="size-5 shrink-0 text-m-blue" aria-hidden />
+                <span className="min-w-0 flex-1 font-semibold text-m-ink group-hover:text-m-blue"><Num value={toMark.length} />টি ফাইনাল ইন্টারভিউয়ে নম্বর দেওয়া বাকি</span>
+                <ArrowRight className="size-4 shrink-0 text-m-ink/60" aria-hidden />
               </Link>
             </li>
           )}
           {t.record.complaints.open > 0 && (
             <li className="flex items-center gap-3 px-4 py-3.5 sm:px-5">
-              <ShieldAlert className="size-5 shrink-0 text-signal-orange" aria-hidden />
-              <span className="text-sm text-white/85"><Num value={t.record.complaints.open} />টি অভিযোগ প্যানেলের কাছে — আপনার বক্তব্য চাওয়া হবে। কে লিখেছেন, তা দেখানো হয় না।</span>
+              <ShieldAlert className="size-5 shrink-0 text-m-blue" aria-hidden />
+              <span className="text-sm text-m-ink/85"><Num value={t.record.complaints.open} />টি অভিযোগ প্যানেলের কাছে — আপনার বক্তব্য চাওয়া হবে। কে লিখেছেন, তা দেখানো হয় না।</span>
             </li>
           )}
         </ul>
       </section>
 
       <section aria-labelledby="my-courses">
-        <h2 id="my-courses" className="mb-3 text-lg font-bold text-white">আমার কোর্স</h2>
+        <h2 id="my-courses" className="mb-3 text-lg font-bold text-m-ink">আমার কোর্স</h2>
         <ul className="space-y-3">
           {t.live.map((c) => <CourseRow key={c.id} course={c} held={held(c)} />)}
         </ul>
@@ -149,7 +149,7 @@ export function DeskHome() {
 
       {t.drafts.length > 0 && (
         <section aria-labelledby="drafts">
-          <h2 id="drafts" className="mb-3 text-lg font-bold text-white">প্যানেলের অনুমোদনের অপেক্ষায়</h2>
+          <h2 id="drafts" className="mb-3 text-lg font-bold text-m-ink">প্যানেলের অনুমোদনের অপেক্ষায়</h2>
           <ul className="space-y-3">
             {t.drafts.map((c) => <CourseRow key={c.id} course={c} held={0} draft />)}
           </ul>
@@ -161,19 +161,19 @@ export function DeskHome() {
 
 function CourseRow({ course, held, draft }: { course: Course; held: number; draft?: boolean }) {
   return (
-    <li className="flex flex-wrap items-center gap-4 rounded-2xl bg-text-primary p-3 ring-1 ring-white/12 sm:flex-nowrap sm:p-4">
-      <div className="relative aspect-video w-28 shrink-0 overflow-hidden rounded-xl bg-black">
+    <li className="flex flex-wrap items-center gap-4 rounded-2xl bg-m-card p-3 ring-1 ring-m-ink/10 sm:flex-nowrap sm:p-4 shadow-m-tile">
+      <div className="relative aspect-video w-28 shrink-0 overflow-hidden rounded-xl bg-m-canvas">
         <Image src={course.image} alt="" fill sizes="7rem" className="object-cover" />
       </div>
       <div className="min-w-0 flex-1">
-        <p className="font-mono text-xs font-bold text-signal-orange">{course.id}</p>
-        <p className="truncate font-semibold text-white">{course.title}</p>
-        <p className="mt-0.5 text-xs text-white/70">
+        <p className="font-mono text-xs font-bold text-m-blue">{course.id}</p>
+        <p className="truncate font-semibold text-m-ink">{course.title}</p>
+        <p className="mt-0.5 text-xs text-m-ink/70">
           {draft ? "জমা হয়েছে · প্যানেল ৭২ ঘণ্টায় দেখবে" : <><Num value={course.enrolled} /> / <Num value={course.seats} /> আসন{course.nextLive && <> · পরের ক্লাস <DateText iso={course.nextLive} time /></>}</>}
         </p>
         {!draft && (
           <div className="mt-2 flex gap-1" aria-label={`${course.lessons.length}টির মধ্যে ${held}টি ক্লাস হয়েছে`}>
-            {course.lessons.map((l, i) => <span key={l.week} className={cn("h-1.5 flex-1 rounded-full", i < held ? "bg-signal-orange" : "bg-white/12")} />)}
+            {course.lessons.map((l, i) => <span key={l.week} className={cn("h-1.5 flex-1 rounded-full", i < held ? "bg-m-yellow" : "bg-m-ink/7")} />)}
           </div>
         )}
       </div>
@@ -187,10 +187,10 @@ function CourseRow({ course, held, draft }: { course: Course; held: number; draf
 /** A small board-and-pointer glyph for the closed desk. */
 function Presenter() {
   return (
-    <svg viewBox="0 0 64 48" className="mx-auto h-14 text-signal-orange" aria-hidden>
+    <svg viewBox="0 0 64 48" className="mx-auto h-14 text-m-blue" aria-hidden>
       <rect x="6" y="4" width="52" height="30" rx="4" className="fill-current" />
-      <rect x="11" y="9" width="42" height="20" rx="2" className="fill-bd-green-dark" />
-      <path d="M17 23 L27 15 L35 21 L47 12" className="fill-none stroke-white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      <rect x="11" y="9" width="42" height="20" rx="2" className="fill-m-blue-deep" />
+      <path d="M17 23 L27 15 L35 21 L47 12" className="fill-none stroke-m-ink" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
       <rect x="29" y="34" width="6" height="10" className="fill-current" />
       <rect x="20" y="43" width="24" height="3" rx="1.5" className="fill-current" />
     </svg>

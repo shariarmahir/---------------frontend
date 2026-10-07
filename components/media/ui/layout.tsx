@@ -19,14 +19,14 @@ export function PageHeader({
     <header className="live-in mb-6 flex flex-wrap items-end justify-between gap-4">
       <div className="min-w-0">
         {back && (
-          <Link href={back.href} className="group mb-2 inline-flex min-h-8 items-center gap-1.5 text-sm font-semibold text-signal-orange">
+          <Link href={back.href} className="group mb-2 inline-flex min-h-8 items-center gap-1.5 text-sm font-semibold text-m-blue">
             <ArrowLeft className="size-4 transition-transform duration-200 group-hover:-translate-x-1" aria-hidden />
             {back.label}
           </Link>
         )}
         <PixelMark tone="dark" className="mb-2" />
-        <h1 className="text-2xl font-bold tracking-tight text-balance text-white sm:text-[2rem] sm:leading-tight">{title}</h1>
-        {subtitle && <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/80">{subtitle}</p>}
+        <h1 className="text-2xl font-bold tracking-tight text-balance text-m-ink sm:text-[2rem] sm:leading-tight">{title}</h1>
+        {subtitle && <p className="mt-2 max-w-2xl text-sm leading-relaxed text-m-ink/80">{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
     </header>
@@ -48,10 +48,10 @@ export function Panel({
   as?: "section" | "div" | "aside" | "article";
 }) {
   return (
-    <Tag className={cn("story-reveal rounded-2xl bg-text-primary p-4 ring-1 ring-white/12 sm:p-6", className)}>
+    <Tag className={cn("story-reveal rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 sm:p-6 shadow-m-tile", className)}>
       {(title || action) && (
         <div className="mb-4 flex items-center justify-between gap-2">
-          {title && <h2 className="text-base font-bold text-signal-orange">{title}</h2>}
+          {title && <h2 className="text-base font-bold text-m-blue">{title}</h2>}
           {action}
         </div>
       )}

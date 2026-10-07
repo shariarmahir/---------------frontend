@@ -21,13 +21,13 @@ import { fromMine, fromSeed, reply, type DealThread } from "./deal";
 export type ChatPerson = Pick<Person, "handle" | "nameBn" | "initials" | "tone" | "headline" | "idVerified">;
 
 const statusChip: Record<NegotiationStatus, { bn: string; className: string }> = {
-  open: { bn: "নতুন", className: "bg-white/10 text-white/80" },
-  "awaiting-seller": { bn: "উত্তরের অপেক্ষা", className: "bg-signal-orange text-text-primary" },
-  countered: { bn: "পাল্টা দাম", className: "bg-bdorange-600 text-text-primary" },
-  declined: { bn: "ফিরিয়েছে", className: "bg-national-crimson text-white" },
-  exhausted: { bn: "প্রস্তাব শেষ", className: "bg-national-crimson text-white" },
-  agreed: { bn: "রাজি", className: "bg-white/10 text-signal-orange" },
-  booked: { bn: "চুক্তি হয়েছে", className: "bg-bd-green text-white" },
+  open: { bn: "নতুন", className: "bg-m-ink/6 text-m-ink/80" },
+  "awaiting-seller": { bn: "উত্তরের অপেক্ষা", className: "bg-m-yellow text-m-ink" },
+  countered: { bn: "পাল্টা দাম", className: "bg-m-red-soft text-m-ink" },
+  declined: { bn: "ফিরিয়েছে", className: "bg-m-red text-m-on" },
+  exhausted: { bn: "প্রস্তাব শেষ", className: "bg-m-red text-m-on" },
+  agreed: { bn: "রাজি", className: "bg-m-ink/6 text-m-blue" },
+  booked: { bn: "চুক্তি হয়েছে", className: "bg-m-blue-soft text-m-ink" },
 };
 
 const roundText: Record<Round["kind"], (a: number) => React.ReactNode> = {
@@ -106,11 +106,11 @@ export function MessagesApp({ seed, people, me }: { seed: Thread[]; people: Reco
   }
 
   return (
-    <div className="flex h-[calc(100dvh-11.5rem)] min-h-120 overflow-hidden rounded-2xl border border-white/12 bg-text-primary lg:h-[calc(100dvh-7.5rem)]">
-      <section aria-label="কথোপকথন" className={cn("flex w-full flex-col border-white/12 lg:w-84 lg:shrink-0 lg:border-r", thread && "hidden lg:flex")}>
-        <div className="border-b border-white/12 px-4 py-4">
-          <h1 className="text-lg font-bold text-white">বার্তা ও ডিল</h1>
-          <p className="text-xs text-white/65">হায়ার ও দরদাম — সব এক জায়গায়</p>
+    <div className="flex h-[calc(100dvh-11.5rem)] min-h-120 overflow-hidden rounded-2xl border border-m-ink/10 bg-m-card lg:h-[calc(100dvh-7.5rem)] shadow-m-tile">
+      <section aria-label="কথোপকথন" className={cn("flex w-full flex-col border-m-ink/10 lg:w-84 lg:shrink-0 lg:border-r", thread && "hidden lg:flex")}>
+        <div className="border-b border-m-ink/10 px-4 py-4">
+          <h1 className="text-lg font-bold text-m-ink">বার্তা ও ডিল</h1>
+          <p className="text-xs text-m-ink/65">হায়ার ও দরদাম — সব এক জায়গায়</p>
         </div>
         {!hydrated ? (
           <ThreadListSkeleton />
@@ -131,22 +131,22 @@ export function MessagesApp({ seed, people, me }: { seed: Thread[]; people: Reco
                     href={`/media/messages?t=${t.id}`}
                     scroll={false}
                     aria-current={t.id === thread?.id ? "true" : undefined}
-                    className={cn("flex gap-3 border-b border-white/12 px-4 py-3.5 transition-colors hover:bg-white/10", t.id === thread?.id && "bg-black shadow-[inset_3px_0_0_var(--color-signal-orange)] hover:bg-black")}
+                    className={cn("flex gap-3 border-b border-m-ink/10 px-4 py-3.5 transition-colors hover:bg-m-ink/6", t.id === thread?.id && "bg-m-canvas shadow-[inset_3px_0_0_var(--color-signal-orange)] hover:bg-m-canvas")}
                   >
                     {p && <PersonAvatar person={p} />}
                     <span className="min-w-0 flex-1">
                       <span className="flex items-baseline justify-between gap-2">
-                        <span className="truncate text-sm font-bold text-white">{p?.nameBn}</span>
-                        {lastMsg && <span className="shrink-0 text-[11px] text-white/65"><Ago iso={lastMsg.at} live={lastLive} /></span>}
+                        <span className="truncate text-sm font-bold text-m-ink">{p?.nameBn}</span>
+                        {lastMsg && <span className="shrink-0 text-[11px] text-m-ink/65"><Ago iso={lastMsg.at} live={lastLive} /></span>}
                       </span>
-                      <span className="flex items-center gap-1 truncate text-xs text-white/80">
+                      <span className="flex items-center gap-1 truncate text-xs text-m-ink/80">
                         {t.kind === "hire" ? <BriefcaseBusiness className="size-3.5 shrink-0" aria-hidden /> : <Handshake className="size-3.5 shrink-0" aria-hidden />}
                         <span className="truncate">{t.subject}</span>
                       </span>
                       <span className="mt-1.5 flex items-center justify-between gap-2">
                         <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-bold", chip.className)}>{chip.bn}</span>
                         {t.unread > 0 && !read[t.id] && (
-                          <span className="min-w-5 rounded-full bg-signal-orange px-1.5 text-center text-[11px] leading-5 font-bold text-text-primary">
+                          <span className="min-w-5 rounded-full bg-m-yellow px-1.5 text-center text-[11px] leading-5 font-bold text-m-ink">
                             <Num value={t.unread} />
                           </span>
                         )}
@@ -167,31 +167,31 @@ export function MessagesApp({ seed, people, me }: { seed: Thread[]; people: Reco
           </div>
         ) : (
           <>
-            <header className="flex items-center gap-3 border-b border-white/12 px-3 py-2.5 sm:px-4">
+            <header className="flex items-center gap-3 border-b border-m-ink/10 px-3 py-2.5 sm:px-4">
               <button type="button" onClick={() => router.push("/media/messages", { scroll: false })} className={mediaButton({ variant: "ghost", size: "icon", className: "lg:hidden" })}>
                 <ArrowLeft aria-hidden />
                 <span className="sr-only">সব বার্তা</span>
               </button>
               <PersonAvatar person={other} />
               <div className="min-w-0 flex-1">
-                <p className="flex items-center gap-1 truncate text-sm font-bold text-white">
+                <p className="flex items-center gap-1 truncate text-sm font-bold text-m-ink">
                   {other.nameBn} {other.idVerified && <IdSeal size={16} />}
                 </p>
-                <p className="truncate text-xs text-white/65">{thread.subject}</p>
+                <p className="truncate text-xs text-m-ink/65">{thread.subject}</p>
               </div>
               <Link href={`/media/u/${other.handle}`} className={mediaButton({ variant: "quiet", size: "sm", className: "hidden sm:inline-flex" })}>
                 প্রোফাইল
               </Link>
             </header>
 
-            <div className="flex-1 space-y-3 overflow-y-auto bg-black px-3 py-4 sm:px-5" aria-live="polite">
-              <p className="mx-auto max-w-sm rounded-xl bg-text-primary px-3 py-2 text-center text-xs text-white/65 ring-1 ring-white/12">
+            <div className="flex-1 space-y-3 overflow-y-auto bg-m-canvas px-3 py-4 sm:px-5" aria-live="polite">
+              <p className="mx-auto max-w-sm rounded-xl bg-m-card px-3 py-2 text-center text-xs text-m-ink/65 ring-1 ring-m-ink/10">
                 দাম চাওয়া হয়েছে <Taka amount={thread.ask} />। টাকা প্ল্যাটফর্মের এসক্রোতে থাকবে — বাইরে অগ্রিম দেবেন না।
               </p>
               {thread.brief && (
-                <div className="mx-auto max-w-md rounded-xl border border-white/12 bg-text-primary p-3 text-sm">
-                  <p className="mb-1 flex items-center gap-1.5 text-xs font-bold text-signal-orange"><BriefcaseBusiness className="size-3.5" aria-hidden />কাজের বিবরণ</p>
-                  <p className="whitespace-pre-line text-white">{thread.brief}</p>
+                <div className="mx-auto max-w-md rounded-xl border border-m-ink/10 bg-m-card p-3 text-sm">
+                  <p className="mb-1 flex items-center gap-1.5 text-xs font-bold text-m-blue"><BriefcaseBusiness className="size-3.5" aria-hidden />কাজের বিবরণ</p>
+                  <p className="whitespace-pre-line text-m-ink">{thread.brief}</p>
                 </div>
               )}
               {items.map((it) => {
@@ -203,7 +203,7 @@ export function MessagesApp({ seed, people, me }: { seed: Thread[]; people: Reco
                       <span
                         className={cn(
                           "inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-sm font-semibold",
-                          good ? "border-signal-orange/30 bg-white/10 text-signal-orange" : it.round.kind === "decline" ? "border-crimson-bright/60 bg-national-crimson text-white" : "border-bdorange-600/60 bg-bdorange-600 text-text-primary",
+                          good ? "border-m-blue/30 bg-m-ink/6 text-m-blue" : it.round.kind === "decline" ? "border-m-red/60 bg-m-red text-m-on" : "border-m-red/60 bg-m-red-soft text-m-ink",
                         )}
                       >
                         {good ? <SealCheck size={18} weight="duotone" aria-hidden /> : <Handshake className="size-4" aria-hidden />}
@@ -219,7 +219,7 @@ export function MessagesApp({ seed, people, me }: { seed: Thread[]; people: Reco
                     <p
                       className={cn(
                         "max-w-[80%] rounded-2xl px-3.5 py-2 text-[15px] leading-relaxed whitespace-pre-line",
-                        fromMe ? "rounded-br-md bg-bd-green text-white" : "rounded-bl-md bg-text-primary text-white ring-1 ring-white/12",
+                        fromMe ? "rounded-br-md bg-m-blue-soft text-m-ink" : "rounded-bl-md bg-m-card text-m-ink ring-1 ring-m-ink/10",
                       )}
                     >
                       {it.text}
@@ -237,7 +237,7 @@ export function MessagesApp({ seed, people, me }: { seed: Thread[]; people: Reco
                 e.preventDefault();
                 send();
               }}
-              className="flex items-end gap-2 border-t border-white/12 p-2.5"
+              className="flex items-end gap-2 border-t border-m-ink/10 p-2.5"
             >
               <label className="flex-1">
                 <span className="sr-only">বার্তা লিখুন</span>
@@ -253,7 +253,7 @@ export function MessagesApp({ seed, people, me }: { seed: Thread[]; people: Reco
                     }
                   }}
                   placeholder="বার্তা লিখুন…"
-                  className="max-h-32 min-h-11 w-full resize-none rounded-xl border border-white/12 px-3 py-2.5 text-[15px] focus:border-signal-orange focus:ring-3 focus:ring-signal-orange/15 focus:outline-none"
+                  className="max-h-32 min-h-11 w-full resize-none rounded-xl border border-m-ink/10 px-3 py-2.5 text-[15px] focus:border-m-blue focus:ring-3 focus:ring-m-blue/15 focus:outline-none"
                 />
               </label>
               <button type="submit" disabled={!draft.trim()} className={mediaButton({ variant: "green", size: "icon", className: "size-11" })}>

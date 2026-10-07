@@ -165,18 +165,18 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
   }
 
   return (
-    <section aria-label="Discussion Room" className="flex h-full min-h-0 flex-col bg-black">
-      <header className="space-y-2.5 border-b border-white/12 px-4 py-3">
+    <section aria-label="Discussion Room" className="flex h-full min-h-0 flex-col bg-m-canvas">
+      <header className="space-y-2.5 border-b border-m-ink/10 px-4 py-3">
         <div className="flex items-center gap-3">
-          <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-bd-green text-white">
+          <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-m-blue-soft text-m-ink">
             <MessagesSquare className="size-5" aria-hidden />
           </span>
           <div className="min-w-0 flex-1">
-            <h2 className="text-base font-bold text-white">Discussion Room</h2>
-            <p className="truncate text-xs text-white/65">{room?.teacher ? `শিক্ষক: ${room.teacher}` : "শিক্ষক আর পুরো ক্লাস"}</p>
+            <h2 className="text-base font-bold text-m-ink">Discussion Room</h2>
+            <p className="truncate text-xs text-m-ink/65">{room?.teacher ? `শিক্ষক: ${room.teacher}` : "শিক্ষক আর পুরো ক্লাস"}</p>
           </div>
           {onClose && (
-            <button type="button" onClick={onClose} className="grid size-9 place-items-center rounded-lg text-white/70 transition-colors hover:bg-white/10 hover:text-white">
+            <button type="button" onClick={onClose} className="grid size-9 place-items-center rounded-lg text-m-ink/70 transition-colors hover:bg-m-ink/6 hover:text-m-ink">
               <X className="size-5" aria-hidden />
               <span className="sr-only">চ্যাট বন্ধ করুন</span>
             </button>
@@ -192,7 +192,7 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
               value={id ?? ""}
               onChange={(e) => setPicked(e.target.value)}
               disabled={Boolean(current && rooms.some((r) => r.id === current))}
-              className="h-10 w-full appearance-none rounded-xl bg-text-primary pr-9 pl-3 text-sm font-semibold text-white ring-1 ring-white/12 outline-none focus-visible:ring-signal-orange disabled:opacity-100"
+              className="h-10 w-full appearance-none rounded-xl bg-m-card pr-9 pl-3 text-sm font-semibold text-m-ink ring-1 ring-m-ink/10 outline-none focus-visible:ring-m-blue disabled:opacity-100"
             >
               {rooms.map((r) => (
                 <option key={r.id} value={r.id}>
@@ -203,14 +203,14 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
               ))}
             </select>
             {room?.kind === "lab" ? (
-              <FlaskConical className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-signal-orange" aria-hidden />
+              <FlaskConical className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-m-blue" aria-hidden />
             ) : (
-              <GraduationCap className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-signal-orange" aria-hidden />
+              <GraduationCap className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-m-blue" aria-hidden />
             )}
           </div>
         )}
         {open.length > 0 && (
-          <p className="inline-flex items-center gap-1.5 rounded-full bg-signal-orange/15 px-2.5 py-1 text-xs font-bold text-signal-orange">
+          <p className="inline-flex items-center gap-1.5 rounded-full bg-m-yellow/15 px-2.5 py-1 text-xs font-bold text-m-blue">
             <HelpCircle className="size-3.5" aria-hidden /> শিক্ষকের উত্তরের অপেক্ষায় {num(open.length)}টি প্রশ্ন
           </p>
         )}
@@ -239,7 +239,7 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
 
       <div className="scrollbar-gold min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4">
         {list.length === 0 ? (
-          <p className="px-2 pt-6 text-center text-sm text-white/60">এখনো কেউ লেখেনি। প্রথম বার্তাটা আপনিই দিন।</p>
+          <p className="px-2 pt-6 text-center text-sm text-m-ink/60">এখনো কেউ লেখেনি। প্রথম বার্তাটা আপনিই দিন।</p>
         ) : (
           <ol className="space-y-3">
             {list.map((m, i) => {
@@ -253,39 +253,39 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
                 <Fragment key={m.id}>
                   {newDay && (
                     <li className="flex justify-center pt-1" aria-hidden>
-                      <span className="rounded-full bg-white/8 px-3 py-0.5 text-[11px] font-semibold text-white/60">{day(m.at)}</span>
+                      <span className="rounded-full bg-m-ink/4 px-3 py-0.5 text-[11px] font-semibold text-m-ink/60">{day(m.at)}</span>
                     </li>
                   )}
                   <li id={`msg-${m.id}`} className={cn("group/msg flex flex-col gap-1", self ? "items-end" : "items-start")}>
                     {!self && (
-                      <p className="flex items-center gap-1.5 px-1 text-xs font-semibold text-white/70">
+                      <p className="flex items-center gap-1.5 px-1 text-xs font-semibold text-m-ink/70">
                         {m.byName}
-                        {teacher && <span className="rounded-full bg-bd-green px-1.5 py-px text-[10px] font-bold text-white">শিক্ষক</span>}
-                        {m.byRole === "leader" && <span className="rounded-full bg-white/10 px-1.5 py-px text-[10px] font-bold text-signal-orange">{room?.kind === "lab" ? "লিডার" : "সিআর"}</span>}
+                        {teacher && <span className="rounded-full bg-m-blue-soft px-1.5 py-px text-[10px] font-bold text-m-ink">শিক্ষক</span>}
+                        {m.byRole === "leader" && <span className="rounded-full bg-m-ink/6 px-1.5 py-px text-[10px] font-bold text-m-blue">{room?.kind === "lab" ? "লিডার" : "সিআর"}</span>}
                       </p>
                     )}
                     <div
                       className={cn(
                         "relative max-w-[88%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed break-words whitespace-pre-wrap transition-shadow duration-300",
                         self ? "rounded-tr-md" : "rounded-tl-md",
-                        mark ? cn(PAPER[mark].paper, "font-medium") : self ? "bg-signal-orange font-medium text-text-primary" : teacher ? "bg-bd-green text-white" : "bg-text-primary text-white ring-1 ring-white/12",
-                        flash === m.id && "ring-2 ring-white ring-offset-2 ring-offset-black",
+                        mark ? cn(PAPER[mark].paper, "font-medium") : self ? "bg-m-yellow font-medium text-m-ink" : teacher ? "bg-m-blue-soft text-m-ink" : "bg-m-card text-m-ink ring-1 ring-m-ink/10",
+                        flash === m.id && "ring-2 ring-white ring-offset-2 ring-offset-white",
                       )}
                     >
                       {m.ask && (
-                        <span className={cn("mb-1 flex items-center gap-1 text-[11px] font-bold", mark ? "opacity-80" : self ? "text-text-primary/75" : "text-signal-orange")}>
+                        <span className={cn("mb-1 flex items-center gap-1 text-[11px] font-bold", mark ? "opacity-80" : self ? "text-m-ink/75" : "text-m-blue")}>
                           <HelpCircle className="size-3.5" aria-hidden /> শিক্ষকের কাছে প্রশ্ন{waiting ? " · উত্তরের অপেক্ষায়" : ""}
                         </span>
                       )}
                       {m.text}
                       {mark && (
-                        <span className="absolute -top-1.5 -right-1.5 grid size-5 place-items-center rounded-full bg-text-primary text-signal-orange ring-2 ring-black">
+                        <span className="absolute -top-1.5 -right-1.5 grid size-5 place-items-center rounded-full bg-m-card text-m-blue ring-2 ring-white">
                           <Highlighter className="size-3" aria-label={`মার্ক করা — ${PAPER[mark].bn}`} />
                         </span>
                       )}
                     </div>
                     <div className={cn("flex flex-wrap items-center gap-x-1", self && "justify-end")}>
-                      <time dateTime={m.at} className="px-1 text-[10px] text-white/45">
+                      <time dateTime={m.at} className="px-1 text-[10px] text-m-ink/45">
                         {time(m.at)}
                       </time>
                       {mayPin && (
@@ -308,27 +308,27 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
       </div>
 
       {parent ? (
-        <p className="flex items-start gap-2 border-t border-white/12 px-4 py-3 text-xs leading-relaxed text-white/70">
-          <Eye className="mt-0.5 size-4 shrink-0 text-signal-orange" aria-hidden /> অভিভাবক হিসেবে শুধু পড়ছেন — ক্লাসের চ্যাটে লেখা, পিন বা মার্ক করা যায় না। কিছু জানাতে চাইলে শিক্ষকের সঙ্গে সরাসরি যোগাযোগ করুন।
+        <p className="flex items-start gap-2 border-t border-m-ink/10 px-4 py-3 text-xs leading-relaxed text-m-ink/70">
+          <Eye className="mt-0.5 size-4 shrink-0 text-m-blue" aria-hidden /> অভিভাবক হিসেবে শুধু পড়ছেন — ক্লাসের চ্যাটে লেখা, পিন বা মার্ক করা যায় না। কিছু জানাতে চাইলে শিক্ষকের সঙ্গে সরাসরি যোগাযোগ করুন।
         </p>
       ) : !writable ? (
-        <p className="border-t border-white/12 px-4 py-3 text-xs leading-relaxed text-white/70">
+        <p className="border-t border-m-ink/10 px-4 py-3 text-xs leading-relaxed text-m-ink/70">
           এই ক্লাসে যোগ দিলে লিখতে পারবেন।{" "}
           {room && (
-            <Link href={room.kind === "lab" ? `/media/classroom/lab/${room.id}` : `/media/classroom/${room.id}`} className="font-bold text-signal-orange hover:underline">
+            <Link href={room.kind === "lab" ? `/media/classroom/lab/${room.id}` : `/media/classroom/${room.id}`} className="font-bold text-m-blue hover:underline">
               ক্লাসটা খুলুন
             </Link>
           )}
         </p>
       ) : (
         <form
-          className="border-t border-white/12 p-3"
+          className="border-t border-m-ink/10 p-3"
           onSubmit={(e) => {
             e.preventDefault();
             send();
           }}
         >
-          <div className="rounded-2xl bg-text-primary ring-1 ring-white/12 focus-within:ring-signal-orange/60">
+          <div className="rounded-2xl bg-m-card ring-1 ring-m-ink/10 focus-within:ring-m-blue/60 shadow-m-tile">
             <label htmlFor="class-chat-box" className="sr-only">
               ক্লাসে লিখুন
             </label>
@@ -347,7 +347,7 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
               rows={ask ? 4 : 2}
               maxLength={MSG_MAX}
               placeholder={role === "teacher" ? "ক্লাসকে কিছু বলুন" : ask ? "শিক্ষককে প্রশ্নটা লিখুন — অথবা এলোমেলো কথা লিখে “AI দিয়ে বানান” চাপুন" : "ক্লাসে লিখুন"}
-              className="block max-h-40 min-h-12 w-full resize-none bg-transparent px-3.5 pt-3 text-sm leading-relaxed text-white outline-none placeholder:text-white/45"
+              className="block max-h-40 min-h-12 w-full resize-none bg-transparent px-3.5 pt-3 text-sm leading-relaxed text-m-ink outline-none placeholder:text-m-ink/45"
             />
             <div className="flex items-center gap-2 px-2 pb-2">
               {role !== "teacher" && (
@@ -356,7 +356,7 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
                     type="button"
                     onClick={() => setAsk((a) => !a)}
                     aria-pressed={ask}
-                    className={cn("inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-bold transition-colors", ask ? "bg-signal-orange text-text-primary" : "text-white/70 ring-1 ring-white/15 hover:text-white")}
+                    className={cn("inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-bold transition-colors", ask ? "bg-m-yellow text-m-ink" : "text-m-ink/70 ring-1 ring-m-ink/13 hover:text-m-ink")}
                   >
                     <HelpCircle className="size-3.5" aria-hidden /> শিক্ষককে প্রশ্ন
                   </button>
@@ -364,7 +364,7 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
                     type="button"
                     onClick={() => void buildQuestion()}
                     title="AI দিয়ে প্রশ্ন বানান — খসড়া বা শিক্ষকের শেষ কথা থেকে স্পষ্ট একটা প্রশ্ন সাজিয়ে দেয়"
-                    className={cn("inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-bold text-signal-orange ring-1 ring-signal-orange/50 transition-colors hover:bg-signal-orange/10", question.building && "bg-signal-orange/10")}
+                    className={cn("inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-bold text-m-blue ring-1 ring-m-blue/50 transition-colors hover:bg-m-yellow/10", question.building && "bg-m-yellow/10")}
                   >
                     {question.building ? <LoaderCircle className="size-3.5 animate-spin motion-reduce:animate-none" aria-hidden /> : <WandSparkles className="size-3.5" aria-hidden />}
                     {question.building ? "থামান" : "AI দিয়ে বানান"}
@@ -372,7 +372,7 @@ export function ClassChatPanel({ rooms, current, onClose }: { rooms: RoomCard[];
                 </>
               )}
               <span className="flex-1" />
-              <button type="submit" disabled={!draft.trim() || question.building} className="grid size-9 place-items-center rounded-xl bg-signal-orange text-text-primary transition-[scale,opacity] active:scale-95 disabled:opacity-40">
+              <button type="submit" disabled={!draft.trim() || question.building} className="grid size-9 place-items-center rounded-xl bg-m-yellow text-m-ink transition-[scale,opacity] active:scale-95 disabled:opacity-40">
                 <SendHorizontal className="size-4.5" aria-hidden />
                 <span className="sr-only">পাঠান</span>
               </button>

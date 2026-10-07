@@ -147,14 +147,14 @@ export function BoardForm() {
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_21rem]">
-      <form noValidate onSubmit={publish} className="min-w-0 space-y-6 rounded-3xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-7">
+      <form noValidate onSubmit={publish} className="min-w-0 space-y-6 rounded-3xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-7 shadow-m-tile">
         <fieldset className="grid grid-cols-2 gap-3">
           <legend className="sr-only">কোন দিকের পোস্ট</legend>
           {([
-            { k: "sell", Icon: Store, on: "bg-bd-green text-white ring-bd-green" },
-            { k: "buy", Icon: PackageSearch, on: "bg-signal-orange text-text-primary ring-signal-orange" },
+            { k: "sell", Icon: Store, on: "bg-m-blue-soft text-m-ink ring-m-blue" },
+            { k: "buy", Icon: PackageSearch, on: "bg-m-yellow text-m-ink ring-m-blue" },
           ] as const).map(({ k, Icon, on }) => (
-            <label key={k} className={cn("flex cursor-pointer flex-col gap-2 rounded-2xl p-4 ring-2 transition-[translate,background-color] duration-300 hover:-translate-y-0.5 has-focus-visible:ring-white motion-reduce:transition-none", d.side === k ? on : "bg-black/40 text-white ring-white/12 hover:ring-white/30")}>
+            <label key={k} className={cn("flex cursor-pointer flex-col gap-2 rounded-2xl p-4 ring-2 transition-[translate,background-color] duration-300 hover:-translate-y-0.5 has-focus-visible:ring-white motion-reduce:transition-none", d.side === k ? on : "bg-white/65 text-m-ink ring-m-ink/10 hover:ring-m-ink/26")}>
               <input type="radio" name="side" className="sr-only" checked={d.side === k} onChange={() => setD((x) => ({ ...x, side: k, mode: k === "sell" ? "wholesale" : "retail", sampleTest: false }))} />
               <Icon className="size-6" aria-hidden />
               <span className="text-lg font-bold">{SIDES[k].bn}</span>
@@ -195,7 +195,7 @@ export function BoardForm() {
           </div>
 
           <fieldset>
-            <legend className="mb-2 text-sm font-semibold text-white">{buy ? "কী জন্য কিনছেন" : "কাদের কাছে বিক্রি করবেন"}</legend>
+            <legend className="mb-2 text-sm font-semibold text-m-ink">{buy ? "কী জন্য কিনছেন" : "কাদের কাছে বিক্রি করবেন"}</legend>
             <div className="flex flex-wrap gap-2">
               {(Object.keys(MODES) as TradeMode[]).map((k) => (
                 <label key={k} className={choiceClass(d.mode === k)} title={MODES[k].hint}>
@@ -209,13 +209,13 @@ export function BoardForm() {
           {(farmOrFood || (buy && d.mode === "export")) && (
             <div className="grid gap-2 sm:grid-cols-2">
               {farmOrFood && (
-                <label htmlFor="organic" className="flex min-h-12 items-center justify-between gap-3 rounded-xl bg-white/5 px-3 text-sm font-semibold text-white">
+                <label htmlFor="organic" className="flex min-h-12 items-center justify-between gap-3 rounded-xl bg-m-ink/3 px-3 text-sm font-semibold text-m-ink">
                   {buy ? "শুধু বিষমুক্ত চাই" : "বিষমুক্ত / অর্গানিক"}
                   <Switch id="organic" checked={d.organic} onCheckedChange={(v) => set("organic", v)} />
                 </label>
               )}
               {buy && d.mode === "export" && (
-                <label htmlFor="sampleTest" className="flex min-h-12 items-center justify-between gap-3 rounded-xl bg-white/5 px-3 text-sm font-semibold text-white">
+                <label htmlFor="sampleTest" className="flex min-h-12 items-center justify-between gap-3 rounded-xl bg-m-ink/3 px-3 text-sm font-semibold text-m-ink">
                   আগে নমুনা ও ল্যাব টেস্ট
                   <Switch id="sampleTest" checked={d.sampleTest} onCheckedChange={(v) => set("sampleTest", v)} />
                 </label>
@@ -239,7 +239,7 @@ export function BoardForm() {
           </Row>
         </div>
 
-        <div className="flex justify-end border-t border-white/10 pt-5">
+        <div className="flex justify-end border-t border-m-ink/9 pt-5">
           <button type="submit" disabled={Boolean(banned)} className={mediaButton({ variant: buy ? "primary" : "green", size: "lg" })}>
             বোর্ডে পোস্ট করুন
           </button>
@@ -247,15 +247,15 @@ export function BoardForm() {
       </form>
 
       <aside className="space-y-4 lg:sticky lg:top-22 lg:self-start" aria-label="প্রিভিউ ও অটো-মিল">
-        <p className="text-xs font-semibold text-white/60">বোর্ডে যেমন দেখাবে</p>
+        <p className="text-xs font-semibold text-m-ink/60">বোর্ডে যেমন দেখাবে</p>
         <div inert className="pointer-events-none select-none">
           <BoardCard post={post} author={currentUser} sellers={sellers} buyers={buyers} mine />
         </div>
-        <div className={cn("flex items-start gap-2 rounded-2xl p-3 text-sm text-white", banned ? "bg-national-crimson" : "bg-bd-green")} role={banned ? "alert" : undefined}>
+        <div className={cn("flex items-start gap-2 rounded-2xl p-3 text-sm text-m-ink", banned ? "bg-m-red" : "bg-m-blue-soft")} role={banned ? "alert" : undefined}>
           {banned ? <ShieldAlert className="mt-0.5 size-4.5 shrink-0" aria-hidden /> : <ShieldCheck className="mt-0.5 size-4.5 shrink-0" aria-hidden />}
           {banned ? <span>“{banned}” আইনে নিষিদ্ধ — এই পোস্ট প্রকাশ করা যাবে না।</span> : <span>বৈধতা যাচাই: কোনো নিষিদ্ধ পণ্যের নাম নেই।</span>}
         </div>
-        <p className="text-xs leading-relaxed text-white/60">{resolveSub(d.sub).section.hint}</p>
+        <p className="text-xs leading-relaxed text-m-ink/60">{resolveSub(d.sub).section.hint}</p>
       </aside>
     </div>
   );

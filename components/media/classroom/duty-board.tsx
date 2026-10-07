@@ -33,11 +33,11 @@ export const DUTY_ICONS: Record<DutyIcon, LucideIcon> = {
 
 /** Duty colours in a fixed order, so a duty keeps its colour across days. */
 const TONES = [
-  { fill: "var(--color-signal-orange)", ink: "var(--color-text-primary)", chip: "bg-signal-orange text-text-primary" },
-  { fill: "var(--color-bd-green)", ink: "white", chip: "bg-bd-green text-white" },
-  { fill: "var(--color-bdorange-600)", ink: "var(--color-text-primary)", chip: "bg-bdorange-600 text-text-primary" },
-  { fill: "white", ink: "var(--color-text-primary)", chip: "bg-white text-text-primary" },
-  { fill: "var(--color-bdgreen-500)", ink: "var(--color-text-primary)", chip: "bg-bdgreen-500 text-text-primary" },
+  { fill: "var(--color-signal-orange)", ink: "var(--color-text-primary)", chip: "bg-m-yellow text-m-ink" },
+  { fill: "var(--color-bd-green)", ink: "white", chip: "bg-m-blue-soft text-m-ink" },
+  { fill: "var(--color-bdorange-600)", ink: "var(--color-text-primary)", chip: "bg-m-red-soft text-m-ink" },
+  { fill: "white", ink: "var(--color-text-primary)", chip: "bg-m-ink text-m-on" },
+  { fill: "var(--color-bdgreen-500)", ink: "var(--color-text-primary)", chip: "bg-m-green-soft text-m-ink" },
 ] as const;
 
 const toneOf = (duties: Duty[], id: string) => TONES[Math.max(0, duties.findIndex((d) => d.id === id)) % TONES.length];
@@ -111,13 +111,13 @@ export function DutyBoard({ team, members, rota, seed, now, meId, member, leader
     <section aria-labelledby="duty-title" className="space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 id="duty-title" className="text-xl font-bold text-white">দায়িত্বের পালা</h2>
-          <p className="text-sm text-white/65">প্রতি শনিবার নতুন করে ভাগ হয় — কেউ এক কাজে আটকে থাকে না, সবাই সব কাজ শেখে।</p>
+          <h2 id="duty-title" className="text-xl font-bold text-m-ink">দায়িত্বের পালা</h2>
+          <p className="text-sm text-m-ink/65">প্রতি শনিবার নতুন করে ভাগ হয় — কেউ এক কাজে আটকে থাকে না, সবাই সব কাজ শেখে।</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <div role="group" aria-label="সপ্তাহ" className="flex rounded-xl bg-text-primary p-1 ring-1 ring-white/12">
+          <div role="group" aria-label="সপ্তাহ" className="flex rounded-xl bg-m-card p-1 ring-1 ring-m-ink/10">
             {["এই সপ্তাহ", "পরের সপ্তাহ"].map((label, i) => (
-              <button key={label} type="button" aria-pressed={ahead === i} onClick={() => { setAhead(i); setPicked(null); }} className={cn("min-h-9 rounded-lg px-3 text-sm font-bold transition-colors", ahead === i ? "bg-signal-orange text-text-primary" : "text-white/75 hover:text-white")}>
+              <button key={label} type="button" aria-pressed={ahead === i} onClick={() => { setAhead(i); setPicked(null); }} className={cn("min-h-9 rounded-lg px-3 text-sm font-bold transition-colors", ahead === i ? "bg-m-yellow text-m-ink" : "text-m-ink/75 hover:text-m-ink")}>
                 {label}
               </button>
             ))}
@@ -149,15 +149,15 @@ export function DutyBoard({ team, members, rota, seed, now, meId, member, leader
                 aria-pressed={on}
                 className={cn(
                   "relative flex w-full flex-col items-center rounded-xl px-1 py-2 text-center transition-[background-color,color,scale] duration-200 active:scale-95",
-                  on ? "bg-signal-orange text-text-primary" : busy ? "bg-text-primary text-white ring-1 ring-white/12 hover:ring-white/30" : "bg-white/5 text-white/45",
+                  on ? "bg-m-yellow text-m-ink" : busy ? "bg-m-card text-m-ink ring-1 ring-m-ink/10 hover:ring-m-ink/26" : "bg-m-ink/3 text-m-ink/45",
                 )}
               >
                 <span className="text-xs font-bold">{WEEKDAYS[d]}</span>
                 <span className="text-[11px] opacity-80"><Num value={Number(iso.slice(8))} /></span>
-                <span className={cn("mt-1 rounded-full px-1.5 text-[10px] font-semibold", isToday ? (on ? "bg-text-primary text-signal-orange" : "bg-signal-orange text-text-primary") : "opacity-80")}>
+                <span className={cn("mt-1 rounded-full px-1.5 text-[10px] font-semibold", isToday ? (on ? "bg-m-card text-m-blue" : "bg-m-yellow text-m-ink") : "opacity-80")}>
                   {isToday ? "আজ" : busy ? <><Num value={days[d].length} />টি</> : "ছুটি"}
                 </span>
-                {mineToday && <span className={cn("absolute top-1.5 right-1.5 size-1.5 rounded-full", on ? "bg-text-primary" : "bg-signal-orange")} aria-label="আপনার দায়িত্ব আছে" />}
+                {mineToday && <span className={cn("absolute top-1.5 right-1.5 size-1.5 rounded-full", on ? "bg-m-card" : "bg-m-yellow")} aria-label="আপনার দায়িত্ব আছে" />}
               </button>
             </li>
           );
@@ -165,13 +165,13 @@ export function DutyBoard({ team, members, rota, seed, now, meId, member, leader
       </ol>
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-start">
-        <div className="story-reveal overflow-hidden rounded-2xl bg-text-primary ring-1 ring-white/12">
-          <p className="flex items-center justify-between gap-2 border-b border-white/10 px-4 py-3 text-sm font-bold text-white">
+        <div className="story-reveal overflow-hidden rounded-2xl bg-m-card ring-1 ring-m-ink/10 shadow-m-tile">
+          <p className="flex items-center justify-between gap-2 border-b border-m-ink/9 px-4 py-3 text-sm font-bold text-m-ink">
             <span>টিম ম্যাপ · {WEEKDAYS[day]}বার</span>
-            <span className="text-xs font-medium text-white/60"><DateText iso={dates[day]} /></span>
+            <span className="text-xs font-medium text-m-ink/60"><DateText iso={dates[day]} /></span>
           </p>
           {days[day].length === 0 ? (
-            <p className="px-6 py-16 text-center text-sm text-white/65">এই দিনে কোনো দায়িত্ব নেই — বিশ্রাম আর নিজে পড়ার দিন।</p>
+            <p className="px-6 py-16 text-center text-sm text-m-ink/65">এই দিনে কোনো দায়িত্ব নেই — বিশ্রাম আর নিজে পড়ার দিন।</p>
           ) : (
             <DutyMap key={`${week}:${day}:${rota.salt}`} team={team} list={days[day]} duties={rota.duties} name={name} meId={meId} done={(dutyId, who) => Boolean(rota.done[doneKey(dates[day], dutyId, who)])} />
           )}
@@ -182,11 +182,11 @@ export function DutyBoard({ team, members, rota, seed, now, meId, member, leader
             const Icon = DUTY_ICONS[duty.icon];
             const tone = toneOf(rota.duties, duty.id);
             return (
-              <article key={duty.id} className="story-reveal rounded-2xl bg-text-primary p-4 ring-1 ring-white/12">
-                <h3 className="flex items-center gap-2.5 font-bold text-white">
+              <article key={duty.id} className="story-reveal rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 shadow-m-tile">
+                <h3 className="flex items-center gap-2.5 font-bold text-m-ink">
                   <span className={cn("flex size-8 shrink-0 items-center justify-center rounded-lg", tone.chip)}><Icon className="size-4" aria-hidden /></span>
                   <span className="min-w-0 flex-1">{duty.title}</span>
-                  <span className="text-xs font-medium text-white/55"><Num value={duty.need} /> জন</span>
+                  <span className="text-xs font-medium text-m-ink/55"><Num value={duty.need} /> জন</span>
                 </h3>
                 <ul className="mt-3 flex flex-wrap gap-2">
                   {who.map((id) => {
@@ -195,14 +195,14 @@ export function DutyBoard({ team, members, rota, seed, now, meId, member, leader
                     const tick = me && canTick(day);
                     const body = (
                       <>
-                        <span className={cn("flex size-6 items-center justify-center rounded-full text-xs font-bold", done ? "bg-bd-green text-white" : me ? "bg-text-primary text-signal-orange" : "bg-white/15 text-white")}>
+                        <span className={cn("flex size-6 items-center justify-center rounded-full text-xs font-bold", done ? "bg-m-blue-soft text-m-ink" : me ? "bg-m-card text-m-blue" : "bg-m-ink/8 text-m-ink")}>
                           {done ? <Check className="size-3.5" aria-hidden /> : initial(name(id))}
                         </span>
                         {me ? "আপনি" : firstWord(name(id))}
                         {tick && <span className="text-[11px] font-semibold opacity-80">{done ? "· শেষ" : "· শেষ হলে চাপুন"}</span>}
                       </>
                     );
-                    const cls = cn("inline-flex min-h-9 items-center gap-1.5 rounded-full py-1 pr-3 pl-1 text-sm font-semibold", me ? "bg-signal-orange text-text-primary" : "bg-white/8 text-white ring-1 ring-white/10");
+                    const cls = cn("inline-flex min-h-9 items-center gap-1.5 rounded-full py-1 pr-3 pl-1 text-sm font-semibold", me ? "bg-m-yellow text-m-ink" : "bg-m-ink/4 text-m-ink ring-1 ring-m-ink/9");
                     return (
                       <li key={id}>
                         {tick ? (
@@ -217,28 +217,28 @@ export function DutyBoard({ team, members, rota, seed, now, meId, member, leader
               </article>
             );
           })}
-          {days[day].length === 0 && <p className="rounded-2xl bg-text-primary p-4 text-sm text-white/65 ring-1 ring-white/12">অন্য দিন বেছে নিন, অথবা লিডার দায়িত্ব সাজিয়ে এই দিনেও কাজ দিতে পারেন।</p>}
+          {days[day].length === 0 && <p className="rounded-2xl bg-m-card p-4 text-sm text-m-ink/65 ring-1 ring-m-ink/10 shadow-m-tile">অন্য দিন বেছে নিন, অথবা লিডার দায়িত্ব সাজিয়ে এই দিনেও কাজ দিতে পারেন।</p>}
         </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 md:items-start">
-        <div className="story-reveal rounded-2xl bg-bd-green p-4 text-white sm:p-5">
+        <div className="story-reveal rounded-2xl bg-m-blue-soft p-4 text-m-ink sm:p-5">
           <h3 className="font-bold">{ahead ? "পরের সপ্তাহে আমার দায়িত্ব" : "এই সপ্তাহে আমার দায়িত্ব"}</h3>
           {!member || !meId ? (
-            <p className="mt-2 text-sm text-white/80">যোগ দিলে আপনার নামও পালায় উঠবে।</p>
+            <p className="mt-2 text-sm text-m-ink/80">যোগ দিলে আপনার নামও পালায় উঠবে।</p>
           ) : mine.length === 0 ? (
-            <p className="mt-2 text-sm text-white/80">এই সপ্তাহে আপনার ভাগে কিছু পড়েনি — দলের কাউকে সাহায্য করুন।</p>
+            <p className="mt-2 text-sm text-m-ink/80">এই সপ্তাহে আপনার ভাগে কিছু পড়েনি — দলের কাউকে সাহায্য করুন।</p>
           ) : (
             <ul className="mt-3 space-y-2">
               {mine.map(({ d, duty }) => {
                 const Icon = DUTY_ICONS[duty.icon];
                 const done = Boolean(rota.done[doneKey(dates[d], duty.id, meId)]);
                 return (
-                  <li key={`${d}:${duty.id}`} className="flex items-center gap-3 rounded-xl bg-black/20 px-3 py-2 text-sm">
-                    <Icon className="size-4 shrink-0 text-signal-orange" aria-hidden />
+                  <li key={`${d}:${duty.id}`} className="flex items-center gap-3 rounded-xl bg-white/45 px-3 py-2 text-sm">
+                    <Icon className="size-4 shrink-0 text-m-blue" aria-hidden />
                     <span className="w-12 shrink-0 font-bold">{WEEKDAYS[d]}</span>
                     <span className="min-w-0 flex-1 truncate">{duty.title}</span>
-                    {done ? <span className="inline-flex items-center gap-1 text-xs font-bold"><Check className="size-3.5" aria-hidden /> শেষ</span> : ahead === 0 && d < today ? <span className="text-xs font-bold text-signal-orange">বাকি</span> : null}
+                    {done ? <span className="inline-flex items-center gap-1 text-xs font-bold"><Check className="size-3.5" aria-hidden /> শেষ</span> : ahead === 0 && d < today ? <span className="text-xs font-bold text-m-blue">বাকি</span> : null}
                   </li>
                 );
               })}
@@ -246,16 +246,16 @@ export function DutyBoard({ team, members, rota, seed, now, meId, member, leader
           )}
         </div>
 
-        <div className="story-reveal rounded-2xl bg-text-primary p-4 ring-1 ring-white/12 sm:p-5">
-          <h3 className="flex items-center justify-between gap-2 font-bold text-white">
+        <div className="story-reveal rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 sm:p-5 shadow-m-tile">
+          <h3 className="flex items-center justify-between gap-2 font-bold text-m-ink">
             দলের ভারসাম্য
             {progress && progress.of > 0 && (
-              <span className="text-xs font-semibold text-signal-orange">এ পর্যন্ত <Num value={progress.done} />/<Num value={progress.of} /> কাজ শেষ</span>
+              <span className="text-xs font-semibold text-m-blue">এ পর্যন্ত <Num value={progress.done} />/<Num value={progress.of} /> কাজ শেষ</span>
             )}
           </h3>
           {progress && progress.of > 0 && (
-            <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10" role="progressbar" aria-valuemin={0} aria-valuemax={progress.of} aria-valuenow={progress.done} aria-label="দলের অগ্রগতি">
-              <div className="h-full rounded-full bg-signal-orange transition-[width] duration-700 motion-reduce:transition-none" style={{ width: `${(progress.done / progress.of) * 100}%` }} />
+            <div className="mt-3 h-2 overflow-hidden rounded-full bg-m-ink/6" role="progressbar" aria-valuemin={0} aria-valuemax={progress.of} aria-valuenow={progress.done} aria-label="দলের অগ্রগতি">
+              <div className="h-full rounded-full bg-m-yellow transition-[width] duration-700 motion-reduce:transition-none" style={{ width: `${(progress.done / progress.of) * 100}%` }} />
             </div>
           )}
           <ul className="mt-4 space-y-2">
@@ -264,16 +264,16 @@ export function DutyBoard({ team, members, rota, seed, now, meId, member, leader
               const max = Math.max(1, ...load.values());
               return (
                 <li key={m.id} className="flex items-center gap-3 text-sm">
-                  <span className={cn("w-20 shrink-0 truncate", m.id === meId ? "font-bold text-signal-orange" : "text-white/85")}>{m.id === meId ? "আপনি" : firstWord(m.name)}</span>
-                  <span className="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
-                    <span className="block h-full transition-[width] duration-700 motion-reduce:transition-none rounded-full bg-bdgreen-500" style={{ width: `${(n / max) * 100}%` }} />
+                  <span className={cn("w-20 shrink-0 truncate", m.id === meId ? "font-bold text-m-blue" : "text-m-ink/85")}>{m.id === meId ? "আপনি" : firstWord(m.name)}</span>
+                  <span className="h-2 flex-1 overflow-hidden rounded-full bg-m-ink/6">
+                    <span className="block h-full transition-[width] duration-700 motion-reduce:transition-none rounded-full bg-m-green-soft" style={{ width: `${(n / max) * 100}%` }} />
                   </span>
-                  <span className="w-10 shrink-0 text-right text-xs text-white/65"><Num value={n} />টি</span>
+                  <span className="w-10 shrink-0 text-right text-xs text-m-ink/65"><Num value={n} />টি</span>
                 </li>
               );
             })}
           </ul>
-          <p className="mt-3 text-xs text-white/55">সবার কাজ প্রায় সমান — কারো ভাগে বড়জোর একটি বেশি।</p>
+          <p className="mt-3 text-xs text-m-ink/55">সবার কাজ প্রায় সমান — কারো ভাগে বড়জোর একটি বেশি।</p>
         </div>
       </div>
 
@@ -454,18 +454,18 @@ function DutyEditor({ open, onOpenChange, duties, defaults, max, onSave }: { ope
       <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-2xl">
         <DialogHeader>
           <PixelMark tone="dark" />
-          <DialogTitle className="text-xl font-bold text-white">দায়িত্ব সাজান</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-m-ink">দায়িত্ব সাজান</DialogTitle>
           <DialogDescription>কোন কাজ, কতজন, কোন কোন দিন — নাম বসানো হয় নিজে থেকে, প্রতি সপ্তাহে নতুন করে, সবার মধ্যে সমান ভাগে।</DialogDescription>
         </DialogHeader>
         <ul className="space-y-3">
           {draft.map((d) => (
-            <li key={d.id} className={cn("space-y-3 rounded-2xl bg-white/5 p-3 ring-1", tried && bad(d) ? "ring-crimson-bright" : "ring-white/10")}>
+            <li key={d.id} className={cn("space-y-3 rounded-2xl bg-m-ink/3 p-3 ring-1", tried && bad(d) ? "ring-m-red" : "ring-m-ink/9")}>
               <div className="flex items-center gap-2">
                 <Input value={d.title} onChange={(e) => set(d.id, { title: e.target.value })} aria-label="দায়িত্বের নাম" placeholder="যেমন: রিপোর্ট প্রিন্ট" />
-                <div className="flex shrink-0 items-center rounded-lg ring-1 ring-white/15" role="group" aria-label="কতজন লাগবে">
-                  <button type="button" onClick={() => set(d.id, { need: Math.max(1, d.need - 1) })} className="size-10 text-lg font-bold text-white hover:text-signal-orange" aria-label="একজন কম">−</button>
-                  <span className="w-12 text-center text-sm font-bold text-white"><Num value={Math.min(max, d.need)} /> জন</span>
-                  <button type="button" onClick={() => set(d.id, { need: Math.min(max, d.need + 1) })} className="size-10 text-lg font-bold text-white hover:text-signal-orange" aria-label="একজন বেশি">+</button>
+                <div className="flex shrink-0 items-center rounded-lg ring-1 ring-m-ink/13" role="group" aria-label="কতজন লাগবে">
+                  <button type="button" onClick={() => set(d.id, { need: Math.max(1, d.need - 1) })} className="size-10 text-lg font-bold text-m-ink hover:text-m-blue" aria-label="একজন কম">−</button>
+                  <span className="w-12 text-center text-sm font-bold text-m-ink"><Num value={Math.min(max, d.need)} /> জন</span>
+                  <button type="button" onClick={() => set(d.id, { need: Math.min(max, d.need + 1) })} className="size-10 text-lg font-bold text-m-ink hover:text-m-blue" aria-label="একজন বেশি">+</button>
                 </div>
                 <button type="button" onClick={() => setDraft((all) => all.filter((x) => x.id !== d.id))} className={mediaButton({ variant: "ghost", size: "icon-sm" })} aria-label={`${d.title || "দায়িত্ব"} মুছুন`}><Trash2 aria-hidden /></button>
               </div>
@@ -473,7 +473,7 @@ function DutyEditor({ open, onOpenChange, duties, defaults, max, onSave }: { ope
                 {WEEKDAYS.map((w, i) => {
                   const on = d.days.includes(i);
                   return (
-                    <button key={w} type="button" aria-pressed={on} onClick={() => set(d.id, { days: on ? d.days.filter((x) => x !== i) : [...d.days, i].sort() })} className={cn("min-h-8 rounded-lg px-2.5 text-xs font-bold transition-colors", on ? "bg-signal-orange text-text-primary" : "bg-white/8 text-white/70 hover:text-white")}>
+                    <button key={w} type="button" aria-pressed={on} onClick={() => set(d.id, { days: on ? d.days.filter((x) => x !== i) : [...d.days, i].sort() })} className={cn("min-h-8 rounded-lg px-2.5 text-xs font-bold transition-colors", on ? "bg-m-yellow text-m-ink" : "bg-m-ink/4 text-m-ink/70 hover:text-m-ink")}>
                       {w}
                     </button>
                   );
@@ -483,13 +483,13 @@ function DutyEditor({ open, onOpenChange, duties, defaults, max, onSave }: { ope
                 {ICON_KEYS.map((k) => {
                   const Icon = DUTY_ICONS[k];
                   return (
-                    <button key={k} type="button" aria-pressed={d.icon === k} onClick={() => set(d.id, { icon: k })} className={cn("flex size-8 items-center justify-center rounded-lg transition-colors", d.icon === k ? "bg-signal-orange text-text-primary" : "bg-white/8 text-white/70 hover:text-white")} aria-label={k}>
+                    <button key={k} type="button" aria-pressed={d.icon === k} onClick={() => set(d.id, { icon: k })} className={cn("flex size-8 items-center justify-center rounded-lg transition-colors", d.icon === k ? "bg-m-yellow text-m-ink" : "bg-m-ink/4 text-m-ink/70 hover:text-m-ink")} aria-label={k}>
                       <Icon className="size-4" aria-hidden />
                     </button>
                   );
                 })}
               </div>
-              {tried && bad(d) && <p className="text-xs font-semibold text-crimson-bright">নাম (অন্তত ৩ অক্ষর) আর অন্তত একটি দিন দিন।</p>}
+              {tried && bad(d) && <p className="text-xs font-semibold text-m-red">নাম (অন্তত ৩ অক্ষর) আর অন্তত একটি দিন দিন।</p>}
             </li>
           ))}
         </ul>
@@ -499,7 +499,7 @@ function DutyEditor({ open, onOpenChange, duties, defaults, max, onSave }: { ope
           </button>
           <button type="button" onClick={() => setDraft(defaults)} className={mediaButton({ variant: "ghost", size: "sm" })}>শুরুর তালিকায় ফিরুন</button>
         </div>
-        {tried && draft.length === 0 && <p className="text-xs font-semibold text-crimson-bright">অন্তত একটি দায়িত্ব রাখুন।</p>}
+        {tried && draft.length === 0 && <p className="text-xs font-semibold text-m-red">অন্তত একটি দায়িত্ব রাখুন।</p>}
         <button type="button" onClick={save} className={mediaButton({ variant: "primary", size: "lg", className: "w-full" })}>সংরক্ষণ করুন</button>
       </DialogContent>
     </Dialog>

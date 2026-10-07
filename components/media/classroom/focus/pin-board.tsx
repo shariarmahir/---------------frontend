@@ -16,7 +16,7 @@ import { PAPER } from "../notice-board";
 
 const ICON: Record<PinKind, LucideIcon> = { text: StickyNote, task: ListChecks, data: Table2, chat: Quote };
 
-const label = "mb-1.5 block text-sm font-semibold text-white";
+const label = "mb-1.5 block text-sm font-semibold text-m-ink";
 
 interface Props {
   pins: Pin[];
@@ -50,24 +50,24 @@ export function PinBoard({ pins, role, parent, meId, lab, today, onCreate, onTog
   if (list.length === 0 && !can) return null;
 
   return (
-    <div className="border-b border-white/12">
+    <div className="border-b border-m-ink/10">
       <div className="flex items-center gap-1.5 px-3 py-2">
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open}
           disabled={list.length === 0}
-          className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-1.5 py-1 text-left transition-colors enabled:hover:bg-white/5 disabled:cursor-default"
+          className="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-1.5 py-1 text-left transition-colors enabled:hover:bg-m-ink/3 disabled:cursor-default"
         >
-          <PinIcon className="size-4 shrink-0 text-signal-orange" aria-hidden />
-          <span className="shrink-0 text-xs font-bold text-white">পিন</span>
-          {list.length > 0 && <span className="shrink-0 rounded-full bg-signal-orange px-1.5 text-[11px] leading-5 font-bold text-text-primary">{num(list.length)}</span>}
+          <PinIcon className="size-4 shrink-0 text-m-blue" aria-hidden />
+          <span className="shrink-0 text-xs font-bold text-m-ink">পিন</span>
+          {list.length > 0 && <span className="shrink-0 rounded-full bg-m-yellow px-1.5 text-[11px] leading-5 font-bold text-m-ink">{num(list.length)}</span>}
           {list.length === 0 ? (
-            <span className="min-w-0 flex-1 truncate text-xs text-white/55">লেখা, টাস্ক বা ডেটা পিন করুন</span>
+            <span className="min-w-0 flex-1 truncate text-xs text-m-ink/55">লেখা, টাস্ক বা ডেটা পিন করুন</span>
           ) : (
-            !open && <span className="min-w-0 flex-1 truncate text-xs text-white/65">{list[0].title}</span>
+            !open && <span className="min-w-0 flex-1 truncate text-xs text-m-ink/65">{list[0].title}</span>
           )}
-          {list.length > 0 && <ChevronDown className={cn("ml-auto size-4 shrink-0 text-white/60 transition-transform duration-200 motion-reduce:transition-none", open && "rotate-180")} aria-hidden />}
+          {list.length > 0 && <ChevronDown className={cn("ml-auto size-4 shrink-0 text-m-ink/60 transition-transform duration-200 motion-reduce:transition-none", open && "rotate-180")} aria-hidden />}
         </button>
         {can && (
           <button
@@ -75,7 +75,7 @@ export function PinBoard({ pins, role, parent, meId, lab, today, onCreate, onTog
             onClick={() => setAdding(true)}
             disabled={full}
             title={full ? "পিন ভরে গেছে — আগে একটা সরান" : "নতুন পিন"}
-            className="inline-flex h-8 shrink-0 items-center gap-1 rounded-lg bg-signal-orange px-2.5 text-xs font-bold text-text-primary transition-[scale,opacity] active:scale-95 disabled:opacity-40"
+            className="inline-flex h-8 shrink-0 items-center gap-1 rounded-lg bg-m-yellow px-2.5 text-xs font-bold text-m-ink transition-[scale,opacity] active:scale-95 disabled:opacity-40"
           >
             <Plus className="size-3.5" aria-hidden /> পিন
           </button>
@@ -104,8 +104,8 @@ export function PinBoard({ pins, role, parent, meId, lab, today, onCreate, onTog
         <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-md">
           <DialogHeader>
             <PixelMark tone="dark" />
-            <DialogTitle className="text-xl font-bold text-white">নতুন পিন</DialogTitle>
-            <DialogDescription className="text-sm text-white/70">{role === "teacher" || role === "leader" ? "ক্লাসের সবার চোখে পড়বে।" : "শুধু আপনি দেখবেন। গুরুত্বপূর্ণ বার্তা পিন করতে চ্যাটের বার্তার নিচের পিন বোতাম চাপুন।"}</DialogDescription>
+            <DialogTitle className="text-xl font-bold text-m-ink">নতুন পিন</DialogTitle>
+            <DialogDescription className="text-sm text-m-ink/70">{role === "teacher" || role === "leader" ? "ক্লাসের সবার চোখে পড়বে।" : "শুধু আপনি দেখবেন। গুরুত্বপূর্ণ বার্তা পিন করতে চ্যাটের বার্তার নিচের পিন বোতাম চাপুন।"}</DialogDescription>
           </DialogHeader>
           <PinForm
             onSubmit={(draft, color) => {
@@ -150,7 +150,7 @@ function PinCard({ pin: p, owner, today, canTick, canRemove, onToggle, onRemove,
           <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold">
             <span className={cn("rounded-full px-2 py-px", paper.tag)}>{PIN_KINDS[p.kind]}</span>
             {due && state && (
-              <span className={cn("rounded-full px-2 py-px", state === "overdue" ? "bg-national-crimson text-white" : state === "done" ? "bg-text-primary/15" : paper.tag)}>{state === "done" ? "শেষ" : due}</span>
+              <span className={cn("rounded-full px-2 py-px", state === "overdue" ? "bg-m-red text-m-on" : state === "done" ? "bg-m-card/15" : paper.tag)}>{state === "done" ? "শেষ" : due}</span>
             )}
             <span className="opacity-75">{owner}</span>
             {p.kind === "data" && p.url && (
@@ -166,7 +166,7 @@ function PinCard({ pin: p, owner, today, canTick, canRemove, onToggle, onRemove,
           </div>
         </div>
         {canRemove && (
-          <button type="button" onClick={onRemove} title="পিন সরান" className="-mt-0.5 -mr-0.5 grid size-7 shrink-0 place-items-center rounded-lg transition-colors hover:bg-text-primary/15">
+          <button type="button" onClick={onRemove} title="পিন সরান" className="-mt-0.5 -mr-0.5 grid size-7 shrink-0 place-items-center rounded-lg transition-colors hover:bg-m-card/15">
             <PinOff className="size-4" aria-hidden />
             <span className="sr-only">পিন সরান</span>
           </button>
@@ -262,7 +262,7 @@ function PinForm({ onSubmit }: { onSubmit: (draft: PinDraft, color: NoteColor) =
           {NOTE_COLORS.map((c) => {
             const on = paper === c;
             return (
-              <label key={c} title={PAPER[c].bn} className={cn("flex size-9 cursor-pointer items-center justify-center rounded-full ring-2 ring-offset-2 ring-offset-popover transition-[box-shadow,scale] duration-150 has-focus-visible:ring-signal-orange active:scale-90", PAPER[c].paper, on ? "ring-white" : "ring-transparent hover:ring-white/40")}>
+              <label key={c} title={PAPER[c].bn} className={cn("flex size-9 cursor-pointer items-center justify-center rounded-full ring-2 ring-offset-2 ring-offset-popover transition-[box-shadow,scale] duration-150 has-focus-visible:ring-m-blue active:scale-90", PAPER[c].paper, on ? "ring-white" : "ring-transparent hover:ring-m-ink/34")}>
                 <input type="radio" name="pin-color" className="sr-only" checked={on} onChange={() => setColor(c)} />
                 {on && <Check className="size-4" aria-hidden />}
                 <span className="sr-only">{PAPER[c].bn}</span>
@@ -273,12 +273,12 @@ function PinForm({ onSubmit }: { onSubmit: (draft: PinDraft, color: NoteColor) =
       </fieldset>
 
       {problem && (
-        <p role="alert" className="text-sm font-semibold text-crimson-bright">
+        <p role="alert" className="text-sm font-semibold text-m-red">
           {problem}
         </p>
       )}
 
-      <button type="submit" className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-signal-orange px-5 text-base font-semibold text-text-primary transition-[scale] duration-200 active:scale-[0.97]">
+      <button type="submit" className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-m-yellow px-5 text-base font-semibold text-m-ink transition-[scale] duration-200 active:scale-[0.97]">
         <PinIcon className="size-5" aria-hidden /> পিন করুন
       </button>
     </form>

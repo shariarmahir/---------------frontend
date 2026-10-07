@@ -23,7 +23,7 @@ export function MessageTools({ pinned, mark, onPin, onMark }: { pinned: boolean;
         onClick={onPin}
         aria-pressed={pinned}
         title={pinned ? "পিন সরান" : "গুরুত্বপূর্ণ হিসেবে পিন করুন"}
-        className={cn("grid size-7 place-items-center rounded-md transition-colors hover:bg-white/10", pinned ? "text-signal-orange" : "text-white/55 hover:text-white")}
+        className={cn("grid size-7 place-items-center rounded-md transition-colors hover:bg-m-ink/6", pinned ? "text-m-blue" : "text-m-ink/55 hover:text-m-ink")}
       >
         <Pin className={cn("size-3.5", pinned && "fill-current")} aria-hidden />
         <span className="sr-only">{pinned ? "পিন সরান" : "গুরুত্বপূর্ণ হিসেবে পিন করুন"}</span>
@@ -33,7 +33,7 @@ export function MessageTools({ pinned, mark, onPin, onMark }: { pinned: boolean;
         onClick={() => setPicking((p) => !p)}
         aria-expanded={picking}
         title="রং দিয়ে মার্ক করুন"
-        className={cn("grid size-7 place-items-center rounded-md transition-colors hover:bg-white/10", mark ? "text-signal-orange" : "text-white/55 hover:text-white")}
+        className={cn("grid size-7 place-items-center rounded-md transition-colors hover:bg-m-ink/6", mark ? "text-m-blue" : "text-m-ink/55 hover:text-m-ink")}
       >
         <Highlighter className="size-3.5" aria-hidden />
         <span className="sr-only">রং দিয়ে মার্ক করুন</span>
@@ -52,7 +52,7 @@ export function MessageTools({ pinned, mark, onPin, onMark }: { pinned: boolean;
                 }}
                 aria-pressed={on}
                 title={PAPER[c].bn}
-                className={cn("grid size-6 place-items-center rounded-full ring-2 transition-[scale,box-shadow] active:scale-90", PAPER[c].paper, on ? "ring-white" : "ring-transparent hover:ring-white/50")}
+                className={cn("grid size-6 place-items-center rounded-full ring-2 transition-[scale,box-shadow] active:scale-90", PAPER[c].paper, on ? "ring-white" : "ring-transparent hover:ring-m-ink/43")}
               >
                 {on && <Check className="size-3" aria-hidden />}
                 <span className="sr-only">{PAPER[c].bn}</span>
@@ -66,7 +66,7 @@ export function MessageTools({ pinned, mark, onPin, onMark }: { pinned: boolean;
                 onMark(null);
                 setPicking(false);
               }}
-              className="ml-0.5 rounded-md px-1.5 py-1 text-[11px] font-semibold text-white/70 hover:bg-white/10 hover:text-white"
+              className="ml-0.5 rounded-md px-1.5 py-1 text-[11px] font-semibold text-m-ink/70 hover:bg-m-ink/6 hover:text-m-ink"
             >
               মুছুন
             </button>

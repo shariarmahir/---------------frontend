@@ -21,7 +21,7 @@ export function TeamBadge({ team, size = "md", ring }: { team?: Team; size?: "sm
   const box = size === "lg" ? "size-20 sm:size-24" : size === "md" ? "size-14" : "size-9";
   const Icon = team ? KIND_ICON[team.kind] : Swords;
   return (
-    <span className={cn("relative grid shrink-0 place-items-center overflow-hidden rounded-full bg-bd-green text-white ring-4", box, ring ?? "ring-white/15")}>
+    <span className={cn("relative grid shrink-0 place-items-center overflow-hidden rounded-full bg-m-blue-soft text-m-ink ring-4", box, ring ?? "ring-m-ink/13")}>
       {team?.cover ? <Image src={team.cover} alt="" fill sizes="96px" className="object-cover" /> : <Icon className={size === "sm" ? "size-4" : "size-1/2"} aria-hidden />}
     </span>
   );
@@ -60,24 +60,24 @@ export function VersusCard({ match, all, mine, big }: { match: TeamMatch; all: M
     return (
       <div className={cn("flex min-w-0 flex-col items-center gap-2 text-center transition-opacity", lost && "opacity-55")}>
         <span className="relative">
-          <TeamBadge team={team} size={big ? "lg" : "md"} ring={won ? "ring-signal-orange" : which === "home" ? "ring-signal-orange/35" : "ring-bd-green"} />
-          {won && <Crown className="absolute -top-3 left-1/2 size-6 -translate-x-1/2 fill-signal-orange text-signal-orange drop-shadow" aria-label="জয়ী" />}
+          <TeamBadge team={team} size={big ? "lg" : "md"} ring={won ? "ring-m-blue" : which === "home" ? "ring-m-blue/35" : "ring-m-blue"} />
+          {won && <Crown className="absolute -top-3 left-1/2 size-6 -translate-x-1/2 fill-m-yellow text-m-gold drop-shadow" aria-label="জয়ী" />}
         </span>
         {team ? (
-          <Link href={`/media/together/team/${team.id}`} className="line-clamp-2 text-sm leading-snug font-bold text-white hover:text-signal-orange sm:text-base">{team.name}</Link>
+          <Link href={`/media/together/team/${team.id}`} className="line-clamp-2 text-sm leading-snug font-bold text-m-ink hover:text-m-blue sm:text-base">{team.name}</Link>
         ) : (
-          <span className="text-sm font-bold text-white/60">অজানা দল</span>
+          <span className="text-sm font-bold text-m-ink/60">অজানা দল</span>
         )}
-        {me?.team.id === team?.id && <span className="rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-bold text-signal-orange">আপনার দল</span>}
+        {me?.team.id === team?.id && <span className="rounded-full bg-m-ink/6 px-2 py-0.5 text-[11px] font-bold text-m-blue">আপনার দল</span>}
       </div>
     );
   };
 
   return (
-    <article id={match.id} className={cn("story-reveal scroll-mt-28 overflow-hidden rounded-3xl bg-text-primary ring-1 transition-[translate,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_44px_-28px_var(--color-signal-orange)] motion-reduce:transition-none motion-reduce:hover:translate-y-0", match.status === "invited" && me?.side === "away" ? "ring-2 ring-signal-orange" : "ring-white/12")}>
+    <article id={match.id} className={cn("story-reveal scroll-mt-28 overflow-hidden rounded-3xl bg-m-card ring-1 transition-[translate,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_44px_-28px_var(--color-signal-orange)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 shadow-m-tile", match.status === "invited" && me?.side === "away" ? "ring-2 ring-m-blue" : "ring-m-ink/10")}>
       <div className="flex flex-wrap items-center justify-between gap-2 px-4 pt-4 text-xs font-bold sm:px-5">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-signal-orange px-2.5 py-1 text-text-primary"><Swords className="size-3.5" aria-hidden /> {format.bn}</span>
-        <span className={cn("rounded-full px-2.5 py-1", match.status === "done" ? "bg-bd-green text-white" : match.status === "declined" ? "bg-white/10 text-white/60" : "bg-white/10 text-white/85")}>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-m-yellow px-2.5 py-1 text-m-ink"><Swords className="size-3.5" aria-hidden /> {format.bn}</span>
+        <span className={cn("rounded-full px-2.5 py-1", match.status === "done" ? "bg-m-blue-soft text-m-ink" : match.status === "declined" ? "bg-m-ink/6 text-m-ink/60" : "bg-m-ink/6 text-m-ink/85")}>
           {STATUS[match.status]}{match.status !== "done" && <> · <DateText iso={match.on} /></>}
         </span>
       </div>
@@ -86,37 +86,37 @@ export function VersusCard({ match, all, mine, big }: { match: TeamMatch; all: M
         {side(home, "home")}
         <div className="flex flex-col items-center gap-1">
           {match.score ? (
-            <span className="flex items-baseline gap-2 font-bold text-white tabular-nums">
-              <span className={cn(big ? "text-4xl sm:text-5xl" : "text-3xl", o === "home" && "text-signal-orange")}><Num value={match.score.home} /></span>
-              <span className="text-white/40">–</span>
-              <span className={cn(big ? "text-4xl sm:text-5xl" : "text-3xl", o === "away" && "text-signal-orange")}><Num value={match.score.away} /></span>
+            <span className="flex items-baseline gap-2 font-bold text-m-ink tabular-nums">
+              <span className={cn(big ? "text-4xl sm:text-5xl" : "text-3xl", o === "home" && "text-m-blue")}><Num value={match.score.home} /></span>
+              <span className="text-m-ink/40">–</span>
+              <span className={cn(big ? "text-4xl sm:text-5xl" : "text-3xl", o === "away" && "text-m-blue")}><Num value={match.score.away} /></span>
             </span>
           ) : (
-            <span className="relative grid size-12 place-items-center rounded-full bg-signal-orange text-sm font-black tracking-wider text-text-primary ring-6 ring-signal-orange/15 sm:size-14">
-              <span className="absolute inset-0 rounded-full bg-signal-orange/40 motion-safe:animate-ping" aria-hidden />
+            <span className="relative grid size-12 place-items-center rounded-full bg-m-yellow text-sm font-black tracking-wider text-m-ink ring-6 ring-m-blue/15 sm:size-14">
+              <span className="absolute inset-0 rounded-full bg-m-yellow/40 motion-safe:animate-ping" aria-hidden />
               <span className="relative">VS</span>
             </span>
           )}
-          <span className="text-[11px] font-semibold text-white/55">{o === "draw" ? "ড্র" : match.score ? format.unit : ""}</span>
+          <span className="text-[11px] font-semibold text-m-ink/55">{o === "draw" ? "ড্র" : match.score ? format.unit : ""}</span>
         </div>
         {side(away, "away")}
       </div>
 
-      <div className="space-y-2 border-t border-white/10 px-4 py-4 sm:px-5">
-        <h3 className="text-base leading-snug font-bold text-white">{match.title}</h3>
-        <p className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-white/65">
+      <div className="space-y-2 border-t border-m-ink/9 px-4 py-4 sm:px-5">
+        <h3 className="text-base leading-snug font-bold text-m-ink">{match.title}</h3>
+        <p className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-m-ink/65">
           <span className="inline-flex items-center gap-1"><CalendarDays className="size-3.5" aria-hidden /><DateText iso={match.on} weekday /></span>
           {match.place && <span className="inline-flex items-center gap-1"><MapPin className="size-3.5" aria-hidden />{match.place}</span>}
         </p>
-        {match.rules && <p className="text-sm leading-relaxed text-white/80">{match.rules}</p>}
+        {match.rules && <p className="text-sm leading-relaxed text-m-ink/80">{match.rules}</p>}
         {match.stake && (
-          <p className="inline-flex items-start gap-1.5 rounded-xl bg-signal-orange/10 px-3 py-1.5 text-xs font-semibold text-signal-orange ring-1 ring-signal-orange/30">
+          <p className="inline-flex items-start gap-1.5 rounded-xl bg-m-yellow/10 px-3 py-1.5 text-xs font-semibold text-m-blue ring-1 ring-m-blue/30">
             <Flag className="mt-0.5 size-3.5 shrink-0" aria-hidden /> বাজি: {match.stake}
           </p>
         )}
 
         <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
-          <span className="text-xs text-white/55">{sender ? `চ্যালেঞ্জ দিয়েছেন ${sender.nameBn}` : ""}</span>
+          <span className="text-xs text-m-ink/55">{sender ? `চ্যালেঞ্জ দিয়েছেন ${sender.nameBn}` : ""}</span>
           <div className="flex flex-wrap gap-2">
             {match.status === "invited" && me?.side === "away" && (
               <>
@@ -124,9 +124,9 @@ export function VersusCard({ match, all, mine, big }: { match: TeamMatch; all: M
                 <button type="button" onClick={() => answer(true)} className={mediaButton({ variant: "primary", size: "sm" })}><Check aria-hidden /> গ্রহণ করুন</button>
               </>
             )}
-            {match.status === "invited" && me?.side === "home" && <span className="text-xs font-semibold text-white/65">{away?.name ?? "প্রতিপক্ষ"}-এর উত্তরের অপেক্ষায়</span>}
+            {match.status === "invited" && me?.side === "home" && <span className="text-xs font-semibold text-m-ink/65">{away?.name ?? "প্রতিপক্ষ"}-এর উত্তরের অপেক্ষায়</span>}
             {match.status === "accepted" && me && <button type="button" onClick={() => setScoring(true)} className={mediaButton({ variant: "green", size: "sm" })}><Flag aria-hidden /> ফল লিখুন</button>}
-            {match.status === "done" && match.postId && <Link href={`/media/post/${match.postId}`} className="inline-flex h-9 items-center gap-1 text-sm font-bold text-signal-orange hover:underline">ফিডে দেখুন <ArrowUpRight className="size-4" aria-hidden /></Link>}
+            {match.status === "done" && match.postId && <Link href={`/media/post/${match.postId}`} className="inline-flex h-9 items-center gap-1 text-sm font-bold text-m-blue hover:underline">ফিডে দেখুন <ArrowUpRight className="size-4" aria-hidden /></Link>}
             {match.status === "done" && !match.postId && me && <button type="button" onClick={share} className={mediaButton({ variant: "outline", size: "sm" })}><Share2 aria-hidden /> ফিডে শেয়ার</button>}
           </div>
         </div>

@@ -44,22 +44,22 @@ export const RankingTab: ClassTab = ({ room, me, member, leader }) => {
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <Panel title="পুরো ক্লাসের র‍্যাংকিং">
-          <p className="mb-4 text-xs text-white/60">নোট শেয়ার ৫, সমাধান ১০, সাহায্য ৮ পয়েন্ট; মূল্যায়নের গড় থেকে সর্বোচ্চ ১০ — নম্বরের চেয়ে অবদান বড়।</p>
+          <p className="mb-4 text-xs text-m-ink/60">নোট শেয়ার ৫, সমাধান ১০, সাহায্য ৮ পয়েন্ট; মূল্যায়নের গড় থেকে সর্বোচ্চ ১০ — নম্বরের চেয়ে অবদান বড়।</p>
           <ol className="space-y-2">
             {ranked.map((m, i) => (
-              <li key={m.id} className={cn("flex items-center gap-3 rounded-xl px-3 py-2.5", m.id === me?.id ? "bg-signal-orange/15 ring-1 ring-signal-orange/50" : "bg-black/30")}>
-                <span className="w-6 text-center text-sm font-bold text-white/60"><Num value={i + 1} /></span>
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-bd-green font-bold text-white">{initial(m.name)}</span>
+              <li key={m.id} className={cn("flex items-center gap-3 rounded-xl px-3 py-2.5", m.id === me?.id ? "bg-m-yellow/15 ring-1 ring-m-blue/50" : "bg-white/55")}>
+                <span className="w-6 text-center text-sm font-bold text-m-ink/60"><Num value={i + 1} /></span>
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-m-blue-soft font-bold text-m-ink">{initial(m.name)}</span>
                 <span className="min-w-0 flex-1">
-                  <span className="flex items-center gap-1.5 truncate font-semibold text-white">
+                  <span className="flex items-center gap-1.5 truncate font-semibold text-m-ink">
                     {m.name}
-                    {m.id === room.leaderId && <Crown className="size-3.5 shrink-0 text-signal-orange" aria-label="সিআর" />}
+                    {m.id === room.leaderId && <Crown className="size-3.5 shrink-0 text-m-blue" aria-label="সিআর" />}
                   </span>
-                  <span className="mt-1 block h-1.5 overflow-hidden rounded-full bg-white/10">
-                    <span className="block h-full rounded-full bg-signal-orange transition-[width] duration-700" style={{ width: `${(m.points / Math.max(1, ranked[0].points)) * 100}%` }} />
+                  <span className="mt-1 block h-1.5 overflow-hidden rounded-full bg-m-ink/6">
+                    <span className="block h-full rounded-full bg-m-yellow transition-[width] duration-700" style={{ width: `${(m.points / Math.max(1, ranked[0].points)) * 100}%` }} />
                   </span>
                 </span>
-                <span className="w-14 text-right text-sm font-bold text-signal-orange"><Num value={m.points} /></span>
+                <span className="w-14 text-right text-sm font-bold text-m-blue"><Num value={m.points} /></span>
               </li>
             ))}
           </ol>
@@ -80,16 +80,16 @@ export const RankingTab: ClassTab = ({ room, me, member, leader }) => {
 function Recovery({ room, pairs, me, member }: { room: Classroom; pairs: { weak: string; buddy: string }[]; me: { id: string } | null; member: boolean }) {
   const myBuddy = pairs.find((p) => p.weak === me?.id);
   return (
-    <section className="story-reveal rounded-2xl bg-bd-green p-5 text-white">
-      <h2 className="flex items-center gap-2 font-bold"><HandHeart className="size-5 text-signal-orange" aria-hidden /> পিছিয়ে পড়া বন্ধুর পাশে</h2>
-      <p className="mt-1 text-xs text-white/80">মূল্যায়নের গড় <Num value={WEAK_BELOW} />%-এর নিচে হলে ক্লাসের সবচেয়ে বেশি সাহায্যকারী একজন বাডি হন।</p>
-      {myBuddy && <p className="mt-3 rounded-xl bg-white/15 px-3 py-2 text-sm font-semibold">আপনার বাডি: {nameOf(room, myBuddy.buddy)}</p>}
+    <section className="story-reveal rounded-2xl bg-m-blue-soft p-5 text-m-ink">
+      <h2 className="flex items-center gap-2 font-bold"><HandHeart className="size-5 text-m-blue" aria-hidden /> পিছিয়ে পড়া বন্ধুর পাশে</h2>
+      <p className="mt-1 text-xs text-m-ink/80">মূল্যায়নের গড় <Num value={WEAK_BELOW} />%-এর নিচে হলে ক্লাসের সবচেয়ে বেশি সাহায্যকারী একজন বাডি হন।</p>
+      {myBuddy && <p className="mt-3 rounded-xl bg-m-ink/8 px-3 py-2 text-sm font-semibold">আপনার বাডি: {nameOf(room, myBuddy.buddy)}</p>}
       <ul className="mt-3 space-y-2">
         {pairs.map((p) => (
-          <li key={p.weak} className="flex items-center justify-between gap-2 rounded-xl bg-black/20 px-3 py-2 text-sm">
+          <li key={p.weak} className="flex items-center justify-between gap-2 rounded-xl bg-white/45 px-3 py-2 text-sm">
             <span className="min-w-0">
               <span className="block truncate font-semibold">{nameOf(room, p.weak)}</span>
-              <span className="text-xs text-white/75">বাডি: {nameOf(room, p.buddy)}</span>
+              <span className="text-xs text-m-ink/75">বাডি: {nameOf(room, p.buddy)}</span>
             </span>
             {member && me && me.id !== p.weak && (
               <button
@@ -105,7 +105,7 @@ function Recovery({ room, pairs, me, member }: { room: Classroom; pairs: { weak:
             )}
           </li>
         ))}
-        {pairs.length === 0 && <li className="text-sm text-white/80">এখন কেউ পিছিয়ে নেই।</li>}
+        {pairs.length === 0 && <li className="text-sm text-m-ink/80">এখন কেউ পিছিয়ে নেই।</li>}
       </ul>
     </section>
   );
@@ -123,7 +123,7 @@ function TeacherDesk({ room, leader }: { room: Classroom; leader: boolean }) {
     <Panel title={<span className="flex items-center gap-2"><UserRoundCheck className="size-4.5" aria-hidden /> শিক্ষকের নজরে</span>}>
       {room.teacher ? (
         <>
-          <p className="mb-3 text-sm text-white/80">{room.teacher.name} · {room.teacher.subject}</p>
+          <p className="mb-3 text-sm text-m-ink/80">{room.teacher.name} · {room.teacher.subject}</p>
           <dl className="grid grid-cols-2 gap-2 text-center">
             {[
               { label: "ক্লাসের গড়", value: <><Num value={avg} />%</> },
@@ -131,9 +131,9 @@ function TeacherDesk({ room, leader }: { room: Classroom; leader: boolean }) {
               { label: "সাহায্য দরকার", value: <><Num value={weak} /> জন</> },
               { label: "পরের পরীক্ষা", value: next ? <><Num value={next.days} /> দিন</> : "—" },
             ].map((s) => (
-              <div key={s.label} className="rounded-xl bg-black/40 px-2 py-3 ring-1 ring-white/10">
-                <dt className="text-[11px] text-white/60">{s.label}</dt>
-                <dd className="text-lg font-bold text-signal-orange">{s.value}</dd>
+              <div key={s.label} className="rounded-xl bg-white/65 px-2 py-3 ring-1 ring-m-ink/9">
+                <dt className="text-[11px] text-m-ink/60">{s.label}</dt>
+                <dd className="text-lg font-bold text-m-blue">{s.value}</dd>
               </div>
             ))}
           </dl>
@@ -147,13 +147,13 @@ function TeacherDesk({ room, leader }: { room: Classroom; leader: boolean }) {
             editClassroom(room.id, (r) => ({ ...r, teacher: { name: name.trim(), subject: subject.trim() || "তত্ত্বাবধান" } }));
           }}
         >
-          <p className="text-sm text-white/75">একজন শিক্ষক যোগ করলে তিনি ক্লাসের গড়, সিলেবাস আর কে পিছিয়ে — এক নজরে দেখবেন।</p>
+          <p className="text-sm text-m-ink/75">একজন শিক্ষক যোগ করলে তিনি ক্লাসের গড়, সিলেবাস আর কে পিছিয়ে — এক নজরে দেখবেন।</p>
           <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="শিক্ষকের নাম" aria-label="শিক্ষকের নাম" />
           <Input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="বিষয়" aria-label="বিষয়" />
           <button type="submit" className={mediaButton({ variant: "primary", className: "w-full" })}>শিক্ষক যোগ করুন</button>
         </form>
       ) : (
-        <p className="text-sm text-white/70">এই ক্লাসে এখনো কোনো শিক্ষক যুক্ত নেই।</p>
+        <p className="text-sm text-m-ink/70">এই ক্লাসে এখনো কোনো শিক্ষক যুক্ত নেই।</p>
       )}
     </Panel>
   );
@@ -179,21 +179,21 @@ function ClassGalaxy({ room }: { room: Classroom }) {
       label: m.name,
       sublabel: `${m.points} পয়েন্ট`,
       color: r.color,
-      avatar: <span className="flex size-8 items-center justify-center rounded-full bg-text-primary text-xs font-bold text-white ring-2 ring-current lg:size-9">{initial(m.name)}</span>,
+      avatar: <span className="flex size-8 items-center justify-center rounded-full bg-m-card text-xs font-bold text-m-ink ring-2 ring-current lg:size-9">{initial(m.name)}</span>,
     })),
   }));
 
   return (
-    <section className="story-reveal overflow-hidden rounded-3xl bg-black ring-1 ring-white/12">
-      <h2 className="px-5 pt-5 text-lg font-bold text-white sm:px-8 sm:pt-7">ক্লাসের গ্যালাক্সি</h2>
-      <p className="px-5 text-sm text-white/65 sm:px-8">মাঝে সিআর, সোনালি কক্ষপথে সবচেয়ে সক্রিয়রা। নাম দেখতে কোনো গ্রহের ওপর রাখুন।</p>
+    <section className="story-reveal overflow-hidden rounded-3xl bg-m-canvas ring-1 ring-m-ink/10">
+      <h2 className="px-5 pt-5 text-lg font-bold text-m-ink sm:px-8 sm:pt-7">ক্লাসের গ্যালাক্সি</h2>
+      <p className="px-5 text-sm text-m-ink/65 sm:px-8">মাঝে সিআর, সোনালি কক্ষপথে সবচেয়ে সক্রিয়রা। নাম দেখতে কোনো গ্রহের ওপর রাখুন।</p>
       <SolarSystem
         className="mx-auto"
         orbits={orbits}
         core={
           <span className="flex flex-col items-center">
-            <span className="flex size-16 items-center justify-center rounded-full bg-signal-orange text-2xl font-bold text-text-primary shadow-[0_0_40px_-6px_var(--color-signal-orange)]">{initial(nameOf(room, room.leaderId))}</span>
-            <span className="mt-2 rounded-full bg-text-primary px-2.5 py-0.5 text-xs font-bold text-signal-orange ring-1 ring-white/15">সিআর</span>
+            <span className="flex size-16 items-center justify-center rounded-full bg-m-yellow text-2xl font-bold text-m-ink shadow-[0_0_40px_-6px_var(--color-signal-orange)]">{initial(nameOf(room, room.leaderId))}</span>
+            <span className="mt-2 rounded-full bg-m-card px-2.5 py-0.5 text-xs font-bold text-m-blue ring-1 ring-m-ink/13">সিআর</span>
           </span>
         }
       />
@@ -205,7 +205,7 @@ function AddStudent({ roomId }: { roomId: string }) {
   const [name, setName] = useState("");
   return (
     <form
-      className="flex flex-wrap gap-2 rounded-2xl bg-text-primary p-4 ring-1 ring-white/12"
+      className="flex flex-wrap gap-2 rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 shadow-m-tile"
       onSubmit={(e) => {
         e.preventDefault();
         if (name.trim().length < 2) return;

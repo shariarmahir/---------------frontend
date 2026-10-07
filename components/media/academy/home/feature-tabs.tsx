@@ -58,19 +58,19 @@ export function FeatureTabs({ items }: { items: Feature[] }) {
             tabIndex={i === on ? 0 : -1}
             onClick={() => setOn(i)}
             className={cn(
-              "group relative flex h-[4.75rem] shrink-0 items-center gap-4 rounded-xl bg-white pr-6 pl-5 text-left text-[17px] font-semibold text-text-primary ring-4 transition-[box-shadow,translate] duration-300 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal-orange motion-reduce:transition-none lg:w-full",
-              i === on ? "ring-signal-orange shadow-[0_14px_30px_-16px_var(--color-signal-orange)]" : "ring-transparent hover:shadow-tile-lift",
+              "group relative flex h-[4.75rem] shrink-0 items-center gap-4 rounded-xl bg-m-ink pr-6 pl-5 text-left text-[17px] font-semibold text-m-on ring-4 transition-[box-shadow,translate] duration-300 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-m-blue motion-reduce:transition-none lg:w-full",
+              i === on ? "ring-m-blue shadow-[0_14px_30px_-16px_var(--color-signal-orange)]" : "ring-transparent hover:shadow-m-lift",
             )}
           >
             <span className="size-11 shrink-0 transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none">{item.icon}</span>
             <span className="whitespace-nowrap lg:whitespace-normal">{item.title}</span>
             {/* The notch pointing at the picture. */}
-            {i === on && <span className="absolute top-1/2 -right-[13px] hidden size-5 -translate-y-1/2 rotate-45 border-t-4 border-r-4 border-signal-orange bg-white lg:block" aria-hidden />}
+            {i === on && <span className="absolute top-1/2 -right-[13px] hidden size-5 -translate-y-1/2 rotate-45 border-t-4 border-r-4 border-m-blue bg-white lg:block" aria-hidden />}
           </button>
         ))}
       </div>
 
-      <div id={`${base}-panel`} role="tabpanel" aria-labelledby={`${base}-tab-${f.id}`} className="relative overflow-hidden rounded-3xl bg-bd-green px-4 py-8 sm:px-8 lg:min-h-[34rem]">
+      <div id={`${base}-panel`} role="tabpanel" aria-labelledby={`${base}-tab-${f.id}`} className="relative overflow-hidden rounded-3xl bg-m-blue-soft px-4 py-8 sm:px-8 lg:min-h-[34rem]">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={f.id}
@@ -80,30 +80,30 @@ export function FeatureTabs({ items }: { items: Feature[] }) {
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="flex flex-col items-center gap-5 lg:block"
           >
-            <div className="relative mx-auto w-[15.5rem] rounded-[2.4rem] bg-text-primary p-2.5 pb-12 shadow-[0_30px_60px_-30px_rgb(0_0_0/0.9)] sm:w-[17rem]">
+            <div className="relative mx-auto w-[15.5rem] rounded-[2.4rem] bg-m-card p-2.5 pb-12 shadow-[0_30px_60px_-30px_rgb(16_24_40/0.27)] sm:w-[17rem]">
               <div className="flex items-center gap-2 px-3 py-2.5">
                 <span className="flex h-4 items-end gap-0.5" aria-hidden>
                   {[0, 1, 2].map((b) => (
                     <motion.span
                       key={b}
-                      className="w-1 rounded-full bg-signal-orange"
+                      className="w-1 rounded-full bg-m-yellow"
                       initial={{ height: 8 }}
                       animate={reduce ? { height: 10 } : { height: [5, 16, 5] }}
                       transition={{ duration: 0.8, delay: b * 0.15, repeat: Infinity, ease: "easeInOut" }}
                     />
                   ))}
                 </span>
-                <span className="truncate rounded-md bg-white/10 px-2 py-1 text-xs font-semibold text-white">{f.screen}</span>
+                <span className="truncate rounded-md bg-m-ink/6 px-2 py-1 text-xs font-semibold text-m-ink">{f.screen}</span>
               </div>
               <div className="relative aspect-4/5 overflow-hidden rounded-[1.75rem]">
                 <Image src={f.image} alt={f.alt} fill sizes="272px" className="object-cover" />
               </div>
             </div>
 
-            <motion.div {...float(0)} className="w-full max-w-[17rem] rounded-2xl bg-white p-4 text-text-primary shadow-[0_24px_40px_-24px_rgb(0_0_0/0.8)] lg:absolute lg:bottom-10 lg:left-6 xl:left-10">
+            <motion.div {...float(0)} className="w-full max-w-[17rem] rounded-2xl bg-m-ink p-4 text-m-on shadow-[0_24px_40px_-24px_rgb(16_24_40/0.24)] lg:absolute lg:bottom-10 lg:left-6 xl:left-10">
               {f.a}
             </motion.div>
-            <motion.div {...float(0.8)} className="w-full max-w-[17rem] rounded-2xl bg-white p-4 text-text-primary shadow-[0_24px_40px_-24px_rgb(0_0_0/0.8)] lg:absolute lg:top-10 lg:right-6 lg:max-w-[14rem] xl:right-10">
+            <motion.div {...float(0.8)} className="w-full max-w-[17rem] rounded-2xl bg-m-ink p-4 text-m-on shadow-[0_24px_40px_-24px_rgb(16_24_40/0.24)] lg:absolute lg:top-10 lg:right-6 lg:max-w-[14rem] xl:right-10">
               {f.b}
             </motion.div>
           </motion.div>

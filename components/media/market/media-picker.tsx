@@ -29,26 +29,26 @@ async function read(kind: UploadKind, file: File): Promise<MediaSlot> {
 /** One uploaded item: photo, video with its poster, or a playable audio sample. */
 function Item({ m, onRemove }: { m: MediaSlot; onRemove: () => void }) {
   return (
-    <li className="live-in relative overflow-hidden rounded-2xl bg-black/40 ring-1 ring-white/12">
+    <li className="live-in relative overflow-hidden rounded-2xl bg-white/65 ring-1 ring-m-ink/10">
       {m.kind === "audio" ? (
-        <div className="flex aspect-4/3 flex-col justify-end gap-2 bg-bdorange-600 p-3 text-text-primary">
+        <div className="flex aspect-4/3 flex-col justify-end gap-2 bg-m-red-soft p-3 text-m-ink">
           <AudioLines className="size-7" aria-hidden />
           <p className="truncate text-xs font-bold">{m.label}</p>
           {m.play ? <audio controls src={m.play} className="h-8 w-full" /> : <p className="text-[11px]">শুধু দৈর্ঘ্য রাখা হলো — ফাইল বড়</p>}
         </div>
       ) : m.kind === "video" && m.play ? (
-        <video controls poster={m.src} src={m.play} className="aspect-4/3 w-full bg-black object-cover" />
+        <video controls poster={m.src} src={m.play} className="aspect-4/3 w-full bg-m-canvas object-cover" />
       ) : (
         // eslint-disable-next-line @next/next/no-img-element -- a local data URL
         <img src={m.src} alt="" className="aspect-4/3 w-full object-cover" />
       )}
       {m.kind === "video" && !m.play && (
         <span className="pointer-events-none absolute inset-0 flex items-center justify-center" aria-hidden>
-          <span className="flex size-10 items-center justify-center rounded-full bg-black/70 text-signal-orange"><Play className="ml-0.5 size-5 fill-current" /></span>
+          <span className="flex size-10 items-center justify-center rounded-full bg-white/90 text-m-blue"><Play className="ml-0.5 size-5 fill-current" /></span>
         </span>
       )}
-      {m.duration && m.kind === "video" && <span className="absolute bottom-2 left-2 rounded-md bg-black/70 px-1.5 py-0.5 text-[11px] font-semibold text-white">{m.duration}</span>}
-      <button type="button" onClick={onRemove} aria-label={`${m.label} সরান`} className="absolute top-2 right-2 flex size-8 items-center justify-center rounded-full bg-black/70 text-white hover:bg-black">
+      {m.duration && m.kind === "video" && <span className="absolute bottom-2 left-2 rounded-md bg-white/90 px-1.5 py-0.5 text-[11px] font-semibold text-m-ink">{m.duration}</span>}
+      <button type="button" onClick={onRemove} aria-label={`${m.label} সরান`} className="absolute top-2 right-2 flex size-8 items-center justify-center rounded-full bg-white/90 text-m-ink hover:bg-m-canvas">
         <X className="size-4" aria-hidden />
       </button>
     </li>
@@ -80,8 +80,8 @@ export function MediaPicker({ spec, items, error, onChange }: { spec: ProductFor
 
   return (
     <fieldset className="space-y-3" aria-describedby={error ? "media-error" : "media-hint"}>
-      <legend className="text-sm font-semibold text-white">{spec.label}{spec.need && " *"}</legend>
-      <p id="media-hint" className="text-xs leading-relaxed text-white/65">{spec.hint}</p>
+      <legend className="text-sm font-semibold text-m-ink">{spec.label}{spec.need && " *"}</legend>
+      <p id="media-hint" className="text-xs leading-relaxed text-m-ink/65">{spec.hint}</p>
       {items.length > 0 && (
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {items.map((m, i) => <Item key={i} m={m} onRemove={() => onChange(items.filter((_, j) => j !== i))} />)}
@@ -99,12 +99,12 @@ export function MediaPicker({ spec, items, error, onChange }: { spec: ProductFor
             </span>
           );
         })}
-        <span className="text-xs text-white/55">
+        <span className="text-xs text-m-ink/55">
           {reading > 0 ? <span className="inline-flex items-center gap-1"><Loader2 className="size-3.5 animate-spin" aria-hidden />প্রস্তুত হচ্ছে…</span> : <><Num value={items.length} />/<Num value={spec.max} /></>}
         </span>
       </div>
-      <p className="text-[11px] text-white/50">অডিও-ভিডিও ১.৫ এমবি পর্যন্ত চালানো যায়; বড় ফাইলের দৈর্ঘ্য আর পোস্টার রাখা হয় (সার্ভার এলে পুরো ফাইল)।</p>
-      {error && <p id="media-error" className="text-xs font-medium text-crimson-bright">{error}</p>}
+      <p className="text-[11px] text-m-ink/50">অডিও-ভিডিও ১.৫ এমবি পর্যন্ত চালানো যায়; বড় ফাইলের দৈর্ঘ্য আর পোস্টার রাখা হয় (সার্ভার এলে পুরো ফাইল)।</p>
+      {error && <p id="media-error" className="text-xs font-medium text-m-red">{error}</p>}
     </fieldset>
   );
 }

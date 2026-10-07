@@ -242,7 +242,7 @@ export function BazaarForm() {
           if (step < 3) go(step + 1);
           else publish();
         }}
-        className="min-w-0 space-y-6 rounded-3xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-7"
+        className="min-w-0 space-y-6 rounded-3xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-7 shadow-m-tile"
       >
         <Stepper steps={STEPS} at={step} onJump={go} />
 
@@ -251,18 +251,18 @@ export function BazaarForm() {
             <>
                 <>
                   <fieldset className="space-y-2">
-                    <legend className="mb-2 text-sm font-semibold text-white">আপনার ব্যবসা এখন কোন পর্যায়ে</legend>
+                    <legend className="mb-2 text-sm font-semibold text-m-ink">আপনার ব্যবসা এখন কোন পর্যায়ে</legend>
                     <div className="grid gap-2 sm:grid-cols-2">
                       {(Object.keys(STAGES) as SellerStage[]).map((k) => {
                         const Icon = STAGE_ICON[k];
                         const on = d.stage === k;
                         return (
-                          <label key={k} className={cn("flex cursor-pointer items-start gap-3 rounded-2xl border-2 p-3 transition-colors has-focus-visible:ring-2 has-focus-visible:ring-signal-orange", on ? "border-signal-orange bg-signal-orange/10" : "border-white/12 hover:border-white/30")}>
+                          <label key={k} className={cn("flex cursor-pointer items-start gap-3 rounded-2xl border-2 p-3 transition-colors has-focus-visible:ring-2 has-focus-visible:ring-m-blue", on ? "border-m-blue bg-m-yellow/10" : "border-m-ink/10 hover:border-m-ink/26")}>
                             <input type="radio" name="stage" className="sr-only" checked={on} onChange={() => setD((x) => ({ ...x, stage: k }))} />
-                            <span className={cn("flex size-9 shrink-0 items-center justify-center rounded-xl", on ? "bg-signal-orange text-text-primary" : "bg-white/10 text-signal-orange")}><Icon className="size-5" aria-hidden /></span>
+                            <span className={cn("flex size-9 shrink-0 items-center justify-center rounded-xl", on ? "bg-m-yellow text-m-ink" : "bg-m-ink/6 text-m-blue")}><Icon className="size-5" aria-hidden /></span>
                             <span>
-                              <span className={cn("block font-bold", on ? "text-signal-orange" : "text-white")}>{STAGES[k].bn}</span>
-                              <span className="text-xs leading-relaxed text-white/70">{STAGES[k].hint}</span>
+                              <span className={cn("block font-bold", on ? "text-m-blue" : "text-m-ink")}>{STAGES[k].bn}</span>
+                              <span className="text-xs leading-relaxed text-m-ink/70">{STAGES[k].hint}</span>
                             </span>
                           </label>
                         );
@@ -326,21 +326,21 @@ export function BazaarForm() {
                     </Row>
                   )}
                   <div className="space-y-1.5">
-                    <label htmlFor="negotiable" className="flex min-h-11 items-center justify-between gap-3 text-sm font-semibold text-white">
+                    <label htmlFor="negotiable" className="flex min-h-11 items-center justify-between gap-3 text-sm font-semibold text-m-ink">
                       দরদাম চলবে
                       <Switch id="negotiable" checked={d.negotiable} onCheckedChange={(v) => set("negotiable", v)} />
                     </label>
                     {d.negotiable && (
                       <>
                         <Input id="floor" inputMode="numeric" value={d.floor} onChange={(e) => set("floor", e.target.value)} placeholder="সর্বনিম্ন কত নেবেন (গোপন)" aria-label="সর্বনিম্ন দাম" {...aria("floor")} />
-                        {err("floor") && <p id="floor-error" className="text-xs font-medium text-crimson-bright">{err("floor")}</p>}
+                        {err("floor") && <p id="floor-error" className="text-xs font-medium text-m-red">{err("floor")}</p>}
                       </>
                     )}
                   </div>
                 </div>
 
                 <fieldset {...aria("modes")}>
-                  <legend className="mb-2 text-sm font-semibold text-white">কাদের কাছে বিক্রি করবেন</legend>
+                  <legend className="mb-2 text-sm font-semibold text-m-ink">কাদের কাছে বিক্রি করবেন</legend>
                   <div className="flex flex-wrap gap-2">
                     {(Object.keys(MODES) as TradeMode[]).map((k) => {
                       const on = d.modes.includes(k);
@@ -352,12 +352,12 @@ export function BazaarForm() {
                       );
                     })}
                   </div>
-                  {err("modes") && <p id="modes-error" className="mt-1.5 text-xs font-medium text-crimson-bright">{err("modes")}</p>}
+                  {err("modes") && <p id="modes-error" className="mt-1.5 text-xs font-medium text-m-red">{err("modes")}</p>}
                 </fieldset>
 
                 {d.modes.includes("wholesale") && (
-                  <div className="space-y-2 rounded-2xl bg-bd-green/25 p-4 ring-1 ring-bdgreen-500/30" {...aria("tiers")}>
-                    <p className="text-sm font-semibold text-white">পাইকারি দর — বেশি নিলে কম দাম</p>
+                  <div className="space-y-2 rounded-2xl bg-m-blue/13 p-4 ring-1 ring-m-green/30" {...aria("tiers")}>
+                    <p className="text-sm font-semibold text-m-ink">পাইকারি দর — বেশি নিলে কম দাম</p>
                     {d.tiers.map((t, i) => (
                       <div key={i} className="flex items-center gap-2">
                         <Input inputMode="numeric" value={t.min} onChange={(e) => set("tiers", d.tiers.map((x, j) => (j === i ? { ...x, min: e.target.value } : x)))} placeholder={`কমপক্ষে কত ${d.unit}`} aria-label={`ধাপ ${i + 1}: কমপক্ষে পরিমাণ`} />
@@ -372,18 +372,18 @@ export function BazaarForm() {
                         <Plus aria-hidden /> দরের ধাপ যোগ করুন
                       </button>
                     )}
-                    {err("tiers") && <p id="tiers-error" className="text-xs font-medium text-crimson-bright">{err("tiers")}</p>}
+                    {err("tiers") && <p id="tiers-error" className="text-xs font-medium text-m-red">{err("tiers")}</p>}
                   </div>
                 )}
               </>
 
               {farmOrFood && (
                 <div className="grid gap-2 sm:grid-cols-2">
-                  <label htmlFor="organic" className="flex min-h-12 items-center justify-between gap-3 rounded-xl bg-white/5 px-3 text-sm font-semibold text-white">
-                    <span className="inline-flex items-center gap-2"><Leaf className="size-4 text-bdgreen-500" aria-hidden />বিষমুক্ত / অর্গানিক</span>
+                  <label htmlFor="organic" className="flex min-h-12 items-center justify-between gap-3 rounded-xl bg-m-ink/3 px-3 text-sm font-semibold text-m-ink">
+                    <span className="inline-flex items-center gap-2"><Leaf className="size-4 text-m-green" aria-hidden />বিষমুক্ত / অর্গানিক</span>
                     <Switch id="organic" checked={d.organic} onCheckedChange={(v) => set("organic", v)} />
                   </label>
-                  <label htmlFor="perishable" className="flex min-h-12 items-center justify-between gap-3 rounded-xl bg-white/5 px-3 text-sm font-semibold text-white">
+                  <label htmlFor="perishable" className="flex min-h-12 items-center justify-between gap-3 rounded-xl bg-m-ink/3 px-3 text-sm font-semibold text-m-ink">
                     দ্রুত নষ্ট হয় (কোল্ড বক্স লাগবে)
                     <Switch id="perishable" checked={d.perishable} onCheckedChange={(v) => set("perishable", v)} />
                   </label>
@@ -392,7 +392,7 @@ export function BazaarForm() {
 
               {fieldsForSub(d.sub).length > 0 && (
                 <div>
-                  <p className="mb-3 text-sm font-semibold text-signal-orange">{d.sub === "custom" ? d.custom || "আপনার বিভাগ" : resolveSub(d.sub).sub.bn} — যা ক্রেতা জানতে চান</p>
+                  <p className="mb-3 text-sm font-semibold text-m-blue">{d.sub === "custom" ? d.custom || "আপনার বিভাগ" : resolveSub(d.sub).sub.bn} — যা ক্রেতা জানতে চান</p>
                   <div className="grid gap-4 sm:grid-cols-2">
                     {fieldsForSub(d.sub).map((f) => (
                       <SpecField key={`${d.sub}-${f.key}`} field={f} value={d.extra[f.key] ?? ""} error={err(`spec-${f.key}`)} onChange={(v) => setExtra(f.key, v)} />
@@ -408,7 +408,7 @@ export function BazaarForm() {
             <>
               {product.delivery.length > 0 && (
               <fieldset {...aria("delivery")}>
-                <legend className="mb-2 text-sm font-semibold text-white">কীভাবে পৌঁছাবে *</legend>
+                <legend className="mb-2 text-sm font-semibold text-m-ink">কীভাবে পৌঁছাবে *</legend>
                 <div className="flex flex-wrap gap-2">
                   {(physical ? GOODS_DELIVERY : SERVICE_DELIVERY).map((k) => {
                     const on = d.delivery.includes(k);
@@ -420,7 +420,7 @@ export function BazaarForm() {
                     );
                   })}
                 </div>
-                {err("delivery") && <p id="delivery-error" className="mt-1.5 text-xs font-medium text-crimson-bright">{err("delivery")}</p>}
+                {err("delivery") && <p id="delivery-error" className="mt-1.5 text-xs font-medium text-m-red">{err("delivery")}</p>}
               </fieldset>
               )}
               <div className="grid gap-4 sm:grid-cols-2">
@@ -435,17 +435,17 @@ export function BazaarForm() {
                 </Row>
               </div>
               {fees && (
-                <dl className="space-y-1 rounded-2xl bg-white/5 p-4 text-sm">
-                  <div className="flex justify-between"><dt className="text-white/75">প্রতি {d.unit} দাম</dt><dd className="text-white"><Taka amount={fees.price} /></dd></div>
-                  <div className="flex justify-between"><dt className="text-white/75">প্ল্যাটফর্ম ফি ৫%</dt><dd className="text-white">− <Taka amount={fees.sellerFee} /></dd></div>
-                  <div className="flex justify-between border-t border-white/12 pt-1 font-bold"><dt className="text-white">আপনি পাবেন</dt><dd className="text-signal-orange"><Taka amount={fees.sellerReceives} /></dd></div>
+                <dl className="space-y-1 rounded-2xl bg-m-ink/3 p-4 text-sm">
+                  <div className="flex justify-between"><dt className="text-m-ink/75">প্রতি {d.unit} দাম</dt><dd className="text-m-ink"><Taka amount={fees.price} /></dd></div>
+                  <div className="flex justify-between"><dt className="text-m-ink/75">প্ল্যাটফর্ম ফি ৫%</dt><dd className="text-m-ink">− <Taka amount={fees.sellerFee} /></dd></div>
+                  <div className="flex justify-between border-t border-m-ink/10 pt-1 font-bold"><dt className="text-m-ink">আপনি পাবেন</dt><dd className="text-m-blue"><Taka amount={fees.sellerReceives} /></dd></div>
                 </dl>
               )}
             </>
           )}
         </div>
 
-        <div className="flex items-center justify-between gap-3 border-t border-white/10 pt-5">
+        <div className="flex items-center justify-between gap-3 border-t border-m-ink/9 pt-5">
           {step > 0 ? (
             <button type="button" onClick={() => go(step - 1)} className={mediaButton({ variant: "ghost" })}>
               <ArrowLeft aria-hidden /> আগের ধাপ
@@ -460,27 +460,27 @@ export function BazaarForm() {
       </form>
 
       <aside className="space-y-4 lg:sticky lg:top-22 lg:self-start" aria-label="প্রিভিউ ও অটো-মিল">
-        <p className="text-xs font-semibold tracking-wide text-white/60">ক্রেতারা যেমন দেখবেন</p>
+        <p className="text-xs font-semibold tracking-wide text-m-ink/60">ক্রেতারা যেমন দেখবেন</p>
         <div inert className="pointer-events-none select-none">
           <ListingCard listing={preview} seller={currentUser} />
         </div>
-        <div className={cn("flex items-start gap-2 rounded-2xl p-3 text-sm", banned ? "bg-national-crimson text-white" : "bg-bd-green text-white")} role={banned ? "alert" : undefined}>
+        <div className={cn("flex items-start gap-2 rounded-2xl p-3 text-sm", banned ? "bg-m-red text-m-on" : "bg-m-blue-soft text-m-ink")} role={banned ? "alert" : undefined}>
           {banned ? <ShieldAlert className="mt-0.5 size-4.5 shrink-0" aria-hidden /> : <ShieldCheck className="mt-0.5 size-4.5 shrink-0" aria-hidden />}
           {banned ? <span>“{banned}” আইনে নিষিদ্ধ — এই পোস্ট প্রকাশ করা যাবে না।</span> : <span>বৈধতা যাচাই: কোনো নিষিদ্ধ পণ্যের নাম নেই।</span>}
         </div>
-        <div className="rounded-2xl bg-text-primary p-4 ring-1 ring-white/12">
-          <p className="text-sm font-bold text-white">
-            {buyers.length ? <><span className="text-signal-orange"><Num value={buyers.length} /></span> জন ক্রেতা বোর্ডে এটাই খুঁজছেন</> : "বোর্ডে এখনো মিলের মতো ক্রেতা নেই"}
+        <div className="rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 shadow-m-tile">
+          <p className="text-sm font-bold text-m-ink">
+            {buyers.length ? <><span className="text-m-blue"><Num value={buyers.length} /></span> জন ক্রেতা বোর্ডে এটাই খুঁজছেন</> : "বোর্ডে এখনো মিলের মতো ক্রেতা নেই"}
           </p>
           <ul className="mt-2 space-y-1.5">
             {buyers.slice(0, 3).map((m) => (
-              <li key={m.post.id} className="flex justify-between gap-2 text-xs text-white/75">
+              <li key={m.post.id} className="flex justify-between gap-2 text-xs text-m-ink/75">
                 <span className="truncate">{m.post.title}</span>
-                <span className="font-bold text-bdgreen-500"><Num value={m.score} />%</span>
+                <span className="font-bold text-m-green"><Num value={m.score} />%</span>
               </li>
             ))}
           </ul>
-          <p className="mt-2 text-[11px] text-white/55">ট্যাগ, দাম, পরিমাণ আর জেলা মিলিয়ে হিসাব।</p>
+          <p className="mt-2 text-[11px] text-m-ink/55">ট্যাগ, দাম, পরিমাণ আর জেলা মিলিয়ে হিসাব।</p>
         </div>
       </aside>
     </div>

@@ -33,14 +33,14 @@ export const deptImage = (d: Department) => [...coursesOf(d.id)].sort((a, b) => 
 
 const tileFrame = (surface: "ink" | "black") =>
   cn(
-    "group flex h-full flex-col rounded-2xl p-2 transition-[translate,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-[0_18px_36px_-18px_rgb(0_0_0/0.9)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-signal-orange motion-reduce:transition-none motion-reduce:hover:translate-y-0",
-    surface === "ink" ? "bg-text-primary" : "bg-black",
+    "group flex h-full flex-col rounded-2xl p-2 transition-[translate,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-[0_18px_36px_-18px_rgb(16_24_40/0.27)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-m-blue motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+    surface === "ink" ? "bg-m-card" : "bg-m-canvas",
   );
 
 /** The button at a tile's foot; the whole tile is the link, so it is drawn, not nested. */
 function TileCta({ label }: { label: string }) {
   return (
-    <span className={mediaButton({ variant: "outline", size: "sm", className: "mx-1.5 mt-3 mb-1.5 self-start group-hover:bg-signal-orange group-hover:text-text-primary" })}>
+    <span className={mediaButton({ variant: "outline", size: "sm", className: "mx-1.5 mt-3 mb-1.5 self-start group-hover:bg-m-yellow group-hover:text-m-ink" })}>
       {label} <ArrowRight className="transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden />
     </span>
   );
@@ -54,23 +54,23 @@ export function DeptTile({ dept, surface = "ink" }: { dept: Department; surface?
   const image = deptImage(dept);
   return (
     <Link href={`/media/academy/dept/${dept.id}`} className={tileFrame(surface)}>
-      <span className="relative block aspect-video overflow-hidden rounded-xl bg-black">
+      <span className="relative block aspect-video overflow-hidden rounded-xl bg-m-canvas">
         {image ? (
           <Image src={image} alt="" fill sizes="(min-width: 1280px) 16rem, (min-width: 640px) 40vw, 90vw" className="object-cover transition-transform duration-700 group-hover:scale-105 motion-reduce:transition-none" />
         ) : (
           <RoleArt dept={dept} tone="gold" className="aspect-video rounded-none" />
         )}
-        {list.some((c) => c.fee === 0) && <span className="absolute top-2 left-2 rounded-md bg-signal-orange px-1.5 py-0.5 text-[11px] font-bold text-text-primary">বিনা ফি কোর্স</span>}
+        {list.some((c) => c.fee === 0) && <span className="absolute top-2 left-2 rounded-md bg-m-yellow px-1.5 py-0.5 text-[11px] font-bold text-m-ink">বিনা ফি কোর্স</span>}
       </span>
-      <span className="mt-3 flex items-center gap-2 px-1.5 text-sm text-white/80">
+      <span className="mt-3 flex items-center gap-2 px-1.5 text-sm text-m-ink/80">
         <PersonAvatar person={lead} size="xs" />
         <span className="truncate">{dept.academy.name}</span>
       </span>
-      <span className="mt-1 line-clamp-2 px-1.5 font-bold text-white underline-offset-2 group-hover:underline">{dept.name}</span>
-      <span className="mt-auto flex flex-wrap items-center gap-1 px-1.5 pt-4 text-xs text-white/65">
+      <span className="mt-1 line-clamp-2 px-1.5 font-bold text-m-ink underline-offset-2 group-hover:underline">{dept.name}</span>
+      <span className="mt-auto flex flex-wrap items-center gap-1 px-1.5 pt-4 text-xs text-m-ink/65">
         {rating && (
           <>
-            <Star className="size-3.5 fill-signal-orange text-signal-orange" aria-hidden />
+            <Star className="size-3.5 fill-m-yellow text-m-gold" aria-hidden />
             <Num value={rating.avg} decimals={1} /> (<Compact n={rating.count} />) ·
           </>
         )}{" "}
@@ -87,19 +87,19 @@ export function CourseTile({ course, surface = "ink", cta = false }: { course: C
   const rating = ratingOf(course);
   return (
     <Link href={`/media/academy/course/${course.id}`} className={tileFrame(surface)}>
-      <span className="relative block aspect-video overflow-hidden rounded-xl bg-black">
+      <span className="relative block aspect-video overflow-hidden rounded-xl bg-m-canvas">
         <Image src={course.image} alt="" fill sizes="(min-width: 1280px) 16rem, (min-width: 640px) 40vw, 90vw" className="object-cover transition-transform duration-700 group-hover:scale-105 motion-reduce:transition-none" />
-        {course.fee === 0 && <span className="absolute top-2 left-2 rounded-md bg-signal-orange px-1.5 py-0.5 text-[11px] font-bold text-text-primary">বিনা ফি</span>}
+        {course.fee === 0 && <span className="absolute top-2 left-2 rounded-md bg-m-yellow px-1.5 py-0.5 text-[11px] font-bold text-m-ink">বিনা ফি</span>}
       </span>
-      <span className="mt-3 flex items-center gap-2 px-1.5 text-sm text-white/80">
+      <span className="mt-3 flex items-center gap-2 px-1.5 text-sm text-m-ink/80">
         <PersonAvatar person={teacher} size="xs" />
         <span className="truncate">{teacher.nameBn}</span>
       </span>
-      <span className="mt-1 line-clamp-2 px-1.5 font-bold text-white underline-offset-2 group-hover:underline">{course.title}</span>
-      <span className={cn("mt-auto flex flex-wrap items-center gap-1 px-1.5 pt-4 text-xs text-white/65", !cta && "pb-1")}>
+      <span className="mt-1 line-clamp-2 px-1.5 font-bold text-m-ink underline-offset-2 group-hover:underline">{course.title}</span>
+      <span className={cn("mt-auto flex flex-wrap items-center gap-1 px-1.5 pt-4 text-xs text-m-ink/65", !cta && "pb-1")}>
         {rating && (
           <>
-            <Star className="size-3.5 fill-signal-orange text-signal-orange" aria-hidden />
+            <Star className="size-3.5 fill-m-yellow text-m-gold" aria-hidden />
             <Num value={rating.avg} decimals={1} /> (<Compact n={rating.count} />) ·
           </>
         )}{" "}
@@ -117,17 +117,17 @@ export function VideoTile({ video, surface = "ink" }: { video: ClassVideo; surfa
   const course = getCourse(video.course);
   return (
     <Link href={watchHref(video)} className={tileFrame(surface)}>
-      <span className="relative block aspect-video overflow-hidden rounded-xl bg-black">
+      <span className="relative block aspect-video overflow-hidden rounded-xl bg-m-canvas">
         {course && <Image src={course.image} alt="" fill sizes="(min-width: 1280px) 16rem, (min-width: 640px) 40vw, 90vw" className="object-cover transition-transform duration-700 group-hover:scale-105 motion-reduce:transition-none" />}
-        <span className="absolute top-2 left-2 rounded-md bg-bd-green px-1.5 py-0.5 text-[11px] font-bold text-white">বিনামূল্যে</span>
-        <span className="absolute right-2 bottom-2 rounded-md bg-black/80 px-1.5 py-0.5 text-xs font-semibold text-white tabular-nums">{num(durationText(video.seconds))}</span>
+        <span className="absolute top-2 left-2 rounded-md bg-m-blue-soft px-1.5 py-0.5 text-[11px] font-bold text-m-ink">বিনামূল্যে</span>
+        <span className="absolute right-2 bottom-2 rounded-md bg-white/90 px-1.5 py-0.5 text-xs font-semibold text-m-ink tabular-nums">{num(durationText(video.seconds))}</span>
       </span>
-      <span className="mt-3 flex items-center gap-2 px-1.5 text-sm text-white/80">
+      <span className="mt-3 flex items-center gap-2 px-1.5 text-sm text-m-ink/80">
         <PersonAvatar person={teacher} size="xs" />
         <span className="truncate">{teacher.nameBn}</span>
       </span>
-      <span className="mt-1 line-clamp-2 px-1.5 font-bold text-white underline-offset-2 group-hover:underline">{video.title}</span>
-      <span className="mt-auto px-1.5 pt-4 pb-1 text-xs text-white/65">
+      <span className="mt-1 line-clamp-2 px-1.5 font-bold text-m-ink underline-offset-2 group-hover:underline">{video.title}</span>
+      <span className="mt-auto px-1.5 pt-4 pb-1 text-xs text-m-ink/65">
         ক্লাস ভিডিও · <Compact n={video.views} /> বার দেখা
       </span>
     </Link>
@@ -154,7 +154,7 @@ export const deptRow = (d: Department): Row => {
         {rating && (
           <>
             {" "}
-            · <Star className="inline size-3 fill-signal-orange align-[-1px] text-signal-orange" aria-hidden /> <Num value={rating.avg} decimals={1} />
+            · <Star className="inline size-3 fill-m-yellow align-[-1px] text-m-blue" aria-hidden /> <Num value={rating.avg} decimals={1} />
           </>
         )}
       </>
@@ -170,7 +170,7 @@ export const courseRow = (c: Course): Row => ({
   title: c.title,
   meta: (
     <>
-      কোর্স · <Star className="inline size-3 fill-signal-orange align-[-1px] text-signal-orange" aria-hidden /> <Num value={ratingOf(c)?.avg ?? 0} decimals={1} />
+      কোর্স · <Star className="inline size-3 fill-m-yellow align-[-1px] text-m-blue" aria-hidden /> <Num value={ratingOf(c)?.avg ?? 0} decimals={1} />
     </>
   ),
 });
@@ -191,25 +191,25 @@ export const videoRow = (v: ClassVideo): Row => ({
 /** One of the light-blue panels of a course site, in ink: a linked title and a few compact rows. */
 export function RowPanel({ title, href, rows, empty, delay = 0, className }: { title: string; href?: string; rows: Row[]; empty?: React.ReactNode; delay?: number; className?: string }) {
   return (
-    <Reveal delay={delay} className={cn("min-w-0 rounded-2xl bg-text-primary p-3.5 ring-1 ring-white/12", className)}>
+    <Reveal delay={delay} className={cn("min-w-0 rounded-2xl bg-m-card p-3.5 ring-1 ring-m-ink/10 shadow-m-tile", className)}>
       <h3 className="px-1">
         {href ? (
-          <a href={href} className="group inline-flex items-center gap-1.5 font-bold text-white">
+          <a href={href} className="group inline-flex items-center gap-1.5 font-bold text-m-ink">
             {title} <ArrowRight className="size-4 transition-transform group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden />
           </a>
         ) : (
-          <span className="font-bold text-white">{title}</span>
+          <span className="font-bold text-m-ink">{title}</span>
         )}
       </h3>
       {rows.length === 0 ? (
-        <p className="mt-3 rounded-xl bg-black/45 px-3 py-4 text-sm text-white/70">{empty}</p>
+        <p className="mt-3 rounded-xl bg-white/70 px-3 py-4 text-sm text-m-ink/70">{empty}</p>
       ) : (
         <ul className="mt-3 space-y-2">
           {rows.map((r) => {
             const t = personOrThrow(r.teacher);
             return (
               <li key={r.key}>
-                <Link href={r.href} className="group flex items-center gap-3 rounded-xl bg-black/45 p-2 transition-colors hover:bg-black">
+                <Link href={r.href} className="group flex items-center gap-3 rounded-xl bg-white/70 p-2 transition-colors hover:bg-m-canvas">
                   <span className={cn("relative grid size-16 shrink-0 place-items-center overflow-hidden rounded-lg", !r.image && "bg-white")}>
                     {r.image ? (
                       <Image src={r.image} alt="" fill sizes="64px" className="object-cover transition-transform duration-500 group-hover:scale-110 motion-reduce:transition-none" />
@@ -218,12 +218,12 @@ export function RowPanel({ title, href, rows, empty, delay = 0, className }: { t
                     )}
                   </span>
                   <span className="min-w-0">
-                    <span className="flex items-center gap-1.5 text-xs text-white/70">
+                    <span className="flex items-center gap-1.5 text-xs text-m-ink/70">
                       <PersonAvatar person={t} size="xs" className="size-4.5 text-[8px]" />
                       <span className="truncate">{t.nameBn}</span>
                     </span>
-                    <span className="mt-0.5 block truncate text-sm font-bold text-white group-hover:text-signal-orange">{r.title}</span>
-                    <span className="mt-0.5 block text-xs text-white/60">{r.meta}</span>
+                    <span className="mt-0.5 block truncate text-sm font-bold text-m-ink group-hover:text-m-blue">{r.title}</span>
+                    <span className="mt-0.5 block text-xs text-m-ink/60">{r.meta}</span>
                   </span>
                 </Link>
               </li>
@@ -241,9 +241,9 @@ export type BandTone = "green" | "gold" | "ink";
 export type BandTab = { id: string; label: string; items: { key: string; node: React.ReactNode }[] };
 
 const BAND: Record<BandTone, { box: string; text: string; sub: string; on: string; off: string; cta: "tile" | "primary" | "quiet" }> = {
-  green: { box: "bg-bd-green", text: "text-white", sub: "text-white/85", on: "text-white", off: "text-white ring-1 ring-white/40 hover:bg-white/10", cta: "tile" },
-  gold: { box: "bg-signal-orange", text: "text-text-primary", sub: "text-text-primary/80", on: "text-white", off: "text-text-primary ring-1 ring-text-primary/40 hover:bg-text-primary/10", cta: "tile" },
-  ink: { box: "bg-text-primary ring-1 ring-white/12", text: "text-white", sub: "text-white/75", on: "text-text-primary", off: "text-white ring-1 ring-white/30 hover:bg-white/10", cta: "primary" },
+  green: { box: "bg-m-blue-soft", text: "text-m-ink", sub: "text-m-ink/85", on: "text-m-ink", off: "text-m-ink ring-1 ring-m-ink/34 hover:bg-m-ink/6", cta: "tile" },
+  gold: { box: "bg-m-yellow", text: "text-m-ink", sub: "text-m-ink/80", on: "text-m-ink", off: "text-m-ink ring-1 ring-m-ink/40 hover:bg-m-card/10", cta: "tile" },
+  ink: { box: "bg-m-card ring-1 ring-m-ink/10", text: "text-m-ink", sub: "text-m-ink/75", on: "text-m-ink", off: "text-m-ink ring-1 ring-m-ink/26 hover:bg-m-ink/6", cta: "primary" },
 };
 
 /**
@@ -276,7 +276,7 @@ export function ChipBand({
   const choose = onTab ?? setOwn;
   const t = BAND[tone];
   const active = tabs.find((x) => x.id === current) ?? tabs[0];
-  const pill = tone === "ink" ? "bg-signal-orange" : "bg-text-primary";
+  const pill = tone === "ink" ? "bg-m-yellow" : "bg-m-card";
 
   return (
     <Reveal>

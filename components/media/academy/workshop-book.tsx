@@ -26,7 +26,7 @@ export function WorkshopBook({ workshop }: { workshop: Workshop }) {
 
   if (hydrated && booked) {
     return (
-      <span className="inline-flex h-9 items-center gap-1.5 text-sm font-semibold text-bdgreen-500">
+      <span className="inline-flex h-9 items-center gap-1.5 text-sm font-semibold text-m-green">
         <Check className="size-4" aria-hidden /> আসন রাখা হয়েছে
       </span>
     );

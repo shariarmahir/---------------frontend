@@ -17,7 +17,7 @@ export default async function TeachPage({ searchParams }: { searchParams: Promis
         <TeachApply initialDept={dept} />
         <div className="space-y-5 lg:sticky lg:top-0 lg:self-start">
           <Panel as="aside" title="যা দেখা হয়">
-            <ul className="space-y-2.5 text-sm leading-relaxed text-white/85">
+            <ul className="space-y-2.5 text-sm leading-relaxed text-m-ink/85">
               <li>পরিচয় যাচাই করা প্রোফাইল (এনআইডি বা পাসপোর্ট)।</li>
               <li>অন্তত ২ বছরের হাতে-কলমে কাজ।</li>
               <li>১০ মিনিটের নমুনা ক্লাস — বোঝানো যায় কি না।</li>
@@ -26,7 +26,7 @@ export default async function TeachPage({ searchParams }: { searchParams: Promis
             </ul>
           </Panel>
           <Panel as="aside" title="আয় ও দায়">
-            <ul className="space-y-2.5 text-sm leading-relaxed text-white/85">
+            <ul className="space-y-2.5 text-sm leading-relaxed text-m-ink/85">
               <li>ফি আপনি ঠিক করেন; আপনি পান ৯৫%, ক্লাস হলে এসক্রো থেকে।</li>
               <li>চাইলে বিনা ফিতেও শেখাতে পারেন — দেশের দরকারে অনেকে তা-ই করছেন।</li>
               <li>র‍্যাংক ঠিক হয় পয়েন্টে: ইন্টারভিউ, রেটিং, গ্র্যাজুয়েট, সফলতার গল্প। তিনটি প্রমাণিত অভিযোগে শিক্ষকতা থামে।</li>

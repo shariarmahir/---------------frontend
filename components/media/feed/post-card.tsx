@@ -34,7 +34,7 @@ export function CategoryChip({ id, className }: { id: Post["category"]; classNam
   return (
     <Link
       href={`/media?c=${c.id}`}
-      className={cn("inline-flex min-h-7 items-center rounded-full border border-white/12 bg-text-primary px-2.5 text-xs font-semibold text-white/80 transition-colors hover:border-signal-orange/40 hover:text-signal-orange", className)}
+      className={cn("inline-flex min-h-7 items-center rounded-full border border-m-ink/10 bg-m-card px-2.5 text-xs font-semibold text-m-ink/80 transition-colors hover:border-m-blue/40 hover:text-m-blue", className)}
     >
       {c.bn}
     </Link>
@@ -67,24 +67,24 @@ export function PostCard({
   const bg = post.media.length === 0 && post.caption.length <= BG_MAX ? bgOf(post.bg) : undefined;
   const Audience = post.audience === "private" ? Lock : post.audience === "followers" ? UsersRound : Earth;
   return (
-    <article id={post.id} className="scroll-mt-24 rounded-2xl border border-white/12 bg-text-primary story-reveal transition-[translate,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-white/25 hover:shadow-[0_24px_44px_-26px_var(--color-signal-orange)] active:scale-[0.99] motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+    <article id={post.id} className="scroll-mt-24 rounded-2xl border border-m-ink/10 bg-m-card story-reveal transition-[translate,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-m-ink/21 hover:shadow-[0_24px_44px_-26px_var(--color-signal-orange)] active:scale-[0.99] motion-reduce:transition-none motion-reduce:hover:translate-y-0 shadow-m-tile">
       <header className="flex items-start gap-3 p-4 pb-0 sm:p-6 sm:pb-0">
-        <Link href={`/media/u/${author.handle}`} className="shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-orange">
+        <Link href={`/media/u/${author.handle}`} className="shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-m-blue">
           <PersonAvatar person={author} />
         </Link>
         <div className="min-w-0 flex-1">
           <p className="flex items-center gap-1">
-            <Link href={`/media/u/${author.handle}`} className="truncate text-[15px] font-bold text-white hover:text-signal-orange">
+            <Link href={`/media/u/${author.handle}`} className="truncate text-[15px] font-bold text-m-ink hover:text-m-blue">
               {author.nameBn}
             </Link>
             {author.idVerified && <IdSeal />}
             {feeling && (
-              <span className="truncate text-sm text-white/70">
+              <span className="truncate text-sm text-m-ink/70">
                 — <span aria-hidden>{feeling.emoji}</span> {feeling.line}
               </span>
             )}
           </p>
-          <p className="flex min-w-0 items-center gap-1 text-xs text-white/65">
+          <p className="flex min-w-0 items-center gap-1 text-xs text-m-ink/65">
             <span className="truncate">{author.headline}</span>
             <span aria-hidden>·</span>
             <span className="shrink-0"><Ago iso={post.createdAt} live={live} /></span>
@@ -102,7 +102,7 @@ export function PostCard({
 
       <div className="space-y-4 p-4 sm:p-6">
         {post.topic === "help" && (
-          <p className="flex items-center gap-2 rounded-xl bg-national-crimson px-3 py-2 text-sm font-semibold text-white">
+          <p className="flex items-center gap-2 rounded-xl bg-m-red px-3 py-2 text-sm font-semibold text-m-on">
             <LifeBuoy className="size-4.5 shrink-0" aria-hidden /> সাহায্য চাই — পারলে শেয়ার করুন, কেউ হয়তো কাছেই আছেন
           </p>
         )}
@@ -110,7 +110,7 @@ export function PostCard({
         {bg ? (
           <p className={cn("grid min-h-56 place-items-center rounded-2xl px-6 py-10 text-center text-2xl leading-snug font-bold whitespace-pre-line text-balance sm:text-[1.7rem]", bg.className)}>{post.caption}</p>
         ) : post.caption ? (
-          <p className="text-[15px] leading-relaxed whitespace-pre-line text-white">{post.caption}</p>
+          <p className="text-[15px] leading-relaxed whitespace-pre-line text-m-ink">{post.caption}</p>
         ) : null}
 
         <MediaGallery media={post.media} />
@@ -119,7 +119,7 @@ export function PostCard({
 
         <div className="flex flex-wrap items-center gap-2">
           {post.skill ? (
-            <span className="inline-flex min-h-7 items-center gap-1.5 rounded-full bg-bd-green px-3 text-xs font-bold text-white">
+            <span className="inline-flex min-h-7 items-center gap-1.5 rounded-full bg-m-blue-soft px-3 text-xs font-bold text-m-ink">
               {post.kind === "project" ? <FolderKanban className="size-3.5" aria-hidden /> : <Tag className="size-3.5" aria-hidden />}
               {post.skill.name}
             </span>
@@ -127,21 +127,21 @@ export function PostCard({
           {topic.id !== "skill" && (
             <Link
               href={`/media?t=${topic.id}`}
-              className="inline-flex min-h-7 items-center gap-1 rounded-full bg-white/10 px-2.5 text-xs font-semibold text-white/80 transition-colors hover:bg-white/15"
+              className="inline-flex min-h-7 items-center gap-1 rounded-full bg-m-ink/6 px-2.5 text-xs font-semibold text-m-ink/80 transition-colors hover:bg-m-ink/8"
             >
-              <TopicIcon className="size-3.5 text-signal-orange" aria-hidden />
+              <TopicIcon className="size-3.5 text-m-blue" aria-hidden />
               {topic.bn}
             </Link>
           )}
           {post.from && (
-            <Link href={roomHref(post.from)} className="inline-flex min-h-7 items-center gap-1 rounded-full bg-bd-green px-2.5 text-xs font-semibold text-white transition-colors hover:bg-bdgreen-600">
+            <Link href={roomHref(post.from)} className="inline-flex min-h-7 items-center gap-1 rounded-full bg-m-blue-soft px-2.5 text-xs font-semibold text-m-ink transition-colors hover:bg-m-green-soft">
               {post.from.kind === "lab" ? <FlaskConical className="size-3.5" aria-hidden /> : post.from.kind === "team" ? <UsersRound className="size-3.5" aria-hidden /> : <GraduationCap className="size-3.5" aria-hidden />}
               {post.from.name}
             </Link>
           )}
           {post.skill && <CategoryChip id={post.category} />}
           {post.tags.map((t) => (
-            <span key={t} className="text-xs font-medium text-signal-orange">
+            <span key={t} className="text-xs font-medium text-m-blue">
               {t}
             </span>
           ))}
@@ -152,29 +152,29 @@ export function PostCard({
         {post.topic === "rights" && (
           <Link
             href="/media/civic"
-            className="flex items-center justify-between gap-3 rounded-xl border border-white/12 bg-white/10 px-4 py-3 text-sm transition-colors hover:border-signal-orange/40"
+            className="flex items-center justify-between gap-3 rounded-xl border border-m-ink/10 bg-m-ink/6 px-4 py-3 text-sm transition-colors hover:border-m-blue/40"
           >
-            <span className="flex items-center gap-2 font-semibold text-white">
-              <Megaphone className="size-4.5 text-signal-orange" aria-hidden /> নাগরিক বার্তায় অপরাধ ও এলাকার সমস্যা দেখুন, নিশ্চিত করুন
+            <span className="flex items-center gap-2 font-semibold text-m-ink">
+              <Megaphone className="size-4.5 text-m-blue" aria-hidden /> নাগরিক বার্তায় অপরাধ ও এলাকার সমস্যা দেখুন, নিশ্চিত করুন
             </span>
-            <ArrowUpRight className="size-4.5 shrink-0 text-white/65" aria-hidden />
+            <ArrowUpRight className="size-4.5 shrink-0 text-m-ink/65" aria-hidden />
           </Link>
         )}
 
         {listing && (
           <Link
             href={`/media/market/${listing.id}`}
-            className="flex items-center justify-between gap-3 rounded-xl border border-bdorange-600/60 bg-bdorange-600 px-4 py-3 transition-colors hover:border-bdorange-600/60 hover:bg-bdorange-600"
+            className="flex items-center justify-between gap-3 rounded-xl border border-m-red/60 bg-m-red-soft px-4 py-3 transition-colors hover:border-m-red/60 hover:bg-m-red-soft"
           >
             <span className="min-w-0">
-              <span className="block text-xs font-semibold text-text-primary">বিক্রির জন্য</span>
-              <span className="block truncate text-sm font-semibold text-text-primary">{listing.title}</span>
+              <span className="block text-xs font-semibold text-m-ink">বিক্রির জন্য</span>
+              <span className="block truncate text-sm font-semibold text-m-ink">{listing.title}</span>
             </span>
             <span className="flex shrink-0 items-center gap-2">
-              <span className="text-base font-bold text-text-primary">
+              <span className="text-base font-bold text-m-ink">
                 <Taka amount={listing.price} />
               </span>
-              <ArrowUpRight className="size-4.5 text-text-primary" aria-hidden />
+              <ArrowUpRight className="size-4.5 text-m-ink" aria-hidden />
             </span>
           </Link>
         )}
@@ -186,8 +186,8 @@ export function PostCard({
           seedVerdict={post.comments.find((c) => c.author === CURRENT_USER_HANDLE && c.verdict)?.verdict}
         />
 
-        <section id={full ? "discussion" : undefined} aria-label="আলোচনা" className={cn(full && "scroll-mt-24 border-t border-white/12 pt-5")}>
-          {full && <h2 className="mb-4 text-base font-bold text-white">আলোচনা</h2>}
+        <section id={full ? "discussion" : undefined} aria-label="আলোচনা" className={cn(full && "scroll-mt-24 border-t border-m-ink/10 pt-5")}>
+          {full && <h2 className="mb-4 text-base font-bold text-m-ink">আলোচনা</h2>}
           <CommentThread postId={post.id} seed={post.comments} people={commentPeopleFor(post)} limit={full ? undefined : commentPreview} />
         </section>
       </div>

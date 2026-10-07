@@ -50,30 +50,30 @@ function TxnRow({ t, live }: { t: Txn; live?: boolean }) {
   const incoming = amount >= 0;
   return (
     <li className="flex gap-3 py-3.5">
-      <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-full", incoming ? "bg-white/10 text-signal-orange" : "bg-white/10 text-white/80")}>
+      <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-full", incoming ? "bg-m-ink/6 text-m-blue" : "bg-m-ink/6 text-m-ink/80")}>
         <k.Icon className="size-4.5" aria-hidden />
       </span>
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-3">
-          <p className="min-w-0 text-sm font-semibold text-white">{t.label}</p>
-          <p className={cn("shrink-0 text-sm font-bold", incoming ? "text-signal-orange" : "text-white")}>
+          <p className="min-w-0 text-sm font-semibold text-m-ink">{t.label}</p>
+          <p className={cn("shrink-0 text-sm font-bold", incoming ? "text-m-blue" : "text-m-ink")}>
             {incoming ? "+" : ""}
             <Taka amount={amount} />
           </p>
         </div>
-        <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-white/65">
+        <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-m-ink/65">
           {k.bn} · <Ago iso={t.at} live={live} />
           {outside && t.paidVia && <span>· {payBn[t.paidVia]} থেকে</span>}
-          {t.status !== "done" && <span className={cn("rounded-full px-1.5 font-semibold", t.status === "held" ? "bg-signal-orange text-text-primary" : "bg-white/10 text-white/80")}>{statusBn[t.status]}</span>}
+          {t.status !== "done" && <span className={cn("rounded-full px-1.5 font-semibold", t.status === "held" ? "bg-m-yellow text-m-ink" : "bg-m-ink/6 text-m-ink/80")}>{statusBn[t.status]}</span>}
         </p>
         {t.feeSide !== "none" && (
-          <p className="mt-1.5 inline-flex flex-wrap items-center gap-x-1.5 rounded-lg bg-white/10 px-2 py-1 text-xs text-white/80">
+          <p className="mt-1.5 inline-flex flex-wrap items-center gap-x-1.5 rounded-lg bg-m-ink/6 px-2 py-1 text-xs text-m-ink/80">
             দাম <Taka amount={t.gross} />
             <span aria-hidden>·</span>
-            {t.feeSide === "seller" ? "প্ল্যাটফর্ম ফি ৫%" : "ক্রেতার সেবা চার্জ ৫%"} <span className="font-semibold text-white"><Taka amount={t.fee} /></span>
+            {t.feeSide === "seller" ? "প্ল্যাটফর্ম ফি ৫%" : "ক্রেতার সেবা চার্জ ৫%"} <span className="font-semibold text-m-ink"><Taka amount={t.fee} /></span>
           </p>
         )}
-        {t.feeSide === "none" && t.kind === "withdraw" && <p className="mt-1 text-xs text-white/65">উত্তোলনে কোনো ফি নেই</p>}
+        {t.feeSide === "none" && t.kind === "withdraw" && <p className="mt-1 text-xs text-m-ink/65">উত্তোলনে কোনো ফি নেই</p>}
         {t.kind === "escrow" && t.status === "held" && (
           <button
             type="button"
@@ -112,10 +112,10 @@ function WithdrawDialog({ available, linked, open, onOpenChange }: { available: 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-text-primary font-sans sm:max-w-md">
+      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-m-card font-sans sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-lg font-bold text-white">টাকা তুলুন</DialogTitle>
-          <DialogDescription className="text-sm text-white/80">
+          <DialogTitle className="text-lg font-bold text-m-ink">টাকা তুলুন</DialogTitle>
+          <DialogDescription className="text-sm text-m-ink/80">
             তোলা যাবে <Taka amount={available} />। উত্তোলনে ফি নেই।
           </DialogDescription>
         </DialogHeader>
@@ -132,8 +132,8 @@ function WithdrawDialog({ available, linked, open, onOpenChange }: { available: 
                       <label
                         key={key}
                         className={cn(
-                          "flex min-h-16 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 text-sm font-semibold transition-colors has-focus-visible:ring-3 has-focus-visible:ring-signal-orange/30",
-                          field.value === key ? "border-signal-orange bg-white/10 text-signal-orange" : "border-white/12 text-white/80 hover:border-white/12",
+                          "flex min-h-16 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 text-sm font-semibold transition-colors has-focus-visible:ring-3 has-focus-visible:ring-m-blue/30",
+                          field.value === key ? "border-m-blue bg-m-ink/6 text-m-blue" : "border-m-ink/10 text-m-ink/80 hover:border-m-ink/10",
                         )}
                       >
                         <input
@@ -227,22 +227,22 @@ export function WalletView({ seed }: { seed: WalletSeed }) {
 
   return (
     <>
-      <section className="rounded-2xl bg-bd-green p-5 text-white sm:p-6">
-        <p className="text-sm text-white/85">তোলা যাবে</p>
+      <section className="rounded-2xl bg-m-blue-soft p-5 text-m-ink sm:p-6">
+        <p className="text-sm text-m-ink/85">তোলা যাবে</p>
         <p className="mt-1 text-4xl font-bold">
           <Taka amount={w.available} />
         </p>
         <dl className="mt-5 grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
           <div>
-            <dt className="flex items-center gap-1 text-white/75"><Lock className="size-3.5" aria-hidden />এসক্রোতে</dt>
+            <dt className="flex items-center gap-1 text-m-ink/75"><Lock className="size-3.5" aria-hidden />এসক্রোতে</dt>
             <dd className="font-bold"><Taka amount={w.escrow} /></dd>
           </div>
           <div>
-            <dt className="text-white/75">মোট আয়</dt>
+            <dt className="text-m-ink/75">মোট আয়</dt>
             <dd className="font-bold"><Taka amount={w.lifetime} /></dd>
           </div>
           <div>
-            <dt className="text-white/75">দেওয়া ফি (সব লেনদেনে)</dt>
+            <dt className="text-m-ink/75">দেওয়া ফি (সব লেনদেনে)</dt>
             <dd className="font-bold"><Taka amount={fees} /></dd>
           </div>
         </dl>
@@ -250,7 +250,7 @@ export function WalletView({ seed }: { seed: WalletSeed }) {
           <button type="button" onClick={() => setOpen(true)} className={mediaButton({ variant: "primary" })}>
             <ArrowUpRight aria-hidden /> টাকা তুলুন
           </button>
-          <span className="inline-flex items-center gap-2 rounded-xl border border-white/25 px-3 text-xs text-white/85">
+          <span className="inline-flex items-center gap-2 rounded-xl border border-m-ink/21 px-3 text-xs text-m-ink/85">
             বিকাশ {seed.linked.bkash} · নগদ {seed.linked.nagad}
           </span>
         </div>
@@ -292,7 +292,7 @@ export function TransactionsButton({ seed }: { seed: WalletSeed }) {
     <>
       <button type="button" onClick={() => setOpen(true)} className={mediaButton({ variant: "primary" })}>
         <ReceiptText aria-hidden /> লেনদেন
-        <span className="rounded-md bg-text-primary px-1.5 text-xs text-signal-orange"><Num value={w.txns.length} /></span>
+        <span className="rounded-md bg-m-card px-1.5 text-xs text-m-blue"><Num value={w.txns.length} /></span>
       </button>
       <Dialog
         open={open}
@@ -301,10 +301,10 @@ export function TransactionsButton({ seed }: { seed: WalletSeed }) {
           if (!o && params.get("txns")) router.replace("/media/dashboard", { scroll: false });
         }}
       >
-        <DialogContent className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden rounded-2xl bg-text-primary p-0 font-sans sm:max-w-2xl">
+        <DialogContent className="flex max-h-[90dvh] flex-col gap-0 overflow-hidden rounded-2xl bg-m-card p-0 font-sans sm:max-w-2xl">
           <Tabs defaultValue="all" className="flex min-h-0 flex-1 flex-col gap-0">
-            <DialogHeader className="gap-3 border-b border-white/12 p-5 pr-12">
-              <DialogTitle className="text-lg font-bold text-white">সব লেনদেন</DialogTitle>
+            <DialogHeader className="gap-3 border-b border-m-ink/10 p-5 pr-12">
+              <DialogTitle className="text-lg font-bold text-m-ink">সব লেনদেন</DialogTitle>
               <DialogDescription className="sr-only">ওয়ালেটের প্রতিটি লেনদেন, ফি-সহ।</DialogDescription>
               <dl className="grid grid-cols-3 gap-2">
                 {[
@@ -312,9 +312,9 @@ export function TransactionsButton({ seed }: { seed: WalletSeed }) {
                   { label: "এসেছে", value: <>+<Taka amount={income} /></> },
                   { label: "গেছে", value: <Taka amount={spent} /> },
                 ].map((x) => (
-                  <div key={x.label} className="flex flex-col-reverse rounded-xl bg-white/10 px-3 py-2">
-                    <dt className="text-xs text-white/65">{x.label}</dt>
-                    <dd className="text-sm font-bold text-white sm:text-base">{x.value}</dd>
+                  <div key={x.label} className="flex flex-col-reverse rounded-xl bg-m-ink/6 px-3 py-2">
+                    <dt className="text-xs text-m-ink/65">{x.label}</dt>
+                    <dd className="text-sm font-bold text-m-ink sm:text-base">{x.value}</dd>
                   </div>
                 ))}
               </dl>
@@ -334,7 +334,7 @@ export function TransactionsButton({ seed }: { seed: WalletSeed }) {
                     {rows.length === 0 ? (
                       <div className="pt-4"><EmptyState icon="wallet" title="এই ধরনের লেনদেন নেই" /></div>
                     ) : (
-                      <ul className="divide-y divide-white/12">
+                      <ul className="divide-y divide-m-ink/10">
                         {rows.map((t) => (
                           <TxnRow key={t.id} t={t} live={!seedIds.has(t.id)} />
                         ))}

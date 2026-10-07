@@ -79,10 +79,10 @@ export function PostJobButton() {
         <Plus aria-hidden /> কাজের পোস্ট দিন
       </button>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-text-primary font-sans sm:max-w-xl">
+        <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-m-card font-sans sm:max-w-xl">
           <DialogHeader>
-            <DialogTitle className="text-lg font-bold text-white">কাজের পোস্ট — বিনামূল্যে</DialogTitle>
-            <DialogDescription className="text-sm text-white/80">বেতন লেখা বাধ্যতামূলক, আর তা ন্যায্য মজুরির নিচে হতে পারবে না।</DialogDescription>
+            <DialogTitle className="text-lg font-bold text-m-ink">কাজের পোস্ট — বিনামূল্যে</DialogTitle>
+            <DialogDescription className="text-sm text-m-ink/80">বেতন লেখা বাধ্যতামূলক, আর তা ন্যায্য মজুরির নিচে হতে পারবে না।</DialogDescription>
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-5">
@@ -152,7 +152,7 @@ export function PostJobButton() {
                   </FormItem>
                 )} />
               </div>
-              <p className="-mt-2 rounded-lg bg-white/10 px-3 py-2 text-xs text-signal-orange">
+              <p className="-mt-2 rounded-lg bg-m-ink/6 px-3 py-2 text-xs text-m-blue">
                 ন্যায্য মজুরি: {payUnitBn[unit]} অন্তত <Taka amount={floor} />
               </p>
               <div className="grid gap-5 sm:grid-cols-2">
@@ -216,7 +216,7 @@ export function MyJobs() {
   if (mine.length === 0) return null;
   return (
     <section className="space-y-3">
-      <h2 className="text-base font-bold text-white">আপনার পোস্ট করা কাজ</h2>
+      <h2 className="text-base font-bold text-m-ink">আপনার পোস্ট করা কাজ</h2>
       {mine.map((j) => (
         <JobCard key={j.id} job={j} />
       ))}

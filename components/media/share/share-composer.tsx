@@ -63,12 +63,12 @@ export function ShareComposer() {
   }
 
   return (
-    <form onSubmit={post} className="live-in space-y-4 rounded-2xl bg-text-primary p-4 ring-1 ring-white/12 sm:p-6">
+    <form onSubmit={post} className="live-in space-y-4 rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 sm:p-6 shadow-m-tile">
       <div className="flex items-center gap-3">
         <PersonAvatar person={currentUser} />
         <p className="min-w-0 text-sm">
-          <span className="block font-bold text-white">{currentUser.nameBn}</span>
-          <span className="block truncate text-white/60">গবেষণা পোস্ট · সবাই দেখতে পাবেন</span>
+          <span className="block font-bold text-m-ink">{currentUser.nameBn}</span>
+          <span className="block truncate text-m-ink/60">গবেষণা পোস্ট · সবাই দেখতে পাবেন</span>
         </p>
       </div>
       <label htmlFor="share-caption" className="sr-only">পোস্টের লেখা</label>
@@ -78,12 +78,12 @@ export function ShareComposer() {
         value={caption}
         maxLength={LIMIT}
         onChange={(e) => setCaption(e.target.value)}
-        className="w-full resize-y rounded-xl border border-white/15 bg-black p-3.5 text-[15px] leading-relaxed text-white placeholder:text-white/40 focus-visible:border-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange/25 focus-visible:outline-none"
+        className="w-full resize-y rounded-xl border border-m-ink/13 bg-m-canvas p-3.5 text-[15px] leading-relaxed text-m-ink placeholder:text-m-ink/40 focus-visible:border-m-blue focus-visible:ring-2 focus-visible:ring-m-blue/25 focus-visible:outline-none"
         placeholder="এই গবেষণা নিয়ে আপনার কথা…"
       />
       <LinkCard link={intent.link} />
-      {intent.tags.length > 0 && <p className="flex flex-wrap gap-2 text-xs font-medium text-signal-orange">{intent.tags.map((t) => <span key={t}>{t}</span>)}</p>}
-      <div className="flex flex-wrap items-center justify-end gap-2 border-t border-white/10 pt-4">
+      {intent.tags.length > 0 && <p className="flex flex-wrap gap-2 text-xs font-medium text-m-blue">{intent.tags.map((t) => <span key={t}>{t}</span>)}</p>}
+      <div className="flex flex-wrap items-center justify-end gap-2 border-t border-m-ink/9 pt-4">
         <button type="button" onClick={() => router.back()} className={mediaButton({ variant: "ghost" })}>বাতিল</button>
         <button type="submit" disabled={busy} className={mediaButton({ variant: "primary", size: "lg" })}>ফিডে পোস্ট করুন</button>
       </div>

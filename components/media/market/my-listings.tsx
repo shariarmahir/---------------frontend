@@ -14,7 +14,7 @@ import { ListingCard } from "./listing-card";
 
 function BoostButton({ listing }: { listing: Listing }) {
   const [open, setOpen] = useState(false);
-  if (listing.featured) return <p className="text-center text-xs font-semibold text-signal-orange">ম্যাচ বুস্ট চালু</p>;
+  if (listing.featured) return <p className="text-center text-xs font-semibold text-m-blue">ম্যাচ বুস্ট চালু</p>;
   function boost(days: number) {
     const ok = updateMedia((s) => ({ ...s, listings: s.listings.map((l) => (l.id === listing.id ? { ...l, featured: true } : l)) }));
     setOpen(false);
@@ -34,9 +34,9 @@ function BoostButton({ listing }: { listing: Listing }) {
           </DialogHeader>
           <div className="grid grid-cols-3 gap-2">
             {BOOST_TIERS.map((t) => (
-              <button key={t.taka} type="button" onClick={() => boost(t.days)} className="rounded-2xl bg-text-primary px-3 py-4 text-center ring-1 ring-white/12 transition-[translate,box-shadow] hover:-translate-y-0.5 hover:ring-signal-orange active:scale-[0.97] motion-reduce:transition-none">
-                <span className="block text-xl font-bold text-signal-orange"><Taka amount={t.taka} /></span>
-                <span className="text-xs text-white/75"><Num value={t.days} /> দিন</span>
+              <button key={t.taka} type="button" onClick={() => boost(t.days)} className="rounded-2xl bg-m-card px-3 py-4 text-center ring-1 ring-m-ink/10 transition-[translate,box-shadow] hover:-translate-y-0.5 hover:ring-m-blue active:scale-[0.97] motion-reduce:transition-none shadow-m-tile">
+                <span className="block text-xl font-bold text-m-blue"><Taka amount={t.taka} /></span>
+                <span className="text-xs text-m-ink/75"><Num value={t.days} /> দিন</span>
               </button>
             ))}
           </div>
@@ -52,7 +52,7 @@ export function MyListings() {
   if (mine.length === 0) return null;
   return (
     <section className="mb-8">
-      <h2 className="mb-3 text-base font-bold text-white">আপনার বিক্রির তালিকা</h2>
+      <h2 className="mb-3 text-base font-bold text-m-ink">আপনার বিক্রির তালিকা</h2>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {mine.map((l) => (
           <div key={l.id} className="flex flex-col gap-2">

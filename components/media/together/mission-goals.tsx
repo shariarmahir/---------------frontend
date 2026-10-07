@@ -17,10 +17,10 @@ import { bdToday } from "../research/use-research";
 import { editTeamRoom, shareTeamPost } from "./use-team-room";
 
 const STATE_CHIP: Record<GoalState, { bn: string; cls: string }> = {
-  done: { bn: "পূরণ হয়েছে", cls: "bg-bd-green text-white" },
-  late: { bn: "সময় পেরিয়েছে", cls: "bg-national-crimson text-white" },
-  soon: { bn: "এই সপ্তাহে", cls: "bg-signal-orange text-text-primary" },
-  open: { bn: "চলছে", cls: "bg-white/10 text-white/80" },
+  done: { bn: "পূরণ হয়েছে", cls: "bg-m-blue-soft text-m-ink" },
+  late: { bn: "সময় পেরিয়েছে", cls: "bg-m-red text-m-on" },
+  soon: { bn: "এই সপ্তাহে", cls: "bg-m-yellow text-m-ink" },
+  open: { bn: "চলছে", cls: "bg-m-ink/6 text-m-ink/80" },
 };
 
 /** "১৫ নভেম্বর" for a caption built in code. */
@@ -64,25 +64,25 @@ function Mission({ team, room, canEdit }: { team: Team; room: TeamRoom; canEdit:
   }
 
   return (
-    <section aria-labelledby="mission-title" className="relative isolate overflow-hidden rounded-3xl bg-signal-orange p-5 text-text-primary shadow-[0_30px_70px_-40px_var(--color-signal-orange)] sm:p-7 lg:sticky lg:top-[calc(var(--sticky-top,4rem)+4.5rem)]">
-      <Compass className="pointer-events-none absolute -right-6 -bottom-8 -z-10 size-44 text-text-primary/8 motion-safe:animate-[spin_60s_linear_infinite]" aria-hidden />
+    <section aria-labelledby="mission-title" className="relative isolate overflow-hidden rounded-3xl bg-m-yellow p-5 text-m-ink shadow-[0_30px_70px_-40px_var(--color-signal-orange)] sm:p-7 lg:sticky lg:top-[calc(var(--sticky-top,4rem)+4.5rem)]">
+      <Compass className="pointer-events-none absolute -right-6 -bottom-8 -z-10 size-44 text-m-ink/8 motion-safe:animate-[spin_60s_linear_infinite]" aria-hidden />
       <h2 id="mission-title" className="flex items-center gap-2 text-sm font-bold"><Compass className="size-4.5" aria-hidden /> আমাদের মিশন</h2>
       {editing ? (
         <form onSubmit={save} noValidate className="mt-4 space-y-3">
           <label className="block">
             <span className="sr-only">মিশন</span>
-            <Textarea rows={4} maxLength={MISSION_MAX} value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="কেন এই দল — কী বদলাতে চান, কার জন্য" className="!bg-text-primary text-white" aria-invalid={tried && Boolean(problem)} />
+            <Textarea rows={4} maxLength={MISSION_MAX} value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="কেন এই দল — কী বদলাতে চান, কার জন্য" className="!bg-m-card text-m-ink" aria-invalid={tried && Boolean(problem)} />
           </label>
           {tried && problem && <p className="text-xs font-bold">{problem}</p>}
           <div className="flex flex-wrap gap-2">
             <button type="submit" className={mediaButton({ variant: "tile" })}><Check aria-hidden /> রাখুন</button>
-            <button type="button" onClick={() => { setEditing(false); setDraft(room.mission); setTried(false); }} className="inline-flex h-11 items-center rounded-xl px-4 text-sm font-bold ring-1 ring-text-primary/35 hover:bg-text-primary/10">বাতিল</button>
+            <button type="button" onClick={() => { setEditing(false); setDraft(room.mission); setTried(false); }} className="inline-flex h-11 items-center rounded-xl px-4 text-sm font-bold ring-1 ring-m-ink/35 hover:bg-m-card/10">বাতিল</button>
           </div>
         </form>
       ) : room.mission ? (
         <blockquote className="mt-4 text-xl leading-snug font-bold text-balance sm:text-2xl">“{room.mission}”</blockquote>
       ) : (
-        <p className="mt-4 text-lg font-bold text-text-primary/75">{canEdit ? "দলের মিশন এখনো লেখা হয়নি — এক-দুই বাক্যে লিখুন, কেন এই দল।" : "দলটা মিশন লিখলে এখানে দেখা যাবে।"}</p>
+        <p className="mt-4 text-lg font-bold text-m-ink/75">{canEdit ? "দলের মিশন এখনো লেখা হয়নি — এক-দুই বাক্যে লিখুন, কেন এই দল।" : "দলটা মিশন লিখলে এখানে দেখা যাবে।"}</p>
       )}
       {!editing && (canEdit || room.missionPostId) && (
         <div className="mt-5 flex flex-wrap gap-2">
@@ -92,9 +92,9 @@ function Mission({ team, room, canEdit }: { team: Team; room: TeamRoom; canEdit:
             </button>
           )}
           {room.missionPostId ? (
-            <Link href={`/media/post/${room.missionPostId}`} className="inline-flex h-9 items-center gap-1 rounded-xl px-3 text-sm font-bold ring-1 ring-text-primary/35 hover:bg-text-primary/10">ফিডে দেখুন <ArrowUpRight className="size-4" aria-hidden /></Link>
+            <Link href={`/media/post/${room.missionPostId}`} className="inline-flex h-9 items-center gap-1 rounded-xl px-3 text-sm font-bold ring-1 ring-m-ink/35 hover:bg-m-card/10">ফিডে দেখুন <ArrowUpRight className="size-4" aria-hidden /></Link>
           ) : canEdit && room.mission ? (
-            <button type="button" onClick={share} className="inline-flex h-9 items-center gap-1.5 rounded-xl px-3 text-sm font-bold ring-1 ring-text-primary/35 transition-colors hover:bg-text-primary/10"><Share2 className="size-4" aria-hidden /> ফিডে শেয়ার</button>
+            <button type="button" onClick={share} className="inline-flex h-9 items-center gap-1.5 rounded-xl px-3 text-sm font-bold ring-1 ring-m-ink/35 transition-colors hover:bg-m-card/10"><Share2 className="size-4" aria-hidden /> ফিডে শেয়ার</button>
           ) : null}
         </div>
       )}
@@ -140,46 +140,46 @@ function Goals({ team, room, canEdit }: { team: Team; room: TeamRoom; canEdit: b
   }
 
   return (
-    <section aria-labelledby="goals-title" className="space-y-4 rounded-3xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-6">
+    <section aria-labelledby="goals-title" className="space-y-4 rounded-3xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-6 shadow-m-tile">
       <div className="flex flex-wrap items-end justify-between gap-3">
-        <h2 id="goals-title" className="flex items-center gap-2 text-xl font-bold text-white"><Target className="size-5 text-signal-orange" aria-hidden /> লক্ষ্য</h2>
-        <p className="text-sm font-semibold text-white/70"><Num value={done} />/<Num value={total} /> পূরণ</p>
+        <h2 id="goals-title" className="flex items-center gap-2 text-xl font-bold text-m-ink"><Target className="size-5 text-m-blue" aria-hidden /> লক্ষ্য</h2>
+        <p className="text-sm font-semibold text-m-ink/70"><Num value={done} />/<Num value={total} /> পূরণ</p>
       </div>
-      <div className="h-2.5 overflow-hidden rounded-full bg-white/10" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label="লক্ষ্য পূরণ">
-        <div className="h-full rounded-full bg-gradient-to-r from-bd-green to-signal-orange transition-[width] duration-700" style={{ width: `${pct}%` }} />
+      <div className="h-2.5 overflow-hidden rounded-full bg-m-ink/6" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label="লক্ষ্য পূরণ">
+        <div className="h-full rounded-full bg-gradient-to-r from-m-blue to-m-yellow transition-[width] duration-700" style={{ width: `${pct}%` }} />
       </div>
 
       {room.goals.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-white/12 p-5 text-center text-sm text-white/65">{canEdit ? "প্রথম লক্ষ্যটা লিখুন — মাপা যায় এমন, তারিখসহ।" : "এখনো কোনো লক্ষ্য নেই।"}</p>
+        <p className="rounded-2xl border border-dashed border-m-ink/10 p-5 text-center text-sm text-m-ink/65">{canEdit ? "প্রথম লক্ষ্যটা লিখুন — মাপা যায় এমন, তারিখসহ।" : "এখনো কোনো লক্ষ্য নেই।"}</p>
       ) : (
         <ul className="space-y-2">
           {sortGoals(room.goals).map((g) => {
             const state = hydrated ? goalState(g, today) : g.done ? "done" : "open";
             return (
-              <li key={g.id} className={cn("live-in flex items-start gap-3 rounded-2xl p-3 ring-1 transition-colors", g.done ? "bg-bd-green/15 ring-bd-green/40" : "bg-white/4 ring-white/10")}>
+              <li key={g.id} className={cn("live-in flex items-start gap-3 rounded-2xl p-3 ring-1 transition-colors", g.done ? "bg-m-blue/8 ring-m-blue/40" : "bg-m-ink/3 ring-m-ink/9")}>
                 {canEdit ? (
-                  <button type="button" onClick={() => flip(g)} aria-pressed={g.done} aria-label={g.done ? `${g.title} — আবার খুলুন` : `${g.title} — পূরণ হয়েছে`} className={cn("mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg ring-2 transition-[background-color,scale] duration-200 active:scale-90", g.done ? "bg-bd-green text-white ring-bd-green" : "text-transparent ring-white/30 hover:ring-signal-orange")}>
+                  <button type="button" onClick={() => flip(g)} aria-pressed={g.done} aria-label={g.done ? `${g.title} — আবার খুলুন` : `${g.title} — পূরণ হয়েছে`} className={cn("mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg ring-2 transition-[background-color,scale] duration-200 active:scale-90", g.done ? "bg-m-blue-soft text-m-ink ring-m-blue" : "text-transparent ring-m-ink/26 hover:ring-m-blue")}>
                     <Check className="size-4" strokeWidth={3} aria-hidden />
                   </button>
                 ) : (
-                  <span className={cn("mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg", g.done ? "bg-bd-green text-white" : "ring-2 ring-white/20")} aria-hidden>{g.done && <Check className="size-4" strokeWidth={3} />}</span>
+                  <span className={cn("mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg", g.done ? "bg-m-blue-soft text-m-ink" : "ring-2 ring-m-ink/17")} aria-hidden>{g.done && <Check className="size-4" strokeWidth={3} />}</span>
                 )}
                 <div className="min-w-0 flex-1">
-                  <p className={cn("font-semibold", g.done ? "text-white/70 line-through decoration-bd-green decoration-2" : "text-white")}>{g.title}</p>
+                  <p className={cn("font-semibold", g.done ? "text-m-ink/70 line-through decoration-m-blue decoration-2" : "text-m-ink")}>{g.title}</p>
                   <p className="mt-1 flex flex-wrap items-center gap-2 text-xs">
                     <span className={cn("rounded-full px-2 py-0.5 font-bold", STATE_CHIP[state].cls)}>{STATE_CHIP[state].bn}</span>
-                    {g.due && !g.done && <span className="inline-flex items-center gap-1 text-white/65"><CalendarClock className="size-3.5" aria-hidden /><DateText iso={g.due} /></span>}
-                    {g.done && g.doneAt && <span className="text-white/60"><DateText iso={g.doneAt} /></span>}
+                    {g.due && !g.done && <span className="inline-flex items-center gap-1 text-m-ink/65"><CalendarClock className="size-3.5" aria-hidden /><DateText iso={g.due} /></span>}
+                    {g.done && g.doneAt && <span className="text-m-ink/60"><DateText iso={g.doneAt} /></span>}
                   </p>
                 </div>
                 <div className="flex shrink-0 items-center gap-1">
                   {g.postId ? (
-                    <Link href={`/media/post/${g.postId}`} className="grid size-8 place-items-center rounded-lg text-signal-orange hover:bg-white/10" title="ফিডে দেখুন"><ArrowUpRight className="size-4" aria-hidden /><span className="sr-only">ফিডে দেখুন</span></Link>
+                    <Link href={`/media/post/${g.postId}`} className="grid size-8 place-items-center rounded-lg text-m-blue hover:bg-m-ink/6" title="ফিডে দেখুন"><ArrowUpRight className="size-4" aria-hidden /><span className="sr-only">ফিডে দেখুন</span></Link>
                   ) : canEdit ? (
-                    <button type="button" onClick={() => share(g)} className="grid size-8 place-items-center rounded-lg text-white/60 hover:bg-white/10 hover:text-signal-orange" title="ফিডে শেয়ার"><Share2 className="size-4" aria-hidden /><span className="sr-only">ফিডে শেয়ার</span></button>
+                    <button type="button" onClick={() => share(g)} className="grid size-8 place-items-center rounded-lg text-m-ink/60 hover:bg-m-ink/6 hover:text-m-blue" title="ফিডে শেয়ার"><Share2 className="size-4" aria-hidden /><span className="sr-only">ফিডে শেয়ার</span></button>
                   ) : null}
                   {canEdit && (
-                    <button type="button" onClick={() => editTeamRoom(team.id, (r) => ({ ...r, goals: r.goals.filter((x) => x.id !== g.id) }))} className="grid size-8 place-items-center rounded-lg text-white/45 hover:bg-white/10 hover:text-white" title="সরান">
+                    <button type="button" onClick={() => editTeamRoom(team.id, (r) => ({ ...r, goals: r.goals.filter((x) => x.id !== g.id) }))} className="grid size-8 place-items-center rounded-lg text-m-ink/45 hover:bg-m-ink/6 hover:text-m-ink" title="সরান">
                       <Trash2 className="size-4" aria-hidden /><span className="sr-only">লক্ষ্য সরান</span>
                     </button>
                   )}
@@ -191,7 +191,7 @@ function Goals({ team, room, canEdit }: { team: Team; room: TeamRoom; canEdit: b
       )}
 
       {canEdit && room.goals.length < MAX_GOALS && (
-        <form onSubmit={add} noValidate className="space-y-2 border-t border-white/10 pt-4">
+        <form onSubmit={add} noValidate className="space-y-2 border-t border-m-ink/9 pt-4">
           <div className="flex flex-col gap-2 sm:flex-row">
             <label className="min-w-0 flex-1">
               <span className="sr-only">নতুন লক্ষ্য</span>
@@ -203,7 +203,7 @@ function Goals({ team, room, canEdit }: { team: Team; room: TeamRoom; canEdit: b
             </label>
             <button type="submit" className={mediaButton({ variant: "primary" })}><Plus aria-hidden /> যোগ</button>
           </div>
-          {error && <p role="alert" className="text-xs font-semibold text-crimson-bright">{error}</p>}
+          {error && <p role="alert" className="text-xs font-semibold text-m-red">{error}</p>}
         </form>
       )}
     </section>

@@ -48,7 +48,7 @@ export function StoryCarousel({ stories }: { stories: Story[] }) {
       onBlur={() => setHeld(false)}
       className="relative"
     >
-      <div className="relative mx-auto max-w-4xl overflow-hidden rounded-3xl bg-white text-text-primary shadow-[0_30px_60px_-30px_rgb(0_0_0/0.7)]">
+      <div className="relative mx-auto max-w-4xl overflow-hidden rounded-3xl bg-m-blue-night text-m-on shadow-m-lift">
         <AnimatePresence mode="popLayout" initial={false} custom={dir}>
           <motion.article
             key={at}
@@ -65,12 +65,12 @@ export function StoryCarousel({ stories }: { stories: Story[] }) {
               <Quotes />
               <p className="mt-5 text-lg leading-relaxed sm:text-xl">“{s.text}”</p>
               <p className="mt-6 text-xl font-bold">{s.name}</p>
-              <p className="mt-1 text-sm font-semibold text-text-muted">{s.from}</p>
+              <p className="mt-1 text-sm font-semibold text-white/70">{s.from}</p>
             </div>
             <div className="relative aspect-16/10 overflow-hidden rounded-2xl">
               <Image src={s.image} alt="" fill sizes="(min-width: 768px) 352px, 90vw" className="object-cover" />
               {s.certificate && (
-                <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-lg bg-text-primary px-2.5 py-1.5 font-mono text-xs font-bold text-signal-orange">
+                <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-lg bg-m-card px-2.5 py-1.5 font-mono text-xs font-bold text-m-blue">
                   <BadgeCheck className="size-4" aria-hidden /> {s.certificate}
                 </span>
               )}
@@ -90,7 +90,7 @@ export function StoryCarousel({ stories }: { stories: Story[] }) {
             onClick={() => go(i, i > at ? 1 : -1)}
             aria-label={`গল্প ${num(i + 1)}: ${st.name}`}
             aria-current={i === at ? "true" : undefined}
-            className={cn("h-2.5 rounded-full transition-[width,background-color] duration-300 motion-reduce:transition-none", i === at ? "w-8 bg-signal-orange" : "w-2.5 bg-white/30 hover:bg-white/60")}
+            className={cn("h-2.5 rounded-full transition-[width,background-color] duration-300 motion-reduce:transition-none", i === at ? "w-8 bg-m-yellow" : "w-2.5 bg-m-ink/17 hover:bg-m-ink/33")}
           />
         ))}
       </div>
@@ -103,7 +103,7 @@ function Quotes() {
   const reduce = useReducedMotion();
   return (
     <span className="flex gap-1.5" aria-hidden>
-      {["fill-signal-orange", "fill-bd-green"].map((tone, i) => (
+      {["fill-m-yellow", "fill-m-blue"].map((tone, i) => (
         <motion.svg
           key={tone}
           viewBox="0 0 20 28"
@@ -126,7 +126,7 @@ function Arrow({ side, onClick }: { side: "left" | "right"; onClick: () => void 
       type="button"
       onClick={onClick}
       className={cn(
-        "absolute top-[calc(50%-1.75rem)] hidden size-12 -translate-y-1/2 place-items-center rounded-full bg-white text-text-primary shadow-tile ring-1 ring-text-primary/10 transition-[scale,background-color] duration-200 hover:scale-110 hover:bg-signal-orange active:scale-95 sm:grid sm:size-14",
+        "absolute top-[calc(50%-1.75rem)] hidden size-12 -translate-y-1/2 place-items-center rounded-full bg-m-ink text-m-on shadow-m-tile ring-1 ring-m-ink/10 transition-[scale,background-color] duration-200 hover:scale-110 hover:bg-m-yellow active:scale-95 sm:grid sm:size-14",
         side === "left" ? "-left-1 sm:left-0 lg:-left-2" : "-right-1 sm:right-0 lg:-right-2",
       )}
     >

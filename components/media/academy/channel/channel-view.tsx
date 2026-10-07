@@ -82,27 +82,27 @@ export function ChannelView({ handle }: { handle: string }) {
       <header className="mt-4 flex items-start gap-4 sm:mt-6 sm:items-center sm:gap-6">
         <PersonAvatar person={person} size="xl" className="size-18 text-3xl sm:size-40 sm:text-6xl" />
         <div className="min-w-0 flex-1">
-          <h1 className="flex items-center gap-2 text-2xl leading-tight font-bold text-white sm:text-4xl">
+          <h1 className="flex items-center gap-2 text-2xl leading-tight font-bold text-m-ink sm:text-4xl">
             <span className="min-w-0 truncate">{person.nameBn}</span>
-            <BadgeCheck className="size-5 shrink-0 text-white/75 sm:size-7" aria-label="ইন্টারভিউ-উত্তীর্ণ শিক্ষক" />
+            <BadgeCheck className="size-5 shrink-0 text-m-ink/75 sm:size-7" aria-label="ইন্টারভিউ-উত্তীর্ণ শিক্ষক" />
           </h1>
-          <p className="mt-1.5 text-sm text-white/70">
-            <span className="font-semibold text-white">@{handle}</span> · <Compact n={followers} /> অনুসারী · <Num value={videos.length} />টি ভিডিও
+          <p className="mt-1.5 text-sm text-m-ink/70">
+            <span className="font-semibold text-m-ink">@{handle}</span> · <Compact n={followers} /> অনুসারী · <Num value={videos.length} />টি ভিডিও
           </p>
-          <button type="button" onClick={() => setAbout(true)} className="group mt-2 flex w-full max-w-2xl min-w-0 items-baseline gap-1 text-left text-sm text-white/70">
+          <button type="button" onClick={() => setAbout(true)} className="group mt-2 flex w-full max-w-2xl min-w-0 items-baseline gap-1 text-left text-sm text-m-ink/70">
             <span className="min-w-0 truncate">
               {record.title}। {person.bio}
             </span>
-            <span className="shrink-0 font-semibold text-white group-hover:text-signal-orange">...আরও</span>
+            <span className="shrink-0 font-semibold text-m-ink group-hover:text-m-blue">...আরও</span>
           </button>
           {depts[0] && (
             <p className="mt-1.5 flex flex-wrap items-center gap-1 text-sm">
-              <Link2 className="size-4 text-signal-orange" aria-hidden />
-              <Link href={`/media/academy/dept/${depts[0].id}`} className="font-semibold text-signal-orange hover:underline">
+              <Link2 className="size-4 text-m-blue" aria-hidden />
+              <Link href={`/media/academy/dept/${depts[0].id}`} className="font-semibold text-m-blue hover:underline">
                 {depts[0].name}
               </Link>
               {depts.length > 1 && (
-                <button type="button" onClick={() => setAbout(true)} className="font-semibold text-white hover:text-signal-orange">
+                <button type="button" onClick={() => setAbout(true)} className="font-semibold text-m-ink hover:text-m-blue">
                   ও আরও <Num value={depts.length - 1} />টি বিভাগ
                 </button>
               )}
@@ -180,20 +180,20 @@ function Banner({ handle, depts, courses }: { handle: string; depts: Department[
   ];
 
   return (
-    <div className="relative min-h-32 overflow-hidden rounded-2xl bg-bd-green sm:aspect-[6/1] sm:min-h-40">
+    <div className="relative min-h-32 overflow-hidden rounded-2xl bg-m-blue-soft sm:aspect-[6/1] sm:min-h-40">
       <div className="relative z-10 flex h-full min-h-32 flex-col justify-center px-5 py-5 sm:min-h-40 sm:px-10 lg:max-w-[60%]">
-        <p className="flex items-center gap-2 text-xs font-bold text-white/85 sm:text-sm">
+        <p className="flex items-center gap-2 text-xs font-bold text-m-ink/85 sm:text-sm">
           <Pixels reduce={!!reduce} />
           {depts[0]?.name}
         </p>
-        <p className="mt-1.5 text-3xl leading-tight font-extrabold text-signal-orange sm:text-5xl">{person.nameBn}</p>
-        <p className="mt-1 text-xs font-semibold text-white sm:text-sm">প্রতি সপ্তাহে একটা ক্লাস বিনামূল্যে · সবার জন্য</p>
+        <p className="mt-1.5 text-3xl leading-tight font-extrabold text-m-blue sm:text-5xl">{person.nameBn}</p>
+        <p className="mt-1 text-xs font-semibold text-m-ink sm:text-sm">প্রতি সপ্তাহে একটা ক্লাস বিনামূল্যে · সবার জন্য</p>
       </div>
       <div className="absolute top-1/2 right-10 hidden h-0 w-0 md:block" aria-hidden>
         {pics.map((src, i) => (
           <span key={src} className="absolute top-0 right-0 block" style={{ zIndex: fan[i].z, transform: `translate(${fan[i].x}, calc(-50% + ${fan[i].y})) rotate(${fan[i].rotate}deg)` }}>
             <motion.span
-              className="relative block aspect-video w-44 overflow-hidden rounded-lg bg-black ring-3 ring-black lg:w-52"
+              className="relative block aspect-video w-44 overflow-hidden rounded-lg bg-m-canvas ring-3 ring-white lg:w-52"
               initial={reduce ? false : { opacity: 0, x: 60, scale: 0.9 }}
               animate={reduce ? { opacity: 1 } : { opacity: 1, x: 0, scale: 1, y: [0, -6, 0] }}
               transition={reduce ? undefined : { opacity: { duration: 0.5, delay: i * 0.12 }, x: { type: "spring", stiffness: 120, damping: 16, delay: i * 0.12 }, scale: { duration: 0.5, delay: i * 0.12 }, y: { duration: 5 + i, repeat: Infinity, ease: "easeInOut", delay: 0.8 } }}
@@ -214,7 +214,7 @@ function Pixels({ reduce }: { reduce: boolean }) {
       {[0, 1, 2, 3].map((i) => (
         <motion.span
           key={i}
-          className={cn("size-1.5 rounded-[1px]", i === 3 ? "bg-white" : "bg-signal-orange")}
+          className={cn("size-1.5 rounded-[1px]", i === 3 ? "bg-white" : "bg-m-yellow")}
           initial={reduce ? false : { opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 + i * 0.12, type: "spring", stiffness: 400, damping: 18 }}
@@ -246,7 +246,7 @@ function TabBar({ handle, tabs, tab, q }: { handle: string; tabs: { id: Tab; lab
 
   // Sticks at the very top of the scrolling area: its own top padding covers the area's padding, so nothing shows through above.
   return (
-    <nav aria-label="চ্যানেলের ভাগ" className="sticky -top-6 z-20 -mx-3 border-b border-white/12 bg-black px-3 pt-6 sm:-mx-6 sm:px-6">
+    <nav aria-label="চ্যানেলের ভাগ" className="frost-pane sticky -top-6 z-20 -mx-3 px-3 pt-6 sm:-mx-6 sm:px-6">
       <div className="flex items-center gap-1">
         <ul className="flex min-w-0 flex-1 overflow-x-auto scrollbar-none">
           {tabs.map((t) => {
@@ -257,19 +257,19 @@ function TabBar({ handle, tabs, tab, q }: { handle: string; tabs: { id: Tab; lab
                   href={t.id === "home" ? base : `${base}?tab=${t.id}`}
                   scroll={false}
                   aria-current={on ? "page" : undefined}
-                  className={cn("relative flex h-12 items-center px-3 text-[15px] font-semibold transition-colors sm:px-4", on ? "text-white" : "text-white/60 hover:text-white")}
+                  className={cn("relative flex h-12 items-center px-3 text-[15px] font-semibold transition-colors sm:px-4", on ? "text-m-ink" : "text-m-ink/60 hover:text-m-ink")}
                 >
                   {t.label}
                   {on && <motion.span layoutId="channel-tab" className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-white" transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 500, damping: 40 }} />}
-                  {!on && <span className="absolute inset-x-2 bottom-0 h-0.5 scale-x-0 rounded-full bg-white/40 transition-transform duration-200 [a:hover>&]:scale-x-100" aria-hidden />}
+                  {!on && <span className="absolute inset-x-2 bottom-0 h-0.5 scale-x-0 rounded-full bg-m-ink/22 transition-transform duration-200 [a:hover>&]:scale-x-100" aria-hidden />}
                 </Link>
               </li>
             );
           })}
         </ul>
         {searching ? (
-          <form role="search" onSubmit={submit} className="flex shrink-0 items-center gap-1 border-b border-white/60">
-            <Search className="size-4.5 text-white/70" aria-hidden />
+          <form role="search" onSubmit={submit} className="flex shrink-0 items-center gap-1 border-b border-m-ink/51">
+            <Search className="size-4.5 text-m-ink/70" aria-hidden />
             <label className="sr-only" htmlFor="channel-q">
               এই চ্যানেলে খুঁজুন
             </label>
@@ -282,7 +282,7 @@ function TabBar({ handle, tabs, tab, q }: { handle: string; tabs: { id: Tab; lab
               maxLength={60}
               placeholder="এই চ্যানেলে খুঁজুন"
               onKeyDown={(e) => e.key === "Escape" && setSearching(false)}
-              className="h-9 w-32 bg-transparent text-sm text-white placeholder:text-white/50 focus:outline-none sm:w-52"
+              className="h-9 w-32 bg-transparent text-sm text-m-ink placeholder:text-m-ink/50 focus:outline-none sm:w-52"
             />
             <button
               type="button"
@@ -290,14 +290,14 @@ function TabBar({ handle, tabs, tab, q }: { handle: string; tabs: { id: Tab; lab
                 setSearching(false);
                 if (q) router.push(base, { scroll: false });
               }}
-              className="grid size-8 place-items-center rounded-full text-white/70 hover:bg-white/10 hover:text-white"
+              className="grid size-8 place-items-center rounded-full text-m-ink/70 hover:bg-m-ink/6 hover:text-m-ink"
             >
               <X className="size-4" aria-hidden />
               <span className="sr-only">খোঁজা বন্ধ</span>
             </button>
           </form>
         ) : (
-          <button type="button" onClick={() => setSearching(true)} className="grid size-10 shrink-0 place-items-center rounded-full text-white/75 hover:bg-white/10 hover:text-white">
+          <button type="button" onClick={() => setSearching(true)} className="grid size-10 shrink-0 place-items-center rounded-full text-m-ink/75 hover:bg-m-ink/6 hover:text-m-ink">
             <Search className="size-5" aria-hidden />
             <span className="sr-only">এই চ্যানেলে খুঁজুন</span>
           </button>
@@ -348,14 +348,14 @@ function HomeTab({
       {sections.map(({ dept, shelves, team }) => (
         <section key={dept.id} aria-labelledby={`dept-${dept.id}`} className="space-y-6">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-            <span className="size-2.5 rounded-[2px] bg-signal-orange" aria-hidden />
-            <h2 id={`dept-${dept.id}`} className="text-xl font-bold text-white sm:text-2xl">
+            <span className="size-2.5 rounded-[2px] bg-m-yellow" aria-hidden />
+            <h2 id={`dept-${dept.id}`} className="text-xl font-bold text-m-ink sm:text-2xl">
               {dept.name}
             </h2>
-            <span className="rounded-md bg-white/10 px-2 py-0.5 text-xs font-semibold text-white/80">
+            <span className="rounded-md bg-m-ink/6 px-2 py-0.5 text-xs font-semibold text-m-ink/80">
               {dept.teachers[0] === handle ? "প্রধান" : "সদস্য"} · {DEPT_KINDS[dept.kind]}
             </span>
-            <Link href={`/media/academy/dept/${dept.id}`} className="group ml-auto inline-flex items-center gap-1 text-sm font-semibold text-white/75 hover:text-signal-orange">
+            <Link href={`/media/academy/dept/${dept.id}`} className="group ml-auto inline-flex items-center gap-1 text-sm font-semibold text-m-ink/75 hover:text-m-blue">
               বিভাগের পাতা <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden />
             </Link>
           </div>
@@ -396,10 +396,10 @@ function HomeTab({
         <Shelf title="শিক্ষার্থীদের সফলতা" about="যাঁরা শিখে কাজে লাগিয়েছেন — তাঁদের নিজের কথায়।">
           {record.stories.map((s) => (
             <ShelfItem key={s.name}>
-              <figure className="flex h-full flex-col rounded-2xl bg-text-primary p-5 ring-1 ring-white/12">
-                <Quote className="size-5 text-signal-orange" aria-hidden />
-                <blockquote className="mt-2 line-clamp-4 flex-1 text-[15px] leading-relaxed text-white">{s.text}</blockquote>
-                <figcaption className="mt-3 text-sm font-semibold text-white/75">— {s.name}</figcaption>
+              <figure className="flex h-full flex-col rounded-2xl bg-m-card p-5 ring-1 ring-m-ink/10 shadow-m-tile">
+                <Quote className="size-5 text-m-blue" aria-hidden />
+                <blockquote className="mt-2 line-clamp-4 flex-1 text-[15px] leading-relaxed text-m-ink">{s.text}</blockquote>
+                <figcaption className="mt-3 text-sm font-semibold text-m-ink/75">— {s.name}</figcaption>
               </figure>
             </ShelfItem>
           ))}
@@ -408,7 +408,7 @@ function HomeTab({
 
       {mates.length > 0 && (
         <section aria-labelledby="mates">
-          <h3 id="mates" className="text-lg font-bold text-white sm:text-xl">
+          <h3 id="mates" className="text-lg font-bold text-m-ink sm:text-xl">
             একই বিভাগের শিক্ষক
           </h3>
           <ul className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5 2xl:grid-cols-6">
@@ -429,21 +429,21 @@ function Featured({ video, locked }: { video: ClassVideo; locked: boolean }) {
   const course = getCourse(video.course);
   const thisWeek = weekOf(video.at) === THIS_WEEK;
   return (
-    <section aria-labelledby="featured" className="grid gap-4 border-b border-white/10 pb-8 md:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] md:gap-6">
-      <Link href={watchHref(video)} className="group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal-orange" aria-label={video.title}>
+    <section aria-labelledby="featured" className="grid gap-4 border-b border-m-ink/9 pb-8 md:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] md:gap-6">
+      <Link href={watchHref(video)} className="group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-m-blue" aria-label={video.title}>
         <Thumb video={video} locked={locked} className="aspect-video" sizes="(min-width: 768px) 26rem, 92vw" />
       </Link>
       <div className="min-w-0">
-        <p className="text-xs font-bold text-signal-orange">{thisWeek ? "এ সপ্তাহের বিনামূল্যের ক্লাস" : "সর্বশেষ বিনামূল্যের ক্লাস"}</p>
-        <h2 id="featured" className="mt-1 text-lg leading-snug font-bold text-white sm:text-xl">
-          <Link href={watchHref(video)} className="hover:text-signal-orange">
+        <p className="text-xs font-bold text-m-blue">{thisWeek ? "এ সপ্তাহের বিনামূল্যের ক্লাস" : "সর্বশেষ বিনামূল্যের ক্লাস"}</p>
+        <h2 id="featured" className="mt-1 text-lg leading-snug font-bold text-m-ink sm:text-xl">
+          <Link href={watchHref(video)} className="hover:text-m-blue">
             {video.title}
           </Link>
         </h2>
-        <p className="mt-1 text-sm text-white/65">
+        <p className="mt-1 text-sm text-m-ink/65">
           <Compact n={video.views} /> বার দেখা · <Ago iso={video.at} />
         </p>
-        <p className="mt-3 line-clamp-4 max-w-2xl text-sm leading-relaxed text-white/80">
+        <p className="mt-3 line-clamp-4 max-w-2xl text-sm leading-relaxed text-m-ink/80">
           {video.about ?? (
             <>
               “{course?.title}” কোর্সের সপ্তাহ <Num value={video.week} />-এর ক্লাস — সবার জন্য বিনামূল্যে। {course?.outcome}
@@ -478,7 +478,7 @@ function VideosTab({ full, depts, locked }: { full: ClassVideo[]; depts: Departm
             {VIDEO_SORTS[s]}
           </button>
         ))}
-        {withVideos.length > 0 && <span className="mx-1 h-6 w-px shrink-0 bg-white/20" aria-hidden />}
+        {withVideos.length > 0 && <span className="mx-1 h-6 w-px shrink-0 bg-m-ink/11" aria-hidden />}
         {withVideos.length > 0 && (
           <button type="button" aria-pressed={!dept} onClick={() => setDept(null)} className={chipClass(!dept)}>
             সব বিভাগ
@@ -512,7 +512,7 @@ function CoursesTab({ handle, depts, courses, videos }: { handle: string; depts:
         icon="search"
         title="এখনো নিজের কোর্স নেই"
         body={`${personOrThrow(handle).nameBn} দলের সাথে শেখান। নিজের কোর্স প্যানেলে পাস হলে এখানে আসবে।`}
-        action={d && <Link href={`/media/academy/dept/${d.id}`} className="text-sm font-semibold text-signal-orange hover:underline">{d.name} — দলের কোর্স দেখুন</Link>}
+        action={d && <Link href={`/media/academy/dept/${d.id}`} className="text-sm font-semibold text-m-blue hover:underline">{d.name} — দলের কোর্স দেখুন</Link>}
       />
     );
   }
@@ -520,8 +520,8 @@ function CoursesTab({ handle, depts, courses, videos }: { handle: string; depts:
     <div className="space-y-10">
       {groups.map(({ dept, list }) => (
         <section key={dept.id} aria-labelledby={`pl-${dept.id}`}>
-          <h2 id={`pl-${dept.id}`} className="mb-5 flex items-center gap-3 text-lg font-bold text-white sm:text-xl">
-            <span className="size-2.5 rounded-[2px] bg-signal-orange" aria-hidden />
+          <h2 id={`pl-${dept.id}`} className="mb-5 flex items-center gap-3 text-lg font-bold text-m-ink sm:text-xl">
+            <span className="size-2.5 rounded-[2px] bg-m-yellow" aria-hidden />
             {dept.name}
           </h2>
           <ul className="grid gap-x-4 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
@@ -542,26 +542,26 @@ function PlaylistCard({ course, items }: { course: Course; items: ClassVideo[] }
   const href = items[0] ? watchHref(items[0]) : `/media/academy/course/${course.id}`;
   return (
     <article className="group">
-      <Link href={href} className="relative block rounded-xl pt-2 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal-orange" aria-label={`${course.title} — ${items.length ? "সব চালান" : "কোর্সের পাতা"}`}>
-        <span className="absolute inset-x-5 top-0 h-2 rounded-t-lg bg-white/20" aria-hidden />
-        <span className="absolute inset-x-2.5 top-1 h-1.5 rounded-t-lg bg-white/40" aria-hidden />
-        <span className="relative block aspect-video overflow-hidden rounded-xl bg-text-primary ring-1 ring-black">
+      <Link href={href} className="relative block rounded-xl pt-2 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-m-blue" aria-label={`${course.title} — ${items.length ? "সব চালান" : "কোর্সের পাতা"}`}>
+        <span className="absolute inset-x-5 top-0 h-2 rounded-t-lg bg-m-ink/11" aria-hidden />
+        <span className="absolute inset-x-2.5 top-1 h-1.5 rounded-t-lg bg-m-ink/22" aria-hidden />
+        <span className="relative block aspect-video overflow-hidden rounded-xl bg-m-card ring-1 ring-white">
           <Image src={course.image} alt="" fill sizes="(min-width: 1536px) 22vw, (min-width: 1024px) 30vw, (min-width: 640px) 45vw, 92vw" className="object-cover transition-transform duration-700 group-hover:scale-105 motion-reduce:transition-none" />
-          <span className="absolute right-2 bottom-2 inline-flex items-center gap-1 rounded-md bg-black/80 px-1.5 py-0.5 text-xs font-semibold text-white">
+          <span className="absolute right-2 bottom-2 inline-flex items-center gap-1 rounded-md bg-white/90 px-1.5 py-0.5 text-xs font-semibold text-m-ink">
             <ListVideo className="size-3.5" aria-hidden /> <Num value={items.length} />টি ভিডিও
           </span>
-          <span className="absolute inset-0 grid place-items-center bg-black/65 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none" aria-hidden>
-            <span className="inline-flex items-center gap-2 text-sm font-bold text-white">
+          <span className="absolute inset-0 grid place-items-center bg-white/90 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none" aria-hidden>
+            <span className="inline-flex items-center gap-2 text-sm font-bold text-m-ink">
               <Play className="size-5 fill-current" /> {items.length ? "সব চালান" : "কোর্সের পাতা"}
             </span>
           </span>
         </span>
       </Link>
-      <h3 className="mt-3 line-clamp-2 text-[15px] leading-snug font-semibold text-white">{course.title}</h3>
-      <p className="mt-1 text-sm text-white/65">
+      <h3 className="mt-3 line-clamp-2 text-[15px] leading-snug font-semibold text-m-ink">{course.title}</h3>
+      <p className="mt-1 text-sm text-m-ink/65">
         {course.id} · {LEVELS[course.level]} · <Num value={COURSE_DAYS} /> দিন
       </p>
-      <Link href={`/media/academy/course/${course.id}`} className="mt-1 inline-block text-sm font-semibold text-white/80 hover:text-signal-orange">
+      <Link href={`/media/academy/course/${course.id}`} className="mt-1 inline-block text-sm font-semibold text-m-ink/80 hover:text-m-blue">
         পুরো কোর্স দেখুন
       </Link>
     </article>
@@ -577,18 +577,18 @@ function StoriesTab({ handle }: { handle: string }) {
     <ul className="max-w-3xl space-y-4">
       {record.stories.map((s, i) => (
         <li key={s.name}>
-          <article className="rounded-2xl bg-text-primary p-5 ring-1 ring-white/12">
+          <article className="rounded-2xl bg-m-card p-5 ring-1 ring-m-ink/10 shadow-m-tile">
             <header className="flex items-center gap-3">
               <PersonAvatar person={person} size="md" />
               <div className="min-w-0">
-                <p className="flex items-center gap-1 text-sm font-semibold text-white">
-                  {person.nameBn} <BadgeCheck className="size-3.5 text-white/70" aria-hidden />
+                <p className="flex items-center gap-1 text-sm font-semibold text-m-ink">
+                  {person.nameBn} <BadgeCheck className="size-3.5 text-m-ink/70" aria-hidden />
                 </p>
-                <p className="text-xs text-white/60">শিক্ষার্থীর সফলতা</p>
+                <p className="text-xs text-m-ink/60">শিক্ষার্থীর সফলতা</p>
               </div>
             </header>
-            <blockquote className="mt-4 text-[17px] leading-relaxed text-white">“{s.text}”</blockquote>
-            <p className="mt-2 text-sm font-semibold text-white/75">— {s.name}</p>
+            <blockquote className="mt-4 text-[17px] leading-relaxed text-m-ink">“{s.text}”</blockquote>
+            <p className="mt-2 text-sm font-semibold text-m-ink/75">— {s.name}</p>
             <footer className="mt-3 -ml-2">
               <CommentVotes id={`story:${handle}:${i}`} base={30 + ((s.text.length * 7) % 90)} />
             </footer>
@@ -614,14 +614,14 @@ function SearchResults({ q, videos, locked }: { q: string; videos: ClassVideo[];
         const course = getCourse(v.course);
         return (
           <li key={v.id}>
-            <Link href={watchHref(v)} className="group flex gap-4 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal-orange">
+            <Link href={watchHref(v)} className="group flex gap-4 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-m-blue">
               <Thumb video={v} locked={locked(v)} className={cn("shrink-0", v.short ? "aspect-[9/14] w-24 sm:w-32" : "aspect-video w-40 sm:w-64")} sizes="256px" />
               <span className="min-w-0 py-0.5">
-                <span className="line-clamp-2 font-semibold text-white group-hover:text-signal-orange sm:text-lg">{v.title}</span>
-                <span className="mt-1 block text-sm text-white/65">
+                <span className="line-clamp-2 font-semibold text-m-ink group-hover:text-m-blue sm:text-lg">{v.title}</span>
+                <span className="mt-1 block text-sm text-m-ink/65">
                   <Compact n={v.views} /> বার দেখা · <Ago iso={v.at} />
                 </span>
-                <span className="mt-2 hidden text-sm text-white/65 sm:line-clamp-2">
+                <span className="mt-2 hidden text-sm text-m-ink/65 sm:line-clamp-2">
                   {course?.title} · সপ্তাহ <Num value={v.week} />
                 </span>
               </span>

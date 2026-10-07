@@ -52,7 +52,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
         {post.skill && (
         <Panel title="কারা রেটিং দিয়েছেন">
           {verdicts.length === 0 ? (
-            <p className="text-sm text-white/65">মন্তব্যসহ কোনো রেটিং এখনো নেই। প্রথম যাচাইটি আপনিই করুন।</p>
+            <p className="text-sm text-m-ink/65">মন্তব্যসহ কোনো রেটিং এখনো নেই। প্রথম যাচাইটি আপনিই করুন।</p>
           ) : (
             <ul className="space-y-3">
               {verdicts.map((c) => {
@@ -62,7 +62,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
                 return (
                   <li key={c.id} className="flex items-center justify-between gap-2">
                     <PersonLine person={p} size="sm" meta={p.headline} />
-                    <span className={ok ? "inline-flex items-center gap-1 text-xs font-bold text-signal-orange" : "inline-flex items-center gap-1 text-xs font-bold text-crimson-bright"}>
+                    <span className={ok ? "inline-flex items-center gap-1 text-xs font-bold text-m-blue" : "inline-flex items-center gap-1 text-xs font-bold text-m-red"}>
                       {ok ? <SealCheck size={16} weight="duotone" aria-hidden /> : <SealWarning size={16} weight="duotone" aria-hidden />}
                       <Num value={c.verdict.stars} />★
                     </span>
@@ -71,13 +71,13 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
               })}
             </ul>
           )}
-          <p className="mt-4 text-xs text-white/65">
+          <p className="mt-4 text-xs text-m-ink/65">
             মোট <Num value={post.skill.raters} /> জন রেটিং দিয়েছেন; এখানে শুধু যাঁরা কারণও লিখেছেন।
           </p>
         </Panel>
         )}
         <Panel title={`${author.nameBn}-কে কাজ দিতে চান?`}>
-          <Link href={`/media/u/${author.handle}#hire`} className="flex h-11 items-center justify-center rounded-xl bg-signal-orange text-sm font-semibold text-text-primary transition-[filter] hover:brightness-95">
+          <Link href={`/media/u/${author.handle}#hire`} className="flex h-11 items-center justify-center rounded-xl bg-m-yellow text-sm font-semibold text-m-ink transition-[filter] hover:brightness-95">
             প্রোফাইল থেকে হায়ার করুন
           </Link>
         </Panel>

@@ -105,14 +105,14 @@ export function ShareDialog({ open, onOpenChange, from, members, meId, preset, o
     });
   }
 
-  const label = "mb-1.5 block text-sm font-semibold text-white";
-  const err = (m?: string) => tried && m && <span className="mt-1 block text-xs font-semibold text-crimson-bright">{m}</span>;
+  const label = "mb-1.5 block text-sm font-semibold text-m-ink";
+  const err = (m?: string) => tried && m && <span className="mt-1 block text-xs font-semibold text-m-red">{m}</span>;
   return (
     <Dialog open={open} onOpenChange={reset}>
       <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-xl">
         <DialogHeader>
           <PixelMark tone="dark" />
-          <DialogTitle className="flex items-center gap-2 text-xl font-bold text-white"><Share2 className="size-5 text-signal-orange" aria-hidden /> দলের কাজ শেয়ার করুন</DialogTitle>
+          <DialogTitle className="flex items-center gap-2 text-xl font-bold text-m-ink"><Share2 className="size-5 text-m-blue" aria-hidden /> দলের কাজ শেয়ার করুন</DialogTitle>
           <DialogDescription>যে সমস্যা মিলে সমাধান করলেন, যা নতুন বানালেন বা খুঁজে পেলেন — ফিডে দিন, সবাই শিখুক।</DialogDescription>
         </DialogHeader>
         <form onSubmit={submit} noValidate className="space-y-5">
@@ -159,7 +159,7 @@ export function ShareDialog({ open, onOpenChange, from, members, meId, preset, o
               {members.map((m) => {
                 const on = v.team.includes(m.id);
                 return (
-                  <button key={m.id} type="button" aria-pressed={on} onClick={() => setV((x) => ({ ...x, team: on ? x.team.filter((t) => t !== m.id) : [...x.team, m.id] }))} className={cn("min-h-9 rounded-full px-3 text-sm font-semibold transition-colors", on ? "bg-signal-orange text-text-primary" : "bg-white/8 text-white/75 ring-1 ring-white/12 hover:text-white")}>
+                  <button key={m.id} type="button" aria-pressed={on} onClick={() => setV((x) => ({ ...x, team: on ? x.team.filter((t) => t !== m.id) : [...x.team, m.id] }))} className={cn("min-h-9 rounded-full px-3 text-sm font-semibold transition-colors", on ? "bg-m-yellow text-m-ink" : "bg-m-ink/4 text-m-ink/75 ring-1 ring-m-ink/10 hover:text-m-ink")}>
                     {m.id === meId ? "আমি" : m.name}
                   </button>
                 );
@@ -171,8 +171,8 @@ export function ShareDialog({ open, onOpenChange, from, members, meId, preset, o
             <span className={label}>ছবি (ঐচ্ছিক)</span>
             {photo ? (
               <div className="relative w-fit">
-                <Image src={photo.data} alt="" width={240} height={180} unoptimized className="h-36 w-auto rounded-xl object-cover ring-1 ring-white/12" />
-                <button type="button" onClick={() => setPhoto(undefined)} className="absolute top-2 right-2 flex size-8 items-center justify-center rounded-full bg-black/70 text-white" aria-label="ছবি সরান"><X className="size-4" aria-hidden /></button>
+                <Image src={photo.data} alt="" width={240} height={180} unoptimized className="h-36 w-auto rounded-xl object-cover ring-1 ring-m-ink/10" />
+                <button type="button" onClick={() => setPhoto(undefined)} className="absolute top-2 right-2 flex size-8 items-center justify-center rounded-full bg-white/90 text-m-ink" aria-label="ছবি সরান"><X className="size-4" aria-hidden /></button>
               </div>
             ) : (
               <button type="button" disabled={busy} onClick={() => pick.current?.click()} className={mediaButton({ variant: "quiet", size: "sm" })}>
@@ -201,7 +201,7 @@ export function ShareDialog({ open, onOpenChange, from, members, meId, preset, o
             />
           </div>
 
-          <p className="flex items-center gap-2 text-xs text-white/60"><Newspaper className="size-4 shrink-0 text-signal-orange" aria-hidden /> ফিডে যাবে, ক্লাস বা ল্যাবের নামসহ — সবাই দেখবে, মন্তব্য করবে।</p>
+          <p className="flex items-center gap-2 text-xs text-m-ink/60"><Newspaper className="size-4 shrink-0 text-m-blue" aria-hidden /> ফিডে যাবে, ক্লাস বা ল্যাবের নামসহ — সবাই দেখবে, মন্তব্য করবে।</p>
           <button type="submit" disabled={busy} className={mediaButton({ variant: "primary", size: "lg", className: "w-full" })}><Send aria-hidden /> ফিডে শেয়ার করুন</button>
         </form>
       </DialogContent>
@@ -218,11 +218,11 @@ export function ShowcasePanel({ shares, canShare, onShare, onStart, research }: 
   ];
   return (
     <section aria-labelledby="show-title" className="space-y-4">
-      <div className="story-reveal overflow-hidden rounded-3xl bg-signal-orange p-5 text-text-primary sm:p-7">
+      <div className="story-reveal overflow-hidden rounded-3xl bg-m-yellow p-5 text-m-ink sm:p-7">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="max-w-xl">
             <h2 id="show-title" className="text-2xl font-bold tracking-tight">উদ্ভাবন ও গবেষণা</h2>
-            <p className="mt-1 text-sm font-medium text-text-primary/80">যা শিখলেন, তা দিয়ে কিছু সমাধান করুন — তারপর সবাইকে দেখান। ভালো কাজ ফিড থেকে চাকরি আর গবেষণার সুযোগে পৌঁছায়।</p>
+            <p className="mt-1 text-sm font-medium text-m-ink/80">যা শিখলেন, তা দিয়ে কিছু সমাধান করুন — তারপর সবাইকে দেখান। ভালো কাজ ফিড থেকে চাকরি আর গবেষণার সুযোগে পৌঁছায়।</p>
           </div>
           {(onStart || canShare) && (
             <div className="flex flex-wrap gap-2">
@@ -241,9 +241,9 @@ export function ShowcasePanel({ shares, canShare, onShare, onStart, research }: 
         </div>
         <ol className="mt-5 grid gap-2 sm:grid-cols-3">
           {steps.map((s) => (
-            <li key={s.n} className="flex gap-3 rounded-2xl bg-text-primary/8 p-3 ring-1 ring-text-primary/15">
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-text-primary text-sm font-bold text-signal-orange"><Num value={s.n} /></span>
-              <span><span className="block text-sm font-bold">{s.t}</span><span className="block text-xs text-text-primary/75">{s.d}</span></span>
+            <li key={s.n} className="flex gap-3 rounded-2xl bg-m-card/8 p-3 ring-1 ring-m-ink/15">
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-m-card text-sm font-bold text-m-blue"><Num value={s.n} /></span>
+              <span><span className="block text-sm font-bold">{s.t}</span><span className="block text-xs text-m-ink/75">{s.d}</span></span>
             </li>
           ))}
         </ol>
@@ -252,21 +252,21 @@ export function ShowcasePanel({ shares, canShare, onShare, onStart, research }: 
       {research}
 
       {shares.length === 0 ? (
-        <p className="rounded-2xl bg-text-primary p-5 text-center text-sm text-white/65 ring-1 ring-white/12">এখনো কিছু শেয়ার হয়নি। প্রথম সমাধানটা আপনার দলেরই হোক।</p>
+        <p className="rounded-2xl bg-m-card p-5 text-center text-sm text-m-ink/65 ring-1 ring-m-ink/10 shadow-m-tile">এখনো কিছু শেয়ার হয়নি। প্রথম সমাধানটা আপনার দলেরই হোক।</p>
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2">
           {[...shares].sort((a, b) => b.at.localeCompare(a.at)).map((s) => {
             const Icon = SHARE_ICONS[s.kind];
             return (
-              <li key={s.id} className="story-reveal flex flex-col gap-3 rounded-2xl bg-text-primary p-4 ring-1 ring-white/12">
+              <li key={s.id} className="story-reveal flex flex-col gap-3 rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 shadow-m-tile">
                 <span className="flex items-center gap-2 text-xs font-bold">
-                  <span className={cn("inline-flex items-center gap-1 rounded-full px-2.5 py-0.5", s.kind === "research" ? "bg-bd-green text-white" : "bg-signal-orange text-text-primary")}><Icon className="size-3.5" aria-hidden /> {SHARE_KINDS[s.kind].bn}</span>
-                  <span className="ml-auto font-medium text-white/55"><Ago iso={s.at} live /></span>
+                  <span className={cn("inline-flex items-center gap-1 rounded-full px-2.5 py-0.5", s.kind === "research" ? "bg-m-blue-soft text-m-ink" : "bg-m-yellow text-m-ink")}><Icon className="size-3.5" aria-hidden /> {SHARE_KINDS[s.kind].bn}</span>
+                  <span className="ml-auto font-medium text-m-ink/55"><Ago iso={s.at} live /></span>
                 </span>
-                <span className="font-bold text-white">{s.title}</span>
-                {s.team.length > 0 && <span className="text-xs text-white/65">দল: {s.team.join(", ")}</span>}
+                <span className="font-bold text-m-ink">{s.title}</span>
+                {s.team.length > 0 && <span className="text-xs text-m-ink/65">দল: {s.team.join(", ")}</span>}
                 <span className="mt-auto flex flex-wrap gap-3 text-sm font-bold">
-                  {s.postId && <Link href={`/media/post/${s.postId}`} className="inline-flex items-center gap-1 text-signal-orange hover:underline">ফিডে দেখুন <ArrowUpRight className="size-4" aria-hidden /></Link>}
+                  {s.postId && <Link href={`/media/post/${s.postId}`} className="inline-flex items-center gap-1 text-m-blue hover:underline">ফিডে দেখুন <ArrowUpRight className="size-4" aria-hidden /></Link>}
                 </span>
               </li>
             );

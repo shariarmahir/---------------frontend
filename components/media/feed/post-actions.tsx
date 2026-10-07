@@ -74,26 +74,26 @@ export function PostActions({
     }
   }
 
-  const quiet = "inline-flex min-h-10 items-center gap-1.5 rounded-xl px-3 text-sm font-semibold text-white/80 transition-colors";
+  const quiet = "inline-flex min-h-10 items-center gap-1.5 rounded-xl px-3 text-sm font-semibold text-m-ink/80 transition-colors";
 
   return (
-    <div className="flex flex-wrap items-center gap-1 border-t border-white/12 pt-3">
+    <div className="flex flex-wrap items-center gap-1 border-t border-m-ink/10 pt-3">
       <button
         type="button"
         aria-pressed={liked}
         onClick={() => ensure("লাইক দিতে") && toggleKey("liked", post.id)}
-        className={cn(quiet, liked ? "text-crimson-bright" : "hover:bg-national-crimson hover:text-white")}
+        className={cn(quiet, liked ? "text-m-red" : "hover:bg-m-red hover:text-m-on")}
       >
         <Heart className={cn("size-5", liked && "like-pop fill-current")} aria-hidden />
         {!hideCounts && <Compact n={post.stats.likes + (liked ? 1 : 0)} />}
         <span className="sr-only">{liked ? "পছন্দ তুলে নিন" : "পছন্দ"}</span>
       </button>
-      <Link href={`/media/post/${post.id}#discussion`} className={cn(quiet, "hover:bg-white/10 hover:text-white")}>
+      <Link href={`/media/post/${post.id}#discussion`} className={cn(quiet, "hover:bg-m-ink/6 hover:text-m-ink")}>
         <MessageCircle className="size-5" aria-hidden />
         <Num value={commentCount + myComments} />
         <span className="sr-only">মন্তব্য</span>
       </Link>
-      <button type="button" onClick={share} className={cn(quiet, "hover:bg-white/10 hover:text-white")}>
+      <button type="button" onClick={share} className={cn(quiet, "hover:bg-m-ink/6 hover:text-m-ink")}>
         <Share2 className="size-5" aria-hidden />
         <span className="hidden sm:inline">শেয়ার</span>
         <span className="sr-only sm:hidden">শেয়ার</span>
@@ -101,12 +101,12 @@ export function PostActions({
 
       <span className="ml-auto">
         {!post.skill ? null : own ? (
-          <span className="text-xs text-white/65">নিজের দক্ষতা নিজে যাচাই করা যায় না</span>
+          <span className="text-xs text-m-ink/65">নিজের দক্ষতা নিজে যাচাই করা যায় না</span>
         ) : mine ? (
           <span
             className={cn(
               "inline-flex min-h-10 items-center gap-1.5 rounded-xl px-3 text-sm font-semibold",
-              mine.verdict === "verify" ? "bg-white/10 text-signal-orange" : "bg-national-crimson text-white",
+              mine.verdict === "verify" ? "bg-m-ink/6 text-m-blue" : "bg-m-red text-m-on",
             )}
           >
             <Check className="size-4" aria-hidden />

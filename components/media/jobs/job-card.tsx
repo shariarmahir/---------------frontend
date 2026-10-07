@@ -36,26 +36,26 @@ function ApplyDialog({ job, open, onOpenChange }: { job: Job; open: boolean; onO
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-text-primary font-sans sm:max-w-lg">
+      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-m-card font-sans sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-lg font-bold text-white">আবেদন — {job.title}</DialogTitle>
-          <DialogDescription className="text-sm text-white/80">সার্টিফিকেট লাগবে না — আপনার প্রোফাইলই পোর্টফোলিও।</DialogDescription>
+          <DialogTitle className="text-lg font-bold text-m-ink">আবেদন — {job.title}</DialogTitle>
+          <DialogDescription className="text-sm text-m-ink/80">সার্টিফিকেট লাগবে না — আপনার প্রোফাইলই পোর্টফোলিও।</DialogDescription>
         </DialogHeader>
-        <div className="flex items-center gap-3 rounded-xl bg-white/10 p-3">
+        <div className="flex items-center gap-3 rounded-xl bg-m-ink/6 p-3">
           <PersonAvatar person={currentUser} />
           <div className="min-w-0">
-            <p className="text-sm font-bold text-white">{currentUser.nameBn}</p>
-            <p className="truncate text-xs text-white/65">{currentUser.headline}</p>
+            <p className="text-sm font-bold text-m-ink">{currentUser.nameBn}</p>
+            <p className="truncate text-xs text-m-ink/65">{currentUser.headline}</p>
           </div>
         </div>
         <div>
-          <p className="mb-2 text-sm font-semibold text-white">এই খাতে আপনার দক্ষতা</p>
+          <p className="mb-2 text-sm font-semibold text-m-ink">এই খাতে আপনার দক্ষতা</p>
           {relevant.length === 0 ? (
-            <p className="text-sm text-white/65">এই খাতে এখনো যাচাই করা দক্ষতা নেই — নোটে কাজের অভিজ্ঞতা লিখুন।</p>
+            <p className="text-sm text-m-ink/65">এই খাতে এখনো যাচাই করা দক্ষতা নেই — নোটে কাজের অভিজ্ঞতা লিখুন।</p>
           ) : (
             <ul className="flex flex-wrap gap-2">
               {relevant.map((s) => (
-                <li key={s.skill} className="flex items-center gap-1.5 rounded-lg border border-white/12 px-2.5 py-1.5 text-xs font-semibold">
+                <li key={s.skill} className="flex items-center gap-1.5 rounded-lg border border-m-ink/10 px-2.5 py-1.5 text-xs font-semibold">
                   {s.skill} <StatusBadge status={skillStatus(s.self, s.communityAvg, s.raters)} size="sm" />
                 </li>
               ))}
@@ -63,7 +63,7 @@ function ApplyDialog({ job, open, onOpenChange }: { job: Job; open: boolean; onO
           )}
         </div>
         <label className="block">
-          <span className="mb-2 block text-sm font-semibold text-white">ছোট একটি নোট</span>
+          <span className="mb-2 block text-sm font-semibold text-m-ink">ছোট একটি নোট</span>
           <Textarea
             rows={4}
             value={note}
@@ -74,7 +74,7 @@ function ApplyDialog({ job, open, onOpenChange }: { job: Job; open: boolean; onO
             }}
             placeholder="কোন কাজ আগে করেছেন, কবে থেকে শুরু করতে পারবেন।"
           />
-          {error && <span role="alert" className="mt-1.5 block text-xs font-semibold text-crimson-bright">{error}</span>}
+          {error && <span role="alert" className="mt-1.5 block text-xs font-semibold text-m-red">{error}</span>}
         </label>
         <button type="button" onClick={submit} className={mediaButton({ variant: "primary", size: "lg", className: "w-full" })}>
           <Send aria-hidden /> আবেদন পাঠান
@@ -91,17 +91,17 @@ export function JobCard({ job }: { job: Job }) {
   const own = job.poster === CURRENT_USER_HANDLE;
   const sector = getCategory(job.sector);
   return (
-    <article id={job.id} className="scroll-mt-24 rounded-2xl border border-white/12 bg-text-primary p-4 story-reveal target:ring-2 target:ring-signal-orange transition-[translate,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-white/25 hover:shadow-[0_24px_44px_-26px_var(--color-signal-orange)] active:scale-[0.99] motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-5">
+    <article id={job.id} className="scroll-mt-24 rounded-2xl border border-m-ink/10 bg-m-card p-4 story-reveal target:ring-2 target:ring-m-blue transition-[translate,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-m-ink/21 hover:shadow-[0_24px_44px_-26px_var(--color-signal-orange)] active:scale-[0.99] motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-5 shadow-m-tile">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-semibold text-signal-orange">{sector.bn}</p>
-          <h3 className="mt-0.5 text-base font-bold text-white">{job.title}</h3>
-          <p className="text-sm text-white/80">
-            <Link href={`/media/u/${job.poster}`} className="hover:text-signal-orange hover:underline">{job.org}</Link>
+          <p className="text-xs font-semibold text-m-blue">{sector.bn}</p>
+          <h3 className="mt-0.5 text-base font-bold text-m-ink">{job.title}</h3>
+          <p className="text-sm text-m-ink/80">
+            <Link href={`/media/u/${job.poster}`} className="hover:text-m-blue hover:underline">{job.org}</Link>
           </p>
         </div>
         <div className="text-right">
-          <p className="text-lg font-bold text-white">
+          <p className="text-lg font-bold text-m-ink">
             <Taka amount={job.pay.min} />
             {job.pay.max > job.pay.min && (
               <>
@@ -109,44 +109,44 @@ export function JobCard({ job }: { job: Job }) {
               </>
             )}
           </p>
-          <p className="text-xs text-white/65">{payUnitBn[job.pay.unit]}</p>
+          <p className="text-xs text-m-ink/65">{payUnitBn[job.pay.unit]}</p>
         </div>
       </div>
 
-      <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-white/80">
-        <span className="rounded-full bg-white/10 px-2 py-0.5 font-semibold text-white">{jobTypeBn[job.type]}</span>
+      <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-m-ink/80">
+        <span className="rounded-full bg-m-ink/6 px-2 py-0.5 font-semibold text-m-ink">{jobTypeBn[job.type]}</span>
         <span className="inline-flex items-center gap-1"><MapPin className="size-3.5" aria-hidden />{job.location}</span>
         {job.remote && <span className="inline-flex items-center gap-1"><Wifi className="size-3.5" aria-hidden />রিমোট চলবে</span>}
         {job.studentFriendly && <span className="inline-flex items-center gap-1"><GraduationCap className="size-3.5" aria-hidden />শিক্ষার্থীদের জন্য</span>}
-        <span className="inline-flex items-center gap-1 font-semibold text-signal-orange"><SealCheck size={15} weight="duotone" aria-hidden />ন্যায্য মজুরি</span>
+        <span className="inline-flex items-center gap-1 font-semibold text-m-blue"><SealCheck size={15} weight="duotone" aria-hidden />ন্যায্য মজুরি</span>
       </p>
 
-      <p className="mt-3 text-sm leading-relaxed text-white">{job.description}</p>
+      <p className="mt-3 text-sm leading-relaxed text-m-ink">{job.description}</p>
       {job.requirements.length > 0 && (
         <ul className="mt-3 space-y-1">
           {job.requirements.map((r) => (
-            <li key={r} className="flex gap-1.5 text-sm text-white/80">
-              <CircleCheck className="mt-0.5 size-4 shrink-0 text-signal-orange" aria-hidden />
+            <li key={r} className="flex gap-1.5 text-sm text-m-ink/80">
+              <CircleCheck className="mt-0.5 size-4 shrink-0 text-m-blue" aria-hidden />
               {r}
             </li>
           ))}
         </ul>
       )}
-      <p className="mt-3 flex flex-wrap gap-x-2 text-xs font-medium text-signal-orange">
+      <p className="mt-3 flex flex-wrap gap-x-2 text-xs font-medium text-m-blue">
         {job.tags.map((t) => (
           <span key={t}>{t}</span>
         ))}
       </p>
 
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/12 pt-3">
-        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-white/65">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-m-ink/10 pt-3">
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-m-ink/65">
           <span className="inline-flex items-center gap-1"><Users className="size-3.5" aria-hidden /><Num value={job.applicants + (appliedAt ? 1 : 0)} /> জন আবেদন করেছেন</span>
           <span className="inline-flex items-center gap-1"><CalendarClock className="size-3.5" aria-hidden />শেষ তারিখ <DateText iso={job.deadline} /></span>
         </p>
         {own ? (
-          <span className="text-xs font-semibold text-white/65">আপনার পোস্ট</span>
+          <span className="text-xs font-semibold text-m-ink/65">আপনার পোস্ট</span>
         ) : appliedAt ? (
-          <span className={cn("inline-flex min-h-9 items-center gap-1.5 rounded-xl bg-white/10 px-3 text-sm font-semibold text-signal-orange")}>
+          <span className={cn("inline-flex min-h-9 items-center gap-1.5 rounded-xl bg-m-ink/6 px-3 text-sm font-semibold text-m-blue")}>
             <CircleCheck className="size-4" aria-hidden /> আবেদন করেছেন
           </span>
         ) : (

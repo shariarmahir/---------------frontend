@@ -83,7 +83,7 @@ export function CreateChallengeButton() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-xl">
           <DialogHeader>
-            <DialogTitle className="text-lg font-bold text-white">চ্যালেঞ্জ তৈরি করুন</DialogTitle>
+            <DialogTitle className="text-lg font-bold text-m-ink">চ্যালেঞ্জ তৈরি করুন</DialogTitle>
             <DialogDescription>একটা বাস্তব সমস্যা দিন, কীভাবে বিচার হবে বলুন — সমাধান আসবে একা বা টিমে।</DialogDescription>
           </DialogHeader>
           <Form {...form}>
@@ -162,7 +162,7 @@ export function CreateChallengeButton() {
                 )} />
               </div>
               <FormField control={form.control} name="teams" render={({ field }) => (
-                <FormItem className="flex items-center justify-between gap-3 rounded-xl bg-white/5 px-3 py-2.5">
+                <FormItem className="flex items-center justify-between gap-3 rounded-xl bg-m-ink/3 px-3 py-2.5">
                   <FormLabel className="m-0">টিমে অংশ নেওয়া যাবে</FormLabel>
                   <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                 </FormItem>
@@ -191,7 +191,7 @@ export function MyChallenges({ kind }: { kind?: ChallengeKind }) {
   if (mine.length === 0) return null;
   return (
     <section className="mb-8">
-      <h2 className="mb-3 text-base font-bold text-white">আপনার চ্যালেঞ্জ</h2>
+      <h2 className="mb-3 text-base font-bold text-m-ink">আপনার চ্যালেঞ্জ</h2>
       <div className="grid gap-4 md:grid-cols-2">
         {mine.map((c) => <ChallengeCard key={c.id} challenge={c} mine />)}
       </div>

@@ -16,10 +16,10 @@ export function DeptCourses({ dept }: { dept: Department }) {
   const list = [...coursesOf(dept.id)].sort((a, b) => order.indexOf(a.level) - order.indexOf(b.level) || a.id.localeCompare(b.id));
   return (
     <section id="all-courses" aria-labelledby="courses-title" className="scroll-mt-20">
-      <h2 id="courses-title" className="text-xl font-bold text-white sm:text-2xl">
+      <h2 id="courses-title" className="text-xl font-bold text-m-ink sm:text-2xl">
         এই বিভাগের কোর্স
       </h2>
-      <p className="mt-1 text-sm text-white/75">
+      <p className="mt-1 text-sm text-m-ink/75">
         {list.length ? (
           <>
             <Num value={list.length} />টি কোর্স — যেকোনোটা খুলে সপ্তাহ ধরে কী শেখানো হয়, ফি আর আসন দেখুন।

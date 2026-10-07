@@ -38,12 +38,12 @@ export const TodayTab: ClassTab = ({ room, leader, onTab }) => {
         <section
           className={cn(
             "story-reveal flex flex-col gap-3 rounded-2xl p-5 lg:col-span-3 lg:flex-row lg:items-center lg:justify-between",
-            alert === "calm" ? "bg-bd-green text-white" : "bg-national-crimson text-white",
+            alert === "calm" ? "bg-m-blue-soft text-m-ink" : "bg-m-red text-m-on",
           )}
         >
           <p className="flex items-center gap-3 text-lg font-bold">
-            <span className="relative flex size-10 items-center justify-center rounded-xl bg-white/15">
-              {alert !== "calm" && <span className="absolute inset-0 animate-ping rounded-xl bg-white/25 motion-reduce:hidden" />}
+            <span className="relative flex size-10 items-center justify-center rounded-xl bg-m-ink/8">
+              {alert !== "calm" && <span className="absolute inset-0 animate-ping rounded-xl bg-m-ink/14 motion-reduce:hidden" />}
               <BellRing className="size-5" aria-hidden />
             </span>
             <span>
@@ -57,7 +57,7 @@ export const TodayTab: ClassTab = ({ room, leader, onTab }) => {
       )}
 
       <Panel title={<span className="flex items-center gap-2"><BookMarked className="size-4.5" aria-hidden /> আজকের ক্লাস টপিক</span>}>
-        <p className="text-xl font-bold text-white">{room.todayTopic || "এখনো ঠিক হয়নি"}</p>
+        <p className="text-xl font-bold text-m-ink">{room.todayTopic || "এখনো ঠিক হয়নি"}</p>
         {leader && (
           <form
             className="mt-4 flex gap-2"
@@ -74,17 +74,17 @@ export const TodayTab: ClassTab = ({ room, leader, onTab }) => {
 
       <Panel title={<span className="flex items-center gap-2"><AlarmClock className="size-4.5" aria-hidden /> {classDay === TODAY ? "আজকের রুটিন" : "পরের ক্লাস"}</span>}>
         {classDay === undefined ? (
-          <p className="text-sm text-white/70">রুটিন এখনো দেওয়া হয়নি।</p>
+          <p className="text-sm text-m-ink/70">রুটিন এখনো দেওয়া হয়নি।</p>
         ) : (
           <>
-            {classDay !== TODAY && <p className="mb-3 text-sm text-white/70">আজ ক্লাস নেই — পরের ক্লাস {WEEKDAYS[classDay]}বার।</p>}
+            {classDay !== TODAY && <p className="mb-3 text-sm text-m-ink/70">আজ ক্লাস নেই — পরের ক্লাস {WEEKDAYS[classDay]}বার।</p>}
             <ul className="space-y-2">
               {slots.map((s, i) => (
-                <li key={i} className="flex items-center gap-3 rounded-xl bg-black/40 px-3 py-2.5 ring-1 ring-white/10">
-                  <span className="w-14 shrink-0 text-xs font-bold text-signal-orange">{s.time}</span>
+                <li key={i} className="flex items-center gap-3 rounded-xl bg-white/65 px-3 py-2.5 ring-1 ring-m-ink/9">
+                  <span className="w-14 shrink-0 text-xs font-bold text-m-blue">{s.time}</span>
                   <span className="min-w-0">
-                    <span className="block font-semibold text-white">{s.subject}</span>
-                    {s.topic && <span className="block truncate text-xs text-white/65">{s.topic}</span>}
+                    <span className="block font-semibold text-m-ink">{s.subject}</span>
+                    {s.topic && <span className="block truncate text-xs text-m-ink/65">{s.topic}</span>}
                   </span>
                 </li>
               ))}
@@ -95,22 +95,22 @@ export const TodayTab: ClassTab = ({ room, leader, onTab }) => {
 
       <Panel title={<span className="flex items-center gap-2"><ClipboardList className="size-4.5" aria-hidden /> হোমওয়ার্ক</span>}>
         {homework.length === 0 ? (
-          <p className="text-sm text-white/70">কোনো হোমওয়ার্ক নেই।</p>
+          <p className="text-sm text-m-ink/70">কোনো হোমওয়ার্ক নেই।</p>
         ) : (
           <ul className="space-y-3">
             {homework.map((n) => (
-              <li key={n.id} className="text-sm leading-relaxed text-white/90">
-                <span className="font-semibold text-white">{n.title}</span>
-                <span className="mt-0.5 block text-xs text-white/55">{nameOf(room, n.by)} · {bnDate(n.at)}</span>
+              <li key={n.id} className="text-sm leading-relaxed text-m-ink/90">
+                <span className="font-semibold text-m-ink">{n.title}</span>
+                <span className="mt-0.5 block text-xs text-m-ink/55">{nameOf(room, n.by)} · {bnDate(n.at)}</span>
               </li>
             ))}
           </ul>
         )}
-        <button type="button" onClick={() => onTab("board")} className="mt-4 text-sm font-bold text-signal-orange hover:underline">নোট বোর্ডে যান →</button>
+        <button type="button" onClick={() => onTab("board")} className="mt-4 text-sm font-bold text-m-blue hover:underline">নোট বোর্ডে যান →</button>
       </Panel>
 
       {daily && (
-        <section className="story-reveal flex flex-col justify-between gap-4 rounded-2xl bg-signal-orange p-5 text-text-primary sm:flex-row sm:items-center lg:col-span-3">
+        <section className="story-reveal flex flex-col justify-between gap-4 rounded-2xl bg-m-yellow p-5 text-m-ink sm:flex-row sm:items-center lg:col-span-3">
           <p>
             <span className="block text-xs font-bold tracking-wide uppercase opacity-75">আজকের মূল্যায়ন</span>
             <span className="text-lg font-bold">{daily.title}</span>
@@ -143,17 +143,17 @@ function Syllabus({ room, leader }: { room: Parameters<ClassTab>[0]["room"]; lea
     <Panel title={<span className="flex items-center gap-2"><ScrollText className="size-4.5" aria-hidden /> সিলেবাস মিটার</span>} className="lg:row-span-2">
       <div className="mb-5">
         <div className="mb-2 flex items-end justify-between">
-          <span className="text-4xl font-bold text-white"><Num value={progress} />%</span>
-          <span className="text-sm text-white/70">{progress === 100 ? "সিলেবাস শেষ!" : "শেষ হয়েছে"}</span>
+          <span className="text-4xl font-bold text-m-ink"><Num value={progress} />%</span>
+          <span className="text-sm text-m-ink/70">{progress === 100 ? "সিলেবাস শেষ!" : "শেষ হয়েছে"}</span>
         </div>
-        <div className="h-3 overflow-hidden rounded-full bg-white/10">
-          <div className="h-full rounded-full bg-signal-orange transition-[width] duration-700 ease-out" style={{ width: `${progress}%` }} />
+        <div className="h-3 overflow-hidden rounded-full bg-m-ink/6">
+          <div className="h-full rounded-full bg-m-yellow transition-[width] duration-700 ease-out" style={{ width: `${progress}%` }} />
         </div>
       </div>
       <div className="space-y-4">
         {subjects.map((sub) => (
           <div key={sub}>
-            <p className="mb-2 text-xs font-bold tracking-wide text-signal-orange">{sub}</p>
+            <p className="mb-2 text-xs font-bold tracking-wide text-m-blue">{sub}</p>
             <ul className="space-y-1.5">
               {room.topics.filter((t) => t.subject === sub).map((t) => (
                 <li key={t.id}>
@@ -161,23 +161,23 @@ function Syllabus({ room, leader }: { room: Parameters<ClassTab>[0]["room"]; lea
                     type="button"
                     disabled={!leader}
                     onClick={() => toggle(t.id)}
-                    className="flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left text-sm transition-colors enabled:hover:bg-white/5 disabled:cursor-default"
+                    className="flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left text-sm transition-colors enabled:hover:bg-m-ink/3 disabled:cursor-default"
                   >
-                    <span className={cn("flex size-6 shrink-0 items-center justify-center rounded-lg transition-colors", t.done ? "bg-bd-green text-white" : "ring-1 ring-white/25")}>
+                    <span className={cn("flex size-6 shrink-0 items-center justify-center rounded-lg transition-colors", t.done ? "bg-m-blue-soft text-m-ink" : "ring-1 ring-m-ink/21")}>
                       {t.done && <Check className="live-in size-4" aria-hidden />}
                     </span>
-                    <span className={cn(t.done ? "text-white/60 line-through decoration-white/40" : "text-white")}>{t.title}</span>
+                    <span className={cn(t.done ? "text-m-ink/60 line-through decoration-m-ink/40" : "text-m-ink")}>{t.title}</span>
                   </button>
                 </li>
               ))}
             </ul>
           </div>
         ))}
-        {room.topics.length === 0 && <p className="text-sm text-white/70">এখনো কোনো টপিক নেই।</p>}
+        {room.topics.length === 0 && <p className="text-sm text-m-ink/70">এখনো কোনো টপিক নেই।</p>}
       </div>
       {leader && (
         <form
-          className="mt-5 grid gap-2 border-t border-white/10 pt-4 sm:grid-cols-[1fr_1.4fr_auto]"
+          className="mt-5 grid gap-2 border-t border-m-ink/9 pt-4 sm:grid-cols-[1fr_1.4fr_auto]"
           onSubmit={(e) => {
             e.preventDefault();
             if (!subject.trim() || !title.trim()) return;
@@ -205,15 +205,15 @@ function ExamRoutine({ exams, roomId, leader }: { exams: Exam[]; roomId: string;
         {sorted.map((e) => {
           const left = nextExam([e], DEMO_NOW)?.days;
           return (
-            <li key={e.id} className={cn("flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 ring-1", left === undefined ? "opacity-55 ring-white/10" : "ring-white/15")}>
+            <li key={e.id} className={cn("flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 ring-1", left === undefined ? "opacity-55 ring-m-ink/9" : "ring-m-ink/13")}>
               <span className="min-w-0">
-                <span className="block truncate font-semibold text-white">{e.title}</span>
-                <span className="text-xs text-white/65">{bnDate(e.date)} · {e.kind === "public" ? "পাবলিক পরীক্ষা" : "ক্লাস পরীক্ষা"}</span>
+                <span className="block truncate font-semibold text-m-ink">{e.title}</span>
+                <span className="text-xs text-m-ink/65">{bnDate(e.date)} · {e.kind === "public" ? "পাবলিক পরীক্ষা" : "ক্লাস পরীক্ষা"}</span>
               </span>
               <span
                 className={cn(
                   "shrink-0 rounded-lg px-2.5 py-1 text-xs font-bold",
-                  left === undefined ? "bg-white/10 text-white/70" : examAlert(left) === "calm" ? "bg-bd-green text-white" : "bg-national-crimson text-white",
+                  left === undefined ? "bg-m-ink/6 text-m-ink/70" : examAlert(left) === "calm" ? "bg-m-blue-soft text-m-ink" : "bg-m-red text-m-on",
                 )}
               >
                 {left === undefined ? "শেষ" : left === 0 ? "আজ" : <><Num value={left} /> দিন</>}
@@ -221,11 +221,11 @@ function ExamRoutine({ exams, roomId, leader }: { exams: Exam[]; roomId: string;
             </li>
           );
         })}
-        {exams.length === 0 && <p className="text-sm text-white/70">কোনো পরীক্ষা যোগ হয়নি।</p>}
+        {exams.length === 0 && <p className="text-sm text-m-ink/70">কোনো পরীক্ষা যোগ হয়নি।</p>}
       </ul>
       {leader && (
         <form
-          className="mt-4 grid gap-2 border-t border-white/10 pt-4 sm:grid-cols-2"
+          className="mt-4 grid gap-2 border-t border-m-ink/9 pt-4 sm:grid-cols-2"
           onSubmit={(e) => {
             e.preventDefault();
             if (!title.trim() || !date) return;
@@ -257,10 +257,10 @@ function WeekRoutine({ room, leader }: { room: Parameters<ClassTab>[0]["room"]; 
         {WEEKDAYS.map((d, i) => {
           const slots = room.routine.filter((s) => s.day === i);
           return (
-            <li key={d} className={cn("min-h-24 rounded-xl p-1.5 text-center", i === TODAY ? "bg-signal-orange text-text-primary" : "bg-black/40 text-white ring-1 ring-white/10")}>
+            <li key={d} className={cn("min-h-24 rounded-xl p-1.5 text-center", i === TODAY ? "bg-m-yellow text-m-ink" : "bg-white/65 text-m-ink ring-1 ring-m-ink/9")}>
               <span className="block text-[11px] font-bold">{d}</span>
               {slots.map((s, k) => (
-                <span key={k} className={cn("mt-1 block rounded-md px-0.5 py-1 text-[10px] leading-tight font-semibold", i === TODAY ? "bg-text-primary/10" : "bg-white/10")}>{s.subject}</span>
+                <span key={k} className={cn("mt-1 block rounded-md px-0.5 py-1 text-[10px] leading-tight font-semibold", i === TODAY ? "bg-m-card/10" : "bg-m-ink/6")}>{s.subject}</span>
               ))}
             </li>
           );
@@ -268,7 +268,7 @@ function WeekRoutine({ room, leader }: { room: Parameters<ClassTab>[0]["room"]; 
       </ul>
       {leader && (
         <form
-          className="mt-4 grid grid-cols-[auto_1fr] gap-2 border-t border-white/10 pt-4 sm:grid-cols-[auto_6rem_1fr_auto]"
+          className="mt-4 grid grid-cols-[auto_1fr] gap-2 border-t border-m-ink/9 pt-4 sm:grid-cols-[auto_6rem_1fr_auto]"
           onSubmit={(e) => {
             e.preventDefault();
             if (!subject.trim()) return;
@@ -308,7 +308,7 @@ function MonthCalendar({ exams, classDays }: { exams: Exam[]; classDays: Set<num
       }
     >
       <div className="grid grid-cols-7 gap-1 text-center">
-        {WEEKDAYS.map((d) => <span key={d} className="pb-1 text-[11px] font-bold text-white/60">{d}</span>)}
+        {WEEKDAYS.map((d) => <span key={d} className="pb-1 text-[11px] font-bold text-m-ink/60">{d}</span>)}
         {Array.from({ length: lead }, (_, i) => <span key={`x${i}`} />)}
         {Array.from({ length: days }, (_, i) => {
           const date = new Date(Date.UTC(first.getUTCFullYear(), first.getUTCMonth(), i + 1));
@@ -320,20 +320,20 @@ function MonthCalendar({ exams, classDays }: { exams: Exam[]; classDays: Set<num
               title={exam?.title}
               className={cn(
                 "relative flex aspect-square items-center justify-center rounded-lg text-sm font-semibold transition-transform duration-200 hover:scale-110",
-                exam ? (exam.kind === "public" ? "bg-national-crimson text-white" : "bg-signal-orange text-text-primary") : "text-white/85",
+                exam ? (exam.kind === "public" ? "bg-m-red text-m-on" : "bg-m-yellow text-m-ink") : "text-m-ink/85",
                 iso === todayIso && "ring-2 ring-white",
               )}
             >
               <Num value={i + 1} />
-              {!exam && classDays.has(weekday(date)) && <span className="absolute bottom-1 h-0.5 w-3 rounded-full bg-bdgreen-500" aria-hidden />}
+              {!exam && classDays.has(weekday(date)) && <span className="absolute bottom-1 h-0.5 w-3 rounded-full bg-m-green-soft" aria-hidden />}
             </span>
           );
         })}
       </div>
-      <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-white/65">
-        <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-signal-orange" /> ক্লাস পরীক্ষা</span>
-        <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-national-crimson" /> পাবলিক পরীক্ষা</span>
-        <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3 rounded-full bg-bdgreen-500" /> ক্লাসের দিন</span>
+      <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-m-ink/65">
+        <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-m-yellow" /> ক্লাস পরীক্ষা</span>
+        <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-m-red" /> পাবলিক পরীক্ষা</span>
+        <span className="inline-flex items-center gap-1.5"><span className="h-0.5 w-3 rounded-full bg-m-green-soft" /> ক্লাসের দিন</span>
       </p>
     </Panel>
   );

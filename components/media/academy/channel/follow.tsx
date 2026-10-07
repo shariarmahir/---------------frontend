@@ -74,7 +74,7 @@ export function FollowButton({ handle, name, size = "md", className }: { handle:
   }
 
   const Icon = BELL_ICON[bell];
-  const item = "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-white hover:bg-white/10 focus-visible:bg-white/10 focus-visible:outline-none";
+  const item = "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-m-ink hover:bg-m-ink/6 focus-visible:bg-m-ink/6 focus-visible:outline-none";
   return (
     <div ref={box} className={cn("relative", className)}>
       <button
@@ -82,7 +82,7 @@ export function FollowButton({ handle, name, size = "md", className }: { handle:
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
-        className={cn("inline-flex items-center gap-2 rounded-full bg-white/10 font-semibold text-white transition-colors hover:bg-white/20 aria-expanded:bg-white/20", h)}
+        className={cn("inline-flex items-center gap-2 rounded-full bg-m-ink/6 font-semibold text-m-ink transition-colors hover:bg-m-ink/11 aria-expanded:bg-m-ink/11", h)}
       >
         <motion.span
           key={bell}
@@ -98,7 +98,7 @@ export function FollowButton({ handle, name, size = "md", className }: { handle:
         <span className="sr-only">— কী জানাব, বদলান</span>
       </button>
       {open && (
-        <div role="menu" aria-label="কী জানাব" className="absolute top-12 left-0 z-30 w-60 overflow-hidden rounded-xl bg-text-primary py-2 shadow-[0_20px_40px_-12px_rgb(0_0_0/0.9)] ring-1 ring-white/12">
+        <div role="menu" aria-label="কী জানাব" className="absolute top-12 left-0 z-30 w-60 overflow-hidden rounded-xl bg-m-card py-2 shadow-[0_20px_40px_-12px_rgb(16_24_40/0.27)] ring-1 ring-m-ink/10">
           {(Object.keys(BELLS) as BellKind[]).map((b) => {
             const BIcon = BELL_ICON[b];
             return (
@@ -115,11 +115,11 @@ export function FollowButton({ handle, name, size = "md", className }: { handle:
               >
                 <BIcon className="size-4.5" aria-hidden />
                 <span className="flex-1">{BELLS[b]}</span>
-                {bell === b && <Check className="size-4 text-signal-orange" aria-hidden />}
+                {bell === b && <Check className="size-4 text-m-blue" aria-hidden />}
               </button>
             );
           })}
-          <span className="my-1 block h-px bg-white/10" aria-hidden />
+          <span className="my-1 block h-px bg-m-ink/6" aria-hidden />
           <button
             type="button"
             role="menuitem"

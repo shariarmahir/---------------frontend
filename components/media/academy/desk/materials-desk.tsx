@@ -112,24 +112,24 @@ export function MaterialsDesk({ course }: { course: Course }) {
           void addFiles(e.dataTransfer.files);
         }}
         className={cn(
-          "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed px-6 py-10 text-center transition-colors has-focus-visible:ring-2 has-focus-visible:ring-signal-orange",
-          over ? "border-signal-orange bg-signal-orange/10" : "border-white/20 bg-text-primary hover:border-white/40",
+          "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed px-6 py-10 text-center transition-colors has-focus-visible:ring-2 has-focus-visible:ring-m-blue",
+          over ? "border-m-blue bg-m-yellow/10" : "border-m-ink/17 bg-m-card hover:border-m-ink/34",
         )}
       >
         <input ref={input} type="file" multiple accept={ACCEPT} className="sr-only" onChange={(e) => e.target.files && void addFiles(e.target.files).then(() => { if (input.current) input.current.value = ""; })} />
-        <span className="grid size-12 place-items-center rounded-2xl bg-signal-orange text-text-primary"><Upload className="size-6" aria-hidden /></span>
-        <span className="text-base font-bold text-white">{busy ? "পড়া হচ্ছে…" : "ফাইল এখানে ছেড়ে দিন, বা বেছে নিন"}</span>
-        <span className="text-sm text-white/70">পিডিএফ, ওয়ার্ড, এক্সেল, স্লাইড, ডেটা, ছোট ভিডিও — প্রতিটি ১.৫ এমবি পর্যন্ত</span>
+        <span className="grid size-12 place-items-center rounded-2xl bg-m-yellow text-m-ink"><Upload className="size-6" aria-hidden /></span>
+        <span className="text-base font-bold text-m-ink">{busy ? "পড়া হচ্ছে…" : "ফাইল এখানে ছেড়ে দিন, বা বেছে নিন"}</span>
+        <span className="text-sm text-m-ink/70">পিডিএফ, ওয়ার্ড, এক্সেল, স্লাইড, ডেটা, ছোট ভিডিও — প্রতিটি ১.৫ এমবি পর্যন্ত</span>
       </label>
 
-      <form onSubmit={addLink} className="grid gap-2 rounded-2xl bg-text-primary p-4 ring-1 ring-white/12 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)_8rem_auto] sm:items-end">
+      <form onSubmit={addLink} className="grid gap-2 rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)_8rem_auto] sm:items-end shadow-m-tile">
         <label className="text-sm">
-          <span className="mb-1 block font-semibold text-white">বড় ভিডিও বা ফাইলের লিংক</span>
-          <input value={link.title} onChange={(e) => setLink((l) => ({ ...l, title: e.target.value }))} placeholder="যেমন: সপ্তাহ ৩-এর ক্লাস" className="h-11 w-full rounded-lg border border-white/15 bg-black px-3 text-[15px] focus-visible:border-signal-orange focus-visible:outline-none" />
+          <span className="mb-1 block font-semibold text-m-ink">বড় ভিডিও বা ফাইলের লিংক</span>
+          <input value={link.title} onChange={(e) => setLink((l) => ({ ...l, title: e.target.value }))} placeholder="যেমন: সপ্তাহ ৩-এর ক্লাস" className="h-11 w-full rounded-lg border border-m-ink/13 bg-m-canvas px-3 text-[15px] focus-visible:border-m-blue focus-visible:outline-none" />
         </label>
         <label className="text-sm">
           <span className="sr-only">লিংক</span>
-          <input value={link.url} onChange={(e) => setLink((l) => ({ ...l, url: e.target.value }))} type="url" placeholder="https://youtu.be/…" className="h-11 w-full rounded-lg border border-white/15 bg-black px-3 text-[15px] focus-visible:border-signal-orange focus-visible:outline-none" />
+          <input value={link.url} onChange={(e) => setLink((l) => ({ ...l, url: e.target.value }))} type="url" placeholder="https://youtu.be/…" className="h-11 w-full rounded-lg border border-m-ink/13 bg-m-canvas px-3 text-[15px] focus-visible:border-m-blue focus-visible:outline-none" />
         </label>
         <label className="text-sm">
           <span className="sr-only">ধরন</span>
@@ -141,18 +141,18 @@ export function MaterialsDesk({ course }: { course: Course }) {
       </form>
 
       <section aria-labelledby="mat-list">
-        <h3 id="mat-list" className="mb-2 text-sm font-semibold text-white/80">সব উপকরণ · <Num value={added.length + course.materials.length} /></h3>
-        <ul className="divide-y divide-white/10 overflow-hidden rounded-2xl bg-text-primary ring-1 ring-white/12">
+        <h3 id="mat-list" className="mb-2 text-sm font-semibold text-m-ink/80">সব উপকরণ · <Num value={added.length + course.materials.length} /></h3>
+        <ul className="divide-y divide-m-ink/9 overflow-hidden rounded-2xl bg-m-card ring-1 ring-m-ink/10 shadow-m-tile">
           {[...added, ...course.materials].map((m, i) => {
             const Icon = MATERIAL_ICON[m.kind];
             const mine = Boolean(m.at);
             const isLink = m.href && !m.href.startsWith("data:");
             return (
               <li key={`${m.title}-${m.at ?? i}`} className="flex items-center gap-3 px-4 py-3">
-                <Icon className="size-5 shrink-0 text-signal-orange" aria-hidden />
+                <Icon className="size-5 shrink-0 text-m-blue" aria-hidden />
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-[15px] text-white">{m.title}</span>
-                  <span className="text-xs text-white/65">{MATERIAL_KINDS[m.kind]} · {m.size}{!mine && " · কোর্সের সাথে"}</span>
+                  <span className="block truncate text-[15px] text-m-ink">{m.title}</span>
+                  <span className="text-xs text-m-ink/65">{MATERIAL_KINDS[m.kind]} · {m.size}{!mine && " · কোর্সের সাথে"}</span>
                 </span>
                 {m.href && (
                   <a

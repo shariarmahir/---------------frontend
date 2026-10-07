@@ -74,7 +74,7 @@ function Spark({ values, on }: { values: number[]; on: boolean }) {
         strokeWidth={2}
         strokeLinecap="round"
         strokeLinejoin="round"
-        className={on ? "stroke-text-primary" : "stroke-signal-orange"}
+        className={on ? "stroke-m-ink" : "stroke-m-yellow"}
         initial={reduce ? false : { pathLength: 0 }}
         animate={{ pathLength: 1 }}
         transition={{ duration: 1.1, ease: EASE }}
@@ -88,7 +88,7 @@ function Delta({ pct, on }: { pct: number | null; on: boolean }) {
   const up = pct >= 0;
   const Icon = up ? TrendingUp : TrendingDown;
   return (
-    <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold", on ? "bg-text-primary/15" : up ? "bg-signal-orange/15 text-signal-orange" : "bg-white/10 text-white/80")}>
+    <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold", on ? "bg-m-card/15" : up ? "bg-m-yellow/15 text-m-blue" : "bg-m-ink/6 text-m-ink/80")}>
       <Icon className="size-3.5" aria-hidden />
       {up ? "+" : "−"}
       <Num value={Math.abs(pct)} />%
@@ -100,9 +100,9 @@ function Delta({ pct, on }: { pct: number | null; on: boolean }) {
 function Meter({ share, muted }: { share: number; muted?: boolean }) {
   const reduce = useReducedMotion();
   return (
-    <span className="block h-1.5 overflow-hidden rounded-full bg-white/10">
+    <span className="block h-1.5 overflow-hidden rounded-full bg-m-ink/6">
       <motion.span
-        className={cn("block h-full origin-left rounded-full", muted ? "bg-white/35" : "bg-signal-orange")}
+        className={cn("block h-full origin-left rounded-full", muted ? "bg-m-ink/19" : "bg-m-yellow")}
         style={{ width: `${Math.max(share * 100, share > 0 ? 2 : 0)}%` }}
         initial={reduce ? false : { scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
@@ -141,10 +141,10 @@ function TrendChart({ current, previous, metric, range }: { current: Bucket[]; p
                 const row = active && payload?.[0]?.payload;
                 if (!row) return null;
                 return (
-                  <div className="rounded-xl bg-black px-3 py-2 text-xs text-white shadow-xl ring-1 ring-white/15">
+                  <div className="rounded-xl bg-m-canvas px-3 py-2 text-xs text-m-ink shadow-xl ring-1 ring-m-ink/13">
                     <p className="font-bold">{row.label}</p>
-                    <p className="mt-1 flex items-center gap-2"><span className="size-2.5 rounded-sm bg-signal-orange" />{metric.label}: <span className="font-bold tabular-nums">{fmt(row.now)}</span></p>
-                    <p className="flex items-center gap-2 text-white/70"><span className="size-2.5 rounded-sm bg-white/30" />{range.was}: <span className="tabular-nums">{fmt(row.was)}</span></p>
+                    <p className="mt-1 flex items-center gap-2"><span className="size-2.5 rounded-sm bg-m-yellow" />{metric.label}: <span className="font-bold tabular-nums">{fmt(row.now)}</span></p>
+                    <p className="flex items-center gap-2 text-m-ink/70"><span className="size-2.5 rounded-sm bg-m-ink/17" />{range.was}: <span className="tabular-nums">{fmt(row.was)}</span></p>
                   </div>
                 );
               }}
@@ -163,7 +163,7 @@ function TrendChart({ current, previous, metric, range }: { current: Bucket[]; p
   );
 }
 
-const card = "story-reveal rounded-2xl bg-text-primary p-4 ring-1 ring-white/12 sm:p-6";
+const card = "story-reveal rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 sm:p-6 shadow-m-tile";
 
 /**
  * Shop numbers on the dashboard: revenue, earnings, sales and orders for a
@@ -190,12 +190,12 @@ export function BusinessOverview() {
     <section aria-labelledby="biz-heading" className="space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 id="biz-heading" className="text-lg font-bold text-white">ব্যবসার হিসাব</h2>
-          <p className="text-sm text-white/70">{r.was}-এর সঙ্গে তুলনা</p>
+          <h2 id="biz-heading" className="text-lg font-bold text-m-ink">ব্যবসার হিসাব</h2>
+          <p className="text-sm text-m-ink/70">{r.was}-এর সঙ্গে তুলনা</p>
         </div>
-        <div role="group" aria-label="সময়কাল" className="flex rounded-xl bg-white/10 p-1">
+        <div role="group" aria-label="সময়কাল" className="flex rounded-xl bg-m-ink/6 p-1">
           {RANGES.map((x) => (
-            <button key={x.key} type="button" aria-pressed={range === x.key} onClick={() => setRange(x.key)} className={cn("min-h-9 rounded-lg px-3.5 text-sm font-semibold transition-colors", range === x.key ? "bg-signal-orange text-text-primary" : "text-white/80 hover:text-white")}>
+            <button key={x.key} type="button" aria-pressed={range === x.key} onClick={() => setRange(x.key)} className={cn("min-h-9 rounded-lg px-3.5 text-sm font-semibold transition-colors", range === x.key ? "bg-m-yellow text-m-ink" : "text-m-ink/80 hover:text-m-ink")}>
               {x.label}
             </button>
           ))}
@@ -215,7 +215,7 @@ export function BusinessOverview() {
               style={{ animationDelay: `${i * 60}ms` }}
               className={cn(
                 "story-reveal group rounded-2xl p-4 text-left ring-1 transition-[translate,box-shadow,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
-                on ? "bg-signal-orange text-text-primary ring-signal-orange shadow-[0_22px_40px_-24px_var(--color-signal-orange)]" : "bg-text-primary text-white ring-white/12 hover:shadow-[0_22px_40px_-24px_var(--color-signal-orange)]",
+                on ? "bg-m-yellow text-m-ink ring-m-blue shadow-[0_22px_40px_-24px_var(--color-signal-orange)]" : "bg-m-card text-m-ink ring-m-ink/10 hover:shadow-[0_22px_40px_-24px_var(--color-signal-orange)]",
               )}
             >
               <span className="flex items-center justify-between gap-2">
@@ -235,12 +235,12 @@ export function BusinessOverview() {
       <div className={card}>
         <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h3 className="text-base font-bold text-signal-orange">{m.label} — {r.label}</h3>
-            <p className="mt-0.5 text-xs text-white/65">{m.hint}</p>
+            <h3 className="text-base font-bold text-m-blue">{m.label} — {r.label}</h3>
+            <p className="mt-0.5 text-xs text-m-ink/65">{m.hint}</p>
           </div>
-          <ul className="flex items-center gap-4 text-xs text-white/75">
-            <li className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-signal-orange" aria-hidden />এই সময়</li>
-            <li className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-white/25" aria-hidden />{r.was}</li>
+          <ul className="flex items-center gap-4 text-xs text-m-ink/75">
+            <li className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-m-yellow" aria-hidden />এই সময়</li>
+            <li className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-m-ink/14" aria-hidden />{r.was}</li>
           </ul>
         </div>
         <TrendChart current={current} previous={previous} metric={m} range={r} />
@@ -248,14 +248,14 @@ export function BusinessOverview() {
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className={card}>
-          <h3 className="mb-4 flex items-baseline justify-between text-base font-bold text-signal-orange">
-            অর্ডারের অবস্থা <span className="text-xs font-semibold text-white/65">মোট <Num value={b.count} /></span>
+          <h3 className="mb-4 flex items-baseline justify-between text-base font-bold text-m-blue">
+            অর্ডারের অবস্থা <span className="text-xs font-semibold text-m-ink/65">মোট <Num value={b.count} /></span>
           </h3>
           <ul className="space-y-3.5">
             {STATUS.map(({ key, label, Icon }) => (
               <li key={key} className="space-y-1.5">
-                <span className="flex items-center justify-between text-sm text-white">
-                  <span className="flex items-center gap-2"><Icon className={cn("size-4", key === "cancelled" ? "text-white/60" : "text-signal-orange")} aria-hidden />{label}</span>
+                <span className="flex items-center justify-between text-sm text-m-ink">
+                  <span className="flex items-center gap-2"><Icon className={cn("size-4", key === "cancelled" ? "text-m-ink/60" : "text-m-blue")} aria-hidden />{label}</span>
                   <span className="font-bold tabular-nums"><Num value={b.status[key]} /></span>
                 </span>
                 <Meter share={b.count ? b.status[key] / b.count : 0} muted={key === "cancelled"} />
@@ -264,42 +264,42 @@ export function BusinessOverview() {
           </ul>
         </div>
         <div className={card}>
-          <h3 className="mb-4 text-base font-bold text-signal-orange">রাজস্ব কোথা থেকে</h3>
+          <h3 className="mb-4 text-base font-bold text-m-blue">রাজস্ব কোথা থেকে</h3>
           <ul className="space-y-3.5">
             {(Object.keys(SOURCE) as OrderSource[]).map((k) => {
               const share = sourceTotal ? b.source[k] / sourceTotal : 0;
               return (
                 <li key={k} className="space-y-1.5">
-                  <span className="flex items-center justify-between gap-3 text-sm text-white">
+                  <span className="flex items-center justify-between gap-3 text-sm text-m-ink">
                     {SOURCE[k]}
-                    <span className="text-right"><span className="font-bold"><Taka amount={b.source[k]} /></span> <span className="text-xs text-white/60">(<Num value={Math.round(share * 100)} />%)</span></span>
+                    <span className="text-right"><span className="font-bold"><Taka amount={b.source[k]} /></span> <span className="text-xs text-m-ink/60">(<Num value={Math.round(share * 100)} />%)</span></span>
                   </span>
                   <Meter share={share} />
                 </li>
               );
             })}
           </ul>
-          <p className="mt-4 text-xs text-white/60">রাজস্ব থেকে ৫% প্ল্যাটফর্ম ফি কাটে — এই সময়ে <Taka amount={now.revenue - now.earnings} />।</p>
+          <p className="mt-4 text-xs text-m-ink/60">রাজস্ব থেকে ৫% প্ল্যাটফর্ম ফি কাটে — এই সময়ে <Taka amount={now.revenue - now.earnings} />।</p>
         </div>
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
         <div className={card}>
-          <h3 className="mb-4 text-base font-bold text-signal-orange">সেরা বিক্রি</h3>
+          <h3 className="mb-4 text-base font-bold text-m-blue">সেরা বিক্রি</h3>
           {b.top.length === 0 ? (
-            <p className="text-sm text-white/65">এই সময়ে কোনো বিক্রি নেই।</p>
+            <p className="text-sm text-m-ink/65">এই সময়ে কোনো বিক্রি নেই।</p>
           ) : (
             <ol className="space-y-3.5">
               {b.top.slice(0, 5).map((t, i) => (
                 <li key={t.item} className="flex items-center gap-3">
-                  <span className={cn("flex size-7 shrink-0 items-center justify-center rounded-lg text-xs font-bold", i === 0 ? "bg-signal-orange text-text-primary" : "bg-white/10 text-white")}><Num value={i + 1} /></span>
+                  <span className={cn("flex size-7 shrink-0 items-center justify-center rounded-lg text-xs font-bold", i === 0 ? "bg-m-yellow text-m-ink" : "bg-m-ink/6 text-m-ink")}><Num value={i + 1} /></span>
                   <span className="min-w-0 flex-1 space-y-1.5">
                     <span className="flex items-baseline justify-between gap-2 text-sm">
-                      <span className="truncate font-semibold text-white">{t.item}</span>
-                      <span className="shrink-0 font-bold text-white"><Taka amount={t.revenue} /></span>
+                      <span className="truncate font-semibold text-m-ink">{t.item}</span>
+                      <span className="shrink-0 font-bold text-m-ink"><Taka amount={t.revenue} /></span>
                     </span>
                     <Meter share={t.revenue / topMax} />
-                    <span className="block text-xs text-white/60"><Num value={t.units} /> একক · {SOURCE[t.source]}</span>
+                    <span className="block text-xs text-m-ink/60"><Num value={t.units} /> একক · {SOURCE[t.source]}</span>
                   </span>
                 </li>
               ))}
@@ -307,20 +307,20 @@ export function BusinessOverview() {
           )}
         </div>
         <div className={card}>
-          <h3 className="mb-2 text-base font-bold text-signal-orange">সাম্প্রতিক অর্ডার</h3>
-          <ul className="divide-y divide-white/10">
+          <h3 className="mb-2 text-base font-bold text-m-blue">সাম্প্রতিক অর্ডার</h3>
+          <ul className="divide-y divide-m-ink/9">
             {recent.map((o) => {
               const s = STATUS.find((x) => x.key === o.status)!;
               return (
                 <li key={o.id} className="flex items-center gap-3 py-3">
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-signal-orange"><s.Icon className="size-4" aria-hidden /></span>
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-m-ink/6 text-m-blue"><s.Icon className="size-4" aria-hidden /></span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-semibold text-white">{o.item}{o.qty > 1 && <> × <Num value={o.qty} /></>}</span>
-                    <span className="block truncate text-xs text-white/60">{o.id} · {getPerson(o.buyer)?.nameBn ?? o.buyer} · <Ago iso={o.at} /></span>
+                    <span className="block truncate text-sm font-semibold text-m-ink">{o.item}{o.qty > 1 && <> × <Num value={o.qty} /></>}</span>
+                    <span className="block truncate text-xs text-m-ink/60">{o.id} · {getPerson(o.buyer)?.nameBn ?? o.buyer} · <Ago iso={o.at} /></span>
                   </span>
                   <span className="shrink-0 text-right">
-                    <span className="block text-sm font-bold text-white"><Taka amount={o.gross} /></span>
-                    <span className={cn("mt-0.5 inline-block rounded-full px-2 text-[11px] font-semibold", o.status === "delivered" ? "bg-white/10 text-white/80" : o.status === "cancelled" ? "bg-white/10 text-white/55 " : "bg-signal-orange text-text-primary")}>{s.label}</span>
+                    <span className="block text-sm font-bold text-m-ink"><Taka amount={o.gross} /></span>
+                    <span className={cn("mt-0.5 inline-block rounded-full px-2 text-[11px] font-semibold", o.status === "delivered" ? "bg-m-ink/6 text-m-ink/80" : o.status === "cancelled" ? "bg-m-ink/6 text-m-ink/55 " : "bg-m-yellow text-m-ink")}>{s.label}</span>
                   </span>
                 </li>
               );

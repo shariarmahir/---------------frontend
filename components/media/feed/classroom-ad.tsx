@@ -88,23 +88,23 @@ export function ClassroomAd() {
       style={{ "--scene-ms": `${SCENE_MS}ms` } as React.CSSProperties}
       onPointerEnter={(e) => e.pointerType === "mouse" && setHover(true)}
       onPointerLeave={() => setHover(false)}
-      className="cb-root story-reveal overflow-hidden rounded-2xl bg-signal-orange p-4 text-text-primary sm:p-6"
+      className="cb-root story-reveal overflow-hidden rounded-2xl bg-m-yellow p-4 text-m-ink sm:p-6"
     >
       <div className="flex items-center justify-between gap-3">
-        <p className="inline-flex min-h-8 items-center gap-1.5 rounded-full bg-text-primary px-3 text-xs font-bold text-signal-orange">
+        <p className="inline-flex min-h-8 items-center gap-1.5 rounded-full bg-m-card px-3 text-xs font-bold text-m-blue">
           <GraduationCap className="size-4" aria-hidden /> কাণ্ডারী-ল্যাব ক্লাসরুম
         </p>
         <div className="flex items-center gap-1">
-          <span className="mr-1 text-xs font-bold text-text-primary/65">প্রচার</span>
+          <span className="mr-1 text-xs font-bold text-m-ink/65">প্রচার</span>
           <button
             type="button"
             onClick={() => setPlaying((p) => !p)}
             aria-label={playing ? "অ্যানিমেশন থামান" : "অ্যানিমেশন চালান"}
-            className="grid size-10 place-items-center rounded-full text-text-primary transition-colors hover:bg-text-primary/10 motion-reduce:hidden"
+            className="grid size-10 place-items-center rounded-full text-m-ink transition-colors hover:bg-m-card/10 motion-reduce:hidden"
           >
             {playing ? <Pause className="size-4.5" aria-hidden /> : <Play className="size-4.5" aria-hidden />}
           </button>
-          <button type="button" onClick={close} aria-label="প্রচারটি বন্ধ করুন" className="grid size-10 place-items-center rounded-full text-text-primary transition-colors hover:bg-text-primary/10">
+          <button type="button" onClick={close} aria-label="প্রচারটি বন্ধ করুন" className="grid size-10 place-items-center rounded-full text-m-ink transition-colors hover:bg-m-card/10">
             <X className="size-4.5" aria-hidden />
           </button>
         </div>
@@ -113,14 +113,14 @@ export function ClassroomAd() {
       <div className="mt-2 grid items-center gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] sm:gap-5">
         <div className="order-2 sm:order-1">
           <div key={`${scene}-${round}`} aria-live="off">
-            <p className="cb-text text-sm font-bold text-bd-green" style={{ "--d": 0 } as React.CSSProperties}>{s.tag}</p>
+            <p className="cb-text text-sm font-bold text-m-blue" style={{ "--d": 0 } as React.CSSProperties}>{s.tag}</p>
             <h3 className="cb-text mt-1 min-h-[2.6em] text-[1.6rem] leading-[1.3] font-bold text-balance sm:text-[1.9rem]" style={{ "--d": 60 } as React.CSSProperties}>{s.title}</h3>
-            <p className="cb-text mt-2 min-h-[4.9em] text-[15px] leading-relaxed text-text-primary/80" style={{ "--d": 140 } as React.CSSProperties}>{s.body}</p>
+            <p className="cb-text mt-2 min-h-[4.9em] text-[15px] leading-relaxed text-m-ink/80" style={{ "--d": 140 } as React.CSSProperties}>{s.body}</p>
           </div>
 
           <Link
             href="/media/classroom"
-            className="group mt-4 inline-flex h-12 items-center gap-2 rounded-2xl bg-text-primary px-5 text-[15px] font-bold text-white transition-[translate,background-color] duration-200 hover:-translate-y-0.5 hover:bg-black focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:ring-offset-2 focus-visible:ring-offset-signal-orange motion-reduce:hover:translate-y-0"
+            className="group mt-4 inline-flex h-12 items-center gap-2 rounded-2xl bg-m-card px-5 text-[15px] font-bold text-m-ink transition-[translate,background-color] duration-200 hover:-translate-y-0.5 hover:bg-m-canvas focus-visible:ring-2 focus-visible:ring-m-card focus-visible:ring-offset-2 focus-visible:ring-offset-signal-orange motion-reduce:hover:translate-y-0"
           >
             ক্লাসরুমে যোগ দিন
             <ArrowRight className="size-4.5 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden />
@@ -130,12 +130,12 @@ export function ClassroomAd() {
             {SCENES.map((x, i) => (
               <li key={x.tag} className="flex-1">
                 <button type="button" onClick={() => go(i)} aria-label={`ধাপ ${i + 1}: ${x.tag}`} aria-current={i === scene ? "step" : undefined} className="group flex h-6 w-full items-center">
-                  <span className="relative block h-1.5 w-full overflow-hidden rounded-full bg-text-primary/20 transition-[height] group-hover:h-2">
-                    {i < scene && <span className="absolute inset-0 rounded-full bg-text-primary" />}
+                  <span className="relative block h-1.5 w-full overflow-hidden rounded-full bg-m-card/20 transition-[height] group-hover:h-2">
+                    {i < scene && <span className="absolute inset-0 rounded-full bg-m-card" />}
                     {i === scene && (
                       <span
                         key={`${scene}-${round}`}
-                        className="cb-fill absolute inset-0 rounded-full bg-text-primary"
+                        className="cb-fill absolute inset-0 rounded-full bg-m-card"
                         onAnimationEnd={() => {
                           setScene((c) => (c + 1) % SCENES.length);
                           setRound((r) => r + 1);

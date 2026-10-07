@@ -67,7 +67,7 @@ export function AcademyMediaEditor({ dept, hasPhoto, hasLogo }: { dept: Departme
 
   return (
     <div className="relative">
-      <button type="button" aria-expanded={open} aria-controls={panelId} onClick={() => setOpen((o) => !o)} className={mediaButton({ variant: "quiet", size: "sm", className: "bg-black/50" })}>
+      <button type="button" aria-expanded={open} aria-controls={panelId} onClick={() => setOpen((o) => !o)} className={mediaButton({ variant: "quiet", size: "sm", className: "bg-white/75" })}>
         <Camera aria-hidden /> ছবি ও লোগো
       </button>
       <AnimatePresence>
@@ -78,16 +78,16 @@ export function AcademyMediaEditor({ dept, hasPhoto, hasLogo }: { dept: Departme
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.18 }}
-            className="absolute bottom-full left-0 z-20 mb-2 w-72 rounded-2xl bg-text-primary p-4 shadow-[0_24px_48px_-16px_rgb(0_0_0/0.95)] ring-1 ring-white/15 lg:right-0 lg:left-auto"
+            className="absolute bottom-full left-0 z-20 mb-2 w-72 rounded-2xl bg-m-card p-4 shadow-[0_24px_48px_-16px_rgb(16_24_40/0.29)] ring-1 ring-m-ink/13 lg:right-0 lg:left-auto"
           >
             <div className="flex items-center justify-between gap-2">
-              <p className="font-bold text-white">{dept.academy.name}</p>
-              <button type="button" onClick={() => setOpen(false)} className="grid size-8 place-items-center rounded-full text-white/75 hover:bg-white/10 hover:text-white">
+              <p className="font-bold text-m-ink">{dept.academy.name}</p>
+              <button type="button" onClick={() => setOpen(false)} className="grid size-8 place-items-center rounded-full text-m-ink/75 hover:bg-m-ink/6 hover:text-m-ink">
                 <X className="size-4.5" aria-hidden />
                 <span className="sr-only">বন্ধ করুন</span>
               </button>
             </div>
-            <p className="mt-1 text-xs leading-snug text-white/65">দলের ছবি হিরোর পেছনে বসে, লোগো নামের পাশে। এখন শুধু এই ব্রাউজারে থাকে।</p>
+            <p className="mt-1 text-xs leading-snug text-m-ink/65">দলের ছবি হিরোর পেছনে বসে, লোগো নামের পাশে। এখন শুধু এই ব্রাউজারে থাকে।</p>
             <div className="mt-4 space-y-3">
               <Slot label="দলের ছবি" hint="সবাই একসাথে, পাশাপাশি — চওড়া ছবি" has={hasPhoto} busy={busy === "photo"} onPick={(f) => pick("photo", f)} onClear={() => save((m) => ({ ...m, photo: undefined }))} />
               <Slot label="লোগো" hint="চারকোনা, সাদা বা স্বচ্ছ পটভূমি" has={hasLogo} busy={busy === "logo"} onPick={(f) => pick("logo", f)} onClear={() => save((m) => ({ ...m, logo: undefined }))} />
@@ -103,11 +103,11 @@ function Slot({ label, hint, has, busy, onPick, onClear }: { label: string; hint
   const input = useRef<HTMLInputElement>(null);
   return (
     <div className="flex items-center gap-2">
-      <button type="button" disabled={busy} onClick={() => input.current?.click()} className={cn("flex min-w-0 flex-1 items-center gap-2.5 rounded-xl px-3 py-2.5 text-left ring-1 transition-colors", has ? "bg-bd-green/25 ring-bd-green" : "bg-black/40 ring-white/15 hover:ring-signal-orange/60")}>
-        <ImageUp className="size-4.5 shrink-0 text-signal-orange" aria-hidden />
+      <button type="button" disabled={busy} onClick={() => input.current?.click()} className={cn("flex min-w-0 flex-1 items-center gap-2.5 rounded-xl px-3 py-2.5 text-left ring-1 transition-colors", has ? "bg-m-blue/13 ring-m-blue" : "bg-white/65 ring-m-ink/13 hover:ring-m-blue/60")}>
+        <ImageUp className="size-4.5 shrink-0 text-m-blue" aria-hidden />
         <span className="min-w-0">
-          <span className="block text-sm font-semibold text-white">{busy ? "বসানো হচ্ছে…" : has ? `${label} বদলান` : `${label} দিন`}</span>
-          <span className="block truncate text-[11px] text-white/60">{hint}</span>
+          <span className="block text-sm font-semibold text-m-ink">{busy ? "বসানো হচ্ছে…" : has ? `${label} বদলান` : `${label} দিন`}</span>
+          <span className="block truncate text-[11px] text-m-ink/60">{hint}</span>
         </span>
       </button>
       {has && (

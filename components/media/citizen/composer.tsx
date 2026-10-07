@@ -125,13 +125,13 @@ export function CrimeComposer({ open, onOpenChange, me }: { open: boolean; onOpe
     else toast.error("ব্রাউজারে জায়গা শেষ", { description: "পোস্টটি এই ভিজিটে আছে, কিন্তু পরে থাকবে না। ছবি কমিয়ে আবার দিন।" });
   }
 
-  const label = "mb-1.5 block text-sm font-semibold text-white";
+  const label = "mb-1.5 block text-sm font-semibold text-m-ink";
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[94dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-2xl">
         <DialogHeader>
           <PixelMark tone="dark" />
-          <DialogTitle className="text-xl font-bold text-white">ঘটনা পোস্ট করুন</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-m-ink">ঘটনা পোস্ট করুন</DialogTitle>
           <DialogDescription>কী দেখেছেন, কোথায়, কখন — প্রমাণসহ। মানুষ নয়, ঘটনাকে দেখান।</DialogDescription>
         </DialogHeader>
 
@@ -146,7 +146,7 @@ export function CrimeComposer({ open, onOpenChange, me }: { open: boolean; onOpe
                 </label>
               ))}
             </div>
-            <p className="mt-1.5 text-xs text-white/65">{CRIME_KINDS[kind].hint}</p>
+            <p className="mt-1.5 text-xs text-m-ink/65">{CRIME_KINDS[kind].hint}</p>
           </fieldset>
 
           <label className="block">
@@ -170,7 +170,7 @@ export function CrimeComposer({ open, onOpenChange, me }: { open: boolean; onOpe
             <Textarea rows={4} value={body} onChange={(e) => setBody(e.target.value)} placeholder="সময়, কী দেখেছেন, কতবার ঘটে, কারা ক্ষতিগ্রস্ত — অনুমান নয়, যা দেখেছেন" />
           </label>
           {issues.length > 0 && (
-            <p role="alert" className="live-in flex gap-2 rounded-xl bg-national-crimson px-3 py-2 text-sm font-semibold text-white">
+            <p role="alert" className="live-in flex gap-2 rounded-xl bg-m-red px-3 py-2 text-sm font-semibold text-m-on">
               <ShieldAlert className="mt-0.5 size-4 shrink-0" aria-hidden />
               {issues.map((i) => ISSUE_BN[i]).join(", ")} সরান — কারো ব্যক্তিগত তথ্য পোস্টে দেওয়া যায় না।
             </p>
@@ -180,7 +180,7 @@ export function CrimeComposer({ open, onOpenChange, me }: { open: boolean; onOpe
             <span className={label}>ছবি ও ভিডিও (সর্বোচ্চ ৪টি)</span>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
               {media.map((m, i) => (
-                <div key={i} className="live-in relative aspect-square overflow-hidden rounded-xl bg-black ring-1 ring-white/12">
+                <div key={i} className="live-in relative aspect-square overflow-hidden rounded-xl bg-m-canvas ring-1 ring-m-ink/10">
                   {m.kind === "video" ? (
                     <video src={m.src} muted playsInline className="size-full object-cover" />
                   ) : (
@@ -190,11 +190,11 @@ export function CrimeComposer({ open, onOpenChange, me }: { open: boolean; onOpe
                   )}
                   <div className="absolute top-1 right-1 flex gap-1">
                     {m.kind === "image" && m.src !== m.original && (
-                      <button type="button" onClick={() => setMedia((all) => all.map((x, k) => (k === i ? { ...x, src: x.original } : x)))} className="flex size-7 items-center justify-center rounded-lg bg-black/70 text-white" aria-label="ঢাকা সরান">
+                      <button type="button" onClick={() => setMedia((all) => all.map((x, k) => (k === i ? { ...x, src: x.original } : x)))} className="flex size-7 items-center justify-center rounded-lg bg-white/90 text-m-ink" aria-label="ঢাকা সরান">
                         <Undo2 className="size-4" aria-hidden />
                       </button>
                     )}
-                    <button type="button" onClick={() => setMedia((all) => all.filter((_, k) => k !== i))} className="flex size-7 items-center justify-center rounded-lg bg-black/70 text-white" aria-label="সরান">
+                    <button type="button" onClick={() => setMedia((all) => all.filter((_, k) => k !== i))} className="flex size-7 items-center justify-center rounded-lg bg-white/90 text-m-ink" aria-label="সরান">
                       <X className="size-4" aria-hidden />
                     </button>
                   </div>
@@ -202,35 +202,35 @@ export function CrimeComposer({ open, onOpenChange, me }: { open: boolean; onOpe
               ))}
               {media.length < 4 && (
                 <>
-                  <label className="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl bg-signal-orange text-sm font-bold text-text-primary transition-[scale] duration-200 active:scale-95 has-focus-visible:ring-2 has-focus-visible:ring-white">
+                  <label className="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl bg-m-yellow text-sm font-bold text-m-ink transition-[scale] duration-200 active:scale-95 has-focus-visible:ring-2 has-focus-visible:ring-white">
                     <input type="file" accept="image/*,video/*" capture="environment" className="sr-only" onChange={add} disabled={busy} />
                     <Camera className="size-6" aria-hidden /> তুলুন
                   </label>
-                  <label className="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl text-sm font-bold text-white ring-1 ring-white/20 transition-[background-color,scale] duration-200 hover:bg-white/10 active:scale-95 has-focus-visible:ring-2 has-focus-visible:ring-signal-orange">
+                  <label className="flex aspect-square cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl text-sm font-bold text-m-ink ring-1 ring-m-ink/17 transition-[background-color,scale] duration-200 hover:bg-m-ink/6 active:scale-95 has-focus-visible:ring-2 has-focus-visible:ring-m-blue">
                     <input type="file" accept="image/*,video/*" multiple className="sr-only" onChange={add} disabled={busy} />
                     <ImagePlus className="size-6" aria-hidden /> গ্যালারি
                   </label>
                 </>
               )}
             </div>
-            <p className="mt-2 text-xs text-white/60">{busy ? "ছবি ঠিক করা হচ্ছে…" : "মুখ বা নম্বরপ্লেট ঢাকতে ছবির সেই জায়গায় চাপুন। ভিডিও সর্বোচ্চ ১.৫ MB।"}</p>
+            <p className="mt-2 text-xs text-m-ink/60">{busy ? "ছবি ঠিক করা হচ্ছে…" : "মুখ বা নম্বরপ্লেট ঢাকতে ছবির সেই জায়গায় চাপুন। ভিডিও সর্বোচ্চ ১.৫ MB।"}</p>
           </div>
 
-          <div className="grid gap-2 text-sm text-white/85 sm:grid-cols-3">
-            <label className="flex items-center gap-2"><input type="checkbox" checked={anonymous} onChange={(e) => setAnonymous(e.target.checked)} className="size-4 accent-signal-orange" /> নাম গোপন রাখুন</label>
-            <label className="flex items-center gap-2"><input type="checkbox" checked={sensitive} onChange={(e) => setSensitive(e.target.checked)} className="size-4 accent-signal-orange" /> <EyeOff className="size-4" aria-hidden /> সংবেদনশীল ছবি</label>
-            <label className="flex items-center gap-2"><input type="checkbox" checked={reported} onChange={(e) => setReported(e.target.checked)} className="size-4 accent-signal-orange" /> <Num value={line.tel} />-এ জানিয়েছি</label>
+          <div className="grid gap-2 text-sm text-m-ink/85 sm:grid-cols-3">
+            <label className="flex items-center gap-2"><input type="checkbox" checked={anonymous} onChange={(e) => setAnonymous(e.target.checked)} className="size-4 accent-m-blue" /> নাম গোপন রাখুন</label>
+            <label className="flex items-center gap-2"><input type="checkbox" checked={sensitive} onChange={(e) => setSensitive(e.target.checked)} className="size-4 accent-m-blue" /> <EyeOff className="size-4" aria-hidden /> সংবেদনশীল ছবি</label>
+            <label className="flex items-center gap-2"><input type="checkbox" checked={reported} onChange={(e) => setReported(e.target.checked)} className="size-4 accent-m-blue" /> <Num value={line.tel} />-এ জানিয়েছি</label>
           </div>
 
-          <fieldset className="space-y-2 rounded-2xl bg-black/40 p-4 ring-1 ring-white/10">
+          <fieldset className="space-y-2 rounded-2xl bg-white/65 p-4 ring-1 ring-m-ink/9">
             <legend className="sr-only">অঙ্গীকার</legend>
             {PLEDGES.map((p, i) => (
-              <label key={p} className="flex items-start gap-2 text-sm text-white/85">
-                <input type="checkbox" checked={pledged[i]} onChange={(e) => setPledged((all) => all.map((v, k) => (k === i ? e.target.checked : v)))} className="mt-0.5 size-4 shrink-0 accent-signal-orange" />
+              <label key={p} className="flex items-start gap-2 text-sm text-m-ink/85">
+                <input type="checkbox" checked={pledged[i]} onChange={(e) => setPledged((all) => all.map((v, k) => (k === i ? e.target.checked : v)))} className="mt-0.5 size-4 shrink-0 accent-m-blue" />
                 {p}
               </label>
             ))}
-            {tried && !pledged.every(Boolean) && <p className="text-xs font-semibold text-crimson-bright">পোস্ট করতে তিনটিতেই টিক দিন।</p>}
+            {tried && !pledged.every(Boolean) && <p className="text-xs font-semibold text-m-red">পোস্ট করতে তিনটিতেই টিক দিন।</p>}
           </fieldset>
 
           <button type="submit" disabled={busy} className={mediaButton({ variant: "primary", size: "lg", className: cn("w-full", !ready && "opacity-80") })}>

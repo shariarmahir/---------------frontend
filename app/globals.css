@@ -68,6 +68,38 @@
   /* গবেষণাকোষ reading surface: the brand off-white (CLAUDE.md §4.1). */
   --color-paper: #fafaf8;
 
+  /* শিক্ষিতদের মিডিয়া (owner's palette, 2026-10-07, from the reference
+     card): Azure Mist ground, white cards, Amber Flame #FFB423 for buttons
+     and highlights, Persian Blue #013FD0 for headings, links and the bold
+     bands, near-black text, red only for risk, green only for yes. Used
+     only under /media. `m-canvas` is the white surface (cards, wells,
+     inputs); `m-ground` is the page under them. Contrast: ink on white
+     18:1, blue on white 8.1:1, blue on mist 7.6:1, white on blue 8.1:1,
+     ink on amber 10:1, red 5.3:1, green 5.0:1. */
+  --color-m-canvas: #ffffff;
+  --color-m-ground: #eff8f7;
+  --color-m-mist: #e2f1ef;
+  --color-m-ink: #0b1020;
+  --color-m-on: #ffffff;
+  --color-m-card: #ffffff;
+  --color-m-yellow: #ffb423;
+  --color-m-amber-soft: #fff1d4;
+  --color-m-gold: #8f5600;
+  --color-m-blue: #013fd0;
+  --color-m-blue-deep: #0030a3;
+  --color-m-blue-night: #001f6b;
+  --color-m-blue-soft: #e6edfc;
+  --color-m-red: #d92d20;
+  --color-m-red-soft: #fde8e6;
+  --color-m-green: #12805c;
+  --color-m-green-soft: #ddf4e9;
+  /* Shadows are cast in a deep blue, not grey, so white cards sit on the
+     mist the way paper sits on a lit desk: a tight contact shadow and a
+     wide soft one. */
+  --shadow-m-tile: 0 1px 2px rgb(0 31 107 / 0.06), 0 8px 22px -12px rgb(0 31 107 / 0.22);
+  --shadow-m-lift: 0 2px 4px rgb(0 31 107 / 0.06), 0 22px 40px -18px rgb(0 31 107 / 0.3);
+  --shadow-m-ink: 0 1px 2px rgb(0 31 107 / 0.08), 0 4px 12px -5px rgb(0 31 107 / 0.2);
+
   /* চলো বাংলাদেশ গড়ি — command-centre palette (Prompt V3 §12). Series
      colours are the dataviz-validated order for the cream surface. */
   --color-gori-deep: var(--gori-deep);
@@ -1657,80 +1689,185 @@
 }
 
 /*
- * শিক্ষিতদের মিডিয়া sits on the home page's black ground. The shared shadcn
- * pieces are white for the rest of the site, so they are re-toned here
- * rather than forked. Unlayered, so these win over the utility layer; the
- * `body:has()` prefix also reaches dialogs and sheets portalled out of the
- * shell.
+ * শিক্ষিতদের মিডিয়া, light (owner's palette, 2026-10-07): a white ground,
+ * black text, yellow buttons and cards, #185ADB blue as the second colour,
+ * red only for risk, green only for yes. The shared shadcn pieces are
+ * re-toned here rather than forked. Unlayered, so these win over the
+ * utility layer; the `body:has()` prefix also reaches dialogs and sheets
+ * portalled out of the shell. The brand variables are pointed at the media
+ * palette too, for the art and glows that read them with var().
  */
 .media-shell,
 body:has(.media-shell) :is([data-slot="dialog-content"], [data-slot="sheet-content"]) {
-  color-scheme: dark;
+  color-scheme: light;
+}
+body:has(.media-shell) {
+  --color-signal-orange: var(--color-m-yellow);
+  --color-bd-green: var(--color-m-blue);
+  --color-bd-green-dark: var(--color-m-blue-deep);
+  --color-national-crimson: var(--color-m-red);
+  --color-crimson-bright: var(--color-m-red);
+  --color-bdgreen-500: var(--color-m-green);
+  --color-bdorange-600: var(--color-m-red);
+  --color-text-primary: var(--color-m-ink);
+  background-color: var(--color-m-ground);
+}
+
+/* Headings in the reference card's face: Poppins for Latin, its Bangla
+   sibling Hind Siliguri (same foundry) for Bangla. Body stays Noto Sans
+   Bengali for long reading. */
+.media-shell :is(h1, h2, h3),
+.media-shell .font-display-m {
+  font-family: var(--font-m-poppins), var(--font-m-hind), var(--font-bengali), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.005em;
 }
 body:has(.media-shell) :is([data-slot="input"], [data-slot="textarea"], input[data-slot="form-control"], textarea[data-slot="form-control"], [data-slot="select-trigger"]) {
-  border-color: rgb(255 255 255 / 0.15);
-  background-color: var(--color-black);
-  color: var(--color-white);
-  box-shadow: none;
+  border-color: rgb(11 11 12 / 0.16);
+  background-color: var(--color-m-canvas);
+  color: var(--color-m-ink);
+  box-shadow: 0 1px 2px rgb(16 24 40 / 0.05);
 }
 body:has(.media-shell) :is([data-slot="input"], [data-slot="textarea"], input[data-slot="form-control"], textarea[data-slot="form-control"])::placeholder {
-  color: rgb(255 255 255 / 0.5);
+  color: rgb(11 11 12 / 0.45);
 }
 body:has(.media-shell) :is([data-slot="input"], [data-slot="textarea"], input[data-slot="form-control"], textarea[data-slot="form-control"]):hover {
-  border-color: rgb(255 255 255 / 0.3);
+  border-color: rgb(11 11 12 / 0.3);
 }
 body:has(.media-shell) :is([data-slot="input"], [data-slot="textarea"], input[data-slot="form-control"], textarea[data-slot="form-control"]):focus-visible {
-  border-color: var(--color-signal-orange);
-  box-shadow: 0 0 0 3px rgb(228 176 39 / 0.25);
+  border-color: var(--color-m-blue);
+  box-shadow: 0 0 0 3px rgb(1 63 208 / 0.2);
 }
 body:has(.media-shell) :is([data-slot="input"], [data-slot="textarea"], input[data-slot="form-control"], textarea[data-slot="form-control"])[aria-invalid="true"] {
-  border-color: var(--color-crimson-bright);
+  border-color: var(--color-m-red);
 }
 body:has(.media-shell) :is([data-slot="dialog-content"], [data-slot="sheet-content"]) {
-  border-color: rgb(255 255 255 / 0.12);
-  background-color: var(--color-text-primary);
-  color: var(--color-white);
+  border-color: rgb(11 11 12 / 0.1);
+  background-color: var(--color-m-canvas);
+  color: var(--color-m-ink);
+  box-shadow: 0 24px 60px -20px rgb(16 24 40 / 0.35);
 }
 body:has(.media-shell) [data-slot="dialog-content"] {
   animation: live-in 0.26s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 body:has(.media-shell) :is([data-slot="dialog-overlay"], [data-slot="sheet-overlay"]) {
-  background-color: rgb(0 0 0 / 0.7);
+  background-color: rgb(11 11 12 / 0.45);
 }
 body:has(.media-shell) :is([data-slot="dialog-description"], [data-slot="sheet-description"], [data-slot="form-description"]) {
-  color: rgb(255 255 255 / 0.7);
+  color: rgb(11 11 12 / 0.68);
 }
 body:has(.media-shell) :is([data-slot="form-label"], [data-slot="form-group-label"]) {
-  color: var(--color-white);
+  color: var(--color-m-ink);
 }
 body:has(.media-shell) [data-slot="form-message"] {
-  color: var(--color-crimson-bright);
+  color: var(--color-m-red);
 }
 body:has(.media-shell) [data-slot="tabs-list"] {
-  background-color: rgb(255 255 255 / 0.08);
-  color: rgb(255 255 255 / 0.75);
+  background-color: var(--color-m-blue-soft);
+  color: rgb(11 11 12 / 0.75);
 }
 body:has(.media-shell) [data-slot="tabs-trigger"][data-state="active"] {
-  background-color: var(--color-signal-orange);
-  color: var(--color-text-primary);
+  background-color: var(--color-m-yellow);
+  color: var(--color-m-ink);
 }
 body:has(.media-shell) [role="switch"][data-state="checked"] {
-  background-color: var(--color-signal-orange);
+  background-color: var(--color-m-blue);
 }
 body:has(.media-shell) [role="switch"][data-state="unchecked"],
 body:has(.media-shell) [data-slot="slider-track"] {
-  background-color: rgb(255 255 255 / 0.2);
+  background-color: rgb(11 11 12 / 0.16);
 }
 body:has(.media-shell) [role="switch"][data-state="checked"] [data-slot="switch-thumb"] {
-  background-color: var(--color-text-primary);
+  background-color: var(--color-m-canvas);
 }
 body:has(.media-shell) [data-slot="avatar-fallback"] {
-  background-color: rgb(255 255 255 / 0.15);
-  color: var(--color-white);
+  background-color: #e7e9ee;
+  color: var(--color-m-ink);
 }
 body:has(.media-shell) [data-slot="skeleton"] {
-  background-color: rgb(255 255 255 / 0.08);
-  background-image: linear-gradient(90deg, transparent 0%, rgb(255 255 255 / 0.08) 50%, transparent 100%);
+  background-color: rgb(11 11 12 / 0.06);
+  background-image: linear-gradient(90deg, transparent 0%, rgb(255 255 255 / 0.7) 50%, transparent 100%);
+}
+
+/*
+ * The media frame is white glass (owner, 2026-10-07): header, bars and
+ * footers are frosted panes over the Azure Mist ground, not painted bands.
+ * Two soft daylight washes at the top (amber from the left, Persian Blue
+ * from the right) give the glass something to frost over, the way a real
+ * pane picks up the room behind it.
+ */
+.media-shell {
+  background-image:
+    radial-gradient(60rem 26rem at 6% -8rem, rgb(255 180 35 / 0.16), transparent 70%),
+    radial-gradient(56rem 26rem at 96% -6rem, rgb(1 63 208 / 0.1), transparent 70%);
+  background-repeat: no-repeat;
+}
+
+/* A frosted pane along the top: bright lip, hairline under it, soft lift. */
+@utility frost-pane {
+  background-color: rgb(255 255 255 / 0.66);
+  background-image: linear-gradient(180deg, rgb(255 255 255 / 0.92) 0%, rgb(255 255 255 / 0.58) 100%);
+  -webkit-backdrop-filter: blur(22px) saturate(1.7);
+  backdrop-filter: blur(22px) saturate(1.7);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.95),
+    inset 0 -1px 0 rgb(11 11 12 / 0.07),
+    0 14px 34px -22px rgb(16 24 40 / 0.4);
+}
+
+/* The same pane docked at the bottom of a phone screen: its lift points up. */
+@utility frost-dock {
+  background-color: rgb(255 255 255 / 0.74);
+  background-image: linear-gradient(0deg, rgb(255 255 255 / 0.94) 0%, rgb(255 255 255 / 0.66) 100%);
+  -webkit-backdrop-filter: blur(22px) saturate(1.7);
+  backdrop-filter: blur(22px) saturate(1.7);
+  box-shadow:
+    inset 0 1px 0 rgb(11 11 12 / 0.07),
+    inset 0 2px 0 rgb(255 255 255 / 0.9),
+    0 -14px 34px -22px rgb(16 24 40 / 0.35);
+}
+
+/*
+ * A footer as a sheet of glass resting at the foot of the page: cool white
+ * frost, the two daylight washes caught in its corners, a bright top edge.
+ */
+@utility frost-foot {
+  background-color: #f7fbfb;
+  background-image:
+    radial-gradient(44rem 20rem at 0% 100%, rgb(255 180 35 / 0.24), transparent 70%),
+    radial-gradient(44rem 20rem at 100% 0%, rgb(1 63 208 / 0.13), transparent 70%),
+    linear-gradient(180deg, rgb(255 255 255 / 0.95), rgb(255 255 255 / 0.3));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 1),
+    inset 0 2px 0 rgb(11 11 12 / 0.05),
+    0 -18px 40px -30px rgb(16 24 40 / 0.3);
+}
+
+/* A small glass tile sitting on the panes: buttons, chips, the logo plate. */
+@utility frost-tile {
+  background-color: rgb(255 255 255 / 0.7);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 1),
+    0 0 0 1px rgb(11 11 12 / 0.08),
+    0 4px 12px -6px rgb(16 24 40 / 0.22);
+}
+
+/*
+ * A Persian Blue band, lit like a real surface: a slightly brighter blue
+ * where the light comes in (top left), the deep blue it falls off to, a
+ * warm amber bloom in one corner and a soft white sheen in the other.
+ */
+@utility blue-band {
+  background-color: #013fd0;
+  background-image:
+    radial-gradient(36rem 14rem at 100% 0%, rgb(255 180 35 / 0.24), transparent 62%),
+    radial-gradient(30rem 16rem at 0% 120%, rgb(255 255 255 / 0.1), transparent 60%),
+    linear-gradient(135deg, #0a4ff0 0%, #013fd0 45%, #0030a3 100%);
+  color: #ffffff;
+}
+
+/* The thin line under the top pane: blue into yellow. */
+@utility frost-seam {
+  background-image: linear-gradient(90deg, transparent 0%, rgb(1 63 208 / 0.6) 22%, rgb(255 180 35 / 0.9) 62%, transparent 100%);
 }
 
 /* Skeleton shimmer: a light band sweeping across a grey block. */

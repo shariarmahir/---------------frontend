@@ -77,7 +77,7 @@ export function PayPicker({
 }) {
   return (
     <fieldset>
-      <legend className="mb-2 text-sm font-semibold text-white">কীভাবে দেবেন</legend>
+      <legend className="mb-2 text-sm font-semibold text-m-ink">কীভাবে দেবেন</legend>
       <div className="grid grid-cols-2 gap-2">
         {payMethods.map(({ key, bn, Icon }) => {
           const short = key === "wallet" && available < due;
@@ -85,17 +85,17 @@ export function PayPicker({
             <label
               key={key}
               className={cn(
-                "flex min-h-12 items-center gap-2 rounded-xl border-2 px-3 text-sm font-semibold transition-colors has-focus-visible:ring-3 has-focus-visible:ring-signal-orange/30",
+                "flex min-h-12 items-center gap-2 rounded-xl border-2 px-3 text-sm font-semibold transition-colors has-focus-visible:ring-3 has-focus-visible:ring-m-blue/30",
                 key === "wallet" && "col-span-2",
-                short ? "cursor-not-allowed border-white/12 text-white/65" : "cursor-pointer",
-                !short && (value === key ? "border-signal-orange bg-white/10 text-signal-orange" : "border-white/12 text-white/80 hover:border-white/12"),
+                short ? "cursor-not-allowed border-m-ink/10 text-m-ink/65" : "cursor-pointer",
+                !short && (value === key ? "border-m-blue bg-m-ink/6 text-m-blue" : "border-m-ink/10 text-m-ink/80 hover:border-m-ink/10"),
               )}
             >
               <input type="radio" name={name} className="sr-only" checked={value === key} disabled={short} onChange={() => onChange(key)} />
               <Icon className="size-4.5 shrink-0" aria-hidden />
               <span className="min-w-0 flex-1">{bn}</span>
               {key === "wallet" && (
-                <span className={cn("text-xs font-medium", short ? "text-crimson-bright" : "text-white/65")}>
+                <span className={cn("text-xs font-medium", short ? "text-m-red" : "text-m-ink/65")}>
                   {short ? "ব্যালান্স কম · " : "ব্যালান্স "}
                   <Taka amount={available} />
                 </span>

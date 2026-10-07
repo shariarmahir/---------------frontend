@@ -29,11 +29,11 @@ function useUnseen() {
 export function NotificationBell() {
   const n = useUnseen();
   return (
-    <Link href="/media/notifications" className={mediaButton({ variant: "tile", size: "icon", className: "relative" })}>
+    <Link href="/media/notifications" className={mediaButton({ variant: "frame", size: "icon", className: "relative" })}>
       <Bell aria-hidden />
       <span className="sr-only">নোটিফিকেশন{n > 0 ? ` (${n})` : ""}</span>
       {n > 0 && (
-        <span className="absolute -top-0.5 -right-0.5 min-w-4.5 rounded-full bg-white px-1 text-[11px] leading-4.5 font-bold text-text-primary ring-2 ring-signal-orange" aria-hidden>
+        <span className="absolute -top-0.5 -right-0.5 min-w-4.5 rounded-full bg-m-ink px-1 text-[11px] leading-4.5 font-bold text-m-on ring-2 ring-white" aria-hidden>
           <Num value={n} />
         </span>
       )}
@@ -53,21 +53,21 @@ export function NotificationList() {
   }, [hydrated]);
 
   return (
-    <ul className="divide-y divide-white/12 overflow-hidden rounded-2xl border border-white/12 bg-text-primary">
+    <ul className="divide-y divide-m-ink/10 overflow-hidden rounded-2xl border border-m-ink/10 bg-m-card shadow-m-tile">
       {notices.map((n) => {
         const Icon = kindIcon[n.kind];
         const fresh = hydrated && !seen[n.id];
         return (
           <li key={n.id}>
-            <Link href={n.href} className={cn("flex gap-3 px-4 py-3.5 transition-colors hover:bg-white/10", fresh && "bg-white/10")}>
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-signal-orange">
+            <Link href={n.href} className={cn("flex gap-3 px-4 py-3.5 transition-colors hover:bg-m-ink/6", fresh && "bg-m-ink/6")}>
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-m-ink/6 text-m-blue">
                 <Icon className="size-4.5" aria-hidden />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block text-sm leading-relaxed text-white">{n.text}</span>
-                <span className="mt-0.5 block text-xs text-white/65"><Ago iso={n.at} /></span>
+                <span className="block text-sm leading-relaxed text-m-ink">{n.text}</span>
+                <span className="mt-0.5 block text-xs text-m-ink/65"><Ago iso={n.at} /></span>
               </span>
-              {fresh && <span className="mt-2 size-2.5 shrink-0 rounded-full bg-signal-orange" aria-label="নতুন" />}
+              {fresh && <span className="mt-2 size-2.5 shrink-0 rounded-full bg-m-yellow" aria-label="নতুন" />}
             </Link>
           </li>
         );

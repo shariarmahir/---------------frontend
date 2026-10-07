@@ -94,9 +94,9 @@ export function VideoFeed() {
 
   return (
     <div className="-mt-6">
-      <div className="sticky top-0 z-20 -mx-3 bg-black px-3 pt-4 pb-3 sm:-mx-6 sm:px-6">
+      <div className="frost-pane sticky top-0 z-20 -mx-3 px-3 pt-4 pb-3 sm:-mx-6 sm:px-6">
         <div className="flex items-center gap-3">
-          <h1 className="hidden shrink-0 text-xl font-bold text-white md:block">ক্লাস ভিডিও</h1>
+          <h1 className="hidden shrink-0 text-xl font-bold text-m-ink md:block">ক্লাস ভিডিও</h1>
           <form role="search" onSubmit={(e) => e.preventDefault()} className="mx-auto flex min-w-0 flex-1 md:max-w-xl">
             <label htmlFor="video-q" className="sr-only">ভিডিও খুঁজুন</label>
             <input
@@ -105,19 +105,19 @@ export function VideoFeed() {
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="ক্লাস, শিক্ষক বা কোর্স খুঁজুন"
-              className="h-10 min-w-0 flex-1 rounded-l-full border border-white/20 bg-black px-4 text-[15px] text-white placeholder:text-white/45 focus-visible:border-signal-orange focus-visible:outline-none"
+              className="h-10 min-w-0 flex-1 rounded-l-full border border-m-ink/17 bg-m-canvas px-4 text-[15px] text-m-ink placeholder:text-m-ink/45 focus-visible:border-m-blue focus-visible:outline-none"
             />
-            <button type="submit" className="grid h-10 w-14 shrink-0 place-items-center rounded-r-full border border-l-0 border-white/20 bg-white/10 text-white hover:bg-white/15 sm:w-16">
+            <button type="submit" className="grid h-10 w-14 shrink-0 place-items-center rounded-r-full border border-l-0 border-m-ink/17 bg-m-ink/6 text-m-ink hover:bg-m-ink/8 sm:w-16">
               <Search className="size-5" aria-hidden />
               <span className="sr-only">খুঁজুন</span>
             </button>
           </form>
           {hydrated && teaching && (
-            <button type="button" onClick={() => setUpload(true)} className="relative inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-white/10 px-3 text-sm font-semibold text-white transition-colors hover:bg-white/20 sm:px-4">
+            <button type="button" onClick={() => setUpload(true)} className="relative inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-m-ink/6 px-3 text-sm font-semibold text-m-ink transition-colors hover:bg-m-ink/11 sm:px-4">
               <Plus className="size-5" aria-hidden />
               <span className="hidden sm:inline">তৈরি করুন</span>
               <span className="sr-only sm:hidden">ভিডিও তুলুন</span>
-              {owes && <span className="absolute -top-0.5 -right-0.5 size-3 rounded-full bg-signal-orange ring-2 ring-black" aria-label="এ সপ্তাহের বিনামূল্যের ক্লাস বাকি" />}
+              {owes && <span className="absolute -top-0.5 -right-0.5 size-3 rounded-full bg-m-yellow ring-2 ring-white" aria-label="এ সপ্তাহের বিনামূল্যের ক্লাস বাকি" />}
             </button>
           )}
         </div>
@@ -130,7 +130,7 @@ export function VideoFeed() {
                 type="button"
                 aria-pressed={chip === c.id}
                 onClick={() => setChip(c.id)}
-                className={cn("h-8 shrink-0 rounded-lg px-3 text-sm font-semibold whitespace-nowrap transition-colors", chip === c.id ? "bg-white text-black" : "bg-white/10 text-white hover:bg-white/20")}
+                className={cn("h-8 shrink-0 rounded-lg px-3 text-sm font-semibold whitespace-nowrap transition-colors", chip === c.id ? "bg-white text-m-ink" : "bg-m-ink/6 text-m-ink hover:bg-m-ink/11")}
               >
                 {c.label}
               </button>
@@ -139,7 +139,7 @@ export function VideoFeed() {
           <button
             type="button"
             onClick={() => chips.current?.scrollBy({ left: 240 })}
-            className="absolute top-0 right-0 hidden size-8 place-items-center rounded-full bg-black text-white shadow-[-16px_0_16px_0_var(--color-black)] hover:bg-white/10 sm:grid"
+            className="absolute top-0 right-0 hidden size-8 place-items-center rounded-full bg-m-canvas text-m-ink shadow-[-16px_0_16px_0_var(--color-black)] hover:bg-m-ink/6 sm:grid"
           >
             <ChevronRight className="size-5" aria-hidden />
             <span className="sr-only">আরও বাছাই</span>
@@ -148,7 +148,7 @@ export function VideoFeed() {
       </div>
 
       {hydrated && owes && (
-        <div className="mt-3 flex flex-wrap items-center gap-3 rounded-xl bg-signal-orange px-4 py-3 text-text-primary">
+        <div className="mt-3 flex flex-wrap items-center gap-3 rounded-xl bg-m-yellow px-4 py-3 text-m-ink">
           <CalendarClock className="size-5 shrink-0" aria-hidden />
           <p className="min-w-0 flex-1 text-sm font-semibold">এ সপ্তাহের বিনামূল্যের ক্লাস এখনো দেননি — সপ্তাহ শেষ শুক্রবার রাতে। প্রতি সপ্তাহে একটা, সবার জন্য।</p>
           <button type="button" onClick={() => setUpload(true)} className={mediaButton({ variant: "tile", size: "sm" })}>
@@ -157,23 +157,23 @@ export function VideoFeed() {
         </div>
       )}
 
-      <p className="mt-3 mb-5 flex items-center gap-2 text-sm text-white/70">
-        <CheckCircle2 className="size-4 shrink-0 text-bdgreen-500" aria-hidden />
+      <p className="mt-3 mb-5 flex items-center gap-2 text-sm text-m-ink/70">
+        <CheckCircle2 className="size-4 shrink-0 text-m-green" aria-hidden />
         এ সপ্তাহে <Num value={done} />/<Num value={DUTY.length} /> জন শিক্ষক বিনামূল্যের ক্লাস দিয়েছেন — সবার জন্য, বিনা ফিতে
       </p>
 
       {classes.length === 0 && shorts.length === 0 ? (
         <div className="mx-auto mt-16 max-w-sm text-center">
-          <SearchX className="mx-auto size-10 text-white/50" aria-hidden />
-          <p className="mt-3 font-semibold text-white">কোনো ভিডিও মিলল না</p>
-          <p className="mt-1 text-sm text-white/65">অন্য শব্দে খুঁজুন, বা “সব” বাছুন।</p>
+          <SearchX className="mx-auto size-10 text-m-ink/50" aria-hidden />
+          <p className="mt-3 font-semibold text-m-ink">কোনো ভিডিও মিলল না</p>
+          <p className="mt-1 text-sm text-m-ink/65">অন্য শব্দে খুঁজুন, বা “সব” বাছুন।</p>
         </div>
       ) : (
         <>
           {grid(classes.slice(0, 8), 0)}
           {shorts.length > 0 && (
-            <section aria-labelledby="shorts" className="my-10 border-y border-white/12 py-8">
-              <h2 id="shorts" className="mb-5 flex items-center gap-2.5 text-xl font-bold text-white">
+            <section aria-labelledby="shorts" className="my-10 border-y border-m-ink/10 py-8">
+              <h2 id="shorts" className="mb-5 flex items-center gap-2.5 text-xl font-bold text-m-ink">
                 <ShortsMark /> ছোট ক্লাস
               </h2>
               <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6">
@@ -198,9 +198,9 @@ export function VideoFeed() {
 function ShortsMark() {
   const reduce = useReducedMotion();
   return (
-    <span className="grid size-7 place-items-center rounded-lg bg-signal-orange" aria-hidden>
+    <span className="grid size-7 place-items-center rounded-lg bg-m-yellow" aria-hidden>
       <motion.svg viewBox="0 0 12 12" className="size-3.5" animate={reduce ? undefined : { x: [0, 2, 0] }} transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}>
-        <path d="M2 1 L11 6 L2 11 Z" className="fill-text-primary" />
+        <path d="M2 1 L11 6 L2 11 Z" className="fill-m-ink" />
       </motion.svg>
     </span>
   );

@@ -49,59 +49,59 @@ export function TeamCard({ team }: { team: Team }) {
   }
 
   return (
-    <article id={team.id} className="story-reveal flex scroll-mt-28 flex-col overflow-hidden rounded-2xl border border-white/12 bg-text-primary transition-[translate,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-white/25 hover:shadow-[0_24px_44px_-26px_var(--color-signal-orange)] active:scale-[0.99] motion-reduce:transition-none motion-reduce:hover:translate-y-0">
-      <div className="relative aspect-16/7 bg-white/10">
+    <article id={team.id} className="story-reveal flex scroll-mt-28 flex-col overflow-hidden rounded-2xl border border-m-ink/10 bg-m-card transition-[translate,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-m-ink/21 hover:shadow-[0_24px_44px_-26px_var(--color-signal-orange)] active:scale-[0.99] motion-reduce:transition-none motion-reduce:hover:translate-y-0 shadow-m-tile">
+      <div className="relative aspect-16/7 bg-m-ink/6">
         {team.cover ? (
           <Image src={team.cover} alt="" fill sizes="(min-width: 1024px) 400px, 100vw" className="object-cover" />
         ) : esports ? (
-          <span className="absolute inset-0 flex items-center justify-between gap-3 bg-black px-5" aria-hidden>
-            <span className="text-2xl font-black tracking-tight text-signal-orange">{ESPORTS_GAMES[esports.game].name}</span>
-            <Gamepad2 className="size-12 text-white/15" />
+          <span className="absolute inset-0 flex items-center justify-between gap-3 bg-m-canvas px-5" aria-hidden>
+            <span className="text-2xl font-black tracking-tight text-m-blue">{ESPORTS_GAMES[esports.game].name}</span>
+            <Gamepad2 className="size-12 text-m-ink/15" />
           </span>
         ) : (
-          <span className="absolute inset-0 bg-bd-green" aria-hidden />
+          <span className="absolute inset-0 bg-m-blue-soft" aria-hidden />
         )}
-        <span className="absolute top-3 left-3 rounded-full bg-black/70 px-2.5 py-1 text-xs font-bold text-signal-orange">{teamKindBn[team.kind]}</span>
-        {esports && <span className="absolute top-3 right-3 rounded-full bg-signal-orange px-2.5 py-1 text-xs font-bold text-text-primary">{ESPORTS_GAMES[esports.game].platform}</span>}
+        <span className="absolute top-3 left-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-bold text-m-blue">{teamKindBn[team.kind]}</span>
+        {esports && <span className="absolute top-3 right-3 rounded-full bg-m-yellow px-2.5 py-1 text-xs font-bold text-m-ink">{ESPORTS_GAMES[esports.game].platform}</span>}
       </div>
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div>
-          <h3 className="text-base font-bold text-white"><Link href={`/media/together/team/${team.id}`} className="transition-colors hover:text-signal-orange">{team.name}</Link></h3>
-          <p className="mt-0.5 flex flex-wrap gap-x-3 text-xs text-white/65">
+          <h3 className="text-base font-bold text-m-ink"><Link href={`/media/together/team/${team.id}`} className="transition-colors hover:text-m-blue">{team.name}</Link></h3>
+          <p className="mt-0.5 flex flex-wrap gap-x-3 text-xs text-m-ink/65">
             <span className="inline-flex items-center gap-1"><Users className="size-3.5" aria-hidden /><Num value={count} />{team.limit ? <>/<Num value={team.limit} /></> : null} জন</span>
             <span className="inline-flex items-center gap-1"><MapPin className="size-3.5" aria-hidden />{team.district}</span>
           </p>
         </div>
-        <p className="text-sm leading-relaxed text-white/80">{team.about}</p>
+        <p className="text-sm leading-relaxed text-m-ink/80">{team.about}</p>
         {team.limit !== undefined && <Seats limit={team.limit} count={count} />}
         {team.profile?.type === "lab" && <LabDetails lab={team.profile} />}
         {team.profile?.type === "sports" && <SportsDetails sports={team.profile} />}
         {esports && <Roster esports={esports} you={joined} />}
-        <p className="flex flex-wrap gap-x-2 text-xs font-medium text-signal-orange">{team.tags.map((t) => <span key={t}>{t}</span>)}</p>
-        <Link href={`/media/together/team/${team.id}`} className="group inline-flex min-h-9 items-center gap-1.5 self-start rounded-xl text-sm font-bold text-signal-orange">
+        <p className="flex flex-wrap gap-x-2 text-xs font-medium text-m-blue">{team.tags.map((t) => <span key={t}>{t}</span>)}</p>
+        <Link href={`/media/together/team/${team.id}`} className="group inline-flex min-h-9 items-center gap-1.5 self-start rounded-xl text-sm font-bold text-m-blue">
           <DoorOpen className="size-4" aria-hidden /> {mine ? "টিম রুমে ঢুকুন" : "যাত্রা ও মিশন দেখুন"}
           <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden />
         </Link>
-        <div className="mt-auto flex items-center justify-between gap-2 border-t border-white/12 pt-3">
+        <div className="mt-auto flex items-center justify-between gap-2 border-t border-m-ink/10 pt-3">
           <span className="flex -space-x-2">
             {known.map((p) => (
-              <Link key={p.handle} href={`/media/u/${p.handle}`} className="rounded-full ring-2 ring-text-primary" title={p.nameBn}>
+              <Link key={p.handle} href={`/media/u/${p.handle}`} className="rounded-full ring-2 ring-m-card" title={p.nameBn}>
                 <PersonAvatar person={p} size="sm" />
               </Link>
             ))}
           </span>
           {mine ? (
-            team.code ? <SecretKey code={team.code} /> : <span className="inline-flex min-h-9 items-center rounded-xl bg-white/10 px-3 text-sm font-semibold text-signal-orange">আপনার টিম</span>
+            team.code ? <SecretKey code={team.code} /> : <span className="inline-flex min-h-9 items-center rounded-xl bg-m-ink/6 px-3 text-sm font-semibold text-m-blue">আপনার টিম</span>
           ) : full ? (
-            <span className="inline-flex min-h-9 items-center gap-1.5 rounded-xl bg-national-crimson px-3 text-sm font-bold text-white">দল পূর্ণ</span>
+            <span className="inline-flex min-h-9 items-center gap-1.5 rounded-xl bg-m-red px-3 text-sm font-bold text-m-on">দল পূর্ণ</span>
           ) : status === "requested" ? (
-            <span className="inline-flex min-h-9 items-center gap-1.5 rounded-xl bg-white/10 px-3 text-sm font-semibold text-white/80"><Clock className="size-4" aria-hidden />অনুরোধ গেছে</span>
+            <span className="inline-flex min-h-9 items-center gap-1.5 rounded-xl bg-m-ink/6 px-3 text-sm font-semibold text-m-ink/80"><Clock className="size-4" aria-hidden />অনুরোধ গেছে</span>
           ) : team.open ? (
             <button type="button" onClick={request} className={mediaButton({ variant: "green", size: "sm" })}>
               <UserPlus aria-hidden /> যোগ দিতে চাই
             </button>
           ) : (
-            <span className="inline-flex min-h-9 items-center gap-1.5 text-xs font-semibold text-white/65"><Lock className="size-3.5" aria-hidden />শুধু গোপন কী দিয়ে</span>
+            <span className="inline-flex min-h-9 items-center gap-1.5 text-xs font-semibold text-m-ink/65"><Lock className="size-3.5" aria-hidden />শুধু গোপন কী দিয়ে</span>
           )}
         </div>
       </div>
@@ -115,11 +115,11 @@ function Seats({ limit, count }: { limit: number; count: number }) {
   return (
     <div>
       <div className="mb-1 flex justify-between text-xs font-semibold">
-        <span className="text-white/70">আসন</span>
-        <span className={left === 0 ? "text-crimson-bright" : "text-signal-orange"}>{left === 0 ? "পূর্ণ" : <><Num value={left} />টি খালি</>}</span>
+        <span className="text-m-ink/70">আসন</span>
+        <span className={left === 0 ? "text-m-red" : "text-m-blue"}>{left === 0 ? "পূর্ণ" : <><Num value={left} />টি খালি</>}</span>
       </div>
-      <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
-        <div className={cn("h-full rounded-full transition-[width] duration-700", left === 0 ? "bg-national-crimson" : "bg-signal-orange")} style={{ width: `${Math.min(100, (count / limit) * 100)}%` }} />
+      <div className="h-1.5 overflow-hidden rounded-full bg-m-ink/6">
+        <div className={cn("h-full rounded-full transition-[width] duration-700", left === 0 ? "bg-m-red" : "bg-m-yellow")} style={{ width: `${Math.min(100, (count / limit) * 100)}%` }} />
       </div>
     </div>
   );
@@ -129,18 +129,18 @@ const chip = "rounded-full px-2.5 py-0.5 text-xs font-semibold";
 
 function LabDetails({ lab }: { lab: LabProfile }) {
   return (
-    <div className="space-y-2.5 rounded-xl bg-black/40 p-3 text-xs ring-1 ring-white/10">
-      <p className="flex items-center gap-1.5 font-bold text-white"><FlaskConical className="size-4 text-signal-orange" aria-hidden /> {lab.university}</p>
-      {lab.supervisor && <p className="text-white/70">তত্ত্বাবধায়ক: {lab.supervisor}</p>}
-      {lab.focus.length > 0 && <p className="flex flex-wrap gap-1.5">{lab.focus.map((f) => <span key={f} className={cn(chip, "bg-white/10 text-white/85")}>{f}</span>)}</p>}
+    <div className="space-y-2.5 rounded-xl bg-white/65 p-3 text-xs ring-1 ring-m-ink/9">
+      <p className="flex items-center gap-1.5 font-bold text-m-ink"><FlaskConical className="size-4 text-m-blue" aria-hidden /> {lab.university}</p>
+      {lab.supervisor && <p className="text-m-ink/70">তত্ত্বাবধায়ক: {lab.supervisor}</p>}
+      {lab.focus.length > 0 && <p className="flex flex-wrap gap-1.5">{lab.focus.map((f) => <span key={f} className={cn(chip, "bg-m-ink/6 text-m-ink/85")}>{f}</span>)}</p>}
       {lab.roles.length > 0 && (
         <div>
-          <p className="mb-1 font-semibold text-white/70">যে পদে লোক নিচ্ছে</p>
-          <p className="flex flex-wrap gap-1.5">{lab.roles.map((r) => <span key={r} className={cn(chip, "bg-signal-orange text-text-primary")}>{r}</span>)}</p>
+          <p className="mb-1 font-semibold text-m-ink/70">যে পদে লোক নিচ্ছে</p>
+          <p className="flex flex-wrap gap-1.5">{lab.roles.map((r) => <span key={r} className={cn(chip, "bg-m-yellow text-m-ink")}>{r}</span>)}</p>
         </div>
       )}
-      {lab.equipment.length > 0 && <p className="text-white/60">যন্ত্রপাতি: {lab.equipment.join(" · ")}</p>}
-      {lab.meets && <p className="flex items-center gap-1.5 text-white/70"><CalendarClock className="size-3.5" aria-hidden /> {lab.meets}</p>}
+      {lab.equipment.length > 0 && <p className="text-m-ink/60">যন্ত্রপাতি: {lab.equipment.join(" · ")}</p>}
+      {lab.meets && <p className="flex items-center gap-1.5 text-m-ink/70"><CalendarClock className="size-3.5" aria-hidden /> {lab.meets}</p>}
     </div>
   );
 }
@@ -148,28 +148,28 @@ function LabDetails({ lab }: { lab: LabProfile }) {
 function SportsDetails({ sports }: { sports: SportsProfile }) {
   const { w, d, l } = sports.record;
   return (
-    <div className="space-y-2.5 rounded-xl bg-black/40 p-3 text-xs ring-1 ring-white/10">
-      <p className="flex items-center gap-1.5 font-bold text-white"><Medal className="size-4 text-signal-orange" aria-hidden /> {sports.sport} · {sports.ageGroup}</p>
+    <div className="space-y-2.5 rounded-xl bg-white/65 p-3 text-xs ring-1 ring-m-ink/9">
+      <p className="flex items-center gap-1.5 font-bold text-m-ink"><Medal className="size-4 text-m-blue" aria-hidden /> {sports.sport} · {sports.ageGroup}</p>
       {w + d + l > 0 && (
         <div className="grid grid-cols-4 gap-1.5 text-center">
           {[
-            { label: "জয়", n: w, tone: "bg-bd-green text-white" },
-            { label: "ড্র", n: d, tone: "bg-white/10 text-white" },
-            { label: "হার", n: l, tone: "bg-national-crimson text-white" },
+            { label: "জয়", n: w, tone: "bg-m-blue-soft text-m-ink" },
+            { label: "ড্র", n: d, tone: "bg-m-ink/6 text-m-ink" },
+            { label: "হার", n: l, tone: "bg-m-red text-m-on" },
           ].map((x) => (
             <span key={x.label} className={cn("rounded-lg py-1.5", x.tone)}>
               <span className="block text-base font-bold"><Num value={x.n} /></span>
               {x.label}
             </span>
           ))}
-          <span className="rounded-lg bg-signal-orange py-1.5 text-text-primary">
+          <span className="rounded-lg bg-m-yellow py-1.5 text-m-ink">
             <span className="block text-base font-bold"><Num value={winRate(sports.record)} />%</span>জয়ের হার
           </span>
         </div>
       )}
-      {sports.practice && <p className="flex items-center gap-1.5 text-white/70"><CalendarClock className="size-3.5" aria-hidden /> অনুশীলন: {sports.practice}</p>}
+      {sports.practice && <p className="flex items-center gap-1.5 text-m-ink/70"><CalendarClock className="size-3.5" aria-hidden /> অনুশীলন: {sports.practice}</p>}
       {sports.positions.length > 0 && (
-        <p className="flex flex-wrap items-center gap-1.5"><span className="font-semibold text-white/70">লোক দরকার:</span>{sports.positions.map((p) => <span key={p} className={cn(chip, "bg-signal-orange text-text-primary")}>{p}</span>)}</p>
+        <p className="flex flex-wrap items-center gap-1.5"><span className="font-semibold text-m-ink/70">লোক দরকার:</span>{sports.positions.map((p) => <span key={p} className={cn(chip, "bg-m-yellow text-m-ink")}>{p}</span>)}</p>
       )}
     </div>
   );
@@ -184,25 +184,25 @@ function Roster({ esports, you }: { esports: EsportsProfile; you: boolean }) {
     return filled[i] ?? { name: "", role: sub ? "সাব" : (game.roles[i] ?? "ফ্লেক্স"), sub };
   });
   return (
-    <div className="space-y-2.5 rounded-xl bg-black/40 p-3 text-xs ring-1 ring-white/10">
-      <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-white/75">
-        <span className="inline-flex items-center gap-1 font-bold text-white"><Gamepad2 className="size-4 text-signal-orange" aria-hidden /> র‍্যাংক: {esports.rank}</span>
-        <span className="inline-flex items-center gap-1"><Trophy className="size-3.5 text-signal-orange" aria-hidden /><Num value={esports.wins} />টি টুর্নামেন্ট জয়</span>
+    <div className="space-y-2.5 rounded-xl bg-white/65 p-3 text-xs ring-1 ring-m-ink/9">
+      <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-m-ink/75">
+        <span className="inline-flex items-center gap-1 font-bold text-m-ink"><Gamepad2 className="size-4 text-m-blue" aria-hidden /> র‍্যাংক: {esports.rank}</span>
+        <span className="inline-flex items-center gap-1"><Trophy className="size-3.5 text-m-blue" aria-hidden /><Num value={esports.wins} />টি টুর্নামেন্ট জয়</span>
       </p>
       <ul className="grid grid-cols-2 gap-1.5">
         {seats.map((s, i) => (
-          <li key={i} className={cn("flex items-center gap-2 rounded-lg px-2 py-1.5", s.name ? "bg-white/10" : "border border-dashed border-signal-orange/60")}>
-            <span className={cn("flex size-6 shrink-0 items-center justify-center rounded-md text-[11px] font-bold", s.name ? (s.sub ? "bg-white/20 text-white" : "bg-signal-orange text-text-primary") : "text-signal-orange")}>
+          <li key={i} className={cn("flex items-center gap-2 rounded-lg px-2 py-1.5", s.name ? "bg-m-ink/6" : "border border-dashed border-m-blue/60")}>
+            <span className={cn("flex size-6 shrink-0 items-center justify-center rounded-md text-[11px] font-bold", s.name ? (s.sub ? "bg-m-ink/11 text-m-ink" : "bg-m-yellow text-m-ink") : "text-m-blue")}>
               {s.name ? s.name.charAt(0) : "+"}
             </span>
             <span className="min-w-0 leading-tight">
-              <span className={cn("block truncate font-semibold", s.name ? "text-white" : "text-signal-orange")}>{s.name || "খালি"}</span>
-              <span className="block truncate text-[11px] text-white/60">{s.role}{s.sub && s.name ? " · সাব" : ""}</span>
+              <span className={cn("block truncate font-semibold", s.name ? "text-m-ink" : "text-m-blue")}>{s.name || "খালি"}</span>
+              <span className="block truncate text-[11px] text-m-ink/60">{s.role}{s.sub && s.name ? " · সাব" : ""}</span>
             </span>
           </li>
         ))}
       </ul>
-      {esports.scrims && <p className="flex items-center gap-1.5 text-white/70"><CalendarClock className="size-3.5" aria-hidden /> স্ক্রিম: {esports.scrims}</p>}
+      {esports.scrims && <p className="flex items-center gap-1.5 text-m-ink/70"><CalendarClock className="size-3.5" aria-hidden /> স্ক্রিম: {esports.scrims}</p>}
     </div>
   );
 }
@@ -283,7 +283,7 @@ export function CreateTeamButton() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-xl">
           <DialogHeader>
-            <DialogTitle className="text-lg font-bold text-white">টিম বানান</DialogTitle>
+            <DialogTitle className="text-lg font-bold text-m-ink">টিম বানান</DialogTitle>
             <DialogDescription>পরিবার, ল্যাব, প্রজেক্ট, ভ্রমণ, খেলা বা ই-স্পোর্টস — আসন ঠিক করুন, গোপন কী দিন।</DialogDescription>
           </DialogHeader>
           <Form {...form}>
@@ -313,7 +313,7 @@ export function CreateTeamButton() {
               )} />
 
               {kind === "esports" && (
-                <div className="live-in space-y-4 rounded-2xl bg-black/40 p-4 ring-1 ring-white/10">
+                <div className="live-in space-y-4 rounded-2xl bg-white/65 p-4 ring-1 ring-m-ink/9">
                   <FormField control={form.control} name="game" render={({ field }) => (
                     <FormItem>
                       <FormGroupLabel>গেম</FormGroupLabel>
@@ -337,7 +337,7 @@ export function CreateTeamButton() {
                 </div>
               )}
               {kind === "lab" && (
-                <div className="live-in grid gap-4 rounded-2xl bg-black/40 p-4 ring-1 ring-white/10 sm:grid-cols-2">
+                <div className="live-in grid gap-4 rounded-2xl bg-white/65 p-4 ring-1 ring-m-ink/9 sm:grid-cols-2">
                   {text("university", "বিশ্ববিদ্যালয় ও বিভাগ", "যেমন: রুয়েট · সিএসই")}
                   {text("supervisor", "তত্ত্বাবধায়ক", "শিক্ষকের নাম বা পদ")}
                   {text("focus", "গবেষণার বিষয় (কমা দিয়ে)", "এআই, কৃষি, রোবোটিক্স")}
@@ -346,7 +346,7 @@ export function CreateTeamButton() {
                 </div>
               )}
               {kind === "sports" && (
-                <div className="live-in grid gap-4 rounded-2xl bg-black/40 p-4 ring-1 ring-white/10 sm:grid-cols-2">
+                <div className="live-in grid gap-4 rounded-2xl bg-white/65 p-4 ring-1 ring-m-ink/9 sm:grid-cols-2">
                   {text("sport", "খেলা", "ক্রিকেট, ফুটবল, ব্যাডমিন্টন")}
                   {text("ageGroup", "বয়স-গ্রুপ", "অনূর্ধ্ব-১৫, সবার জন্য")}
                   {text("practice", "অনুশীলনের সময়", "শুক্রবার সকাল ৭টা")}
@@ -413,7 +413,7 @@ function SecretKey({ code }: { code: string }) {
         if (shown) navigator.clipboard?.writeText(code).then(() => toast.success("গোপন কী কপি হলো", { description: "শুধু যাকে চান তাকে দিন।" }), () => {});
         setShown(true);
       }}
-      className="inline-flex min-h-9 items-center gap-1.5 rounded-xl bg-signal-orange px-3 font-mono text-sm font-bold tracking-widest text-text-primary shadow-tile transition-[scale] duration-150 active:scale-95"
+      className="inline-flex min-h-9 items-center gap-1.5 rounded-xl bg-m-yellow px-3 font-mono text-sm font-bold tracking-widest text-m-ink shadow-m-tile transition-[scale] duration-150 active:scale-95"
       title={shown ? "কপি করুন" : "গোপন কী দেখুন"}
     >
       {shown ? <Copy className="size-4" aria-hidden /> : <KeyRound className="size-4" aria-hidden />}
@@ -430,7 +430,7 @@ export function MyTeams() {
   if (mine.length === 0) return null;
   return (
     <section className="space-y-3">
-      <h2 className="text-xl font-bold text-white">আমার টিম</h2>
+      <h2 className="text-xl font-bold text-m-ink">আমার টিম</h2>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{mine.map((t) => <TeamCard key={t.id} team={t} />)}</div>
     </section>
   );
@@ -467,10 +467,10 @@ export function JoinTeamByKey() {
   }
 
   return (
-    <form id="join" onSubmit={join} className="scroll-mt-24 rounded-2xl bg-bd-green p-5 text-white sm:flex sm:items-center sm:gap-6 sm:p-6">
+    <form id="join" onSubmit={join} className="scroll-mt-24 rounded-2xl bg-m-blue-soft p-5 text-m-ink sm:flex sm:items-center sm:gap-6 sm:p-6">
       <div className="mb-4 sm:mb-0">
-        <p className="flex items-center gap-2 text-lg font-bold"><KeyRound className="size-5 text-signal-orange" aria-hidden /> গোপন কী দিয়ে যোগ দিন</p>
-        <p className="mt-1 text-sm text-white/80">টিম লিডার কী দেবেন — বন্ধ টিমেও সরাসরি যোগ দেওয়া যায়, আসন খালি থাকলে। ডেমোতে চেষ্টা করুন: NKNTPG</p>
+        <p className="flex items-center gap-2 text-lg font-bold"><KeyRound className="size-5 text-m-blue" aria-hidden /> গোপন কী দিয়ে যোগ দিন</p>
+        <p className="mt-1 text-sm text-m-ink/80">টিম লিডার কী দেবেন — বন্ধ টিমেও সরাসরি যোগ দেওয়া যায়, আসন খালি থাকলে। ডেমোতে চেষ্টা করুন: NKNTPG</p>
       </div>
       <div className="flex flex-1 flex-wrap gap-2 sm:justify-end">
         <label className="relative min-w-0 flex-1 sm:max-w-60">
@@ -485,12 +485,12 @@ export function JoinTeamByKey() {
             className="pr-11 font-mono tracking-[0.3em] uppercase placeholder:font-sans placeholder:tracking-normal placeholder:normal-case"
             aria-invalid={Boolean(error)}
           />
-          <button type="button" onClick={() => setVisible(!visible)} className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-white/70 hover:text-white" aria-label={visible ? "কী লুকান" : "কী দেখুন"}>
+          <button type="button" onClick={() => setVisible(!visible)} className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-m-ink/70 hover:text-m-ink" aria-label={visible ? "কী লুকান" : "কী দেখুন"}>
             {visible ? <EyeOff className="size-4.5" aria-hidden /> : <Eye className="size-4.5" aria-hidden />}
           </button>
         </label>
         <button type="submit" className={mediaButton({ variant: "primary" })}>যোগ দিন</button>
-        {error && <p role="alert" className="live-in w-full text-sm font-semibold text-signal-orange sm:text-right">{error}</p>}
+        {error && <p role="alert" className="live-in w-full text-sm font-semibold text-m-blue sm:text-right">{error}</p>}
       </div>
     </form>
   );

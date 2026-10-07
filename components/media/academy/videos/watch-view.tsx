@@ -37,11 +37,11 @@ export function WatchView({ id }: { id: string }) {
   const video = videos.find((v) => v.id === id);
 
   if (!video) {
-    if (!hydrated) return <Skeleton className="aspect-video w-full max-w-5xl rounded-xl bg-text-primary/60" />;
+    if (!hydrated) return <Skeleton className="aspect-video w-full max-w-5xl rounded-xl bg-m-card/60" />;
     return (
       <div className="mx-auto mt-16 max-w-md text-center">
-        <h1 className="text-xl font-bold text-white">ভিডিওটা পাওয়া গেল না</h1>
-        <p className="mt-2 text-sm text-white/70">হয়তো সরানো হয়েছে, বা অন্য ফোনে তোলা।</p>
+        <h1 className="text-xl font-bold text-m-ink">ভিডিওটা পাওয়া গেল না</h1>
+        <p className="mt-2 text-sm text-m-ink/70">হয়তো সরানো হয়েছে, বা অন্য ফোনে তোলা।</p>
         <Link href="/media/academy/videos" className={mediaButton({ className: "mt-5" })}>সব ক্লাস ভিডিও</Link>
       </div>
     );
@@ -69,22 +69,22 @@ export function WatchView({ id }: { id: string }) {
   return (
     <div className="mx-auto grid max-w-[110rem] gap-6 xl:grid-cols-[minmax(0,1fr)_24rem]">
       <div className="min-w-0">
-        <div className="relative aspect-video overflow-hidden rounded-xl bg-black ring-1 ring-white/10">
+        <div className="relative aspect-video overflow-hidden rounded-xl bg-m-canvas ring-1 ring-m-ink/9">
           <Player video={video} open={open} image={course?.image} courseTitle={course?.title ?? video.course} />
         </div>
 
-        <h1 className="mt-4 text-xl leading-snug font-bold text-white sm:text-2xl">{video.title}</h1>
+        <h1 className="mt-4 text-xl leading-snug font-bold text-m-ink sm:text-2xl">{video.title}</h1>
 
         <div className="mt-3 flex flex-wrap items-center gap-3">
           <Link href={`/media/academy/teachers/${teacher.handle}`} className="flex min-w-0 items-center gap-3">
             <PersonAvatar person={teacher} size="md" />
             <span className="min-w-0">
-              <span className="flex items-center gap-1 font-semibold text-white">
+              <span className="flex items-center gap-1 font-semibold text-m-ink">
                 <span className="truncate">{teacher.nameBn}</span>
-                <BadgeCheck className="size-4 shrink-0 text-white/70" aria-label="ইন্টারভিউ-উত্তীর্ণ শিক্ষক" />
+                <BadgeCheck className="size-4 shrink-0 text-m-ink/70" aria-label="ইন্টারভিউ-উত্তীর্ণ শিক্ষক" />
               </span>
               {record && (
-                <span className="block text-xs text-white/65">
+                <span className="block text-xs text-m-ink/65">
                   <Num value={record.graduates} /> জন গ্র্যাজুয়েট
                 </span>
               )}
@@ -96,7 +96,7 @@ export function WatchView({ id }: { id: string }) {
           </Link>
           <div className="flex items-center gap-2 sm:ml-auto">
             <VideoLikes id={video.id} base={videoLikes(video)} />
-            <button type="button" onClick={share} className="inline-flex h-10 items-center gap-2 rounded-full bg-white/10 px-4 text-sm font-semibold text-white transition-colors hover:bg-white/20">
+            <button type="button" onClick={share} className="inline-flex h-10 items-center gap-2 rounded-full bg-m-ink/6 px-4 text-sm font-semibold text-m-ink transition-colors hover:bg-m-ink/11">
               <Share2 className="size-4.5" aria-hidden /> শেয়ার
             </button>
           </div>
@@ -108,7 +108,7 @@ export function WatchView({ id }: { id: string }) {
       </div>
 
       <aside aria-labelledby="next-title">
-        <h2 id="next-title" className="mb-3 font-bold text-white">পরের ভিডিও</h2>
+        <h2 id="next-title" className="mb-3 font-bold text-m-ink">পরের ভিডিও</h2>
         <ul className="space-y-3">
           {next.map((v) => (
             <li key={v.id}>
@@ -126,13 +126,13 @@ function Player({ video, open, image, courseTitle }: { video: ClassVideo; open: 
     return (
       <div className="absolute inset-0 grid place-items-center">
         {image && <Image src={image} alt="" fill sizes="(min-width: 1280px) 60vw, 100vw" className="object-cover" />}
-        <span className="absolute inset-0 bg-black/75" aria-hidden />
+        <span className="absolute inset-0 bg-white/90" aria-hidden />
         <div className="relative max-w-sm px-6 text-center">
-          <span className="mx-auto grid size-14 place-items-center rounded-full bg-signal-orange text-text-primary">
+          <span className="mx-auto grid size-14 place-items-center rounded-full bg-m-yellow text-m-ink">
             <Lock className="size-6" aria-hidden />
           </span>
-          <p className="mt-4 text-lg font-bold text-white">এটা “{courseTitle}” কোর্সের ভিডিও</p>
-          <p className="mt-1 text-sm text-white/75">ভর্তি হলে সব সপ্তাহের ভিডিও দেখা যাবে। এ কোর্সের বিনামূল্যের ক্লাসগুলো সবাই দেখতে পারেন।</p>
+          <p className="mt-4 text-lg font-bold text-m-ink">এটা “{courseTitle}” কোর্সের ভিডিও</p>
+          <p className="mt-1 text-sm text-m-ink/75">ভর্তি হলে সব সপ্তাহের ভিডিও দেখা যাবে। এ কোর্সের বিনামূল্যের ক্লাসগুলো সবাই দেখতে পারেন।</p>
           <Link href={`/media/academy/course/${video.course}`} className={mediaButton({ className: "mt-5" })}>
             কোর্সটা দেখুন <ArrowRight aria-hidden />
           </Link>
@@ -159,7 +159,7 @@ function Player({ video, open, image, courseTitle }: { video: ClassVideo; open: 
     return (
       <div className="absolute inset-0 grid place-items-center">
         {image && <Image src={image} alt="" fill sizes="(min-width: 1280px) 60vw, 100vw" className="object-cover" />}
-        <span className="absolute inset-0 bg-black/60" aria-hidden />
+        <span className="absolute inset-0 bg-white/85" aria-hidden />
         <a href={video.href} target="_blank" rel="noopener noreferrer nofollow" className={mediaButton({ size: "lg", className: "relative" })}>
           <ExternalLink aria-hidden /> লিংকে ভিডিওটা দেখুন
         </a>
@@ -170,7 +170,7 @@ function Player({ video, open, image, courseTitle }: { video: ClassVideo; open: 
   return (
     <>
       <video src={SAMPLE} poster={image} controls playsInline preload="metadata" className="absolute inset-0 size-full object-contain" />
-      <span className="pointer-events-none absolute top-3 left-3 rounded-md bg-black/80 px-2 py-1 text-xs font-semibold text-white/85">নমুনা ভিডিও — ডেমোতে সব ক্লাসে এটাই চলে</span>
+      <span className="pointer-events-none absolute top-3 left-3 rounded-md bg-white/90 px-2 py-1 text-xs font-semibold text-m-ink/85">নমুনা ভিডিও — ডেমোতে সব ক্লাসে এটাই চলে</span>
     </>
   );
 }
@@ -178,12 +178,12 @@ function Player({ video, open, image, courseTitle }: { video: ClassVideo; open: 
 function NextItem({ video, locked }: { video: ClassVideo; locked: boolean }) {
   const teacher = personOrThrow(video.teacher);
   return (
-    <Link href={watchHref(video)} className="group flex gap-2.5 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-orange">
+    <Link href={watchHref(video)} className="group flex gap-2.5 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-m-blue">
       <Thumb video={video} locked={locked} className="aspect-video w-40 shrink-0" sizes="160px" />
       <span className="min-w-0">
-        <span className="line-clamp-2 text-sm leading-snug font-semibold text-white group-hover:text-signal-orange">{video.title}</span>
-        <span className="mt-1 block truncate text-xs text-white/65">{teacher.nameBn}</span>
-        <span className="block text-xs text-white/65">
+        <span className="line-clamp-2 text-sm leading-snug font-semibold text-m-ink group-hover:text-m-blue">{video.title}</span>
+        <span className="mt-1 block truncate text-xs text-m-ink/65">{teacher.nameBn}</span>
+        <span className="block text-xs text-m-ink/65">
           <Compact n={video.views} /> বার দেখা · <Ago iso={video.at} />
         </span>
       </span>

@@ -44,7 +44,7 @@ function OfferInput({ onSubmit, label, remaining }: { onSubmit: (n: number) => s
       <div className="flex gap-2">
         <label className="relative flex-1">
           <span className="sr-only">{label}</span>
-          <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 font-bold text-white/65">৳</span>
+          <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 font-bold text-m-ink/65">৳</span>
           <Input
             name="offer"
             inputMode="numeric"
@@ -62,7 +62,7 @@ function OfferInput({ onSubmit, label, remaining }: { onSubmit: (n: number) => s
           <Handshake aria-hidden /> প্রস্তাব
         </button>
       </div>
-      <p className={cn("text-xs", error ? "font-semibold text-crimson-bright" : "text-white/65")} role={error ? "alert" : undefined}>
+      <p className={cn("text-xs", error ? "font-semibold text-m-red" : "text-m-ink/65")} role={error ? "alert" : undefined}>
         {error ?? (
           <>
             আর <Num value={remaining} />টি প্রস্তাব দেওয়া যাবে
@@ -82,26 +82,26 @@ function AgreementDialog({ thread, n, sellerName, open, onOpenChange }: { thread
   const method = picked === "wallet" && available < due ? "bkash" : (picked ?? defaultMethod(available, due));
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-text-primary font-sans sm:max-w-md">
+      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-m-card font-sans sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-lg font-bold text-white">চুক্তি নিশ্চিত করুন</DialogTitle>
-          <DialogDescription className="text-sm text-white/80">নিশ্চিত করলে টাকা এসক্রোতে জমা হবে। কাজ বুঝে পেয়ে আপনি ছাড়লে তবেই {sellerName} পাবেন।</DialogDescription>
+          <DialogTitle className="text-lg font-bold text-m-ink">চুক্তি নিশ্চিত করুন</DialogTitle>
+          <DialogDescription className="text-sm text-m-ink/80">নিশ্চিত করলে টাকা এসক্রোতে জমা হবে। কাজ বুঝে পেয়ে আপনি ছাড়লে তবেই {sellerName} পাবেন।</DialogDescription>
         </DialogHeader>
-        <dl className="grid gap-3 rounded-xl border border-white/12 p-4 text-sm">
-          <div className="flex justify-between gap-3"><dt className="text-white/65">কাজ</dt><dd className="text-right font-semibold">{thread.subject}</dd></div>
-          <div className="flex justify-between gap-3"><dt className="text-white/65">কার সাথে</dt><dd className="font-semibold">{sellerName}</dd></div>
+        <dl className="grid gap-3 rounded-xl border border-m-ink/10 p-4 text-sm">
+          <div className="flex justify-between gap-3"><dt className="text-m-ink/65">কাজ</dt><dd className="text-right font-semibold">{thread.subject}</dd></div>
+          <div className="flex justify-between gap-3"><dt className="text-m-ink/65">কার সাথে</dt><dd className="font-semibold">{sellerName}</dd></div>
           {thread.deadline && (
             <div className="flex justify-between gap-3">
-              <dt className="text-white/65">শেষ তারিখ</dt>
+              <dt className="text-m-ink/65">শেষ তারিখ</dt>
               <dd className="inline-flex items-center gap-1 font-semibold"><CalendarDays className="size-4" aria-hidden /><Num value={thread.deadline} /></dd>
             </div>
           )}
-          <div className="flex justify-between gap-3"><dt className="text-white/65">সম্মত দাম</dt><dd className="font-bold"><Taka amount={price} /></dd></div>
+          <div className="flex justify-between gap-3"><dt className="text-m-ink/65">সম্মত দাম</dt><dd className="font-bold"><Taka amount={price} /></dd></div>
         </dl>
         <BuyerFees price={price} />
         <PayPicker name={`pay-${thread.id}`} value={method} onChange={setPicked} available={available} due={due} />
-        <label className="flex cursor-pointer items-start gap-3 text-sm text-white/80">
-          <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} className="mt-0.5 size-5 shrink-0 accent-signal-orange" />
+        <label className="flex cursor-pointer items-start gap-3 text-sm text-m-ink/80">
+          <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} className="mt-0.5 size-5 shrink-0 accent-m-blue" />
           কাজের বিবরণ, দাম ও সময়ে আমি একমত। সমস্যা হলে প্ল্যাটফর্মের মধ্যস্থতা মেনে নেব।
         </label>
         <button
@@ -135,18 +135,18 @@ export function DealPanel({ thread, n, sellerName }: { thread: DealThread; n: Ne
   const remaining = MAX_BARGAIN_ROUNDS - used;
   const last = n.rounds[n.rounds.length - 1];
 
-  const shell = "border-t border-white/12 bg-text-primary px-3 py-3 sm:px-4";
+  const shell = "border-t border-m-ink/10 bg-m-card px-3 py-3 sm:px-4";
 
   if (status === "booked") {
     return (
       <div className={shell}>
         {released ? (
-          <p className="flex items-center gap-2 rounded-xl bg-white/10 px-3 py-2.5 text-sm font-semibold text-signal-orange">
+          <p className="flex items-center gap-2 rounded-xl bg-m-ink/6 px-3 py-2.5 text-sm font-semibold text-m-blue">
             <CircleCheck className="size-5" aria-hidden /> কাজ বুঝে পেয়েছেন — <Taka amount={n.agreed ?? 0} /> {sellerName}-এর কাছে গেছে।
           </p>
         ) : (
-          <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-signal-orange/30 bg-white/10 px-3 py-2.5">
-            <p className="flex items-center gap-2 text-sm font-semibold text-signal-orange">
+          <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-m-blue/30 bg-m-ink/6 px-3 py-2.5">
+            <p className="flex items-center gap-2 text-sm font-semibold text-m-blue">
               <SealCheck size={22} weight="duotone" aria-hidden /> চুক্তি হয়েছে · <Taka amount={n.agreed ?? 0} /> এসক্রোতে
             </p>
             <button
@@ -169,8 +169,8 @@ export function DealPanel({ thread, n, sellerName }: { thread: DealThread; n: Ne
     return (
       <div className={shell}>
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="text-sm text-white/80">
-            দুজনেই রাজি: <span className="text-base font-bold text-white"><Taka amount={n.agreed ?? 0} /></span>
+          <p className="text-sm text-m-ink/80">
+            দুজনেই রাজি: <span className="text-base font-bold text-m-ink"><Taka amount={n.agreed ?? 0} /></span>
           </p>
           <button type="button" onClick={() => setConfirming(true)} className={mediaButton({ variant: "primary" })}>
             <Lock aria-hidden /> চুক্তি নিশ্চিত করুন
@@ -183,10 +183,10 @@ export function DealPanel({ thread, n, sellerName }: { thread: DealThread; n: Ne
 
   if (status === "awaiting-seller") {
     return (
-      <div className={cn(shell, "flex items-center gap-2 text-sm text-white/65")} role="status">
+      <div className={cn(shell, "flex items-center gap-2 text-sm text-m-ink/65")} role="status">
         <span className="flex gap-1" aria-hidden>
           {[0, 1, 2].map((i) => (
-            <span key={i} className="typing-dot size-2 rounded-full bg-bd-green" style={{ ["--i" as string]: i }} />
+            <span key={i} className="typing-dot size-2 rounded-full bg-m-blue-soft" style={{ ["--i" as string]: i }} />
           ))}
         </span>
         {sellerName} আপনার <Taka amount={last?.amount ?? 0} />-এর প্রস্তাব দেখছেন…
@@ -198,8 +198,8 @@ export function DealPanel({ thread, n, sellerName }: { thread: DealThread; n: Ne
     return (
       <div className={cn(shell, "space-y-3")}>
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="text-sm text-white/80">
-            {sellerName}-এর পাল্টা দাম: <span className="text-base font-bold text-white"><Taka amount={last.amount} /></span>
+          <p className="text-sm text-m-ink/80">
+            {sellerName}-এর পাল্টা দাম: <span className="text-base font-bold text-m-ink"><Taka amount={last.amount} /></span>
           </p>
           <button
             type="button"
@@ -220,7 +220,7 @@ export function DealPanel({ thread, n, sellerName }: { thread: DealThread; n: Ne
   if (status === "exhausted") {
     return (
       <div className={cn(shell, "flex flex-wrap items-center justify-between gap-2")}>
-        <p className="text-sm text-white/80">তিনটি প্রস্তাবই ফিরেছে। চাওয়া দাম <span className="font-bold text-white"><Taka amount={n.ask} /></span></p>
+        <p className="text-sm text-m-ink/80">তিনটি প্রস্তাবই ফিরেছে। চাওয়া দাম <span className="font-bold text-m-ink"><Taka amount={n.ask} /></span></p>
         <button type="button" onClick={() => acceptAsk(thread.id, n)} className={mediaButton({ variant: "primary", size: "sm" })}>
           চাওয়া দামে রাজি
         </button>
@@ -231,8 +231,8 @@ export function DealPanel({ thread, n, sellerName }: { thread: DealThread; n: Ne
   // open or declined
   return (
     <div className={cn(shell, "space-y-2")}>
-      <p className="text-sm text-white/80">
-        চাওয়া দাম <span className="font-bold text-white"><Taka amount={n.ask} /></span>
+      <p className="text-sm text-m-ink/80">
+        চাওয়া দাম <span className="font-bold text-m-ink"><Taka amount={n.ask} /></span>
         {status === "declined" && " · আগের প্রস্তাব ফিরেছে"}
       </p>
       <OfferInput label="আপনার প্রস্তাব" remaining={remaining} onSubmit={(a) => { const e = offer(thread.id, n, a); return e ? errorBn[e] : null; }} />

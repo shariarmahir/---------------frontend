@@ -33,11 +33,11 @@ export default async function ExamPage({ searchParams }: { searchParams: Promise
         subtitle="কোর্স শেষ মানেই পাস নয়। সত্যিকারের একটা কাজ বানিয়ে পেশাদারদের প্যানেলের সামনে ব্যাখ্যা করতে হয় — ইন্টারভিউটাই ফাইনাল, আর তা সবার জন্য খোলা।"
       />
 
-      <ol className="mb-10 grid gap-px overflow-hidden rounded-2xl bg-white/12 sm:grid-cols-2 lg:grid-cols-4">
+      <ol className="mb-10 grid gap-px overflow-hidden rounded-2xl bg-m-ink/7 sm:grid-cols-2 lg:grid-cols-4">
         {RULES.map((r) => (
-          <li key={r.title} className="bg-black p-5">
-            <h2 className="font-bold text-signal-orange">{r.title}</h2>
-            <p className="mt-1.5 text-sm leading-relaxed text-white/85">{r.body}</p>
+          <li key={r.title} className="bg-m-canvas p-5">
+            <h2 className="font-bold text-m-blue">{r.title}</h2>
+            <p className="mt-1.5 text-sm leading-relaxed text-m-ink/85">{r.body}</p>
           </li>
         ))}
       </ol>
@@ -45,43 +45,43 @@ export default async function ExamPage({ searchParams }: { searchParams: Promise
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="min-w-0 space-y-10">
           <section id="board" aria-labelledby="board-title" className="scroll-mt-24">
-            <h2 id="board-title" className="text-xl font-bold text-white">প্রকাশ্য ইন্টারভিউ বোর্ড</h2>
-            <p className="mt-1 mb-4 text-sm text-white/75">সামনের প্যানেল আর সাম্প্রতিক উত্তীর্ণরা। নিয়োগকর্তারা এখান থেকেই দক্ষ মানুষ খোঁজেন।</p>
+            <h2 id="board-title" className="text-xl font-bold text-m-ink">প্রকাশ্য ইন্টারভিউ বোর্ড</h2>
+            <p className="mt-1 mb-4 text-sm text-m-ink/75">সামনের প্যানেল আর সাম্প্রতিক উত্তীর্ণরা। নিয়োগকর্তারা এখান থেকেই দক্ষ মানুষ খোঁজেন।</p>
 
-            <h3 className="mb-2 text-sm font-semibold text-signal-orange">সামনের ইন্টারভিউ</h3>
-            <ul className="mb-8 divide-y divide-white/10 overflow-hidden rounded-2xl bg-text-primary ring-1 ring-white/12">
+            <h3 className="mb-2 text-sm font-semibold text-m-blue">সামনের ইন্টারভিউ</h3>
+            <ul className="mb-8 divide-y divide-m-ink/9 overflow-hidden rounded-2xl bg-m-card ring-1 ring-m-ink/10 shadow-m-tile">
               {upcoming.map((s) => (
                 <li key={s.id} className="grid gap-1 p-4 sm:grid-cols-[14rem_minmax(0,1fr)] sm:gap-4">
-                  <span className="text-sm font-semibold text-white/85"><DateText iso={s.at} time weekday /></span>
+                  <span className="text-sm font-semibold text-m-ink/85"><DateText iso={s.at} time weekday /></span>
                   <span className="min-w-0">
-                    <span className="block font-semibold text-white">{s.learner} <span className="font-normal text-white/65">· {s.district}</span></span>
-                    <Link href={`/media/academy/course/${s.course}`} className="block text-sm text-signal-orange hover:underline">{getCourse(s.course)?.title}</Link>
-                    <span className="mt-1 block text-sm text-white/80">প্রজেক্ট: {s.project}</span>
-                    <span className="mt-1 block text-xs text-white/65">প্যানেল: {s.panel.join(" · ")}</span>
+                    <span className="block font-semibold text-m-ink">{s.learner} <span className="font-normal text-m-ink/65">· {s.district}</span></span>
+                    <Link href={`/media/academy/course/${s.course}`} className="block text-sm text-m-blue hover:underline">{getCourse(s.course)?.title}</Link>
+                    <span className="mt-1 block text-sm text-m-ink/80">প্রজেক্ট: {s.project}</span>
+                    <span className="mt-1 block text-xs text-m-ink/65">প্যানেল: {s.panel.join(" · ")}</span>
                   </span>
                 </li>
               ))}
             </ul>
 
-            <h3 className="mb-2 text-sm font-semibold text-signal-orange">উত্তীর্ণ</h3>
+            <h3 className="mb-2 text-sm font-semibold text-m-blue">উত্তীর্ণ</h3>
             <ul className="grid gap-4 sm:grid-cols-2">
               {passes.map((s) => {
                 const { average, verdict } = finalResult(s.marks!);
                 return (
-                  <li key={s.id} className="flex flex-col rounded-2xl bg-text-primary p-5 ring-1 ring-white/12">
+                  <li key={s.id} className="flex flex-col rounded-2xl bg-m-card p-5 ring-1 ring-m-ink/10 shadow-m-tile">
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <p className="font-bold text-white">{s.learner}</p>
-                        <p className="text-sm text-white/75">{getCourse(s.course)?.title}</p>
+                        <p className="font-bold text-m-ink">{s.learner}</p>
+                        <p className="text-sm text-m-ink/75">{getCourse(s.course)?.title}</p>
                       </div>
-                      <span className={cn("rounded-md px-2 py-1 text-xs font-bold whitespace-nowrap", verdict === "distinction" ? "bg-signal-orange text-text-primary" : "bg-bd-green text-white")}>{VERDICTS[verdict]}</span>
+                      <span className={cn("rounded-md px-2 py-1 text-xs font-bold whitespace-nowrap", verdict === "distinction" ? "bg-m-yellow text-m-ink" : "bg-m-blue-soft text-m-ink")}>{VERDICTS[verdict]}</span>
                     </div>
-                    <p className="mt-3 text-sm text-white/80">{s.project}</p>
-                    <p className="mt-2 text-xs text-white/65">
+                    <p className="mt-3 text-sm text-m-ink/80">{s.project}</p>
+                    <p className="mt-2 text-xs text-m-ink/65">
                       গড় <Num value={average} /> · পরীক্ষক <Num value={s.marks!.length} /> জন{s.marks!.length > 2 && " (তৃতীয় পরীক্ষকসহ)"} · <DateText iso={s.at} />
                     </p>
-                    <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-white/10 pt-3">
-                      <Link href={`/media/academy/exam?id=${s.certificate}#verify`} className="font-mono text-xs font-bold text-signal-orange hover:underline">{s.certificate}</Link>
+                    <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-m-ink/9 pt-3">
+                      <Link href={`/media/academy/exam?id=${s.certificate}#verify`} className="font-mono text-xs font-bold text-m-blue hover:underline">{s.certificate}</Link>
                       <Link href="/media/jobs" className={mediaButton({ variant: "quiet", size: "sm" })}>কাজে ডাকুন</Link>
                     </div>
                   </li>
@@ -99,17 +99,17 @@ export default async function ExamPage({ searchParams }: { searchParams: Promise
           <Panel title="সার্টিফিকেট যাচাই" as="section">
             <form id="verify" action="/media/academy/exam#verify" role="search" className="flex scroll-mt-28 gap-2">
               <label className="sr-only" htmlFor="cert-id">সার্টিফিকেট আইডি</label>
-              <input id="cert-id" name="id" defaultValue={raw} placeholder="KTA-2026-…" autoComplete="off" spellCheck={false} className="h-11 min-w-0 flex-1 rounded-lg border border-white/15 bg-black px-3 font-mono text-sm uppercase focus-visible:border-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange/25 focus-visible:outline-none" />
+              <input id="cert-id" name="id" defaultValue={raw} placeholder="KTA-2026-…" autoComplete="off" spellCheck={false} className="h-11 min-w-0 flex-1 rounded-lg border border-m-ink/13 bg-m-canvas px-3 font-mono text-sm uppercase focus-visible:border-m-blue focus-visible:ring-2 focus-visible:ring-m-blue/25 focus-visible:outline-none" />
               <button type="submit" className={mediaButton({ variant: "primary", size: "icon" })} aria-label="যাচাই করুন"><Search aria-hidden /></button>
             </form>
             {raw && (found ? (
-              <div className="mt-4 rounded-xl bg-bd-green p-4 text-sm text-white">
+              <div className="mt-4 rounded-xl bg-m-blue-soft p-4 text-sm text-m-ink">
                 <p className="flex items-center gap-2 font-bold"><BadgeCheck className="size-5" aria-hidden /> আসল সার্টিফিকেট</p>
                 <p className="mt-1">{found.learner} · {getCourse(found.course)?.title}</p>
-                <p className="mt-0.5 text-white/85">{VERDICTS[finalResult(found.marks!).verdict]} · <DateText iso={found.at} /></p>
+                <p className="mt-0.5 text-m-ink/85">{VERDICTS[finalResult(found.marks!).verdict]} · <DateText iso={found.at} /></p>
               </div>
             ) : (
-              <p className="mt-4 flex gap-2 text-sm text-crimson-bright"><ShieldAlert className="size-5 shrink-0" aria-hidden /> এই আইডির কোনো সার্টিফিকেট নেই — নকল হতে পারে।</p>
+              <p className="mt-4 flex gap-2 text-sm text-m-red"><ShieldAlert className="size-5 shrink-0" aria-hidden /> এই আইডির কোনো সার্টিফিকেট নেই — নকল হতে পারে।</p>
             ))}
           </Panel>
         </aside>

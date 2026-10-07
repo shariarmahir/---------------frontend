@@ -19,8 +19,8 @@ export default function PanelPage() {
           <ul className="space-y-2.5 text-sm">
             {RUBRIC.map((r) => (
               <li key={r.id} className="flex justify-between gap-3">
-                <span className="text-white/85">{r.bn}</span>
-                <span className="font-semibold text-white"><Num value={r.max} /></span>
+                <span className="text-m-ink/85">{r.bn}</span>
+                <span className="font-semibold text-m-ink"><Num value={r.max} /></span>
               </li>
             ))}
           </ul>

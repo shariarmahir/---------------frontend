@@ -76,7 +76,7 @@ export function SectionRail({ baseParams, sec, sectionCounts, onBrowse }: { base
 
   return (
     <div className="flex items-center gap-2">
-      <button type="button" onClick={onBrowse} aria-haspopup="dialog" className={cn(chipClass(false), "shrink-0 border-signal-orange bg-signal-orange text-text-primary hover:text-text-primary")}>
+      <button type="button" onClick={onBrowse} aria-haspopup="dialog" className={cn(chipClass(false), "shrink-0 border-m-blue bg-m-yellow text-m-ink hover:text-m-ink")}>
         <LayoutGrid className="size-3.5" aria-hidden />
         সব বিভাগ
       </button>

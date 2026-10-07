@@ -127,9 +127,9 @@ export function ExploreNav({ onSchool, onAllDepts }: { onSchool?: (s: School) =>
         aria-autocomplete="list"
         aria-controls={listId}
         aria-expanded={focused && hits.length > 0}
-        className="h-11 w-full rounded-full border border-white/15 bg-text-primary pr-14 pl-5 text-[15px] text-white placeholder:text-white/55 focus:border-signal-orange focus:outline-none"
+        className="frost-tile h-11 w-full rounded-full pr-14 pl-5 text-[15px] text-m-ink transition-[background-color,box-shadow] placeholder:text-m-ink/55 focus:bg-white focus:ring-3 focus:ring-m-blue/25 focus:outline-none"
       />
-      <button type="submit" className="absolute top-1/2 right-1 grid size-9 -translate-y-1/2 place-items-center rounded-full bg-signal-orange text-text-primary transition-transform hover:scale-105 active:scale-95 motion-reduce:transition-none">
+      <button type="submit" className="absolute top-1/2 right-1 grid size-9 -translate-y-1/2 place-items-center rounded-full bg-m-yellow text-m-ink transition-transform hover:scale-105 active:scale-95 motion-reduce:transition-none">
         <Search className="size-4.5" strokeWidth={2.6} aria-hidden />
         <span className="sr-only">খুঁজুন</span>
       </button>
@@ -141,17 +141,17 @@ export function ExploreNav({ onSchool, onAllDepts }: { onSchool?: (s: School) =>
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.15 }}
-            className="absolute inset-x-0 top-13 z-40 overflow-hidden rounded-2xl bg-text-primary py-2 shadow-[0_24px_48px_-16px_rgb(0_0_0/0.95)] ring-1 ring-white/12"
+            className="absolute inset-x-0 top-13 z-40 overflow-hidden rounded-2xl bg-m-card py-2 shadow-[0_24px_48px_-16px_rgb(16_24_40/0.29)] ring-1 ring-m-ink/10"
           >
             {hits.length === 0 ? (
-              <li className="px-4 py-3 text-sm text-white/70">“{q.trim()}” — কিছু মিলল না। অন্য শব্দে খুঁজুন।</li>
+              <li className="px-4 py-3 text-sm text-m-ink/70">“{q.trim()}” — কিছু মিলল না। অন্য শব্দে খুঁজুন।</li>
             ) : (
               hits.map((h) => (
                 <li key={h.href}>
-                  <Link href={h.href} onClick={close} className="flex items-center gap-3 px-4 py-2.5 text-sm text-white hover:bg-white/8 focus-visible:bg-white/8 focus-visible:outline-none">
-                    <h.Icon className="size-4.5 shrink-0 text-white/60" aria-hidden />
+                  <Link href={h.href} onClick={close} className="flex items-center gap-3 px-4 py-2.5 text-sm text-m-ink hover:bg-m-ink/4 focus-visible:bg-m-ink/4 focus-visible:outline-none">
+                    <h.Icon className="size-4.5 shrink-0 text-m-ink/60" aria-hidden />
                     <span className="min-w-0 flex-1 truncate">{h.label}</span>
-                    <span className="shrink-0 text-xs text-white/50">{h.kind}</span>
+                    <span className="shrink-0 text-xs text-m-ink/50">{h.kind}</span>
                   </Link>
                 </li>
               ))
@@ -163,60 +163,60 @@ export function ExploreNav({ onSchool, onAllDepts }: { onSchool?: (s: School) =>
   );
 
   const col = "space-y-2.5";
-  const head = "mb-3 text-base font-bold text-white";
-  const item = "block text-left text-sm text-white/80 transition-colors hover:text-signal-orange focus-visible:text-signal-orange focus-visible:outline-none";
-  const all = "mt-3 inline-block text-sm font-semibold text-white underline underline-offset-4 hover:text-signal-orange";
+  const head = "mb-3 text-base font-bold text-m-ink";
+  const item = "block text-left text-sm text-m-ink/80 transition-colors hover:text-m-blue focus-visible:text-m-blue focus-visible:outline-none";
+  const all = "mt-3 inline-block text-sm font-semibold text-m-ink underline underline-offset-4 hover:text-m-blue";
 
   return (
     <>
       <AnimatePresence>
-        {open && <motion.div key="scrim" className="fixed inset-0 z-25 bg-black/65" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} onClick={() => setOpen(false)} aria-hidden />}
+        {open && <motion.div key="scrim" className="fixed inset-0 z-25 bg-white/70 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} onClick={() => setOpen(false)} aria-hidden />}
       </AnimatePresence>
 
-      <div ref={bar} className="sticky -top-6 z-30 -mx-3 border-b border-white/12 bg-black sm:-mx-6">
+      <div ref={bar} className="frost-pane sticky -top-6 z-30 -mx-3 sm:-mx-6">
         <nav aria-label="বিভাগ" className="mx-auto flex h-16 max-w-7xl items-center gap-2 px-3 sm:gap-4 sm:px-6">
-          <Link href="/media/academy/departments" className="shrink-0 text-2xl leading-none font-extrabold text-signal-orange">
-            কাণ্ডারী <span className="text-white">শিখন</span>
+          <Link href="/media/academy/departments" className="shrink-0 text-2xl leading-none font-extrabold text-m-blue">
+            কাণ্ডারী <span className="text-m-ink">শিখন</span>
           </Link>
           <button
             type="button"
             aria-expanded={open}
             aria-controls={menuId}
             onClick={() => setOpen((o) => !o)}
-            className={cn("inline-flex h-10 shrink-0 items-center gap-1 rounded-lg px-2.5 text-sm font-semibold transition-colors", open ? "bg-white/12 text-white" : "text-white/80 hover:bg-white/8 hover:text-white")}
+            className={cn("inline-flex h-10 shrink-0 items-center gap-1 rounded-lg px-2.5 text-sm font-semibold transition-colors", open ? "bg-m-ink/7 text-m-ink" : "text-m-ink/80 hover:bg-m-ink/4 hover:text-m-ink")}
           >
             অন্বেষণ
             <ChevronDown className={cn("size-4 transition-transform duration-200 motion-reduce:transition-none", open && "rotate-180")} aria-hidden />
           </button>
-          <a href="#my-learning" onClick={(e) => (e.preventDefault(), jump("my-learning"))} className="hidden h-10 shrink-0 items-center rounded-lg px-2 text-sm font-semibold text-white/80 hover:text-white lg:inline-flex">
+          <a href="#my-learning" onClick={(e) => (e.preventDefault(), jump("my-learning"))} className="hidden h-10 shrink-0 items-center rounded-lg px-2 text-sm font-semibold text-m-ink/80 hover:text-m-ink lg:inline-flex">
             আমার শেখা
           </a>
-          <Link href="/media/academy/exam" className="hidden h-10 shrink-0 items-center rounded-lg px-2 text-sm font-semibold text-white/80 hover:text-white lg:inline-flex">
+          <Link href="/media/academy/exam" className="hidden h-10 shrink-0 items-center rounded-lg px-2 text-sm font-semibold text-m-ink/80 hover:text-m-ink lg:inline-flex">
             ফাইনাল
           </Link>
           <div className="hidden max-w-xl flex-1 md:block">{searchBox}</div>
           <span className="flex-1 md:hidden" />
-          <button type="button" onClick={() => setPhoneSearch((s) => !s)} className="grid size-10 shrink-0 place-items-center rounded-full text-white hover:bg-white/10 md:hidden">
+          <button type="button" onClick={() => setPhoneSearch((s) => !s)} className="grid size-10 shrink-0 place-items-center rounded-full text-m-ink hover:bg-m-ink/6 md:hidden">
             {phoneSearch ? <X className="size-5" aria-hidden /> : <Search className="size-5" aria-hidden />}
             <span className="sr-only">{phoneSearch ? "খোঁজা বন্ধ" : "খুঁজুন"}</span>
           </button>
-          <span className="hidden min-w-0 shrink items-center gap-1 text-sm text-white/75 xl:flex">
+          <span className="hidden min-w-0 shrink items-center gap-1 text-sm text-m-ink/75 xl:flex">
             লক্ষ্য:
             {goalDept ? (
-              <Link href={`/media/academy/dept/${goalDept.id}`} className="truncate font-semibold text-white underline underline-offset-4 hover:text-signal-orange">
+              <Link href={`/media/academy/dept/${goalDept.id}`} className="truncate font-semibold text-m-ink underline underline-offset-4 hover:text-m-blue">
                 {goalDept.name}
               </Link>
             ) : (
-              <a href="#departments" onClick={(e) => (e.preventDefault(), jump("departments"))} className="font-semibold text-white underline underline-offset-4 hover:text-signal-orange">
+              <a href="#departments" onClick={(e) => (e.preventDefault(), jump("departments"))} className="font-semibold text-m-ink underline underline-offset-4 hover:text-m-blue">
                 বিভাগ বেছে নিন
               </a>
             )}
           </span>
-          <Link href="/media/academy/videos" className="hidden size-10 shrink-0 place-items-center rounded-full text-white/85 hover:bg-white/10 hover:text-white sm:grid">
+          <Link href="/media/academy/videos" className="hidden size-10 shrink-0 place-items-center rounded-full text-m-ink/85 hover:bg-m-ink/6 hover:text-m-ink sm:grid">
             <Bell className="size-5" aria-hidden />
             <span className="sr-only">নতুন ক্লাস</span>
           </Link>
-          {account && <AccountAvatar name={account.name} photo={account.photo} sizes="36px" className="size-9 shrink-0 text-sm ring-2 ring-signal-orange" />}
+          {account && <AccountAvatar name={account.name} photo={account.photo} sizes="36px" className="size-9 shrink-0 text-sm ring-2 ring-m-blue" />}
         </nav>
 
         {phoneSearch && <div className="px-3 pb-3 md:hidden">{searchBox}</div>}
@@ -230,7 +230,7 @@ export function ExploreNav({ onSchool, onAllDepts }: { onSchool?: (s: School) =>
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-x-0 top-full max-h-[calc(100dvh-9rem)] overflow-y-auto border-b border-white/12 bg-black"
+              className="absolute inset-x-0 top-full max-h-[calc(100dvh-9rem)] overflow-y-auto border-b border-m-ink/8 bg-white/95 shadow-[0_30px_50px_-30px_rgb(16_24_40/0.35)] backdrop-blur-xl"
             >
               <motion.div
                 className="mx-auto grid max-w-7xl gap-8 px-5 pt-7 pb-6 sm:grid-cols-2 sm:px-8 lg:grid-cols-4"
@@ -319,13 +319,13 @@ export function ExploreNav({ onSchool, onAllDepts }: { onSchool?: (s: School) =>
                 </Col>
               </motion.div>
               <div className="mx-auto max-w-7xl px-5 pb-6 sm:px-8">
-                <p className="border-t border-white/12 pt-5 text-sm text-white/75">
+                <p className="border-t border-m-ink/10 pt-5 text-sm text-m-ink/75">
                   কোথা থেকে শুরু করবেন বুঝছেন না?{" "}
-                  <Link href="/media/academy/videos" onClick={() => setOpen(false)} className="font-semibold text-white underline underline-offset-4 hover:text-signal-orange">
+                  <Link href="/media/academy/videos" onClick={() => setOpen(false)} className="font-semibold text-m-ink underline underline-offset-4 hover:text-m-blue">
                     বিনামূল্যের ক্লাস দেখুন
                   </Link>{" "}
                   অথবা{" "}
-                  <button type="button" onClick={() => jump("start")} className="font-semibold text-white underline underline-offset-4 hover:text-signal-orange">
+                  <button type="button" onClick={() => jump("start")} className="font-semibold text-m-ink underline underline-offset-4 hover:text-m-blue">
                     জানুন বিভাগ কীভাবে চলে
                   </button>
                 </p>

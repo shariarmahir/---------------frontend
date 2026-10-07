@@ -13,10 +13,10 @@ export const SHIP_BN: Record<ShipMode, string> = { bus: "বাসের বক�
 export function LogisticsBand() {
   const modes = Object.keys(SHIP_NOTE) as ShipMode[];
   return (
-    <section className="story-reveal overflow-hidden rounded-3xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-8">
+    <section className="story-reveal overflow-hidden rounded-3xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-8 shadow-m-tile">
       <PixelMark tone="dark" />
-      <h2 className="mt-3 text-2xl font-bold text-white sm:text-3xl">দেশজুড়ে ডেলিভারি — <span className="text-signal-orange">খালি জায়গা কাজে লাগিয়ে</span></h2>
-      <p className="mt-2 max-w-[60ch] text-sm leading-relaxed text-white/75">
+      <h2 className="mt-3 text-2xl font-bold text-m-ink sm:text-3xl">দেশজুড়ে ডেলিভারি — <span className="text-m-blue">খালি জায়গা কাজে লাগিয়ে</span></h2>
+      <p className="mt-2 max-w-[60ch] text-sm leading-relaxed text-m-ink/75">
         প্রতিদিন হাজারো দূরপাল্লার বাসের মালের বক্স আধা-খালি যায়। সেই জায়গায় কৃষকের পণ্য যায় একই দিনে, কম খরচে। বড় চালান যায় ট্রেনে বা ট্রাকে।
       </p>
       <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
@@ -39,9 +39,9 @@ export function LogisticsBand() {
 /** Paid reach that never leaves the platform and never reaches an unmatched buyer. */
 export function BoostBand() {
   return (
-    <section className="story-reveal grid gap-6 rounded-3xl bg-signal-orange p-5 text-text-primary sm:p-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-center">
+    <section className="story-reveal grid gap-6 rounded-3xl bg-m-yellow p-5 text-m-ink sm:p-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-center">
       <div>
-      <p className="inline-flex items-center gap-2 rounded-full bg-text-primary px-3 py-1 text-xs font-bold text-signal-orange">
+      <p className="inline-flex items-center gap-2 rounded-full bg-m-card px-3 py-1 text-xs font-bold text-m-blue">
         <Megaphone className="size-4" aria-hidden /> ম্যাচ বুস্ট
       </p>
       <h2 className="mt-3 text-2xl font-bold sm:text-3xl">বাইরে বিজ্ঞাপন নয় — শুধু আসল ক্রেতার সামনে</h2>
@@ -53,9 +53,9 @@ export function BoostBand() {
       </div>
       <ul className="grid grid-cols-3 gap-2">
         {BOOST_TIERS.map((t) => (
-          <li key={t.taka} className="rounded-2xl bg-text-primary px-3 py-3 text-center text-white">
-            <span className="block text-xl font-bold text-signal-orange"><Taka amount={t.taka} /></span>
-            <span className="text-xs text-white/75"><Num value={t.days} /> দিন</span>
+          <li key={t.taka} className="rounded-2xl bg-m-card px-3 py-3 text-center text-m-ink">
+            <span className="block text-xl font-bold text-m-blue"><Taka amount={t.taka} /></span>
+            <span className="text-xs text-m-ink/75"><Num value={t.days} /> দিন</span>
           </li>
         ))}
       </ul>

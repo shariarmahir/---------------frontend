@@ -102,19 +102,19 @@ export function PeopleDirectory() {
 
   return (
     <div className="space-y-6">
-      <section className="live-in overflow-hidden rounded-3xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-8">
+      <section className="live-in overflow-hidden rounded-3xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-8 shadow-m-tile">
         <PixelMark tone="dark" />
-        <h1 className="mt-3 text-3xl font-bold tracking-tight text-white sm:text-4xl">মানুষ</h1>
-        <p className="mt-2 max-w-[52ch] text-[15px] leading-relaxed text-white/80">দক্ষ মানুষ খুঁজুন, অনুসরণ করুন — একই দক্ষতা, একই জেলা, একই স্বপ্ন। কাজের বন্ধু এখানেই।</p>
+        <h1 className="mt-3 text-3xl font-bold tracking-tight text-m-ink sm:text-4xl">মানুষ</h1>
+        <p className="mt-2 max-w-[52ch] text-[15px] leading-relaxed text-m-ink/80">দক্ষ মানুষ খুঁজুন, অনুসরণ করুন — একই দক্ষতা, একই জেলা, একই স্বপ্ন। কাজের বন্ধু এখানেই।</p>
         <dl className="mt-5 grid max-w-md grid-cols-3 gap-2">
           {[
             { label: "অনুসারী", n: lists.followers.length },
             { label: "অনুসরণ করছেন", n: lists.following.length },
             { label: "মোট সদস্য", n: people.length },
           ].map((s) => (
-            <div key={s.label} className="flex flex-col-reverse rounded-2xl bg-white/10 px-3 py-2.5 text-center">
-              <dt className="text-xs text-white/70">{s.label}</dt>
-              <dd className="text-2xl font-bold text-signal-orange"><Num value={s.n} /></dd>
+            <div key={s.label} className="flex flex-col-reverse rounded-2xl bg-m-ink/6 px-3 py-2.5 text-center">
+              <dt className="text-xs text-m-ink/70">{s.label}</dt>
+              <dd className="text-2xl font-bold text-m-blue"><Num value={s.n} /></dd>
             </div>
           ))}
         </dl>
@@ -122,15 +122,15 @@ export function PeopleDirectory() {
 
       <div className="grid gap-6 lg:grid-cols-[15rem_minmax(0,1fr)]">
         <nav aria-label="মানুষের তালিকা" className="lg:sticky lg:top-22 lg:self-start">
-          <ul className="grid grid-cols-3 gap-1 rounded-2xl bg-white/10 p-1 lg:grid-cols-1 lg:gap-1.5 lg:bg-transparent lg:p-0">
+          <ul className="grid grid-cols-3 gap-1 rounded-2xl bg-m-ink/6 p-1 lg:grid-cols-1 lg:gap-1.5 lg:bg-transparent lg:p-0">
             {TABS.map(({ key, label, short, Icon }) => {
               const on = tab === key;
               return (
                 <li key={key}>
-                  <button type="button" onClick={() => go(key)} aria-current={on ? "page" : undefined} className={cn("flex min-h-11 w-full items-center justify-center gap-2 rounded-xl px-3 text-sm font-semibold transition-colors lg:justify-start lg:text-[15px]", on ? "bg-signal-orange text-text-primary shadow-tile" : "text-white/80 hover:bg-white/10 hover:text-white")}>
+                  <button type="button" onClick={() => go(key)} aria-current={on ? "page" : undefined} className={cn("flex min-h-11 w-full items-center justify-center gap-2 rounded-xl px-3 text-sm font-semibold transition-colors lg:justify-start lg:text-[15px]", on ? "bg-m-yellow text-m-ink shadow-m-tile" : "text-m-ink/80 hover:bg-m-ink/6 hover:text-m-ink")}>
                     <Icon className="hidden size-5 lg:block" aria-hidden />
                     <span className="truncate"><span className="lg:hidden">{short}</span><span className="hidden lg:inline">{label}</span></span>
-                    <span className={cn("ml-auto hidden rounded-md px-1.5 text-xs lg:inline", on ? "bg-text-primary text-signal-orange" : "bg-white/10")}><Num value={lists[key].length} /></span>
+                    <span className={cn("ml-auto hidden rounded-md px-1.5 text-xs lg:inline", on ? "bg-m-card text-m-blue" : "bg-m-ink/6")}><Num value={lists[key].length} /></span>
                   </button>
                 </li>
               );
@@ -141,13 +141,13 @@ export function PeopleDirectory() {
         <div className="min-w-0 space-y-4">
           <label className="relative block">
             <span className="sr-only">মানুষ খুঁজুন</span>
-            <Search className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-white/65" aria-hidden />
+            <Search className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-m-ink/65" aria-hidden />
             <input
               type="search"
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="নাম, দক্ষতা, বিভাগ বা জেলা — যেমন: মেহেদি, পাইথন, যশোর"
-              className="h-12 w-full rounded-2xl border border-white/12 bg-text-primary pr-4 pl-12 text-[15px] text-white focus:border-signal-orange focus:ring-3 focus:ring-signal-orange/15 focus:outline-none"
+              className="h-12 w-full rounded-2xl border border-m-ink/10 bg-m-card pr-4 pl-12 text-[15px] text-m-ink focus:border-m-blue focus:ring-3 focus:ring-m-blue/15 focus:outline-none shadow-m-tile"
             />
           </label>
           <div className="flex flex-wrap items-center gap-2">
@@ -178,10 +178,10 @@ export function PeopleDirectory() {
               {SORTS.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
             </select>
           </div>
-          <div className="flex min-h-6 items-center justify-between gap-3 text-sm text-white/70" aria-live="polite">
+          <div className="flex min-h-6 items-center justify-between gap-3 text-sm text-m-ink/70" aria-live="polite">
             <span><Num value={shown.length} /> জন{district ? ` · ${district}` : division ? ` · ${division} বিভাগ` : ""}</span>
             {filtered && (
-              <button type="button" onClick={reset} className="inline-flex items-center gap-1 font-semibold text-signal-orange hover:underline">
+              <button type="button" onClick={reset} className="inline-flex items-center gap-1 font-semibold text-m-blue hover:underline">
                 <X className="size-4" aria-hidden /> ফিল্টার মুছুন
               </button>
             )}

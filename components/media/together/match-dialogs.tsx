@@ -107,27 +107,27 @@ export function ChallengeDialog({ open, onOpenChange, from, to }: { open: boolea
     toast.success(`${awayTeam?.name ?? "প্রতিপক্ষ"}-কে চ্যালেঞ্জ পাঠানো হলো`, { description: `${lead?.nameBn ?? "দলের লিডার"} গ্রহণ করলে খেলা পাকা।` });
   }
 
-  const label = "mb-1.5 block text-sm font-semibold text-white";
-  const err = (msg?: string) => tried && msg && <span className="mt-1 block text-xs font-semibold text-crimson-bright">{msg}</span>;
+  const label = "mb-1.5 block text-sm font-semibold text-m-ink";
+  const err = (msg?: string) => tried && msg && <span className="mt-1 block text-xs font-semibold text-m-red">{msg}</span>;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-xl">
         <DialogHeader>
           <PixelMark tone="dark" />
-          <DialogTitle className="flex items-center gap-2 text-xl font-bold text-white"><Swords className="size-5 text-signal-orange" aria-hidden /> অন্য দলকে চ্যালেঞ্জ দিন</DialogTitle>
+          <DialogTitle className="flex items-center gap-2 text-xl font-bold text-m-ink"><Swords className="size-5 text-m-blue" aria-hidden /> অন্য দলকে চ্যালেঞ্জ দিন</DialogTitle>
           <DialogDescription>খেলা, কুইজ, বানানোর লড়াই — বা কে বেশি ভালো কাজ করে। ওরা গ্রহণ করলে খেলা পাকা, ফল উঠবে লিগ টেবিলে।</DialogDescription>
         </DialogHeader>
 
         {mine.length === 0 && hydrated ? (
-          <p className="rounded-2xl bg-text-primary p-4 text-sm text-white/80 ring-1 ring-white/12">চ্যালেঞ্জ দিতে আগে একটা টিম বানান, বা গোপন কী দিয়ে কোনো টিমে যোগ দিন।</p>
+          <p className="rounded-2xl bg-m-card p-4 text-sm text-m-ink/80 ring-1 ring-m-ink/10 shadow-m-tile">চ্যালেঞ্জ দিতে আগে একটা টিম বানান, বা গোপন কী দিয়ে কোনো টিমে যোগ দিন।</p>
         ) : (
           <form onSubmit={submit} noValidate className="space-y-5">
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="block">
                 <span className={label}>আপনার দল</span>
                 {from ? (
-                  <span className="flex h-11 items-center rounded-xl bg-white/6 px-3 text-sm font-bold text-white ring-1 ring-white/12">{homeTeam?.name}</span>
+                  <span className="flex h-11 items-center rounded-xl bg-m-ink/3 px-3 text-sm font-bold text-m-ink ring-1 ring-m-ink/10">{homeTeam?.name}</span>
                 ) : (
                   <select value={home} onChange={(e) => setHome(e.target.value)} className={selectClass}>
                     {mine.filter((t) => t.id !== to).map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
@@ -137,7 +137,7 @@ export function ChallengeDialog({ open, onOpenChange, from, to }: { open: boolea
               <label className="block">
                 <span className={label}>প্রতিপক্ষ</span>
                 {to ? (
-                  <span className="flex h-11 items-center rounded-xl bg-white/6 px-3 text-sm font-bold text-white ring-1 ring-white/12">{awayTeam?.name}</span>
+                  <span className="flex h-11 items-center rounded-xl bg-m-ink/3 px-3 text-sm font-bold text-m-ink ring-1 ring-m-ink/10">{awayTeam?.name}</span>
                 ) : (
                   <select value={away} onChange={(e) => pickOpponent(e.target.value)} className={selectClass} aria-invalid={tried && Boolean(pairing)}>
                     <option value="">দল বাছুন</option>
@@ -154,13 +154,13 @@ export function ChallengeDialog({ open, onOpenChange, from, to }: { open: boolea
                 {formats.map((f, i) => {
                   const picked = format === f;
                   return (
-                    <label key={f} className={cn("flex cursor-pointer flex-col gap-0.5 rounded-xl p-3 ring-2 transition-colors", picked ? "bg-signal-orange/10 ring-signal-orange" : "ring-white/12 hover:ring-white/30")}>
+                    <label key={f} className={cn("flex cursor-pointer flex-col gap-0.5 rounded-xl p-3 ring-2 transition-colors", picked ? "bg-m-yellow/10 ring-m-blue" : "ring-m-ink/10 hover:ring-m-ink/26")}>
                       <input type="radio" name="match-format" className="sr-only" checked={picked} onChange={() => setFormat(f)} />
-                      <span className={cn("flex items-center gap-2 text-sm font-bold", picked ? "text-signal-orange" : "text-white")}>
+                      <span className={cn("flex items-center gap-2 text-sm font-bold", picked ? "text-m-blue" : "text-m-ink")}>
                         {FORMATS[f].bn}
-                        {i === 0 && homeTeam && awayTeam && <span className="rounded-full bg-bd-green px-2 py-0.5 text-[10px] text-white">মানানসই</span>}
+                        {i === 0 && homeTeam && awayTeam && <span className="rounded-full bg-m-blue-soft px-2 py-0.5 text-[10px] text-m-ink">মানানসই</span>}
                       </span>
-                      <span className="text-xs leading-snug text-white/65">{FORMATS[f].hint}</span>
+                      <span className="text-xs leading-snug text-m-ink/65">{FORMATS[f].hint}</span>
                     </label>
                   );
                 })}
@@ -191,7 +191,7 @@ export function ChallengeDialog({ open, onOpenChange, from, to }: { open: boolea
             <label className="block">
               <span className={label}>বাজি (বন্ধুত্বপূর্ণ)</span>
               <Input value={stake} maxLength={STAKE_MAX} onChange={(e) => setStake(e.target.value)} placeholder="যেমন: হারলে ১০টা গাছ লাগাবে" />
-              <span className="mt-1 block text-xs text-white/55">টাকার বাজি নয় — ভালো কাজ বা মজার কিছু।</span>
+              <span className="mt-1 block text-xs text-m-ink/55">টাকার বাজি নয় — ভালো কাজ বা মজার কিছু।</span>
               {err(problems.stake)}
             </label>
             <button type="submit" className={mediaButton({ variant: "primary", size: "lg", className: "w-full" })}><Send aria-hidden /> চ্যালেঞ্জ পাঠান</button>
@@ -230,7 +230,7 @@ export function ResultDialog({ open, onOpenChange, match, all, me }: { open: boo
   }
 
   const toggle = (on: boolean, flip: () => void, Icon: typeof Flag, title: string, hint: string) => (
-    <button type="button" aria-pressed={on} onClick={flip} className={cn("flex min-h-14 items-center gap-3 rounded-xl px-3 text-left text-sm font-bold ring-2 transition-colors", on ? "bg-signal-orange/10 text-signal-orange ring-signal-orange" : "text-white/70 ring-white/12 hover:ring-white/30")}>
+    <button type="button" aria-pressed={on} onClick={flip} className={cn("flex min-h-14 items-center gap-3 rounded-xl px-3 text-left text-sm font-bold ring-2 transition-colors", on ? "bg-m-yellow/10 text-m-blue ring-m-blue" : "text-m-ink/70 ring-m-ink/10 hover:ring-m-ink/26")}>
       <Icon className="size-5 shrink-0" aria-hidden />
       <span>{title}<span className="block text-xs font-normal opacity-80">{hint}</span></span>
     </button>
@@ -240,23 +240,23 @@ export function ResultDialog({ open, onOpenChange, match, all, me }: { open: boo
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="rounded-3xl font-sans sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl font-bold text-white"><Flag className="size-5 text-signal-orange" aria-hidden /> ফল লিখুন</DialogTitle>
+          <DialogTitle className="flex items-center gap-2 text-xl font-bold text-m-ink"><Flag className="size-5 text-m-blue" aria-hidden /> ফল লিখুন</DialogTitle>
           <DialogDescription>{match.title} — দুই দল যে ফল মেনে নিয়েছে, সেটাই লিখুন।</DialogDescription>
         </DialogHeader>
         <form onSubmit={submit} noValidate className="space-y-5">
           <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-end gap-3">
             <label className="block text-center">
-              <span className="mb-1.5 line-clamp-2 block text-sm font-bold text-white">{home?.name}</span>
+              <span className="mb-1.5 line-clamp-2 block text-sm font-bold text-m-ink">{home?.name}</span>
               <Input inputMode="numeric" value={h} onChange={(e) => setH(e.target.value)} placeholder="০" className="h-16 text-center text-3xl font-bold" aria-label={`${home?.name ?? "প্রথম দল"} — ${unit}`} aria-invalid={tried && hs === undefined} />
             </label>
-            <span className="pb-4 text-2xl font-bold text-white/40">–</span>
+            <span className="pb-4 text-2xl font-bold text-m-ink/40">–</span>
             <label className="block text-center">
-              <span className="mb-1.5 line-clamp-2 block text-sm font-bold text-white">{away?.name}</span>
+              <span className="mb-1.5 line-clamp-2 block text-sm font-bold text-m-ink">{away?.name}</span>
               <Input inputMode="numeric" value={a} onChange={(e) => setA(e.target.value)} placeholder="০" className="h-16 text-center text-3xl font-bold" aria-label={`${away?.name ?? "দ্বিতীয় দল"} — ${unit}`} aria-invalid={tried && as === undefined} />
             </label>
           </div>
-          <p className="-mt-2 text-center text-xs text-white/55">{unit} · ০ থেকে ৯৯৯</p>
-          {tried && (hs === undefined || as === undefined) && <p role="alert" className="text-center text-xs font-semibold text-crimson-bright">দুই দলের {unit} পূর্ণ সংখ্যায় লিখুন।</p>}
+          <p className="-mt-2 text-center text-xs text-m-ink/55">{unit} · ০ থেকে ৯৯৯</p>
+          {tried && (hs === undefined || as === undefined) && <p role="alert" className="text-center text-xs font-semibold text-m-red">দুই দলের {unit} পূর্ণ সংখ্যায় লিখুন।</p>}
           <div className="grid gap-2 sm:grid-cols-2">
             {toggle(toFeed, () => setToFeed((x) => !x), Newspaper, "ফিডে শেয়ার", "সবাই ফল দেখবে")}
             {toggle(toJourney, () => setToJourney((x) => !x), BookHeart, "টিমের যাত্রায় লিখুন", `${me.team.name}-এর টাইমলাইনে`)}

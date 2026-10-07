@@ -67,11 +67,11 @@ export function VerifyDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-text-primary font-sans sm:max-w-md">
+      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-m-card font-sans sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-lg font-bold text-white">রেটিং যাচাই করুন</DialogTitle>
-          <DialogDescription className="text-sm leading-relaxed text-white/80">
-            {authorName} নিজেকে “{skill.name}”-এ <span className="font-bold text-signal-orange"><Num value={skill.self} />★</span> দিয়েছেন। প্রমাণ দেখে আপনি কত দেবেন?
+          <DialogTitle className="text-lg font-bold text-m-ink">রেটিং যাচাই করুন</DialogTitle>
+          <DialogDescription className="text-sm leading-relaxed text-m-ink/80">
+            {authorName} নিজেকে “{skill.name}”-এ <span className="font-bold text-m-blue"><Num value={skill.self} />★</span> দিয়েছেন। প্রমাণ দেখে আপনি কত দেবেন?
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -106,14 +106,14 @@ export function VerifyDialog({
                   <FormGroupLabel>আপনার মত</FormGroupLabel>
                   <FormGroup className="grid grid-cols-2 gap-2">
                     {([
-                      ["verify", "দাবি ঠিক আছে", SealCheck, "border-signal-orange bg-white/10 text-signal-orange"],
-                      ["challenge", "দাবি বেশি", SealWarning, "border-crimson-bright/60 bg-national-crimson text-white"],
+                      ["verify", "দাবি ঠিক আছে", SealCheck, "border-m-blue bg-m-ink/6 text-m-blue"],
+                      ["challenge", "দাবি বেশি", SealWarning, "border-m-red/60 bg-m-red text-m-on"],
                     ] as const).map(([value, label, Icon, on]) => (
                       <label
                         key={value}
                         className={cn(
-                          "flex min-h-12 cursor-pointer items-center gap-2 rounded-xl border-2 px-3 text-sm font-semibold transition-colors has-focus-visible:ring-3 has-focus-visible:ring-signal-orange/30",
-                          field.value === value ? on : "border-white/12 text-white/80 hover:border-white/12",
+                          "flex min-h-12 cursor-pointer items-center gap-2 rounded-xl border-2 px-3 text-sm font-semibold transition-colors has-focus-visible:ring-3 has-focus-visible:ring-m-blue/30",
+                          field.value === value ? on : "border-m-ink/10 text-m-ink/80 hover:border-m-ink/10",
                         )}
                       >
                         <input type="radio" className="sr-only" name={field.name} checked={field.value === value} onChange={() => field.onChange(value)} />
@@ -146,7 +146,7 @@ export function VerifyDialog({
               {verdict === "challenge" ? <SealWarning size={20} weight="duotone" aria-hidden /> : <SealCheck size={20} weight="duotone" aria-hidden />}
               {verdict === "challenge" ? "চ্যালেঞ্জ জমা দিন" : "যাচাই জমা দিন"}
             </button>
-            <p className="text-center text-xs text-white/65">একটি পোস্টে একবারই রেটিং দেওয়া যায়। আপনার নাম আলোচনায় দেখাবে।</p>
+            <p className="text-center text-xs text-m-ink/65">একটি পোস্টে একবারই রেটিং দেওয়া যায়। আপনার নাম আলোচনায় দেখাবে।</p>
           </form>
         </Form>
       </DialogContent>

@@ -18,14 +18,14 @@ const ICON: Record<NoticeKind, LucideIcon> = { emergency: Siren, cancel: Calenda
 
 /** Each paper with ink that reads on it, and a contrasting chip for the reason and role. */
 export const PAPER: Record<NoteColor | "red", { bn: string; paper: string; tag: string }> = {
-  red: { bn: "লাল", paper: "bg-national-crimson text-white", tag: "bg-white text-national-crimson" },
-  gold: { bn: "সোনালি", paper: "bg-signal-orange text-text-primary", tag: "bg-text-primary text-signal-orange" },
-  orange: { bn: "কমলা", paper: "bg-bdorange-600 text-text-primary", tag: "bg-text-primary text-signal-orange" },
-  peach: { bn: "পীচ", paper: "bg-bdorange-100 text-text-primary", tag: "bg-bdorange-600 text-text-primary" },
-  green: { bn: "সবুজ", paper: "bg-bd-green text-white", tag: "bg-signal-orange text-text-primary" },
-  mint: { bn: "পুদিনা", paper: "bg-bdgreen-500 text-text-primary", tag: "bg-text-primary text-white" },
-  leaf: { bn: "কচিপাতা", paper: "bg-bdgreen-200 text-text-primary", tag: "bg-bd-green text-white" },
-  white: { bn: "সাদা", paper: "bg-white text-text-primary", tag: "bg-text-primary text-white" },
+  red: { bn: "লাল", paper: "bg-m-red text-m-on", tag: "bg-white text-m-red" },
+  gold: { bn: "সোনালি", paper: "bg-m-yellow text-m-ink", tag: "bg-m-card text-m-blue" },
+  orange: { bn: "কমলা", paper: "bg-m-red-soft text-m-ink", tag: "bg-m-card text-m-blue" },
+  peach: { bn: "পীচ", paper: "bg-m-red-soft text-m-ink", tag: "bg-m-red-soft text-m-ink" },
+  green: { bn: "সবুজ", paper: "bg-m-blue-soft text-m-ink", tag: "bg-m-yellow text-m-ink" },
+  mint: { bn: "পুদিনা", paper: "bg-m-green-soft text-m-ink", tag: "bg-m-card text-m-ink" },
+  leaf: { bn: "কচিপাতা", paper: "bg-m-green-soft text-m-ink", tag: "bg-m-blue-soft text-m-ink" },
+  white: { bn: "সাদা", paper: "bg-m-canvas text-m-ink ring-1 ring-m-ink/10", tag: "bg-m-blue-soft text-m-ink" },
 };
 
 /** A slight tilt per note, like paper pinned by hand. */
@@ -53,8 +53,8 @@ function NoteCard({ n, tilt, by, actions }: { n: Notice; tilt: string; by: strin
   const Icon = ICON[n.kind];
   const { paper, tag } = PAPER[paperOf(n)];
   return (
-    <div className={cn("relative flex h-full flex-col gap-1 rounded-md p-2.5 pt-3.5 shadow-[0_10px_20px_-12px_rgb(0_0_0/0.9)] transition-[rotate,translate] duration-300 hover:-translate-y-0.5 hover:rotate-0 motion-reduce:transition-none", paper, tilt)}>
-      <span className="absolute -top-1.5 left-1/2 size-3 -translate-x-1/2 rounded-full bg-text-primary ring-2 ring-white/80" aria-hidden />
+    <div className={cn("relative flex h-full flex-col gap-1 rounded-md p-2.5 pt-3.5 shadow-[0_10px_20px_-12px_rgb(16_24_40/0.27)] transition-[rotate,translate] duration-300 hover:-translate-y-0.5 hover:rotate-0 motion-reduce:transition-none", paper, tilt)}>
+      <span className="absolute -top-1.5 left-1/2 size-3 -translate-x-1/2 rounded-full bg-m-card ring-2 ring-m-ink/68" aria-hidden />
       <span className="flex items-center gap-1 text-[10px] font-bold tracking-wide uppercase opacity-80">
         <Icon className="size-3" aria-hidden /> {NOTICE_KINDS[n.kind].bn}
         {n.pinned && <Pin className="ml-auto size-3" aria-label="পিন করা" />}
@@ -91,12 +91,12 @@ export function NoticeBoard({ notices, role, meId, name, today, subjects, items,
   const staff = isStaff(role);
 
   return (
-    <section aria-labelledby="notice-title" className="story-reveal rounded-3xl bg-text-primary p-4 ring-1 ring-white/12 sm:p-5">
+    <section aria-labelledby="notice-title" className="story-reveal rounded-3xl bg-m-card p-4 ring-1 ring-m-ink/10 sm:p-5 shadow-m-tile">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h2 id="notice-title" className="flex items-center gap-2 text-lg font-bold text-white">
-          <span className="flex size-8 items-center justify-center rounded-lg bg-signal-orange text-text-primary"><BellRing className="size-4.5" aria-hidden /></span>
+        <h2 id="notice-title" className="flex items-center gap-2 text-lg font-bold text-m-ink">
+          <span className="flex size-8 items-center justify-center rounded-lg bg-m-yellow text-m-ink"><BellRing className="size-4.5" aria-hidden /></span>
           নোটিশ বোর্ড
-          {live.length > 0 && <span className="rounded-full bg-white/10 px-2 text-xs font-semibold text-white/75"><Num value={live.length} /></span>}
+          {live.length > 0 && <span className="rounded-full bg-m-ink/6 px-2 text-xs font-semibold text-m-ink/75"><Num value={live.length} /></span>}
         </h2>
         {role !== "guest" && (
           <button type="button" onClick={() => setWriting(true)} className={mediaButton({ variant: "primary", size: "sm" })}>
@@ -106,7 +106,7 @@ export function NoticeBoard({ notices, role, meId, name, today, subjects, items,
       </div>
 
       {live.length === 0 ? (
-        <p className="rounded-2xl border-2 border-dashed border-white/15 px-4 py-6 text-center text-sm text-white/60">বোর্ড ফাঁকা — আজ কোনো নোটিশ নেই।</p>
+        <p className="rounded-2xl border-2 border-dashed border-m-ink/13 px-4 py-6 text-center text-sm text-m-ink/60">বোর্ড ফাঁকা — আজ কোনো নোটিশ নেই।</p>
       ) : (
         <ul className="grid grid-cols-2 gap-3 pt-1.5 sm:grid-cols-3 lg:grid-cols-4">
           {shown.map((n, i) => (
@@ -118,12 +118,12 @@ export function NoticeBoard({ notices, role, meId, name, today, subjects, items,
                 actions={
                   <>
                     {staff && (
-                      <button type="button" onClick={() => onChange((l) => l.map((x) => (x.id === n.id ? { ...x, pinned: !x.pinned } : x)))} className="flex size-6 items-center justify-center rounded hover:bg-black/15" aria-label={n.pinned ? "পিন সরান" : "পিন করুন"}>
+                      <button type="button" onClick={() => onChange((l) => l.map((x) => (x.id === n.id ? { ...x, pinned: !x.pinned } : x)))} className="flex size-6 items-center justify-center rounded hover:bg-white/40" aria-label={n.pinned ? "পিন সরান" : "পিন করুন"}>
                         {n.pinned ? <PinOff className="size-3" aria-hidden /> : <Pin className="size-3" aria-hidden />}
                       </button>
                     )}
                     {canRemove(n, role, meId) && (
-                      <button type="button" onClick={() => onChange((l) => l.filter((x) => x.id !== n.id)) && toast.success("নোটিশ সরানো হলো")} className="flex size-6 items-center justify-center rounded hover:bg-black/15" aria-label="নোটিশ সরান">
+                      <button type="button" onClick={() => onChange((l) => l.filter((x) => x.id !== n.id)) && toast.success("নোটিশ সরানো হলো")} className="flex size-6 items-center justify-center rounded hover:bg-white/40" aria-label="নোটিশ সরান">
                         <X className="size-3" aria-hidden />
                       </button>
                     )}
@@ -135,7 +135,7 @@ export function NoticeBoard({ notices, role, meId, name, today, subjects, items,
         </ul>
       )}
       {live.length > 8 && (
-        <button type="button" onClick={() => setAll((v) => !v)} className="mt-4 text-sm font-bold text-signal-orange hover:underline">
+        <button type="button" onClick={() => setAll((v) => !v)} className="mt-4 text-sm font-bold text-m-blue hover:underline">
           {all ? "কম দেখান" : <>আরও <Num value={live.length - 8} />টি নোটিশ</>}
         </button>
       )}
@@ -228,14 +228,14 @@ function NoticeComposer({ open, onOpenChange, role, meId, meName, today, subject
     } else toast.error("এই ব্রাউজারে আর জায়গা নেই");
   }
 
-  const label = "mb-1.5 block text-sm font-semibold text-white";
-  const err = (m: string) => tried && m && <span className="mt-1 block text-xs font-semibold text-crimson-bright">{m}</span>;
+  const label = "mb-1.5 block text-sm font-semibold text-m-ink";
+  const err = (m: string) => tried && m && <span className="mt-1 block text-xs font-semibold text-m-red">{m}</span>;
   return (
     <Dialog open={open} onOpenChange={reset}>
       <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-lg">
         <DialogHeader>
           <PixelMark tone="dark" />
-          <DialogTitle className="text-xl font-bold text-white">নোটিশ দিন</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-m-ink">নোটিশ দিন</DialogTitle>
           <DialogDescription>{isStaff(role) ? "বোর্ডে যা উঠবে, ক্লাসের সবাই সাথে সাথে দেখবে।" : "ছুটি বা দেরিতে জমার খবর আগে দিন — শিক্ষক আর লিডার দেখবেন।"}</DialogDescription>
         </DialogHeader>
         <form onSubmit={submit} noValidate className="space-y-5">
@@ -245,14 +245,14 @@ function NoticeComposer({ open, onOpenChange, role, meId, meName, today, subject
               {kinds.map((k) => {
                 const Icon = ICON[k];
                 return (
-                  <label key={k} className={cn(choiceClass(kind === k), k === "emergency" && kind === k && "border-crimson-bright bg-national-crimson/15 text-crimson-bright")}>
+                  <label key={k} className={cn(choiceClass(kind === k), k === "emergency" && kind === k && "border-m-red bg-m-red/15 text-m-red")}>
                     <input type="radio" name="notice-kind" className="sr-only" checked={kind === k} onChange={() => setKind(k)} />
                     <Icon className="size-4" aria-hidden /> {NOTICE_KINDS[k].bn}
                   </label>
                 );
               })}
             </div>
-            <p className="mt-1.5 text-xs text-white/60">{NOTICE_KINDS[kind].hint}</p>
+            <p className="mt-1.5 text-xs text-m-ink/60">{NOTICE_KINDS[kind].hint}</p>
           </fieldset>
 
           {kind === "custom" && (
@@ -310,7 +310,7 @@ function NoticeComposer({ open, onOpenChange, role, meId, meName, today, subject
               </label>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {LEAVE_WORDS.map((w) => (
-                  <button key={w} type="button" onClick={() => setReason(w)} className={cn("min-h-8 rounded-full px-3 text-xs font-semibold transition-colors", reason === w ? "bg-signal-orange text-text-primary" : "bg-white/8 text-white/75 ring-1 ring-white/12 hover:text-white")}>{w}</button>
+                  <button key={w} type="button" onClick={() => setReason(w)} className={cn("min-h-8 rounded-full px-3 text-xs font-semibold transition-colors", reason === w ? "bg-m-yellow text-m-ink" : "bg-m-ink/4 text-m-ink/75 ring-1 ring-m-ink/10 hover:text-m-ink")}>{w}</button>
                 ))}
               </div>
               {err(problem.reason)}
@@ -324,7 +324,7 @@ function NoticeComposer({ open, onOpenChange, role, meId, meName, today, subject
           </label>
 
           {kind === "emergency" ? (
-            <p className="text-xs text-white/60">জরুরি নোটিশ সবসময় লাল — যাতে সবার চোখে আগে পড়ে।</p>
+            <p className="text-xs text-m-ink/60">জরুরি নোটিশ সবসময় লাল — যাতে সবার চোখে আগে পড়ে।</p>
           ) : (
             <fieldset>
               <legend className={label}>নোটের রং</legend>
@@ -332,7 +332,7 @@ function NoticeComposer({ open, onOpenChange, role, meId, meName, today, subject
                 {NOTE_COLORS.map((c) => {
                   const on = paperOf({ kind, color }) === c;
                   return (
-                    <label key={c} title={PAPER[c].bn} className={cn("flex size-9 cursor-pointer items-center justify-center rounded-full ring-2 ring-offset-2 ring-offset-text-primary transition-[box-shadow,scale] duration-150 has-focus-visible:ring-signal-orange active:scale-90", PAPER[c].paper, on ? "ring-white" : "ring-transparent hover:ring-white/40")}>
+                    <label key={c} title={PAPER[c].bn} className={cn("flex size-9 cursor-pointer items-center justify-center rounded-full ring-2 ring-offset-2 ring-offset-text-primary transition-[box-shadow,scale] duration-150 has-focus-visible:ring-m-blue active:scale-90", PAPER[c].paper, on ? "ring-white" : "ring-transparent hover:ring-m-ink/34")}>
                       <input type="radio" name="note-color" className="sr-only" checked={on} onChange={() => setColor(c)} />
                       {on && <Check className="size-4" aria-hidden />}
                       <span className="sr-only">{PAPER[c].bn}</span>
@@ -342,16 +342,16 @@ function NoticeComposer({ open, onOpenChange, role, meId, meName, today, subject
               </div>
             </fieldset>
           )}
-          <div className="flex items-start gap-4 rounded-2xl bg-black/30 p-4 ring-1 ring-white/10">
-            <span className="pt-2 text-xs font-semibold text-white/60">বোর্ডে এমন দেখাবে</span>
+          <div className="flex items-start gap-4 rounded-2xl bg-white/55 p-4 ring-1 ring-m-ink/9">
+            <span className="pt-2 text-xs font-semibold text-m-ink/60">বোর্ডে এমন দেখাবে</span>
             <div className="w-44 shrink-0">
               <NoteCard n={{ ...draft, title: draft.title || NOTICE_KINDS[kind].bn }} tilt="-rotate-1" by={meName} />
             </div>
           </div>
 
           {isStaff(role) && (
-            <label className="flex items-center gap-2 text-sm text-white/80">
-              <input type="checkbox" checked={pinned} onChange={(e) => setPinned(e.target.checked)} className="size-4 accent-signal-orange" />
+            <label className="flex items-center gap-2 text-sm text-m-ink/80">
+              <input type="checkbox" checked={pinned} onChange={(e) => setPinned(e.target.checked)} className="size-4 accent-m-blue" />
               পিন করে রাখুন — নিজে না সরানো পর্যন্ত থাকবে
             </label>
           )}

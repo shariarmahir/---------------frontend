@@ -33,20 +33,20 @@ export default async function CertificatePage({ params }: { params: Promise<{ ha
       <div className="print:hidden">
         <PageHeader title="দক্ষতার সার্টিফিকেট" back={{ href: `/media/u/${person.handle}`, label: person.nameBn }} actions={<PrintButton />} />
       </div>
-      <article className="relative overflow-hidden rounded-2xl live-in border-2 border-signal-orange bg-white p-6 text-center shadow-[0_30px_70px_-30px_var(--color-signal-orange)] sm:p-12 print:border-bd-green print:shadow-none">
-        <div className="absolute inset-3 rounded-xl border border-bd-green/15" aria-hidden />
+      <article className="relative overflow-hidden rounded-2xl live-in border-2 border-m-blue bg-white p-6 text-center shadow-[0_30px_70px_-30px_var(--color-signal-orange)] sm:p-12 print:border-m-blue print:shadow-none">
+        <div className="absolute inset-3 rounded-xl border border-m-blue/15" aria-hidden />
         <Image src="/logo/kandari-logo.png" alt="কাণ্ডারী-ল্যাব (Kandari Lab)" width={1600} height={967} sizes="120px" className="mx-auto h-16 w-auto" />
-        <p className="mt-3 text-sm font-bold tracking-wide text-bd-green">শিক্ষিতদের মিডিয়া</p>
+        <p className="mt-3 text-sm font-bold tracking-wide text-m-blue">শিক্ষিতদের মিডিয়া</p>
         <h1 className="mt-6 text-sm font-semibold text-text-muted">কমিউনিটি-যাচাইকৃত দক্ষতার সনদ</h1>
         <p className="mt-6 text-sm text-text-secondary">এই মর্মে জানানো যাচ্ছে যে</p>
-        <p className="mt-2 text-3xl font-bold text-text-primary">{person.nameBn}</p>
+        <p className="mt-2 text-3xl font-bold text-m-ink">{person.nameBn}</p>
         <p className="text-sm text-text-muted" lang="en">{person.name}</p>
         <p className="mt-6 text-sm text-text-secondary">কাজের প্রমাণ দেখে কমিউনিটি যাচাই করেছে তাঁর দক্ষতা</p>
-        <p className="mt-2 text-2xl font-bold text-bd-green-dark">{s.skill}</p>
+        <p className="mt-2 text-2xl font-bold text-m-blue-deep">{s.skill}</p>
         <p className="text-sm text-text-muted">{getCategory(s.category).bn}</p>
-        <div className="mx-auto mt-6 flex max-w-sm items-center justify-center gap-6 rounded-xl bg-bd-green-light/60 px-4 py-3">
+        <div className="mx-auto mt-6 flex max-w-sm items-center justify-center gap-6 rounded-xl bg-m-blue-soft/60 px-4 py-3">
           <div>
-            <p className="text-2xl font-bold text-bd-green-dark"><Num value={s.communityAvg} decimals={1} /></p>
+            <p className="text-2xl font-bold text-m-blue-deep"><Num value={s.communityAvg} decimals={1} /></p>
             <Stars value={s.communityAvg} size={14} />
           </div>
           <div className="text-left text-sm text-text-secondary">
@@ -57,16 +57,16 @@ export default async function CertificatePage({ params }: { params: Promise<{ ha
         <div className="mt-8 flex flex-wrap items-end justify-between gap-4 text-left text-xs text-text-muted">
           <div>
             <p>সনদ নম্বর</p>
-            <p className="font-mono text-sm font-semibold text-text-primary">{cert.id}</p>
+            <p className="font-mono text-sm font-semibold text-m-ink">{cert.id}</p>
           </div>
-          <SealCheck size={56} weight="duotone" className="seal-shine rounded-full text-bd-green" aria-hidden />
+          <SealCheck size={56} weight="duotone" className="seal-shine rounded-full text-m-blue" aria-hidden />
           <div className="text-right">
             <p>পরীক্ষা নয়, প্রমাণ।</p>
             <p>সার্টিফিকেট নয়, কাজ।</p>
           </div>
         </div>
       </article>
-      <p className="mt-4 text-center text-xs text-white/65 print:hidden">
+      <p className="mt-4 text-center text-xs text-m-ink/65 print:hidden">
         ৫ বা তার বেশি জনের রেটিং দাবির আধা তারার মধ্যে থাকলে সনদ তৈরি হয়। রেটিং কমে গেলে সনদ বাতিল হয়।
       </p>
     </div>

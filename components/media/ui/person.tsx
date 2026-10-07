@@ -5,12 +5,12 @@ import { cn } from "@/lib/utils";
 import { IdSeal } from "./trust";
 
 export const toneClass: Record<Tone, string> = {
-  green: "bg-bd-green text-white",
-  orange: "bg-signal-orange text-text-primary",
-  emerald: "bg-emerald-700 text-white",
-  amber: "bg-signal-orange text-text-primary",
-  slate: "bg-slate-700 text-white",
-  teal: "bg-teal-700 text-white",
+  green: "bg-m-blue-soft text-m-ink",
+  orange: "bg-m-yellow text-m-ink",
+  emerald: "bg-emerald-700 text-m-on",
+  amber: "bg-m-yellow text-m-ink",
+  slate: "bg-slate-700 text-m-on",
+  teal: "bg-teal-700 text-m-on",
 };
 
 const sizeClass = {
@@ -46,15 +46,15 @@ export function PersonLine({
   return (
     <Link
       href={`/media/u/${person.handle}`}
-      className={cn("group flex min-w-0 items-center gap-2.5 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-orange", className)}
+      className={cn("group flex min-w-0 items-center gap-2.5 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-m-blue", className)}
     >
       <PersonAvatar person={person} size={size} />
       <span className="min-w-0">
         <span className="flex items-center gap-1">
-          <span className="truncate text-sm font-semibold text-white group-hover:text-signal-orange">{person.nameBn}</span>
+          <span className="truncate text-sm font-semibold text-m-ink group-hover:text-m-blue">{person.nameBn}</span>
           {person.idVerified && <IdSeal size={16} />}
         </span>
-        {meta && <span className="block truncate text-xs text-white/65">{meta}</span>}
+        {meta && <span className="block truncate text-xs text-m-ink/65">{meta}</span>}
       </span>
     </Link>
   );

@@ -94,19 +94,21 @@ export function AcademyShell({ children }: { children: React.ReactNode }) {
   const order = role === "teacher" ? (["teach", "learn"] as const) : (["learn", "teach"] as const);
 
   return (
-    <div className="fixed inset-0 z-45 flex flex-col bg-black font-sans text-white">
-      <header className="flex h-16 shrink-0 items-center gap-2 bg-signal-orange px-2.5 text-text-primary sm:gap-4 sm:px-4">
-        <Link href="/media/academy" className="flex shrink-0 flex-col items-center rounded-lg leading-none focus-visible:outline-2 focus-visible:outline-text-primary">
-          <Image src="/logo/kandari-logo.png" alt="কাণ্ডারী-ল্যাব" width={1600} height={967} sizes="96px" className="h-10 w-auto sm:h-11" priority />
-          <span className="text-[9px] font-extrabold tracking-[0.3em] sm:text-[10px]">ACADEMY</span>
+    <div className="fixed inset-0 z-45 flex flex-col bg-m-ground font-sans text-m-ink">
+      <header className="frost-pane relative z-10 flex h-16 shrink-0 items-center gap-2 px-2.5 text-m-ink sm:gap-4 sm:px-4">
+        <Link href="/media/academy" className="flex shrink-0 flex-col items-center rounded-lg leading-none focus-visible:outline-2 focus-visible:outline-m-blue">
+          <span className="frost-tile rounded-xl px-1.5 pt-1 pb-0.5 text-center text-m-ink">
+          <Image src="/logo/kandari-logo.png" alt="কাণ্ডারী-ল্যাব" width={1600} height={967} sizes="96px" className="h-8 w-auto sm:h-9" priority />
+          <span className="block text-[9px] font-extrabold tracking-[0.3em] sm:text-[10px]">ACADEMY</span>
+          </span>
         </Link>
-        <span className="hidden h-9 w-px shrink-0 bg-text-primary/20 sm:block" aria-hidden />
+        <span className="hidden h-9 w-px shrink-0 bg-m-ink/12 sm:block" aria-hidden />
         <div className="min-w-0 flex-1 leading-tight">
           <p className="truncate text-[15px] font-bold">কাণ্ডারী তৈরি একাডেমি</p>
-          <p className="truncate text-xs font-semibold text-text-primary/80">সবার আমি ছাত্র</p>
+          <p className="truncate text-xs font-semibold text-m-blue">সবার আমি ছাত্র</p>
         </div>
         {role === "teacher" ? (
-          <Link href="/media/academy/desk" className="hidden h-9 shrink-0 items-center gap-1.5 rounded-full bg-text-primary px-3.5 text-sm font-bold text-signal-orange sm:inline-flex">
+          <Link href="/media/academy/desk" className="hidden h-9 shrink-0 items-center gap-1.5 rounded-full bg-m-yellow px-3.5 text-sm font-bold text-m-ink sm:inline-flex">
             <Presentation className="size-4" aria-hidden /> শিক্ষক হিসেবে আছেন
           </Link>
         ) : (
@@ -115,7 +117,7 @@ export function AcademyShell({ children }: { children: React.ReactNode }) {
         <button
           type="button"
           onClick={leave}
-          className="group inline-flex h-10 shrink-0 items-center gap-2 rounded-xl px-2 text-sm font-bold transition-colors hover:bg-text-primary/10 sm:px-3"
+          className="group inline-flex h-10 shrink-0 items-center gap-2 rounded-xl px-2 text-sm font-bold text-m-ink/85 transition-colors hover:bg-m-red-soft hover:text-m-red sm:px-3"
         >
           <LogOut className="size-4.5 transition-transform duration-300 group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden />
           <span className="hidden sm:inline">বের হন</span>
@@ -124,14 +126,14 @@ export function AcademyShell({ children }: { children: React.ReactNode }) {
       </header>
 
       <div className="flex min-h-0 flex-1">
-        <nav aria-label="একাডেমি" className="hidden w-60 shrink-0 flex-col overflow-y-auto border-r border-white/12 bg-text-primary px-3 py-5 lg:flex">
+        <nav aria-label="একাডেমি" className="hidden w-60 shrink-0 flex-col overflow-y-auto border-r border-m-ink/8 bg-white/70 px-3 py-5 shadow-[inset_-1px_0_0_rgb(255_255_255/0.9)] lg:flex">
           {order.map((k) => (
             <Group key={k} title={SECTIONS[k].title} items={SECTIONS[k].items} path={pathname} />
           ))}
           <Following path={pathname} />
-          <div className="mt-auto rounded-2xl bg-signal-orange p-4 text-text-primary">
-            <p className="text-lg leading-snug font-bold">সবার আমি ছাত্র</p>
-            <p className="mt-2 text-xs leading-relaxed font-semibold text-text-primary/80">যোগ দেওয়া বিনামূল্যে · ফি এসক্রোতে · ফাইনাল প্রকাশ্য</p>
+          <div className="blue-band mt-auto rounded-2xl p-4 shadow-m-tile">
+            <p className="text-lg leading-snug font-bold text-m-yellow">সবার আমি ছাত্র</p>
+            <p className="mt-2 text-xs leading-relaxed font-semibold text-white/80">যোগ দেওয়া বিনামূল্যে · ফি এসক্রোতে · ফাইনাল প্রকাশ্য</p>
           </div>
         </nav>
 
@@ -140,13 +142,13 @@ export function AcademyShell({ children }: { children: React.ReactNode }) {
         </main>
       </div>
 
-      <nav aria-label="একাডেমি" className="shrink-0 border-t border-white/12 bg-text-primary pb-[env(safe-area-inset-bottom)] lg:hidden">
+      <nav aria-label="একাডেমি" className="frost-dock shrink-0 pb-[env(safe-area-inset-bottom)] lg:hidden">
         <ul className="grid grid-cols-5">
           {TABS.map((item) => {
             const on = isOn(item, pathname);
             return (
               <li key={item.href}>
-                <Link href={item.href} aria-current={on ? "page" : undefined} className={cn("flex h-16 flex-col items-center justify-center gap-1 text-[11px] font-semibold", on ? "text-signal-orange" : "text-white/75")}>
+                <Link href={item.href} aria-current={on ? "page" : undefined} className={cn("flex h-16 flex-col items-center justify-center gap-1 text-[11px] font-semibold", on ? "text-m-blue" : "text-m-ink/65")}>
                   <item.Icon className="size-5" aria-hidden />
                   {item.short ?? item.label}
                 </Link>
@@ -162,7 +164,7 @@ export function AcademyShell({ children }: { children: React.ReactNode }) {
 function Group({ title, items, path }: { title: string; items: Item[]; path: string }) {
   return (
     <div className="mb-6">
-      <p className="mb-2 px-3 text-xs font-bold text-signal-orange">{title}</p>
+      <p className="mb-2 px-3 text-xs font-bold text-m-blue">{title}</p>
       <ul className="space-y-1">
         {items.map((item) => {
           const on = isOn(item, path);
@@ -173,7 +175,7 @@ function Group({ title, items, path }: { title: string; items: Item[]; path: str
                 aria-current={on ? "page" : undefined}
                 className={cn(
                   "group flex h-11 items-center gap-3 rounded-xl px-3 text-[15px] font-semibold transition-colors",
-                  on ? "bg-signal-orange text-text-primary shadow-tile" : "text-white/85 hover:bg-white/8 hover:text-white",
+                  on ? "bg-m-yellow text-m-ink shadow-m-tile" : "text-m-ink/85 hover:bg-m-ink/4 hover:text-m-ink",
                 )}
               >
                 <item.Icon className="size-5 shrink-0 transition-transform duration-200 group-hover:-rotate-6 motion-reduce:transition-none" aria-hidden />
@@ -193,11 +195,11 @@ function JoinedChip() {
   const joined = useAcademy((a) => Object.keys(a.admissions).length);
   if (!hydrated) return null;
   return joined > 0 ? (
-    <Link href="/media/academy" className="hidden h-9 shrink-0 items-center gap-1.5 rounded-full bg-text-primary px-3.5 text-sm font-bold text-signal-orange sm:inline-flex">
+    <Link href="/media/academy" className="hidden h-9 shrink-0 items-center gap-1.5 rounded-full bg-m-yellow px-3.5 text-sm font-bold text-m-ink sm:inline-flex">
       <Num value={joined} />টি বিভাগে আছেন
     </Link>
   ) : (
-    <Link href="/media/academy/departments" className="hidden h-9 shrink-0 items-center rounded-full bg-text-primary px-3.5 text-sm font-bold text-signal-orange sm:inline-flex">
+    <Link href="/media/academy/departments" className="hidden h-9 shrink-0 items-center rounded-full bg-m-yellow px-3.5 text-sm font-bold text-m-ink sm:inline-flex">
       বিভাগে যোগ দিন
     </Link>
   );
@@ -213,10 +215,10 @@ function Following({ path }: { path: string }) {
   if (!hydrated) return null;
   const handles = Object.keys(follows);
   return (
-    <div className="mb-6 border-t border-white/10 pt-5">
-      <p className="mb-2 px-3 text-xs font-bold text-signal-orange">অনুসরণ</p>
+    <div className="mb-6 border-t border-m-ink/9 pt-5">
+      <p className="mb-2 px-3 text-xs font-bold text-m-blue">অনুসরণ</p>
       {handles.length === 0 ? (
-        <Link href="/media/academy/teachers" className="block rounded-xl px-3 py-2 text-sm leading-relaxed text-white/70 hover:bg-white/8 hover:text-white">
+        <Link href="/media/academy/teachers" className="block rounded-xl px-3 py-2 text-sm leading-relaxed text-m-ink/70 hover:bg-m-ink/4 hover:text-m-ink">
           শিক্ষকদের অনুসরণ করলে তাঁদের চ্যানেল এখানে থাকবে।
         </Link>
       ) : (
@@ -227,11 +229,11 @@ function Following({ path }: { path: string }) {
             const on = path === href;
             return (
               <li key={h}>
-                <Link href={href} aria-current={on ? "page" : undefined} className={cn("flex h-10 items-center gap-3 rounded-xl px-3 text-sm font-semibold transition-colors", on ? "bg-white/12 text-white" : "text-white/85 hover:bg-white/8 hover:text-white")}>
+                <Link href={href} aria-current={on ? "page" : undefined} className={cn("flex h-10 items-center gap-3 rounded-xl px-3 text-sm font-semibold transition-colors", on ? "bg-m-ink/7 text-m-ink" : "text-m-ink/85 hover:bg-m-ink/4 hover:text-m-ink")}>
                   <PersonAvatar person={person} size="xs" />
                   <span className="min-w-0 flex-1 truncate">{person.nameBn}</span>
                   {FRESH.has(h) && (
-                    <span className="size-1.5 shrink-0 rounded-full bg-signal-orange">
+                    <span className="size-1.5 shrink-0 rounded-full bg-m-yellow">
                       <span className="sr-only">এ সপ্তাহে নতুন ক্লাস</span>
                     </span>
                   )}

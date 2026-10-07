@@ -16,7 +16,7 @@ export interface ShelfCourse {
   school: string;
 }
 
-const DOTS = ["bg-bd-green", "bg-signal-orange", "bg-text-primary", "bg-bdgreen-500"];
+const DOTS = ["bg-m-blue-soft", "bg-m-yellow", "bg-m-card", "bg-m-green-soft"];
 
 /**
  * Courses by school: tabs along the top, and a gold panel with a row of
@@ -40,7 +40,7 @@ export function CourseCarousel({ courses, schools }: { courses: ShelfCourse[]; s
 
   return (
     <div>
-      <div role="tablist" aria-label="স্কুল অনুযায়ী কোর্স" className="-mx-4 flex gap-7 overflow-x-auto border-b border-white/15 px-4 scrollbar-none sm:mx-0 sm:px-0">
+      <div role="tablist" aria-label="স্কুল অনুযায়ী কোর্স" className="-mx-4 flex gap-7 overflow-x-auto border-b border-m-ink/13 px-4 scrollbar-none sm:mx-0 sm:px-0">
         {tabs.map((t) => (
           <button
             key={t.id}
@@ -49,15 +49,15 @@ export function CourseCarousel({ courses, schools }: { courses: ShelfCourse[]; s
             aria-selected={tab === t.id}
             aria-controls={`${base}-row`}
             onClick={() => pick(t.id)}
-            className={cn("relative shrink-0 pb-3 text-[17px] font-semibold whitespace-nowrap transition-colors", tab === t.id ? "text-signal-orange" : "text-white/80 hover:text-white")}
+            className={cn("relative shrink-0 pb-3 text-[17px] font-semibold whitespace-nowrap transition-colors", tab === t.id ? "text-m-blue" : "text-m-ink/80 hover:text-m-ink")}
           >
             {t.name}
-            {tab === t.id && <motion.span layoutId={`${base}-bar`} className="absolute inset-x-0 -bottom-px h-[3px] rounded-full bg-signal-orange" transition={{ type: "spring", stiffness: 500, damping: 40 }} />}
+            {tab === t.id && <motion.span layoutId={`${base}-bar`} className="absolute inset-x-0 -bottom-px h-[3px] rounded-full bg-m-yellow" transition={{ type: "spring", stiffness: 500, damping: 40 }} />}
           </button>
         ))}
       </div>
 
-      <div className="relative mt-6 rounded-3xl bg-signal-orange px-3 py-8 sm:px-16 sm:py-12">
+      <div className="relative mt-6 rounded-3xl bg-m-yellow px-3 py-8 sm:px-16 sm:py-12">
         <ArrowButton side="left" onClick={() => slide(-1)} />
         <AnimatePresence mode="wait" initial={false}>
           <motion.ul
@@ -79,21 +79,21 @@ export function CourseCarousel({ courses, schools }: { courses: ShelfCourse[]; s
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: Math.min(i, 5) * 0.06, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
               >
-                <Link href={`/media/academy/course/${c.id}`} className="group block h-full overflow-hidden rounded-2xl bg-white text-text-primary ring-1 ring-text-primary/10 transition-[translate,box-shadow] duration-300 hover:-translate-y-1.5 hover:shadow-tile-lift focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-text-primary motion-reduce:transition-none">
+                <Link href={`/media/academy/course/${c.id}`} className="group block h-full overflow-hidden rounded-2xl bg-m-card text-m-ink shadow-m-tile ring-1 ring-m-ink/8 transition-[translate,box-shadow] duration-300 hover:-translate-y-1.5 hover:shadow-m-lift focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-m-ink motion-reduce:transition-none">
                   <span className="relative block aspect-16/10 overflow-hidden">
                     <Image src={c.image} alt="" fill sizes="264px" className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none" />
-                    <span className="absolute top-1/2 left-1/2 grid size-12 -translate-1/2 place-items-center rounded-full bg-white/85 text-text-primary transition-[scale,background-color] duration-300 group-hover:scale-110 group-hover:bg-signal-orange motion-reduce:transition-none">
+                    <span className="absolute top-1/2 left-1/2 grid size-12 -translate-1/2 place-items-center rounded-full bg-m-ink/45 text-m-on backdrop-blur-sm transition-[scale,background-color,color] duration-300 group-hover:scale-110 group-hover:bg-m-yellow group-hover:text-m-ink motion-reduce:transition-none">
                       <ArrowUpRight className="size-5" aria-hidden />
                     </span>
-                    <span className="absolute right-2.5 bottom-2.5 rounded-md bg-white px-2 py-0.5 text-[11px] font-bold">{c.level}</span>
+                    <span className="absolute right-2.5 bottom-2.5 rounded-md bg-white px-2 py-0.5 text-[11px] font-bold text-m-ink">{c.level}</span>
                   </span>
                   <span className="block p-4">
-                    <span className="flex items-center gap-2 text-xs font-semibold text-text-muted">
+                    <span className="flex items-center gap-2 text-xs font-semibold text-m-ink/65">
                       <span className={cn("size-2.5 shrink-0 rounded-full", dotOf(c.school))} aria-hidden />
                       <span className="truncate">{c.dept}</span>
                     </span>
                     <span className="mt-1.5 block truncate text-base font-bold">
-                      <span className="font-mono text-[13px] text-bd-green">{c.id}</span> · {c.title}
+                      <span className="font-mono text-[13px] text-m-blue">{c.id}</span> · {c.title}
                     </span>
                   </span>
                 </Link>
@@ -114,7 +114,7 @@ function ArrowButton({ side, onClick }: { side: "left" | "right"; onClick: () =>
       type="button"
       onClick={onClick}
       className={cn(
-        "absolute top-1/2 z-10 hidden size-11 -translate-y-1/2 place-items-center rounded-full bg-white text-text-primary shadow-tile transition-[scale,background-color] duration-200 hover:scale-110 hover:bg-text-primary hover:text-signal-orange active:scale-95 sm:grid",
+        "absolute top-1/2 z-10 hidden size-11 -translate-y-1/2 place-items-center rounded-full bg-m-ink text-m-on shadow-m-tile transition-[scale,background-color] duration-200 hover:scale-110 hover:bg-m-card hover:text-m-blue active:scale-95 sm:grid",
         side === "left" ? "left-3" : "right-3",
       )}
     >

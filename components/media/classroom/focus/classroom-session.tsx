@@ -142,8 +142,8 @@ function FocusShell({ session, rooms, onLeave, children }: { session: ClassSessi
           className={cn(
             "min-h-0 print:hidden",
             docked
-              ? cn("relative w-[22rem] shrink-0", from === "left" ? "border-r" : "w-[25rem] border-l", "border-white/12")
-              : cn("absolute inset-y-0 z-20 w-[min(26rem,92vw)] shadow-[0_0_60px_-10px_rgb(0_0_0/0.9)]", from === "left" ? "left-0 border-r border-white/12" : "right-0 border-l border-white/12"),
+              ? cn("relative w-[22rem] shrink-0", from === "left" ? "border-r" : "w-[25rem] border-l", "border-m-ink/10")
+              : cn("absolute inset-y-0 z-20 w-[min(26rem,92vw)] shadow-[0_0_60px_-10px_rgb(16_24_40/0.27)]", from === "left" ? "left-0 border-r border-m-ink/10" : "right-0 border-l border-m-ink/10"),
           )}
         >
           {node}
@@ -153,13 +153,13 @@ function FocusShell({ session, rooms, onLeave, children }: { session: ClassSessi
   );
 
   return (
-    <div className="fixed inset-0 z-[45] flex flex-col bg-black font-sans text-white print:static print:block">
-      <header className="flex h-16 shrink-0 items-center gap-1.5 bg-signal-orange px-2.5 text-text-primary sm:gap-3 sm:px-4 print:hidden">
-        <Link href="/media/classroom" className="flex shrink-0 flex-col items-center rounded-lg leading-none focus-visible:outline-2 focus-visible:outline-text-primary">
+    <div className="fixed inset-0 z-[45] flex flex-col bg-m-ground font-sans text-m-ink print:static print:block">
+      <header className="flex h-16 shrink-0 items-center gap-1.5 bg-m-yellow px-2.5 text-m-ink sm:gap-3 sm:px-4 print:hidden">
+        <Link href="/media/classroom" className="flex shrink-0 flex-col items-center rounded-lg leading-none focus-visible:outline-2 focus-visible:outline-m-ink">
           <Image src="/logo/kandari-logo.png" alt="কাণ্ডারী-ল্যাব" width={1600} height={967} sizes="96px" className="h-10 w-auto sm:h-11" priority />
           <span className="text-[9px] font-extrabold tracking-[0.26em] sm:text-[10px]">CLASSROOM</span>
         </Link>
-        <span className="h-9 w-px shrink-0 bg-text-primary/20 md:max-lg:hidden" aria-hidden />
+        <span className="h-9 w-px shrink-0 bg-m-card/20 md:max-lg:hidden" aria-hidden />
         <div className="min-w-0 flex-1 leading-tight md:max-lg:sr-only md:flex-none lg:max-w-56 xl:max-w-72">
           <p className="flex items-center gap-1.5 truncate">
             {parent && <Eye className="size-4 shrink-0" aria-label="অভিভাবক হিসেবে দেখছেন" />}
@@ -176,7 +176,7 @@ function FocusShell({ session, rooms, onLeave, children }: { session: ClassSessi
             )}
           </p>
           {(who.school || parent) && (
-            <p className="font-garet truncate text-[11px] font-extrabold tracking-wide text-text-primary/80">
+            <p className="font-garet truncate text-[11px] font-extrabold tracking-wide text-m-ink/80">
               {parent ? `অভিভাবক দেখছেন${who.school ? ` · ${who.school}` : ""}` : who.school}
             </p>
           )}
@@ -189,7 +189,7 @@ function FocusShell({ session, rooms, onLeave, children }: { session: ClassSessi
         )}
         <PanelButton on={shown("chat")} onClick={() => toggle("chat")} Icon={DiscussionIcon} label="Discussion Room" />
         <PanelButton on={shown("ai")} onClick={() => toggle("ai")} Icon={BuddyIcon} label="মেধাবী বন্ধু" />
-        <button type="button" onClick={onLeave} className="group inline-flex h-10 shrink-0 items-center gap-2 rounded-xl px-2 text-sm font-bold sm:px-3 transition-colors hover:bg-text-primary/10">
+        <button type="button" onClick={onLeave} className="group inline-flex h-10 shrink-0 items-center gap-2 rounded-xl px-2 text-sm font-bold sm:px-3 transition-colors hover:bg-m-card/10">
           <LogOut className="size-4.5 transition-transform duration-300 group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden />
           <span className="hidden xl:inline">বের হন</span>
           <span className="sr-only xl:hidden">ক্লাসরুম থেকে বের হন</span>
@@ -197,7 +197,7 @@ function FocusShell({ session, rooms, onLeave, children }: { session: ClassSessi
       </header>
 
       {!wide && (
-        <div className="shrink-0 border-t border-text-primary/15 bg-signal-orange px-3 print:hidden">
+        <div className="shrink-0 border-t border-m-ink/15 bg-m-yellow px-3 print:hidden">
           <ClassTicker />
         </div>
       )}
@@ -211,10 +211,10 @@ function FocusShell({ session, rooms, onLeave, children }: { session: ClassSessi
           className="scrollbar-gold min-w-0 flex-1 overflow-y-auto overscroll-contain px-3 pt-5 pb-16 [--sticky-top:0px] sm:px-6 print:overflow-visible print:p-0"
         >
           {blocked ? (
-            <div className="mx-auto mt-10 max-w-md space-y-4 rounded-3xl bg-text-primary p-6 text-center ring-1 ring-white/12">
-              <ShieldAlert className="mx-auto size-10 text-signal-orange" aria-hidden />
+            <div className="mx-auto mt-10 max-w-md space-y-4 rounded-3xl bg-m-card p-6 text-center ring-1 ring-m-ink/10 shadow-m-tile">
+              <ShieldAlert className="mx-auto size-10 text-m-blue" aria-hidden />
               <h1 className="text-xl font-bold">এই ক্লাসটা {parent?.name}-এর নয়</h1>
-              <p className="text-sm leading-relaxed text-white/75">অভিভাবক হিসেবে শুধু নিজের সন্তানের ক্লাস আর ল্যাব দেখা যায়।</p>
+              <p className="text-sm leading-relaxed text-m-ink/75">অভিভাবক হিসেবে শুধু নিজের সন্তানের ক্লাস আর ল্যাব দেখা যায়।</p>
               <Link href="/media/classroom" className={mediaButton({ variant: "primary" })}>
                 সন্তানের ক্লাসগুলো দেখুন
               </Link>
@@ -235,7 +235,7 @@ function FocusShell({ session, rooms, onLeave, children }: { session: ClassSessi
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 z-10 bg-black/60 print:hidden"
+              className="absolute inset-0 z-10 bg-white/85 print:hidden"
             />
           )}
         </AnimatePresence>
@@ -252,7 +252,7 @@ function PanelButton({ on, onClick, Icon, label }: { on: boolean; onClick: () =>
       aria-pressed={on}
       className={cn(
         "inline-flex h-10 shrink-0 items-center gap-2 rounded-xl px-2.5 text-sm font-bold transition-[background-color,color,scale] duration-200 active:scale-95 sm:px-3",
-        on ? "bg-text-primary text-signal-orange [--icon-bg:var(--color-text-primary)]" : "ring-1 ring-text-primary/30 [--icon-bg:var(--color-signal-orange)] hover:bg-text-primary/10",
+        on ? "bg-m-card text-m-blue [--icon-bg:var(--color-text-primary)]" : "ring-1 ring-m-ink/30 [--icon-bg:var(--color-signal-orange)] hover:bg-m-card/10",
       )}
     >
       <Icon className="size-5" />

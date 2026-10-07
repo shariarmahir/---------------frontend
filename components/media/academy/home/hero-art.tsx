@@ -22,16 +22,16 @@ export function HeroArt() {
   return (
     <div className="relative mx-auto aspect-[5/4] w-full max-w-[34rem]">
       {/* Shapes behind the pictures. */}
-      <motion.span className="absolute bottom-[6%] left-[30%] size-[38%] rounded-t-full bg-bd-green-dark" {...drift(-8, 0, 6)} aria-hidden />
+      <motion.span className="absolute bottom-[6%] left-[30%] size-[38%] rounded-t-full bg-m-blue-soft" {...drift(-8, 0, 6)} aria-hidden />
       <motion.svg viewBox="0 0 60 52" className="absolute top-0 left-[46%] w-[16%]" {...drift(10, -10, 5)} aria-hidden>
-        <path d="M30 0 L60 52 H0 Z" className="fill-bd-green" />
+        <path d="M30 0 L60 52 H0 Z" className="fill-m-blue" />
       </motion.svg>
-      <motion.span className="absolute top-[8%] right-[2%] size-[18%] rounded-full border-[6px] border-text-primary" {...drift(8, 90, 9)} aria-hidden />
+      <motion.span className="absolute top-[8%] right-[2%] size-[18%] rounded-full border-[6px] border-m-card" {...drift(8, 90, 9)} aria-hidden />
 
       {SHOTS.map((s, i) => (
         <motion.div
           key={s.src}
-          className={`absolute overflow-hidden ring-4 ring-text-primary ${s.className}`}
+          className={`absolute overflow-hidden ring-4 ring-m-card ${s.className}`}
           initial={reduce ? false : { opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ delay: 0.15 + i * 0.12, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
@@ -42,8 +42,8 @@ export function HeroArt() {
 
       {/* The brand's three pixels, bobbing over the arch. */}
       <div className="absolute top-[14%] right-[24%] flex gap-1.5" aria-hidden>
-        {["bg-text-primary", "bg-bd-green", "bg-white"].map((tone, i) => (
-          <motion.span key={tone} className={`size-3.5 rounded-[4px] ${tone}`} {...(reduce ? {} : { animate: { y: [0, -8, 0] }, transition: { duration: 1.4, delay: i * 0.18, repeat: Infinity, ease: "easeInOut" as const } })} />
+        {["bg-m-yellow", "bg-m-blue", "bg-m-ink"].map((tone, i) => (
+          <motion.span key={i} className={`size-3.5 rounded-[4px] ${tone}`} {...(reduce ? {} : { animate: { y: [0, -8, 0] }, transition: { duration: 1.4, delay: i * 0.18, repeat: Infinity, ease: "easeInOut" as const } })} />
         ))}
       </div>
     </div>

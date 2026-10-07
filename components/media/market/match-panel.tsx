@@ -25,23 +25,23 @@ export function MatchPanel() {
   const buyers = mine.flatMap((l) => buyersFor(listingOffer(l), posts).map((m) => ({ ...m, listing: l })));
 
   return (
-    <section className="live-in space-y-4 rounded-3xl bg-bd-green p-5 sm:p-6">
-      <h2 className="flex items-center gap-2 text-lg font-bold text-white">
-        <Sparkles className="size-5 text-signal-orange" aria-hidden /> আপনার জন্য অটো-মিল
+    <section className="live-in space-y-4 rounded-3xl bg-m-blue-soft p-5 sm:p-6">
+      <h2 className="flex items-center gap-2 text-lg font-bold text-m-ink">
+        <Sparkles className="size-5 text-m-blue" aria-hidden /> আপনার জন্য অটো-মিল
       </h2>
       {mine.length > 0 &&
         (buyers.length === 0 ? (
-          <p className="text-sm text-white/85">আপনার পণ্যের সাথে বোর্ডের কোনো ক্রেতা এখনো মেলেনি। হ্যাশট্যাগ বাড়ালে মিলের সম্ভাবনা বাড়ে।</p>
+          <p className="text-sm text-m-ink/85">আপনার পণ্যের সাথে বোর্ডের কোনো ক্রেতা এখনো মেলেনি। হ্যাশট্যাগ বাড়ালে মিলের সম্ভাবনা বাড়ে।</p>
         ) : (
           <ul className="grid gap-2 sm:grid-cols-2">
             {buyers.map((m) => (
-              <li key={m.post.id + m.listing.id} className="flex items-center gap-3 rounded-2xl bg-text-primary p-3">
-                <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-signal-orange text-sm font-bold text-text-primary"><Num value={m.score} />%</span>
+              <li key={m.post.id + m.listing.id} className="flex items-center gap-3 rounded-2xl bg-m-card p-3">
+                <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-m-yellow text-sm font-bold text-m-ink"><Num value={m.score} />%</span>
                 <span className="min-w-0 flex-1 text-sm">
-                  <span className="block truncate font-semibold text-white">{personOrThrow(m.post.author).nameBn} কিনতে চান: {m.post.title}</span>
-                  <span className="block truncate text-xs text-white/65">আপনার “{m.listing.title}” · {m.why.join(" · ")}</span>
+                  <span className="block truncate font-semibold text-m-ink">{personOrThrow(m.post.author).nameBn} কিনতে চান: {m.post.title}</span>
+                  <span className="block truncate text-xs text-m-ink/65">আপনার “{m.listing.title}” · {m.why.join(" · ")}</span>
                 </span>
-                <Link href={`/media/market?view=board#${m.post.id}`} className="shrink-0 text-xs font-bold text-signal-orange hover:underline">দেখুন</Link>
+                <Link href={`/media/market?view=board#${m.post.id}`} className="shrink-0 text-xs font-bold text-m-blue hover:underline">দেখুন</Link>
               </li>
             ))}
           </ul>
