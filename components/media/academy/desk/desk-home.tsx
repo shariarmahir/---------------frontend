@@ -2,10 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ClipboardCheck, ListChecks, Plus, ShieldAlert } from "lucide-react";
+import { ArrowRight, ClipboardCheck, ListChecks, MonitorPlay, Plus, ShieldAlert } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { board, getCourse } from "@/data/media/academy";
-import { payoutOf, type Course } from "@/lib/media/academy";
+import { DEMO_NOW } from "@/data/media/clock";
+import { freeClassDone, payoutOf, type Course } from "@/lib/media/academy";
 import { useHydrated } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
 import { mediaButton } from "../../ui/button-styles";
@@ -13,6 +14,7 @@ import { DateText, Num, Taka } from "../../ui/numerals";
 import { PersonAvatar } from "../../ui/person";
 import { TierBadge, standingOf } from "../parts";
 import { useAcademy } from "../use-academy";
+import { useVideos } from "../videos/use-videos";
 import { useTeacher } from "./use-teacher";
 
 /** শিক্ষক ডেস্ক: a teacher's courses, today's jobs, and the money as classes are held. */
@@ -22,6 +24,7 @@ export function DeskHome() {
   const attendance = useAcademy((a) => a.attendance);
   const marks = useAcademy((a) => a.marks);
   const application = useAcademy((a) => a.application);
+  const videos = useVideos();
 
   if (!hydrated) return <Skeleton className="h-96 rounded-2xl bg-text-primary/40" />;
 
@@ -95,6 +98,18 @@ export function DeskHome() {
       <section aria-labelledby="today">
         <h2 id="today" className="mb-3 text-lg font-bold text-white">আজকের কাজ</h2>
         <ul className="divide-y divide-white/10 overflow-hidden rounded-2xl bg-text-primary ring-1 ring-white/12">
+          {t.live.length > 0 && !freeClassDone(videos, t.handle, DEMO_NOW.toISOString()) && (
+            <li>
+              <Link href="/media/academy/videos?upload=1" className="group flex items-center gap-3 px-4 py-3.5 hover:bg-white/5 sm:px-5">
+                <MonitorPlay className="size-5 shrink-0 text-signal-orange" aria-hidden />
+                <span className="min-w-0 flex-1">
+                  <span className="block font-semibold text-white group-hover:text-signal-orange">এ সপ্তাহের বিনামূল্যের ক্লাস ভিডিও তুলুন</span>
+                  <span className="text-xs text-white/65">প্রতি সপ্তাহে একটা, সবার জন্য — সপ্তাহ শেষ শুক্রবার রাতে</span>
+                </span>
+                <ArrowRight className="size-4 shrink-0 text-white/60 transition-transform group-hover:translate-x-0.5" aria-hidden />
+              </Link>
+            </li>
+          )}
           {nextWeeks.map(({ course, lesson }) => (
             <li key={course.id}>
               <Link href={`/media/academy/desk/${course.id}`} className="group flex items-center gap-3 px-4 py-3.5 hover:bg-white/5 sm:px-5">

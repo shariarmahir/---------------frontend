@@ -26,7 +26,7 @@ const ICON: Record<CaptchaItem, LucideIcon> = {
  * and brings a new puzzle; the right one turns green and opens the door.
  * Disabled (with the reason) until the gate has what it needs.
  */
-export function PictureCaptcha({ disabled, hint, onPass }: { disabled: boolean; hint?: string; onPass: () => void }) {
+export function PictureCaptcha({ disabled, hint, opening = "ক্লাসরুম খুলছে…", onPass }: { disabled: boolean; hint?: string; opening?: string; onPass: () => void }) {
   const reduce = useReducedMotion();
   // The puzzle is made in the browser only: the gate's content is never server-rendered.
   const [puzzle, setPuzzle] = useState<Captcha>(() => makeCaptcha(Math.random));
@@ -101,7 +101,7 @@ export function PictureCaptcha({ disabled, hint, onPass }: { disabled: boolean; 
 
       <p aria-live="polite" className="mt-3 min-h-5 text-xs font-semibold">
         {passed ? (
-          <span className="text-bdgreen-200">মিলেছে — ক্লাসরুম খুলছে…</span>
+          <span className="text-bdgreen-200">মিলেছে — {opening}</span>
         ) : disabled && hint ? (
           <span className="text-white/65">{hint}</span>
         ) : miss > 0 ? (

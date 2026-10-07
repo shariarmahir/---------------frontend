@@ -389,3 +389,30 @@ export const markSchema = z
     });
   });
 export type MarkInput = z.infer<typeof markSchema>;
+
+const isHttps = (s: string) => {
+  try {
+    return new URL(s).protocol === "https:";
+  } catch {
+    return false;
+  }
+};
+
+/** A class video a teacher puts up: a web link, its length (seconds for a short, else minutes), free or for the course. */
+export const videoSchema = z
+  .object({
+    course: z.string().min(1, "কোর্স বেছে নিন।"),
+    title: z.string().trim().min(6, "ভিডিওর নাম দিন (অন্তত ৬ অক্ষর)।").max(100, "১০০ অক্ষরের মধ্যে রাখুন।"),
+    week: z.number().int().min(1, "সপ্তাহ বেছে নিন।"),
+    href: z.string().trim().refine(isHttps, "ইউটিউব বা ড্রাইভের https লিংক দিন।"),
+    short: z.boolean(),
+    length: z.number({ error: "দৈর্ঘ্য লিখুন।" }).int().min(1, "দৈর্ঘ্য লিখুন।"),
+    access: z.enum(["free", "paid"]),
+    about: z.string().trim().max(1000, "১০০০ অক্ষরের মধ্যে রাখুন।"),
+  })
+  .superRefine((v, ctx) => {
+    if (v.short && v.length > 59) ctx.addIssue({ code: "custom", path: ["length"], message: "ছোট ভিডিও ৫৯ সেকেন্ডের মধ্যে।" });
+    if (!v.short && v.length > 240) ctx.addIssue({ code: "custom", path: ["length"], message: "২৪০ মিনিটের মধ্যে রাখুন।" });
+    if (v.short && v.access === "paid") ctx.addIssue({ code: "custom", path: ["access"], message: "ছোট ভিডিও সবসময় বিনামূল্যে।" });
+  });
+export type VideoInput = z.infer<typeof videoSchema>;

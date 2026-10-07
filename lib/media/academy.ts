@@ -319,9 +319,19 @@ export interface AcademyState {
   attendance: Record<string, Record<number, string[]>>;
   /** Panel marks the viewer gave, by board seat. */
   marks: Record<string, PanelMark>;
+  /** Class videos the teacher put up, newest first. */
+  videos: ClassVideo[];
+  /** The viewer's like or dislike, by video or comment id. */
+  votes: Record<string, Vote>;
+  /** The viewer's stars for a class, by video id. */
+  ratings: Record<string, number>;
+  /** What the viewer wrote under classes, oldest first. */
+  comments: VideoComment[];
+  /** Teachers the viewer follows, by handle, and how much to hear from each. */
+  follows: Record<string, Bell>;
 }
 
-export const emptyAcademy: AcademyState = { admissions: {}, enrolled: {}, application: null, complaints: [], workshops: {}, drafts: [], materials: {}, attendance: {}, marks: {} };
+export const emptyAcademy: AcademyState = { admissions: {}, enrolled: {}, application: null, complaints: [], workshops: {}, drafts: [], materials: {}, attendance: {}, marks: {}, videos: [], votes: {}, ratings: {}, comments: [], follows: {} };
 
 /**
  * Saved state from any earlier version, made whole: missing parts start
@@ -405,4 +415,165 @@ export interface PanelMark {
 /** The total of a rubric, each line held between 0 and its maximum. */
 export function rubricTotal(scores: number[]): number {
   return RUBRIC.reduce((n, r, i) => n + Math.max(0, Math.min(r.max, Math.round(scores[i] ?? 0))), 0);
+}
+
+/* ── Class videos ──────────────────────────────────────────────────── */
+
+/** Free classes are for everyone; course videos for those enrolled. */
+export type VideoAccess = "free" | "paid";
+
+export interface ClassVideo {
+  id: string;
+  /** Course code. */
+  course: string;
+  /** Teacher's handle. */
+  teacher: string;
+  title: string;
+  /** The course week the class belongs to. */
+  week: number;
+  /** Length in seconds. */
+  seconds: number;
+  access: VideoAccess;
+  /** A clip under a minute, for the shorts shelf. */
+  short?: boolean;
+  at: string;
+  views: number;
+  /** Where it plays: the YouTube or Drive link the teacher gave. */
+  href?: string;
+  /** The teacher's own words under the video. */
+  about?: string;
+}
+
+/** The academy week runs Saturday to Friday, Dhaka time; this is its Saturday, as YYYY-MM-DD. */
+export function weekOf(iso: string): string {
+  const d = new Date(new Date(iso).getTime() + 6 * 3_600_000);
+  d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 1) % 7));
+  return d.toISOString().slice(0, 10);
+}
+
+/**
+ * Has the teacher put up this week's free class — the one every teacher
+ * owes, for free education for all? A short doesn't count. Anything dated
+ * after `now` was made on this device, whose clock runs ahead of the
+ * demo's, so it counts as this week.
+ */
+export function freeClassDone(videos: ClassVideo[], teacher: string, now: string): boolean {
+  const week = weekOf(now);
+  return videos.some((v) => v.teacher === teacher && v.access === "free" && !v.short && (weekOf(v.at) === week || v.at > now));
+}
+
+/** May this viewer play it: a free class, a course they joined, or their own. */
+export function canWatch(video: ClassVideo, enrolled: Record<string, unknown>, viewer?: string): boolean {
+  return video.access === "free" || video.teacher === viewer || video.course in enrolled;
+}
+
+/** A YouTube link as a privacy-friendly embed address; any other link is not embedded. */
+export function youtubeEmbed(href: string): string | null {
+  let url: URL;
+  try {
+    url = new URL(href);
+  } catch {
+    return null;
+  }
+  if (url.protocol !== "https:") return null;
+  const host = url.hostname.replace(/^(www|m)\./, "");
+  const id =
+    host === "youtu.be"
+      ? url.pathname.slice(1)
+      : host === "youtube.com" || host === "youtube-nocookie.com"
+        ? (url.searchParams.get("v") ?? url.pathname.match(/^\/(?:shorts|embed|live)\/([^/]+)/)?.[1])
+        : undefined;
+  return id && /^[\w-]{11}$/.test(id) ? `https://www.youtube-nocookie.com/embed/${id}` : null;
+}
+
+/** A video's length as its thumbnail shows it: "৪১:২০", "১:০২:০৫" (in Latin digits; the page converts). */
+export function durationText(seconds: number): string {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  return `${h ? `${h}:${String(m).padStart(2, "0")}` : m}:${String(s).padStart(2, "0")}`;
+}
+
+/* ── Under a class: likes, stars and comments ─────────────────────── */
+
+export type Vote = "up" | "down";
+
+export interface VideoComment {
+  id: string;
+  video: string;
+  /** The writer's handle, when they have a profile here (teachers, the viewer). */
+  handle?: string;
+  /** Otherwise the learner's name. */
+  name?: string;
+  text: string;
+  at: string;
+  likes: number;
+  /** The comment this answers. */
+  parent?: string;
+  /** Pinned by the teacher: shown first. */
+  pinned?: boolean;
+}
+
+export type CommentSort = "top" | "new";
+
+export interface Thread {
+  comment: VideoComment;
+  replies: VideoComment[];
+}
+
+/** A class's conversation: the teacher's pinned note first, then most liked (or newest); replies oldest first. */
+export function threadsOf(all: VideoComment[], video: string, sort: CommentSort): Thread[] {
+  const here = all.filter((c) => c.video === video);
+  return here
+    .filter((c) => !c.parent)
+    .sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)) || (sort === "top" ? b.likes - a.likes : 0) || b.at.localeCompare(a.at))
+    .map((comment) => ({ comment, replies: here.filter((r) => r.parent === comment.id).sort((a, b) => a.at.localeCompare(b.at)) }));
+}
+
+export interface RatingSummary {
+  avg: number;
+  count: number;
+  /** How many gave 1, 2, 3, 4 and 5 stars. */
+  stars: number[];
+}
+
+/**
+ * How many gave each star, for a class rated `avg` by `count` people — a
+ * seeded class keeps only those two. Whole people, adding up to `count`.
+ */
+export function starSpread(avg: number, count: number): number[] {
+  const weights = [1, 2, 3, 4, 5].map((s) => Math.exp(-((s - avg) ** 2) / 0.9));
+  const total = weights.reduce((a, b) => a + b, 0);
+  const raw = weights.map((w) => (w / total) * count);
+  const out = raw.map(Math.floor);
+  let left = count - out.reduce((a, b) => a + b, 0);
+  for (const [, i] of raw.map((x, i) => [x - Math.floor(x), i]).sort((a, b) => b[0] - a[0])) {
+    if (left-- <= 0) break;
+    out[i]++;
+  }
+  return out;
+}
+
+/** A class's rating with the viewer's own stars counted in. */
+export function ratingWith(seed: { avg: number; count: number }, mine?: number): RatingSummary {
+  const stars = starSpread(seed.avg, seed.count);
+  if (!mine) return { ...seed, stars };
+  stars[mine - 1]++;
+  return { avg: Math.round(((seed.avg * seed.count + mine) / (seed.count + 1)) * 10) / 10, count: seed.count + 1, stars };
+}
+
+/* ── Teacher channels ──────────────────────────────────────────────── */
+
+/** How much a follower hears: every new class, only the weekly free class, or nothing. */
+export type Bell = "all" | "free" | "none";
+export const BELLS: Record<Bell, string> = { all: "সব ক্লাস", free: "শুধু বিনামূল্যের ক্লাস", none: "কিছু না" };
+
+export type VideoSort = "latest" | "popular" | "oldest";
+export const VIDEO_SORTS: Record<VideoSort, string> = { latest: "সর্বশেষ", popular: "জনপ্রিয়", oldest: "পুরোনো" };
+
+/** A channel's videos in the chosen order; ties fall back to newest first. */
+export function sortVideos(videos: ClassVideo[], by: VideoSort): ClassVideo[] {
+  const newest = (a: ClassVideo, b: ClassVideo) => b.at.localeCompare(a.at);
+  const order = by === "popular" ? (a: ClassVideo, b: ClassVideo) => b.views - a.views || newest(a, b) : by === "oldest" ? (a: ClassVideo, b: ClassVideo) => -newest(a, b) : newest;
+  return [...videos].sort(order);
 }

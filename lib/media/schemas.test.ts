@@ -7,6 +7,7 @@ import {
   eventSchema,
   jobSchema,
   markSchema,
+  videoSchema,
   commentSchema,
   complaintSchema,
   courseSchema,
@@ -200,4 +201,13 @@ test("academy: building a course and marking a final", () => {
   assert.deepEqual(errPaths(markSchema.safeParse({ ...mark, scores: [31, 20, 15, 12, 8] })), ["scores.0"]);
   assert.deepEqual(errPaths(markSchema.safeParse({ ...mark, scores: [26, 20] })), ["scores"]);
   assert.deepEqual(errPaths(markSchema.safeParse({ ...mark, comment: "ভালো" })), ["comment"]);
+});
+
+test("a class video needs an https link; a short is free and under a minute", () => {
+  const video = { course: "AI-201", title: "পাইথনের ঝটপট পুনরাবৃত্তি", week: 1, href: "https://youtu.be/dQw4w9WgXcQ", short: false, length: 39, access: "free" as const, about: "" };
+  assert.ok(videoSchema.safeParse(video).success);
+  assert.deepEqual(errPaths(videoSchema.safeParse({ ...video, href: "javascript:alert(1)" })), ["href"]);
+  assert.deepEqual(errPaths(videoSchema.safeParse({ ...video, href: "http://youtu.be/dQw4w9WgXcQ" })), ["href"]);
+  assert.deepEqual(errPaths(videoSchema.safeParse({ ...video, short: true, length: 75, access: "paid" })), ["length", "access"]);
+  assert.deepEqual(errPaths(videoSchema.safeParse({ ...video, length: 300 })), ["length"]);
 });

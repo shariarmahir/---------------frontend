@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { RUBRIC, attendanceOf, certificateId, draftCode, finalResult, interviewSlots, latestAdmission, materialKindOf, normalizeAcademy, payoutOf, placement, progressOf, rubricTotal, sizeParts, teacherPoints, teacherTier } from "./academy.ts";
+import { RUBRIC, attendanceOf, canWatch, certificateId, draftCode, durationText, finalResult, freeClassDone, interviewSlots, latestAdmission, materialKindOf, normalizeAcademy, payoutOf, placement, progressOf, ratingWith, rubricTotal, starSpread, threadsOf, sizeParts, sortVideos, teacherPoints, teacherTier, weekOf, youtubeEmbed, type ClassVideo, type VideoComment } from "./academy.ts";
 
 test("admission places everyone; experience with proof fast-tracks", () => {
   assert.deepEqual(placement({ testPct: 20, years: 0, hasProof: false }), { level: "foundation", fastTrack: false });
@@ -93,4 +93,77 @@ test("panel rubric adds to 100 and clamps each line", () => {
   assert.equal(rubricTotal([30, 25, 20, 15, 10]), 100);
   assert.equal(rubricTotal([40, -5, 10.4, 15]), 30 + 0 + 10 + 15);
   assert.equal(rubricTotal([]), 0);
+});
+
+test("class videos: the Saturday week, the free class owed, who may watch, safe embeds", () => {
+  // Friday 23:30 in Dhaka is still the week that began on Saturday the 19th; Saturday 00:30 starts the next.
+  assert.equal(weekOf("2026-09-25T17:30:00Z"), "2026-09-19");
+  assert.equal(weekOf("2026-09-25T18:30:00Z"), "2026-09-26");
+  assert.equal(weekOf("2026-09-19T00:00:00Z"), "2026-09-19");
+
+  const now = "2026-09-25T12:00:00Z";
+  const v = (over: Partial<ClassVideo>): ClassVideo => ({ id: "x", course: "AI-201", teacher: "mahir", title: "t", week: 1, seconds: 600, access: "free", at: "2026-09-21T06:00:00Z", views: 0, ...over });
+  assert.equal(freeClassDone([v({})], "mahir", now), true);
+  assert.equal(freeClassDone([v({ at: "2026-09-14T06:00:00Z" })], "mahir", now), false, "last week's class is not this week's");
+  assert.equal(freeClassDone([v({ access: "paid" })], "mahir", now), false, "a course video is not the free class");
+  assert.equal(freeClassDone([v({ short: true, seconds: 40 })], "mahir", now), false, "a short is not a class");
+  assert.equal(freeClassDone([v({ teacher: "anik" })], "mahir", now), false);
+  assert.equal(freeClassDone([v({ at: "2026-10-07T06:00:00Z" })], "mahir", now), true, "made on this device after the demo's now");
+
+  assert.equal(canWatch(v({}), {}), true);
+  assert.equal(canWatch(v({ access: "paid" }), {}), false);
+  assert.equal(canWatch(v({ access: "paid" }), { "AI-201": {} }), true);
+  assert.equal(canWatch(v({ access: "paid" }), {}, "mahir"), true, "a teacher sees their own");
+
+  const embed = "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ";
+  assert.equal(youtubeEmbed("https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=30"), embed);
+  assert.equal(youtubeEmbed("https://youtu.be/dQw4w9WgXcQ"), embed);
+  assert.equal(youtubeEmbed("https://m.youtube.com/shorts/dQw4w9WgXcQ"), embed);
+  assert.equal(youtubeEmbed("http://youtu.be/dQw4w9WgXcQ"), null);
+  assert.equal(youtubeEmbed("https://youtube.com.evil.example/watch?v=dQw4w9WgXcQ"), null);
+  assert.equal(youtubeEmbed("https://youtu.be/not-an-id"), null);
+  assert.equal(youtubeEmbed("javascript:alert(1)"), null);
+
+  assert.equal(durationText(2480), "41:20");
+  assert.equal(durationText(59), "0:59");
+  assert.equal(durationText(3725), "1:02:05");
+});
+
+test("under a class: pinned first, replies in order, stars that add up", () => {
+  const c = (id: string, over: Partial<VideoComment> = {}): VideoComment => ({ id, video: "v1", name: "ক", text: "ভালো", at: "2026-09-20T00:00:00Z", likes: 0, ...over });
+  const all = [
+    c("a", { likes: 5, at: "2026-09-20T00:00:00Z" }),
+    c("b", { likes: 9, at: "2026-09-21T00:00:00Z" }),
+    c("pin", { pinned: true, likes: 1, handle: "rahima" }),
+    c("r2", { parent: "b", at: "2026-09-23T00:00:00Z" }),
+    c("r1", { parent: "b", at: "2026-09-22T00:00:00Z" }),
+    c("other", { video: "v2", likes: 99 }),
+  ];
+  assert.deepEqual(threadsOf(all, "v1", "top").map((t) => t.comment.id), ["pin", "b", "a"]);
+  assert.deepEqual(threadsOf(all, "v1", "new").map((t) => t.comment.id), ["pin", "b", "a"]);
+  assert.deepEqual(threadsOf([...all, c("n", { at: "2026-09-24T00:00:00Z" })], "v1", "new").map((t) => t.comment.id), ["pin", "n", "b", "a"]);
+  assert.deepEqual(threadsOf(all, "v1", "top")[1].replies.map((r) => r.id), ["r1", "r2"]);
+
+  for (const [avg, count] of [[4.8, 410], [3.2, 7], [0, 0], [5, 1]]) {
+    const spread = starSpread(avg, count);
+    assert.equal(spread.length, 5);
+    assert.equal(spread.reduce((a, b) => a + b, 0), count, `${avg}/${count} adds up`);
+  }
+  assert.ok(starSpread(4.8, 400)[4] > starSpread(4.8, 400)[0], "a 4.8 class is mostly fives");
+
+  assert.deepEqual(ratingWith({ avg: 0, count: 0 }, 4), { avg: 4, count: 1, stars: [0, 0, 0, 1, 0] });
+  const mine = ratingWith({ avg: 4.5, count: 9 }, 5);
+  assert.equal(mine.count, 10);
+  assert.equal(mine.avg, 4.6);
+  assert.equal(mine.stars.reduce((a, b) => a + b, 0), 10);
+});
+
+test("a channel's videos sort newest, most watched or oldest first", () => {
+  const v = (id: string, at: string, views: number) => ({ id, at, views }) as ClassVideo;
+  const all = [v("a", "2026-09-01", 10), v("b", "2026-09-20", 90), v("c", "2026-09-10", 90), v("d", "2026-09-15", 5)];
+  assert.deepEqual(sortVideos(all, "latest").map((x) => x.id), ["b", "d", "c", "a"]);
+  assert.deepEqual(sortVideos(all, "popular").map((x) => x.id), ["b", "c", "a", "d"], "equal views: newer first");
+  assert.deepEqual(sortVideos(all, "oldest").map((x) => x.id), ["a", "c", "d", "b"]);
+  assert.deepEqual(all.map((x) => x.id), ["a", "b", "c", "d"], "the list given is left alone");
+  assert.deepEqual(normalizeAcademy({}).follows, {}, "older saves start following no one");
 });

@@ -1,9 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
-import { admissionQuestions, board, courses, departments, rosterOf, teacherRecords, workshops } from "./academy.ts";
+import { admissionQuestions, board, classVideos, courses, deptLikes, deptsOfTeacher, teacherFollowers, videoComments, videoRating, departments, rosterOf, teacherRecords, workshops } from "./academy.ts";
 import { people } from "./users.ts";
-import { SCHOOLS, certificateId, finalResult } from "../../lib/media/academy.ts";
+import { SCHOOLS, certificateId, finalResult, freeClassDone } from "../../lib/media/academy.ts";
 
 const handles = new Set(people.map((p) => p.handle));
 const deptIds = new Set(departments.map((d) => d.id));
@@ -72,4 +72,56 @@ test("academy: every course has a full class list with unique names", () => {
     assert.equal(new Set(roster.map((s) => s.name)).size, roster.length, `${c.id}: repeated name`);
     assert.equal(new Set(roster.map((s) => s.id)).size, roster.length, c.id);
   }
+});
+
+test("class videos belong to real lessons, and only মাহির and কামাল still owe this week's free class", () => {
+  assert.equal(new Set(classVideos.map((v) => v.id)).size, classVideos.length, "unique ids");
+  for (const v of classVideos) {
+    const c = courses.find((x) => x.id === v.course);
+    assert.ok(c, `${v.id}: course`);
+    assert.equal(v.teacher, c.teacher, `${v.id}: the course's own teacher`);
+    assert.ok(v.week >= 1 && v.week <= c.lessons.length, `${v.id}: a week of the course`);
+    if (v.short) assert.ok(v.seconds < 60 && v.access === "free", `${v.id}: a short is free and under a minute`);
+  }
+  const now = "2026-09-25T12:00:00Z";
+  const owing = [...new Set(courses.map((c) => c.teacher))].filter((t) => !freeClassDone(classVideos, t, now)).sort();
+  assert.deepEqual(owing, ["kamal", "mahir"]);
+});
+
+test("comments sit under real classes, after them, and only the teacher pins", () => {
+  const byId = new Map(classVideos.map((v) => [v.id, v]));
+  const handles = new Set(people.map((p) => p.handle));
+  assert.equal(new Set(videoComments.map((c) => c.id)).size, videoComments.length, "unique ids");
+  for (const c of videoComments) {
+    const v = byId.get(c.video);
+    assert.ok(v, `${c.id}: video`);
+    assert.ok(c.at > v.at, `${c.id}: written after the video went up`);
+    assert.ok(c.handle ? handles.has(c.handle) : c.name, `${c.id}: a known writer`);
+    if (c.pinned) assert.equal(c.handle, v.teacher, `${c.id}: pinned by the class's teacher`);
+    if (c.parent) {
+      const p = videoComments.find((x) => x.id === c.parent);
+      assert.ok(p && p.video === c.video && !p.parent && c.at > p.at, `${c.id}: answers an earlier comment on the same class`);
+    }
+  }
+  for (const v of classVideos) {
+    const r = videoRating(v);
+    assert.ok(r.avg >= 1 && r.avg <= 5 && r.count >= 1, `${v.id}: a rating`);
+  }
+});
+
+test("every teacher has a channel: their departments, led ones first, and followers", () => {
+  for (const t of teacherRecords) {
+    const depts = deptsOfTeacher(t.handle);
+    assert.ok(depts.some((d) => d.id === t.dept), `${t.handle}: their own department`);
+    const led = depts.map((d) => d.teachers[0] === t.handle);
+    assert.deepEqual(led, [...led].sort((a, b) => Number(b) - Number(a)), `${t.handle}: led departments first`);
+    assert.ok(teacherFollowers(t.handle) >= t.graduates, `${t.handle}: graduates follow`);
+  }
+  assert.deepEqual(deptsOfTeacher("mahir").map((d) => d.id), ["mechatronics", "web-ai"], "leads mechatronics, teaches in web-ai");
+  assert.deepEqual(deptsOfTeacher("rupa").map((d) => d.id), ["web-ai", "media"]);
+});
+
+test("every department says who it suits", () => {
+  for (const d of departments) assert.ok(deptLikes[d.id]?.length > 10, `${d.id}: a line`);
+  assert.deepEqual(Object.keys(deptLikes).sort(), departments.map((d) => d.id).sort(), "no line for a department that does not exist");
 });

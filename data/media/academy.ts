@@ -1,4 +1,4 @@
-import type { Course, Department, Lesson, Material, School, TeacherRecord, Workshop } from "@/lib/media/academy";
+import type { ClassVideo, Course, Department, Lesson, Material, School, TeacherRecord, VideoAccess, VideoComment, Workshop } from "@/lib/media/academy";
 import type { Question } from "@/lib/media/classroom";
 
 /**
@@ -311,3 +311,158 @@ export const teacherRecord = (handle: string) => recordByHandle.get(handle);
 export const coursesOf = (dept: string) => courses.filter((c) => c.dept === dept);
 export const coursesBy = (handle: string) => courses.filter((c) => c.teacher === handle);
 export const workshopsOf = (dept: string) => workshops.filter((w) => w.dept === dept);
+
+/* ── Class videos ──────────────────────────────────────────────────── */
+
+/** A class video, titled after its week's lesson; `length` is "mm:ss". */
+function clip(course: string, week: number, access: VideoAccess, at: string, length: string, views: number): ClassVideo {
+  const c = courseById.get(course)!;
+  const [m, s] = length.split(":").map(Number);
+  return { id: `${course}-${access === "free" ? "f" : "p"}${week}`.toLowerCase(), course, teacher: c.teacher, title: c.lessons[week - 1].title, week, seconds: m * 60 + s, access, at, views };
+}
+
+/** A short: one idea from a lesson, under a minute, always free. */
+function short(course: string, week: number, title: string, seconds: number, at: string, views: number): ClassVideo {
+  return { id: `${course}-s${week}`.toLowerCase(), course, teacher: courseById.get(course)!.teacher, title, week, seconds, access: "free", short: true, at, views };
+}
+
+/**
+ * The video shelf. Every teacher with a running course owes one free class
+ * a week (Saturday to Friday). In the demo week (19–25 September) all have
+ * put theirs up except মাহির and কামাল — it is Friday, the last day.
+ */
+export const classVideos: ClassVideo[] = [
+  // This week's free classes.
+  clip("WEB-101", 3, "free", "2026-09-24T14:00:00Z", "41:20", 18400),
+  clip("ARC-101", 2, "free", "2026-09-22T10:00:00Z", "33:05", 6100),
+  clip("MTR-101", 2, "free", "2026-09-23T05:30:00Z", "27:40", 52300),
+  clip("CHF-101", 3, "free", "2026-09-25T04:00:00Z", "38:12", 9800),
+  clip("CHF-102", 1, "free", "2026-09-20T12:00:00Z", "18:30", 31200),
+  clip("MUS-101", 2, "free", "2026-09-21T13:00:00Z", "24:10", 12700),
+  clip("ART-101", 2, "free", "2026-09-24T09:00:00Z", "29:45", 4300),
+  clip("TEX-101", 1, "free", "2026-09-19T08:00:00Z", "22:18", 15600),
+  clip("MED-101", 2, "free", "2026-09-23T15:00:00Z", "35:02", 27800),
+  clip("MED-102", 1, "free", "2026-09-22T07:00:00Z", "19:55", 8900),
+  clip("GFX-101", 1, "free", "2026-09-20T14:30:00Z", "31:30", 21400),
+  clip("BIZ-101", 1, "free", "2026-09-21T03:00:00Z", "44:08", 13300),
+  clip("BTY-101", 1, "free", "2026-09-24T11:00:00Z", "16:40", 11900),
+  clip("SPT-101", 1, "free", "2026-09-19T02:00:00Z", "21:12", 7400),
+  clip("MTH-101", 3, "free", "2026-09-25T02:00:00Z", "47:35", 36500),
+  // Earlier weeks' free classes.
+  clip("RKS-101", 3, "free", "2026-09-15T06:00:00Z", "23:00", 64800),
+  clip("MEC-101", 1, "free", "2026-09-14T12:00:00Z", "26:50", 22100),
+  clip("AI-201", 1, "free", "2026-09-07T12:00:00Z", "39:15", 17600),
+  clip("BIZ-102", 1, "free", "2026-09-12T04:00:00Z", "15:20", 5200),
+  clip("WEB-101", 2, "free", "2026-09-16T14:00:00Z", "37:44", 24100),
+  clip("CHF-101", 1, "free", "2026-09-08T04:00:00Z", "28:30", 19300),
+  clip("MTH-101", 2, "free", "2026-09-17T02:00:00Z", "42:10", 33900),
+  clip("MTH-101", 1, "free", "2026-09-10T02:00:00Z", "39:50", 41200),
+  clip("WEB-101", 1, "free", "2026-09-09T14:00:00Z", "34:18", 29700),
+  clip("CHF-101", 2, "free", "2026-09-15T04:00:00Z", "31:40", 22600),
+  clip("RKS-101", 2, "free", "2026-09-08T06:00:00Z", "26:15", 48300),
+  clip("RKS-101", 1, "free", "2026-09-01T06:00:00Z", "21:30", 57100),
+  clip("MTR-101", 1, "free", "2026-09-16T05:30:00Z", "24:55", 61800),
+  clip("MUS-101", 1, "free", "2026-09-14T13:00:00Z", "22:40", 15900),
+  clip("MED-101", 1, "free", "2026-09-16T15:00:00Z", "30:12", 34100),
+  clip("ARC-101", 1, "free", "2026-09-15T10:00:00Z", "28:20", 7300),
+  clip("ART-101", 1, "free", "2026-09-17T09:00:00Z", "26:05", 5600),
+  // Course videos, for those enrolled.
+  clip("WEB-101", 4, "paid", "2026-09-24T15:00:00Z", "52:30", 2100),
+  clip("AI-201", 3, "paid", "2026-09-22T13:00:00Z", "48:10", 980),
+  clip("MEC-101", 3, "paid", "2026-09-21T12:00:00Z", "55:00", 1240),
+  clip("MTR-201", 1, "paid", "2026-09-20T05:00:00Z", "31:15", 1870),
+  clip("MUS-101", 3, "paid", "2026-09-18T13:00:00Z", "26:40", 640),
+  clip("GFX-101", 2, "paid", "2026-09-23T14:00:00Z", "39:20", 1520),
+  clip("MED-101", 3, "paid", "2026-09-15T15:00:00Z", "41:05", 2380),
+  clip("BIZ-101", 2, "paid", "2026-09-24T03:00:00Z", "46:50", 870),
+  clip("ARC-101", 3, "paid", "2026-09-18T10:00:00Z", "50:25", 460),
+  clip("ART-101", 3, "paid", "2026-09-17T09:00:00Z", "33:30", 390),
+  // Shorts.
+  short("CHF-101", 3, "বিরিয়ানির চাল কখন দেবেন — পানির মাপ এক নজরে", 48, "2026-09-24T05:00:00Z", 128000),
+  short("MTR-101", 3, "চেইন কতটা ঢিলা থাকবে? দুই আঙুলের নিয়ম", 35, "2026-09-23T06:00:00Z", 214000),
+  short("MTH-101", 2, "ঢাল মানে কী — একটা রিকশার ছবিতে", 52, "2026-09-22T03:00:00Z", 89000),
+  short("BTY-101", 1, "মেহেদির কোন ধরার সঠিক কোণ", 41, "2026-09-21T11:00:00Z", 176000),
+  short("WEB-101", 2, "এক লাইনের সিএসএস, ফোনে পাতা ঠিক", 29, "2026-09-20T14:00:00Z", 66000),
+  short("SPT-101", 2, "ব্যাট ধরার যে ভুলটা সবাই করে", 38, "2026-09-19T03:00:00Z", 97000),
+  short("TEX-101", 2, "রান ফোঁড় — চল্লিশ সেকেন্ডে", 40, "2026-09-18T08:00:00Z", 58000),
+  short("MED-102", 1, "জানালার আলোয় প্রোডাক্টের ছবি", 45, "2026-09-17T07:00:00Z", 73000),
+];
+
+const seededVideo = new Set(classVideos.map((v) => v.id));
+
+/** A seeded class's likes: about one viewer in twenty-two. Videos made on this device start at none. */
+export function videoLikes(v: ClassVideo): number {
+  return seededVideo.has(v.id) ? Math.round(v.views * 0.045) : 0;
+}
+
+/** A seeded class's stars: near its teacher's, from about one viewer in forty-five. */
+export function videoRating(v: ClassVideo): { avg: number; count: number } {
+  const record = recordByHandle.get(v.teacher);
+  if (!seededVideo.has(v.id) || !record) return { avg: 0, count: 0 };
+  const nudge = ([...v.id].reduce((n, ch) => n + ch.charCodeAt(0), 0) % 3) / 10;
+  return { avg: Math.round((record.rating.avg - nudge) * 10) / 10, count: Math.max(1, Math.round(v.views / 45)) };
+}
+
+/* ── Department pitch ──────────────────────────────────────────────── */
+
+/** "যদি আপনি … ভালোবাসেন" — what kind of person each department suits, in one line. */
+export const deptLikes: Record<string, string> = {
+  "web-ai": "নিজের হাতে অ্যাপ বানানো, সমস্যার যুক্তি খোঁজা আর কম্পিউটারকে কাজ শেখানো",
+  mechatronics: "সেন্সর, তার আর মোটর জুড়ে এমন যন্ত্র বানানো যা গ্রামের কাজ সহজ করে",
+  architecture: "মাপজোখ, নকশা আঁকা আর বন্যা-ঝড় মাথায় রেখে কম খরচে টেকসই বাড়ি ভাবা",
+  motor: "ইঞ্জিনের শব্দ শুনে সমস্যা ধরা, যন্ত্র খুলে আবার জোড়া লাগানো",
+  kitchen: "রান্না করে মানুষকে খাওয়ানো, মাপ মেলানো আর রান্নাঘরকে ব্যবসা বানানো",
+  music: "গান গাওয়া, সুর বাঁধা আর লোকগানের শিকড় খুঁজে নতুন করে গাওয়া",
+  "fine-art": "রং-তুলিতে নদী-গ্রাম আঁকা, বাংলা হরফে সৌন্দর্য খোঁজা",
+  textile: "সুই-সুতোয় ধৈর্য ধরে নকশা তোলা, তাঁতের ছন্দে কাপড় বোনা",
+  media: "ছবি তোলা, ভিডিও বানানো আর গল্প বলে মানুষের কাছে পৌঁছানো",
+  business: "হিসাব মেলানো, খাতা গুছিয়ে রাখা আর ছোট ব্যবসাকে বড় করা",
+  beauty: "হাতে সূক্ষ্ম নকশা আঁকা, উৎসবে মানুষকে সাজিয়ে আনন্দ দেওয়া",
+  sports: "মাঠে ঘাম ঝরানো, কৌশল শেখানো আর দল গড়ে জেতা",
+  math: "চারপাশের জিনিসে সংখ্যা খোঁজা, ধাঁধা মেলানো আর কেন-কীভাবে জানতে চাওয়া",
+};
+
+/* ── Teacher channels ──────────────────────────────────────────────── */
+
+/** The departments a teacher teaches in, the ones they lead first. */
+export function deptsOfTeacher(handle: string): Department[] {
+  return departments.filter((d) => d.teachers.includes(handle)).sort((a, b) => Number(b.teachers[0] === handle) - Number(a.teachers[0] === handle));
+}
+
+/** A teacher's followers before the viewer: about one viewer of their seeded classes in nine, and their graduates. */
+export function teacherFollowers(handle: string): number {
+  const views = classVideos.filter((v) => v.teacher === handle).reduce((n, v) => n + v.views, 0);
+  return Math.round(views / 9) + (recordByHandle.get(handle)?.graduates ?? 0);
+}
+
+/** What learners said under the most-watched free classes, and the teachers' answers. */
+export const videoComments: VideoComment[] = [
+  { id: "c-chf3-pin", video: "chf-101-f3", handle: "rahima", text: "এই সপ্তাহের বাড়ির কাজ: এক কাপ চালে দেড় কাপ পানি মেপে পোলাও রাঁধুন, ছবি তুলে কোর্সের পাতায় দিন। মসলার মাপ উপকরণে পিডিএফ করে দেওয়া আছে।", at: "2026-09-25T04:30:00Z", likes: 212, pinned: true },
+  { id: "c-chf3-1", video: "chf-101-f3", name: "রুনা আক্তার", text: "চাল ধুয়ে আধা ঘণ্টা ভিজিয়ে রাখার কারণটা এত সহজে কেউ বোঝায়নি। আজ রাতে বাসায় করে দেখব।", at: "2026-09-25T06:10:00Z", likes: 86 },
+  { id: "c-chf3-1a", video: "chf-101-f3", parent: "c-chf3-1", handle: "rahima", text: "ভিজালে দানা লম্বা হয়, ভাঙে না। দেখে জানাবেন কেমন হলো!", at: "2026-09-25T07:00:00Z", likes: 31 },
+  { id: "c-chf3-2", video: "chf-101-f3", name: "শাহানা পারভীন", text: "১০০ জনের রান্নায় লবণের মাপ কীভাবে বাড়াব? দ্বিগুণ করলে বেশি হয়ে যায়।", at: "2026-09-25T08:20:00Z", likes: 44 },
+  { id: "c-chf3-2a", video: "chf-101-f3", parent: "c-chf3-2", handle: "rahima", text: "ঠিক ধরেছেন — লবণ সরাসরি গুণ হয় না। সপ্তাহ ৫-এ পুরো হিসাব আছে; আপাতত তিন ভাগের দুই ভাগ দিয়ে শুরু করে চেখে বাড়ান।", at: "2026-09-25T09:00:00Z", likes: 58 },
+  { id: "c-chf3-2b", video: "chf-101-f3", parent: "c-chf3-2", name: "শাহানা পারভীন", text: "বুঝলাম, ধন্যবাদ আপা।", at: "2026-09-25T09:40:00Z", likes: 4 },
+
+  { id: "c-mth3-pin", video: "mth-101-f3", handle: "nusrat", text: "যাঁরা ক্লাসে ছিলেন না: বোর্ডের ছবি আর অনুশীলনের ১০টা প্রশ্ন উপকরণে। উত্তর মেলাতে শুক্রবার রাতে লাইভে আসুন।", at: "2026-09-25T02:30:00Z", likes: 140, pinned: true },
+  { id: "c-mth3-1", video: "mth-101-f3", name: "রিয়াদ হাসান", text: "রিকশার গতি বাড়া-কমা দিয়ে অন্তরীকরণ — এইচএসসিতে যেটা মুখস্থ করেছিলাম, আজ প্রথম বুঝলাম কেন।", at: "2026-09-25T04:00:00Z", likes: 167 },
+  { id: "c-mth3-2", video: "mth-101-f3", name: "সাদিয়া ইসলাম", text: "৩২ মিনিটের উদাহরণটা আরেকবার ধীরে দেখাবেন? ঢাল ঋণাত্মক কেন হলো ধরতে পারিনি।", at: "2026-09-25T05:15:00Z", likes: 23 },
+  { id: "c-mth3-2a", video: "mth-101-f3", parent: "c-mth3-2", handle: "nusrat", text: "রিকশা তখন ঢাল বেয়ে নামছিল, তাই উচ্চতা কমছে — সেজন্য ঋণাত্মক। শুক্রবারের লাইভে প্রথমেই এটা করব।", at: "2026-09-25T06:00:00Z", likes: 19 },
+
+  { id: "c-web3-1", video: "web-101-f3", name: "তানজিলা ইসলাম", text: "বোতাম চাপলে লেখা বদলানোটা আমার মায়ের দোকানের পাতায় লাগিয়ে দিলাম। কাজ করছে!", at: "2026-09-24T17:00:00Z", likes: 74 },
+  { id: "c-web3-1a", video: "web-101-f3", parent: "c-web3-1", handle: "anik", text: "দারুণ! লিংকটা কোর্সের পাতায় দিন, পরের ক্লাসে সবাইকে দেখাব।", at: "2026-09-24T18:00:00Z", likes: 22 },
+  { id: "c-web3-2", video: "web-101-f3", name: "ইমন সরকার", text: "কনসোলে লাল লেখা এলে ভয় পেতাম। আপনার ‘ভুলটা পড়ো, ভয় পেয়ো না’ কথাটা মনে থাকবে।", at: "2026-09-25T03:00:00Z", likes: 51 },
+
+  { id: "c-rks3-pin", video: "rks-101-f3", handle: "rafi", text: "ব্যাটারি চার্জের সময় ঘরের দরজা খোলা রাখুন, পানির বালতি হাতের কাছে নয় — বালি রাখুন। নিরাপত্তার তালিকা উপকরণে।", at: "2026-09-15T07:00:00Z", likes: 520, pinned: true },
+  { id: "c-rks3-1", video: "rks-101-f3", name: "সোহাগ মিয়া", text: "আমাদের গ্যারেজে গত মাসে ব্যাটারি গরম হয়ে ধোঁয়া বের হয়েছিল। এই ভিডিওটা সবাইকে দেখালাম।", at: "2026-09-16T10:00:00Z", likes: 311 },
+  { id: "c-rks3-2", video: "rks-101-f3", name: "জসিম উদ্দিন", text: "পুরোনো ব্যাটারি কোথায় বিক্রি করলে নিরাপদে রিসাইকেল হয়?", at: "2026-09-18T12:00:00Z", likes: 64 },
+  { id: "c-rks3-2a", video: "rks-101-f3", parent: "c-rks3-2", handle: "rafi", text: "লাইসেন্স আছে এমন ভাঙারিতে দিন, রাস্তার পাশে খোলা জায়গায় না। সপ্তাহ ৪-এ ঠিকানাগুলোর তালিকা দেব।", at: "2026-09-18T14:00:00Z", likes: 48 },
+
+  { id: "c-med2-1", video: "med-101-f2", name: "জান্নাতুল ফেরদৌস", text: "জানালার পাশে দাঁড়িয়ে শুট করলাম, আলো সত্যিই অনেক ভালো এল। মাইক্রোফোন ছাড়া শব্দ কীভাবে ভালো করি?", at: "2026-09-23T18:00:00Z", likes: 39 },
+  { id: "c-med2-1a", video: "med-101-f2", parent: "c-med2-1", handle: "nabila", text: "ফোন মুখের কাছাকাছি, কাপড়ভরা ঘরে রেকর্ড করুন — পর্দা-কাঁথা শব্দ শুষে নেয়। পরের সপ্তাহে দেখাব।", at: "2026-09-23T19:00:00Z", likes: 27 },
+
+  { id: "c-chf102-1", video: "chf-102-f1", name: "মামুন হোসেন", text: "ফুচকার টকের মাপটা লিখে নিলাম। দিনে কত প্লেট বিক্রি হলে লাভ হয় — এই হিসাবটাও চাই।", at: "2026-09-21T09:00:00Z", likes: 57 },
+  { id: "c-chf102-1a", video: "chf-102-f1", parent: "c-chf102-1", handle: "babul", text: "সপ্তাহ ৩-এ পুরো খাতা ধরে দেখাব। আমার গাড়িতে দিনে ৮০ প্লেটের নিচে নামলে লোকসান।", at: "2026-09-21T11:00:00Z", likes: 41 },
+
+  { id: "c-gfx1-1", video: "gfx-101-f1", name: "তাহমিনা আক্তার", text: "ফাঁকা জায়গা রাখলেই পোস্ট দামি দেখায় — এটা মাথায় রেখে আজ তিনটা পোস্ট বানালাম।", at: "2026-09-21T08:00:00Z", likes: 46 },
+];

@@ -6,6 +6,7 @@ import { MapPin } from "lucide-react";
 import { ComplaintBox } from "@/components/media/academy/complaint-box";
 import { CourseDesk } from "@/components/media/academy/course-desk";
 import { CourseMaterials } from "@/components/media/academy/course-materials";
+import { RememberCourse } from "@/components/media/academy/departments/recent";
 import { ModeTag, TierBadge, modesOf, standingOf } from "@/components/media/academy/parts";
 import { PageHeader, Panel } from "@/components/media/ui/layout";
 import { Num, Taka } from "@/components/media/ui/numerals";
@@ -37,6 +38,7 @@ export default async function CoursePage({ params }: Props) {
 
   return (
     <div className="mx-auto max-w-6xl">
+      <RememberCourse id={course.id} />
       <PageHeader back={{ href: `/media/academy/dept/${dept.id}`, label: dept.name }} title={course.title} subtitle={course.outcome} />
 
       <div className="relative mb-8 aspect-21/9 overflow-hidden rounded-3xl bg-black sm:aspect-3/1">

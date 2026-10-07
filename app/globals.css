@@ -926,19 +926,6 @@
   animation: live-in 0.26s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* একাডেমি: the admit card is laid on the gold banner like a stamped card —
-   it drops in tilted and settles flat. Motion-only: rests flat otherwise. */
-@keyframes admit-in {
-  from { opacity: 0; transform: translateY(18px) rotate(-3deg) scale(0.96); }
-  60% { opacity: 1; transform: translateY(-3px) rotate(0.6deg); }
-  to { opacity: 1; transform: none; }
-}
-@media (prefers-reduced-motion: no-preference) {
-  .admit-in {
-    animation: admit-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
-  }
-}
-
 /* গবেষণাকোষ charts: a bar grows from its start. On the cover it runs once on
    load (.research-grow-now); in articles it follows the scroll where view
    timelines exist and simply stands drawn elsewhere. Still under reduced motion. */
