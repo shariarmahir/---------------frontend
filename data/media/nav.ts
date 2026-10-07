@@ -35,13 +35,13 @@ export const mediaNavGroups: { title: string; items: MediaNavItem[] }[] = [
       { href: "/media", label: "ফিড", icon: "feed", hint: "জীবন, প্রতিভা, দক্ষতা, গবেষণা, বাজার — সবার পোস্ট এক জায়গায়" },
       { href: "/media/market", label: "বাজার", icon: "market", hint: "যা পারেন বিক্রি করুন, দরদাম করে কিনুন" },
       { href: "/media/jobs", label: "কাজ", icon: "jobs", hint: "খাত অনুযায়ী কাজ, ন্যায্য মজুরি" },
+      { href: "/media/academy", label: "একাডেমি", icon: "academy", hint: "কাণ্ডারী তৈরি একাডেমি — বিনামূল্যে ভর্তি, হাতে-কলমে ক্লাস, প্যানেল ইন্টারভিউ, যাচাইযোগ্য সার্টিফিকেট" },
       { href: "/media/messages", label: "বার্তা", icon: "messages", badge: "messages", hint: "হায়ার, দরদাম, চুক্তি" },
     ],
   },
   {
     title: "কমিউনিটি",
     items: [
-      { href: "/media/academy", label: "একাডেমি", icon: "academy", hint: "কান্ডারি তৈরি একাডেমি — বাস্তব দক্ষতা ও প্রফেশনাল প্ল্যাটফর্ম" },
       { href: "/media/people", label: "মানুষ", icon: "people", hint: "দক্ষ মানুষ খুঁজুন, অনুসরণ করুন" },
       { href: "/media/classroom", label: "ক্লাসরুম", icon: "classroom", hint: "ব্যাচ, ল্যাব, রুটিন, দায়িত্বের পালা, ক্লাস চ্যালেঞ্জ" },
       { href: "/media/news", label: "নাগরিক জীবন", icon: "news", hint: "আজকের খবর — সকাল, দুপুর, সন্ধ্যা, রাতের শিরোনাম, সারাংশ আর বিনোদন" },

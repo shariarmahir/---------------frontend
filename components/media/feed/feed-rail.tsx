@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { BadgeCheck, Briefcase, FlaskConical, GraduationCap, Hash, Megaphone, Newspaper, NotebookPen, Store, UserRound, UsersRound, Wallet, type LucideIcon } from "lucide-react";
+import { BadgeCheck, Briefcase, FlaskConical, GraduationCap, Hash, Library, Megaphone, Newspaper, NotebookPen, Store, UserRound, UsersRound, Wallet, type LucideIcon } from "lucide-react";
 import { posts } from "@/data/media/posts";
 import { isRated } from "@/data/media/topics";
 import { currentUser, people } from "@/data/media/users";
@@ -13,7 +13,8 @@ import { Stars } from "../ui/trust";
 import { DailyPlan } from "../wellbeing/daily-plan";
 
 /** Every room of the platform, one tap away. */
-const ROOMS: { href: string; label: string; Icon: LucideIcon; tone: string }[] = [
+const ROOMS: { href: string; label: string; Icon: LucideIcon; tone: string; note?: string }[] = [
+  { href: "/media/academy", label: "কাণ্ডারী তৈরি একাডেমি", note: "সবার আমি ছাত্র · ভর্তি বিনামূল্যে", Icon: Library, tone: "col-span-2 bg-signal-orange text-text-primary" },
   { href: "/research", label: "গবেষণাকোষ", Icon: FlaskConical, tone: "bg-signal-orange text-text-primary" },
   { href: "/media/market", label: "বাজার", Icon: Store, tone: "bg-bd-green text-white" },
   { href: "/media/jobs", label: "কাজ", Icon: Briefcase, tone: "bg-white text-text-primary" },
@@ -81,11 +82,12 @@ export function FeedRail() {
 
       <Panel title="সব জায়গা এক নজরে">
         <ul className="grid grid-cols-2 gap-2">
-          {ROOMS.map(({ href, label, Icon, tone }) => (
-            <li key={href}>
+          {ROOMS.map(({ href, label, note, Icon, tone }) => (
+            <li key={href} className={note ? "col-span-2" : undefined}>
               <Link href={href} className={cn("group flex min-h-16 flex-col justify-between gap-1 rounded-2xl p-3 text-sm font-bold transition-[translate] duration-300 hover:-translate-y-0.5 motion-reduce:transition-none", tone)}>
                 <Icon className="size-5 transition-transform group-hover:-rotate-6 motion-reduce:transition-none" aria-hidden />
                 {label}
+                {note && <span className="text-xs font-semibold">{note}</span>}
               </Link>
             </li>
           ))}

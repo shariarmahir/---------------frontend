@@ -1,8 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { ArrowRight, Briefcase, CalendarDays, FileUp, FlaskConical, GraduationCap, HandHeart, MapPin, Megaphone, Plus, Star, Store, Trophy, UsersRound, Wifi, type LucideIcon } from "lucide-react";
+import { ArrowRight, Briefcase, CalendarDays, FileUp, FlaskConical, GraduationCap, HandHeart, Library, MapPin, Megaphone, Plus, Star, Store, Trophy, UsersRound, Wifi, type LucideIcon } from "lucide-react";
 import { Icon } from "@/components/ui/icon";
+import { courses } from "@/data/media/academy";
 import { challengeKindBn, challenges } from "@/data/media/challenges";
 import { civicKindBn, civicReports, civicStatusBn } from "@/data/media/civic";
 import { eventKindBn, events } from "@/data/media/events";
@@ -170,6 +171,46 @@ export function MarketModule() {
 }
 
 /** গবেষণাকোষ: the editors' pick large, then the newest. */
+/** কাণ্ডারী তৈরি একাডেমি: the next classes, live or hands-on, and the free admission. */
+export function AcademyModule() {
+  const next = courses.filter((c) => c.nextLive).sort((a, b) => a.nextLive!.localeCompare(b.nextLive!)).slice(0, 6);
+  return (
+    <Module
+      Icon={Library}
+      eyebrow="কাণ্ডারী তৈরি একাডেমি"
+      title="সবার আমি ছাত্র — সামনের ক্লাস"
+      href="/media/academy"
+      link="একাডেমি"
+      extra={
+        <Link href="/media/academy/admission" className="hidden min-h-9 items-center rounded-full bg-signal-orange px-3.5 text-sm font-semibold text-text-primary sm:inline-flex">
+          ভর্তি বিনামূল্যে
+        </Link>
+      }
+    >
+      <ul className={cn(rail, "scroll-px-4 px-4 py-4 sm:scroll-px-5 sm:px-5")}>
+        {next.map((c) => {
+          const teacher = getPerson(c.teacher);
+          return (
+            <li key={c.id} className="w-60 shrink-0 snap-start">
+              <Link href={`/media/academy/course/${c.id}`} className="group block overflow-hidden rounded-2xl bg-black ring-1 ring-white/12 hover:ring-signal-orange/50">
+                <span className="relative block aspect-video">
+                  <Image src={c.image} alt="" fill sizes="15rem" className="object-cover" />
+                  <span className="absolute top-2 left-2 rounded bg-black px-1.5 py-0.5 font-mono text-[11px] font-bold text-signal-orange">{c.id}</span>
+                </span>
+                <span className="block p-3">
+                  <span className="line-clamp-2 text-sm font-semibold text-white group-hover:text-signal-orange">{c.title}</span>
+                  <span className="mt-1 block truncate text-xs text-white/70">{teacher?.nameBn}</span>
+                  <span className="mt-2 block text-xs font-semibold text-signal-orange"><DateText iso={c.nextLive!} time weekday /></span>
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </Module>
+  );
+}
+
 export function ResearchModule() {
   const pub = libraryArticles.filter((a) => a.status === "published");
   const lead = pub.find((a) => a.pinned) ?? pub[0];

@@ -4,7 +4,7 @@
  */
 import { z } from "zod";
 import { fairPayFloor, payUnitBn } from "./fair-pay.ts";
-import { taka } from "./format.ts";
+import { bnDigits, taka } from "./format.ts";
 import type { PriceBand } from "./fair-price.ts";
 import { normalizeDigits, validateNid, validatePassport } from "./identity.ts";
 
@@ -285,3 +285,61 @@ export function withdrawSchema(available: number) {
     });
 }
 export type WithdrawInput = z.infer<ReturnType<typeof withdrawSchema>>;
+
+/* ── কাণ্ডারী তৈরি একাডেমি ───────────────────────────────────────────── */
+
+/** Handles in a free-text list: "@anik, mahir" → ["anik", "mahir"]. */
+export const handleList = (raw: string) =>
+  raw
+    .split(/[\s,]+/)
+    .map((h) => h.replace(/^@/, "").toLowerCase())
+    .filter(Boolean);
+
+/** The admission form; the test score is added when it is marked. */
+export const admissionSchema = z.object({
+  dept: z.string().min(1, "একটি বিভাগ বেছে নিন।"),
+  goal: z.string().trim().min(20, "কেন শিখতে চান — অন্তত এক লাইন লিখুন।").max(400, "৪০০ অক্ষরের মধ্যে রাখুন।"),
+  years: z.number({ error: "বছর লিখুন, না থাকলে ০।" }).int().min(0).max(60, "৬০ বছরের মধ্যে লিখুন।"),
+  proof: z.union([z.literal(""), z.url("সঠিক লিংক দিন, যেমন https://…")]),
+});
+export type AdmissionInput = z.infer<typeof admissionSchema>;
+
+export const TEACH_KINDS = ["solo", "team", "workshop"] as const;
+export const MIN_TEACH_YEARS = 2;
+
+/** Applying to teach: proof of skill first, then a panel interview. */
+export const teachSchema = z
+  .object({
+    kind: z.enum(TEACH_KINDS),
+    dept: z.string().min(1, "একটি বিভাগ বেছে নিন।"),
+    newDept: z.string().trim().max(60, "৬০ অক্ষরের মধ্যে রাখুন।"),
+    skill: z.string().trim().min(2, "কী শেখাবেন লিখুন।").max(60),
+    years: z.number({ error: "বছর লিখুন।" }).int().min(MIN_TEACH_YEARS, `শেখাতে অন্তত ${bnDigits(MIN_TEACH_YEARS)} বছরের হাতে-কলমে অভিজ্ঞতা লাগে।`).max(60),
+    sample: z.url("একটি নমুনা ক্লাসের ভিডিও লিংক দিন।"),
+    plan: z.string().trim().min(40, "ক্লাসের পরিকল্পনা অন্তত ৪০ অক্ষরে লিখুন।").max(800, "৮০০ অক্ষরের মধ্যে রাখুন।"),
+    team: z.string().trim().max(200),
+    place: z.string().trim().max(120),
+  })
+  .superRefine((v, ctx) => {
+    if (v.dept === "new" && v.newDept.length < 3) ctx.addIssue({ code: "custom", path: ["newDept"], message: "নতুন বিভাগের নাম লিখুন।" });
+    const team = handleList(v.team);
+    if (v.kind === "team" && team.length === 0) ctx.addIssue({ code: "custom", path: ["team"], message: "দলের অন্তত একজনের @হ্যান্ডেল দিন।" });
+    if (team.some((h) => !/^[a-z0-9_]{3,20}$/.test(h))) ctx.addIssue({ code: "custom", path: ["team"], message: "হ্যান্ডেল হয় ছোট হাতের ইংরেজি অক্ষর, সংখ্যা বা _ দিয়ে।" });
+    if (v.kind === "workshop" && v.place.length < 5) ctx.addIssue({ code: "custom", path: ["place"], message: "কর্মশালার ঠিকানা দিন — ক্লাস সেখানেই হবে।" });
+  });
+export type TeachInput = z.infer<typeof teachSchema>;
+
+/** The final project the panel interview is about. */
+export const projectSchema = z.object({
+  title: z.string().trim().min(4, "প্রজেক্টের নাম দিন।").max(100),
+  link: z.url("প্রজেক্টের লিংক দিন — ভিডিও, ছবি বা কোড।"),
+  summary: z.string().trim().min(40, "কী বানালেন, কীভাবে — অন্তত ৪০ অক্ষরে লিখুন।").max(1000, "১০০০ অক্ষরের মধ্যে রাখুন।"),
+});
+export type ProjectInput = z.infer<typeof projectSchema>;
+
+export const complaintSchema = z.object({
+  kind: z.enum(["absent", "quality", "money", "behaviour", "safety"], { error: "অভিযোগের ধরন বেছে নিন।" }),
+  course: z.string(),
+  details: z.string().trim().min(20, "কী হয়েছিল, কবে — অন্তত ২০ অক্ষরে লিখুন।").max(1000, "১০০০ অক্ষরের মধ্যে রাখুন।"),
+});
+export type ComplaintInput = z.infer<typeof complaintSchema>;

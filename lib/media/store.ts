@@ -10,6 +10,7 @@ import type { Marks, Pin } from "./class-pins";
 import type { Classroom } from "./classroom";
 import type { TutorMsg } from "./tutor";
 import type { LabRoom } from "./lab";
+import { emptyAcademy, type AcademyState } from "./academy";
 import type { ResearchProject } from "./research-project";
 import type { ResearchEntry } from "./showcase";
 import type { CrimePost } from "./crime";
@@ -143,6 +144,8 @@ export interface MediaState {
   crimePosts: CrimePost[];
   crimeWitness: Record<string, true>;
   crimeFlags: Record<string, true>;
+  /** কাণ্ডারী তৈরি একাডেমি: admission, courses joined, teaching application, complaints. */
+  academy: AcademyState;
   /** Today's Learn → Connect → Create → Apply → Relax steps, keyed by date. */
   plan: { date: string; done: Record<string, true> };
 
@@ -211,6 +214,7 @@ const initialState: MediaState = Object.freeze({
   crimePosts: [],
   crimeWitness: {},
   crimeFlags: {},
+  academy: emptyAcademy,
   plan: { date: "", done: {} },
   liked: {},
   commentLikes: {},

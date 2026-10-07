@@ -4,7 +4,7 @@ import { BadgeCheck, ChevronDown, LayoutGrid, Sparkles, Store, UsersRound, X } f
 import { ClassroomAd } from "@/components/media/feed/classroom-ad";
 import { FeedComposer } from "@/components/media/feed/feed-composer";
 import { FeedEnd } from "@/components/media/feed/feed-end";
-import { CommunityModule, Highlights, JobsModule, MarketModule, ResearchModule } from "@/components/media/feed/feed-modules";
+import { AcademyModule, CommunityModule, Highlights, JobsModule, MarketModule, ResearchModule } from "@/components/media/feed/feed-modules";
 import { FeedRail } from "@/components/media/feed/feed-rail";
 import { FollowingFeed } from "@/components/media/feed/following-feed";
 import { MyPosts } from "@/components/media/feed/my-posts";
@@ -80,7 +80,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
 
   // What appears after the post at each index (0-based).
   const slots: Record<number, ReactNode> = unfiltered
-    ? { 1: <MarketModule />, 3: listingAd(0), 5: <ResearchModule />, 7: <JobsModule />, 9: <SponsoredAd variant="research" />, 10: <CommunityModule />, 13: challengeAd, 16: listingAd(1) }
+    ? { 1: <MarketModule />, 3: listingAd(0), 5: <ResearchModule />, 7: <JobsModule />, 9: <SponsoredAd variant="research" />, 10: <CommunityModule />, 12: <AcademyModule />, 13: challengeAd, 16: listingAd(1) }
     : { 3: listingAd(0), 8: <SponsoredAd variant="research" /> };
 
   // A filtered view opens on the room it is about.
