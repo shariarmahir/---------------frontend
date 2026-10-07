@@ -7,7 +7,7 @@ import { fairPayFloor, payUnitBn } from "./fair-pay.ts";
 import { bnDigits, taka } from "./format.ts";
 import type { PriceBand } from "./fair-price.ts";
 import { normalizeDigits, validateNid, validatePassport } from "./identity.ts";
-import { RUBRIC } from "./academy.ts";
+import { BATCH_MAX, CLASS_MINUTES, CLASS_WEEKS, DEPT_NAME_MAX, PROMO_SECONDS, RUBRIC, promoFits, type DeptKind } from "./academy.ts";
 
 const CATEGORY_IDS = [
   "crafts", "cooking", "tech", "design", "art", "music", "photo", "content", "engineering",
@@ -305,15 +305,20 @@ export const admissionSchema = z.object({
 });
 export type AdmissionInput = z.infer<typeof admissionSchema>;
 
-export const TEACH_KINDS = ["solo", "team", "workshop"] as const;
+export const TEACH_KINDS = ["solo", "team"] as const;
 export const MIN_TEACH_YEARS = 2;
 
-/** Applying to teach: proof of skill first, then a panel interview. */
+/**
+ * Applying to teach: proof of skill first, then a panel interview. Opening a
+ * new department means opening an academy — one academy, one department.
+ */
 export const teachSchema = z
   .object({
     kind: z.enum(TEACH_KINDS),
     dept: z.string().min(1, "একটি বিভাগ বেছে নিন।"),
-    newDept: z.string().trim().max(60, "৬০ অক্ষরের মধ্যে রাখুন।"),
+    newDept: z.string().trim().max(DEPT_NAME_MAX, `বিভাগের নাম ছোট রাখুন — ${bnDigits(DEPT_NAME_MAX)} অক্ষরের মধ্যে।`),
+    academy: z.string().trim().max(50, "৫০ অক্ষরের মধ্যে রাখুন।"),
+    about: z.string().trim().max(160, "১৬০ অক্ষরের মধ্যে রাখুন।"),
     skill: z.string().trim().min(2, "কী শেখাবেন লিখুন।").max(60),
     years: z.number({ error: "বছর লিখুন।" }).int().min(MIN_TEACH_YEARS, `শেখাতে অন্তত ${bnDigits(MIN_TEACH_YEARS)} বছরের হাতে-কলমে অভিজ্ঞতা লাগে।`).max(60),
     sample: z.url("একটি নমুনা ক্লাসের ভিডিও লিংক দিন।"),
@@ -322,11 +327,13 @@ export const teachSchema = z
     place: z.string().trim().max(120),
   })
   .superRefine((v, ctx) => {
-    if (v.dept === "new" && v.newDept.length < 3) ctx.addIssue({ code: "custom", path: ["newDept"], message: "নতুন বিভাগের নাম লিখুন।" });
+    const opening = v.dept === "new";
+    if (opening && v.newDept.length < 3) ctx.addIssue({ code: "custom", path: ["newDept"], message: "নতুন বিভাগের নাম লিখুন — ছোট আর বিষয়ের সাথে মিলিয়ে।" });
+    if (opening && v.academy.length < 3) ctx.addIssue({ code: "custom", path: ["academy"], message: "একাডেমির নাম দিন — যেমন ষড়বিংশ একাডেমি।" });
+    if (opening && v.about.length < 20) ctx.addIssue({ code: "custom", path: ["about"], message: "একাডেমি নিয়ে অন্তত এক লাইন লিখুন।" });
     const team = handleList(v.team);
-    if (v.kind === "team" && team.length === 0) ctx.addIssue({ code: "custom", path: ["team"], message: "দলের অন্তত একজনের @হ্যান্ডেল দিন।" });
+    if (opening && v.kind === "team" && team.length === 0) ctx.addIssue({ code: "custom", path: ["team"], message: "দলের অন্তত একজনের @হ্যান্ডেল দিন।" });
     if (team.some((h) => !/^[a-z0-9_]{3,20}$/.test(h))) ctx.addIssue({ code: "custom", path: ["team"], message: "হ্যান্ডেল হয় ছোট হাতের ইংরেজি অক্ষর, সংখ্যা বা _ দিয়ে।" });
-    if (v.kind === "workshop" && v.place.length < 5) ctx.addIssue({ code: "custom", path: ["place"], message: "কর্মশালার ঠিকানা দিন — ক্লাস সেখানেই হবে।" });
   });
 export type TeachInput = z.infer<typeof teachSchema>;
 
@@ -348,34 +355,61 @@ export type ComplaintInput = z.infer<typeof complaintSchema>;
 export const LESSON_MODES = ["video", "live", "hands-on"] as const;
 export const COURSE_LEVELS = ["foundation", "intermediate", "advanced"] as const;
 
-/** A teacher building a course: weeks, fee, the plan week by week and the final. */
-export const courseSchema = z
-  .object({
-    title: z.string().trim().min(6, "কোর্সের নাম দিন (অন্তত ৬ অক্ষর)।").max(80, "৮০ অক্ষরের মধ্যে রাখুন।"),
-    dept: z.string().min(1, "বিভাগ বেছে নিন।"),
-    level: z.enum(COURSE_LEVELS),
-    weeks: z.number({ error: "কয় সপ্তাহ লিখুন।" }).int().min(1, "অন্তত ১ সপ্তাহ।").max(24, "২৪ সপ্তাহের মধ্যে রাখুন।"),
-    fee: z.number({ error: "ফি লিখুন, বিনা ফি হলে ০।" }).int().min(0).max(50000, "৳৫০,০০০-এর মধ্যে রাখুন।"),
-    seats: z.number({ error: "আসন লিখুন।" }).int().min(1, "অন্তত ১টি আসন।").max(200, "২০০ আসনের মধ্যে রাখুন।"),
-    image: z.string().min(1, "একটা প্রচ্ছদ বেছে নিন।"),
-    outcome: z.string().trim().min(20, "শেষে শিক্ষার্থী কী পারবে — অন্তত ২০ অক্ষরে।").max(200),
-    final: z.string().trim().min(20, "ফাইনাল প্রজেক্ট কী — অন্তত ২০ অক্ষরে।").max(300),
-    lessons: z
-      .array(
-        z.object({
-          title: z.string().trim().min(3, "ক্লাসের বিষয় লিখুন।").max(80),
-          mode: z.enum(LESSON_MODES),
-          homework: z.string().trim().max(120),
-        }),
-      )
-      .min(1, "অন্তত একটি ক্লাস যোগ করুন।")
-      .max(24),
-  })
-  .superRefine((v, ctx) => {
-    if (v.lessons.length > v.weeks) ctx.addIssue({ code: "custom", path: ["lessons"], message: "সপ্তাহের চেয়ে বেশি ক্লাস — সপ্তাহ বাড়ান বা ক্লাস কমান।" });
-    if (v.lessons[0]?.mode === "hands-on") ctx.addIssue({ code: "custom", path: ["lessons", 0, "mode"], message: "প্রথম ক্লাস সবসময় অনলাইনে — ভিডিও বা লাইভ দিন।" });
+/** An uploaded paper — the syllabus or the working calendar. */
+const paper = (missing: string) =>
+  z.object({
+    kind: z.enum(["video", "pdf", "doc", "sheet", "data"]),
+    title: z.string().min(1, missing),
+    size: z.string(),
+    href: z.string().optional(),
+    file: z.string().optional(),
   });
-export type CourseInput = z.infer<typeof courseSchema>;
+
+/**
+ * A teacher building a course, by the academy rules: five weeks of topics
+ * (the course ends in 40 days), a batch no bigger than the academy may take,
+ * the syllabus, the working calendar and a 2.5-minute promo — and in a team
+ * academy, each topic taught by a member.
+ */
+export function courseSchemaFor(dept: { kind: DeptKind; teachers: string[] }) {
+  const max = BATCH_MAX[dept.kind];
+  return z
+    .object({
+      title: z.string().trim().min(6, "কোর্সের নাম দিন (অন্তত ৬ অক্ষর)।").max(80, "৮০ অক্ষরের মধ্যে রাখুন।"),
+      dept: z.string().min(1, "বিভাগ বেছে নিন।"),
+      level: z.enum(COURSE_LEVELS),
+      fee: z.number({ error: "ফি লিখুন, বিনা ফি হলে ০।" }).int().min(0).max(50000, "৳৫০,০০০-এর মধ্যে রাখুন।"),
+      seats: z.number({ error: "আসন লিখুন।" }).int().min(1, "অন্তত ১টি আসন।").max(max, `এক ব্যাচে সর্বোচ্চ ${bnDigits(max)} জন।`),
+      image: z.string().min(1, "একটা প্রচ্ছদ বেছে নিন।"),
+      outcome: z.string().trim().min(20, "শেষে শিক্ষার্থী কী পারবে — অন্তত ২০ অক্ষরে।").max(200),
+      final: z.string().trim().min(20, "ফাইনাল প্রজেক্ট কী — অন্তত ২০ অক্ষরে।").max(300),
+      starts: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "শুরুর দিন বেছে নিন।"),
+      lessons: z
+        .array(
+          z.object({
+            title: z.string().trim().min(3, "এই সপ্তাহের বিষয় লিখুন।").max(80),
+            mode: z.enum(LESSON_MODES),
+            homework: z.string().trim().max(120),
+            by: z.string(),
+          }),
+        )
+        .length(CLASS_WEEKS, `${bnDigits(CLASS_WEEKS)} সপ্তাহের ${bnDigits(CLASS_WEEKS)}টি বিষয় লাগবে।`),
+      syllabus: paper("সিলেবাস আপলোড করুন।"),
+      calendar: paper("কাজের ক্যালেন্ডার আপলোড করুন।"),
+      promo: z.object({ seconds: z.number(), file: z.string().min(1, "প্রোমো ভিডিও আপলোড করুন।") }),
+    })
+    .superRefine((v, ctx) => {
+      if (v.lessons[0]?.mode === "hands-on") ctx.addIssue({ code: "custom", path: ["lessons", 0, "mode"], message: "প্রথম ক্লাস সবসময় অনলাইনে — ভিডিও বা লাইভ দিন।" });
+      if (v.promo.file && !promoFits(v.promo.seconds)) ctx.addIssue({ code: "custom", path: ["promo", "seconds"], message: `প্রোমো ঠিক আড়াই মিনিটের (${bnDigits(PROMO_SECONDS)} সেকেন্ড) হতে হবে।` });
+      if (dept.kind === "team") {
+        v.lessons.forEach((l, i) => {
+          if (!dept.teachers.includes(l.by)) ctx.addIssue({ code: "custom", path: ["lessons", i, "by"], message: "কে পড়াবেন বেছে নিন।" });
+        });
+        if (new Set(v.lessons.map((l) => l.by)).size < 2) ctx.addIssue({ code: "custom", path: ["lessons"], message: "দলীয় একাডেমিতে আলাদা বিষয় আলাদা শিক্ষক পড়ান — অন্তত দুজনকে দিন।" });
+      }
+    });
+}
+export type CourseInput = z.infer<ReturnType<typeof courseSchemaFor>>;
 
 /** One examiner's marks: every rubric line within its range, and the reasons. */
 export const markSchema = z
@@ -412,7 +446,7 @@ export const videoSchema = z
   })
   .superRefine((v, ctx) => {
     if (v.short && v.length > 59) ctx.addIssue({ code: "custom", path: ["length"], message: "ছোট ভিডিও ৫৯ সেকেন্ডের মধ্যে।" });
-    if (!v.short && v.length > 240) ctx.addIssue({ code: "custom", path: ["length"], message: "২৪০ মিনিটের মধ্যে রাখুন।" });
+    if (!v.short && v.length !== CLASS_MINUTES) ctx.addIssue({ code: "custom", path: ["length"], message: `অনলাইন ক্লাস ঠিক ${bnDigits(CLASS_MINUTES)} মিনিটের।` });
     if (v.short && v.access === "paid") ctx.addIssue({ code: "custom", path: ["access"], message: "ছোট ভিডিও সবসময় বিনামূল্যে।" });
   });
 export type VideoInput = z.infer<typeof videoSchema>;

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { RUBRIC, attendanceOf, canWatch, certificateId, draftCode, durationText, finalResult, freeClassDone, interviewSlots, latestAdmission, materialKindOf, normalizeAcademy, payoutOf, placement, progressOf, ratingWith, rubricTotal, starSpread, threadsOf, sizeParts, sortVideos, teacherPoints, teacherTier, weekOf, youtubeEmbed, type ClassVideo, type VideoComment } from "./academy.ts";
+import { BATCH_MAX, COURSE_DAYS, RUBRIC, attendanceOf, courseIssues, courseTimeline, deptIssues, promoFits, canWatch, certificateId, draftCode, durationText, finalResult, freeClassDone, interviewSlots, latestAdmission, materialKindOf, normalizeAcademy, payoutOf, placement, progressOf, ratingWith, rubricTotal, starSpread, threadsOf, sizeParts, sortVideos, teacherPoints, teacherTier, weekOf, youtubeEmbed, type ClassVideo, type VideoComment } from "./academy.ts";
 
 test("admission places everyone; experience with proof fast-tracks", () => {
   assert.deepEqual(placement({ testPct: 20, years: 0, hasProof: false }), { level: "foundation", fastTrack: false });
@@ -166,4 +166,59 @@ test("a channel's videos sort newest, most watched or oldest first", () => {
   assert.deepEqual(sortVideos(all, "oldest").map((x) => x.id), ["a", "c", "d", "b"]);
   assert.deepEqual(all.map((x) => x.id), ["a", "b", "c", "d"], "the list given is left alone");
   assert.deepEqual(normalizeAcademy({}).follows, {}, "older saves start following no one");
+});
+
+test("a course runs 40 days: five class weeks, then five days for the project and the panel", () => {
+  const t = courseTimeline("2026-09-05");
+  assert.equal(t.weeks.length, 5);
+  assert.deepEqual(t.weeks[0], { week: 1, from: "2026-09-05", to: "2026-09-11" });
+  assert.deepEqual(t.weeks[4], { week: 5, from: "2026-10-03", to: "2026-10-09" });
+  assert.deepEqual(t.final, { from: "2026-10-10", to: "2026-10-14" });
+  const days = (Date.parse(t.ends) - Date.parse("2026-09-05")) / 86_400_000 + 1;
+  assert.equal(days, COURSE_DAYS, "day one to the last day is forty days");
+});
+
+test("academy rules: three courses, a short name, batches of 5 or 15, a 2.5-minute promo, a topic per teacher", () => {
+  assert.deepEqual(BATCH_MAX, { solo: 5, team: 15 });
+  assert.ok(promoFits(150) && promoFits(146) && promoFits(155));
+  assert.ok(!promoFits(120) && !promoFits(160));
+
+  const team = { kind: "team" as const, teachers: ["anik", "mahir", "rupa", "sajid"] };
+  const L = (week: number, by?: string) => ({ week, title: `বিষয় ${week}`, mode: "live" as const, by });
+  const course = {
+    weeks: 5,
+    lessons: [L(1, "anik"), L(2, "rupa"), L(3, "anik"), L(4, "mahir"), L(5, "anik")],
+    seats: 15,
+    enrolled: 12,
+    teacher: "anik",
+    syllabus: { kind: "pdf" as const, title: "সিলেবাস", size: "২০০ কেবি" },
+    calendar: { kind: "sheet" as const, title: "ক্যালেন্ডার", size: "৪০ কেবি" },
+    promo: { seconds: 150 },
+  };
+  assert.deepEqual(courseIssues(course, team), []);
+  assert.equal(courseIssues({ ...course, seats: 16 }, team).length, 1, "a team batch is at most 15");
+  assert.equal(courseIssues({ ...course, weeks: 8 }, team).length, 1, "forty days, five weeks");
+  assert.equal(courseIssues({ ...course, promo: { seconds: 300 } }, team).length, 1);
+  assert.equal(courseIssues({ ...course, lessons: course.lessons.map((l) => ({ ...l, by: "anik" })) }, team).length, 1, "one teacher alone is not a team course");
+  assert.equal(courseIssues({ ...course, lessons: course.lessons.map((l) => ({ ...l, by: "stranger" })) }, team).length, 2);
+
+  const solo = { kind: "solo" as const, teachers: ["sadman"] };
+  const own = { ...course, teacher: "sadman", seats: 5, enrolled: 5, lessons: course.lessons.map((l) => ({ ...l, by: undefined })) };
+  assert.deepEqual(courseIssues(own, solo), []);
+  assert.equal(courseIssues({ ...own, seats: 6 }, solo).length, 1, "a solo batch is at most 5");
+
+  const dept = { name: "মিউজিক", kind: "solo" as const, teachers: ["sadman"], academy: { name: "সাদমান বিন আহমেদ মিউজিক একাডেমি", about: "একক" } };
+  assert.deepEqual(deptIssues(dept, 3), []);
+  assert.equal(deptIssues(dept, 2).length, 1, "exactly three courses");
+  assert.equal(deptIssues({ ...dept, teachers: ["sadman", "mitu"] }, 3).length, 1, "a solo academy is one teacher");
+  assert.equal(deptIssues({ ...dept, name: "ইলেকট্রিক গিটার, কর্ড, রিদম আর লিড বাজানো" }, 3).length, 1, "a short name");
+  assert.equal(deptIssues({ ...dept, kind: "team" }, 3).length, 1, "a team is at least two");
+});
+
+test("an old application for a workshop becomes a solo or team academy", () => {
+  const app = { dept: "motor", newDept: "", skill: "মেরামত", years: 5, sample: "https://x.y", plan: "", team: [] as string[], place: "টঙ্গী", at: "2026-09-01T00:00:00Z" };
+  assert.equal(normalizeAcademy({ application: { ...app, kind: "workshop" } }).application?.kind, "solo");
+  assert.equal(normalizeAcademy({ application: { ...app, kind: "workshop", team: ["anik"] } }).application?.kind, "team");
+  assert.equal(normalizeAcademy({ application: { ...app, kind: "team" } }).application?.academy, "");
+  assert.deepEqual(normalizeAcademy({}).academyMedia, {});
 });

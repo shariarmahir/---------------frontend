@@ -1,9 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
-import { admissionQuestions, board, classVideos, courses, deptLikes, deptsOfTeacher, teacherFollowers, videoComments, videoRating, departments, rosterOf, teacherRecords, workshops } from "./academy.ts";
+import { admissionQuestions, board, classVideos, courses, deptLikes, deptShort, deptsOfTeacher, teacherFollowers, videoComments, videoRating, departments, rosterOf, teacherRecords, workshops } from "./academy.ts";
 import { people } from "./users.ts";
-import { SCHOOLS, certificateId, finalResult, freeClassDone } from "../../lib/media/academy.ts";
+import { CLASS_MINUTES, SCHOOLS, certificateId, courseIssues, courseTimeline, deptIssues, finalResult, freeClassDone } from "../../lib/media/academy.ts";
 
 const handles = new Set(people.map((p) => p.handle));
 const deptIds = new Set(departments.map((d) => d.id));
@@ -17,9 +17,33 @@ test("academy: every teacher is a member with an interview record, in their depa
       assert.ok(handles.has(h), `${d.id}: unknown member ${h}`);
       assert.ok(recordFor.has(h), `${d.id}: ${h} has no interview record`);
     }
-    if (d.kind === "workshop") assert.ok(d.place, `${d.id}: a workshop needs a real place`);
   }
   for (const t of teacherRecords) assert.ok(deptIds.has(t.dept), `${t.handle}: unknown department ${t.dept}`);
+});
+
+test("academy rules: one academy per department, three courses, 40 days, batches of 5 or 15, papers and promo", () => {
+  assert.equal(new Set(departments.map((d) => d.academy.name)).size, departments.length, "an academy opens one department");
+  for (const d of departments) {
+    assert.ok(d.academy.about.length >= 20, `${d.id}: a line about the academy`);
+    assert.deepEqual(deptIssues(d, courses.filter((c) => c.dept === d.id).length), [], d.id);
+  }
+  for (const c of courses) assert.deepEqual(courseIssues(c, departments.find((d) => d.id === c.dept)!), [], c.id);
+  // The two the owner named: a team of four friends, and a solo music academy teaching electric guitar.
+  const web = departments.find((d) => d.academy.name === "ষড়বিংশ একাডেমি")!;
+  assert.equal(web.kind, "team");
+  assert.equal(web.teachers.length, 4);
+  const guitar = departments.find((d) => d.academy.name === "সাদমান বিন আহমেদ মিউজিক একাডেমি")!;
+  assert.deepEqual([guitar.kind, guitar.name], ["solo", "মিউজিক"]);
+  assert.ok(courses.some((c) => c.dept === guitar.id && c.title.includes("ইলেকট্রিক গিটার")));
+});
+
+test("academy: every online class is forty minutes, and every department has a short for its page", () => {
+  for (const v of classVideos) if (!v.short) assert.equal(v.seconds, CLASS_MINUTES * 60, `${v.id}: a forty-minute class`);
+  for (const d of departments) {
+    const ids = new Set(courses.filter((c) => c.dept === d.id).map((c) => c.id));
+    assert.ok(classVideos.some((v) => v.short && ids.has(v.course)), `${d.id}: a short`);
+    assert.ok(ids.has(deptShort(d.id)?.course ?? ""), `${d.id}: its page links its own short`);
+  }
 });
 
 test("academy: courses and workshops point at real departments, teachers and images", () => {
@@ -84,7 +108,9 @@ test("class videos belong to real lessons, and only মাহির and কা�
     if (v.short) assert.ok(v.seconds < 60 && v.access === "free", `${v.id}: a short is free and under a minute`);
   }
   const now = "2026-09-25T12:00:00Z";
-  const owing = [...new Set(courses.map((c) => c.teacher))].filter((t) => !freeClassDone(classVideos, t, now)).sort();
+  // Only a running batch owes the weekly free class; one starting next month does not yet.
+  const running = courses.filter((c) => c.starts <= now.slice(0, 10) && courseTimeline(c.starts).ends >= now.slice(0, 10));
+  const owing = [...new Set(running.map((c) => c.teacher))].filter((t) => !freeClassDone(classVideos, t, now)).sort();
   assert.deepEqual(owing, ["kamal", "mahir"]);
 });
 

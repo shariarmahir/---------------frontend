@@ -8,32 +8,43 @@ import { ArrowRight, History, Info, X } from "lucide-react";
 import { DEMO_NOW } from "@/data/media/clock";
 import { classVideos, courses, coursesOf, departments, getCourse } from "@/data/media/academy";
 import { useAuth } from "@/lib/auth/client";
-import { LEVELS, SCHOOLS, progressOf, weekOf, type Course, type Level, type School } from "@/lib/media/academy";
+import { LEVELS, SCHOOLS, progressOf, weekOf, type Course, type Department, type Level, type School } from "@/lib/media/academy";
 import { useHydrated } from "@/lib/media/store";
 import { mediaButton } from "../../ui/button-styles";
 import { Num } from "../../ui/numerals";
 import { Reveal } from "../home/motion-bits";
 import { useAcademy } from "../use-academy";
+import { DeptIcon } from "./dept-icons";
 import { AudienceStrip, DeptFooter } from "./dept-footer";
 import { ExploreNav } from "./explore-nav";
 import { HeroDeck } from "./hero-deck";
-import { ChipBand, CourseTile, RowPanel, VideoTile, courseRow, ratingOf, videoRow, type BandTab } from "./parts";
+import { ChipBand, DeptTile, RowPanel, VideoTile, deptImage, deptRating, deptRow, videoRow, type BandTab } from "./parts";
 import { Categories, Doors, Promos, TeacherPills } from "./promos";
 import { Faq, Outcome, Voices } from "./proof";
-import { useRecentCourses } from "./recent";
+import { useRecentCourses, useRecentDepts } from "./recent";
 import { RoleCard } from "./role-card";
 
 const THIS_WEEK = weekOf(DEMO_NOW.toISOString());
 const NEW_DEPT = "/media/academy/teach?dept=new";
 const schoolOf = (c: Course) => departments.find((d) => d.id === c.dept)!.school;
-const SCHOOL_LIST = (Object.keys(SCHOOLS) as School[]).filter((s) => courses.some((c) => schoolOf(c) === s));
-const byRating = (a: Course, b: Course) => (ratingOf(b)?.avg ?? 0) - (ratingOf(a)?.avg ?? 0);
+const SCHOOL_LIST = (Object.keys(SCHOOLS) as School[]).filter((s) => departments.some((d) => d.school === s));
+const byRating = (a: Department, b: Department) => (deptRating(b)?.avg ?? 0) - (deptRating(a)?.avg ?? 0);
+const joinedOf = (d: Department) => coursesOf(d.id).reduce((n, c) => n + c.enrolled, 0);
+/** Departments with a beginners' course, the cheapest such course first. */
+const STARTERS = departments
+  .flatMap((d) => {
+    const fees = coursesOf(d.id).filter((c) => c.level === "foundation").map((c) => c.fee);
+    return fees.length ? [{ d, fee: Math.min(...fees) }] : [];
+  })
+  .sort((a, b) => a.fee - b.fee || byRating(a.d, b.d))
+  .map((x) => x.d);
+const deptTiles =(list: Department[]) => [...list].sort(byRating).map((d) => ({ key: d.id, node: <DeptTile dept={d} /> }));
 const FREE_CLASSES = classVideos.filter((v) => v.access === "free" && !v.short).sort((a, b) => b.at.localeCompare(a.at));
 const STEP = 4;
 const BANNER_KEY = "academy-depts-banner";
 
 /**
- * বিভাগ ও কোর্স, laid out section by section like a big course site's home:
+ * বিভাগ (departments only — their courses live on each department page), laid out section by section like a big course site's home:
  * who it is for, its own bar with a wide menu and search, a welcome, a
  * notice, the carousel, what you looked at, new and popular, three tabbed
  * bands, two promos, the teachers, three doors, categories, trending lists,
@@ -44,22 +55,11 @@ export function DepartmentsView() {
   const [school, setSchool] = useState<string>(SCHOOL_LIST[0]);
   const [shown, setShown] = useState(STEP);
 
-  const levelTabs: BandTab[] = (Object.keys(LEVELS) as Level[]).map((l) => ({
-    id: l,
-    label: LEVELS[l],
-    items: courses
-      .filter((c) => c.level === l)
-      .sort(byRating)
-      .map((c) => ({ key: c.id, node: <CourseTile course={c} /> })),
-  }));
-  const schoolTabs: BandTab[] = SCHOOL_LIST.map((s) => ({
-    id: s,
-    label: SCHOOLS[s],
-    items: courses
-      .filter((c) => schoolOf(c) === s)
-      .sort(byRating)
-      .map((c) => ({ key: c.id, node: <CourseTile course={c} /> })),
-  }));
+  // Every band on this page shows departments; their courses live on each department's own page.
+  const levelTabs: BandTab[] = (Object.keys(LEVELS) as Level[])
+    .map((l) => ({ id: l, label: LEVELS[l], items: deptTiles(departments.filter((d) => coursesOf(d.id).some((c) => c.level === l))) }))
+    .filter((t) => t.items.length);
+  const schoolTabs: BandTab[] = SCHOOL_LIST.map((s) => ({ id: s, label: SCHOOLS[s], items: deptTiles(departments.filter((d) => d.school === s)) }));
   const freeTabs: BandTab[] = SCHOOL_LIST.map((s) => ({
     id: s,
     label: SCHOOLS[s],
@@ -165,26 +165,33 @@ function Notice() {
 /* ── Resume your exploration ───────────────────────────────────────── */
 
 /**
- * What you were looking at: the courses you are in (with how far along),
- * the course pages you opened last on this device, and courses like them.
+ * What you were looking at: the departments you study in (with how far
+ * along), the departments you opened last on this device, and ones like them.
  */
 function Resume() {
   const hydrated = useHydrated();
   const enrolled = useAcademy((a) => a.enrolled);
   const admissions = useAcademy((a) => a.admissions);
-  const recent = useRecentCourses();
-  const mine = hydrated ? Object.entries(enrolled).flatMap(([id, e]) => (getCourse(id) ? [{ course: getCourse(id)!, e }] : [])) : [];
+  const visitedDepts = useRecentDepts();
+  const visitedCourses = useRecentCourses();
+  // Departments opened, then the departments of courses opened — each once.
+  const recent = [...new Set([...visitedDepts, ...visitedCourses.flatMap((c) => departments.find((d) => d.id === c.dept) ?? [])])];
+  const mine = hydrated
+    ? departments.flatMap((dept) => {
+        const runs = coursesOf(dept.id).flatMap((course) => (enrolled[course.id] ? [{ course, p: progressOf(course, enrolled[course.id]) }] : []));
+        return runs.length ? [{ dept, runs }] : [];
+      })
+    : [];
 
-  // Like what you looked at: the same departments first, then the same schools; never what is already shown.
-  const seenIds = new Set([...recent.map((c) => c.id), ...mine.map((m) => m.course.id)]);
-  const seedDepts = new Set([...recent.map((c) => c.dept), ...(hydrated ? Object.keys(admissions) : [])]);
-  const seedSchools = new Set(courses.filter((c) => seedDepts.has(c.dept)).map(schoolOf));
-  const similar = courses
-    .filter((c) => !seenIds.has(c.id))
-    .map((c) => ({ c, rank: seedDepts.has(c.dept) ? 0 : seedSchools.has(schoolOf(c)) ? 1 : 2 }))
-    .sort((a, b) => a.rank - b.rank || byRating(a.c, b.c))
+  // Like what you looked at: the same schools first; never what is already shown.
+  const seen = new Set([...recent.map((d) => d.id), ...mine.map((m) => m.dept.id)]);
+  const seedSchools = new Set([...recent.map((d) => d.school), ...(hydrated ? Object.keys(admissions).flatMap((id) => departments.find((d) => d.id === id)?.school ?? []) : [])]);
+  const similar = departments
+    .filter((d) => !seen.has(d.id))
+    .map((d) => ({ d, rank: seedSchools.has(d.school) ? 0 : 1 }))
+    .sort((a, b) => a.rank - b.rank || byRating(a.d, b.d))
     .slice(0, 3)
-    .map((x) => x.c);
+    .map((x) => x.d);
 
   return (
     <section id="my-learning" aria-labelledby="resume-title" className="scroll-mt-20">
@@ -194,23 +201,27 @@ function Resume() {
 
       {mine.length > 0 && (
         <ul className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {mine.map(({ course, e }) => {
-            const p = progressOf(course, e);
-            const pct = Math.round((p.attended / course.lessons.length) * 100);
+          {mine.map(({ dept, runs }) => {
+            const done = runs.reduce((n, r) => n + r.p.attended, 0);
+            const total = runs.reduce((n, r) => n + r.course.lessons.length, 0);
+            const pct = total ? Math.round((done / total) * 100) : 0;
+            const image = deptImage(dept);
             return (
-              <li key={course.id}>
-                <Link href={`/media/academy/course/${course.id}`} className="group flex gap-4 rounded-2xl bg-text-primary p-3 ring-1 ring-white/12 transition-colors hover:ring-signal-orange/50">
-                  <span className="relative aspect-square w-20 shrink-0 overflow-hidden rounded-xl">
-                    <Image src={course.image} alt="" fill sizes="80px" className="object-cover" />
+              <li key={dept.id}>
+                <Link href={`/media/academy/dept/${dept.id}`} className="group flex gap-4 rounded-2xl bg-text-primary p-3 ring-1 ring-white/12 transition-colors hover:ring-signal-orange/50">
+                  <span className="relative grid aspect-square w-20 shrink-0 place-items-center overflow-hidden rounded-xl bg-white">
+                    {image ? <Image src={image} alt="" fill sizes="80px" className="object-cover" /> : <DeptIcon dept={dept.id} school={dept.school} className="size-14" />}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block text-xs text-white/60">চলছে · {course.id}</span>
-                    <span className="block truncate font-bold text-white group-hover:text-signal-orange">{course.title}</span>
+                    <span className="block text-xs text-white/60">
+                      চলছে · <Num value={runs.length} />টি কোর্স
+                    </span>
+                    <span className="block truncate font-bold text-white group-hover:text-signal-orange">{dept.name}</span>
                     <span className="mt-2 block h-1.5 overflow-hidden rounded-full bg-white/10">
                       <span className="block h-full rounded-full bg-signal-orange" style={{ width: `${pct}%` }} />
                     </span>
                     <span className="mt-1 block text-xs text-white/65">
-                      <Num value={p.attended} />/<Num value={course.lessons.length} /> সপ্তাহ · {p.eligible ? "ফাইনালের জন্য তৈরি" : "চলছে"}
+                      <Num value={done} />/<Num value={total} /> সপ্তাহ · {runs.some((r) => r.p.eligible) ? "ফাইনালের জন্য তৈরি" : "চলছে"}
                     </span>
                   </span>
                 </Link>
@@ -221,8 +232,8 @@ function Resume() {
       )}
 
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
-        <RowPanel title="সম্প্রতি দেখেছেন" rows={recent.slice(0, 3).map(courseRow)} empty="কোনো কোর্সের পাতা খুললে সেটা এখানে থাকবে — এই ফোনে, শুধু আপনার জন্য।" />
-        <RowPanel title={recent.length || seedDepts.size ? "আপনার আগ্রহের সাথে মেলে" : "শুরু করার জন্য ভালো"} rows={similar.map(courseRow)} delay={0.08} />
+        <RowPanel title="সম্প্রতি দেখেছেন" rows={recent.slice(0, 3).map(deptRow)} empty="কোনো বিভাগের পাতা খুললে সেটা এখানে থাকবে — এই ফোনে, শুধু আপনার জন্য।" />
+        <RowPanel title={seedSchools.size ? "আপনার আগ্রহের সাথে মেলে" : "শুরু করার জন্য ভালো"} rows={similar.map(deptRow)} delay={0.08} />
       </div>
     </section>
   );
@@ -237,9 +248,9 @@ function NewAndPopular() {
         নতুন ও জনপ্রিয়
       </h2>
       <div className="mt-5 grid gap-4 lg:grid-cols-3">
-        <RowPanel title="সবচেয়ে জনপ্রিয়" href="#job-ready" rows={[...courses].sort((a, b) => b.enrolled - a.enrolled).slice(0, 3).map(courseRow)} />
+        <RowPanel title="সবচেয়ে জনপ্রিয়" href="#job-ready" rows={[...departments].sort((a, b) => joinedOf(b) - joinedOf(a)).slice(0, 3).map(deptRow)} />
         <RowPanel title="এ সপ্তাহের বিনামূল্যের ক্লাস" href="/media/academy/videos" rows={FREE_CLASSES.filter((v) => weekOf(v.at) === THIS_WEEK).sort((a, b) => b.views - a.views).slice(0, 3).map(videoRow)} delay={0.08} />
-        <RowPanel title="বিনা ফি ও শুরু থেকে" href="#by-level" rows={courses.filter((c) => c.level === "foundation").sort((a, b) => a.fee - b.fee || byRating(a, b)).slice(0, 3).map(courseRow)} delay={0.16} />
+        <RowPanel title="বিনা ফি ও শুরু থেকে" href="#by-level" rows={STARTERS.slice(0, 3).map(deptRow)} delay={0.16} />
       </div>
     </section>
   );
@@ -257,7 +268,7 @@ function Trending() {
         {top.map((s, i) => {
           const first = departments.find((d) => d.school === s)!;
           return (
-            <RowPanel key={s} title={SCHOOLS[s]} href={`/media/academy/dept/${first.id}`} rows={courses.filter((c) => schoolOf(c) === s).sort(byRating).slice(0, 3).map(courseRow)} delay={i * 0.08} />
+            <RowPanel key={s} title={SCHOOLS[s]} href={`/media/academy/dept/${first.id}`} rows={departments.filter((d) => d.school === s).sort(byRating).slice(0, 3).map(deptRow)} delay={i * 0.08} />
           );
         })}
       </div>

@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { departments, getDepartment } from "@/data/media/academy";
 import { getPerson } from "@/data/media/users";
-import { DEPT_KINDS, interviewSlots, type DeptKind, type TeachApplication } from "@/lib/media/academy";
+import { DEPT_KINDS, DEPT_NAME_MAX, interviewSlots, type DeptKind, type TeachApplication } from "@/lib/media/academy";
 import { handleList, teachSchema, type TeachInput } from "@/lib/media/schemas";
 import { useHydrated } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
@@ -21,9 +21,8 @@ import { DateText } from "../ui/numerals";
 import { updateAcademy, useAcademy } from "./use-academy";
 
 const KIND_HINT: Record<DeptKind, string> = {
-  solo: "নিজে একা একটা কোর্স চালাবেন।",
-  team: "কয়েক বন্ধু মিলে একটা বিভাগ — যেমন ওয়েব, অ্যাপ আর এআই।",
-  workshop: "নিজের গ্যারেজ, রান্নাঘর বা ল্যাবে হাতে-কলমে ক্লাস।",
+  solo: "নিজের নামে একাডেমি, একাই পড়াবেন — এক ব্যাচে সর্বোচ্চ ৫ জন।",
+  team: "বন্ধুরা মিলে একাডেমি — যেমন চার বন্ধুর ষড়বিংশ একাডেমি। আলাদা বিষয় আলাদা জন পড়ান, এক ব্যাচে সর্বোচ্চ ১৫ জন।",
 };
 
 /** Apply to teach, then book the panel interview. */
@@ -34,7 +33,7 @@ export function TeachApply({ initialDept }: { initialDept?: string }) {
   const preset = initialDept === "new" || (initialDept && getDepartment(initialDept)) ? initialDept : "";
   const form = useForm<TeachInput>({
     resolver: zodResolver(teachSchema),
-    defaultValues: { kind: "solo", dept: preset, newDept: "", skill: "", years: 0, sample: "", plan: "", team: "", place: "" },
+    defaultValues: { kind: "solo", dept: preset, newDept: "", academy: "", about: "", skill: "", years: 0, sample: "", plan: "", team: "", place: "" },
   });
   const [kind, dept] = useWatch({ control: form.control, name: ["kind", "dept"] });
 
@@ -43,13 +42,19 @@ export function TeachApply({ initialDept }: { initialDept?: string }) {
 
   function onSubmit(v: TeachInput) {
     if (!ensure("শিক্ষক হিসেবে আবেদন করতে")) return;
+    // Joining a department means joining its academy; a solo academy is one teacher's own.
+    const joining = getDepartment(v.dept);
+    if (joining?.kind === "solo") {
+      form.setError("dept", { message: `${joining.academy.name} একক একাডেমি — সেখানে আর কেউ পড়াতে পারেন না। নিজের একাডেমি খুলুন।` });
+      return;
+    }
     const team = handleList(v.team);
     const unknown = team.filter((h) => !getPerson(h));
     if (unknown.length > 0) {
       form.setError("team", { message: `এই সদস্য পাওয়া যায়নি: @${unknown.join(", @")}` });
       return;
     }
-    const app: TeachApplication = { ...v, team, at: new Date().toISOString() };
+    const app: TeachApplication = { ...v, kind: joining ? joining.kind : v.kind, team, at: new Date().toISOString() };
     updateAcademy((a) => ({ ...a, application: app }));
     toast.success("আবেদন জমা হয়েছে", { description: "এবার প্যানেল ইন্টারভিউয়ের সময় বেছে নিন।" });
   }
@@ -59,8 +64,8 @@ export function TeachApply({ initialDept }: { initialDept?: string }) {
       <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-6 rounded-2xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-7">
         <FormField control={form.control} name="kind" render={({ field }) => (
           <FormItem>
-            <FormGroupLabel>কীভাবে শেখাবেন</FormGroupLabel>
-            <FormGroup className="grid gap-2 sm:grid-cols-3">
+            <FormGroupLabel>কোন ধরনের একাডেমি</FormGroupLabel>
+            <FormGroup className="grid gap-2 sm:grid-cols-2">
               {(Object.keys(DEPT_KINDS) as DeptKind[]).map((k) => (
                 <label key={k} className={cn(choiceClass(field.value === k), "flex-col items-start py-3")}>
                   <input type="radio" className="sr-only" name={field.name} checked={field.value === k} onChange={() => field.onChange(k)} />
@@ -79,8 +84,8 @@ export function TeachApply({ initialDept }: { initialDept?: string }) {
               <FormControl>
                 <select {...field} className={selectClass}>
                   <option value="">বেছে নিন</option>
-                  {departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
-                  <option value="new">+ নতুন বিভাগ খুলব</option>
+                  {departments.map((d) => <option key={d.id} value={d.id} disabled={d.kind === "solo"}>{d.name} — {d.academy.name}{d.kind === "solo" ? " (একক)" : ""}</option>)}
+                  <option value="new">+ নিজের একাডেমি আর বিভাগ খুলব</option>
                 </select>
               </FormControl>
               <FormMessage />
@@ -89,8 +94,9 @@ export function TeachApply({ initialDept }: { initialDept?: string }) {
           {dept === "new" ? (
             <FormField control={form.control} name="newDept" render={({ field }) => (
               <FormItem>
-                <FormLabel>নতুন বিভাগের নাম</FormLabel>
-                <FormControl><Input placeholder="যেমন: ট্যাটু ও বডি আর্ট" {...field} /></FormControl>
+                <FormLabel>বিভাগের নাম</FormLabel>
+                <FormControl><Input placeholder="যেমন: ওয়েব ডেভেলপমেন্ট" maxLength={DEPT_NAME_MAX} {...field} /></FormControl>
+                <FormDescription>ছোট আর বিষয়ের সাথে মিলিয়ে — একটি একাডেমি একটিই বিভাগ খুলতে পারে।</FormDescription>
                 <FormMessage />
               </FormItem>
             )} />
@@ -104,6 +110,25 @@ export function TeachApply({ initialDept }: { initialDept?: string }) {
             )} />
           )}
         </div>
+        {dept === "new" && (
+          <div className="grid gap-5 sm:grid-cols-2">
+            <FormField control={form.control} name="academy" render={({ field }) => (
+              <FormItem>
+                <FormLabel>একাডেমির নাম</FormLabel>
+                <FormControl><Input placeholder={kind === "team" ? "যেমন: ষড়বিংশ একাডেমি" : "যেমন: সাদমান বিন আহমেদ মিউজিক একাডেমি"} {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+            <FormField control={form.control} name="about" render={({ field }) => (
+              <FormItem>
+                <FormLabel>একাডেমি নিয়ে এক লাইন</FormLabel>
+                <FormControl><Input placeholder="কারা, কী শেখান, কীভাবে" {...field} /></FormControl>
+                <FormDescription>বিভাগের পাতার ওপরে নামের নিচে এটাই থাকবে।</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )} />
+          </div>
+        )}
         {dept === "new" && (
           <FormField control={form.control} name="skill" render={({ field }) => (
             <FormItem>
@@ -134,12 +159,12 @@ export function TeachApply({ initialDept }: { initialDept?: string }) {
         <FormField control={form.control} name="plan" render={({ field }) => (
           <FormItem>
             <FormLabel>ক্লাসের পরিকল্পনা</FormLabel>
-            <FormControl><Textarea rows={4} placeholder="কয় সপ্তাহ, প্রতি সপ্তাহে কী, হোমওয়ার্ক কী, শেষে শিক্ষার্থী কী বানাবে।" {...field} /></FormControl>
+            <FormControl><Textarea rows={4} placeholder="তিনটি দক্ষতার কোর্স, প্রতিটা ৪০ দিনে — পাঁচ সপ্তাহে কী শেখাবেন, হোমওয়ার্ক কী, শেষে শিক্ষার্থী কী বানাবে।" {...field} /></FormControl>
             <FormMessage />
           </FormItem>
         )} />
 
-        {kind === "team" && (
+        {kind === "team" && dept === "new" && (
           <FormField control={form.control} name="team" render={({ field }) => (
             <FormItem>
               <FormLabel>দলের অন্যরা</FormLabel>
@@ -149,10 +174,10 @@ export function TeachApply({ initialDept }: { initialDept?: string }) {
             </FormItem>
           )} />
         )}
-        {kind === "workshop" && (
+        {dept === "new" && (
           <FormField control={form.control} name="place" render={({ field }) => (
             <FormItem>
-              <FormLabel>কর্মশালার ঠিকানা</FormLabel>
+              <FormLabel>হাতে-কলমের ক্লাসের ঠিকানা (ঐচ্ছিক)</FormLabel>
               <FormControl><Input placeholder="যেমন: রফিকুল মোটরস, স্টেশন রোড, টঙ্গী" {...field} /></FormControl>
               <FormDescription>প্যানেল গিয়ে জায়গার নিরাপত্তা দেখবে। প্রথম ক্লাস সবসময় অনলাইনে।</FormDescription>
               <FormMessage />
@@ -176,7 +201,7 @@ function Status({ application }: { application: TeachApplication }) {
       <div>
         <p className="text-sm font-semibold text-signal-orange">আবেদন জমা · <DateText iso={application.at} /></p>
         <h2 className="mt-1 text-xl font-bold text-white">{application.skill}</h2>
-        <p className="text-sm text-white/80">{dept} · {DEPT_KINDS[application.kind]}{application.team.length > 0 && ` · দলে @${application.team.join(", @")}`}</p>
+        <p className="text-sm text-white/80">{application.academy && `${application.academy} · `}{dept} · {DEPT_KINDS[application.kind]}{application.team.length > 0 && ` · দলে @${application.team.join(", @")}`}</p>
       </div>
       <ol className="space-y-2 text-sm">
         {[

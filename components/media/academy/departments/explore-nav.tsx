@@ -174,7 +174,7 @@ export function ExploreNav({ onSchool, onAllDepts }: { onSchool?: (s: School) =>
       </AnimatePresence>
 
       <div ref={bar} className="sticky -top-6 z-30 -mx-3 border-b border-white/12 bg-black sm:-mx-6">
-        <nav aria-label="বিভাগ ও কোর্স" className="mx-auto flex h-16 max-w-7xl items-center gap-2 px-3 sm:gap-4 sm:px-6">
+        <nav aria-label="বিভাগ" className="mx-auto flex h-16 max-w-7xl items-center gap-2 px-3 sm:gap-4 sm:px-6">
           <Link href="/media/academy/departments" className="shrink-0 text-2xl leading-none font-extrabold text-signal-orange">
             কাণ্ডারী <span className="text-white">শিখন</span>
           </Link>

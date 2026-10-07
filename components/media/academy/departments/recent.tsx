@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useSyncExternalStore } from "react";
-import { getCourse } from "@/data/media/academy";
-import type { Course } from "@/lib/media/academy";
+import { getCourse, getDepartment } from "@/data/media/academy";
+import type { Course, Department } from "@/lib/media/academy";
 
 /**
  * The courses this browser looked at last, newest first — a convenience for
@@ -42,16 +42,47 @@ export function useRecentCourses(): Course[] {
   );
 }
 
+function remember(key: string, id: string) {
+  try {
+    const list = [id, ...(localStorage.getItem(key) ?? "").split(",").filter((x) => x && x !== id)].slice(0, MAX);
+    localStorage.setItem(key, list.join(","));
+    window.dispatchEvent(new Event(CHANGED));
+  } catch {
+    /* storage blocked: nothing to remember */
+  }
+}
+
 /** Put on a course page: notes the visit. Draws nothing. */
 export function RememberCourse({ id }: { id: string }) {
-  useEffect(() => {
-    try {
-      const list = [id, ...read().split(",").filter((x) => x && x !== id)].slice(0, MAX);
-      localStorage.setItem(KEY, list.join(","));
-      window.dispatchEvent(new Event(CHANGED));
-    } catch {
-      /* storage blocked: nothing to remember */
-    }
-  }, [id]);
+  useEffect(() => remember(KEY, id), [id]);
+  return null;
+}
+
+/* The departments this browser opened last, the same way. */
+const DEPT_KEY = "academy-recent-depts";
+
+function readDepts(): string {
+  try {
+    return localStorage.getItem(DEPT_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+export function useRecentDepts(): Department[] {
+  const raw = useSyncExternalStore(subscribe, readDepts, () => "");
+  return useMemo(
+    () =>
+      raw
+        .split(",")
+        .map((id) => getDepartment(id))
+        .filter((d): d is Department => Boolean(d)),
+    [raw],
+  );
+}
+
+/** Put on a department page: notes the visit. Draws nothing. */
+export function RememberDept({ id }: { id: string }) {
+  useEffect(() => remember(DEPT_KEY, id), [id]);
   return null;
 }

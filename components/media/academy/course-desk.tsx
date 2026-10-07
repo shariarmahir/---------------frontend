@@ -12,13 +12,15 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { getDepartment } from "@/data/media/academy";
-import { MIN_ATTENDANCE, MIN_HOMEWORK, interviewSlots, progressOf, type Course, type Enrollment } from "@/lib/media/academy";
+import { personOrThrow } from "@/data/media/users";
+import { CLASS_MINUTES, MIN_ATTENDANCE, MIN_HOMEWORK, courseTimeline, interviewSlots, progressOf, type Course, type Enrollment } from "@/lib/media/academy";
 import { projectSchema, type ProjectInput } from "@/lib/media/schemas";
 import { useHydrated } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
 import { mediaButton } from "../ui/button-styles";
 import { choiceClass } from "../ui/field-styles";
 import { DateText, Num, useFormat } from "../ui/numerals";
+import { PersonAvatar } from "../ui/person";
 import { PayDialog } from "./pay-dialog";
 import { Fee, ModeTag } from "./parts";
 import { updateAcademy, useAcademy } from "./use-academy";
@@ -123,9 +125,13 @@ function Standing({ course, e, fastTrack }: { course: Course; e: Enrollment; fas
 
 function Curriculum({ course, e }: { course: Course; e?: Enrollment }) {
   const place = getDepartment(course.dept)?.place;
+  const timeline = course.starts ? courseTimeline(course.starts) : undefined;
   return (
     <section aria-labelledby="curriculum">
-      <h2 id="curriculum" className="mb-3 text-lg font-bold text-white">সপ্তাহ ধরে পাঠক্রম</h2>
+      <h2 id="curriculum" className="text-lg font-bold text-white">সপ্তাহ ধরে পাঠক্রম</h2>
+      <p className="mt-1 mb-3 text-sm text-white/70">
+        প্রতিটা অনলাইন ক্লাস <Num value={CLASS_MINUTES} /> মিনিটের।{timeline && <> পাঁচ সপ্তাহের পর <DateText iso={timeline.final.from} /> থেকে <DateText iso={timeline.final.to} /> প্রজেক্ট আর প্যানেল।</>}
+      </p>
       <ol className="relative space-y-3 before:absolute before:top-2 before:bottom-2 before:left-[1.1rem] before:w-px before:bg-white/15">
         {course.lessons.map((l) => {
           const attended = e?.attended.includes(l.week) ?? false;
@@ -139,6 +145,16 @@ function Curriculum({ course, e }: { course: Course; e?: Enrollment }) {
                   <h3 className="font-semibold text-white">{l.title}</h3>
                   <ModeTag mode={l.mode} />
                 </div>
+                {timeline && (
+                  <p className="mt-0.5 text-xs text-white/60">
+                    <DateText iso={timeline.weeks[l.week - 1]?.from ?? course.starts} /> – <DateText iso={timeline.weeks[l.week - 1]?.to ?? course.starts} />
+                  </p>
+                )}
+                {l.by && (
+                  <p className="mt-2 flex items-center gap-1.5 text-xs text-white/75">
+                    <PersonAvatar person={personOrThrow(l.by)} size="xs" /> পড়াবেন {personOrThrow(l.by).nameBn}
+                  </p>
+                )}
                 {l.mode === "hands-on" && place && <p className="mt-1 text-xs text-white/65">{place}</p>}
                 {l.homework && <p className="mt-2 text-sm text-white/80"><span className="font-semibold text-signal-orange">হোমওয়ার্ক:</span> {l.homework}</p>}
                 {e && <WeekActions code={course.id} week={l.week} attended={attended} homework={l.homework ? e.homework[l.week] ?? "" : undefined} />}

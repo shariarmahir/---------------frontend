@@ -472,7 +472,7 @@ function HelpCard({ tone, title, body, href, action, icon, delay }: { tone: "lig
 
 function AcademyFooter() {
   const learn = [
-    { href: "/media/academy/departments", label: "বিভাগ ও কোর্স" },
+    { href: "/media/academy/departments", label: "বিভাগ" },
     { href: "/media/academy/teachers", label: "শিক্ষক" },
     { href: "/media/academy/exam", label: "ফাইনাল ও বোর্ড" },
     { href: "/media/academy/admission", label: "যোগ দেওয়ার নিয়ম" },

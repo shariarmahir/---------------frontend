@@ -31,7 +31,7 @@ interface Item {
 const LEARN: Item[] = [
   { href: "/media/academy", label: "হোম", Icon: House },
   { href: "/media/academy/videos", label: "ক্লাস ভিডিও", short: "ভিডিও", Icon: MonitorPlay },
-  { href: "/media/academy/departments", label: "বিভাগ ও কোর্স", short: "বিভাগ", Icon: Building2, also: ["/media/academy/dept", "/media/academy/course", "/media/academy/admission"] },
+  { href: "/media/academy/departments", label: "বিভাগ", short: "বিভাগ", Icon: Building2, also: ["/media/academy/dept", "/media/academy/course", "/media/academy/admission"] },
   { href: "/media/academy/teachers", label: "শিক্ষক", Icon: UsersRound },
   { href: "/media/academy/exam", label: "ফাইনাল ও বোর্ড", short: "ফাইনাল", Icon: Award },
 ];

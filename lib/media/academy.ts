@@ -1,4 +1,5 @@
 import { computeFees } from "./fees.ts";
+import { bnDigits } from "./format.ts";
 
 /**
  * কাণ্ডারী তৈরি একাডেমি — the rules a real skill school runs on. Pure, and
@@ -32,17 +33,48 @@ export const SCHOOLS: Record<School, string> = {
 export type Level = "foundation" | "intermediate" | "advanced";
 export const LEVELS: Record<Level, string> = { foundation: "শুরু থেকে", intermediate: "মাঝারি", advanced: "অভিজ্ঞ" };
 
-/** Who runs a department: one teacher, a team of friends, or a working shop or kitchen. */
-export type DeptKind = "solo" | "team" | "workshop";
-export const DEPT_KINDS: Record<DeptKind, string> = { solo: "একক শিক্ষক", team: "শিক্ষক দল", workshop: "কর্মশালা" };
+/**
+ * Every department belongs to an academy. One teacher can open a solo
+ * academy under their own name; friends together open a team academy, like
+ * the four friends of ষড়বিংশ একাডেমি.
+ */
+export type DeptKind = "solo" | "team";
+export const DEPT_KINDS: Record<DeptKind, string> = { solo: "একক একাডেমি", team: "দলীয় একাডেমি" };
+
+/* ── The academy rules ─────────────────────────────────────────────── */
+
+/** An academy opens one department, and a department teaches exactly three skill courses. */
+export const DEPT_COURSES = 3;
+/** Every course ends 40 days after it starts: five weeks of classes, then five days for the project and the panel. */
+export const COURSE_DAYS = 40;
+export const CLASS_WEEKS = 5;
+export const FINAL_DAYS = COURSE_DAYS - CLASS_WEEKS * 7;
+/** Every online class is 40 minutes. */
+export const CLASS_MINUTES = 40;
+/** One batch of one course: at most 5 skill hunters with a solo academy, 15 with a team. */
+export const BATCH_MAX: Record<DeptKind, number> = { solo: 5, team: 15 };
+/** The course's promo video: the whole course in two and a half minutes, give or take five seconds. */
+export const PROMO_SECONDS = 150;
+export const PROMO_SLACK = 5;
+/** A department's name is short: what it teaches, in a few words. */
+export const DEPT_NAME_MAX = 24;
+
+/** The academy a department belongs to. */
+export interface AcademyInfo {
+  name: string;
+  /** One or two lines: who they are and how they teach. */
+  about: string;
+}
 
 export interface Department {
   id: string;
+  /** Short and to the point, e.g. "ওয়েব ডেভেলপমেন্ট". */
   name: string;
+  academy: AcademyInfo;
   school: School;
   blurb: string;
   kind: DeptKind;
-  /** Member handles; the first leads. */
+  /** Member handles; the first leads. A solo academy has exactly one. */
   teachers: string[];
   /** The real place hands-on classes happen. */
   place?: string;
@@ -54,6 +86,8 @@ export interface Lesson {
   title: string;
   mode: Mode;
   homework?: string;
+  /** In a team academy, the member who teaches this topic. */
+  by?: string;
 }
 
 export type MaterialKind = "video" | "pdf" | "doc" | "sheet" | "data";
@@ -92,6 +126,73 @@ export interface Course {
   final: string;
   /** The next live or hands-on session. */
   nextLive?: string;
+  /** The day the batch starts, YYYY-MM-DD; it ends COURSE_DAYS later. */
+  starts: string;
+  /* Three things every course is opened with. */
+  syllabus: Material;
+  /** The working calendar: which class on which day. */
+  calendar: Material;
+  /** The promo: the whole course in PROMO_SECONDS. */
+  promo: { seconds: number; href?: string; file?: string };
+  /** A draft for a department that already has its three courses takes this one's place once approved. */
+  replaces?: string;
+}
+
+/* ── The 40-day course ─────────────────────────────────────────────── */
+
+const addDays = (day: string, n: number) => {
+  const d = new Date(`${day}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
+};
+
+export interface Timeline {
+  /** Each class week, its first and last day. */
+  weeks: { week: number; from: string; to: string }[];
+  /** Project and panel. */
+  final: { from: string; to: string };
+  /** Day 40. */
+  ends: string;
+}
+
+/** A course's 40 days from its first: five class weeks, then the project and the panel. */
+export function courseTimeline(starts: string): Timeline {
+  const weeks = Array.from({ length: CLASS_WEEKS }, (_, i) => ({ week: i + 1, from: addDays(starts, i * 7), to: addDays(starts, i * 7 + 6) }));
+  return { weeks, final: { from: addDays(starts, CLASS_WEEKS * 7), to: addDays(starts, COURSE_DAYS - 1) }, ends: addDays(starts, COURSE_DAYS - 1) };
+}
+
+/** Is a promo the right length? */
+export const promoFits = (seconds: number) => Math.abs(seconds - PROMO_SECONDS) <= PROMO_SLACK;
+
+/**
+ * What a course breaks of the academy rules, in words a teacher can act on;
+ * empty when it keeps them all.
+ */
+export function courseIssues(course: Pick<Course, "weeks" | "lessons" | "seats" | "enrolled" | "teacher" | "syllabus" | "calendar" | "promo">, dept: Pick<Department, "kind" | "teachers">): string[] {
+  const out: string[] = [];
+  if (course.weeks !== CLASS_WEEKS || course.lessons.length !== CLASS_WEEKS) out.push(`${bnDigits(CLASS_WEEKS)} সপ্তাহে ${bnDigits(CLASS_WEEKS)}টি বিষয় — ${bnDigits(COURSE_DAYS)} দিনে কোর্স শেষ`);
+  if (course.seats > BATCH_MAX[dept.kind]) out.push(`এক ব্যাচে সর্বোচ্চ ${bnDigits(BATCH_MAX[dept.kind])} জন`);
+  if (course.enrolled > course.seats) out.push("আসনের চেয়ে বেশি ভর্তি");
+  if (!course.syllabus?.title) out.push("সিলেবাস লাগবে");
+  if (!course.calendar?.title) out.push("কাজের ক্যালেন্ডার লাগবে");
+  if (!course.promo || !promoFits(course.promo.seconds)) out.push("আড়াই মিনিটের প্রোমো ভিডিও লাগবে");
+  if (!dept.teachers.includes(course.teacher)) out.push("প্রধান শিক্ষক এই একাডেমির নন");
+  if (dept.kind === "team") {
+    if (course.lessons.some((l) => !l.by || !dept.teachers.includes(l.by))) out.push("প্রতিটা বিষয়ে দলের একজন শিক্ষক লাগবে");
+    if (new Set(course.lessons.map((l) => l.by)).size < 2) out.push("দলীয় একাডেমিতে আলাদা বিষয় আলাদা শিক্ষক পড়ান");
+  } else if (course.lessons.some((l) => l.by && l.by !== course.teacher)) out.push("একক একাডেমিতে সব বিষয় একজনই পড়ান");
+  return out;
+}
+
+/** What a department breaks of the academy rules; empty when it keeps them. */
+export function deptIssues(dept: Pick<Department, "name" | "kind" | "teachers" | "academy">, courseCount: number): string[] {
+  const out: string[] = [];
+  if (!dept.academy?.name.trim()) out.push("একাডেমির নাম লাগবে");
+  if (dept.name.length > DEPT_NAME_MAX) out.push("বিভাগের নাম ছোট রাখুন");
+  if (dept.kind === "solo" && dept.teachers.length !== 1) out.push("একক একাডেমিতে একজনই শিক্ষক");
+  if (dept.kind === "team" && dept.teachers.length < 2) out.push("দলীয় একাডেমিতে অন্তত দুজন");
+  if (courseCount !== DEPT_COURSES) out.push(`বিভাগে ঠিক ${bnDigits(DEPT_COURSES)}টি দক্ষতার কোর্স`);
+  return out;
 }
 
 export interface Workshop {
@@ -281,6 +382,9 @@ export interface TeachApplication {
   kind: DeptKind;
   dept: string;
   newDept: string;
+  /** For a new department: the academy that opens it, and a line about it. */
+  academy: string;
+  about: string;
   skill: string;
   years: number;
   sample: string;
@@ -329,9 +433,16 @@ export interface AcademyState {
   comments: VideoComment[];
   /** Teachers the viewer follows, by handle, and how much to hear from each. */
   follows: Record<string, Bell>;
+  /** The team photo and logo an academy put up, by department id (small data URLs). */
+  academyMedia: Record<string, AcademyMedia>;
 }
 
-export const emptyAcademy: AcademyState = { admissions: {}, enrolled: {}, application: null, complaints: [], workshops: {}, drafts: [], materials: {}, attendance: {}, marks: {}, videos: [], votes: {}, ratings: {}, comments: [], follows: {} };
+export interface AcademyMedia {
+  photo?: string;
+  logo?: string;
+}
+
+export const emptyAcademy: AcademyState = { admissions: {}, enrolled: {}, application: null, complaints: [], workshops: {}, drafts: [], materials: {}, attendance: {}, marks: {}, videos: [], votes: {}, ratings: {}, comments: [], follows: {}, academyMedia: {} };
 
 /**
  * Saved state from any earlier version, made whole: missing parts start
@@ -342,7 +453,14 @@ export function normalizeAcademy(raw: unknown): AcademyState {
   const { admission, ...rest } = saved;
   const admissions = { ...rest.admissions };
   if (admission && !admissions[admission.dept]) admissions[admission.dept] = admission;
-  return { ...emptyAcademy, ...rest, admissions };
+  // The old third kind, a working shop, is now a solo or team academy by how many applied.
+  const old = rest.application as (Omit<TeachApplication, "kind"> & { kind: string }) | null | undefined;
+  const application: TeachApplication | null = old
+    ? { ...old, kind: old.kind === "team" || (old.kind === "workshop" && old.team?.length) ? "team" : "solo", academy: old.academy ?? "", about: old.about ?? "" }
+    : null;
+  // Courses built before the academy rules lack the papers; they show as missing, not crash.
+  const drafts = (rest.drafts ?? []).map((d) => ({ ...d, starts: d.starts ?? "", syllabus: d.syllabus ?? { kind: "pdf" as const, title: "", size: "" }, calendar: d.calendar ?? { kind: "sheet" as const, title: "", size: "" }, promo: d.promo ?? { seconds: 0 } }));
+  return { ...emptyAcademy, ...rest, admissions, application, drafts };
 }
 
 /** The most recent department joined. */

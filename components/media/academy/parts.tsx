@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Hand, MonitorPlay, Radio, type LucideIcon } from "lucide-react";
 import { getDepartment, teacherRecord } from "@/data/media/academy";
 import { personOrThrow } from "@/data/media/users";
-import { LEVELS, MODES, TIERS, teacherPoints, teacherTier, type Course, type Mode, type TeacherRecord, type Tier } from "@/lib/media/academy";
+import { COURSE_DAYS, LEVELS, MODES, TIERS, teacherPoints, teacherTier, type Course, type Mode, type TeacherRecord, type Tier } from "@/lib/media/academy";
 import { cn } from "@/lib/utils";
 import { Num, Taka } from "../ui/numerals";
 import { PersonAvatar } from "../ui/person";
@@ -55,7 +55,7 @@ export function CourseCard({ course, className, preview }: { course: Course; cla
           {teacher.nameBn}
         </p>
         <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1">
-          <span className="text-xs font-semibold text-white/75"><Num value={course.weeks} /> সপ্তাহ</span>
+          <span className="text-xs font-semibold text-white/75"><Num value={COURSE_DAYS} /> দিন</span>
           {modesOf(course).map((m) => <ModeTag key={m} mode={m} />)}
         </p>
         <div className="mt-auto flex items-center justify-between gap-2 border-t border-white/10 pt-3 text-sm">

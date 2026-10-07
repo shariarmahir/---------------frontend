@@ -10,7 +10,7 @@ import {
   videoSchema,
   commentSchema,
   complaintSchema,
-  courseSchema,
+  courseSchemaFor,
   handleList,
   hireSchema,
   identitySchema,
@@ -169,14 +169,18 @@ test("academy: admission, teaching, final project and complaints", () => {
   assert.deepEqual(errPaths(admissionSchema.safeParse({ ...adm, goal: "শিখব" })), ["goal"]);
   assert.deepEqual(errPaths(admissionSchema.safeParse({ ...adm, proof: "garage" })), ["proof"]);
 
-  const teach = { kind: "solo", dept: "motor", newDept: "", skill: "মোটরসাইকেল মেরামত", years: 18, sample: "https://youtu.be/x", plan: "প্রতি সপ্তাহে একটি অংশ খুলে দেখাব, শিক্ষার্থীরা নিজে হাতে জোড়া লাগাবে।", team: "", place: "" };
+  const teach = { kind: "solo", dept: "motor", newDept: "", academy: "", about: "", skill: "মোটরসাইকেল মেরামত", years: 18, sample: "https://youtu.be/x", plan: "প্রতি সপ্তাহে একটি অংশ খুলে দেখাব, শিক্ষার্থীরা নিজে হাতে জোড়া লাগাবে।", team: "", place: "" };
   assert.ok(teachSchema.safeParse(teach).success);
   assert.deepEqual(errPaths(teachSchema.safeParse({ ...teach, years: 1 })), ["years"]);
-  assert.deepEqual(errPaths(teachSchema.safeParse({ ...teach, kind: "team" })), ["team"]);
-  assert.ok(teachSchema.safeParse({ ...teach, kind: "team", team: "@anik, mahir" }).success);
+  assert.ok(teachSchema.safeParse({ ...teach, kind: "team" }).success, "joining a team academy needs no handles");
   assert.deepEqual(errPaths(teachSchema.safeParse({ ...teach, kind: "team", team: "Anik Hasan!" })), ["team"]);
-  assert.deepEqual(errPaths(teachSchema.safeParse({ ...teach, kind: "workshop" })), ["place"]);
-  assert.deepEqual(errPaths(teachSchema.safeParse({ ...teach, dept: "new" })), ["newDept"]);
+  assert.deepEqual(errPaths(teachSchema.safeParse({ ...teach, kind: "workshop" })), ["kind"], "a working shop is a solo or team academy now");
+  assert.deepEqual(errPaths(teachSchema.safeParse({ ...teach, dept: "new" })), ["newDept", "academy", "about"]);
+  const opening = { ...teach, dept: "new", newDept: "ওয়েব ডেভেলপমেন্ট", academy: "ষড়বিংশ একাডেমি", about: "চার বন্ধুর একাডেমি — কোড, ডিজাইন আর হার্ডওয়্যার।" };
+  assert.ok(teachSchema.safeParse(opening).success);
+  assert.deepEqual(errPaths(teachSchema.safeParse({ ...opening, kind: "team" })), ["team"], "opening a team academy names the team");
+  assert.ok(teachSchema.safeParse({ ...opening, kind: "team", team: "@anik, mahir" }).success);
+  assert.deepEqual(errPaths(teachSchema.safeParse({ ...opening, newDept: "ওয়েব ডেভেলপমেন্ট, অ্যাপ আর এআই — সব একসাথে" })), ["newDept"], "a short department name");
   assert.deepEqual(handleList(" @Anik,mahir  rafi "), ["anik", "mahir", "rafi"]);
 
   const project = { title: "কার্বুরেটর সার্ভিস", link: "https://youtu.be/y", summary: "একটি পুরোনো ১০০ সিসি বাইকের কার্বুরেটর খুলে পরিষ্কার করে আবার চালু করেছি।" };
@@ -188,13 +192,26 @@ test("academy: admission, teaching, final project and complaints", () => {
 });
 
 test("academy: building a course and marking a final", () => {
-  const lesson = (mode: string) => ({ title: "চেইন ও স্প্রকেট", mode, homework: "" });
-  const course = { title: "বাইকের চেইন সার্ভিস", dept: "motor", level: "foundation", weeks: 3, fee: 1500, seats: 12, image: "/media/bike-service.webp", outcome: "নিজে চেইন পরিষ্কার, টাইট আর বদলাতে পারবেন।", final: "একটা বাইকের চেইন-স্প্রকেট বদলানো, ভিডিওসহ।", lessons: [lesson("video"), lesson("hands-on")] };
-  assert.ok(courseSchema.safeParse(course).success);
-  assert.deepEqual(errPaths(courseSchema.safeParse({ ...course, lessons: [lesson("hands-on")] })), ["lessons.0.mode"]);
-  assert.deepEqual(errPaths(courseSchema.safeParse({ ...course, weeks: 1 })), ["lessons"]);
-  assert.deepEqual(errPaths(courseSchema.safeParse({ ...course, lessons: [] })), ["lessons"]);
-  assert.ok(courseSchema.safeParse({ ...course, fee: 0 }).success, "teaching for free is welcome");
+  const lesson = (mode: string, by = "") => ({ title: "চেইন ও স্প্রকেট", mode, homework: "", by });
+  const paper = { kind: "pdf", title: "সিলেবাস.pdf", size: "২০০ কেবি" };
+  const five = (by: string[] = []) => ["video", "live", "hands-on", "live", "hands-on"].map((m, i) => lesson(m, by[i] ?? ""));
+  const course = { title: "বাইকের চেইন সার্ভিস", dept: "motor", level: "foundation", fee: 1500, seats: 5, image: "/media/bike-service.webp", outcome: "নিজে চেইন পরিষ্কার, টাইট আর বদলাতে পারবেন।", final: "একটা বাইকের চেইন-স্প্রকেট বদলানো, ভিডিওসহ।", starts: "2026-10-17", lessons: five(), syllabus: paper, calendar: { ...paper, title: "ক্যালেন্ডার.xlsx" }, promo: { seconds: 150, file: "promo.mp4" } };
+  const solo = courseSchemaFor({ kind: "solo", teachers: ["rafi"] });
+  assert.ok(solo.safeParse(course).success);
+  assert.deepEqual(errPaths(solo.safeParse({ ...course, seats: 6 })), ["seats"], "a solo batch is at most five");
+  assert.deepEqual(errPaths(solo.safeParse({ ...course, lessons: [lesson("hands-on"), ...five().slice(1)] })), ["lessons.0.mode"]);
+  assert.deepEqual(errPaths(solo.safeParse({ ...course, lessons: five().slice(0, 4) })), ["lessons"], "five weeks, forty days");
+  assert.deepEqual(errPaths(solo.safeParse({ ...course, syllabus: { ...paper, title: "" } })), ["syllabus.title"]);
+  assert.deepEqual(errPaths(solo.safeParse({ ...course, promo: { seconds: 0, file: "" } })), ["promo.file"]);
+  assert.deepEqual(errPaths(solo.safeParse({ ...course, promo: { seconds: 200, file: "promo.mp4" } })), ["promo.seconds"], "two and a half minutes");
+  assert.ok(solo.safeParse({ ...course, fee: 0 }).success, "teaching for free is welcome");
+
+  const team = courseSchemaFor({ kind: "team", teachers: ["anik", "mahir", "rupa"] });
+  const teamCourse = { ...course, seats: 15, lessons: five(["anik", "rupa", "anik", "mahir", "anik"]) };
+  assert.ok(team.safeParse(teamCourse).success);
+  assert.deepEqual(errPaths(team.safeParse({ ...teamCourse, seats: 16 })), ["seats"], "a team batch is at most fifteen");
+  assert.deepEqual(errPaths(team.safeParse({ ...teamCourse, lessons: five(["anik", "anik", "anik", "anik", "anik"]) })), ["lessons"], "different topics, different teachers");
+  assert.deepEqual(errPaths(team.safeParse({ ...teamCourse, lessons: five(["anik", "", "anik", "mahir", "anik"]) })), ["lessons.1.by"]);
 
   const mark = { scores: [26, 20, 15, 12, 8], comment: "কার্বুরেটর নিজে খুলে দেখালেন, তবে খরচের হিসাবে ভুল ছিল।" };
   assert.ok(markSchema.safeParse(mark).success);
@@ -203,11 +220,11 @@ test("academy: building a course and marking a final", () => {
   assert.deepEqual(errPaths(markSchema.safeParse({ ...mark, comment: "ভালো" })), ["comment"]);
 });
 
-test("a class video needs an https link; a short is free and under a minute", () => {
-  const video = { course: "AI-201", title: "পাইথনের ঝটপট পুনরাবৃত্তি", week: 1, href: "https://youtu.be/dQw4w9WgXcQ", short: false, length: 39, access: "free" as const, about: "" };
+test("a class video needs an https link and runs forty minutes; a short is free and under a minute", () => {
+  const video = { course: "AI-201", title: "পাইথনের ঝটপট পুনরাবৃত্তি", week: 1, href: "https://youtu.be/dQw4w9WgXcQ", short: false, length: 40, access: "free" as const, about: "" };
   assert.ok(videoSchema.safeParse(video).success);
   assert.deepEqual(errPaths(videoSchema.safeParse({ ...video, href: "javascript:alert(1)" })), ["href"]);
   assert.deepEqual(errPaths(videoSchema.safeParse({ ...video, href: "http://youtu.be/dQw4w9WgXcQ" })), ["href"]);
   assert.deepEqual(errPaths(videoSchema.safeParse({ ...video, short: true, length: 75, access: "paid" })), ["length", "access"]);
-  assert.deepEqual(errPaths(videoSchema.safeParse({ ...video, length: 300 })), ["length"]);
+  assert.deepEqual(errPaths(videoSchema.safeParse({ ...video, length: 39 })), ["length"], "every online class is forty minutes");
 });

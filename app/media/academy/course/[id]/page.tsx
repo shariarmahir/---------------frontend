@@ -2,18 +2,18 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MapPin } from "lucide-react";
+import { CalendarRange, FileText, FileVideo, MapPin } from "lucide-react";
 import { ComplaintBox } from "@/components/media/academy/complaint-box";
 import { CourseDesk } from "@/components/media/academy/course-desk";
 import { CourseMaterials } from "@/components/media/academy/course-materials";
 import { RememberCourse } from "@/components/media/academy/departments/recent";
 import { ModeTag, TierBadge, modesOf, standingOf } from "@/components/media/academy/parts";
 import { PageHeader, Panel } from "@/components/media/ui/layout";
-import { Num, Taka } from "@/components/media/ui/numerals";
+import { DateText, Num, Taka } from "@/components/media/ui/numerals";
 import { PersonAvatar } from "@/components/media/ui/person";
-import { courses, getCourse, getDepartment, teacherRecord } from "@/data/media/academy";
+import { courses, deptShort, getCourse, getDepartment, teacherRecord } from "@/data/media/academy";
 import { personOrThrow } from "@/data/media/users";
-import { LEVELS } from "@/lib/media/academy";
+import { BATCH_MAX, CLASS_MINUTES, COURSE_DAYS, DEPT_KINDS, LEVELS, courseTimeline } from "@/lib/media/academy";
 import { computeFees } from "@/lib/media/fees";
 
 type Props = { params: Promise<{ id: string }> };
@@ -35,6 +35,8 @@ export default async function CoursePage({ params }: Props) {
   const record = teacherRecord(course.teacher)!;
   const { points, tier } = standingOf(record);
   const fees = computeFees(course.fee);
+  const timeline = courseTimeline(course.starts);
+  const short = deptShort(dept.id);
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -46,7 +48,7 @@ export default async function CoursePage({ params }: Props) {
         <div className="absolute inset-x-0 bottom-0 flex flex-wrap items-center gap-2 bg-black/75 px-4 py-3 sm:px-6">
           <span className="font-mono text-sm font-bold text-signal-orange">{course.id}</span>
           <span className="rounded-md bg-signal-orange px-2 py-0.5 text-xs font-bold text-text-primary">{LEVELS[course.level]}</span>
-          <span className="text-sm text-white"><Num value={course.weeks} /> সপ্তাহ</span>
+          <span className="text-sm text-white"><Num value={COURSE_DAYS} /> দিন · <Num value={CLASS_MINUTES} /> মিনিটের ক্লাস</span>
           {modesOf(course).map((m) => <ModeTag key={m} mode={m} className="text-white" />)}
         </div>
       </div>
@@ -69,6 +71,39 @@ export default async function CoursePage({ params }: Props) {
             <div className="mt-4">
               <ComplaintBox teacher={teacher.handle} teacherName={teacher.nameBn} course={course.id} />
             </div>
+          </Panel>
+
+          <Panel title={dept.academy.name}>
+            <dl className="space-y-1.5 text-sm">
+              <div className="flex justify-between gap-3"><dt className="text-white/75">বিভাগ</dt><dd className="text-right text-white">{dept.name} · {DEPT_KINDS[dept.kind]}</dd></div>
+              <div className="flex justify-between gap-3"><dt className="text-white/75">ব্যাচ শুরু</dt><dd className="text-white"><DateText iso={course.starts} /></dd></div>
+              <div className="flex justify-between gap-3"><dt className="text-white/75">শেষ (<Num value={COURSE_DAYS} /> দিনে)</dt><dd className="text-white"><DateText iso={timeline.ends} /></dd></div>
+              <div className="flex justify-between gap-3"><dt className="text-white/75">প্রজেক্ট ও প্যানেল</dt><dd className="text-white"><DateText iso={timeline.final.from} /> – <DateText iso={timeline.final.to} /></dd></div>
+              <div className="flex justify-between gap-3"><dt className="text-white/75">এক ব্যাচে</dt><dd className="text-white"><Num value={course.seats} /> জন (সর্বোচ্চ <Num value={BATCH_MAX[dept.kind]} />)</dd></div>
+            </dl>
+          </Panel>
+
+          <Panel title="কোর্সের কাগজ">
+            <ul className="space-y-2 text-sm">
+              {[{ label: "সিলেবাস", paper: course.syllabus, Icon: FileText }, { label: "কাজের ক্যালেন্ডার", paper: course.calendar, Icon: CalendarRange }].map(({ label, paper, Icon }) => (
+                <li key={label} className="flex items-center gap-2.5 rounded-xl bg-black/40 px-3 py-2.5">
+                  <Icon className="size-4.5 shrink-0 text-signal-orange" aria-hidden />
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-semibold text-white">{label}</span>
+                    <span className="block truncate text-xs text-white/60">{paper.title} · {paper.size}</span>
+                  </span>
+                  {paper.href && <a href={paper.href} download={paper.file} className="text-xs font-semibold text-signal-orange hover:underline">নামান</a>}
+                </li>
+              ))}
+              <li className="flex items-center gap-2.5 rounded-xl bg-black/40 px-3 py-2.5">
+                <FileVideo className="size-4.5 shrink-0 text-signal-orange" aria-hidden />
+                <span className="min-w-0 flex-1">
+                  <span className="block font-semibold text-white">প্রোমো ভিডিও</span>
+                  <span className="block text-xs text-white/60">পুরো কোর্স আড়াই মিনিটে</span>
+                </span>
+                {short && <Link href={`/media/academy/videos/${encodeURIComponent(short.id)}`} className="text-xs font-semibold text-signal-orange hover:underline">শর্ট দেখুন</Link>}
+              </li>
+            </ul>
           </Panel>
 
           {course.fee > 0 && (

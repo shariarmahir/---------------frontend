@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Form, FormControl, FormDescription, FormField, FormGroup, FormGroupLabel, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import type { ClassVideo } from "@/lib/media/academy";
+import { CLASS_MINUTES, type ClassVideo } from "@/lib/media/academy";
 import { videoSchema, type VideoInput } from "@/lib/media/schemas";
 import { newId } from "@/lib/media/store";
 import { mediaButton } from "../../ui/button-styles";
@@ -27,7 +27,7 @@ export function UploadDialog({ open, onOpenChange, owes }: { open: boolean; onOp
   const { num } = useFormat();
   const form = useForm<VideoInput>({
     resolver: zodResolver(videoSchema),
-    defaultValues: { course: t.live[0]?.id ?? "", title: "", week: 1, href: "", short: false, length: 0, access: "free", about: "" },
+    defaultValues: { course: t.live[0]?.id ?? "", title: "", week: 1, href: "", short: false, length: CLASS_MINUTES, access: "free", about: "" },
   });
   const [courseId, short] = useWatch({ control: form.control, name: ["course", "short"] });
   const course = t.live.find((c) => c.id === courseId);
@@ -125,8 +125,8 @@ export function UploadDialog({ open, onOpenChange, owes }: { open: boolean; onOp
                   <FormGroup className="flex flex-wrap gap-2">
                     {[false, true].map((s) => (
                       <label key={String(s)} className={choiceClass(field.value === s)}>
-                        <input type="radio" className="sr-only" name={field.name} checked={field.value === s} onChange={() => { field.onChange(s); if (s) form.setValue("access", "free"); }} />
-                        {s ? "ছোট (১ মিনিটের কম)" : "পুরো ক্লাস"}
+                        <input type="radio" className="sr-only" name={field.name} checked={field.value === s} onChange={() => { field.onChange(s); form.setValue("length", s ? 0 : CLASS_MINUTES); if (s) form.setValue("access", "free"); }} />
+                        {s ? "ছোট (১ মিনিটের কম)" : `পুরো ক্লাস (${num(CLASS_MINUTES)} মিনিট)`}
                       </label>
                     ))}
                   </FormGroup>
@@ -136,6 +136,7 @@ export function UploadDialog({ open, onOpenChange, owes }: { open: boolean; onOp
                 <FormItem>
                   <FormLabel>দৈর্ঘ্য ({short ? "সেকেন্ড" : "মিনিট"})</FormLabel>
                   <FormControl><Input inputMode="numeric" className="tabular-nums" value={field.value || ""} placeholder="০" onChange={(e) => field.onChange(toNumber(e.target.value))} /></FormControl>
+                  {!short && <FormDescription>প্রতিটা অনলাইন ক্লাস ঠিক {num(CLASS_MINUTES)} মিনিটের।</FormDescription>}
                   <FormMessage />
                 </FormItem>
               )} />

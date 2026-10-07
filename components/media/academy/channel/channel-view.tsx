@@ -9,7 +9,7 @@ import { ArrowRight, BadgeCheck, Link2, ListVideo, Play, Presentation, Quote, Se
 import { DEMO_NOW } from "@/data/media/clock";
 import { coursesBy, coursesOf, deptsOfTeacher, getCourse, teacherRecord } from "@/data/media/academy";
 import { personOrThrow } from "@/data/media/users";
-import { DEPT_KINDS, LEVELS, VIDEO_SORTS, canWatch, sortVideos, weekOf, type ClassVideo, type Course, type Department, type VideoSort } from "@/lib/media/academy";
+import { COURSE_DAYS, DEPT_KINDS, LEVELS, VIDEO_SORTS, canWatch, sortVideos, weekOf, type ClassVideo, type Course, type Department, type VideoSort } from "@/lib/media/academy";
 import { useHydrated } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
 import { mediaButton } from "../../ui/button-styles";
@@ -559,7 +559,7 @@ function PlaylistCard({ course, items }: { course: Course; items: ClassVideo[] }
       </Link>
       <h3 className="mt-3 line-clamp-2 text-[15px] leading-snug font-semibold text-white">{course.title}</h3>
       <p className="mt-1 text-sm text-white/65">
-        {course.id} · {LEVELS[course.level]} · <Num value={course.weeks} /> সপ্তাহ
+        {course.id} · {LEVELS[course.level]} · <Num value={COURSE_DAYS} /> দিন
       </p>
       <Link href={`/media/academy/course/${course.id}`} className="mt-1 inline-block text-sm font-semibold text-white/80 hover:text-signal-orange">
         পুরো কোর্স দেখুন

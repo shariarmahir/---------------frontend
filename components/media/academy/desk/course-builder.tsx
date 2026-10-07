@@ -3,86 +3,165 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import { useRef, useState } from "react";
+import { useForm, useWatch, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, Check, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, CalendarRange, Check, FileText, FileVideo, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { Form, FormControl, FormDescription, FormField, FormGroup, FormGroupLabel, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { courses, workshops } from "@/data/media/academy";
-import { LEVELS, MODES, draftCode, type Course, type Level, type Mode } from "@/lib/media/academy";
+import { courses, coursesOf, workshops } from "@/data/media/academy";
+import { personOrThrow } from "@/data/media/users";
+import { BATCH_MAX, CLASS_MINUTES, CLASS_WEEKS, COURSE_DAYS, DEPT_COURSES, LEVELS, MODES, PROMO_SECONDS, courseTimeline, draftCode, materialKindOf, promoFits, sizeParts, type Course, type Department, type Level, type Material, type Mode } from "@/lib/media/academy";
+import { NOTE_FILE_MAX } from "@/lib/media/classroom";
+import { bnDigits } from "@/lib/media/format";
 import { computeFees } from "@/lib/media/fees";
-import { courseSchema, type CourseInput } from "@/lib/media/schemas";
+import { courseSchemaFor, type CourseInput } from "@/lib/media/schemas";
 import { useHydrated } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
 import { mediaButton } from "../../ui/button-styles";
 import { choiceClass, selectClass, toNumber } from "../../ui/field-styles";
-import { Num, Taka } from "../../ui/numerals";
+import { DateText, Num, Taka, useFormat } from "../../ui/numerals";
 import { CourseCard } from "../parts";
 import { updateAcademy } from "../use-academy";
 import { useTeacher } from "./use-teacher";
 
-/** Covers a teacher can pick from: the platform's own photos, never a stranger's. */
+/** Covers a teacher can pick from: the platform's own pictures, never a stranger's. */
 const COVERS = [...new Set([...courses.map((c) => c.image), ...workshops.map((w) => w.image)])];
 
-const lesson = (title = "", mode: Mode = "live") => ({ title, mode, homework: "" });
+const lesson = (mode: Mode = "live", by = "") => ({ title: "", mode, homework: "", by });
+const NO_PAPER = { kind: "pdf" as const, title: "", size: "" };
 
-/** Building a course: the plan week by week, the fee, the final — with a live preview. */
+/** The next Saturday after today: batches start at the head of the academy week. */
+function nextSaturday(): string {
+  const d = new Date();
+  d.setUTCDate(d.getUTCDate() + ((6 - d.getUTCDay() + 7) % 7 || 7));
+  return d.toISOString().slice(0, 10);
+}
+
+function readDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(String(r.result));
+    r.onerror = () => reject(r.error);
+    r.readAsDataURL(file);
+  });
+}
+
+/** A video's length in seconds, read from the file itself; nothing is uploaded anywhere. */
+function videoSeconds(file: File): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const v = document.createElement("video");
+    v.preload = "metadata";
+    v.onloadedmetadata = () => {
+      URL.revokeObjectURL(url);
+      resolve(Math.round(v.duration));
+    };
+    v.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("unreadable"));
+    };
+    v.src = url;
+  });
+}
+
+/**
+ * Building a course by the academy rules: five weeks of topics so it ends in
+ * 40 days, 40-minute online classes, a batch no bigger than the academy may
+ * take, a member for every topic in a team academy, and the three papers —
+ * syllabus, working calendar and a 2.5-minute promo. A live preview beside it.
+ */
 export function CourseBuilder() {
   const router = useRouter();
   const hydrated = useHydrated();
   const t = useTeacher();
+  const deptOf = (id: string): Department | undefined => t.depts.find((d) => d.id === id);
+  const first = t.depts[0];
   const form = useForm<CourseInput>({
-    resolver: zodResolver(courseSchema),
+    // The rules depend on the academy: its batch size and its members.
+    resolver: ((values, ctx, opts) => zodResolver(courseSchemaFor(deptOf(values.dept) ?? { kind: "solo", teachers: [t.handle] }))(values, ctx, opts)) as Resolver<CourseInput>,
     defaultValues: {
       title: "",
-      dept: t.depts[0]?.id ?? "",
+      dept: first?.id ?? "",
       level: "foundation",
-      weeks: 4,
       fee: 2000,
-      seats: 20,
+      seats: first ? BATCH_MAX[first.kind] : 5,
       image: COVERS[0],
       outcome: "",
       final: "",
-      lessons: [lesson("", "video"), lesson(), lesson(), lesson()],
+      starts: nextSaturday(),
+      lessons: [lesson("video", t.handle), lesson(), lesson(), lesson(), lesson()],
+      syllabus: NO_PAPER,
+      calendar: { ...NO_PAPER, kind: "sheet" },
+      promo: { seconds: 0, file: "" },
     },
   });
-  const lessons = useFieldArray({ control: form.control, name: "lessons" });
   const v = useWatch({ control: form.control });
+  const [replaces, setReplaces] = useState("");
 
   if (!hydrated) return null;
-  if (!t.record) {
+  if (!t.record || !first) {
     return (
       <p className="mx-auto max-w-md rounded-2xl bg-text-primary p-6 text-center text-white/85 ring-1 ring-white/12">
-        কোর্স বানাতে আগে শিক্ষক হিসেবে প্যানেল ইন্টারভিউ পাস করতে হয়। <Link href="/media/academy/teach" className="font-semibold text-signal-orange hover:underline">আবেদন করুন</Link>
+        কোর্স বানাতে আগে শিক্ষক হিসেবে প্যানেল ইন্টারভিউ পাস করে একটা একাডেমিতে থাকতে হয়। <Link href="/media/academy/teach" className="font-semibold text-signal-orange hover:underline">আবেদন করুন</Link>
       </p>
     );
   }
 
+  const dept = deptOf(v.dept ?? "") ?? first;
+  const team = dept.kind === "team";
+  const max = BATCH_MAX[dept.kind];
+  const live = coursesOf(dept.id);
+  const full = live.length >= DEPT_COURSES;
+  const topics = [...new Set(live.flatMap((c) => c.lessons.map((l) => l.title)))];
+  const timeline = v.starts ? courseTimeline(v.starts) : undefined;
+
   const taken = [...courses.map((c) => c.id), ...t.drafts.map((c) => c.id)];
   const preview: Course = {
-    id: draftCode(v.dept || "new", taken),
-    dept: v.dept ?? "",
+    id: draftCode(dept.id, taken),
+    dept: dept.id,
     title: v.title ?? "",
     teacher: t.handle,
     level: (v.level ?? "foundation") as Level,
-    weeks: v.weeks || 1,
+    weeks: CLASS_WEEKS,
     fee: v.fee ?? 0,
     seats: v.seats || 1,
     enrolled: 0,
     image: v.image || COVERS[0],
     outcome: v.outcome ?? "",
     final: v.final ?? "",
-    lessons: (v.lessons ?? []).map((l, i) => ({ week: i + 1, title: l?.title ?? "", mode: (l?.mode ?? "live") as Mode, homework: l?.homework || undefined })),
+    starts: v.starts ?? "",
+    lessons: (v.lessons ?? []).map((l, i) => ({ week: i + 1, title: l?.title ?? "", mode: (l?.mode ?? "live") as Mode, homework: l?.homework || undefined, by: team ? l?.by || undefined : undefined })),
     materials: [],
+    syllabus: (v.syllabus as Material) ?? NO_PAPER,
+    calendar: (v.calendar as Material) ?? NO_PAPER,
+    promo: { seconds: v.promo?.seconds ?? 0, file: v.promo?.file },
   };
   const fees = computeFees(preview.fee);
 
   function onSubmit(input: CourseInput) {
-    const course: Course = { ...preview, ...input, id: draftCode(input.dept, taken), lessons: input.lessons.map((l, i) => ({ week: i + 1, title: l.title, mode: l.mode, homework: l.homework || undefined })) };
-    updateAcademy((a) => ({ ...a, drafts: [course, ...a.drafts] }));
-    toast.success(`${course.id} জমা হয়েছে`, { description: "প্যানেল ৭২ ঘণ্টার মধ্যে পাঠক্রম দেখে অনুমোদন দেবে।" });
+    if (full && !replaces) {
+      toast.error(`এই বিভাগে ${DEPT_COURSES}টি কোর্সই আছে`, { description: "নতুন কোর্সটি কোনটির জায়গা নেবে, বেছে নিন।" });
+      return;
+    }
+    const course: Course = {
+      ...preview,
+      ...input,
+      id: draftCode(input.dept, taken),
+      weeks: CLASS_WEEKS,
+      lessons: input.lessons.map((l, i) => ({ week: i + 1, title: l.title, mode: l.mode, homework: l.homework || undefined, by: team ? l.by : undefined })),
+      syllabus: input.syllabus as Material,
+      calendar: input.calendar as Material,
+      promo: input.promo,
+      replaces: full ? replaces : undefined,
+    };
+    if (!updateAcademy((a) => ({ ...a, drafts: [course, ...a.drafts] }))) {
+      toast.error("ব্রাউজারের জায়গা ভরে গেছে", { description: "সিলেবাস বা ক্যালেন্ডারের ফাইল ছোট করে আবার দিন।" });
+      return;
+    }
+    toast.success(`${course.id} জমা হয়েছে`, { description: "প্যানেল ৭২ ঘণ্টার মধ্যে সিলেবাস, ক্যালেন্ডার আর প্রোমো দেখে অনুমোদন দেবে।" });
     router.push(`/media/academy/desk/${course.id}`);
   }
 
@@ -92,7 +171,9 @@ export function CourseBuilder() {
         <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" aria-hidden /> শিক্ষক ডেস্ক
       </Link>
       <h1 className="text-2xl font-bold text-white sm:text-[2rem]">নতুন কোর্স</h1>
-      <p className="mt-1 mb-6 max-w-2xl text-sm leading-relaxed text-white/80">সপ্তাহ ধরে যা শেখাবেন, তা-ই পাঠক্রম। প্রথম ক্লাস অনলাইনে, শেষে একটা সত্যিকারের প্রজেক্ট — প্যানেল দেখে অনুমোদন দেবে।</p>
+      <p className="mt-1 mb-6 max-w-2xl text-sm leading-relaxed text-white/80">
+        প্রতিটা কোর্স শুরুর <Num value={COURSE_DAYS} /> দিনে শেষ — <Num value={CLASS_WEEKS} /> সপ্তাহের ক্লাস, তারপর প্রজেক্ট আর প্যানেল। অনলাইন ক্লাস <Num value={CLASS_MINUTES} /> মিনিটের। সিলেবাস, কাজের ক্যালেন্ডার আর আড়াই মিনিটের প্রোমো ছাড়া কোর্স খোলে না।
+      </p>
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_21rem]">
         <Form {...form}>
@@ -100,17 +181,29 @@ export function CourseBuilder() {
             <section className="space-y-5 rounded-2xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-6">
               <h2 className="text-lg font-bold text-white">মূল তথ্য</h2>
               <FormField control={form.control} name="title" render={({ field }) => (
-                <FormItem><FormLabel>কোর্সের নাম</FormLabel><FormControl><Input placeholder="যেমন: বাইকের চেইন ও ব্রেক সার্ভিস" {...field} /></FormControl><FormMessage /></FormItem>
+                <FormItem><FormLabel>কোর্সের নাম</FormLabel><FormControl><Input placeholder="যেমন: ইলেকট্রিক গিটার — শুরু থেকে" {...field} /></FormControl><FormMessage /></FormItem>
               )} />
               <div className="grid gap-5 sm:grid-cols-2">
                 <FormField control={form.control} name="dept" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>বিভাগ</FormLabel>
+                    <FormLabel>একাডেমি ও বিভাগ</FormLabel>
                     <FormControl>
-                      <select {...field} className={selectClass}>
-                        {t.depts.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
+                      <select
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e.target.value);
+                          const next = deptOf(e.target.value);
+                          if (next) form.setValue("seats", Math.min(form.getValues("seats") || BATCH_MAX[next.kind], BATCH_MAX[next.kind]));
+                          setReplaces("");
+                        }}
+                        className={selectClass}
+                      >
+                        {t.depts.map((d) => <option key={d.id} value={d.id}>{d.academy.name} · {d.name}</option>)}
                       </select>
                     </FormControl>
+                    <FormDescription>
+                      {team ? "দলীয় একাডেমি — প্রতিটা বিষয়ে কে পড়াবেন বেছে দিন" : "একক একাডেমি — সব বিষয় আপনিই পড়াবেন"}, এক ব্যাচে সর্বোচ্চ <Num value={max} /> জন।
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )} />
@@ -128,17 +221,47 @@ export function CourseBuilder() {
                   </FormItem>
                 )} />
               </div>
-              <div className="grid grid-cols-3 gap-4">
-                {(["weeks", "fee", "seats"] as const).map((name) => (
-                  <FormField key={name} control={form.control} name={name} render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{name === "weeks" ? "সপ্তাহ" : name === "fee" ? "ফি (৳)" : "আসন"}</FormLabel>
-                      <FormControl><Input inputMode="numeric" className="tabular-nums" value={field.value || ""} placeholder="০" onChange={(e) => field.onChange(toNumber(e.target.value))} /></FormControl>
-                      {name === "fee" && <FormDescription>বিনা ফি হলে ০</FormDescription>}
-                      <FormMessage />
-                    </FormItem>
-                  )} />
-                ))}
+              {full && (
+                <div className="rounded-xl bg-black/40 p-4 ring-1 ring-signal-orange/40">
+                  <label htmlFor="replaces" className="text-sm font-semibold text-white">
+                    এই বিভাগে <Num value={DEPT_COURSES} />টি কোর্সই আছে — নতুনটি কোনটির জায়গা নেবে?
+                  </label>
+                  <select id="replaces" value={replaces} onChange={(e) => setReplaces(e.target.value)} className={cn(selectClass, "mt-2")}>
+                    <option value="">বেছে নিন</option>
+                    {live.map((c) => <option key={c.id} value={c.id}>{c.id} · {c.title}</option>)}
+                  </select>
+                  <p className="mt-1.5 text-xs text-white/65">প্যানেল অনুমোদন দিলে পুরোনোটির চলমান ব্যাচ শেষ হওয়ার পর বদল হবে।</p>
+                </div>
+              )}
+              <div className="grid gap-4 sm:grid-cols-3">
+                <FormField control={form.control} name="fee" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>ফি (৳)</FormLabel>
+                    <FormControl><Input inputMode="numeric" className="tabular-nums" value={field.value || ""} placeholder="০" onChange={(e) => field.onChange(toNumber(e.target.value))} /></FormControl>
+                    <FormDescription>বিনা ফি হলে ০</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="seats" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>এক ব্যাচে আসন</FormLabel>
+                    <FormControl><Input inputMode="numeric" className="tabular-nums" value={field.value || ""} placeholder="০" onChange={(e) => field.onChange(toNumber(e.target.value))} /></FormControl>
+                    <FormDescription>সর্বোচ্চ <Num value={max} /> জন</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="starts" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>ব্যাচ শুরু</FormLabel>
+                    <FormControl><Input type="date" {...field} /></FormControl>
+                    {timeline && (
+                      <FormDescription>
+                        শেষ <DateText iso={`${timeline.ends}T00:00:00Z`} /> — <Num value={COURSE_DAYS} />তম দিন
+                      </FormDescription>
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )} />
               </div>
               <FormField control={form.control} name="image" render={({ field }) => (
                 <FormItem>
@@ -157,29 +280,53 @@ export function CourseBuilder() {
             </section>
 
             <section className="space-y-5 rounded-2xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-6">
+              <div>
+                <h2 className="text-lg font-bold text-white">কোর্সের কাগজ</h2>
+                <p className="mt-1 text-sm text-white/70">তিনটিই লাগবে — প্যানেল এগুলো দেখেই অনুমোদন দেয়।</p>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-3">
+                <PaperField name="syllabus" label="সিলেবাস" hint="পিডিএফ বা ওয়ার্ড" accept=".pdf,.doc,.docx" form={form} />
+                <PaperField name="calendar" label="কাজের ক্যালেন্ডার" hint={`${bnDigits(COURSE_DAYS)} দিনের — কোন দিন কোন ক্লাস`} accept=".pdf,.xls,.xlsx,.csv,.doc,.docx" form={form} />
+                <PromoField form={form} />
+              </div>
+            </section>
+
+            <section className="space-y-5 rounded-2xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-6">
               <h2 className="text-lg font-bold text-white">শেষে কী হবে</h2>
               <FormField control={form.control} name="outcome" render={({ field }) => (
-                <FormItem><FormLabel>শিক্ষার্থী শেষে কী পারবে</FormLabel><FormControl><Textarea rows={2} placeholder="যেমন: নিজে একটা বাইকের চেইন আর ব্রেক পুরো সার্ভিস করতে পারবে।" {...field} /></FormControl><FormMessage /></FormItem>
+                <FormItem><FormLabel>শিক্ষার্থী শেষে কী পারবে</FormLabel><FormControl><Textarea rows={2} placeholder="যেমন: মূল কর্ডগুলো বদলে বদলে একটা পুরো গান বাজাতে পারবে।" {...field} /></FormControl><FormMessage /></FormItem>
               )} />
               <FormField control={form.control} name="final" render={({ field }) => (
-                <FormItem><FormLabel>ফাইনাল প্রজেক্ট</FormLabel><FormControl><Textarea rows={2} placeholder="প্যানেল ইন্টারভিউ এই কাজ নিয়েই হবে।" {...field} /></FormControl><FormMessage /></FormItem>
+                <FormItem><FormLabel>ফাইনাল প্রজেক্ট</FormLabel><FormControl><Textarea rows={2} placeholder="প্যানেল ইন্টারভিউ এই কাজ নিয়েই হবে — শেষের পাঁচ দিনে।" {...field} /></FormControl><FormMessage /></FormItem>
               )} />
             </section>
 
             <section className="rounded-2xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-6">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <h2 className="text-lg font-bold text-white">সপ্তাহ ধরে ক্লাস</h2>
-                <button type="button" onClick={() => lessons.append(lesson())} disabled={lessons.fields.length >= 24} className={mediaButton({ variant: "quiet", size: "sm" })}>
-                  <Plus aria-hidden /> ক্লাস যোগ
-                </button>
+              <div className="mb-4">
+                <h2 className="text-lg font-bold text-white">
+                  <Num value={CLASS_WEEKS} /> সপ্তাহের বিষয়
+                </h2>
+                <p className="mt-1 text-sm text-white/70">
+                  প্রতি সপ্তাহে একটা বিষয়, অনলাইন ক্লাস <Num value={CLASS_MINUTES} /> মিনিটের। {team ? "দলীয় একাডেমিতে আলাদা বিষয় আলাদা জন পড়ান।" : ""}
+                </p>
               </div>
+              <datalist id="topic-options">
+                {topics.map((x) => <option key={x} value={x} />)}
+              </datalist>
               <ol className="space-y-3">
-                {lessons.fields.map((f, i) => (
-                  <li key={f.id} className="grid gap-2 rounded-xl bg-black/40 p-3 sm:grid-cols-[2.5rem_minmax(0,1fr)_9.5rem_auto] sm:items-start">
-                    <span className="inline-flex h-11 items-center text-sm font-bold text-signal-orange">সপ্তাহ <Num value={i + 1} /></span>
+                {Array.from({ length: CLASS_WEEKS }, (_, i) => (
+                  <li key={i} className={cn("grid gap-2 rounded-xl bg-black/40 p-3 sm:items-start", team ? "sm:grid-cols-[4.5rem_minmax(0,1fr)_9rem_9rem]" : "sm:grid-cols-[4.5rem_minmax(0,1fr)_9.5rem]")}>
+                    <span className="flex h-11 flex-col justify-center text-sm font-bold text-signal-orange">
+                      সপ্তাহ <Num value={i + 1} />
+                      {timeline && (
+                        <span className="text-[11px] font-normal text-white/55">
+                          <DateText iso={`${timeline.weeks[i].from}T00:00:00Z`} />
+                        </span>
+                      )}
+                    </span>
                     <div className="space-y-2">
                       <FormField control={form.control} name={`lessons.${i}.title`} render={({ field }) => (
-                        <FormItem><FormLabel className="sr-only">সপ্তাহ {i + 1}-এর বিষয়</FormLabel><FormControl><Input placeholder="এই সপ্তাহের বিষয়" {...field} /></FormControl><FormMessage /></FormItem>
+                        <FormItem><FormLabel className="sr-only">সপ্তাহ {i + 1}-এর বিষয়</FormLabel><FormControl><Input list="topic-options" placeholder="এই সপ্তাহের বিষয়" {...field} /></FormControl><FormMessage /></FormItem>
                       )} />
                       <FormField control={form.control} name={`lessons.${i}.homework`} render={({ field }) => (
                         <FormItem><FormLabel className="sr-only">হোমওয়ার্ক</FormLabel><FormControl><Input placeholder="হোমওয়ার্ক (ঐচ্ছিক)" {...field} /></FormControl><FormMessage /></FormItem>
@@ -196,9 +343,20 @@ export function CourseBuilder() {
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <button type="button" onClick={() => lessons.remove(i)} disabled={lessons.fields.length === 1} className={mediaButton({ variant: "ghost", size: "icon" })} aria-label={`সপ্তাহ ${i + 1} মুছুন`}>
-                      <Trash2 aria-hidden />
-                    </button>
+                    {team && (
+                      <FormField control={form.control} name={`lessons.${i}.by`} render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="sr-only">কে পড়াবেন</FormLabel>
+                          <FormControl>
+                            <select {...field} className={selectClass}>
+                              <option value="">কে পড়াবেন</option>
+                              {dept.teachers.map((h) => <option key={h} value={h}>{personOrThrow(h).nameBn}</option>)}
+                            </select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )} />
+                    )}
                   </li>
                 ))}
               </ol>
@@ -214,12 +372,21 @@ export function CourseBuilder() {
         <aside className="space-y-4 lg:sticky lg:top-0 lg:self-start">
           <p className="text-sm font-semibold text-white/80">শিক্ষার্থীরা যেভাবে দেখবে</p>
           <CourseCard course={preview} preview />
+          {timeline && (
+            <div className="rounded-2xl bg-text-primary p-4 text-sm ring-1 ring-white/12">
+              <p className="flex items-center gap-2 font-semibold text-white">
+                <CalendarRange className="size-4 text-signal-orange" aria-hidden /> <Num value={COURSE_DAYS} /> দিনের সময়রেখা
+              </p>
+              <p className="mt-2 flex justify-between"><span className="text-white/75">ক্লাস</span><span className="text-white"><DateText iso={`${timeline.weeks[0].from}T00:00:00Z`} /> – <DateText iso={`${timeline.weeks[CLASS_WEEKS - 1].to}T00:00:00Z`} /></span></p>
+              <p className="mt-1 flex justify-between"><span className="text-white/75">প্রজেক্ট ও প্যানেল</span><span className="text-white"><DateText iso={`${timeline.final.from}T00:00:00Z`} /> – <DateText iso={`${timeline.final.to}T00:00:00Z`} /></span></p>
+            </div>
+          )}
           <div className="rounded-2xl bg-text-primary p-4 text-sm ring-1 ring-white/12">
             {preview.fee > 0 ? (
               <>
                 <p className="flex justify-between"><span className="text-white/75">প্রতি শিক্ষার্থী আপনি পান</span><span className="font-semibold text-white"><Taka amount={fees.sellerReceives} /></span></p>
                 <p className="mt-1 flex justify-between"><span className="text-white/75">শিক্ষার্থী দেয়</span><span className="font-semibold text-white"><Taka amount={fees.buyerPays} /></span></p>
-                <p className="mt-1 flex justify-between"><span className="text-white/75">সব আসন ভরলে</span><span className="font-semibold text-signal-orange"><Taka amount={fees.sellerReceives * preview.seats} /></span></p>
+                <p className="mt-1 flex justify-between"><span className="text-white/75">পুরো ব্যাচ ভরলে</span><span className="font-semibold text-signal-orange"><Taka amount={fees.sellerReceives * Math.min(preview.seats, max)} /></span></p>
               </>
             ) : (
               <p className="text-white/85">বিনা ফির কোর্স — শিক্ষার্থীদের কোনো খরচ নেই।</p>
@@ -227,6 +394,85 @@ export function CourseBuilder() {
           </div>
         </aside>
       </div>
+    </div>
+  );
+}
+
+type BuilderForm = ReturnType<typeof useForm<CourseInput>>;
+
+/** One paper to upload: kept in the browser when it is small, otherwise its name and size go to the panel. */
+function PaperField({ name, label, hint, accept, form }: { name: "syllabus" | "calendar"; label: string; hint: string; accept: string; form: BuilderForm }) {
+  const { num } = useFormat();
+  const input = useRef<HTMLInputElement>(null);
+  const paper = useWatch({ control: form.control, name });
+  const error = form.formState.errors[name]?.title?.message;
+
+  async function pick(file: File | undefined) {
+    if (!file) return;
+    const { value, unit } = sizeParts(file.size);
+    let href: string | undefined;
+    if (file.size <= NOTE_FILE_MAX) {
+      try {
+        href = await readDataUrl(file);
+      } catch {
+        toast.error(`${file.name} পড়া গেল না`);
+        return;
+      }
+    }
+    form.setValue(name, { kind: materialKindOf(file.name), title: file.name, size: `${num(value)} ${unit}`, href, file: file.name }, { shouldValidate: true });
+  }
+
+  return (
+    <div>
+      <p className="text-sm font-semibold text-white">{label}</p>
+      <button type="button" onClick={() => input.current?.click()} className={cn("mt-2 flex w-full items-center gap-2.5 rounded-xl px-3 py-3 text-left text-sm ring-1 transition-colors", paper?.title ? "bg-bd-green/25 ring-bd-green" : "bg-black/40 ring-white/15 hover:ring-signal-orange/60", error && "ring-crimson-bright")}>
+        {paper?.title ? <Check className="size-4.5 shrink-0 text-signal-orange" aria-hidden /> : <Upload className="size-4.5 shrink-0 text-white/70" aria-hidden />}
+        <span className="min-w-0">
+          <span className="block truncate font-semibold text-white">{paper?.title || "ফাইল দিন"}</span>
+          <span className="block text-xs text-white/60">{paper?.title ? paper.size : hint}</span>
+        </span>
+      </button>
+      <input ref={input} type="file" accept={accept} className="sr-only" tabIndex={-1} aria-label={label} onChange={(e) => pick(e.target.files?.[0])} />
+      {error && <p role="alert" className="mt-1.5 text-xs text-crimson-bright">{error}</p>}
+    </div>
+  );
+}
+
+/** The promo: a video file whose length is read here and must be two and a half minutes. */
+function PromoField({ form }: { form: BuilderForm }) {
+  const { num } = useFormat();
+  const input = useRef<HTMLInputElement>(null);
+  const promo = useWatch({ control: form.control, name: "promo" });
+  const error = form.formState.errors.promo?.file?.message ?? form.formState.errors.promo?.seconds?.message;
+  const ok = Boolean(promo?.file) && promoFits(promo?.seconds ?? 0);
+  const clock = (s: number) => num(`${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`);
+
+  async function pick(file: File | undefined) {
+    if (!file) return;
+    try {
+      const seconds = await videoSeconds(file);
+      form.setValue("promo", { seconds, file: file.name }, { shouldValidate: true });
+      if (!promoFits(seconds)) toast.error(`প্রোমো ${clock(seconds)} — আড়াই মিনিট লাগবে`, { description: `পুরো কোর্সের সারাংশ ${clock(PROMO_SECONDS)}-এ কেটে আবার দিন।` });
+    } catch {
+      toast.error(`${file.name} ভিডিও হিসেবে পড়া গেল না`);
+    }
+  }
+
+  return (
+    <div>
+      <p className="text-sm font-semibold text-white">প্রোমো ভিডিও</p>
+      <button type="button" onClick={() => input.current?.click()} className={cn("mt-2 flex w-full items-center gap-2.5 rounded-xl px-3 py-3 text-left text-sm ring-1 transition-colors", ok ? "bg-bd-green/25 ring-bd-green" : "bg-black/40 ring-white/15 hover:ring-signal-orange/60", error && "ring-crimson-bright")}>
+        {ok ? <Check className="size-4.5 shrink-0 text-signal-orange" aria-hidden /> : promo?.file ? <FileVideo className="size-4.5 shrink-0 text-white/70" aria-hidden /> : <Upload className="size-4.5 shrink-0 text-white/70" aria-hidden />}
+        <span className="min-w-0">
+          <span className="block truncate font-semibold text-white">{promo?.file || "ভিডিও দিন"}</span>
+          <span className="block text-xs text-white/60">{promo?.file ? `${clock(promo.seconds)} মিনিট` : `পুরো কোর্সের সারাংশ, ${clock(PROMO_SECONDS)} মিনিট`}</span>
+        </span>
+      </button>
+      <input ref={input} type="file" accept="video/*" className="sr-only" tabIndex={-1} aria-label="প্রোমো ভিডিও" onChange={(e) => pick(e.target.files?.[0])} />
+      {error && <p role="alert" className="mt-1.5 text-xs text-crimson-bright">{error}</p>}
+      <p className="mt-1.5 flex items-start gap-1.5 text-[11px] leading-snug text-white/55">
+        <FileText className="mt-px size-3 shrink-0" aria-hidden /> ভিডিও এই ফোন থেকে কোথাও যায় না — নাম আর দৈর্ঘ্য প্যানেলে যায়।
+      </p>
     </div>
   );
 }

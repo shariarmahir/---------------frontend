@@ -8,7 +8,7 @@ import { ChevronLeft, ChevronRight, Play, Sparkles, Star } from "lucide-react";
 import { DEMO_NOW } from "@/data/media/clock";
 import { coursesOf, teacherRecord } from "@/data/media/academy";
 import { personOrThrow } from "@/data/media/users";
-import { LEVELS, MODES, weekOf, type ClassVideo, type Course, type Department, type Level } from "@/lib/media/academy";
+import { COURSE_DAYS, LEVELS, MODES, weekOf, type ClassVideo, type Course, type Department, type Level } from "@/lib/media/academy";
 import { useHydrated } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
 import { mediaButton } from "../../ui/button-styles";
@@ -125,14 +125,14 @@ function CredentialCard({ course, dept, top }: { course: Course; dept: Departmen
           </p>
         )}
         <p className="mt-1 text-sm text-white/70">
-          {LEVELS[course.level]} · <Num value={course.weeks} /> সপ্তাহ · {course.fee === 0 ? "বিনা ফি" : <Taka amount={course.fee} />} · {left > 0 ? <><Num value={left} />টি আসন বাকি</> : "আসন পূর্ণ"}
+          {LEVELS[course.level]} · <Num value={COURSE_DAYS} /> দিন · {course.fee === 0 ? "বিনা ফি" : <Taka amount={course.fee} />} · {left > 0 ? <><Num value={left} />টি আসন বাকি</> : "আসন পূর্ণ"}
         </p>
         <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
           <Link href={`/media/academy/course/${course.id}`} className={mediaButton()}>
             {hydrated && enrolled ? "কোর্সে যান" : "ভর্তি হন"}
           </Link>
           <Link href={`/media/academy/course/${course.id}`} className="text-sm font-semibold text-signal-orange hover:underline">
-            বিস্তারিত
+            কোর্স দেখুন
           </Link>
           <button type="button" aria-expanded={why} onClick={() => setWhy((w) => !w)} className="group inline-flex items-center gap-1.5 text-sm font-semibold text-signal-orange hover:underline">
             <Sparkles className="size-4 transition-transform group-hover:rotate-12 motion-reduce:transition-none" aria-hidden /> কেন এটা আপনার জন্য?

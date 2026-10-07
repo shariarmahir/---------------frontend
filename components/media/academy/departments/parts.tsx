@@ -5,17 +5,29 @@ import Link from "next/link";
 import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Star } from "lucide-react";
-import { getCourse, teacherRecord } from "@/data/media/academy";
+import { coursesOf, getCourse, teacherRecord } from "@/data/media/academy";
 import { personOrThrow } from "@/data/media/users";
-import { durationText, type ClassVideo, type Course } from "@/lib/media/academy";
+import { COURSE_DAYS, durationText, type ClassVideo, type Course, type Department } from "@/lib/media/academy";
 import { cn } from "@/lib/utils";
 import { mediaButton } from "../../ui/button-styles";
 import { Compact, Num, useFormat } from "../../ui/numerals";
 import { PersonAvatar } from "../../ui/person";
 import { Reveal } from "../home/motion-bits";
 import { watchHref } from "../videos/video-card";
+import { DeptIcon } from "./dept-icons";
+import { RoleArt } from "./role-art";
 
 export const ratingOf = (c: Course) => teacherRecord(c.teacher)?.rating;
+
+/** A department's rating: its teachers' class ratings pooled, weighted by how many rated. */
+export function deptRating(d: Department): { avg: number; count: number } | undefined {
+  const rs = d.teachers.flatMap((h) => teacherRecord(h)?.rating ?? []);
+  const count = rs.reduce((n, r) => n + r.count, 0);
+  return count ? { avg: rs.reduce((n, r) => n + r.avg * r.count, 0) / count, count } : undefined;
+}
+
+/** The picture of a department's most-joined course, if it has one yet. */
+export const deptImage = (d: Department) => [...coursesOf(d.id)].sort((a, b) => b.enrolled - a.enrolled)[0]?.image;
 
 /* ── Tiles in a band ───────────────────────────────────────────────── */
 
@@ -25,8 +37,52 @@ const tileFrame = (surface: "ink" | "black") =>
     surface === "ink" ? "bg-text-primary" : "bg-black",
   );
 
-/** A course as a big course site's card: picture, teacher, title, stars and kind. */
-export function CourseTile({ course, surface = "ink" }: { course: Course; surface?: "ink" | "black" }) {
+/** The button at a tile's foot; the whole tile is the link, so it is drawn, not nested. */
+function TileCta({ label }: { label: string }) {
+  return (
+    <span className={mediaButton({ variant: "outline", size: "sm", className: "mx-1.5 mt-3 mb-1.5 self-start group-hover:bg-signal-orange group-hover:text-text-primary" })}>
+      {label} <ArrowRight className="transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden />
+    </span>
+  );
+}
+
+/** A department in the same card: its course picture (or its art), lead teacher, name, stars, courses and "বিভাগ দেখুন". */
+export function DeptTile({ dept, surface = "ink" }: { dept: Department; surface?: "ink" | "black" }) {
+  const lead = personOrThrow(dept.teachers[0]);
+  const rating = deptRating(dept);
+  const list = coursesOf(dept.id);
+  const image = deptImage(dept);
+  return (
+    <Link href={`/media/academy/dept/${dept.id}`} className={tileFrame(surface)}>
+      <span className="relative block aspect-video overflow-hidden rounded-xl bg-black">
+        {image ? (
+          <Image src={image} alt="" fill sizes="(min-width: 1280px) 16rem, (min-width: 640px) 40vw, 90vw" className="object-cover transition-transform duration-700 group-hover:scale-105 motion-reduce:transition-none" />
+        ) : (
+          <RoleArt dept={dept} tone="gold" className="aspect-video rounded-none" />
+        )}
+        {list.some((c) => c.fee === 0) && <span className="absolute top-2 left-2 rounded-md bg-signal-orange px-1.5 py-0.5 text-[11px] font-bold text-text-primary">বিনা ফি কোর্স</span>}
+      </span>
+      <span className="mt-3 flex items-center gap-2 px-1.5 text-sm text-white/80">
+        <PersonAvatar person={lead} size="xs" />
+        <span className="truncate">{dept.academy.name}</span>
+      </span>
+      <span className="mt-1 line-clamp-2 px-1.5 font-bold text-white underline-offset-2 group-hover:underline">{dept.name}</span>
+      <span className="mt-auto flex flex-wrap items-center gap-1 px-1.5 pt-4 text-xs text-white/65">
+        {rating && (
+          <>
+            <Star className="size-3.5 fill-signal-orange text-signal-orange" aria-hidden />
+            <Num value={rating.avg} decimals={1} /> (<Compact n={rating.count} />) ·
+          </>
+        )}{" "}
+        বিভাগ · <Num value={list.length} />টি কোর্স
+      </span>
+      <TileCta label="বিভাগ দেখুন" />
+    </Link>
+  );
+}
+
+/** A course as a big course site's card: picture, teacher, title, stars and kind — with "কোর্স দেখুন" when asked. */
+export function CourseTile({ course, surface = "ink", cta = false }: { course: Course; surface?: "ink" | "black"; cta?: boolean }) {
   const teacher = personOrThrow(course.teacher);
   const rating = ratingOf(course);
   return (
@@ -40,15 +96,16 @@ export function CourseTile({ course, surface = "ink" }: { course: Course; surfac
         <span className="truncate">{teacher.nameBn}</span>
       </span>
       <span className="mt-1 line-clamp-2 px-1.5 font-bold text-white underline-offset-2 group-hover:underline">{course.title}</span>
-      <span className="mt-auto flex flex-wrap items-center gap-1 px-1.5 pt-4 pb-1 text-xs text-white/65">
+      <span className={cn("mt-auto flex flex-wrap items-center gap-1 px-1.5 pt-4 text-xs text-white/65", !cta && "pb-1")}>
         {rating && (
           <>
             <Star className="size-3.5 fill-signal-orange text-signal-orange" aria-hidden />
             <Num value={rating.avg} decimals={1} /> (<Compact n={rating.count} />) ·
           </>
         )}{" "}
-        কোর্স · <Num value={course.weeks} /> সপ্তাহ
+        কোর্স · <Num value={COURSE_DAYS} /> দিন
       </span>
+      {cta && <TileCta label="কোর্স দেখুন" />}
     </Link>
   );
 }
@@ -79,7 +136,31 @@ export function VideoTile({ video, surface = "ink" }: { video: ClassVideo; surfa
 
 /* ── Panels of rows ────────────────────────────────────────────────── */
 
-export type Row = { key: string; href: string; image: string; teacher: string; title: string; meta: React.ReactNode };
+/** A row has a picture, or — for a department with no course yet — its icon on a white tile. */
+export type Row = { key: string; href: string; image?: string; dept?: Department; teacher: string; title: string; meta: React.ReactNode };
+
+export const deptRow = (d: Department): Row => {
+  const rating = deptRating(d);
+  return {
+    key: d.id,
+    href: `/media/academy/dept/${d.id}`,
+    image: deptImage(d),
+    dept: d,
+    teacher: d.teachers[0],
+    title: d.name,
+    meta: (
+      <>
+        বিভাগ · <Num value={coursesOf(d.id).length} />টি কোর্স
+        {rating && (
+          <>
+            {" "}
+            · <Star className="inline size-3 fill-signal-orange align-[-1px] text-signal-orange" aria-hidden /> <Num value={rating.avg} decimals={1} />
+          </>
+        )}
+      </>
+    ),
+  };
+};
 
 export const courseRow = (c: Course): Row => ({
   key: c.id,
@@ -129,8 +210,12 @@ export function RowPanel({ title, href, rows, empty, delay = 0, className }: { t
             return (
               <li key={r.key}>
                 <Link href={r.href} className="group flex items-center gap-3 rounded-xl bg-black/45 p-2 transition-colors hover:bg-black">
-                  <span className="relative size-16 shrink-0 overflow-hidden rounded-lg">
-                    <Image src={r.image} alt="" fill sizes="64px" className="object-cover transition-transform duration-500 group-hover:scale-110 motion-reduce:transition-none" />
+                  <span className={cn("relative grid size-16 shrink-0 place-items-center overflow-hidden rounded-lg", !r.image && "bg-white")}>
+                    {r.image ? (
+                      <Image src={r.image} alt="" fill sizes="64px" className="object-cover transition-transform duration-500 group-hover:scale-110 motion-reduce:transition-none" />
+                    ) : (
+                      r.dept && <DeptIcon dept={r.dept.id} school={r.dept.school} className="size-11" />
+                    )}
                   </span>
                   <span className="min-w-0">
                     <span className="flex items-center gap-1.5 text-xs text-white/70">

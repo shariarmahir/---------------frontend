@@ -1,17 +1,21 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { useRef } from "react";
-import { motion, useInView, useReducedMotion } from "framer-motion";
-import { Award, ChevronRight, House, MapPin, Wallet, Wifi } from "lucide-react";
-import { coursesOf, deptLikes, teacherRecord } from "@/data/media/academy";
-import { personOrThrow } from "@/data/media/users";
-import { DEPT_KINDS, SCHOOLS, type Department } from "@/lib/media/academy";
+import { motion, useReducedMotion } from "framer-motion";
+import { Award, CalendarRange, ChevronRight, Clock3, House, Layers3, MapPin, Play, UserRound, UsersRound, Wallet, Wifi } from "lucide-react";
+import { coursesOf, deptLikes, deptShort, teacherRecord } from "@/data/media/academy";
+import { currentUser, personOrThrow } from "@/data/media/users";
+import { BATCH_MAX, CLASS_MINUTES, CLASS_WEEKS, COURSE_DAYS, DEPT_COURSES, DEPT_KINDS, SCHOOLS, durationText, type ClassVideo, type Department } from "@/lib/media/academy";
+import { useHydrated } from "@/lib/media/store";
+import { cn } from "@/lib/utils";
 import { mediaButton } from "../../ui/button-styles";
-import { Num, Taka } from "../../ui/numerals";
+import { Num, Taka, useFormat } from "../../ui/numerals";
 import { PersonAvatar } from "../../ui/person";
 import { DeptIcon } from "../departments/dept-icons";
-import { GLYPH } from "../departments/role-art";
+import { useAcademy } from "../use-academy";
+import { watchHref } from "../videos/video-card";
+import { AcademyMediaEditor } from "./academy-media";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -22,110 +26,181 @@ export function skillsOf(dept: Department): string[] {
 }
 
 /**
- * The top of a department, as a course site opens a role: breadcrumb, the
- * name, who it suits in bold, what it is, the skills it needs — and on the
- * right a great fan sweeping open with the department's moving icon in a
- * white tile. Under it, the facts at a glance.
+ * The top of a department is its academy: the team photo behind (or the
+ * members gathered, until the academy puts one up), the logo, the academy's
+ * name as the title and its line about itself under it, and a play button
+ * that opens the department's short. Members can change the photo and logo.
+ * Under it, who the department suits, then the facts and the rules.
  */
 export function DeptHero({ dept }: { dept: Department }) {
+  const hydrated = useHydrated();
+  const media = useAcademy((a) => a.academyMedia[dept.id]);
+  const photo = hydrated ? media?.photo : undefined;
+  const logo = hydrated ? media?.logo : undefined;
+  const member = hydrated && dept.teachers.includes(currentUser.handle);
+  const short = deptShort(dept.id);
+  const reduce = useReducedMotion();
+  const rise = (delay: number) => (reduce ? {} : { initial: { opacity: 0, y: 18 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.6, delay, ease } });
+
   return (
     <>
-      <section aria-labelledby="dept-title" className="-mx-3 overflow-hidden border-b border-white/12 px-3 sm:-mx-6 sm:px-6">
-        <div className="mx-auto grid max-w-7xl items-center gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)]">
-          <div className="min-w-0 py-8 lg:py-12">
-            <nav aria-label="পথ" className="flex flex-wrap items-center gap-2 text-sm text-white/75">
+      <section aria-labelledby="dept-title" className="relative -mx-3 overflow-hidden border-b border-white/12 bg-bd-green-dark sm:-mx-6">
+        {photo ? (
+          <>
+            <Image src={photo} alt="" fill unoptimized priority sizes="100vw" className="object-cover" />
+            <div className="absolute inset-0 bg-black/65" aria-hidden />
+          </>
+        ) : (
+          <Fans />
+        )}
+
+        <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-3 py-8 sm:px-6 lg:min-h-[30rem] lg:grid-cols-[minmax(0,1fr)_16rem] lg:py-12">
+          <div className="min-w-0">
+            <nav aria-label="পথ" className="flex flex-wrap items-center gap-2 text-sm text-white/80">
               <Link href="/media/academy" className="hover:text-white">
                 <House className="size-4.5" aria-hidden />
                 <span className="sr-only">একাডেমি</span>
               </Link>
-              <ChevronRight className="size-4 text-white/45" aria-hidden />
+              <ChevronRight className="size-4 text-white/50" aria-hidden />
               <Link href="/media/academy/departments" className="hover:text-white">
-                বিভাগ ও কোর্স
+                বিভাগ
               </Link>
-              <ChevronRight className="size-4 text-white/45" aria-hidden />
+              <ChevronRight className="size-4 text-white/50" aria-hidden />
               <span aria-current="page" className="text-white">
                 {dept.name}
               </span>
             </nav>
-            <h1 id="dept-title" className="mt-5 text-3xl leading-tight font-bold text-balance text-white sm:text-[2.6rem]">
-              {dept.name}
-            </h1>
-            <p className="mt-4 max-w-xl text-lg leading-snug font-bold text-white">যদি আপনি {deptLikes[dept.id]} ভালোবাসেন — এই বিভাগ আপনার জন্য।</p>
-            <p className="mt-3 max-w-xl leading-relaxed text-white/80">{dept.blurb}</p>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/80">
-              <span className="font-bold text-white">যে দক্ষতা গড়বেন:</span> {skillsOf(dept).join(", ")}
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
+
+            <motion.div {...rise(0)} className="mt-6 flex items-center gap-4">
+              <span className="relative grid size-18 shrink-0 place-items-center overflow-hidden rounded-2xl bg-white shadow-tile ring-4 ring-black/40 sm:size-20">
+                {logo ? <Image src={logo} alt={`${dept.academy.name}-এর লোগো`} fill unoptimized sizes="80px" className="object-contain p-1.5" /> : <DeptIcon dept={dept.id} school={dept.school} className="size-[72%]" />}
+              </span>
+              <span className="min-w-0">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-signal-orange px-2.5 py-0.5 text-xs font-bold text-text-primary">
+                  {dept.kind === "team" ? <UsersRound className="size-3.5" aria-hidden /> : <UserRound className="size-3.5" aria-hidden />}
+                  {DEPT_KINDS[dept.kind]} · <Num value={dept.teachers.length} /> জন
+                </span>
+                <span className="mt-1.5 block text-sm font-semibold text-white/85">
+                  বিভাগ: <span className="text-white">{dept.name}</span> · {SCHOOLS[dept.school]}
+                </span>
+              </span>
+            </motion.div>
+
+            <motion.h1 {...rise(0.08)} id="dept-title" className="mt-5 text-3xl leading-tight font-bold text-balance text-white sm:text-5xl">
+              {dept.academy.name}
+            </motion.h1>
+            <motion.p {...rise(0.16)} className="mt-4 max-w-2xl text-lg leading-relaxed text-white/90">
+              {dept.academy.about}
+            </motion.p>
+
+            <motion.div {...rise(0.22)} className="mt-5 flex flex-wrap items-center gap-3">
+              <span className="flex -space-x-2">
+                {dept.teachers.map((h) => (
+                  <Link key={h} href={`/media/academy/teachers/${h}`} aria-label={`${personOrThrow(h).nameBn}-এর চ্যানেল`} className="rounded-full hover:z-10">
+                    <PersonAvatar person={personOrThrow(h)} className="ring-2 ring-black" />
+                  </Link>
+                ))}
+              </span>
+              <span className="text-sm text-white/85">{dept.teachers.map((h) => personOrThrow(h).nameBn).join(", ")}</span>
+            </motion.div>
+
+            <motion.div {...rise(0.28)} className="mt-7 flex flex-wrap gap-3">
               <a href="#join" className={mediaButton()}>
                 যোগ দিন — বিনামূল্যে
               </a>
-              <Link href={`/media/academy/teach?dept=${dept.id}`} className={mediaButton({ variant: "quiet" })}>
-                এখানে শেখান
-              </Link>
-            </div>
+              <a href="#all-courses" className={mediaButton({ variant: "outline", className: "bg-black/40" })}>
+                কোর্স দেখুন
+              </a>
+              {dept.kind === "team" && (
+                <Link href={`/media/academy/teach?dept=${dept.id}`} className={mediaButton({ variant: "quiet" })}>
+                  দলে শেখান
+                </Link>
+              )}
+            </motion.div>
           </div>
-          <HeroFan dept={dept} />
+
+          <div className="flex flex-col items-start gap-5 lg:items-center">
+            {!photo && <MemberGroup dept={dept} />}
+            {short && <PlayShort video={short} />}
+            {member && <AcademyMediaEditor dept={dept} hasPhoto={Boolean(photo)} hasLogo={Boolean(logo)} />}
+          </div>
         </div>
       </section>
+      <DeptIntro dept={dept} />
       <Glance dept={dept} />
     </>
   );
 }
 
-/** The big fan: a coloured sector opening from the lower right, an arc tracing it, a glyph, and the white icon tile rising. */
-function HeroFan({ dept }: { dept: Department }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const seen = useInView(ref, { once: true });
-  const reduce = useReducedMotion();
-  const show = !!reduce || seen;
-  const Glyph = GLYPH[dept.id];
-  const CX = 470;
-  const CY = 480;
-  const pt = (r: number, d: number) => `${(CX + r * Math.cos((d * Math.PI) / 180)).toFixed(1)} ${(CY + r * Math.sin((d * Math.PI) / 180)).toFixed(1)}`;
-  const sector = (r: number, a: number, b: number) => `M${CX} ${CY} L${pt(r, a)} A${r} ${r} 0 0 1 ${pt(r, b)} Z`;
-  const arc = (r: number, a: number, b: number) => `M${pt(r, a)} A${r} ${r} 0 0 1 ${pt(r, b)}`;
-
-  // The fans turn about the circle's centre (470, 480) of the 520×440 drawing: 90.4% across, 109.1% down.
-  const pivot = { transformOrigin: "90.4% 109.1%" };
-  const layer = "absolute inset-0 size-full";
-
+/** The ground behind the hero until the academy puts up its photo: two fans opening from the lower right. */
+function Fans() {
   return (
-    <div ref={ref} className="relative -mr-3 ml-auto hidden aspect-[520/440] w-full max-w-[32rem] self-end sm:-mr-6 lg:block" aria-hidden>
-      <svg viewBox="0 0 520 440" className={layer}>
-        <path d={sector(440, 196, 300)} className="fill-white/5" />
-      </svg>
-      <motion.div className={layer} style={pivot} initial={reduce ? false : { rotate: -28, opacity: 0 }} animate={show ? { rotate: 0, opacity: 1 } : undefined} transition={{ duration: 1, ease }}>
-        <svg viewBox="0 0 520 440" className="size-full">
-          <path d={sector(380, 200, 292)} className="fill-bd-green" />
-        </svg>
-      </motion.div>
-      <motion.div className={layer} style={pivot} initial={reduce ? false : { rotate: -40, opacity: 0 }} animate={show ? { rotate: 0, opacity: 1 } : undefined} transition={{ duration: 1.15, delay: 0.15, ease }}>
-        <svg viewBox="0 0 520 440" className="size-full">
-          <path d={sector(380, 266, 292)} className="fill-signal-orange" />
-        </svg>
-      </motion.div>
-      <svg viewBox="0 0 520 440" className={layer}>
-        <motion.path d={arc(408, 198, 300)} fill="none" strokeWidth="3" strokeLinecap="round" className="stroke-white/50" initial={reduce ? false : { pathLength: 0 }} animate={show ? { pathLength: 1 } : undefined} transition={{ duration: 1.3, delay: 0.3, ease }} />
-        <motion.path d={arc(425, 210, 290)} fill="none" strokeWidth="1.5" strokeDasharray="2 8" strokeLinecap="round" className="stroke-white/35" initial={reduce ? false : { pathLength: 0 }} animate={show ? { pathLength: 1 } : undefined} transition={{ duration: 1.5, delay: 0.45, ease }} />
-      </svg>
-      {Glyph && (
-        <motion.span className="absolute top-[42%] left-[16%] grid size-16 place-items-center text-white" initial={reduce ? false : { scale: 0, rotate: -20 }} animate={show ? { scale: 1, rotate: 0 } : undefined} transition={{ delay: 0.8, type: "spring", stiffness: 260, damping: 14 }}>
-          <motion.span className="inline-grid" animate={show && !reduce ? { y: [0, -6, 0] } : undefined} transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut", delay: 1.6 }}>
-            <Glyph className="size-14" strokeWidth={1.8} />
-          </motion.span>
+    <svg viewBox="0 0 520 440" preserveAspectRatio="xMaxYMax slice" className="absolute inset-y-0 right-0 hidden h-full w-3/5 lg:block" aria-hidden>
+      <path d="M520 440 L520 40 A400 400 0 0 0 150 440 Z" className="fill-bd-green" />
+      <path d="M520 440 L520 210 A230 230 0 0 0 300 440 Z" className="fill-signal-orange" />
+    </svg>
+  );
+}
+
+/** Until the academy puts up its photo: the members standing together, as a group photo would show them. */
+function MemberGroup({ dept }: { dept: Department }) {
+  const reduce = useReducedMotion();
+  const team = dept.teachers.slice(0, 4);
+  // Biggest in the middle, the rest to the sides and a step back.
+  const spots = team.length === 1 ? [{ x: 0, y: 0, s: "size-32 text-4xl" }] : [
+    { x: 0, y: 0, s: "size-28 text-4xl" },
+    { x: -78, y: 22, s: "size-22 text-2xl" },
+    { x: 78, y: 22, s: "size-22 text-2xl" },
+    { x: 0, y: 92, s: "size-18 text-xl" },
+  ].slice(0, team.length);
+  return (
+    <div className="relative hidden h-44 w-64 lg:block" aria-hidden>
+      {team.map((h, i) => (
+        <motion.span
+          key={h}
+          className="absolute top-0 left-1/2 -translate-x-1/2"
+          style={{ zIndex: i === 3 ? 20 : 10 - i, marginLeft: spots[i].x }}
+          initial={reduce ? false : { opacity: 0, y: spots[i].y + 16 }}
+          animate={{ opacity: 1, y: spots[i].y }}
+          transition={{ duration: 0.6, delay: 0.15 + i * 0.1, ease }}
+        >
+          <PersonAvatar person={personOrThrow(h)} className={cn(spots[i].s, "ring-6 ring-bd-green-dark")} />
         </motion.span>
-      )}
-      <motion.span
-        className="absolute right-[12%] bottom-0 block w-[46%]"
-        initial={reduce ? false : { y: "40%", opacity: 0 }}
-        animate={show ? { y: "8%", opacity: 1 } : undefined}
-        transition={{ delay: 0.4, type: "spring", stiffness: 150, damping: 17 }}
-      >
-        <span className="grid aspect-square place-items-center rounded-[2rem] bg-white shadow-tile ring-8 ring-black">
-          <DeptIcon dept={dept.id} school={dept.school} className="size-[68%]" />
-        </span>
-      </motion.span>
+      ))}
     </div>
+  );
+}
+
+/** The video icon: a big play button that opens the department's short in the class videos. */
+function PlayShort({ video }: { video: ClassVideo }) {
+  const reduce = useReducedMotion();
+  const { num } = useFormat();
+  return (
+    <Link href={watchHref(video)} className="group flex items-center gap-4 rounded-full focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-signal-orange lg:flex-col lg:gap-3 lg:text-center">
+      <span className="relative grid size-20 place-items-center rounded-full bg-signal-orange text-text-primary shadow-tile transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none sm:size-24">
+        {!reduce && <motion.span className="absolute inset-0 rounded-full ring-4 ring-signal-orange" animate={{ scale: [1, 1.35], opacity: [0.7, 0] }} transition={{ duration: 1.8, repeat: Infinity, ease: "easeOut" }} aria-hidden />}
+        <Play className="ml-1 size-9 fill-text-primary sm:size-10" aria-hidden />
+      </span>
+      <span className="min-w-0 rounded-2xl bg-black/70 px-3.5 py-1.5 ring-1 ring-white/15">
+        <span className="block font-bold text-white">পরিচিতি ভিডিও</span>
+        <span className="block text-sm text-white/80">শর্ট · {num(durationText(video.seconds))}</span>
+      </span>
+    </Link>
+  );
+}
+
+/** Who the department suits, what it is and the skills it builds — right under the academy. */
+function DeptIntro({ dept }: { dept: Department }) {
+  return (
+    <section aria-label="বিভাগ পরিচিতি" className="mx-auto mt-8 grid max-w-7xl gap-4 lg:grid-cols-2">
+      <p className="text-lg leading-snug font-bold text-white">যদি আপনি {deptLikes[dept.id]} ভালোবাসেন — এই বিভাগ আপনার জন্য।</p>
+      <div>
+        <p className="leading-relaxed text-white/80">{dept.blurb}</p>
+        <p className="mt-2 text-sm leading-relaxed text-white/80">
+          <span className="font-bold text-white">যে দক্ষতা গড়বেন:</span> {skillsOf(dept).join(", ")}
+        </p>
+      </div>
+    </section>
   );
 }
 
@@ -138,7 +213,8 @@ function Glance({ dept }: { dept: Department }) {
   const cell = "bg-black p-5";
   const head = "text-xs font-bold text-signal-orange";
   return (
-    <section aria-label="এক নজরে" className="mx-auto mt-8 grid max-w-7xl gap-px overflow-hidden rounded-2xl bg-white/12 ring-1 ring-white/12 sm:grid-cols-2 lg:grid-cols-4">
+    <>
+    <section aria-label="এক নজরে" className="mx-auto mt-6 grid max-w-7xl gap-px overflow-hidden rounded-2xl bg-white/12 ring-1 ring-white/12 sm:grid-cols-2 lg:grid-cols-4">
       <div className={cell}>
         <p className={head}>কারা শেখান</p>
         <div className="mt-3 flex -space-x-2">
@@ -193,5 +269,32 @@ function Glance({ dept }: { dept: Department }) {
         </p>
       </div>
     </section>
+    <AcademyRules dept={dept} />
+    </>
+  );
+}
+
+/** The rules every academy runs on, said once where a learner decides. */
+function AcademyRules({ dept }: { dept: Department }) {
+  const rules = [
+    { Icon: CalendarRange, head: <><Num value={COURSE_DAYS} /> দিনে কোর্স শেষ</>, body: <><Num value={CLASS_WEEKS} /> সপ্তাহ ক্লাস, তারপর প্রজেক্ট আর প্যানেল</> },
+    { Icon: Clock3, head: <><Num value={CLASS_MINUTES} /> মিনিটের অনলাইন ক্লাস</>, body: "প্রতিটা ক্লাস ঠিক এই সময়ের" },
+    { Icon: dept.kind === "team" ? UsersRound : UserRound, head: <>এক ব্যাচে সর্বোচ্চ <Num value={BATCH_MAX[dept.kind]} /> জন</>, body: dept.kind === "team" ? "দলীয় একাডেমি — আলাদা বিষয় আলাদা শিক্ষক" : "একক একাডেমি — প্রত্যেককে আলাদা করে দেখা" },
+    { Icon: Layers3, head: <><Num value={DEPT_COURSES} />টি দক্ষতার কোর্স</>, body: "প্রতিটার সিলেবাস, কাজের ক্যালেন্ডার আর প্রোমো আছে" },
+  ];
+  return (
+    <ul aria-label="একাডেমির নিয়ম" className="mx-auto mt-3 grid max-w-7xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {rules.map(({ Icon, head, body }, i) => (
+        <li key={i} className="flex items-start gap-3 rounded-2xl bg-text-primary p-4 ring-1 ring-white/12">
+          <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-signal-orange text-text-primary">
+            <Icon className="size-5" aria-hidden />
+          </span>
+          <span className="min-w-0">
+            <span className="block font-bold text-white">{head}</span>
+            <span className="mt-0.5 block text-xs leading-snug text-white/70">{body}</span>
+          </span>
+        </li>
+      ))}
+    </ul>
   );
 }
