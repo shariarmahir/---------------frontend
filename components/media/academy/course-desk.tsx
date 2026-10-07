@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarCheck, Check, Lock } from "lucide-react";
+import { Award, CalendarCheck, Check, ChevronDown, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { useRequireAccount } from "@/components/auth/use-require-account";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -22,7 +22,7 @@ import { choiceClass } from "../ui/field-styles";
 import { DateText, Num, useFormat } from "../ui/numerals";
 import { PersonAvatar } from "../ui/person";
 import { PayDialog } from "./pay-dialog";
-import { Fee, ModeTag } from "./parts";
+import { ModeTag } from "./parts";
 import { updateAcademy, useAcademy } from "./use-academy";
 
 const pct = (n: number) => Math.round(n * 100);
@@ -31,33 +31,32 @@ function updateEnrollment(code: string, fn: (e: Enrollment) => Enrollment) {
   updateAcademy((a) => (a.enrolled[code] ? { ...a, enrolled: { ...a.enrolled, [code]: fn(a.enrolled[code]) } } : a));
 }
 
-/**
- * The learner's side of a course: join its department first, then the fee into
- * escrow, then week by week — attendance, homework, the final project and a
- * panel-interview slot once the bar is met.
+/*
+ * The learner's side of a course, in pieces the course page places where a
+ * course site would: the enrol button in the hero, the progress card and the
+ * weeks in the curriculum, the final project after them. The order is the
+ * same as ever — join the department first, the fee into escrow, then week
+ * by week attendance and homework, the project and a panel slot.
  */
-export function CourseDesk({ course }: { course: Course }) {
+
+/** Where the viewer stands with this course. */
+export function useCourseState(course: Course) {
   const hydrated = useHydrated();
   const admitted = useAcademy((a) => Boolean(a.admissions[course.dept]));
   const enrollment = useAcademy((a) => a.enrolled[course.id]);
   // Recognised prior learning: attendance and homework are waived in the department they were placed in.
   const fastTrack = useAcademy((a) => Boolean(a.admissions[course.dept]?.fastTrack));
-
-  if (!hydrated) return <Skeleton className="h-96 rounded-2xl bg-m-card/40" />;
-
-  return (
-    <div className="space-y-6">
-      {enrollment ? <Standing course={course} e={enrollment} fastTrack={fastTrack} /> : <Enroll course={course} admitted={admitted} />}
-      <Curriculum course={course} e={enrollment} />
-      {enrollment && <Final course={course} e={enrollment} fastTrack={fastTrack} />}
-    </div>
-  );
+  return { hydrated, admitted, enrollment, fastTrack };
 }
 
-function Enroll({ course, admitted }: { course: Course; admitted: boolean }) {
+/** The hero's big two-line button: what to do next, and when the batch starts. */
+export function EnrollCta({ course }: { course: Course }) {
+  const { hydrated, admitted, enrollment } = useCourseState(course);
   const ensure = useRequireAccount();
   const [paying, setPaying] = useState(false);
   const full = course.enrolled >= course.seats;
+  const big = "inline-flex min-h-14 flex-col items-center justify-center rounded-xl px-8 py-2 text-center leading-tight";
+  const second = "mt-0.5 text-xs font-semibold opacity-80";
 
   function join() {
     updateAcademy((a) => ({ ...a, enrolled: { ...a.enrolled, [course.id]: { at: new Date().toISOString(), attended: [], homework: {} } } }));
@@ -65,31 +64,53 @@ function Enroll({ course, admitted }: { course: Course; admitted: boolean }) {
     toast.success("কোর্সে ভর্তি হলেন", { description: "প্রথম সপ্তাহ থেকে হাজিরা আর হোমওয়ার্ক গোনা শুরু।" });
   }
 
+  if (!hydrated) return <Skeleton className="h-14 w-64 rounded-xl bg-m-ink/8" />;
+
+  if (enrollment)
+    return (
+      <a href="#curriculum" className={mediaButton({ variant: "green", className: big })}>
+        <span className="text-base">ভর্তি আছেন — অগ্রগতি দেখুন</span>
+        <span className={second}>
+          ভর্তি <DateText iso={enrollment.at} />
+        </span>
+      </a>
+    );
+
+  if (!admitted)
+    return (
+      <Link href={`/media/academy/dept/${course.dept}#join`} className={mediaButton({ className: big })}>
+        <span className="text-base">আগে বিভাগে যোগ দিন — বিনামূল্যে</span>
+        <span className={second}>তারপর এই কোর্সে ভর্তি</span>
+      </Link>
+    );
+
+  if (full) return <p className="max-w-sm rounded-xl bg-m-amber-soft px-4 py-3 text-sm text-m-ink/85">এই ব্যাচের সব আসন পূর্ণ। পরের ব্যাচের তারিখ শিক্ষক বিভাগের পাতায় জানাবেন।</p>;
+
   return (
-    <section className="rounded-2xl bg-m-card p-5 ring-1 ring-m-blue/40 sm:p-6 shadow-m-tile">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <p className="text-sm text-m-ink/75">কোর্স ফি</p>
-          <p className="text-2xl"><Fee amount={course.fee} /></p>
-          {course.fee > 0 && <p className="text-xs text-m-ink/65">শিক্ষক পান ৯৫% · টাকা এসক্রোতে থাকে</p>}
-        </div>
-        {!admitted ? (
-          <Link href={`/media/academy/dept/${course.dept}#join`} className={mediaButton({ variant: "primary", size: "lg" })}>
-            আগে বিভাগে যোগ দিন — বিনামূল্যে
-          </Link>
-        ) : full ? (
-          <p className="max-w-xs text-sm text-m-ink/80">এই ব্যাচের সব আসন পূর্ণ। পরের ব্যাচের তারিখ শিক্ষক বিভাগের পাতায় জানাবেন।</p>
-        ) : (
-          <button type="button" onClick={() => ensure("কোর্সে ভর্তি হতে") && (course.fee === 0 ? join() : setPaying(true))} className={mediaButton({ variant: "primary", size: "lg" })}>
-            কোর্সে ভর্তি হোন
-          </button>
-        )}
-      </div>
-      {course.fee > 0 && (
-        <PayDialog open={paying} onOpenChange={setPaying} title={course.title} label={`কোর্স ${course.id}: ${course.title}`} price={course.fee} onPaid={join} />
-      )}
-    </section>
+    <>
+      <button type="button" onClick={() => ensure("কোর্সে ভর্তি হতে") && (course.fee === 0 ? join() : setPaying(true))} className={mediaButton({ className: big })}>
+        <span className="text-base">{course.fee === 0 ? "বিনা ফিতে ভর্তি হোন" : "কোর্সে ভর্তি হোন"}</span>
+        <span className={second}>
+          ব্যাচ শুরু <DateText iso={course.starts} />
+        </span>
+      </button>
+      {course.fee > 0 && <PayDialog open={paying} onOpenChange={setPaying} title={course.title} label={`কোর্স ${course.id}: ${course.title}`} price={course.fee} onPaid={join} />}
+    </>
   );
+}
+
+/** The progress card, once enrolled; nothing before. */
+export function CourseProgress({ course }: { course: Course }) {
+  const { hydrated, enrollment, fastTrack } = useCourseState(course);
+  if (!hydrated || !enrollment) return null;
+  return <Standing course={course} e={enrollment} fastTrack={fastTrack} />;
+}
+
+/** The final project and the interview slot, once enrolled. */
+export function CourseFinal({ course }: { course: Course }) {
+  const { hydrated, enrollment, fastTrack } = useCourseState(course);
+  if (!hydrated || !enrollment) return null;
+  return <Final course={course} e={enrollment} fastTrack={fastTrack} />;
 }
 
 function Meter({ label, value, goal, need }: { label: string; value: number; goal: number; need: string | null }) {
@@ -123,48 +144,95 @@ function Standing({ course, e, fastTrack }: { course: Course; e: Enrollment; fas
   );
 }
 
-function Curriculum({ course, e }: { course: Course; e?: Enrollment }) {
+/**
+ * The weeks as a course site lists the courses of a series: one bordered
+ * row each — a numbered tile, the title, dates and kind — that opens to its
+ * details (who teaches it, where, the homework, and, once enrolled, the
+ * attendance and homework actions). The project and panel days close it.
+ */
+export function CourseWeeks({ course }: { course: Course }) {
+  const { hydrated, enrollment: e } = useCourseState(course);
   const place = getDepartment(course.dept)?.place;
-  const timeline = course.starts ? courseTimeline(course.starts) : undefined;
+  const timeline = courseTimeline(course.starts);
+  const row = "group rounded-2xl bg-white ring-1 ring-m-ink/12 transition-shadow duration-200 open:shadow-m-tile open:ring-m-blue/35";
+  const summary = "flex cursor-pointer list-none items-center gap-4 p-4 sm:p-5 [&::-webkit-details-marker]:hidden";
+  const chevron = <ChevronDown className="size-5 shrink-0 text-m-blue transition-transform duration-300 group-open:rotate-180 motion-reduce:transition-none" aria-hidden />;
+
   return (
-    <section aria-labelledby="curriculum">
-      <h2 id="curriculum" className="text-lg font-bold text-m-ink">সপ্তাহ ধরে পাঠক্রম</h2>
-      <p className="mt-1 mb-3 text-sm text-m-ink/70">
-        প্রতিটা অনলাইন ক্লাস <Num value={CLASS_MINUTES} /> মিনিটের।{timeline && <> পাঁচ সপ্তাহের পর <DateText iso={timeline.final.from} /> থেকে <DateText iso={timeline.final.to} /> প্রজেক্ট আর প্যানেল।</>}
-      </p>
-      <ol className="relative space-y-3 before:absolute before:top-2 before:bottom-2 before:left-[1.1rem] before:w-px before:bg-m-ink/8">
+    <div>
+      <ol className="space-y-3">
         {course.lessons.map((l) => {
-          const attended = e?.attended.includes(l.week) ?? false;
+          const attended = hydrated && (e?.attended.includes(l.week) ?? false);
+          const span = timeline.weeks[l.week - 1];
           return (
-            <li key={l.week} className="relative flex gap-4">
-              <span className={cn("relative z-10 inline-flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-bold", attended ? "bg-m-green-soft text-m-ink" : "bg-m-card text-m-ink ring-1 ring-m-ink/17")}>
-                {attended ? <Check className="size-4" aria-label="উপস্থিত" /> : <Num value={l.week} />}
-              </span>
-              <div className="min-w-0 flex-1 rounded-xl bg-m-card p-4 ring-1 ring-m-ink/10">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <h3 className="font-semibold text-m-ink">{l.title}</h3>
-                  <ModeTag mode={l.mode} />
+            <li key={l.week}>
+              <details className={row}>
+                <summary className={summary}>
+                  <span className={cn("grid size-14 shrink-0 place-items-center rounded-xl text-lg font-bold shadow-[inset_0_-3px_0_rgb(0_0_0/0.12)]", attended ? "bg-m-green text-m-on" : "bg-m-blue text-m-on")}>
+                    {attended ? <Check className="size-6" strokeWidth={3} aria-label="উপস্থিত" /> : <Num value={l.week} />}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-bold text-m-blue underline-offset-2 group-hover:underline">{l.title}</span>
+                    <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-m-ink/65">
+                      <span>
+                        সপ্তাহ <Num value={l.week} />
+                      </span>
+                      {span && (
+                        <span>
+                          · <DateText iso={span.from} /> – <DateText iso={span.to} />
+                        </span>
+                      )}
+                      <span>·</span>
+                      <ModeTag mode={l.mode} />
+                    </span>
+                  </span>
+                  <span className="hidden text-sm font-semibold text-m-blue sm:inline">বিস্তারিত</span>
+                  {chevron}
+                </summary>
+                <div className="space-y-2 border-t border-m-ink/8 px-4 pt-4 pb-5 sm:px-5 sm:pl-[5.75rem]">
+                  {l.by && (
+                    <p className="flex items-center gap-1.5 text-sm text-m-ink/80">
+                      <PersonAvatar person={personOrThrow(l.by)} size="xs" /> পড়াবেন {personOrThrow(l.by).nameBn}
+                    </p>
+                  )}
+                  <p className="text-sm text-m-ink/75">
+                    {l.mode === "hands-on" && place ? place : <>অনলাইনে, <Num value={CLASS_MINUTES} /> মিনিটের ক্লাস · রেকর্ডিং থাকে</>}
+                  </p>
+                  {l.homework && (
+                    <p className="text-sm text-m-ink/85">
+                      <span className="font-semibold text-m-blue">হোমওয়ার্ক:</span> {l.homework}
+                    </p>
+                  )}
+                  {hydrated && e && <WeekActions code={course.id} week={l.week} attended={attended} homework={l.homework ? e.homework[l.week] ?? "" : undefined} />}
                 </div>
-                {timeline && (
-                  <p className="mt-0.5 text-xs text-m-ink/60">
-                    <DateText iso={timeline.weeks[l.week - 1]?.from ?? course.starts} /> – <DateText iso={timeline.weeks[l.week - 1]?.to ?? course.starts} />
-                  </p>
-                )}
-                {l.by && (
-                  <p className="mt-2 flex items-center gap-1.5 text-xs text-m-ink/75">
-                    <PersonAvatar person={personOrThrow(l.by)} size="xs" /> পড়াবেন {personOrThrow(l.by).nameBn}
-                  </p>
-                )}
-                {l.mode === "hands-on" && place && <p className="mt-1 text-xs text-m-ink/65">{place}</p>}
-                {l.homework && <p className="mt-2 text-sm text-m-ink/80"><span className="font-semibold text-m-blue">হোমওয়ার্ক:</span> {l.homework}</p>}
-                {e && <WeekActions code={course.id} week={l.week} attended={attended} homework={l.homework ? e.homework[l.week] ?? "" : undefined} />}
-              </div>
+              </details>
             </li>
           );
         })}
+        <li>
+          <details className={row}>
+            <summary className={summary}>
+              <span className="grid size-14 shrink-0 place-items-center rounded-xl bg-m-yellow text-m-ink shadow-[inset_0_-3px_0_rgb(0_0_0/0.12)]">
+                <Award className="size-6" aria-hidden />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block font-bold text-m-blue underline-offset-2 group-hover:underline">ফাইনাল প্রজেক্ট ও প্যানেল ইন্টারভিউ</span>
+                <span className="mt-1 block text-xs text-m-ink/65">
+                  শেষ <Num value={5} /> দিন · <DateText iso={timeline.final.from} /> – <DateText iso={timeline.final.to} />
+                </span>
+              </span>
+              <span className="hidden text-sm font-semibold text-m-blue sm:inline">বিস্তারিত</span>
+              {chevron}
+            </summary>
+            <div className="border-t border-m-ink/8 px-4 pt-4 pb-5 sm:px-5 sm:pl-[5.75rem]">
+              <p className="text-sm leading-relaxed text-m-ink/85">{course.final}</p>
+              <p className="mt-2 text-sm text-m-ink/70">প্যানেলে থাকেন আপনার শিক্ষক আর একজন বহিরাগত পেশাদার; দুজন আলাদা নম্বর দেন।</p>
+            </div>
+          </details>
+        </li>
       </ol>
-      {e && <p className="mt-3 text-xs text-m-ink/65">ডেমো: আসল ব্যবস্থায় লাইভ ক্লাসে ঢুকলে আর কর্মশালায় শিক্ষক নিলে হাজিরা নিজে থেকে ওঠে।</p>}
-    </section>
+      {hydrated && e && <p className="mt-3 text-xs text-m-ink/65">ডেমো: আসল ব্যবস্থায় লাইভ ক্লাসে ঢুকলে আর কর্মশালায় শিক্ষক নিলে হাজিরা নিজে থেকে ওঠে।</p>}
+    </div>
   );
 }
 

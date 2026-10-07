@@ -28,7 +28,7 @@ type Hit = { href: string; label: string; kind: string; Icon: typeof Search };
  * and finals, popular skills), "আমার শেখা", finals, a round search that
  * suggests as you type, and the learner's goal, bell and face on the right.
  */
-export function ExploreNav({ onSchool, onAllDepts }: { onSchool?: (s: School) => void; onAllDepts?: () => void } = {}) {
+export function ExploreNav({ onSchool, onAllDepts, className }: { onSchool?: (s: School) => void; onAllDepts?: () => void; className?: string } = {}) {
   const reduce = useReducedMotion();
   const router = useRouter();
   const hydrated = useHydrated();
@@ -173,7 +173,7 @@ export function ExploreNav({ onSchool, onAllDepts }: { onSchool?: (s: School) =>
         {open && <motion.div key="scrim" className="fixed inset-0 z-25 bg-white/70 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} onClick={() => setOpen(false)} aria-hidden />}
       </AnimatePresence>
 
-      <div ref={bar} className="frost-pane sticky -top-6 z-30 -mx-3 sm:-mx-6">
+      <div ref={bar} className={cn("frost-pane sticky -top-6 z-30 -mx-3 sm:-mx-6", className)}>
         <nav aria-label="বিভাগ" className="mx-auto flex h-16 max-w-7xl items-center gap-2 px-3 sm:gap-4 sm:px-6">
           <Link href="/media/academy/departments" className="shrink-0 text-2xl leading-none font-extrabold text-m-blue">
             কাণ্ডারী <span className="text-m-ink">শিখন</span>
