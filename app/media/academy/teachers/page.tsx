@@ -66,7 +66,7 @@ export default async function TeachersPage({ searchParams }: { searchParams: Pro
             </ol>
           )}
         </div>
-        <Panel as="aside" title="পয়েন্ট যেভাবে" className="lg:sticky lg:top-22 lg:self-start">
+        <Panel as="aside" title="পয়েন্ট যেভাবে" className="lg:sticky lg:top-0 lg:self-start">
           <dl className="space-y-2 text-sm">
             {[["প্যানেল ইন্টারভিউ", "৪০"], ["শিক্ষার্থীদের রেটিং", "৩০"], ["গ্র্যাজুয়েট (প্রতি ৫ জনে ১)", "২০"], ["সফলতার গল্প (প্রতিটি ২)", "১০"]].map(([k, v]) => (
               <div key={k} className="flex justify-between gap-3"><dt className="text-white/80">{k}</dt><dd className="font-semibold text-white">{v}</dd></div>

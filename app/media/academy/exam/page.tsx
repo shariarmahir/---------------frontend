@@ -91,7 +91,7 @@ export default async function ExamPage({ searchParams }: { searchParams: Promise
           </section>
         </div>
 
-        <aside className="space-y-5 lg:sticky lg:top-22 lg:self-start">
+        <aside className="space-y-5 lg:sticky lg:top-0 lg:self-start">
           <Panel title="আমার ফাইনাল">
             <MyFinals />
           </Panel>

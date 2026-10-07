@@ -24,7 +24,7 @@ const dhakaDay = (iso: string) => new Date(iso).toLocaleDateString("en-CA", { ti
 const today = dhakaDay(DEMO_NOW.toISOString());
 
 const STEPS = [
-  { title: "ভর্তি পরীক্ষা", body: "বিনামূল্যে। কাউকে বাদ দেয় না — আগের অভিজ্ঞতা আর চার প্রশ্নে ঠিক হয় কোথা থেকে শুরু করবেন।" },
+  { title: "বিভাগে যোগ দিন", body: "বিনামূল্যে। কাউকে বাদ দেয় না — আগের অভিজ্ঞতা আর চার প্রশ্নে ঠিক হয় কোথা থেকে শুরু করবেন।" },
   { title: "ক্লাস", body: "ভিডিও, লাইভ আর সত্যিকারের গ্যারেজ-রান্নাঘর-ল্যাবে হাতে-কলমে। ফি এসক্রোতে থাকে, ক্লাস হলে শিক্ষক পান।" },
   { title: "উপস্থিতি ও হোমওয়ার্ক", body: "অন্তত ৭৫% ক্লাস আর ৮০% হোমওয়ার্ক — না হলে ফাইনালে বসা যায় না।" },
   { title: "ফাইনাল প্রজেক্ট", body: "সত্যিকারের একটা কাজ — সার্ভিস করা বাইক, ১০০ জনের রান্না, চালু অ্যাপ।" },
@@ -61,8 +61,8 @@ export default async function AcademyPage({ searchParams }: { searchParams: Prom
             ইঞ্জিনিয়ার থেকে মেকানিক, শেফ থেকে শিল্পী — যে কাজ জানে সে শেখায়, যে শিখতে চায় সে শেখে। কোনো বয়স বা লিঙ্গের ভাগ নেই। ক্লাস হয় অনলাইনে, লাইভে আর সত্যিকারের গ্যারেজ, রান্নাঘর আর ল্যাবে; শেষে পেশাদারদের প্যানেলের সামনে প্রমাণ।
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
-            <Link href="/media/academy/admission" className={mediaButton({ variant: "tile", size: "lg" })}>
-              ভর্তি পরীক্ষা — বিনামূল্যে <ArrowRight aria-hidden />
+            <Link href="/media/academy/departments" className={mediaButton({ variant: "tile", size: "lg" })}>
+              বিভাগ বেছে যোগ দিন — বিনামূল্যে <ArrowRight aria-hidden />
             </Link>
             <Link href="/media/academy/teach" className={mediaButton({ size: "lg", className: "border-text-primary bg-transparent text-text-primary shadow-none hover:bg-text-primary/10" })}>
               শিক্ষক হিসেবে যোগ দিন
@@ -151,7 +151,7 @@ export default async function AcademyPage({ searchParams }: { searchParams: Prom
         </ul>
       </section>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_24rem]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_24rem]">
         <section aria-labelledby="departments">
           <div className="mb-4 flex items-end justify-between gap-3">
             <h2 id="departments" className="text-xl font-bold text-white">বিভাগ</h2>
@@ -204,7 +204,7 @@ export default async function AcademyPage({ searchParams }: { searchParams: Prom
         </ol>
       </section>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-2">
         <Panel title="প্রকাশ্য ইন্টারভিউ বোর্ড" action={<Link href="/media/academy/exam#board" className="text-sm font-semibold text-signal-orange hover:underline">পুরো বোর্ড</Link>}>
           <p className="-mt-2 mb-3 text-sm text-white/75">যে কেউ দেখতে পারেন — নিয়োগকর্তারা এখান থেকেই দক্ষ মানুষ খোঁজেন।</p>
           <ul className="divide-y divide-white/10">

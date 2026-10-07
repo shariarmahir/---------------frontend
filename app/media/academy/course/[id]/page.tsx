@@ -2,19 +2,18 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { FileSpreadsheet, FileText, FileVideo, Database, MapPin, type LucideIcon } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { ComplaintBox } from "@/components/media/academy/complaint-box";
 import { CourseDesk } from "@/components/media/academy/course-desk";
+import { CourseMaterials } from "@/components/media/academy/course-materials";
 import { ModeTag, TierBadge, modesOf, standingOf } from "@/components/media/academy/parts";
 import { PageHeader, Panel } from "@/components/media/ui/layout";
 import { Num, Taka } from "@/components/media/ui/numerals";
 import { PersonAvatar } from "@/components/media/ui/person";
 import { courses, getCourse, getDepartment, teacherRecord } from "@/data/media/academy";
 import { personOrThrow } from "@/data/media/users";
-import { LEVELS, MATERIAL_KINDS, type MaterialKind } from "@/lib/media/academy";
+import { LEVELS } from "@/lib/media/academy";
 import { computeFees } from "@/lib/media/fees";
-
-const MATERIAL_ICON: Record<MaterialKind, LucideIcon> = { video: FileVideo, pdf: FileText, doc: FileText, sheet: FileSpreadsheet, data: Database };
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -53,7 +52,7 @@ export default async function CoursePage({ params }: Props) {
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <CourseDesk course={course} />
 
-        <aside className="space-y-5 lg:sticky lg:top-22 lg:self-start">
+        <aside className="space-y-5 lg:sticky lg:top-0 lg:self-start">
           <Panel title="শিক্ষক">
             <Link href={`/media/academy/teachers/${teacher.handle}`} className="group flex items-center gap-3">
               <PersonAvatar person={teacher} size="lg" />
@@ -81,19 +80,7 @@ export default async function CoursePage({ params }: Props) {
           )}
 
           <Panel title="উপকরণ">
-            <ul className="space-y-2.5">
-              {course.materials.map((m) => {
-                const Icon = MATERIAL_ICON[m.kind];
-                return (
-                  <li key={m.title} className="flex items-start gap-2.5 text-sm">
-                    <Icon className="mt-0.5 size-4 shrink-0 text-signal-orange" aria-hidden />
-                    <span className="min-w-0 flex-1 text-white/90">{m.title}</span>
-                    <span className="shrink-0 text-xs text-white/65">{MATERIAL_KINDS[m.kind]} · {m.size}</span>
-                  </li>
-                );
-              })}
-            </ul>
-            <p className="mt-3 text-xs text-white/65">ভর্তি হলে শিক্ষক ক্লাসে শেয়ার করেন।</p>
+            <CourseMaterials course={course} />
           </Panel>
 
           {dept.place && (

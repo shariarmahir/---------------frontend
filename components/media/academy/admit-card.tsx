@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { coursesOf, getCourse, getDepartment } from "@/data/media/academy";
 import { currentUser } from "@/data/media/users";
-import { LEVELS } from "@/lib/media/academy";
+import { LEVELS, latestAdmission } from "@/lib/media/academy";
 import { useHydrated } from "@/lib/media/store";
 import { mediaButton } from "../ui/button-styles";
 import { DateText, Num } from "../ui/numerals";
@@ -18,12 +18,14 @@ import { useAcademy } from "./use-academy";
  */
 export function AdmitCard() {
   const hydrated = useHydrated();
-  const admission = useAcademy((a) => a.admission);
+  const admissions = useAcademy((a) => a.admissions);
   const enrolled = useAcademy((a) => a.enrolled);
 
   if (!hydrated) return <Skeleton className="h-64 rounded-2xl bg-text-primary/30" />;
 
   const codes = Object.keys(enrolled);
+  const admission = latestAdmission(admissions);
+  const joined = Object.keys(admissions).length;
   const dept = admission ? getDepartment(admission.dept) : undefined;
   const next = codes.length > 0 ? getCourse(codes[0]) : dept ? coursesOf(dept.id)[0] : undefined;
 
@@ -44,11 +46,11 @@ export function AdmitCard() {
         </div>
         <div>
           <dt className="text-xs text-white/65">বিভাগ</dt>
-          <dd className="font-semibold">{dept?.name ?? "এখনো বাছাই হয়নি"}</dd>
+          <dd className="font-semibold">{dept?.name ?? "এখনো বাছাই হয়নি"}{joined > 1 && <span className="block text-xs font-normal text-white/70">আরও <Num value={joined - 1} />টি বিভাগে</span>}</dd>
         </div>
         <div>
           <dt className="text-xs text-white/65">শুরুর স্তর</dt>
-          <dd className="font-semibold">{admission ? LEVELS[admission.level] : "ভর্তি পরীক্ষার পর"}</dd>
+          <dd className="font-semibold">{admission ? LEVELS[admission.level] : "যোগ দেওয়ার পর"}</dd>
         </div>
         {admission && (
           <>
@@ -57,7 +59,7 @@ export function AdmitCard() {
               <dd className="font-semibold tabular-nums"><Num value={admission.score} />%</dd>
             </div>
             <div>
-              <dt className="text-xs text-white/65">ভর্তির তারিখ</dt>
+              <dt className="text-xs text-white/65">যোগ দিয়েছেন</dt>
               <dd className="font-semibold"><DateText iso={admission.at} /></dd>
             </div>
           </>
@@ -71,8 +73,8 @@ export function AdmitCard() {
       )}
 
       {!admission ? (
-        <Link href="/media/academy/admission" className={mediaButton({ variant: "primary", className: "w-full" })}>
-          বিনামূল্যে ভর্তি পরীক্ষা দিন <ArrowRight aria-hidden />
+        <Link href="/media/academy/departments" className={mediaButton({ variant: "primary", className: "w-full" })}>
+          বিভাগ বেছে যোগ দিন — বিনামূল্যে <ArrowRight aria-hidden />
         </Link>
       ) : next ? (
         <Link href={`/media/academy/course/${next.id}`} className={mediaButton({ variant: "primary", className: "w-full" })}>

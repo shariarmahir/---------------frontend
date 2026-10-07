@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
-import { admissionQuestions, board, courses, departments, teacherRecords, workshops } from "./academy.ts";
+import { admissionQuestions, board, courses, departments, rosterOf, teacherRecords, workshops } from "./academy.ts";
 import { people } from "./users.ts";
 import { SCHOOLS, certificateId, finalResult } from "../../lib/media/academy.ts";
 
@@ -42,8 +42,11 @@ test("academy: courses and workshops point at real departments, teachers and ima
 test("academy: the board shows only upcoming seats and passes, with matching certificates", () => {
   for (const s of board) {
     assert.ok(courseIds.has(s.course), `${s.id}: unknown course`);
+    const day = new Date(s.at).toLocaleDateString("en-US", { weekday: "long", timeZone: "Asia/Dhaka" });
+    assert.notEqual(day, "Friday", `${s.id}: no panel sits on a Friday`);
     if (!s.marks) {
       assert.equal(s.certificate, undefined, `${s.id}: certificate before marks`);
+      if (s.sealed !== undefined) assert.ok(s.sealed >= 0 && s.sealed <= 100, `${s.id}: sealed mark out of range`);
       continue;
     }
     const { verdict } = finalResult(s.marks);
@@ -59,5 +62,14 @@ test("academy: four admission questions per school, each with a valid answer", (
     const qs = admissionQuestions[school];
     assert.equal(qs.length, 4, school);
     for (const q of qs) assert.ok(q.options.length === 4 && q.answer >= 0 && q.answer < 4, q.q);
+  }
+});
+
+test("academy: every course has a full class list with unique names", () => {
+  for (const c of courses) {
+    const roster = rosterOf(c);
+    assert.equal(roster.length, c.enrolled, c.id);
+    assert.equal(new Set(roster.map((s) => s.name)).size, roster.length, `${c.id}: repeated name`);
+    assert.equal(new Set(roster.map((s) => s.id)).size, roster.length, c.id);
   }
 });

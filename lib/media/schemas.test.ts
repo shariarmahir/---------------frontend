@@ -6,8 +6,10 @@ import {
   civicSchema,
   eventSchema,
   jobSchema,
+  markSchema,
   commentSchema,
   complaintSchema,
+  courseSchema,
   handleList,
   hireSchema,
   identitySchema,
@@ -182,4 +184,20 @@ test("academy: admission, teaching, final project and complaints", () => {
 
   assert.ok(complaintSchema.safeParse({ kind: "absent", course: "MTR-101", details: "পরপর দুই সপ্তাহ লাইভ ক্লাস হয়নি, কোনো নোটিশও দেননি।" }).success);
   assert.deepEqual(errPaths(complaintSchema.safeParse({ kind: "rude", course: "", details: "পরপর দুই সপ্তাহ লাইভ ক্লাস হয়নি, কোনো নোটিশও দেননি।" })), ["kind"]);
+});
+
+test("academy: building a course and marking a final", () => {
+  const lesson = (mode: string) => ({ title: "চেইন ও স্প্রকেট", mode, homework: "" });
+  const course = { title: "বাইকের চেইন সার্ভিস", dept: "motor", level: "foundation", weeks: 3, fee: 1500, seats: 12, image: "/media/bike-service.webp", outcome: "নিজে চেইন পরিষ্কার, টাইট আর বদলাতে পারবেন।", final: "একটা বাইকের চেইন-স্প্রকেট বদলানো, ভিডিওসহ।", lessons: [lesson("video"), lesson("hands-on")] };
+  assert.ok(courseSchema.safeParse(course).success);
+  assert.deepEqual(errPaths(courseSchema.safeParse({ ...course, lessons: [lesson("hands-on")] })), ["lessons.0.mode"]);
+  assert.deepEqual(errPaths(courseSchema.safeParse({ ...course, weeks: 1 })), ["lessons"]);
+  assert.deepEqual(errPaths(courseSchema.safeParse({ ...course, lessons: [] })), ["lessons"]);
+  assert.ok(courseSchema.safeParse({ ...course, fee: 0 }).success, "teaching for free is welcome");
+
+  const mark = { scores: [26, 20, 15, 12, 8], comment: "কার্বুরেটর নিজে খুলে দেখালেন, তবে খরচের হিসাবে ভুল ছিল।" };
+  assert.ok(markSchema.safeParse(mark).success);
+  assert.deepEqual(errPaths(markSchema.safeParse({ ...mark, scores: [31, 20, 15, 12, 8] })), ["scores.0"]);
+  assert.deepEqual(errPaths(markSchema.safeParse({ ...mark, scores: [26, 20] })), ["scores"]);
+  assert.deepEqual(errPaths(markSchema.safeParse({ ...mark, comment: "ভালো" })), ["comment"]);
 });

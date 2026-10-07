@@ -30,16 +30,16 @@ function updateEnrollment(code: string, fn: (e: Enrollment) => Enrollment) {
 }
 
 /**
- * The learner's side of a course: admission first, then the fee into
+ * The learner's side of a course: join its department first, then the fee into
  * escrow, then week by week — attendance, homework, the final project and a
  * panel-interview slot once the bar is met.
  */
 export function CourseDesk({ course }: { course: Course }) {
   const hydrated = useHydrated();
-  const admitted = useAcademy((a) => Boolean(a.admission));
+  const admitted = useAcademy((a) => Boolean(a.admissions[course.dept]));
   const enrollment = useAcademy((a) => a.enrolled[course.id]);
   // Recognised prior learning: attendance and homework are waived in the department they were placed in.
-  const fastTrack = useAcademy((a) => Boolean(a.admission?.fastTrack && a.admission.dept === course.dept));
+  const fastTrack = useAcademy((a) => Boolean(a.admissions[course.dept]?.fastTrack));
 
   if (!hydrated) return <Skeleton className="h-96 rounded-2xl bg-text-primary/40" />;
 
@@ -72,8 +72,8 @@ function Enroll({ course, admitted }: { course: Course; admitted: boolean }) {
           {course.fee > 0 && <p className="text-xs text-white/65">শিক্ষক পান ৯৫% · টাকা এসক্রোতে থাকে</p>}
         </div>
         {!admitted ? (
-          <Link href={`/media/academy/admission?dept=${course.dept}`} className={mediaButton({ variant: "primary", size: "lg" })}>
-            আগে ভর্তি পরীক্ষা দিন — বিনামূল্যে
+          <Link href={`/media/academy/dept/${course.dept}#join`} className={mediaButton({ variant: "primary", size: "lg" })}>
+            আগে বিভাগে যোগ দিন — বিনামূল্যে
           </Link>
         ) : full ? (
           <p className="max-w-xs text-sm text-white/80">এই ব্যাচের সব আসন পূর্ণ। পরের ব্যাচের তারিখ শিক্ষক বিভাগের পাতায় জানাবেন।</p>

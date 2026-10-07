@@ -1,3 +1,5 @@
+import { computeFees } from "./fees.ts";
+
 /**
  * কাণ্ডারী তৈরি একাডেমি — the rules a real skill school runs on. Pure, and
  * tested in academy.test.ts.
@@ -61,6 +63,11 @@ export interface Material {
   kind: MaterialKind;
   title: string;
   size: string;
+  /** A kept copy (data URL) or a link, for materials a teacher added. */
+  href?: string;
+  /** The uploaded file's own name, for downloading it back. */
+  file?: string;
+  at?: string;
 }
 
 export interface Course {
@@ -295,13 +302,107 @@ export interface Complaint {
 }
 
 export interface AcademyState {
-  admission: Admission | null;
+  /** Departments joined, by department id: one admission each. */
+  admissions: Record<string, Admission>;
   /** By course code. */
   enrolled: Record<string, Enrollment>;
   application: TeachApplication | null;
   complaints: Complaint[];
   /** Workshop seats taken. */
   workshops: Record<string, true>;
+  /* Teaching, on this device. */
+  /** Courses the teacher built, waiting for the panel. */
+  drafts: Course[];
+  /** Materials the teacher added, by course code. */
+  materials: Record<string, Material[]>;
+  /** Attendance taken: course code → week → ids of students present. A week here is a class held. */
+  attendance: Record<string, Record<number, string[]>>;
+  /** Panel marks the viewer gave, by board seat. */
+  marks: Record<string, PanelMark>;
 }
 
-export const emptyAcademy: AcademyState = { admission: null, enrolled: {}, application: null, complaints: [], workshops: {} };
+export const emptyAcademy: AcademyState = { admissions: {}, enrolled: {}, application: null, complaints: [], workshops: {}, drafts: [], materials: {}, attendance: {}, marks: {} };
+
+/**
+ * Saved state from any earlier version, made whole: missing parts start
+ * empty, and the old single `admission` becomes that department's entry.
+ */
+export function normalizeAcademy(raw: unknown): AcademyState {
+  const saved = (raw && typeof raw === "object" ? raw : {}) as Partial<AcademyState> & { admission?: Admission | null };
+  const { admission, ...rest } = saved;
+  const admissions = { ...rest.admissions };
+  if (admission && !admissions[admission.dept]) admissions[admission.dept] = admission;
+  return { ...emptyAcademy, ...rest, admissions };
+}
+
+/** The most recent department joined. */
+export function latestAdmission(admissions: Record<string, Admission>): Admission | undefined {
+  return Object.values(admissions).sort((a, b) => b.at.localeCompare(a.at))[0];
+}
+
+/* ── Teaching ──────────────────────────────────────────────────────── */
+
+/** What a material is, from its file name. */
+export function materialKindOf(name: string): MaterialKind {
+  const ext = name.toLowerCase().split(".").pop() ?? "";
+  if (["mp4", "mov", "webm", "mkv", "m4v"].includes(ext)) return "video";
+  if (ext === "pdf") return "pdf";
+  if (["xls", "xlsx", "csv", "ods"].includes(ext)) return "sheet";
+  if (["doc", "docx", "ppt", "pptx", "txt", "md", "odt", "rtf"].includes(ext)) return "doc";
+  return "data";
+}
+
+/** A file size as a number and its unit, kilobytes up to a megabyte. */
+export function sizeParts(bytes: number): { value: number; unit: "কেবি" | "এমবি" } {
+  return bytes >= 1024 * 1024 ? { value: Math.round((bytes / (1024 * 1024)) * 10) / 10, unit: "এমবি" } : { value: Math.max(1, Math.round(bytes / 1024)), unit: "কেবি" };
+}
+
+/** One student's attendance over the classes held so far (a full record before any). */
+export function attendanceOf(held: Record<number, string[]>, studentId: string): { present: number; held: number; rate: number } {
+  const weeks = Object.values(held);
+  const present = weeks.filter((ids) => ids.includes(studentId)).length;
+  return { present, held: weeks.length, rate: weeks.length ? present / weeks.length : 1 };
+}
+
+/**
+ * The teacher's side of a course's fees. They earn 95% of every fee; it
+ * waits in escrow and a week's share is released when that class is held.
+ */
+export function payoutOf(course: Pick<Course, "fee" | "enrolled" | "lessons">, weeksHeld: number): { earn: number; released: number; waiting: number } {
+  const earn = computeFees(course.fee).sellerReceives * course.enrolled;
+  const share = course.lessons.length ? Math.min(weeksHeld, course.lessons.length) / course.lessons.length : 0;
+  const released = Math.round(earn * share);
+  return { earn, released, waiting: earn - released };
+}
+
+/** The first free course code in a department, counting up from 101. */
+export function draftCode(dept: string, taken: string[]): string {
+  const prefix = (dept.replace(/[^a-z]/gi, "").slice(0, 3) || "NEW").toUpperCase();
+  let n = 101;
+  while (taken.includes(`${prefix}-${n}`)) n++;
+  return `${prefix}-${n}`;
+}
+
+/* ── Panel marking ─────────────────────────────────────────────────── */
+
+/** What the panel marks, out of 100 in all. */
+export const RUBRIC = [
+  { id: "works", bn: "কাজটা সত্যিই চলে", max: 30, guide: "সামনে চালিয়ে বা ব্যবহার করে দেখাতে পারলে পুরো নম্বর।" },
+  { id: "craft", bn: "হাতের কাজ ও কারিগরি", max: 25, guide: "কাজের মান, যন্ত্রপাতির সঠিক ব্যবহার, ফিনিশিং।" },
+  { id: "explain", bn: "ব্যাখ্যা ও প্রশ্নের উত্তর", max: 20, guide: "কেন এভাবে করলেন, ভুল হলে কী করবেন — নিজের ভাষায়।" },
+  { id: "safety", bn: "নিরাপত্তা ও পরিচ্ছন্নতা", max: 15, guide: "নিজের ও অন্যের নিরাপত্তা, পরিচ্ছন্ন কাজ, নিয়ম মানা।" },
+  { id: "cost", bn: "সময় ও খরচের হিসাব", max: 10, guide: "সময় আর খরচের সৎ হিসাব, কাস্টমারকে দাম বোঝানো।" },
+] as const;
+
+export interface PanelMark {
+  /** One score per rubric line, in order. */
+  scores: number[];
+  total: number;
+  comment: string;
+  at: string;
+}
+
+/** The total of a rubric, each line held between 0 and its maximum. */
+export function rubricTotal(scores: number[]): number {
+  return RUBRIC.reduce((n, r, i) => n + Math.max(0, Math.min(r.max, Math.round(scores[i] ?? 0))), 0);
+}

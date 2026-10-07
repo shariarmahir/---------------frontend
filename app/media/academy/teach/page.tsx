@@ -15,7 +15,7 @@ export default async function TeachPage({ searchParams }: { searchParams: Promis
       />
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_19rem]">
         <TeachApply initialDept={dept} />
-        <div className="space-y-5 lg:sticky lg:top-22 lg:self-start">
+        <div className="space-y-5 lg:sticky lg:top-0 lg:self-start">
           <Panel as="aside" title="যা দেখা হয়">
             <ul className="space-y-2.5 text-sm leading-relaxed text-white/85">
               <li>পরিচয় যাচাই করা প্রোফাইল (এনআইডি বা পাসপোর্ট)।</li>

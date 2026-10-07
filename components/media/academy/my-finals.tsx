@@ -11,7 +11,7 @@ import { useAcademy } from "./use-academy";
 export function MyFinals() {
   const hydrated = useHydrated();
   const enrolled = useAcademy((a) => a.enrolled);
-  const admission = useAcademy((a) => a.admission);
+  const admissions = useAcademy((a) => a.admissions);
   if (!hydrated) return null;
 
   const rows = Object.entries(enrolled).flatMap(([code, e]) => {
@@ -23,7 +23,7 @@ export function MyFinals() {
     return (
       <p className="text-sm leading-relaxed text-white/80">
         এখনো কোনো কোর্সে ভর্তি নেই।{" "}
-        {admission?.fastTrack ? "অভিজ্ঞতার স্বীকৃতি পেয়েছেন — বিভাগের একটা কোর্সে ঢুকে প্রজেক্ট জমা দিলেই ইন্টারভিউ।" : "কোর্স শেষে এখানে ফাইনালের অবস্থা দেখবেন।"}{" "}
+        {Object.values(admissions).some((a) => a.fastTrack) ? "অভিজ্ঞতার স্বীকৃতি পেয়েছেন — বিভাগের একটা কোর্সে ঢুকে প্রজেক্ট জমা দিলেই ইন্টারভিউ।" : "কোর্স শেষে এখানে ফাইনালের অবস্থা দেখবেন।"}{" "}
         <Link href="/media/academy#courses" className="font-semibold text-signal-orange hover:underline">কোর্স দেখুন</Link>
       </p>
     );
@@ -32,7 +32,7 @@ export function MyFinals() {
   return (
     <ul className="divide-y divide-white/10">
       {rows.map(({ course, e }) => {
-        const fast = Boolean(admission?.fastTrack && admission.dept === course.dept);
+        const fast = Boolean(admissions[course.dept]?.fastTrack);
         const ready = progressOf(course, e).eligible || (fast && Boolean(e.project));
         return (
           <li key={course.id}>

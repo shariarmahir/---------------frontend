@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight } from "lucide-react";
@@ -25,75 +25,96 @@ import { updateAcademy, useAcademy } from "./use-academy";
 const LEVEL_ORDER = { foundation: 0, intermediate: 1, advanced: 2 } as const;
 
 /**
- * The free admission test: what you want, what you have already done, and
- * four practical questions from your department's school. It places — it
- * never turns anyone away.
+ * Joining a department: what you want, what you have already done, and four
+ * practical questions from its school. It places — it never turns anyone
+ * away. On a department's page the department is fixed (`lockDept`); on the
+ * admission page the learner picks one.
  */
-export function AdmissionTest({ initialDept }: { initialDept?: string }) {
+export function AdmissionTest({ initialDept, lockDept }: { initialDept?: string; lockDept?: string }) {
   const ensure = useRequireAccount();
   const hydrated = useHydrated();
-  const saved = useAcademy((a) => a.admission);
+  const admissions = useAcademy((a) => a.admissions);
+  const top = useRef<HTMLDivElement>(null);
   const [answers, setAnswers] = useState<AdmissionInput | null>(null);
   const [picks, setPicks] = useState<(number | undefined)[]>([]);
+  const [shown, setShown] = useState<string | null>(null);
   const [retake, setRetake] = useState(false);
-  const form = useForm<AdmissionInput>({
-    resolver: zodResolver(admissionSchema),
-    defaultValues: { dept: initialDept && getDepartment(initialDept) ? initialDept : "", goal: "", years: 0, proof: "" },
-  });
+  const preset = lockDept ?? (initialDept && getDepartment(initialDept) ? initialDept : "");
+  const form = useForm<AdmissionInput>({ resolver: zodResolver(admissionSchema), defaultValues: { dept: preset, goal: "", years: 0, proof: "" } });
 
   if (!hydrated) return null;
-  if (saved && !retake) return <Result admission={saved} onRetake={() => { setRetake(true); setAnswers(null); setPicks([]); }} />;
+
+  const resultDept = shown ?? (lockDept && admissions[lockDept] && !retake ? lockDept : null);
+  const again = () => {
+    setShown(null);
+    setRetake(true);
+    setAnswers(null);
+    setPicks([]);
+    form.reset({ dept: preset, goal: "", years: 0, proof: "" });
+  };
+
+  if (resultDept && admissions[resultDept]) {
+    return (
+      <div ref={top} className="scroll-mt-6">
+        <Result admission={admissions[resultDept]} compact={Boolean(lockDept)} onAgain={again} />
+      </div>
+    );
+  }
 
   if (!answers) {
     return (
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit((v) => ensure("ভর্তি পরীক্ষা দিতে") && setAnswers(v))} noValidate className="space-y-5 rounded-2xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-7">
-          <StepHead n={1} title="কী শিখতে চান" />
-          <FormField control={form.control} name="dept" render={({ field }) => (
-            <FormItem>
-              <FormLabel>বিভাগ</FormLabel>
-              <FormControl>
-                <select {...field} className={selectClass}>
-                  <option value="">বেছে নিন</option>
-                  {(Object.keys(SCHOOLS) as School[]).map((s) => (
-                    <optgroup key={s} label={SCHOOLS[s]}>
-                      {departments.filter((d) => d.school === s).map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
-                    </optgroup>
-                  ))}
-                </select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
-          <FormField control={form.control} name="goal" render={({ field }) => (
-            <FormItem>
-              <FormLabel>কেন শিখতে চান, শেষে কী করবেন</FormLabel>
-              <FormControl><Textarea rows={3} placeholder="যেমন: নিজের গ্যারেজ খুলতে চাই, এলাকায় ভালো মেকানিক নেই।" {...field} /></FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
-          <div className="grid gap-5 sm:grid-cols-[10rem_minmax(0,1fr)]">
-            <FormField control={form.control} name="years" render={({ field }) => (
+      <div ref={top} className="scroll-mt-6">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit((v) => ensure("বিভাগে যোগ দিতে") && setAnswers(v))} noValidate className="space-y-5 rounded-2xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-7">
+            <StepHead n={1} title={lockDept ? "আপনার কথা" : "কী শিখতে চান"} />
+            {!lockDept && (
+              <FormField control={form.control} name="dept" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>বিভাগ</FormLabel>
+                  <FormControl>
+                    <select {...field} className={selectClass}>
+                      <option value="">বেছে নিন</option>
+                      {(Object.keys(SCHOOLS) as School[]).map((s) => (
+                        <optgroup key={s} label={SCHOOLS[s]}>
+                          {departments.filter((d) => d.school === s).map((d) => <option key={d.id} value={d.id}>{admissions[d.id] ? `${d.name} (যোগ দিয়েছেন)` : d.name}</option>)}
+                        </optgroup>
+                      ))}
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+            )}
+            <FormField control={form.control} name="goal" render={({ field }) => (
               <FormItem>
-                <FormLabel>আগে কত বছর করেছেন</FormLabel>
-                <FormControl><Input inputMode="numeric" className="tabular-nums" value={field.value || ""} placeholder="০" onChange={(e) => field.onChange(toNumber(e.target.value))} /></FormControl>
+                <FormLabel>কেন শিখতে চান, শেষে কী করবেন</FormLabel>
+                <FormControl><Textarea rows={3} placeholder="যেমন: নিজের গ্যারেজ খুলতে চাই, এলাকায় ভালো মেকানিক নেই।" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
-            <FormField control={form.control} name="proof" render={({ field }) => (
-              <FormItem>
-                <FormLabel>কাজের প্রমাণ (ঐচ্ছিক)</FormLabel>
-                <FormControl><Input type="url" placeholder="https://… ভিডিও, ছবি বা পোর্টফোলিও" {...field} /></FormControl>
-                <FormDescription>অভিজ্ঞতা আর প্রমাণ থাকলে সরাসরি ফাইনালে বসতে পারবেন।</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )} />
-          </div>
-          <button type="submit" className={mediaButton({ variant: "primary", size: "lg", className: "w-full sm:w-auto" })}>
-            পরীক্ষায় যান <ArrowRight aria-hidden />
-          </button>
-        </form>
-      </Form>
+            <div className="grid gap-5 sm:grid-cols-[10rem_minmax(0,1fr)]">
+              <FormField control={form.control} name="years" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>আগে কত বছর করেছেন</FormLabel>
+                  <FormControl><Input inputMode="numeric" className="tabular-nums" value={field.value || ""} placeholder="০" onChange={(e) => field.onChange(toNumber(e.target.value))} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="proof" render={({ field }) => (
+                <FormItem>
+                  <FormLabel>কাজের প্রমাণ (ঐচ্ছিক)</FormLabel>
+                  <FormControl><Input type="url" placeholder="https://… ভিডিও, ছবি বা পোর্টফোলিও" {...field} /></FormControl>
+                  <FormDescription>তিন বছরের বেশি কাজ আর প্রমাণ থাকলে সরাসরি ফাইনালে বসতে পারবেন।</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )} />
+            </div>
+            <button type="submit" className={mediaButton({ variant: "primary", size: "lg", className: "w-full sm:w-auto" })}>
+              চার প্রশ্নে যান <ArrowRight aria-hidden />
+            </button>
+          </form>
+        </Form>
+      </div>
     );
   }
 
@@ -105,13 +126,16 @@ export function AdmissionTest({ initialDept }: { initialDept?: string }) {
     const score = scorePaper(questions, picks);
     const placed = placement({ testPct: score, years: answers!.years, hasProof: answers!.proof !== "" });
     const admission: Admission = { ...answers!, score, ...placed, at: new Date().toISOString() };
-    if (!updateAcademy((a) => ({ ...a, admission }))) toast.error("এই ব্রাউজারে সংরক্ষণ হয়নি", { description: "ফল এই ভিজিটে দেখা যাবে, পরে নাও থাকতে পারে।" });
+    if (!updateAcademy((a) => ({ ...a, admissions: { ...a.admissions, [admission.dept]: admission } }))) {
+      toast.error("এই ব্রাউজারে সংরক্ষণ হয়নি", { description: "ফল এই ভিজিটে দেখা যাবে, পরে নাও থাকতে পারে।" });
+    }
+    setShown(admission.dept);
     setRetake(false);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    top.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   return (
-    <div className="space-y-5 rounded-2xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-7">
+    <div ref={top} className="scroll-mt-6 space-y-5 rounded-2xl bg-text-primary p-5 ring-1 ring-white/12 sm:p-7">
       <StepHead n={2} title={`${SCHOOLS[dept.school]} — চারটি প্রশ্ন`} />
       <p className="text-sm text-white/75">ভুল হলে ক্ষতি নেই — শুধু ঠিক হয় কোন স্তর থেকে শুরু করবেন।</p>
       <ol className="space-y-6">
@@ -122,7 +146,13 @@ export function AdmissionTest({ initialDept }: { initialDept?: string }) {
               <div className="grid gap-2 sm:grid-cols-2">
                 {q.options.map((o, j) => (
                   <label key={o} className={choiceClass(picks[i] === j)}>
-                    <input type="radio" className="sr-only" name={`q${i}`} checked={picks[i] === j} onChange={() => setPicks((p) => { const next = [...p]; next[i] = j; return next; })} />
+                    <input
+                      type="radio"
+                      className="sr-only"
+                      name={`q${i}`}
+                      checked={picks[i] === j}
+                      onChange={() => setPicks((p) => { const next = [...p]; next[i] = j; return next; })}
+                    />
                     {o}
                   </label>
                 ))}
@@ -133,7 +163,7 @@ export function AdmissionTest({ initialDept }: { initialDept?: string }) {
       </ol>
       <div className="flex flex-wrap items-center gap-3 border-t border-white/10 pt-5">
         <button type="button" disabled={!answered} onClick={submit} className={mediaButton({ variant: "primary", size: "lg" })}>
-          জমা দিন ও ফল দেখুন
+          জমা দিন ও যোগ দিন
         </button>
         <button type="button" onClick={() => setAnswers(null)} className={mediaButton({ variant: "ghost" })}>আগের ধাপে</button>
         {!answered && <span className="text-sm text-white/65">সব প্রশ্নের উত্তর দিন</span>}
@@ -151,7 +181,7 @@ function StepHead({ n, title }: { n: number; title: string }) {
   );
 }
 
-function Result({ admission, onRetake }: { admission: Admission; onRetake: () => void }) {
+function Result({ admission, compact, onAgain }: { admission: Admission; compact: boolean; onAgain: () => void }) {
   const dept = getDepartment(admission.dept);
   const questions = dept ? admissionQuestions[dept.school] : [];
   const suggested = dept
@@ -161,7 +191,7 @@ function Result({ admission, onRetake }: { admission: Admission; onRetake: () =>
   return (
     <div className="space-y-8">
       <section className="live-in rounded-2xl bg-text-primary p-5 ring-1 ring-signal-orange/40 sm:p-7">
-        <p className="text-sm font-semibold text-signal-orange">ভর্তি নিশ্চিত — কোনো ফি লাগেনি</p>
+        <p className="text-sm font-semibold text-signal-orange">আপনি এই বিভাগের শিক্ষার্থী — কোনো ফি লাগেনি</p>
         <h2 className="mt-2 text-2xl font-bold text-white">{dept?.name}</h2>
         <dl className="mt-5 grid grid-cols-3 gap-3">
           {[
@@ -177,11 +207,21 @@ function Result({ admission, onRetake }: { admission: Admission; onRetake: () =>
         </dl>
         {admission.fastTrack ? (
           <p className="mt-5 text-sm leading-relaxed text-white/85">
-            আপনার অভিজ্ঞতা আর কাজের প্রমাণ আছে। চাইলে কোর্স না করেই <Link href="/media/academy/exam" className="font-semibold text-signal-orange hover:underline">ফাইনাল প্রজেক্ট ও প্যানেল ইন্টারভিউ</Link> দিতে পারেন — সরকারের আরপিএল (পূর্ব-অভিজ্ঞতার স্বীকৃতি) যেভাবে কাজ করে।
+            আপনার অভিজ্ঞতা আর কাজের প্রমাণ আছে। এই বিভাগের কোর্সে হাজিরা-হোমওয়ার্ক মাফ — প্রজেক্ট জমা দিলেই <Link href="/media/academy/exam" className="font-semibold text-signal-orange hover:underline">প্যানেল ইন্টারভিউ</Link>, সরকারের আরপিএল (পূর্ব-অভিজ্ঞতার স্বীকৃতি) যেভাবে কাজ করে।
           </p>
         ) : (
-          <p className="mt-5 text-sm leading-relaxed text-white/85">নিচের কোর্সগুলো আপনার স্তরের কাছাকাছি থেকে সাজানো। কোর্সে ভর্তির সময় শুধু সেই কোর্সের ফি দিতে হয়।</p>
+          <p className="mt-5 text-sm leading-relaxed text-white/85">আপনার স্তরের সবচেয়ে কাছের কোর্স দিয়ে শুরু করুন। কোর্সে ঢুকলে শুধু সেই কোর্সের ফি।</p>
         )}
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          {suggested[0] && (
+            <Link href={`/media/academy/course/${suggested[0].id}`} className={mediaButton({ variant: "primary" })}>
+              {suggested[0].title} <ArrowRight aria-hidden />
+            </Link>
+          )}
+          <button type="button" onClick={onAgain} className={mediaButton({ variant: "quiet", size: "sm" })}>
+            {compact ? "আবার পরীক্ষা দিন" : "আরেকটা বিভাগে যোগ দিন"}
+          </button>
+        </div>
         <details className="mt-5 text-sm">
           <summary className="cursor-pointer font-semibold text-signal-orange">সঠিক উত্তরগুলো দেখুন</summary>
           <ol className="mt-3 space-y-2">
@@ -192,10 +232,9 @@ function Result({ admission, onRetake }: { admission: Admission; onRetake: () =>
             ))}
           </ol>
         </details>
-        <button type="button" onClick={onRetake} className={mediaButton({ variant: "quiet", size: "sm", className: "mt-5" })}>অন্য বিভাগে আবার পরীক্ষা দিন</button>
       </section>
 
-      {suggested.length > 0 && (
+      {!compact && suggested.length > 0 && (
         <section aria-labelledby="suggested">
           <h2 id="suggested" className="mb-4 text-lg font-bold text-white">আপনার জন্য কোর্স</h2>
           <div className="grid gap-5 sm:grid-cols-2">

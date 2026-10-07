@@ -105,7 +105,7 @@ export default async function TeacherPage({ params }: Props) {
           )}
         </div>
 
-        <aside className="space-y-5 lg:sticky lg:top-22 lg:self-start">
+        <aside className="space-y-5 lg:sticky lg:top-0 lg:self-start">
           <Panel title="ইন্টারভিউর রেকর্ড">
             <dl className="space-y-2 text-sm">
               <div className="flex justify-between gap-3"><dt className="text-white/75">তারিখ</dt><dd className="text-white"><DateText iso={record.interview.at} /></dd></div>

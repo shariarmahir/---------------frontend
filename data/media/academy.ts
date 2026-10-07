@@ -211,6 +211,10 @@ export interface BoardSeat {
   project: string;
   /** Examiners' marks, once given. */
   marks?: number[];
+  /** The outside examiner's mark, sealed until the teacher on the panel marks too. */
+  sealed?: number;
+  /** How the learner did in the course, for the panel's file. */
+  record?: { attendance: number; homework: number };
   certificate?: string;
 }
 
@@ -218,9 +222,11 @@ export const board: BoardSeat[] = [
   { id: "b-sohag", learner: "সোহাগ মিয়া", district: "গাজীপুর", course: "RKS-101", at: "2026-09-27T04:00:00Z", panel: ["রফিকুল ইসলাম", "বহিরাগত পরীক্ষক · মেকানিক্যাল প্রকৌশলী"], project: "ব্যাটারির আগুনের ঝুঁকি কমানো একটা ইজিবাইক চার্জিং ঘর" },
   { id: "b-maruf", learner: "মারুফ হাসান", district: "সিলেট", course: "MUS-101", at: "2026-09-28T04:00:00Z", panel: ["মিতু সরকার", "বহিরাগত পরীক্ষক · সংগীতশিল্পী"], project: "হাসন রাজার গানের নতুন সুর, ফোনে রেকর্ড করা" },
   { id: "b-jannat", learner: "জান্নাতুল ফেরদৌস", district: "বান্দরবান", course: "MED-101", at: "2026-09-29T09:00:00Z", panel: ["নাবিলা চৌধুরী", "বহিরাগত পরীক্ষক · চলচ্চিত্র নির্মাতা"], project: "পাহাড়ি রান্নার চ্যানেল — চারটি ভিডিও" },
+  { id: "b-nayon", learner: "নয়ন সরকার", district: "শেরপুর", course: "MEC-101", at: "2026-10-10T04:00:00Z", panel: ["মাহির শারিয়ার মাহিন", "বহিরাগত পরীক্ষক · প্রকৌশল অধ্যাপক"], project: "পোলট্রি খামারের তাপমাত্রা দেখে নিজে চলা ফ্যান, খরচ ২,৪০০ টাকা", sealed: 78, record: { attendance: 88, homework: 100 } },
+  { id: "b-sumi", learner: "সুমি আক্তার", district: "ঢাকা", course: "AI-201", at: "2026-10-12T09:00:00Z", panel: ["মাহির শারিয়ার মাহিন", "বহিরাগত পরীক্ষক · সফটওয়্যার স্থপতি"], project: "ইউনিয়ন পরিষদের সেবা নিয়ে প্রশ্নের উত্তর দেওয়া বাংলা চ্যাটবট", sealed: 48, record: { attendance: 83, homework: 80 } },
   { id: "b-emon", learner: "ইমন সরকার", district: "ঢাকা", course: "WEB-101", at: "2026-09-30T04:00:00Z", panel: ["অনিক হাসান", "বহিরাগত পরীক্ষক · সফটওয়্যার স্থপতি"], project: "কোচিং সেন্টারের ভর্তি ও বেতনের অ্যাপ" },
   { id: "b-shariful", learner: "শরিফুল ইসলাম", district: "গাজীপুর", course: "MTR-101", at: "2026-09-20T04:00:00Z", panel: ["রফিকুল ইসলাম", "বহিরাগত পরীক্ষক · মেকানিক্যাল প্রকৌশলী"], project: "একটা ১০০ সিসি বাইকের পূর্ণ সার্ভিসিং, ঘড়ি ধরে", marks: [78, 84], certificate: "KTA-2026-MTR101-0007" },
-  { id: "b-labonno", learner: "লাবণ্য দাস", district: "ঢাকা", course: "CHF-101", at: "2026-09-18T05:00:00Z", panel: ["রহিমা বেগম", "বহিরাগত পরীক্ষক · হোটেলের হেড শেফ"], project: "১২০ জনের বিয়েবাড়ির মেন্যু, জনপ্রতি খরচসহ", marks: [88, 91], certificate: "KTA-2026-CHF101-0003" },
+  { id: "b-labonno", learner: "লাবণ্য দাস", district: "ঢাকা", course: "CHF-101", at: "2026-09-17T05:00:00Z", panel: ["রহিমা বেগম", "বহিরাগত পরীক্ষক · হোটেলের হেড শেফ"], project: "১২০ জনের বিয়েবাড়ির মেন্যু, জনপ্রতি খরচসহ", marks: [88, 91], certificate: "KTA-2026-CHF101-0003" },
   { id: "b-rakib", learner: "রাকিব হোসেন", district: "শেরপুর", course: "MEC-101", at: "2026-09-22T04:00:00Z", panel: ["মাহির শারিয়ার মাহিন", "বহিরাগত পরীক্ষক · প্রকৌশল অধ্যাপক", "তৃতীয় পরীক্ষক · শিল্প প্রতিনিধি"], project: "মাটি শুকালে নিজে চালু হওয়া সেচের পাম্প", marks: [52, 81, 76], certificate: "KTA-2026-MEC101-0002" },
   { id: "b-tanjila", learner: "তানজিলা ইসলাম", district: "ময়মনসিংহ", course: "WEB-101", at: "2026-09-15T04:00:00Z", panel: ["অনিক হাসান", "বহিরাগত পরীক্ষক · সফটওয়্যার স্থপতি"], project: "মায়ের বুটিকের অনলাইন দোকান", marks: [74, 70], certificate: "KTA-2026-WEB101-0011" },
 ];
@@ -280,6 +286,24 @@ export const admissionQuestions: Record<School, Question[]> = {
 const deptById = new Map(departments.map((d) => [d.id, d]));
 const courseById = new Map(courses.map((c) => [c.id, c]));
 const recordByHandle = new Map(teacherRecords.map((t) => [t.handle, t]));
+
+/* A course's class list, the same every time: names drawn from two short lists. */
+const FIRST = ["রাকিব", "সুমি", "তানভীর", "মিম", "শাকিল", "নাদিয়া", "আরিফ", "জুই", "সোহেল", "রুমানা", "ইমরান", "তাসনিম", "রাসেল", "লিজা", "ফাহিম", "সাথী", "নয়ন", "মৌ", "রিপন", "শারমিন"];
+const LAST = ["হোসেন", "আক্তার", "ইসলাম", "খাতুন", "রহমান", "বেগম", "মিয়া", "সরকার", "দাস", "উদ্দিন"];
+
+export interface Student {
+  id: string;
+  name: string;
+}
+
+/** Everyone enrolled in a sample course. */
+export function rosterOf(course: Pick<Course, "id" | "enrolled">): Student[] {
+  const k = courses.findIndex((c) => c.id === course.id) + 1;
+  return Array.from({ length: course.enrolled }, (_, i) => ({
+    id: `${course.id}:${i + 1}`,
+    name: `${FIRST[(i + k * 3) % FIRST.length]} ${LAST[(Math.floor(i / FIRST.length) + i * 3 + k) % LAST.length]}`,
+  }));
+}
 
 export const getDepartment = (id: string) => deptById.get(id);
 export const getCourse = (id: string) => courseById.get(id);

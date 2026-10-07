@@ -31,17 +31,17 @@ export function Fee({ amount }: { amount: number }) {
   return amount === 0 ? <span className="font-bold text-bdgreen-500">বিনা ফি</span> : <span className="font-bold text-white tabular-nums"><Taka amount={amount} /></span>;
 }
 
-export function CourseCard({ course, className }: { course: Course; className?: string }) {
+/** A course in the catalogue; `preview` draws it unlinked, for a course still being built. */
+export function CourseCard({ course, className, preview }: { course: Course; className?: string; preview?: boolean }) {
   const teacher = personOrThrow(course.teacher);
   const left = course.seats - course.enrolled;
-  return (
-    <Link
-      href={`/media/academy/course/${course.id}`}
-      className={cn(
-        "group flex flex-col overflow-hidden rounded-2xl bg-text-primary ring-1 ring-white/12 transition-[translate,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-[0_18px_36px_-20px_var(--color-signal-orange)] hover:ring-signal-orange/50 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none motion-reduce:hover:translate-y-0",
-        className,
-      )}
-    >
+  const frame = cn(
+    "group flex flex-col overflow-hidden rounded-2xl bg-text-primary ring-1 ring-white/12",
+    !preview && "transition-[translate,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-[0_18px_36px_-20px_var(--color-signal-orange)] hover:ring-signal-orange/50 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none motion-reduce:hover:translate-y-0",
+    className,
+  );
+  const body = (
+    <>
       <div className="relative aspect-video overflow-hidden bg-black">
         <Image src={course.image} alt="" fill sizes="(min-width: 1024px) 22rem, (min-width: 640px) 45vw, 92vw" className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] motion-reduce:group-hover:scale-100" />
         <span className="absolute top-3 left-3 rounded-md bg-black px-2 py-1 font-mono text-[11px] font-bold text-signal-orange">{course.id}</span>
@@ -49,7 +49,7 @@ export function CourseCard({ course, className }: { course: Course; className?: 
       </div>
       <div className="flex flex-1 flex-col p-4">
         <p className="text-xs font-semibold text-signal-orange">{getDepartment(course.dept)?.name}</p>
-        <h3 className="mt-1 text-[17px] leading-snug font-bold text-balance text-white group-hover:text-signal-orange">{course.title}</h3>
+        <h3 className="mt-1 text-[17px] leading-snug font-bold text-balance text-white group-hover:text-signal-orange">{course.title || "কোর্সের নাম"}</h3>
         <p className="mt-2 flex items-center gap-2 text-sm text-white/80">
           <PersonAvatar person={teacher} size="xs" />
           {teacher.nameBn}
@@ -65,8 +65,9 @@ export function CourseCard({ course, className }: { course: Course; className?: 
           </span>
         </div>
       </div>
-    </Link>
+    </>
   );
+  return preview ? <article className={frame}>{body}</article> : <Link href={`/media/academy/course/${course.id}`} className={frame}>{body}</Link>;
 }
 
 export const TIER_TONE: Record<Tier, string> = {

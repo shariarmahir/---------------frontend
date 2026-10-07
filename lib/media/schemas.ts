@@ -7,6 +7,7 @@ import { fairPayFloor, payUnitBn } from "./fair-pay.ts";
 import { bnDigits, taka } from "./format.ts";
 import type { PriceBand } from "./fair-price.ts";
 import { normalizeDigits, validateNid, validatePassport } from "./identity.ts";
+import { RUBRIC } from "./academy.ts";
 
 const CATEGORY_IDS = [
   "crafts", "cooking", "tech", "design", "art", "music", "photo", "content", "engineering",
@@ -343,3 +344,48 @@ export const complaintSchema = z.object({
   details: z.string().trim().min(20, "কী হয়েছিল, কবে — অন্তত ২০ অক্ষরে লিখুন।").max(1000, "১০০০ অক্ষরের মধ্যে রাখুন।"),
 });
 export type ComplaintInput = z.infer<typeof complaintSchema>;
+
+export const LESSON_MODES = ["video", "live", "hands-on"] as const;
+export const COURSE_LEVELS = ["foundation", "intermediate", "advanced"] as const;
+
+/** A teacher building a course: weeks, fee, the plan week by week and the final. */
+export const courseSchema = z
+  .object({
+    title: z.string().trim().min(6, "কোর্সের নাম দিন (অন্তত ৬ অক্ষর)।").max(80, "৮০ অক্ষরের মধ্যে রাখুন।"),
+    dept: z.string().min(1, "বিভাগ বেছে নিন।"),
+    level: z.enum(COURSE_LEVELS),
+    weeks: z.number({ error: "কয় সপ্তাহ লিখুন।" }).int().min(1, "অন্তত ১ সপ্তাহ।").max(24, "২৪ সপ্তাহের মধ্যে রাখুন।"),
+    fee: z.number({ error: "ফি লিখুন, বিনা ফি হলে ০।" }).int().min(0).max(50000, "৳৫০,০০০-এর মধ্যে রাখুন।"),
+    seats: z.number({ error: "আসন লিখুন।" }).int().min(1, "অন্তত ১টি আসন।").max(200, "২০০ আসনের মধ্যে রাখুন।"),
+    image: z.string().min(1, "একটা প্রচ্ছদ বেছে নিন।"),
+    outcome: z.string().trim().min(20, "শেষে শিক্ষার্থী কী পারবে — অন্তত ২০ অক্ষরে।").max(200),
+    final: z.string().trim().min(20, "ফাইনাল প্রজেক্ট কী — অন্তত ২০ অক্ষরে।").max(300),
+    lessons: z
+      .array(
+        z.object({
+          title: z.string().trim().min(3, "ক্লাসের বিষয় লিখুন।").max(80),
+          mode: z.enum(LESSON_MODES),
+          homework: z.string().trim().max(120),
+        }),
+      )
+      .min(1, "অন্তত একটি ক্লাস যোগ করুন।")
+      .max(24),
+  })
+  .superRefine((v, ctx) => {
+    if (v.lessons.length > v.weeks) ctx.addIssue({ code: "custom", path: ["lessons"], message: "সপ্তাহের চেয়ে বেশি ক্লাস — সপ্তাহ বাড়ান বা ক্লাস কমান।" });
+    if (v.lessons[0]?.mode === "hands-on") ctx.addIssue({ code: "custom", path: ["lessons", 0, "mode"], message: "প্রথম ক্লাস সবসময় অনলাইনে — ভিডিও বা লাইভ দিন।" });
+  });
+export type CourseInput = z.infer<typeof courseSchema>;
+
+/** One examiner's marks: every rubric line within its range, and the reasons. */
+export const markSchema = z
+  .object({
+    scores: z.array(z.number().int()).length(RUBRIC.length),
+    comment: z.string().trim().min(20, "নম্বরের কারণ লিখুন — অন্তত ২০ অক্ষর, শিক্ষার্থী এটা পড়বে।").max(1000),
+  })
+  .superRefine((v, ctx) => {
+    v.scores.forEach((n, i) => {
+      if (n < 0 || n > RUBRIC[i].max) ctx.addIssue({ code: "custom", path: ["scores", i], message: `০ থেকে ${bnDigits(RUBRIC[i].max)}` });
+    });
+  });
+export type MarkInput = z.infer<typeof markSchema>;

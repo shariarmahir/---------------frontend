@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { certificateId, finalResult, interviewSlots, placement, progressOf, teacherPoints, teacherTier } from "./academy.ts";
+import { RUBRIC, attendanceOf, certificateId, draftCode, finalResult, interviewSlots, latestAdmission, materialKindOf, normalizeAcademy, payoutOf, placement, progressOf, rubricTotal, sizeParts, teacherPoints, teacherTier } from "./academy.ts";
 
 test("admission places everyone; experience with proof fast-tracks", () => {
   assert.deepEqual(placement({ testPct: 20, years: 0, hasProof: false }), { level: "foundation", fastTrack: false });
@@ -57,4 +57,40 @@ test("interview slots: 10 am and 3 pm Dhaka, never on Friday", () => {
 
 test("certificate IDs are stable and readable", () => {
   assert.equal(certificateId(2026, "MTR-101", 7), "KTA-2026-MTR101-0007");
+});
+
+test("saved academies from before departments carry over", () => {
+  const old = { admission: { dept: "motor", at: "2026-09-25T00:00:00Z" }, enrolled: { "MTR-201": { at: "", attended: [], homework: {} } } };
+  const a = normalizeAcademy(old);
+  assert.deepEqual(Object.keys(a.admissions), ["motor"]);
+  assert.equal("admission" in a, false);
+  assert.deepEqual(Object.keys(a.enrolled), ["MTR-201"]);
+  assert.deepEqual([a.drafts, a.materials, a.attendance, a.marks], [[], {}, {}, {}]);
+  assert.deepEqual(normalizeAcademy(null).admissions, {});
+  assert.deepEqual(normalizeAcademy("junk").complaints, []);
+  const two = { motor: { dept: "motor", at: "2026-09-01" }, kitchen: { dept: "kitchen", at: "2026-09-20" } };
+  assert.equal(latestAdmission(two as never)?.dept, "kitchen");
+  assert.equal(latestAdmission({}), undefined);
+});
+
+test("teaching: materials by file name, sizes, attendance and escrow release", () => {
+  assert.deepEqual(["class1.MP4", "notes.pdf", "plan.xlsx", "slides.pptx", "data.json", "noext"].map(materialKindOf), ["video", "pdf", "sheet", "doc", "data", "data"]);
+  assert.deepEqual(sizeParts(900), { value: 1, unit: "কেবি" });
+  assert.deepEqual(sizeParts(1_258_291), { value: 1.2, unit: "এমবি" });
+  const held = { 1: ["a", "b"], 2: ["a"], 3: ["a", "b"] };
+  assert.deepEqual(attendanceOf(held, "b"), { present: 2, held: 3, rate: 2 / 3 });
+  assert.equal(attendanceOf({}, "b").rate, 1, "nothing held yet is not an absence");
+  const course = { fee: 3000, enrolled: 10, lessons: [1, 2, 3, 4].map((week) => ({ week, title: "", mode: "live" as const })) };
+  assert.deepEqual(payoutOf(course, 1), { earn: 28500, released: 7125, waiting: 21375 });
+  assert.equal(payoutOf(course, 9).released, 28500, "never more than all of it");
+  assert.equal(payoutOf({ ...course, fee: 0 }, 2).earn, 0);
+  assert.equal(draftCode("web-ai", ["WEB-101"]), "WEB-102");
+  assert.equal(draftCode("৯৯", []), "NEW-101");
+});
+
+test("panel rubric adds to 100 and clamps each line", () => {
+  assert.equal(RUBRIC.reduce((n, r) => n + r.max, 0), 100);
+  assert.equal(rubricTotal([30, 25, 20, 15, 10]), 100);
+  assert.equal(rubricTotal([40, -5, 10.4, 15]), 30 + 0 + 10 + 15);
+  assert.equal(rubricTotal([]), 0);
 });

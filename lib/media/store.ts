@@ -10,7 +10,7 @@ import type { Marks, Pin } from "./class-pins";
 import type { Classroom } from "./classroom";
 import type { TutorMsg } from "./tutor";
 import type { LabRoom } from "./lab";
-import { emptyAcademy, type AcademyState } from "./academy";
+import { emptyAcademy, normalizeAcademy, type AcademyState } from "./academy";
 import type { ResearchProject } from "./research-project";
 import type { ResearchEntry } from "./showcase";
 import type { CrimePost } from "./crime";
@@ -255,7 +255,7 @@ function load() {
     const raw = window.localStorage.getItem(scope);
     if (raw) {
       const saved = JSON.parse(raw) as Partial<MediaState>;
-      state = { ...initialState, ...saved, privacy: { ...defaultPrivacy, ...saved.privacy } };
+      state = { ...initialState, ...saved, privacy: { ...defaultPrivacy, ...saved.privacy }, academy: normalizeAcademy(saved.academy) };
     }
   } catch {
     // Blocked or corrupt storage: keep the empty state.
