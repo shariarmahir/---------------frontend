@@ -11,9 +11,9 @@ import { personOrThrow } from "@/data/media/users";
 import { LEVELS, MATERIAL_KINDS, durationText, type Department, type Level } from "@/lib/media/academy";
 import { cn } from "@/lib/utils";
 import { mediaButton } from "../../ui/button-styles";
-import { Compact, DateText, Num, useFormat } from "../../ui/numerals";
+import { Compact, DateText, Num, Taka, useFormat } from "../../ui/numerals";
 import { PersonAvatar } from "../../ui/person";
-import { AdmissionTest } from "../admission-test";
+import { CheckoutButton } from "../cart";
 import { Reveal } from "../home/motion-bits";
 import { RoleCard } from "../departments/role-card";
 import { watchHref } from "../videos/video-card";
@@ -43,24 +43,24 @@ export function Purpose({ levels, onLevel }: { levels: Level[]; onLevel: (l: Lev
   const hint: Record<Purpose, React.ReactNode> = {
     start: (
       <>
-        “{LEVELS[lowest]}” স্তরের কোর্স ওপরে বেছে রাখলাম। আগে{" "}
+        “{LEVELS[lowest]}” স্তরের কোর্স ওপরে বেছে রাখলাম। পছন্দ হলে{" "}
         <a href="#join" className="font-semibold text-m-blue hover:underline">
-          ভর্তি পরীক্ষা
+          এখান থেকে ভর্তি হোন
         </a>{" "}
-        দিন — দশ মিনিট, বিনামূল্যে।
+        — এক ফর্মেই।
       </>
     ),
-    change: <>অন্য কাজ থেকে আসছেন? অভিজ্ঞতার প্রমাণ থাকলে ভর্তি পরীক্ষায় উপরের স্তরে বসতে পারেন। আপাতত “{LEVELS[lowest]}” দেখাচ্ছি।</>,
+    change: <>অন্য কাজ থেকে আসছেন? কাজ জানা থাকলে উপরের স্তরের কোর্সেও সরাসরি ভর্তি হতে পারেন। আপাতত “{LEVELS[lowest]}” দেখাচ্ছি।</>,
     grow:
       levels.length > 1 ? (
         <>কাজ জানেন, আরও এগোতে চান — “{LEVELS[highest]}” স্তরের কোর্স ওপরে বেছে রাখলাম।</>
       ) : (
         <>
-          এই বিভাগে এখন শুধু “{LEVELS[highest]}” স্তরের কোর্স আছে। কাজ জানলে{" "}
+          এই বিভাগে এখন শুধু “{LEVELS[highest]}” স্তরের কোর্স আছে —{" "}
           <a href="#join" className="font-semibold text-m-blue hover:underline">
-            ভর্তি পরীক্ষায়
-          </a>{" "}
-          অভিজ্ঞতার প্রমাণ দিন — তিন বছরের বেশি কাজ আর প্রমাণ থাকলে সরাসরি ফাইনালে বসা যায়।
+            এখান থেকে ভর্তি হোন
+          </a>
+          ।
         </>
       ),
     hobby: (
@@ -118,21 +118,23 @@ export function Purpose({ levels, onLevel }: { levels: Level[]; onLevel: (l: Lev
 /* ── Join ──────────────────────────────────────────────────────────── */
 
 const JOIN_STEPS = [
-  { title: "আপনার কথা ও চার প্রশ্ন", body: "কেন শিখতে চান, আগে কত বছর করেছেন — তারপর চারটি সহজ প্রশ্ন। দশ মিনিট, বিনামূল্যে।" },
-  { title: "স্তর মিলিয়ে কোর্স", body: "শুরু থেকে, মাঝারি না অভিজ্ঞ — সেই অনুযায়ী কোর্স বাছুন; ফি শুধু কোর্সের।" },
+  { title: "কোর্স বাছুন", body: "শুরু থেকে, মাঝারি না অভিজ্ঞ — নিজের স্তরের কোর্সে “ভর্তি হোন” চাপুন।" },
+  { title: "চেকআউটে নিশ্চিত করুন", body: "নাম, মোবাইল, জেলা আর পেমেন্ট — এক ফর্মেই। বিভাগে যোগও এখানেই হয়ে যায়।" },
   { title: "প্রথম ক্লাস অনলাইনে", body: "পরিচয় হয়ে গেলে লাইভ আর হাতে-কলমের ক্লাস; শেষে প্রজেক্ট আর প্যানেল।" },
 ];
 
+/** How to join: three steps, then the department's courses, each straight to the checkout. */
 export function Join({ dept }: { dept: Department }) {
+  const list = coursesOf(dept.id);
   return (
     <section id="join" aria-labelledby="join-title" className="scroll-mt-20">
       <h2 id="join-title" className="text-xl font-bold text-m-ink sm:text-2xl">
-        ৩ ধাপে যোগ দিন
+        ৩ ধাপে ভর্তি হোন
       </h2>
       <ol className="mt-4 mb-6 grid gap-3 sm:grid-cols-3">
         {JOIN_STEPS.map((s, i) => (
           <li key={s.title} className="flex gap-3">
-            <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-lg bg-m-yellow text-sm font-bold text-m-ink">
+            <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-lg bg-m-blue text-sm font-bold text-m-on">
               <Num value={i + 1} />
             </span>
             <span>
@@ -142,7 +144,27 @@ export function Join({ dept }: { dept: Department }) {
           </li>
         ))}
       </ol>
-      <AdmissionTest lockDept={dept.id} />
+      <ul className="divide-y divide-m-ink/8 overflow-hidden rounded-2xl bg-white shadow-m-tile ring-1 ring-m-ink/10">
+        {list.map((c) => (
+          <li key={c.id} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-4">
+            <span className="relative hidden size-16 shrink-0 overflow-hidden rounded-xl bg-m-ground sm:block">
+              <Image src={c.image} alt="" fill sizes="64px" className="object-cover" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <Link href={`/media/academy/course/${c.id}`} className="font-bold text-m-ink hover:text-m-blue">
+                {c.title}
+              </Link>
+              <p className="mt-0.5 text-xs text-m-ink/65">
+                {LEVELS[c.level]} · ব্যাচ শুরু <DateText iso={c.starts} />
+              </p>
+            </div>
+            <div className="flex items-center justify-between gap-4 sm:justify-end">
+              <span className="font-bold text-m-ink tabular-nums">{c.fee === 0 ? <span className="text-m-green">বিনা ফি</span> : <Taka amount={c.fee} />}</span>
+              <CheckoutButton course={c} />
+            </div>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }

@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Award, CalendarCheck, Check, ChevronDown, Lock } from "lucide-react";
+import { Award, CalendarCheck, Check, ChevronDown, DoorOpen, Lock, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 import { useRequireAccount } from "@/components/auth/use-require-account";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -21,7 +22,8 @@ import { mediaButton } from "../ui/button-styles";
 import { choiceClass } from "../ui/field-styles";
 import { DateText, Num, useFormat } from "../ui/numerals";
 import { PersonAvatar } from "../ui/person";
-import { PayDialog } from "./pay-dialog";
+import { addToCart, useCart } from "./cart";
+import { defaultBatch, joinable, useCourseBatches } from "./classroom/use-batches";
 import { ModeTag } from "./parts";
 import { updateAcademy, useAcademy } from "./use-academy";
 
@@ -34,9 +36,9 @@ function updateEnrollment(code: string, fn: (e: Enrollment) => Enrollment) {
 /*
  * The learner's side of a course, in pieces the course page places where a
  * course site would: the enrol button in the hero, the progress card and the
- * weeks in the curriculum, the final project after them. The order is the
- * same as ever — join the department first, the fee into escrow, then week
- * by week attendance and homework, the project and a panel slot.
+ * weeks in the curriculum, the final project after them. The order: the
+ * checkout (which joins the department too) with the fee into escrow, then
+ * week by week attendance and homework, the project and a panel slot.
  */
 
 /** Where the viewer stands with this course. */
@@ -51,51 +53,75 @@ export function useCourseState(course: Course) {
 
 /** The hero's big two-line button: what to do next, and when the batch starts. */
 export function EnrollCta({ course }: { course: Course }) {
-  const { hydrated, admitted, enrollment } = useCourseState(course);
+  const { hydrated, enrollment } = useCourseState(course);
   const ensure = useRequireAccount();
-  const [paying, setPaying] = useState(false);
-  const full = course.enrolled >= course.seats;
+  const router = useRouter();
+  const inCart = useCart().includes(course.id);
+  const batches = useCourseBatches(course.id);
+  const next = defaultBatch(batches);
+  const full = !next;
   const big = "inline-flex min-h-14 flex-col items-center justify-center rounded-xl px-8 py-2 text-center leading-tight";
   const second = "mt-0.5 text-xs font-semibold opacity-80";
-
-  function join() {
-    updateAcademy((a) => ({ ...a, enrolled: { ...a.enrolled, [course.id]: { at: new Date().toISOString(), attended: [], homework: {} } } }));
-    setPaying(false);
-    toast.success("কোর্সে ভর্তি হলেন", { description: "প্রথম সপ্তাহ থেকে হাজিরা আর হোমওয়ার্ক গোনা শুরু।" });
-  }
 
   if (!hydrated) return <Skeleton className="h-14 w-64 rounded-xl bg-m-ink/8" />;
 
   if (enrollment)
     return (
-      <a href="#curriculum" className={mediaButton({ variant: "green", className: big })}>
-        <span className="text-base">ভর্তি আছেন — অগ্রগতি দেখুন</span>
+      <Link href={`/media/academy/classroom/${encodeURIComponent(enrollment.batch ?? course.id)}`} className={mediaButton({ className: big })}>
+        <span className="inline-flex items-center gap-2 text-base">
+          <DoorOpen className="size-5" aria-hidden /> ক্লাসরুমে ঢুকুন
+        </span>
         <span className={second}>
           ভর্তি <DateText iso={enrollment.at} />
         </span>
-      </a>
-    );
-
-  if (!admitted)
-    return (
-      <Link href={`/media/academy/dept/${course.dept}#join`} className={mediaButton({ className: big })}>
-        <span className="text-base">আগে বিভাগে যোগ দিন — বিনামূল্যে</span>
-        <span className={second}>তারপর এই কোর্সে ভর্তি</span>
       </Link>
     );
 
-  if (full) return <p className="max-w-sm rounded-xl bg-m-amber-soft px-4 py-3 text-sm text-m-ink/85">এই ব্যাচের সব আসন পূর্ণ। পরের ব্যাচের তারিখ শিক্ষক বিভাগের পাতায় জানাবেন।</p>;
+  if (full) return <p className="max-w-sm rounded-xl bg-m-amber-soft px-4 py-3 text-sm text-m-ink/85">সব ব্যাচের আসন পূর্ণ। একাডেমি নতুন ব্যাচ খুললে এখানেই ভর্তি খুলবে।</p>;
 
+  // Joining — free or paid, new department or not — goes through the cart and the one checkout form.
   return (
-    <>
-      <button type="button" onClick={() => ensure("কোর্সে ভর্তি হতে") && (course.fee === 0 ? join() : setPaying(true))} className={mediaButton({ className: big })}>
+    <div className="flex flex-wrap items-center gap-3">
+      <button
+        type="button"
+        onClick={() => {
+          if (!ensure("কোর্সে ভর্তি হতে")) return;
+          addToCart(course.id);
+          router.push(`/media/academy/checkout?course=${encodeURIComponent(course.id)}`);
+        }}
+        className={mediaButton({ className: big })}
+      >
         <span className="text-base">{course.fee === 0 ? "বিনা ফিতে ভর্তি হোন" : "কোর্সে ভর্তি হোন"}</span>
         <span className={second}>
-          ব্যাচ শুরু <DateText iso={course.starts} />
+          {batches.filter((b) => joinable(b)).length > 1 ? (
+            <>
+              <Num value={batches.filter((b) => joinable(b)).length} />টি ব্যাচ · পরেরটা শুরু <DateText iso={next.starts} />
+            </>
+          ) : (
+            <>
+              ব্যাচ শুরু <DateText iso={next.starts} />
+            </>
+          )}
         </span>
       </button>
-      {course.fee > 0 && <PayDialog open={paying} onOpenChange={setPaying} title={course.title} label={`কোর্স ${course.id}: ${course.title}`} price={course.fee} onPaid={join} />}
-    </>
+      {inCart ? (
+        <Link href="/media/academy/checkout" className={mediaButton({ variant: "outline", size: "lg", className: "h-14" })}>
+          <ShoppingCart aria-hidden /> কার্টে আছে — চেকআউট
+        </Link>
+      ) : (
+        <button
+          type="button"
+          onClick={() => {
+            if (!ensure("কার্টে রাখতে")) return;
+            addToCart(course.id);
+            toast.success("কার্টে রাখা হলো", { description: "উপরের কার্ট থেকে যখন খুশি ভর্তি সম্পন্ন করুন।" });
+          }}
+          className={mediaButton({ variant: "outline", size: "lg", className: "h-14" })}
+        >
+          <ShoppingCart aria-hidden /> কার্টে রাখুন
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -189,7 +215,7 @@ export function CourseWeeks({ course }: { course: Course }) {
                   <span className="hidden text-sm font-semibold text-m-blue sm:inline">বিস্তারিত</span>
                   {chevron}
                 </summary>
-                <div className="space-y-2 border-t border-m-ink/8 px-4 pt-4 pb-5 sm:px-5 sm:pl-[5.75rem]">
+                <div className="space-y-2 border-t border-m-ink/8 px-4 pt-4 pb-5 sm:px-5 sm:pl-23">
                   {l.by && (
                     <p className="flex items-center gap-1.5 text-sm text-m-ink/80">
                       <PersonAvatar person={personOrThrow(l.by)} size="xs" /> পড়াবেন {personOrThrow(l.by).nameBn}
@@ -224,7 +250,7 @@ export function CourseWeeks({ course }: { course: Course }) {
               <span className="hidden text-sm font-semibold text-m-blue sm:inline">বিস্তারিত</span>
               {chevron}
             </summary>
-            <div className="border-t border-m-ink/8 px-4 pt-4 pb-5 sm:px-5 sm:pl-[5.75rem]">
+            <div className="border-t border-m-ink/8 px-4 pt-4 pb-5 sm:px-5 sm:pl-23">
               <p className="text-sm leading-relaxed text-m-ink/85">{course.final}</p>
               <p className="mt-2 text-sm text-m-ink/70">প্যানেলে থাকেন আপনার শিক্ষক আর একজন বহিরাগত পেশাদার; দুজন আলাদা নম্বর দেন।</p>
             </div>

@@ -345,6 +345,28 @@ export const projectSchema = z.object({
 });
 export type ProjectInput = z.infer<typeof projectSchema>;
 
+/** A Bangladeshi mobile number, Bangla or Latin digits, with or without +880. */
+const BD_MOBILE = /^01[3-9]\d{8}$/;
+const toLocalMobile = (raw: string) => {
+  const v = normalizeDigits(raw).replace(/[().]/g, "");
+  return v.startsWith("+880") ? `0${v.slice(4)}` : v.startsWith("880") ? `0${v.slice(3)}` : v;
+};
+
+/** The joining form at checkout: who is joining, how to reach them, and the rules agreed to. */
+export const joinSchema = z.object({
+  name: z.string().trim().min(3, "পুরো নাম লিখুন — অন্তত ৩ অক্ষর।").max(60, "৬০ অক্ষরের মধ্যে রাখুন।"),
+  phone: z
+    .string()
+    .trim()
+    .transform(toLocalMobile)
+    .refine((v) => BD_MOBILE.test(v), "১১ অঙ্কের মোবাইল নম্বর দিন, যেমন ০১৭১২৩৪৫৬৭৮।"),
+  district: z.string().trim().min(2, "কোন জেলা থেকে শিখবেন, লিখুন।").max(40, "৪০ অক্ষরের মধ্যে রাখুন।"),
+  goal: z.string().trim().max(200, "২০০ অক্ষরের মধ্যে রাখুন।").optional(),
+  agree: z.literal(true, { error: "নিয়মগুলো পড়ে টিক দিন।" }),
+});
+export type JoinInput = z.input<typeof joinSchema>;
+export type JoinOutput = z.output<typeof joinSchema>;
+
 export const complaintSchema = z.object({
   kind: z.enum(["absent", "quality", "money", "behaviour", "safety"], { error: "অভিযোগের ধরন বেছে নিন।" }),
   course: z.string(),

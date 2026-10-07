@@ -14,6 +14,7 @@ import {
   handleList,
   hireSchema,
   identitySchema,
+  joinSchema,
   postSchema,
   projectSchema,
   profileSchema,
@@ -227,4 +228,16 @@ test("a class video needs an https link and runs forty minutes; a short is free 
   assert.deepEqual(errPaths(videoSchema.safeParse({ ...video, href: "http://youtu.be/dQw4w9WgXcQ" })), ["href"]);
   assert.deepEqual(errPaths(videoSchema.safeParse({ ...video, short: true, length: 75, access: "paid" })), ["length", "access"]);
   assert.deepEqual(errPaths(videoSchema.safeParse({ ...video, length: 39 })), ["length"], "every online class is forty minutes");
+});
+
+test("join: name, a Bangladeshi mobile in either digits, a district, and the rules agreed", () => {
+  const ok = { name: "রিয়াদ হাসান", phone: "০১৭১২-৩৪৫৬৭৮", district: "শেরপুর", agree: true as const };
+  const r = joinSchema.safeParse(ok);
+  assert.ok(r.success);
+  assert.equal(r.data!.phone, "01712345678");
+  assert.equal(joinSchema.safeParse({ ...ok, phone: "+8801812345678" }).data?.phone, "01812345678");
+  assert.deepEqual(errPaths(joinSchema.safeParse({ ...ok, phone: "01212345678" })), ["phone"]);
+  assert.deepEqual(errPaths(joinSchema.safeParse({ ...ok, name: "রি" })), ["name"]);
+  assert.deepEqual(errPaths(joinSchema.safeParse({ ...ok, agree: false })), ["agree"]);
+  assert.deepEqual(errPaths(joinSchema.safeParse({ ...ok, goal: "ক".repeat(201) })), ["goal"]);
 });

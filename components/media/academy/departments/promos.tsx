@@ -147,7 +147,7 @@ export function TeacherPills() {
 /* ── Three doors ───────────────────────────────────────────────────── */
 
 const DOORS = [
-  { href: "/media/academy/admission", label: "নতুন পেশা শুরু করুন", Icon: BulbIcon },
+  { href: "/media/academy/departments#departments", label: "নতুন পেশা শুরু করুন", Icon: BulbIcon },
   { href: "/media/academy/teach?dept=new", label: "দল নিয়ে বিভাগ খুলুন", Icon: PresenterIcon },
   { href: "/media/academy/exam", label: "ফাইনাল দিয়ে সার্টিফিকেট", Icon: CertIcon },
 ];

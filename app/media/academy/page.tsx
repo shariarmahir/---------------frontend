@@ -84,8 +84,8 @@ export default function AcademyPage() {
                 >
                   বিনামূল্যে প্রথম ক্লাস দেখুন
                 </Link>
-                <Link href="/media/academy/admission" className="text-[15px] font-bold text-white underline-offset-4 hover:underline">
-                  অথবা চার প্রশ্নের ভর্তি পরীক্ষা দিন
+                <Link href="/media/academy/departments" className="text-[15px] font-bold text-white underline-offset-4 hover:underline">
+                  অথবা কোর্স বেছে ভর্তি হোন
                 </Link>
               </div>
             </div>
@@ -109,10 +109,10 @@ export default function AcademyPage() {
           title="কোথা থেকে শুরু করবেন জানুন — অল্প অল্প করে এগোন"
           body={
             <>
-              চার প্রশ্নের ভর্তি পরীক্ষা ঠিক করে দেয় কোন স্তরে বসবেন। তারপর <Num value={5} /> সপ্তাহ অনলাইনে <Num value={CLASS_MINUTES} /> মিনিটের ক্লাস, শেষ <Num value={5} /> দিন প্রজেক্ট আর প্যানেল — মোট <Num value={COURSE_DAYS} /> দিন।
+              শুরু থেকে, মাঝারি না অভিজ্ঞ — নিজের স্তরের কোর্স বেছে এক ফর্মেই ভর্তি। তারপর <Num value={5} /> সপ্তাহ অনলাইনে <Num value={CLASS_MINUTES} /> মিনিটের ক্লাস, শেষ <Num value={5} /> দিন প্রজেক্ট আর প্যানেল — মোট <Num value={COURSE_DAYS} /> দিন।
             </>
           }
-          link={{ href: "/media/academy/admission", label: "ভর্তি পরীক্ষা দিন" }}
+          link={{ href: "/media/academy/departments", label: "কোর্স বেছে নিন" }}
           art={<PathArt />}
         />
         <FeatureRow

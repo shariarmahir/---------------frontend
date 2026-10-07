@@ -41,8 +41,8 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
     title: "শেখার সহায়িকা",
     links: [
       { href: "/media/academy/videos", label: "বিনামূল্যের ক্লাস ভিডিও" },
-      { href: "/media/academy/teachers", label: "শিক্ষকদের চ্যানেল" },
-      { href: "/media/academy/admission", label: "ভর্তি পরীক্ষা" },
+      { href: "/media/academy/teachers", label: "একাডেমি ও শিক্ষক" },
+      { href: "/media/academy/checkout", label: "ভর্তি ও চেকআউট" },
       { href: "/media/academy/exam", label: "ফাইনাল ও প্রকাশ্য বোর্ড" },
       { href: "/media/academy/teach", label: "শিক্ষক হিসেবে আবেদন" },
       { href: "/media/academy/panel", label: "প্যানেল মার্কিং" },

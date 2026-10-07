@@ -74,7 +74,7 @@ export function DepartmentsView() {
       <div className="mx-auto max-w-7xl space-y-14 pt-8 pb-16">
         <Notice />
         <HeroDeck />
-        <ChipBand id="by-level" tone="green" title="যে স্তরেই থাকুন, এখান থেকে শুরু" body="একদম নতুন, কিছুটা জানেন, বা অভিজ্ঞ — ভর্তি পরীক্ষা ঠিক করে দেয় কোন স্তরে বসবেন।" cta={{ href: "/media/academy/admission", label: "ভর্তি পরীক্ষা দিন" }} tabs={levelTabs} />
+        <ChipBand id="by-level" tone="green" title="যে স্তরেই থাকুন, এখান থেকে শুরু" body="একদম নতুন, কিছুটা জানেন, বা অভিজ্ঞ — নিজের স্তরের কোর্স বেছে এক ফর্মেই ভর্তি হোন।" cta={{ href: "/media/academy/departments#departments", label: "কোর্স বেছে নিন" }} tabs={levelTabs} />
         <Promos />
         <TeacherPills />
         <Doors />

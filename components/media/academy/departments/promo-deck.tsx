@@ -94,8 +94,8 @@ function FortySlide() {
         <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-m-ink/85">
           <Num value={CLASS_WEEKS} /> সপ্তাহ <Num value={CLASS_MINUTES} /> মিনিটের ক্লাস, তারপর <Num value={FINAL_DAYS} /> দিন প্রজেক্ট আর প্যানেল ইন্টারভিউ।
         </p>
-        <Link href="/media/academy/admission" className={mediaButton({ variant: "tile", className: "group/btn mt-5 self-start" })}>
-          ভর্তি পরীক্ষা দিন <ArrowRight className="transition-transform group-hover/btn:translate-x-1 motion-reduce:transition-none" aria-hidden />
+        <Link href="/media/academy/departments#departments" className={mediaButton({ variant: "tile", className: "group/btn mt-5 self-start" })}>
+          কোর্স বেছে নিন <ArrowRight className="transition-transform group-hover/btn:translate-x-1 motion-reduce:transition-none" aria-hidden />
         </Link>
       </div>
       <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[44%] sm:block" aria-hidden>

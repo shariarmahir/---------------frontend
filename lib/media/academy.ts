@@ -1,4 +1,5 @@
 import { computeFees } from "./fees.ts";
+import type { Batch, RoomMessage } from "./batch.ts";
 import { bnDigits } from "./format.ts";
 
 /**
@@ -285,6 +286,19 @@ export interface Enrollment {
   project?: { title: string; link: string; summary: string; at: string };
   /** The booked panel interview. */
   interview?: string;
+  /** What the learner confirmed at checkout. */
+  joining?: JoinDetails;
+  /** The batch — and so the classroom — they joined; before batches, the course's first. */
+  batch?: string;
+}
+
+/** The joining form a learner confirms at checkout, kept with the enrolment for the teacher. */
+export interface JoinDetails {
+  name: string;
+  phone: string;
+  district: string;
+  /** Why they are joining, in a line; optional. */
+  goal?: string;
 }
 
 export interface Progress {
@@ -435,6 +449,12 @@ export interface AcademyState {
   follows: Record<string, Bell>;
   /** The team photo and logo an academy put up, by department id (small data URLs). */
   academyMedia: Record<string, AcademyMedia>;
+  /** Course codes waiting at checkout, in the order they were added. */
+  cart: string[];
+  /** Classrooms (batches) the viewer's academy opened on this device. */
+  batches: Batch[];
+  /** What the viewer wrote in batch chats, by batch id, oldest first. */
+  roomChat: Record<string, RoomMessage[]>;
 }
 
 export interface AcademyMedia {
@@ -442,7 +462,7 @@ export interface AcademyMedia {
   logo?: string;
 }
 
-export const emptyAcademy: AcademyState = { admissions: {}, enrolled: {}, application: null, complaints: [], workshops: {}, drafts: [], materials: {}, attendance: {}, marks: {}, videos: [], votes: {}, ratings: {}, comments: [], follows: {}, academyMedia: {} };
+export const emptyAcademy: AcademyState = { admissions: {}, enrolled: {}, application: null, complaints: [], workshops: {}, drafts: [], materials: {}, attendance: {}, marks: {}, videos: [], votes: {}, ratings: {}, comments: [], follows: {}, academyMedia: {}, cart: [], batches: [], roomChat: {} };
 
 /**
  * Saved state from any earlier version, made whole: missing parts start
@@ -461,6 +481,26 @@ export function normalizeAcademy(raw: unknown): AcademyState {
   // Courses built before the academy rules lack the papers; they show as missing, not crash.
   const drafts = (rest.drafts ?? []).map((d) => ({ ...d, starts: d.starts ?? "", syllabus: d.syllabus ?? { kind: "pdf" as const, title: "", size: "" }, calendar: d.calendar ?? { kind: "sheet" as const, title: "", size: "" }, promo: d.promo ?? { seconds: 0 } }));
   return { ...emptyAcademy, ...rest, admissions, application, drafts };
+}
+
+/**
+ * The checkout's one step: every course enrolled with the learner's joining
+ * details, its department joined on the way if it is new (at the course's
+ * level, no test), and those courses taken out of the cart. A department
+ * joined earlier keeps its admission as it was.
+ */
+export function checkoutEnrol(state: AcademyState, courses: (Pick<Course, "id" | "dept" | "level"> & { batch?: string })[], joining: JoinDetails, at: string): AcademyState {
+  const ids = courses.map((c) => c.id);
+  const admissions = { ...state.admissions };
+  for (const c of courses) {
+    admissions[c.dept] ??= { dept: c.dept, goal: joining.goal ?? "", years: 0, proof: "", score: 0, level: c.level, fastTrack: false, at };
+  }
+  return {
+    ...state,
+    admissions,
+    enrolled: { ...state.enrolled, ...Object.fromEntries(courses.map((c) => [c.id, { at, attended: [], homework: {}, joining, batch: c.batch ?? c.id }])) },
+    cart: (state.cart ?? []).filter((x) => !ids.includes(x)),
+  };
 }
 
 /** The most recent department joined. */

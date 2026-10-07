@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { BATCH_MAX, COURSE_DAYS, RUBRIC, attendanceOf, courseIssues, courseTimeline, deptIssues, promoFits, canWatch, certificateId, draftCode, durationText, finalResult, freeClassDone, interviewSlots, latestAdmission, materialKindOf, normalizeAcademy, payoutOf, placement, progressOf, ratingWith, rubricTotal, starSpread, threadsOf, sizeParts, sortVideos, teacherPoints, teacherTier, weekOf, youtubeEmbed, type ClassVideo, type VideoComment } from "./academy.ts";
+import { BATCH_MAX, COURSE_DAYS, RUBRIC, attendanceOf, checkoutEnrol, courseIssues, courseTimeline, deptIssues, promoFits, canWatch, certificateId, draftCode, durationText, finalResult, freeClassDone, interviewSlots, latestAdmission, materialKindOf, normalizeAcademy, payoutOf, placement, progressOf, ratingWith, rubricTotal, starSpread, threadsOf, sizeParts, sortVideos, teacherPoints, teacherTier, weekOf, youtubeEmbed, type ClassVideo, type VideoComment } from "./academy.ts";
 
 test("admission places everyone; experience with proof fast-tracks", () => {
   assert.deepEqual(placement({ testPct: 20, years: 0, hasProof: false }), { level: "foundation", fastTrack: false });
@@ -71,6 +71,24 @@ test("saved academies from before departments carry over", () => {
   const two = { motor: { dept: "motor", at: "2026-09-01" }, kitchen: { dept: "kitchen", at: "2026-09-20" } };
   assert.equal(latestAdmission(two as never)?.dept, "kitchen");
   assert.equal(latestAdmission({}), undefined);
+});
+
+test("checkout enrols every course, joins its department if new, and empties those from the cart", () => {
+  const kept = { dept: "kitchen", goal: "দোকান", years: 4, proof: "https://x", score: 90, level: "advanced" as const, fastTrack: true, at: "2026-09-01" };
+  const before = { ...normalizeAcademy(null), admissions: { kitchen: kept }, cart: ["CHF-102", "WEB-101", "MTR-101"] };
+  const courses = [
+    { id: "CHF-102", dept: "kitchen", level: "intermediate" as const },
+    { id: "WEB-101", dept: "web", level: "foundation" as const, batch: "WEB-101-B2" },
+  ];
+  const joining = { name: "মাহির", phone: "01712345678", district: "শেরপুর", goal: "ওয়েবসাইট বানাতে" };
+  const a = checkoutEnrol(before, courses, joining, "2026-10-08T10:00:00.000Z");
+  assert.deepEqual(Object.keys(a.enrolled).sort(), ["CHF-102", "WEB-101"]);
+  assert.deepEqual(a.enrolled["WEB-101"], { at: "2026-10-08T10:00:00.000Z", attended: [], homework: {}, joining, batch: "WEB-101-B2" });
+  assert.equal(a.enrolled["CHF-102"].batch, "CHF-102", "no batch chosen means the course's first batch, which carries its code");
+  assert.equal(a.admissions.kitchen, kept, "an earlier admission, fast track and all, stays as it was");
+  assert.deepEqual(a.admissions.web, { dept: "web", goal: "ওয়েবসাইট বানাতে", years: 0, proof: "", score: 0, level: "foundation", fastTrack: false, at: "2026-10-08T10:00:00.000Z" });
+  assert.deepEqual(a.cart, ["MTR-101"]);
+  assert.deepEqual(before.cart, ["CHF-102", "WEB-101", "MTR-101"], "the old state is not touched");
 });
 
 test("teaching: materials by file name, sizes, attendance and escrow release", () => {

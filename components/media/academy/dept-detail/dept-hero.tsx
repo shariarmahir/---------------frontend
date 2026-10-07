@@ -106,7 +106,7 @@ export function DeptHero({ dept }: { dept: Department }) {
 
             <motion.div {...rise(0.28)} className="mt-7 flex flex-wrap gap-3">
               <a href="#join" className={mediaButton()}>
-                যোগ দিন — বিনামূল্যে
+                ভর্তি হোন
               </a>
               <a href="#all-courses" className={mediaButton({ variant: "outline", className: "bg-white/65" })}>
                 কোর্স দেখুন

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Award, Building2, ClipboardCheck, House, LogOut, MonitorPlay, Presentation, UserPlus, UsersRound, type LucideIcon } from "lucide-react";
+import { Award, Building2, ClipboardCheck, House, Landmark, LogOut, MonitorPlay, Presentation, UserPlus, type LucideIcon } from "lucide-react";
 import { classVideos } from "@/data/media/academy";
 import { DEMO_NOW } from "@/data/media/clock";
 import { personOrThrow } from "@/data/media/users";
@@ -31,8 +31,8 @@ interface Item {
 const LEARN: Item[] = [
   { href: "/media/academy", label: "হোম", Icon: House },
   { href: "/media/academy/videos", label: "ক্লাস ভিডিও", short: "ভিডিও", Icon: MonitorPlay },
-  { href: "/media/academy/departments", label: "বিভাগ", short: "বিভাগ", Icon: Building2, also: ["/media/academy/dept", "/media/academy/course", "/media/academy/admission"] },
-  { href: "/media/academy/teachers", label: "শিক্ষক", Icon: UsersRound },
+  { href: "/media/academy/departments", label: "বিভাগ", short: "বিভাগ", Icon: Building2, also: ["/media/academy/dept", "/media/academy/course", "/media/academy/checkout"] },
+  { href: "/media/academy/teachers", label: "একাডেমি", Icon: Landmark },
   { href: "/media/academy/exam", label: "ফাইনাল ও বোর্ড", short: "ফাইনাল", Icon: Award },
 ];
 const TEACH: Item[] = [

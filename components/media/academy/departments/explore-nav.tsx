@@ -12,6 +12,7 @@ import { useAuth } from "@/lib/auth/client";
 import { SCHOOLS, type School } from "@/lib/media/academy";
 import { useHydrated } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
+import { CartButton } from "../cart";
 import { useAcademy } from "../use-academy";
 
 const SCHOOL_LIST = (Object.keys(SCHOOLS) as School[]).filter((s) => departments.some((d) => d.school === s));
@@ -212,6 +213,7 @@ export function ExploreNav({ onSchool, onAllDepts, className }: { onSchool?: (s:
               </a>
             )}
           </span>
+          <CartButton />
           <Link href="/media/academy/videos" className="hidden size-10 shrink-0 place-items-center rounded-full text-m-ink/85 hover:bg-m-ink/6 hover:text-m-ink sm:grid">
             <Bell className="size-5" aria-hidden />
             <span className="sr-only">নতুন ক্লাস</span>
@@ -312,9 +314,9 @@ export function ExploreNav({ onSchool, onAllDepts, className }: { onSchool?: (s:
                       </li>
                     ))}
                   </ul>
-                  <h2 className={cn(head, "mt-7")}>ভর্তি পরীক্ষার প্রস্তুতি</h2>
-                  <Link href="/media/academy/admission" onClick={() => setOpen(false)} className={all}>
-                    সব দেখুন
+                  <h2 className={cn(head, "mt-7")}>ভর্তির কার্ট</h2>
+                  <Link href="/media/academy/checkout" onClick={() => setOpen(false)} className={all}>
+                    চেকআউটে যান
                   </Link>
                 </Col>
               </motion.div>
