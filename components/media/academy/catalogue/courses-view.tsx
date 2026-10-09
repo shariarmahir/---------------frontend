@@ -125,13 +125,13 @@ export function CoursesView({ entries }: { entries: CourseEntry[] }) {
         />
       </Band>
 
-      <Band id="levels" n={3} label="স্তর" note="ভর্তি পরীক্ষা স্তর ঠিক করে">
+      <Band id="levels" n={3} label="স্তর" note="প্রতিটি কোর্সে স্তর লেখা থাকে">
         <div className="px-6 py-14 md:px-10 md:py-20">
           <BandTitle>
             তিন <Lean>স্তর</Lean>, একই নিয়ম।
           </BandTitle>
           <p data-reveal className="mt-5 max-w-xl text-lg leading-relaxed text-(--c-muted)">
-            প্রতিটি কোর্সে স্তর লেখা থাকে। ভর্তির সময় চার প্রশ্নের ভর্তি পরীক্ষা মিলিয়ে দেয়, আপনি ঠিক জায়গায় বসছেন কি না।
+            যেখানে আছেন, সেখান থেকে ধরুন। এক বিভাগের তিনটি কোর্স একটার পর একটা নিলে পুরো দক্ষতা গড়ে ওঠে।
           </p>
         </div>
         <ol data-reveal-group className="grid gap-px border-t border-(--c-line) bg-(--c-line) md:grid-cols-3">

@@ -52,7 +52,8 @@ export function useJourney() {
       academy: academy ? `/media/academy/a/${academy.id}` : null,
       // Choosing a department means seeing them all side by side.
       dept: "/media/academy/departments",
-      course: course ? `/media/academy/course/${course.id}` : dept ? `/media/academy/dept/${dept.id}#all-courses` : null,
+      // Choosing a course too: every course of every academy, by level.
+      course: "/media/academy/courses",
       admit: "/media/academy/checkout",
       routine: "/media/academy/routine",
       class: "/media/academy/classroom",

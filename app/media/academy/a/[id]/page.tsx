@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { factsOf } from "@/components/media/academy/finder/facts";
-import { AcademyView } from "@/components/media/academy/university/academy-view";
+import { AcademyProfile } from "@/components/media/academy/profile/academy-profile";
 import { academies, getAcademy } from "@/data/media/academy";
 
 export function generateStaticParams() {
@@ -17,5 +17,5 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 export default async function AcademyPage({ params }: { params: Promise<{ id: string }> }) {
   const a = getAcademy((await params).id);
   if (!a) notFound();
-  return <AcademyView academy={a} facts={factsOf(a)} />;
+  return <AcademyProfile academy={a} facts={factsOf(a)} />;
 }

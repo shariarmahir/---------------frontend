@@ -10,6 +10,7 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
     links: [
       { href: "/media/academy", label: "একাডেমি খুঁজুন" },
       { href: "/media/academy/departments", label: "বিভাগ বাছুন" },
+      { href: "/media/academy/courses", label: "কোর্স বাছুন" },
       { href: "/media/academy/checkout", label: "ভর্তি" },
       { href: "/media/academy/routine", label: "রুটিন" },
       { href: "/media/academy/classroom", label: "ক্লাস" },

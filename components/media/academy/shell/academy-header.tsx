@@ -313,9 +313,9 @@ export function AcademyHeader({ role, rail, onRail, onLeave }: { role: AcademyRo
                       </li>
                     ))}
                   </ul>
-                  <button type="button" onClick={() => jump("academies", { allDepts: true })} className={all}>
-                    সব দেখুন
-                  </button>
+                  <Link href="/media/academy/courses" onClick={() => setOpen(false)} className={all}>
+                    সব কোর্স
+                  </Link>
                   <h2 className={cn(head, "mt-7")}>ফাইনাল ও সার্টিফিকেট</h2>
                   <ul className={col}>
                     <li>

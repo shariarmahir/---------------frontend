@@ -45,6 +45,7 @@ export function stepOfPath(path: string): StepId | null {
     case "departments":
     case "dept":
       return "dept";
+    case "courses":
     case "course":
       return "course";
     case "checkout":

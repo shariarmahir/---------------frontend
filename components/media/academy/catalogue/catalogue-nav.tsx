@@ -24,11 +24,14 @@ const MORE = [
   { href: "/media/academy/classroom/open", label: "ক্লাসরুম খুলুন" },
   { href: "/media/academy/panel", label: "প্যানেল মার্কিং" },
 ];
-/** Set apart after a rule, like the reference's "Craft Apps": the catalogue of every department. */
-const FEATURED = { href: "/media/academy/departments", label: "বিভাগ বাছুন" };
+/** Set apart after a rule, like the reference's "Craft Apps": the catalogues of every department and every course. */
+const FEATURED = [
+  { href: "/media/academy/departments", label: "বিভাগ বাছুন" },
+  { href: "/media/academy/courses", label: "কোর্স বাছুন" },
+];
 
-/** The academy's front page matches only itself; every other stop, its own pages too. */
-const isAt = (href: string, path: string) => (href === "/media/academy" ? path === href : path === href || path.startsWith(`${href}/`));
+/** The academy's front page matches itself and the academies' own pages; every other stop, its own pages too. */
+const isAt = (href: string, path: string) => (href === "/media/academy" ? path === href || path.startsWith("/media/academy/a/") : path === href || path.startsWith(`${href}/`));
 
 /** A bar link: muted until hovered, when its label turns into an inverted block. */
 const link = "group flex h-full items-center px-2.5 hud whitespace-nowrap text-(--c-muted) hover:text-(--c-ink)";
@@ -122,11 +125,16 @@ export function CatalogueNav() {
                 </ul>
               )}
             </li>
-            <li className="ml-1.5 flex items-stretch border-l border-(--c-line) pl-1.5">
-              <Link href={FEATURED.href} aria-current={isAt(FEATURED.href, path) ? "page" : undefined} className={cn(link, "text-(--c-ink)")}>
-                <span className={cn(pill, isAt(FEATURED.href, path) && "bg-(--c-invert-bg) text-(--c-invert-fg)")}>{FEATURED.label}</span>
-              </Link>
-            </li>
+            {FEATURED.map((f, i) => {
+              const on = isAt(f.href, path);
+              return (
+                <li key={f.href} className={cn("flex items-stretch", i === 0 && "ml-1.5 border-l border-(--c-line) pl-1.5")}>
+                  <Link href={f.href} aria-current={on ? "page" : undefined} className={cn(link, "text-(--c-ink)")}>
+                    <span className={cn(pill, on && "bg-(--c-invert-bg) text-(--c-invert-fg)")}>{f.label}</span>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
 
@@ -161,7 +169,7 @@ export function CatalogueNav() {
       {menu && (
         <div id={menuId} className="max-h-[calc(100dvh-3rem)] overflow-y-auto border-t border-(--c-line) bg-(--c-bg) lg:hidden">
           <ul className="grid gap-px bg-(--c-line)">
-            {[FEATURED, ...ROAD, { href: "/media/academy/checkout", label: "ভর্তি" }, { href: "/media/academy/classroom", label: "আমার শেখা" }, ...MORE, { href: "/media", label: "একাডেমি থেকে বের হন" }].map((m) => (
+            {[...FEATURED, ...ROAD, { href: "/media/academy/checkout", label: "ভর্তি" }, { href: "/media/academy/classroom", label: "আমার শেখা" }, ...MORE, { href: "/media", label: "একাডেমি থেকে বের হন" }].map((m) => (
               <li key={m.href + m.label}>
                 <Link
                   href={m.href}

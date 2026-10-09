@@ -11,7 +11,7 @@ const WHERE: Record<StepId, string> = {
   find: "#finder",
   academy: "#academies",
   dept: "/media/academy/departments",
-  course: "/media/academy/departments",
+  course: "/media/academy/courses",
   admit: "/media/academy/checkout",
   routine: "/media/academy/routine",
   class: "/media/academy/classroom",

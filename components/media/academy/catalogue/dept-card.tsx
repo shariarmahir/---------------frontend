@@ -29,8 +29,10 @@ const chip = "flex w-fit items-center gap-1 border border-(--c-line) bg-(--c-bg-
  * picture's edge, the name with "বিভাগ" in its colour and the academy that
  * runs it, what it teaches, the facts as small tags, and who teaches. The
  * whole card opens the department; the academy's name opens the academy.
+ * `tone` keeps a department's colour when it is shown away from the full
+ * line-up.
  */
-export function DeptCard({ entry, n }: { entry: DeptEntry; n: number }) {
+export function DeptCard({ entry, n, tone = n - 1 }: { entry: DeptEntry; n: number; tone?: number }) {
   const { dept: d } = entry;
   const hydrated = useHydrated();
   const photo = useAcademy((s) => s.academyMedia[d.id]?.photo);
@@ -40,7 +42,7 @@ export function DeptCard({ entry, n }: { entry: DeptEntry; n: number }) {
   const title = `d-${d.id}-title`;
 
   return (
-    <article id={`d-${d.id}`} data-reveal aria-labelledby={title} style={toneStyle(n - 1)} className="tone group relative flex h-full flex-col bg-(--c-bg)">
+    <article id={`d-${d.id}`} data-reveal aria-labelledby={title} style={toneStyle(tone)} className="tone group relative flex h-full flex-col bg-(--c-bg)">
       {/* The department's colour draws across the top on hover. */}
       <span aria-hidden className="absolute inset-x-0 top-0 z-10 h-0.5 origin-left scale-x-0 bg-(--c-app) transition-transform duration-300 group-hover:scale-x-100 motion-reduce:transition-none" />
 

@@ -20,8 +20,10 @@ import { AcademyHeader } from "./academy-header";
 import { AcademyStory } from "./academy-story";
 
 const RAIL_KEY = "kandari-academy-rail";
-/** Pages drawn edge to edge with their own navigation, no academy bar, sidebar or dock. */
-const FULL_SCREEN = ["/media/academy", "/media/academy/departments"];
+/** Pages drawn edge to edge with their own navigation, no academy bar, sidebar or dock: these, and everything under the prefixes. */
+const FULL_SCREEN = ["/media/academy", "/media/academy/departments", "/media/academy/courses"];
+const FULL_SCREEN_UNDER = ["/media/academy/a/"];
+const fullScreen = (path: string) => FULL_SCREEN.includes(path) || FULL_SCREEN_UNDER.some((p) => path.startsWith(p));
 
 interface Item {
   href: string;
@@ -116,7 +118,7 @@ export function AcademyShell({ children }: { children: React.ReactNode }) {
   const teach = <Group title="শেখান" items={TEACH} path={pathname} />;
 
   // A catalogue page brings its own bar and instruments: the whole screen is its.
-  if (FULL_SCREEN.includes(pathname)) {
+  if (fullScreen(pathname)) {
     return (
       <div className="fixed inset-0 z-45 flex flex-col font-sans">
         <main ref={main} id="academy-main" className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
