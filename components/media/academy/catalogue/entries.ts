@@ -1,0 +1,65 @@
+import { coursesOf, departments } from "@/data/media/academy";
+import { sampleBatches } from "@/data/media/batches";
+import { DEMO_NOW } from "@/data/media/clock";
+import type { Course, Department, Mode } from "@/lib/media/academy";
+import { batchStage, seatsLeft } from "@/lib/media/batch";
+import { factsOf } from "../finder/facts";
+import { modesOf } from "../parts";
+
+/** The batch a newcomer would land in: one not yet started with a free seat — or, failing that, a running one that still has room. */
+export interface Seat {
+  starts: string;
+  running: boolean;
+  left: number;
+}
+
+function seatIn(codes: Set<string>): Seat | undefined {
+  const open = sampleBatches.filter((b) => codes.has(b.course) && seatsLeft(b) > 0).sort((x, y) => x.starts.localeCompare(y.starts));
+  const upcoming = open.find((b) => batchStage(b, DEMO_NOW) === "upcoming");
+  const running = open.find((b) => batchStage(b, DEMO_NOW) === "running");
+  const b = upcoming ?? running;
+  return b && { starts: b.starts, running: b === running, left: seatsLeft(b) };
+}
+
+/** What a department's card shows, worked out once on the server from its records. */
+export interface DeptEntry {
+  dept: Department;
+  /** Its first course's picture, until the academy uploads its own. */
+  cover?: { src: string; alt: string };
+  courses: number;
+  fees: { min: number; max: number };
+  seat?: Seat;
+  /** Some classes happen in a real workshop, kitchen or field. */
+  handsOn: boolean;
+}
+
+export function deptEntries(): DeptEntry[] {
+  return departments.map((dept) => {
+    const courses = coursesOf(dept.id);
+    const first = courses.find((c) => c.image);
+    return {
+      dept,
+      cover: first?.image ? { src: first.image, alt: first.title } : undefined,
+      courses: courses.length,
+      fees: factsOf({ departments: [dept] }).fees,
+      seat: seatIn(new Set(courses.map((c) => c.id))),
+      handsOn: courses.some((c) => c.lessons.some((l) => l.mode === "hands-on")),
+    };
+  });
+}
+
+/** What a course's card shows. `tone` is its department's place in the catalogue, so a department's courses share a colour. */
+export interface CourseEntry {
+  course: Course;
+  dept: Department;
+  tone: number;
+  seat?: Seat;
+  modes: Mode[];
+}
+
+/** Every course, department by department in catalogue order — or only the given departments'. */
+export function courseEntries(only?: string[]): CourseEntry[] {
+  return departments.flatMap((dept, tone) =>
+    only && !only.includes(dept.id) ? [] : coursesOf(dept.id).map((course) => ({ course, dept, tone, seat: seatIn(new Set([course.id])), modes: modesOf(course) })),
+  );
+}

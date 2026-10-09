@@ -62,6 +62,10 @@ export function DeptHero({ dept }: { dept: Department }) {
                 <span className="sr-only">একাডেমি</span>
               </Link>
               <ChevronRight className="size-4 text-m-ink/50" aria-hidden />
+              <Link href="/media/academy/departments" className="hover:text-m-ink">
+                সব বিভাগ
+              </Link>
+              <ChevronRight className="size-4 text-m-ink/50" aria-hidden />
               <Link href={`/media/academy/a/${dept.academy.id}`} className="hover:text-m-ink">
                 {dept.academy.name}
               </Link>

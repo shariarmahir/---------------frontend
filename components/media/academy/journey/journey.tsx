@@ -27,8 +27,8 @@ export const STEP_ICON: Record<StepId, LucideIcon> = {
 /**
  * Where the learner is on the university road: the step this page is, the
  * steps already behind them (from their own enrolments), and where each
- * step leads — the academy, department and course they last looked at or
- * joined, so "back to my course" is always one tap.
+ * step leads — every department side by side, and the academy and course
+ * they last looked at or joined, so "back to my course" is always one tap.
  */
 export function useJourney() {
   const hydrated = useHydrated();
@@ -50,7 +50,8 @@ export function useJourney() {
     const href: Record<StepId, string | null> = {
       find: "/media/academy",
       academy: academy ? `/media/academy/a/${academy.id}` : null,
-      dept: dept ? `/media/academy/dept/${dept.id}` : academy ? `/media/academy/a/${academy.id}#departments` : null,
+      // Choosing a department means seeing them all side by side.
+      dept: "/media/academy/departments",
       course: course ? `/media/academy/course/${course.id}` : dept ? `/media/academy/dept/${dept.id}#all-courses` : null,
       admit: "/media/academy/checkout",
       routine: "/media/academy/routine",

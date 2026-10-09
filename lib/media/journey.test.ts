@@ -15,6 +15,7 @@ test("every academy page sits on its step; teaching pages on none", () => {
   const at = (p: string) => stepOfPath(p);
   assert.equal(at("/media/academy"), "find");
   assert.equal(at("/media/academy/a/sorobingsho"), "academy");
+  assert.equal(at("/media/academy/departments"), "dept");
   assert.equal(at("/media/academy/dept/web-ai"), "dept");
   assert.equal(at("/media/academy/course/WEB-101"), "course");
   assert.equal(at("/media/academy/checkout"), "admit");

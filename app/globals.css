@@ -1955,3 +1955,136 @@ body:has(.media-shell) [data-slot="skeleton"] {
   }
   .seal-shine::after { display: none; }
 }
+
+/*
+ * The catalogue (বিভাগ বাছুন), after getartcraft.com/apps: charcoal or warm
+ * ash under hairlines, corner ticks where the rules cross, each department in
+ * its own colour, and the brand's blue and yellow for the instruments. Dark
+ * is the default; the nav's switch sets data-theme="light".
+ */
+.catalogue {
+  --c-bg: #121316;
+  --c-bg-raised: #101014;
+  --c-bg-sunken: #060607;
+  --c-ink: #f2f1ee;
+  --c-ink-strong: #fff;
+  --c-muted: rgb(242 241 238 / 0.62);
+  --c-faint: rgb(242 241 238 / 0.46);
+  --c-line: rgb(242 241 238 / 0.15);
+  --c-line-strong: rgb(242 241 238 / 0.4);
+  --c-accent: #3d74ff;
+  --c-accent-ink: #84a9ff;
+  --c-signal: #ffb423;
+  --c-needle: #ffb423;
+  --c-turn: #ffb423;
+  --c-invert-bg: #fff;
+  --c-invert-fg: #0b0b0c;
+  background: var(--c-bg);
+  color: var(--c-ink);
+  color-scheme: dark;
+}
+.catalogue[data-theme="light"] {
+  --c-bg: #f2f1ee;
+  --c-bg-raised: #faf9f7;
+  --c-bg-sunken: #e9e8e4;
+  --c-ink: #0b1020;
+  --c-ink-strong: #000;
+  --c-muted: rgb(11 16 32 / 0.66);
+  --c-faint: rgb(11 16 32 / 0.52);
+  --c-line: rgb(11 16 32 / 0.16);
+  --c-line-strong: rgb(11 16 32 / 0.4);
+  --c-accent: #013fd0;
+  --c-accent-ink: #013fd0;
+  --c-needle: #013fd0;
+  --c-turn: #013fd0;
+  --c-invert-bg: #0b1020;
+  --c-invert-fg: #f2f1ee;
+  color-scheme: light;
+}
+/* A department's colour: the fill is the same in both themes, the ink lightens on charcoal. */
+.catalogue .tone { --c-app-ink: var(--c-tone-dark); }
+.catalogue[data-theme="light"] .tone { --c-app-ink: var(--c-tone-light); }
+
+/* Display type: Archivo stretched wide for Latin and digits, Hind Siliguri for Bangla. */
+.catalogue .display {
+  font-family: var(--font-archivo), var(--font-m-hind), var(--font-bengali), ui-sans-serif, sans-serif;
+  font-weight: 620;
+  font-stretch: 118%;
+  letter-spacing: -0.01em;
+}
+/* The turned word in a heading: a serif italic in the instrument colour. */
+.catalogue .turn {
+  font-family: var(--font-instrument), var(--font-tiro), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-stretch: normal;
+  letter-spacing: 0;
+  color: var(--c-turn);
+}
+/* Small running labels: mono digits, Bangla at a size that stays legible. */
+.catalogue .hud {
+  font-family: var(--font-mono), var(--font-bengali), ui-monospace, monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.catalogue .tick {
+  pointer-events: none;
+  position: absolute;
+  width: 11px;
+  height: 11px;
+}
+.catalogue .tick::before,
+.catalogue .tick::after {
+  content: "";
+  position: absolute;
+  background: var(--c-line-strong);
+}
+.catalogue .tick::before { width: 1px; top: 5px; bottom: 0; left: 5px; }
+.catalogue .tick::after { height: 1px; top: 5px; left: 0; right: 0; }
+
+/* The ruler's rolling readout: each digit a column that slides to its number. */
+.ruler-digits { display: inline-flex; height: 1em; overflow: hidden; line-height: 1; }
+.ruler-digit-col { display: flex; flex-direction: column; transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.2, 1); }
+.ruler-digit-col > span { display: block; height: 1em; }
+/* With the ruler on, it is the scrollbar. */
+#academy-main[data-ruler="on"] { scrollbar-width: none; }
+#academy-main[data-ruler="on"]::-webkit-scrollbar { display: none; width: 0; height: 0; }
+
+/*
+ * The choreography. As a section arrives its top rule draws across, its
+ * label rises out of a blur and the ticks pop in; every data-reveal block
+ * rises the same way. A section or block is "in" once it carries data-in —
+ * the first screen is rendered with it, the rest get it as they scroll into
+ * view. Nothing is hidden unless scripts run and motion is welcome.
+ */
+@keyframes catalogue-rise {
+  from { opacity: 0; transform: translateY(28px); filter: blur(8px); }
+}
+@keyframes catalogue-draw {
+  from { transform: scaleX(0); }
+}
+@keyframes catalogue-tick {
+  from { opacity: 0; transform: scale(0); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .catalogue [data-choreo][data-in] [data-draw-rule] {
+    animation: catalogue-draw 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) backwards;
+  }
+  .catalogue [data-choreo][data-in] [data-draw-eyebrow] {
+    animation: catalogue-rise 0.9s cubic-bezier(0.215, 0.61, 0.355, 1) 0.15s backwards;
+  }
+  .catalogue [data-choreo][data-in] [data-draw-tick] {
+    animation: catalogue-tick 0.35s cubic-bezier(0.215, 0.61, 0.355, 1) backwards;
+    animation-delay: calc(0.35s + var(--i, 0) * 0.06s);
+  }
+  .catalogue [data-reveal][data-in] {
+    animation: catalogue-rise 0.9s cubic-bezier(0.215, 0.61, 0.355, 1) backwards;
+    animation-delay: var(--d, 0s);
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+  .catalogue [data-choreo]:not([data-in]) [data-draw-rule] { transform: scaleX(0); }
+  .catalogue [data-choreo]:not([data-in]) :is([data-draw-eyebrow], [data-draw-tick]),
+  .catalogue [data-reveal]:not([data-in]) { opacity: 0; }
+}
