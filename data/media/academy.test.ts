@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import { admissionQuestions, board, classVideos, courses, deptLikes, deptShort, deptsOfTeacher, teacherFollowers, videoComments, videoRating, departments, rosterOf, teacherRecords, workshops } from "./academy.ts";
 import { people } from "./users.ts";
-import { CLASS_MINUTES, SCHOOLS, certificateId, courseIssues, courseTimeline, deptIssues, finalResult, freeClassDone } from "../../lib/media/academy.ts";
+import { CLASS_MINUTES, SCHOOLS, academiesFrom, academyIssues, certificateId, courseIssues, courseTimeline, deptIssues, finalResult, freeClassDone } from "../../lib/media/academy.ts";
 
 const handles = new Set(people.map((p) => p.handle));
 const deptIds = new Set(departments.map((d) => d.id));
@@ -21,11 +21,21 @@ test("academy: every teacher is a member with an interview record, in their depa
   for (const t of teacherRecords) assert.ok(deptIds.has(t.dept), `${t.handle}: unknown department ${t.dept}`);
 });
 
-test("academy rules: one academy per department, three courses, 40 days, batches of 5 or 15, papers and promo", () => {
-  assert.equal(new Set(departments.map((d) => d.academy.name)).size, departments.length, "an academy opens one department");
+test("academy rules: academies with one or more departments, three courses, 40 days, batches of 5 or 15, papers and promo", () => {
+  const list = academiesFrom(departments);
+  assert.equal(new Set(list.map((a) => a.name)).size, list.length, "one name, one academy");
+  for (const a of list) {
+    assert.deepEqual(academyIssues(a), [], a.id);
+    assert.ok(/^[a-z][a-z0-9-]+$/.test(a.id), `${a.id}: a plain address`);
+    // Every department of an academy carries the very same name and about.
+    for (const d of a.departments) assert.deepEqual([d.academy.name, d.academy.about], [a.name, a.about], d.id);
+  }
+  // The owner's example of a university with several departments.
+  assert.deepEqual(list.find((a) => a.name === "ষড়বিংশ একাডেমি")!.departments.map((d) => d.id), ["web-ai", "mechatronics"]);
   for (const d of departments) {
     assert.ok(d.academy.about.length >= 20, `${d.id}: a line about the academy`);
     assert.deepEqual(deptIssues(d, courses.filter((c) => c.dept === d.id).length), [], d.id);
+    assert.ok(d.fit && d.fit.goals.length && d.fit.likes.length && d.fit.talents.length, `${d.id}: finder tags`);
   }
   for (const c of courses) assert.deepEqual(courseIssues(c, departments.find((d) => d.id === c.dept)!), [], c.id);
   // The two the owner named: a team of four friends, and a solo music academy teaching electric guitar.

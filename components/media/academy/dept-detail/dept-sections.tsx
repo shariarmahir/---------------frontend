@@ -396,7 +396,7 @@ export function Similar({ dept }: { dept: Department }) {
           <h2 id="similar-title" className="text-xl font-bold text-m-ink sm:text-2xl">
             {dept.name}-এর মতো আরও বিভাগ
           </h2>
-          <Link href="/media/academy/departments#departments" className="group inline-flex items-center gap-1.5 font-semibold text-m-blue">
+          <Link href="/media/academy#academies" className="group inline-flex items-center gap-1.5 font-semibold text-m-blue">
             সব বিভাগ <ArrowRight className="size-5 transition-transform group-hover:translate-x-1 motion-reduce:transition-none" aria-hidden />
           </Link>
         </div>

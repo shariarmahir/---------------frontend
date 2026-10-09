@@ -109,7 +109,7 @@ export function CheckoutView() {
       {/* The checkout's own plain bar. */}
       <div className="-mx-3 -mt-6 border-b border-m-ink/8 bg-white sm:-mx-6">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
-          <Link href="/media/academy/departments" className="text-2xl leading-none font-extrabold text-m-blue">
+          <Link href="/media/academy" className="text-2xl leading-none font-extrabold text-m-blue">
             কাণ্ডারী <span className="text-m-ink">শিখন</span>
           </Link>
           <p className="flex items-center gap-1.5 text-sm font-semibold text-m-ink/75">
@@ -119,7 +119,7 @@ export function CheckoutView() {
       </div>
 
       <div className="mx-auto max-w-6xl pt-6 pb-16">
-        <Link href="/media/academy/departments" className="inline-flex items-center gap-1.5 text-sm font-semibold text-m-blue hover:underline">
+        <Link href="/media/academy" className="inline-flex items-center gap-1.5 text-sm font-semibold text-m-blue hover:underline">
           <ArrowLeft className="size-4" aria-hidden /> আরও কোর্স দেখুন
         </Link>
         <h1 className="mt-3 text-[clamp(1.8rem,3.4vw,2.4rem)] leading-tight font-bold text-m-ink">চেকআউট</h1>
@@ -427,7 +427,7 @@ function EmptyCart() {
       <h2 className="mt-4 text-xl font-bold text-m-ink">কার্ট খালি</h2>
       <p className="mt-1 max-w-sm text-[15px] text-m-ink/70">কোনো কোর্সের পাতায় “কার্টে রাখুন” বা “ভর্তি হোন” চাপলে এখানে আসবে।</p>
       <div className="mt-6 flex flex-wrap justify-center gap-3">
-        <Link href="/media/academy/departments" className={mediaButton()}>
+        <Link href="/media/academy" className={mediaButton()}>
           বিভাগ দেখুন
         </Link>
         <Link href="/media/academy/videos" className={mediaButton({ variant: "outline" })}>

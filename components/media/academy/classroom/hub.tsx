@@ -89,7 +89,7 @@ function LearnRooms({ rooms }: { rooms: { batch: Batch; course: Course }[] }) {
         </span>
         <h2 className="mt-4 text-xl font-bold text-m-ink">এখনো কোনো ক্লাসরুমে নেই</h2>
         <p className="mt-1 max-w-sm text-[15px] text-m-ink/70">কোনো কোর্সে ভর্তি হলে সেই ব্যাচের ক্লাসরুম এখানে খুলবে।</p>
-        <Link href="/media/academy/departments" className={mediaButton({ className: "mt-6" })}>
+        <Link href="/media/academy" className={mediaButton({ className: "mt-6" })}>
           কোর্স বেছে নিন <ArrowRight aria-hidden />
         </Link>
       </section>

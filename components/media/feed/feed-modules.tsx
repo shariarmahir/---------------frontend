@@ -182,7 +182,7 @@ export function AcademyModule() {
       href="/media/academy"
       link="একাডেমি"
       extra={
-        <Link href="/media/academy/departments" className="hidden min-h-9 items-center rounded-full bg-m-yellow px-3.5 text-sm font-semibold text-m-ink sm:inline-flex">
+        <Link href="/media/academy" className="hidden min-h-9 items-center rounded-full bg-m-yellow px-3.5 text-sm font-semibold text-m-ink sm:inline-flex">
           ভর্তি বিনামূল্যে
         </Link>
       }

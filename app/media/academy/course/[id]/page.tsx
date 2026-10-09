@@ -9,7 +9,6 @@ import { CourseMaterials } from "@/components/media/academy/course-materials";
 import { CourseTabs } from "@/components/media/academy/course/course-tabs";
 import { DeptFooter } from "@/components/media/academy/departments/dept-footer";
 import { DeptIcon } from "@/components/media/academy/departments/dept-icons";
-import { ExploreNav } from "@/components/media/academy/departments/explore-nav";
 import { RememberCourse } from "@/components/media/academy/departments/recent";
 import { Faq, type QA } from "@/components/media/academy/home/plus/faq";
 import { PlusCourseCard } from "@/components/media/academy/home/plus/skills-panel";
@@ -145,24 +144,22 @@ export default async function CoursePage({ params }: Props) {
   return (
     <>
       <RememberCourse id={course.id} />
-      <ExploreNav className="-mt-6" />
-
-      <div className="-mx-3 bg-m-canvas pb-24 sm:-mx-6">
+      <div className="-mx-3 -mt-6 bg-m-canvas pb-24 sm:-mx-6">
         {/* Hero: light, the academy's mark, the title and the big button. */}
         <section aria-labelledby="course-title" className="relative overflow-hidden bg-linear-to-b from-m-blue-soft via-m-blue-soft/55 to-white">
           <span aria-hidden className="absolute -top-24 -right-24 size-[28rem] rounded-full bg-white/60" />
           <div className={`${WRAP} relative pt-5 pb-24 lg:pb-28`}>
             <nav aria-label="অবস্থান" className="flex flex-wrap items-center gap-1 text-sm text-m-ink/70">
               <Link href="/media/academy" className="hover:text-m-blue hover:underline">
-                একাডেমি
+                একাডেমি খুঁজুন
               </Link>
               <ChevronRight className="size-3.5" aria-hidden />
-              <Link href="/media/academy/departments" className="hover:text-m-blue hover:underline">
-                বিভাগ
+              <Link href={`/media/academy/a/${dept.academy.id}`} className="hover:text-m-blue hover:underline">
+                {dept.academy.name}
               </Link>
               <ChevronRight className="size-3.5" aria-hidden />
               <Link href={`/media/academy/dept/${dept.id}`} className="hover:text-m-blue hover:underline">
-                {dept.name}
+                {dept.name} বিভাগ
               </Link>
               <ChevronRight className="size-3.5" aria-hidden />
               <span className="font-mono text-m-ink">{course.id}</span>
@@ -170,7 +167,7 @@ export default async function CoursePage({ params }: Props) {
 
             <div className="mt-7 grid items-center gap-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
               <div>
-                <Link href={`/media/academy/dept/${dept.id}`} className="inline-flex items-center gap-2.5 rounded-xl bg-white py-1.5 pr-3.5 pl-1.5 text-sm font-bold text-m-ink shadow-m-ink ring-1 ring-m-ink/8 hover:text-m-blue">
+                <Link href={`/media/academy/a/${dept.academy.id}`} className="inline-flex items-center gap-2.5 rounded-xl bg-white py-1.5 pr-3.5 pl-1.5 text-sm font-bold text-m-ink shadow-m-ink ring-1 ring-m-ink/8 hover:text-m-blue">
                   <span className="grid size-8 place-items-center rounded-lg bg-m-ground">
                     <DeptIcon dept={dept.id} school={dept.school} className="size-6" />
                   </span>

@@ -150,8 +150,8 @@ function Actions({ own, handle, name, tier }: { own: boolean; handle: string; na
           <Link href="/media/academy/videos?upload=1" className={mediaButton({ className: "h-10 rounded-full" })}>
             <Upload aria-hidden /> ভিডিও তুলুন
           </Link>
-          <Link href="/media/academy/desk" className={mediaButton({ variant: "quiet", className: "h-10 rounded-full" })}>
-            <Presentation aria-hidden /> শিক্ষক ডেস্ক
+          <Link href="/media/academy/classroom" className={mediaButton({ variant: "quiet", className: "h-10 rounded-full" })}>
+            <Presentation aria-hidden /> আমার ক্লাসরুম
           </Link>
         </>
       ) : (

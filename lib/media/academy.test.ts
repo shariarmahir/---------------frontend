@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { BATCH_MAX, COURSE_DAYS, RUBRIC, attendanceOf, checkoutEnrol, courseIssues, courseTimeline, deptIssues, promoFits, canWatch, certificateId, draftCode, durationText, finalResult, freeClassDone, interviewSlots, latestAdmission, materialKindOf, normalizeAcademy, payoutOf, placement, progressOf, ratingWith, rubricTotal, starSpread, threadsOf, sizeParts, sortVideos, teacherPoints, teacherTier, weekOf, youtubeEmbed, type ClassVideo, type VideoComment } from "./academy.ts";
+import { BATCH_MAX, COURSE_DAYS, RUBRIC, academiesFrom, academyIssues, attendanceOf, checkoutEnrol, courseIssues, courseTimeline, deptIssues, promoFits, canWatch, certificateId, draftCode, durationText, finalResult, freeClassDone, interviewSlots, latestAdmission, materialKindOf, normalizeAcademy, payoutOf, placement, progressOf, ratingWith, rubricTotal, starSpread, threadsOf, sizeParts, sortVideos, teacherPoints, teacherTier, weekOf, youtubeEmbed, type ClassVideo, type VideoComment } from "./academy.ts";
 
 test("admission places everyone; experience with proof fast-tracks", () => {
   assert.deepEqual(placement({ testPct: 20, years: 0, hasProof: false }), { level: "foundation", fastTrack: false });
@@ -71,6 +71,24 @@ test("saved academies from before departments carry over", () => {
   const two = { motor: { dept: "motor", at: "2026-09-01" }, kitchen: { dept: "kitchen", at: "2026-09-20" } };
   assert.equal(latestAdmission(two as never)?.dept, "kitchen");
   assert.equal(latestAdmission({}), undefined);
+});
+
+test("an academy may open several departments; they share its name, kind and members", () => {
+  const A = { id: "six", name: "ষড়বিংশ", about: "চার বন্ধুর একাডেমি" };
+  const B = { id: "solo", name: "একক", about: "একজনের একাডেমি" };
+  const depts = [
+    { id: "web", academy: A, kind: "team" as const, teachers: ["anik", "mahir"], founded: "2026-03-01" },
+    { id: "solo-1", academy: B, kind: "solo" as const, teachers: ["mitu"], founded: "2026-04-01" },
+    { id: "iot", academy: A, kind: "team" as const, teachers: ["mahir", "rupa"], founded: "2026-02-01" },
+  ];
+  const list = academiesFrom(depts);
+  assert.deepEqual(list.map((a) => [a.id, a.departments.map((d) => d.id), a.teachers, a.founded]), [
+    ["six", ["web", "iot"], ["anik", "mahir", "rupa"], "2026-02-01"],
+    ["solo", ["solo-1"], ["mitu"], "2026-04-01"],
+  ]);
+  assert.deepEqual(academyIssues(list[0]), []);
+  assert.equal(academyIssues({ ...list[0], departments: [depts[0], { ...depts[2], kind: "solo" }] }).length, 1, "one academy, one kind");
+  assert.equal(academyIssues({ ...list[1], teachers: ["mitu", "joy"] }).length, 1, "a solo academy has one teacher in all its departments");
 });
 
 test("checkout enrols every course, joins its department if new, and empties those from the cart", () => {

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useSyncExternalStore } from "react";
-import { getCourse, getDepartment } from "@/data/media/academy";
-import type { Course, Department } from "@/lib/media/academy";
+import { getAcademy, getCourse, getDepartment } from "@/data/media/academy";
+import type { Academy, Course, Department } from "@/lib/media/academy";
 
 /**
  * The courses this browser looked at last, newest first — a convenience for
@@ -84,5 +84,34 @@ export function useRecentDepts(): Department[] {
 /** Put on a department page: notes the visit. Draws nothing. */
 export function RememberDept({ id }: { id: string }) {
   useEffect(() => remember(DEPT_KEY, id), [id]);
+  return null;
+}
+
+/* The academies this browser opened last, the same way. */
+const ACADEMY_KEY = "academy-recent-academies";
+
+function readAcademies(): string {
+  try {
+    return localStorage.getItem(ACADEMY_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+export function useRecentAcademies(): Academy[] {
+  const raw = useSyncExternalStore(subscribe, readAcademies, () => "");
+  return useMemo(
+    () =>
+      raw
+        .split(",")
+        .map((id) => getAcademy(id))
+        .filter((a): a is Academy => Boolean(a)),
+    [raw],
+  );
+}
+
+/** Put on an academy's page: notes the visit. Draws nothing. */
+export function RememberAcademy({ id }: { id: string }) {
+  useEffect(() => remember(ACADEMY_KEY, id), [id]);
   return null;
 }

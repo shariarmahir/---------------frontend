@@ -1,8 +1,6 @@
-import type { Metadata } from "next";
-import { CourseManager } from "@/components/media/academy/desk/course-manager";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = { title: "কোর্স ম্যানেজ · শিক্ষক ডেস্ক" };
-
-export default async function ManageCoursePage({ params }: { params: Promise<{ id: string }> }) {
-  return <CourseManager code={decodeURIComponent((await params).id)} />;
+/** A course on the old desk is its first batch's classroom (the first batch carries the course code). */
+export default async function DeskCoursePage({ params }: { params: Promise<{ id: string }> }) {
+  redirect(`/media/academy/classroom/${(await params).id}`);
 }

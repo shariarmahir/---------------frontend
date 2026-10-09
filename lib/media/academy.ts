@@ -44,7 +44,7 @@ export const DEPT_KINDS: Record<DeptKind, string> = { solo: "একক একা
 
 /* ── The academy rules ─────────────────────────────────────────────── */
 
-/** An academy opens one department, and a department teaches exactly three skill courses. */
+/** An academy opens one or more departments, and a department teaches exactly three skill courses. */
 export const DEPT_COURSES = 3;
 /** Every course ends 40 days after it starts: five weeks of classes, then five days for the project and the panel. */
 export const COURSE_DAYS = 40;
@@ -60,11 +60,36 @@ export const PROMO_SLACK = 5;
 /** A department's name is short: what it teaches, in a few words. */
 export const DEPT_NAME_MAX = 24;
 
-/** The academy a department belongs to. */
+/** The academy a department belongs to — like a university, it may open several. */
 export interface AcademyInfo {
+  /** Its address, e.g. "sorobingsho"; every department of the academy carries the same. */
+  id: string;
   name: string;
   /** One or two lines: who they are and how they teach. */
   about: string;
+}
+
+/* What a department suits, for the academy finder. */
+/** The dream: a job, one's own business, earning from home, or the joy of it. */
+export type Goal = "job" | "business" | "home" | "joy";
+/** What one likes working with. */
+export type Like = "machines" | "computers" | "art" | "food" | "people" | "body" | "numbers";
+/** Where one's talent lies. */
+export type Talent = "hands" | "mind" | "art" | "body";
+export interface DeptFit {
+  goals: Goal[];
+  likes: Like[];
+  talents: Talent[];
+}
+
+/** An academy with all its departments, as the finder and its own page show it. */
+export interface Academy extends AcademyInfo {
+  kind: DeptKind;
+  departments: Department[];
+  /** Every member who teaches in any of its departments, in order of first appearance. */
+  teachers: string[];
+  /** The earliest department's founding day. */
+  founded: string;
 }
 
 export interface Department {
@@ -80,6 +105,8 @@ export interface Department {
   /** The real place hands-on classes happen. */
   place?: string;
   founded: string;
+  /** What it suits, for the finder. */
+  fit?: DeptFit;
 }
 
 export interface Lesson {
@@ -185,8 +212,36 @@ export function courseIssues(course: Pick<Course, "weeks" | "lessons" | "seats" 
   return out;
 }
 
+/**
+ * Departments gathered into their academies, in order of first appearance:
+ * each academy's departments, every member who teaches in them, and the
+ * earliest founding day.
+ */
+export function academiesFrom<D extends Pick<Department, "id" | "academy" | "kind" | "teachers" | "founded">>(depts: D[]): (Omit<Academy, "departments"> & { departments: D[] })[] {
+  const by = new Map<string, Omit<Academy, "departments"> & { departments: D[] }>();
+  for (const d of depts) {
+    const a = by.get(d.academy.id);
+    if (!a) {
+      by.set(d.academy.id, { ...d.academy, kind: d.kind, departments: [d], teachers: [...d.teachers], founded: d.founded });
+      continue;
+    }
+    a.departments.push(d);
+    for (const h of d.teachers) if (!a.teachers.includes(h)) a.teachers.push(h);
+    if (d.founded < a.founded) a.founded = d.founded;
+  }
+  return [...by.values()];
+}
+
+/** What an academy breaks: its departments must be of one kind, and a solo academy has one teacher in all of them. */
+export function academyIssues(a: { kind: DeptKind; teachers: string[]; departments: Pick<Department, "kind">[] }): string[] {
+  const out: string[] = [];
+  if (a.departments.some((d) => d.kind !== a.kind)) out.push("একাডেমির সব বিভাগ একই ধরনের — একক বা দলীয়");
+  if (a.kind === "solo" && a.teachers.length !== 1) out.push("একক একাডেমির সব বিভাগে একজনই শিক্ষক");
+  return out;
+}
+
 /** What a department breaks of the academy rules; empty when it keeps them. */
-export function deptIssues(dept: Pick<Department, "name" | "kind" | "teachers" | "academy">, courseCount: number): string[] {
+export function deptIssues(dept: Pick<Department, "name" | "kind" | "teachers"> & { academy?: Pick<AcademyInfo, "name"> }, courseCount: number): string[] {
   const out: string[] = [];
   if (!dept.academy?.name.trim()) out.push("একাডেমির নাম লাগবে");
   if (dept.name.length > DEPT_NAME_MAX) out.push("বিভাগের নাম ছোট রাখুন");
@@ -455,6 +510,10 @@ export interface AcademyState {
   batches: Batch[];
   /** What the viewer wrote in batch chats, by batch id, oldest first. */
   roomChat: Record<string, RoomMessage[]>;
+  /** The academy finder's three answers: the dream, what one likes, where one's talent lies. */
+  finder?: Partial<{ goal: Goal; like: Like; talent: Talent }>;
+  /** The goal the learner wrote for themselves on an academy's page, by academy id. */
+  dreams?: Record<string, { line: string; course?: string; at: string }>;
 }
 
 export interface AcademyMedia {

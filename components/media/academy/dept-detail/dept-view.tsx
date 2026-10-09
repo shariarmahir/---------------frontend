@@ -4,7 +4,6 @@ import { useState } from "react";
 import type { Department, Level } from "@/lib/media/academy";
 import { useHydrated } from "@/lib/media/store";
 import { AudienceStrip, DeptFooter } from "../departments/dept-footer";
-import { ExploreNav } from "../departments/explore-nav";
 import { RememberDept } from "../departments/recent";
 import { useAcademy } from "../use-academy";
 import { Credentials, levelsOf } from "./credentials";
@@ -31,7 +30,6 @@ export function DeptView({ dept }: { dept: Department }) {
     <div>
       <RememberDept id={dept.id} />
       <AudienceStrip />
-      <ExploreNav />
       <DeptHero dept={dept} />
       <div className="mx-auto max-w-7xl space-y-14 pt-12 pb-16">
         {level && <Credentials dept={dept} level={level} setLevel={setChosen} />}

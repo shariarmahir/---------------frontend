@@ -62,12 +62,12 @@ export function DeptHero({ dept }: { dept: Department }) {
                 <span className="sr-only">একাডেমি</span>
               </Link>
               <ChevronRight className="size-4 text-m-ink/50" aria-hidden />
-              <Link href="/media/academy/departments" className="hover:text-m-ink">
-                বিভাগ
+              <Link href={`/media/academy/a/${dept.academy.id}`} className="hover:text-m-ink">
+                {dept.academy.name}
               </Link>
               <ChevronRight className="size-4 text-m-ink/50" aria-hidden />
               <span aria-current="page" className="text-m-ink">
-                {dept.name}
+                {dept.name} বিভাগ
               </span>
             </nav>
 
@@ -80,17 +80,20 @@ export function DeptHero({ dept }: { dept: Department }) {
                   {dept.kind === "team" ? <UsersRound className="size-3.5" aria-hidden /> : <UserRound className="size-3.5" aria-hidden />}
                   {DEPT_KINDS[dept.kind]} · <Num value={dept.teachers.length} /> জন
                 </span>
-                <span className="mt-1.5 block text-sm font-semibold text-m-ink/85">
-                  বিভাগ: <span className="text-m-ink">{dept.name}</span> · {SCHOOLS[dept.school]}
-                </span>
+                <Link href={`/media/academy/a/${dept.academy.id}`} className="mt-1.5 block text-sm font-semibold text-m-blue hover:underline">
+                  {dept.academy.name} · {SCHOOLS[dept.school]}
+                </Link>
               </span>
             </motion.div>
 
-            <motion.h1 {...rise(0.08)} id="dept-title" className="mt-5 text-3xl leading-tight font-bold text-balance text-m-ink sm:text-5xl">
-              {dept.academy.name}
+            <motion.p {...rise(0.04)} className="mt-5 text-sm font-bold text-m-blue">
+              ধাপ ৩ · বিভাগ
+            </motion.p>
+            <motion.h1 {...rise(0.08)} id="dept-title" className="mt-1 text-3xl leading-tight font-bold text-balance text-m-ink sm:text-5xl">
+              {dept.name} বিভাগ
             </motion.h1>
             <motion.p {...rise(0.16)} className="mt-4 max-w-2xl text-lg leading-relaxed text-m-ink/90">
-              {dept.academy.about}
+              {dept.blurb}
             </motion.p>
 
             <motion.div {...rise(0.22)} className="mt-5 flex flex-wrap items-center gap-3">
@@ -109,7 +112,7 @@ export function DeptHero({ dept }: { dept: Department }) {
                 ভর্তি হোন
               </a>
               <a href="#all-courses" className={mediaButton({ variant: "outline", className: "bg-white/65" })}>
-                কোর্স দেখুন
+                কোর্স বাছুন
               </a>
               {dept.kind === "team" && (
                 <Link href={`/media/academy/teach?dept=${dept.id}`} className={mediaButton({ variant: "quiet" })}>

@@ -1,8 +1,6 @@
-import type { Metadata } from "next";
-import { DeskHome } from "@/components/media/academy/desk/desk-home";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = { title: "শিক্ষক ডেস্ক · একাডেমি" };
-
+/** The teacher's desk became the classroom: its tools live in each batch's room now. */
 export default function DeskPage() {
-  return <DeskHome />;
+  redirect("/media/academy/classroom");
 }

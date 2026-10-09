@@ -162,13 +162,13 @@ export function CourseBuilder() {
       return;
     }
     toast.success(`${course.id} জমা হয়েছে`, { description: "প্যানেল ৭২ ঘণ্টার মধ্যে সিলেবাস, ক্যালেন্ডার আর প্রোমো দেখে অনুমোদন দেবে।" });
-    router.push(`/media/academy/desk/${course.id}`);
+    router.push(`/media/academy/classroom/${course.id}`);
   }
 
   return (
     <div className="mx-auto max-w-6xl">
-      <Link href="/media/academy/desk" className="group mb-3 inline-flex min-h-8 items-center gap-1.5 text-sm font-semibold text-m-blue">
-        <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" aria-hidden /> শিক্ষক ডেস্ক
+      <Link href="/media/academy/classroom" className="group mb-3 inline-flex min-h-8 items-center gap-1.5 text-sm font-semibold text-m-blue">
+        <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" aria-hidden /> ক্লাসরুম
       </Link>
       <h1 className="text-2xl font-bold text-m-ink sm:text-[2rem]">নতুন কোর্স</h1>
       <p className="mt-1 mb-6 max-w-2xl text-sm leading-relaxed text-m-ink/80">

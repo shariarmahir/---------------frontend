@@ -154,7 +154,7 @@ function Room({ batch, course }: { batch: Batch; course: Course }) {
       ) : (
         // The frame: one glassy sheet holding the four parts.
         <div className="rounded-[2rem] bg-white/55 p-2 shadow-m-lift ring-1 ring-white backdrop-blur-sm sm:p-2.5">
-          <div className="grid gap-2 sm:gap-2.5 xl:h-[calc(100dvh-15rem)] xl:min-h-[42rem] xl:grid-cols-[19rem_minmax(0,1fr)_21rem] xl:grid-rows-[minmax(0,1.1fr)_minmax(0,1fr)]">
+          <div className="grid gap-2 sm:gap-2.5 xl:h-[calc(100dvh-13rem)] xl:min-h-[50rem] xl:grid-cols-[19rem_minmax(0,1fr)_21rem] xl:grid-rows-[minmax(0,1fr)_minmax(0,1fr)]">
             <SyllabusRail name={first} course={course} batch={batch} week={week} onWeek={setWeek} done={done} videos={course.lessons.length} className="order-3 max-h-[40rem] xl:order-none xl:row-span-2 xl:max-h-none" />
             <RoomPlayer key={week} batch={batch} course={course} lesson={lesson} video={videoOf(week)} teacher={lead} poster={course.image} className="order-1 xl:order-none xl:col-span-2" />
             <RoomChat batch={batch} className="order-4 xl:order-none" />

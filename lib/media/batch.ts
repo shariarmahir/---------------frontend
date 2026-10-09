@@ -159,5 +159,32 @@ export function slotOf(day: number, time: string): string {
   return `${WEEKDAYS[day] ?? ""} · ${part} ${bnDigits(h12)}:${bnDigits(String(m % 60).padStart(2, "0"))}`;
 }
 
+/** iCalendar time: 2026-09-05T13:00:00Z → 20260905T130000Z. */
+const icsTime = (iso: string) => new Date(iso).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+/** iCalendar text: backslash, semicolon, comma and newlines escaped. */
+const icsText = (s: string) => s.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+
+/**
+ * The learner's classes as a calendar file the phone opens (iCalendar,
+ * CRLF lines): one event per class, each its length in minutes.
+ */
+export function calendarFile(events: { uid: string; title: string; at: string; minutes: number; where?: string }[], now: string): string {
+  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Kandari Academy//Routine//BN", "CALSCALE:GREGORIAN"];
+  for (const e of events) {
+    lines.push(
+      "BEGIN:VEVENT",
+      `UID:${e.uid}@kandari-academy`,
+      `DTSTAMP:${icsTime(now)}`,
+      `DTSTART:${icsTime(e.at)}`,
+      `DTEND:${icsTime(new Date(Date.parse(e.at) + e.minutes * 60_000).toISOString())}`,
+      `SUMMARY:${icsText(e.title)}`,
+      ...(e.where ? [`LOCATION:${icsText(e.where)}`] : []),
+      "END:VEVENT",
+    );
+  }
+  lines.push("END:VCALENDAR", "");
+  return lines.join("\r\n");
+}
+
 /** Seats still open in a batch; the viewer's own seat, if taken on this device, counts. */
 export const seatsLeft = (b: Pick<Batch, "seats" | "enrolled">, mine = false) => Math.max(0, b.seats - b.enrolled - (mine ? 1 : 0));

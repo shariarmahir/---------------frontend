@@ -8,5 +8,5 @@ import { getDepartment } from "@/data/media/academy";
  */
 export default async function AdmissionPage({ searchParams }: { searchParams: Promise<{ dept?: string }> }) {
   const { dept } = await searchParams;
-  redirect(dept && getDepartment(dept) ? `/media/academy/dept/${dept}#join` : "/media/academy/departments");
+  redirect(dept && getDepartment(dept) ? `/media/academy/dept/${dept}#join` : "/media/academy");
 }

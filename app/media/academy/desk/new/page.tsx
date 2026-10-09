@@ -1,8 +1,5 @@
-import type { Metadata } from "next";
-import { CourseBuilder } from "@/components/media/academy/desk/course-builder";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = { title: "নতুন কোর্স · শিক্ষক ডেস্ক" };
-
-export default function NewCoursePage() {
-  return <CourseBuilder />;
+export default function DeskNewPage() {
+  redirect("/media/academy/classroom/new");
 }

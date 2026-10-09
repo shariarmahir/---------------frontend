@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 /** The thin strip over the bar: who the page is for. Learners are here; the rest lead to their own doors. */
 export function AudienceStrip() {
   const items = [
-    { href: "/media/academy/departments", label: "শিক্ষার্থীদের জন্য", on: true },
+    { href: "/media/academy", label: "শিক্ষার্থীদের জন্য", on: true },
     { href: "/media/academy/teach", label: "শিক্ষকদের জন্য" },
     { href: "/media/academy/teach?dept=new", label: "দলের জন্য" },
     { href: "/media/academy/panel", label: "প্যানেলের জন্য" },
@@ -41,7 +41,7 @@ const COLUMNS: { title: string; links: { href: string; label: string }[] }[] = [
     title: "শেখার সহায়িকা",
     links: [
       { href: "/media/academy/videos", label: "বিনামূল্যের ক্লাস ভিডিও" },
-      { href: "/media/academy/teachers", label: "একাডেমি ও শিক্ষক" },
+      { href: "/media/academy#academies", label: "একাডেমি ও শিক্ষক" },
       { href: "/media/academy/checkout", label: "ভর্তি ও চেকআউট" },
       { href: "/media/academy/exam", label: "ফাইনাল ও প্রকাশ্য বোর্ড" },
       { href: "/media/academy/teach", label: "শিক্ষক হিসেবে আবেদন" },

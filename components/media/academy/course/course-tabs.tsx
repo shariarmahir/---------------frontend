@@ -21,7 +21,7 @@ export function CourseTabs({ tabs }: { tabs: { id: string; label: string }[] }) 
         const top = tabs.map((t) => [t.id, seen.get(t.id) ?? Infinity] as const).filter(([, y]) => y !== Infinity).sort((a, b) => a[1] - b[1])[0];
         if (top) setOn(top[0]);
       },
-      { root, rootMargin: "-140px 0px -45% 0px" },
+      { root, rootMargin: "-80px 0px -45% 0px" },
     );
     for (const t of tabs) {
       const el = document.getElementById(t.id);
@@ -35,12 +35,12 @@ export function CourseTabs({ tabs }: { tabs: { id: string; label: string }[] }) 
     const root = document.getElementById("academy-main");
     if (!el || !root) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    root.scrollTo({ top: el.getBoundingClientRect().top - root.getBoundingClientRect().top + root.scrollTop - 128, behavior: reduce ? "auto" : "smooth" });
+    root.scrollTo({ top: el.getBoundingClientRect().top - root.getBoundingClientRect().top + root.scrollTop - 64, behavior: reduce ? "auto" : "smooth" });
     setOn(id);
   }
 
   return (
-    <nav aria-label="কোর্সের অংশ" className="sticky top-10 z-20 border-b border-m-ink/10 bg-white/92 backdrop-blur-xl">
+    <nav aria-label="কোর্সের অংশ" className="sticky -top-6 z-20 border-b border-m-ink/10 bg-white/92 backdrop-blur-xl">
       <ul className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-4 scrollbar-none sm:gap-3 sm:px-6">
         {tabs.map((t) => (
           <li key={t.id} className="shrink-0">

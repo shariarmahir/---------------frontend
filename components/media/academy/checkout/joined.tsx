@@ -158,7 +158,7 @@ export function Joined({ receipt }: { receipt: Receipt }) {
             <Link href="/media/dashboard" className={mediaButton({ variant: "outline", size: "sm" })}>
               মাটির ব্যাংকে লেনদেন
             </Link>
-            <Link href="/media/academy/departments" className={mediaButton({ variant: "ghost", size: "sm" })}>
+            <Link href="/media/academy" className={mediaButton({ variant: "ghost", size: "sm" })}>
               আরও কোর্স দেখুন
             </Link>
           </div>

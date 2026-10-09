@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { batchIssues, batchStage, classSessions, foundingBatch, nextClass, roomName, slotOf, type Batch } from "./batch.ts";
+import { batchIssues, batchStage, calendarFile, classSessions, foundingBatch, nextClass, roomName, slotOf, type Batch } from "./batch.ts";
 
 const base: Batch = { id: "MEC-101", course: "MEC-101", n: 1, starts: "2026-09-05", day: 6, time: "19:00", seats: 15, enrolled: 13, room: "Kandari-MEC101-abc", opened: "2026-09-01" };
 
@@ -44,6 +44,19 @@ test("opening a classroom: start today or later, a sensible hour, no clash with 
   // A different hour, or after that batch has ended, is fine.
   assert.deepEqual(batchIssues({ ...ok, time: "20:00" }, [running], "2026-10-08"), []);
   assert.deepEqual(batchIssues({ ...ok, starts: "2026-11-21" }, [running], "2026-10-08"), []);
+});
+
+test("the routine as a phone calendar file: one 40-minute event per class, escaped text, CRLF lines", () => {
+  const ics = calendarFile([{ uid: "MEC-101-w1", title: "ক্লাস; সপ্তাহ ১, সেন্সর", at: "2026-09-05T13:00:00.000Z", minutes: 40, where: "লাইভ ক্লাস" }], "2026-10-10T08:00:00.000Z");
+  const lines = ics.split("\r\n");
+  assert.equal(lines[0], "BEGIN:VCALENDAR");
+  assert.ok(lines.includes("DTSTART:20260905T130000Z"));
+  assert.ok(lines.includes("DTEND:20260905T134000Z"));
+  assert.ok(lines.includes("DTSTAMP:20261010T080000Z"));
+  assert.ok(lines.includes("SUMMARY:ক্লাস\\; সপ্তাহ ১\\, সেন্সর"));
+  assert.ok(lines.includes("UID:MEC-101-w1@kandari-academy"));
+  assert.equal(lines.filter((l) => l === "BEGIN:VEVENT").length, 1);
+  assert.equal(lines.at(-2), "END:VCALENDAR");
 });
 
 test("a course's first batch keeps the course code, and its slot comes from the next live class", () => {

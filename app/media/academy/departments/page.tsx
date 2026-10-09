@@ -1,11 +1,6 @@
-import type { Metadata } from "next";
-import { DepartmentsView } from "@/components/media/academy/departments/departments-view";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "বিভাগ · একাডেমি",
-  description: "পেশাদারদের হাতে গড়া দক্ষতার বিভাগ — দল মিলে খোলা, প্যানেলে যাচাই, প্রতি সপ্তাহে একটা ক্লাস বিনামূল্যে।",
-};
-
+/** The departments page merged into "একাডেমি খুঁজুন", the academy's first view. */
 export default function DepartmentsPage() {
-  return <DepartmentsView />;
+  redirect("/media/academy");
 }

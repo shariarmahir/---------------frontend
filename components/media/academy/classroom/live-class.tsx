@@ -258,7 +258,6 @@ function Call({ batch, course, start }: { batch: Batch; course: Course; start: {
             hideConferenceSubject: true,
             subject: `${course.title} · ব্যাচ ${batch.n}`,
             toolbarButtons: [],
-            notifications: [],
           },
           interfaceConfigOverwrite: { SHOW_JITSI_WATERMARK: false, SHOW_WATERMARK_FOR_GUESTS: false, MOBILE_APP_PROMO: false, DEFAULT_BACKGROUND: night || undefined, TILE_VIEW_MAX_COLUMNS: 4 },
         });
@@ -331,6 +330,17 @@ function Call({ batch, course, start }: { batch: Batch; course: Course; start: {
       <div className="flex min-h-0 flex-1 gap-3 px-3 sm:px-5">
         <div className="relative min-w-0 flex-1 overflow-hidden rounded-[1.6rem] bg-black/30 ring-1 ring-white/12">
           <div ref={host} className="absolute inset-0" />
+          {status === "on" && !joinedAt && (
+            <div role="status" className="absolute inset-x-3 top-3 z-10 flex flex-wrap items-center gap-3 rounded-2xl bg-m-blue-night/85 p-3 pl-4 text-sm ring-1 ring-white/15 backdrop-blur-md sm:inset-x-auto sm:right-auto sm:left-1/2 sm:max-w-xl sm:-translate-x-1/2">
+              <Loader2 className="size-4 shrink-0 animate-spin text-m-yellow motion-reduce:animate-none" aria-hidden />
+              <p className="min-w-0 flex-1 leading-snug text-white/85">
+                {lead ? "ঘর খুলছে — Jitsi লগইন চাইলে লগইন করুন, তারপর শিক্ষার্থীরা ঢুকতে পারবে।" : "শিক্ষক ঘর খোলার অপেক্ষা — শিক্ষক ঢুকলেই ক্লাস শুরু, হাজিরা উঠবে।"}
+              </p>
+              <a href={jitsiUrl(batch.room)} target="_blank" rel="noopener noreferrer" className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-white px-3.5 text-xs font-bold text-m-ink">
+                <ExternalLink className="size-3.5" aria-hidden /> নতুন ট্যাবে
+              </a>
+            </div>
+          )}
           {status !== "on" && (
             <div className="absolute inset-0 grid place-items-center bg-m-blue-night/90 p-6 text-center">
               {status === "loading" ? (
