@@ -40,7 +40,16 @@ function Faces({ list, size = "sm" }: { list: Person[]; size?: "sm" | "md" }) {
   return (
     <span className="flex shrink-0 -space-x-1.5" aria-hidden>
       {list.slice(0, 3).map((p) => (
-        <span key={p.handle} className={cn("flex items-center justify-center rounded-full font-bengali font-bold ring-2 ring-m-card", size === "sm" ? "size-5 text-[10px]" : "size-7 text-xs", toneClass[p.tone])}>{p.initials}</span>
+        <span
+          key={p.handle}
+          className={cn(
+            "flex items-center justify-center rounded-full font-bengali font-bold ring-2 ring-m-card",
+            size === "sm" ? "size-5 text-[10px]" : "size-7 text-xs",
+            toneClass[p.tone],
+          )}
+        >
+          {p.initials}
+        </span>
       ))}
     </span>
   );
@@ -51,7 +60,10 @@ export function MutualLine({ handle }: { handle: string }) {
   const mutual = useMutuals(handle);
   const back = followsYou(handle);
   if (handle === currentUser.handle || (!mutual.length && !back)) return null;
-  const names = mutual.slice(0, 2).map((p) => p.nameBn).join(", ");
+  const names = mutual
+    .slice(0, 2)
+    .map((p) => p.nameBn)
+    .join(", ");
   return (
     <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-m-ink/80">
       {back && <span className="rounded-full bg-m-ink/6 px-2.5 py-0.5 text-xs font-semibold text-m-ink">আপনাকে অনুসরণ করেন</span>}
@@ -60,7 +72,13 @@ export function MutualLine({ handle }: { handle: string }) {
           <Faces list={mutual} size="md" />
           <span>
             {names}
-            {mutual.length > 2 && <> ও আরও <Num value={mutual.length - 2} /> জন</>} এঁকে অনুসরণ করেন
+            {mutual.length > 2 && (
+              <>
+                {" "}
+                ও আরও <Num value={mutual.length - 2} /> জন
+              </>
+            )}{" "}
+            এঁকে অনুসরণ করেন
           </span>
         </span>
       )}
@@ -78,7 +96,19 @@ export function setDismissed(handle: string, on: boolean) {
 }
 
 /** One person to follow. The ✕ shows only where hiding makes sense (suggestions). */
-export function PersonTile({ person, reason, wide, onFollow, dismissible = true }: { person: Person; reason: Reason; wide?: boolean; onFollow?: (handle: string) => void; dismissible?: boolean }) {
+export function PersonTile({
+  person,
+  reason,
+  wide,
+  onFollow,
+  dismissible = true,
+}: {
+  person: Person;
+  reason: Reason;
+  wide?: boolean;
+  onFollow?: (handle: string) => void;
+  dismissible?: boolean;
+}) {
   const ensure = useRequireAccount();
   const following = useMediaState((s) => Boolean(s.following[person.handle]));
   const mutual = useMutuals(person.handle);
@@ -89,7 +119,12 @@ export function PersonTile({ person, reason, wide, onFollow, dismissible = true 
     toast(`${person.nameBn}-কে আর দেখাব না`, { action: { label: "ফিরিয়ে আনুন", onClick: () => setDismissed(person.handle, false) } });
   }
   return (
-    <li className={cn("group relative flex shrink-0 snap-start flex-col overflow-hidden rounded-2xl bg-m-card ring-1 ring-m-ink/10 transition-[translate,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-[0_22px_40px_-24px_var(--color-signal-orange)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 shadow-m-tile", wide ? "w-full" : "w-40 sm:w-44")}>
+    <li
+      className={cn(
+        "group relative flex shrink-0 snap-start flex-col overflow-hidden rounded-2xl bg-m-card ring-1 ring-m-ink/10 transition-[translate,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0 shadow-m-tile",
+        wide ? "w-full" : "w-40 sm:w-44",
+      )}
+    >
       <Link href={`/media/u/${person.handle}`} className={cn("relative flex aspect-square items-center justify-center", toneClass[person.tone])}>
         <span className="font-bengali text-5xl font-bold transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none">{person.initials}</span>
         {person.idVerified && <IdSeal size={22} className="absolute bottom-2 left-2" />}
@@ -97,20 +132,34 @@ export function PersonTile({ person, reason, wide, onFollow, dismissible = true 
         <span className="sr-only">{person.nameBn}-এর প্রোফাইল</span>
       </Link>
       {dismissible && (
-        <button type="button" onClick={dismiss} aria-label={`${person.nameBn}-কে সরান`} className="absolute top-2 right-2 flex size-8 items-center justify-center rounded-full bg-white/80 text-m-ink transition-colors hover:bg-m-canvas">
+        <button
+          type="button"
+          onClick={dismiss}
+          aria-label={`${person.nameBn}-কে সরান`}
+          className="absolute top-2 right-2 flex size-8 items-center justify-center rounded-full bg-white/80 text-m-ink transition-colors hover:bg-m-canvas"
+        >
           <X className="size-4" aria-hidden />
         </button>
       )}
       <div className="flex flex-1 flex-col gap-1 p-3">
-        <Link href={`/media/u/${person.handle}`} className="truncate text-sm font-bold text-m-ink hover:text-m-blue">{person.nameBn}</Link>
-        <p className="flex items-center gap-1 truncate text-xs text-m-ink/70"><Icon className="size-3.5 shrink-0 text-m-blue" aria-hidden /><span className="truncate">{text}</span></p>
+        <Link href={`/media/u/${person.handle}`} className="truncate text-sm font-bold text-m-ink hover:text-m-blue">
+          {person.nameBn}
+        </Link>
+        <p className="flex items-center gap-1 truncate text-xs text-m-ink/70">
+          <Icon className="size-3.5 shrink-0 text-m-blue" aria-hidden />
+          <span className="truncate">{text}</span>
+        </p>
         {mutual.length > 0 && (
           <p className="flex items-center gap-1.5 text-xs text-m-ink/80" title={mutual.map((p) => p.nameBn).join(", ")}>
             <Faces list={mutual} />
-            <span className="truncate"><Num value={mutual.length} /> জন পারস্পরিক</span>
+            <span className="truncate">
+              <Num value={mutual.length} /> জন পারস্পরিক
+            </span>
           </p>
         )}
-        <p className="truncate text-xs text-m-ink/55"><Compact n={person.followers + (following ? 1 : 0)} /> অনুসারী · {person.district}</p>
+        <p className="truncate text-xs text-m-ink/55">
+          <Compact n={person.followers + (following ? 1 : 0)} /> অনুসারী · {person.district}
+        </p>
         <button
           type="button"
           aria-pressed={following}
@@ -162,27 +211,36 @@ export function PeopleYouMayKnow({ about, title = "আপনি হয়তো 
 
   if (list.length === 0) return null;
   const scroll = (dir: 1 | -1) => row.current?.scrollBy({ left: dir * row.current.clientWidth * 0.8, behavior: "smooth" });
-  const arrow = "absolute top-[34%] z-10 hidden size-11 items-center justify-center rounded-full bg-white/90 text-m-ink shadow-lg ring-1 ring-m-ink/17 backdrop-blur transition-[opacity,scale] hover:scale-105 hover:bg-m-canvas sm:flex";
+  const arrow =
+    "absolute top-[34%] z-10 hidden size-11 items-center justify-center rounded-full bg-white/90 text-m-ink shadow-lg ring-1 ring-m-ink/17 backdrop-blur transition-[opacity,scale] hover:scale-105 hover:bg-m-canvas sm:flex";
 
   return (
     <section aria-labelledby={headingId} className={cn("story-reveal rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 shadow-m-tile", className)}>
       <div className="mb-3 flex items-center justify-between gap-3">
-        <h2 id={headingId} className="text-base font-bold text-m-ink">{title}</h2>
+        <h2 id={headingId} className="text-base font-bold text-m-ink">
+          {title}
+        </h2>
         <div className="flex items-center gap-4">
           <button type="button" onClick={() => setAll((v) => !v)} aria-expanded={all} className="text-sm font-semibold text-m-ink/75 hover:text-m-ink">
             {all ? "কম দেখুন" : "এখানেই সব"}
           </button>
-          <Link href="/media/people" className="text-sm font-semibold text-m-blue hover:underline">সব দেখুন</Link>
+          <Link href="/media/people" className="text-sm font-semibold text-m-blue hover:underline">
+            সব দেখুন
+          </Link>
         </div>
       </div>
       {all ? (
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {list.map((s) => <PersonTile key={s.handle} person={personOrThrow(s.handle)} reason={s.reason} wide onFollow={keep} />)}
+          {list.map((s) => (
+            <PersonTile key={s.handle} person={personOrThrow(s.handle)} reason={s.reason} wide onFollow={keep} />
+          ))}
         </ul>
       ) : (
         <div className="relative">
           <ul ref={row} onScroll={measure} className="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-1 scrollbar-none">
-            {list.map((s) => <PersonTile key={s.handle} person={personOrThrow(s.handle)} reason={s.reason} onFollow={keep} />)}
+            {list.map((s) => (
+              <PersonTile key={s.handle} person={personOrThrow(s.handle)} reason={s.reason} onFollow={keep} />
+            ))}
           </ul>
           {!edges.start && (
             <button type="button" onClick={() => scroll(-1)} aria-label="আগের জন" className={cn(arrow, "-left-2")}>

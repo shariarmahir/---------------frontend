@@ -19,7 +19,10 @@ import { useWallet } from "../wallet/use-wallet";
 export function PortfolioTile({ post }: { post: RatedPost }) {
   const status = skillStatus(post.skill.self, post.skill.communityAvg, post.skill.raters);
   return (
-    <Link href={`/media/post/${post.id}`} className="group block overflow-hidden rounded-xl border border-m-ink/10 bg-m-card transition-[border-color,box-shadow] hover:border-m-blue/35 hover:shadow-[0_6px_18px_-10px_rgb(15_23_42/0.25)]">
+    <Link
+      href={`/media/post/${post.id}`}
+      className="group block overflow-hidden rounded-xl border border-m-ink/10 bg-m-card transition-[border-color,box-shadow] hover:border-m-blue/35 hover:shadow-[0_6px_18px_-10px_rgb(15_23_42/0.25)]"
+    >
       <MediaFrame slot={{ ...post.media[0], ratio: "1/1" }} rounded={false} sizes="(min-width: 1024px) 220px, 45vw" />
       <span className="block space-y-1.5 p-3">
         <span className="block truncate text-sm font-bold text-m-ink group-hover:text-m-blue">{post.skill.name}</span>
@@ -90,7 +93,10 @@ export function WalletCard({ seed }: { seed: WalletSeed }) {
         <Link href="/media/dashboard?withdraw=1" className={mediaButton({ variant: "primary", size: "sm" })}>
           টাকা তুলুন
         </Link>
-        <Link href="/media/dashboard" className="inline-flex h-9 items-center justify-center gap-1 rounded-xl border border-m-ink/26 text-sm font-semibold text-m-ink transition-colors hover:bg-m-ink/6">
+        <Link
+          href="/media/dashboard"
+          className="inline-flex h-9 items-center justify-center gap-1 rounded-xl border border-m-ink/26 text-sm font-semibold text-m-ink transition-colors hover:bg-m-ink/6"
+        >
           লেনদেন <ArrowUpRight className="size-4" aria-hidden />
         </Link>
       </div>

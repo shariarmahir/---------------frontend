@@ -35,7 +35,8 @@ export function FeedComposer() {
     { label: "গবেষণা", Icon: FlaskConical, tint: "text-m-blue", preset: { topic: "research" } },
   ] satisfies { label: string; Icon: typeof ImagePlus; tint: string; preset: ComposerPreset }[];
 
-  const item = "flex min-h-10 shrink-0 items-center gap-2 rounded-xl px-3 text-sm font-semibold text-m-ink/85 transition-colors hover:bg-m-ink/6 focus-visible:ring-2 focus-visible:ring-m-blue focus-visible:outline-none";
+  const item =
+    "flex min-h-10 shrink-0 items-center gap-2 rounded-xl px-3 text-sm font-semibold text-m-ink/85 transition-colors hover:bg-m-ink/6 focus-visible:ring-2 focus-visible:ring-m-blue focus-visible:outline-none";
 
   return (
     <section aria-label="পোস্ট তৈরি করুন" className="rounded-3xl border border-m-ink/10 bg-m-card p-3 sm:p-4 shadow-m-tile">
@@ -54,7 +55,7 @@ export function FeedComposer() {
       </div>
 
       <div className="mt-3 border-t border-m-ink/9 pt-2">
-        <div className="-mx-1 flex gap-1 overflow-x-auto px-1 scrollbar-none sm:justify-between">
+        <div className="-mx-1 flex gap-1 overflow-x-auto px-1 scrollbar-none max-sm:[mask-image:linear-gradient(to_right,black_88%,transparent)] sm:justify-between">
           {quick.map(({ label, Icon, tint, preset: p }) => (
             <button key={label} type="button" onClick={() => start(p)} className={item}>
               <Icon className={cn("size-5", tint)} aria-hidden />

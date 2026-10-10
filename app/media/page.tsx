@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Fragment, type ReactNode } from "react";
 import { BadgeCheck, ChevronDown, LayoutGrid, Sparkles, Store, UsersRound, X } from "lucide-react";
+import { AcademyPulse } from "@/components/media/feed/academy-pulse";
 import { ClassroomAd } from "@/components/media/feed/classroom-ad";
 import { FeedComposer } from "@/components/media/feed/feed-composer";
 import { FeedEnd } from "@/components/media/feed/feed-end";
@@ -53,7 +54,18 @@ function href({ tab, t, c }: Filters) {
 function adListing(id: string): AdListing | undefined {
   const l = listings.find((x) => x.id === id);
   if (!l) return undefined;
-  return { id: l.id, title: l.title, price: l.price, unit: l.unit, image: l.media.src, imageAlt: l.media.label, seller: getPerson(l.seller)?.nameBn ?? "", rating: l.rating, sold: l.sold, location: l.location };
+  return {
+    id: l.id,
+    title: l.title,
+    price: l.price,
+    unit: l.unit,
+    image: l.media.src,
+    imageAlt: l.media.label,
+    seller: getPerson(l.seller)?.nameBn ?? "",
+    rating: l.rating,
+    sold: l.sold,
+    location: l.location,
+  };
 }
 
 export default async function FeedPage({ searchParams }: { searchParams: Promise<{ tab?: string; c?: string; t?: string }> }) {
@@ -65,34 +77,56 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
 
   const shown = posts
     .filter((p) => !p.audience || p.audience === "public")
-    .filter((p) =>
-      tab === "verify" ? Boolean(p.skill) && skillStatus(p.skill!.self, p.skill!.communityAvg, p.skill!.raters) !== "verified" : tab === "sale" ? Boolean(p.listingId) : true,
-    )
+    .filter((p) => (tab === "verify" ? Boolean(p.skill) && skillStatus(p.skill!.self, p.skill!.communityAvg, p.skill!.raters) !== "verified" : tab === "sale" ? Boolean(p.listingId) : true))
     .filter((p) => !topic || topicOf(p).id === topic)
     .filter((p) => !cat || p.category === cat)
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 
   // Ad spaces: sellers' boosted listings, then the platform's own promotions.
-  const boosted = listings.filter((l) => l.featured).map((l) => adListing(l.id)).filter((x): x is AdListing => Boolean(x));
+  const boosted = listings
+    .filter((l) => l.featured)
+    .map((l) => adListing(l.id))
+    .filter((x): x is AdListing => Boolean(x));
   const prize = [...challenges].sort((a, b) => b.prize - a.prize)[1] ?? challenges[0];
-  const challengeAd = <SponsoredAd variant="challenge" challenge={{ id: prize.id, title: prize.title, host: prize.host, prize: prize.prize, deadline: prize.deadline, entries: prize.entries }} />;
+  const challengeAd = (
+    <SponsoredAd variant="challenge" challenge={{ id: prize.id, title: prize.title, host: prize.host, prize: prize.prize, deadline: prize.deadline, entries: prize.entries }} />
+  );
   const listingAd = (n: number) => (boosted[n % Math.max(1, boosted.length)] ? <SponsoredAd variant="listing" listing={boosted[n % boosted.length]} /> : null);
 
   // What appears after the post at each index (0-based).
   const slots: Record<number, ReactNode> = unfiltered
-    ? { 1: <MarketModule />, 3: listingAd(0), 5: <ResearchModule />, 7: <JobsModule />, 9: <SponsoredAd variant="research" />, 10: <CommunityModule />, 12: <AcademyModule />, 13: challengeAd, 16: listingAd(1) }
+    ? {
+        1: <MarketModule />,
+        3: listingAd(0),
+        4: <AcademyPulse />,
+        5: <ResearchModule />,
+        7: <JobsModule />,
+        9: <SponsoredAd variant="research" />,
+        10: <CommunityModule />,
+        12: <AcademyModule />,
+        13: challengeAd,
+        16: listingAd(1),
+      }
     : { 3: listingAd(0), 8: <SponsoredAd variant="research" /> };
 
   // A filtered view opens on the room it is about.
   const lead =
-    tab === "sale" ? <MarketModule /> : topic === "research" ? <ResearchModule /> : topic === "help" || topic === "rights" ? <CommunityModule /> : null;
+    tab === "sale" ? (
+      <MarketModule />
+    ) : topic === "research" ? (
+      <ResearchModule />
+    ) : topic === "education" ? (
+      <AcademyPulse />
+    ) : topic === "help" || topic === "rights" ? (
+      <CommunityModule />
+    ) : null;
 
   const card = (p: (typeof shown)[number]) => <PostCard post={p} author={personOrThrow(p.author)} listing={p.listingId ? getListing(p.listingId) : undefined} />;
 
   const chip = (on: boolean) =>
     cn(
       "inline-flex min-h-9 items-center gap-1.5 rounded-full border px-3.5 text-sm font-semibold whitespace-nowrap transition-colors",
-      on ? "border-m-blue bg-m-yellow text-m-ink shadow-[0_8px_20px_-12px_var(--color-signal-orange)]" : "border-m-ink/10 bg-m-card text-m-ink/80 hover:border-m-blue/40 hover:text-m-blue",
+      on ? "border-m-yellow bg-m-yellow text-m-ink" : "border-m-ink/12 text-m-ink/75 hover:border-m-ink/30 hover:text-m-ink",
     );
 
   return (
@@ -105,7 +139,7 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
         {unfiltered && <Highlights />}
 
         <nav aria-label="ফিড ফিল্টার" className="space-y-3">
-          <div className="grid grid-cols-4 gap-1 rounded-2xl border border-m-ink/10 bg-m-card p-1 shadow-m-tile">
+          <div className="grid grid-cols-4 border-b border-m-ink/10">
             {tabs.map(({ key, label, Icon }) => (
               <Link
                 key={key}
@@ -113,8 +147,8 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
                 aria-current={tab === key ? "page" : undefined}
                 scroll={false}
                 className={cn(
-                  "flex min-h-11 flex-col items-center justify-center gap-0.5 rounded-xl px-1 text-xs font-semibold transition-[background-color,color,box-shadow] sm:flex-row sm:gap-1.5 sm:text-sm",
-                  tab === key ? "bg-m-yellow text-m-ink shadow-m-tile" : "text-m-ink/75 hover:bg-m-ink/3 hover:text-m-ink",
+                  "-mb-px flex min-h-12 flex-col items-center justify-center gap-0.5 border-b-2 px-1 text-xs font-bold transition-colors sm:flex-row sm:gap-1.5 sm:text-sm",
+                  tab === key ? "border-m-yellow text-m-ink" : "border-transparent text-m-ink/60 hover:text-m-ink",
                 )}
               >
                 <Icon className="size-4.5 shrink-0" aria-hidden />
@@ -162,7 +196,10 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
                         href={href({ tab, t: topic, c: c.id })}
                         scroll={false}
                         aria-current={cat === c.id ? "page" : undefined}
-                        className={cn("flex min-h-10 items-center rounded-xl px-3 text-sm font-semibold transition-colors", cat === c.id ? "bg-m-yellow text-m-ink" : "text-m-ink/85 hover:bg-m-ink/6")}
+                        className={cn(
+                          "flex min-h-10 items-center rounded-xl px-3 text-sm font-semibold transition-colors",
+                          cat === c.id ? "bg-m-yellow text-m-ink" : "text-m-ink/85 hover:bg-m-ink/6",
+                        )}
                       >
                         {c.bn}
                       </Link>
@@ -199,7 +236,11 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
             icon="posts"
             title="এই ফিল্টারে কোনো পোস্ট নেই"
             body="অন্য ধরন বা বিভাগ বেছে নিন, অথবা প্রথম পোস্টটি আপনিই দিন।"
-            action={<Link href="/media/post/new" className={mediaButton({ variant: "primary" })}>পোস্ট করুন</Link>}
+            action={
+              <Link href="/media/post/new" className={mediaButton({ variant: "primary" })}>
+                পোস্ট করুন
+              </Link>
+            }
           />
         ) : (
           <>

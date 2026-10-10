@@ -101,7 +101,7 @@ export function AccountMenu({ variant = "site", className }: { variant?: "site" 
           align="end"
           sideOffset={8}
           collisionPadding={12}
-          className="menu-pop z-60 w-76 rounded-3xl bg-signal-orange p-2 text-text-primary shadow-[0_28px_60px_-18px_rgb(0_0_0/0.7)] ring-1 ring-text-primary/15"
+          className="menu-pop z-60 w-[min(19rem,calc(100vw-1rem))] rounded-3xl bg-signal-orange p-2 text-text-primary shadow-[0_28px_60px_-18px_rgb(0_0_0/0.7)] ring-1 ring-text-primary/15"
         >
           {/* Who is signed in — an ink card with the picture. */}
           <div className="flex items-center gap-space-sm rounded-2xl bg-text-primary p-space-sm text-white">

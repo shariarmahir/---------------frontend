@@ -2,17 +2,12 @@
 
 import Lenis from "lenis";
 import "lenis/dist/lenis.css";
-import { Archivo, Instrument_Serif, Tiro_Bangla } from "next/font/google";
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef } from "react";
 import { cn } from "@/lib/utils";
+import { ACADEMY_FACES } from "../../ui/fonts";
+import { useMediaTheme } from "../../ui/theme";
 
-/** The wide display face: Archivo stretched, for Latin and digits beside Hind Siliguri's Bangla. */
-const archivo = Archivo({ subsets: ["latin"], axes: ["wdth"], variable: "--font-archivo", display: "swap" });
-/** The turned word in a heading — "ছোট *বিশ্ববিদ্যালয়*" — is a serif italic: Instrument Serif for Latin, Tiro Bangla for Bangla. */
-const instrument = Instrument_Serif({ subsets: ["latin"], weight: "400", style: "italic", variable: "--font-instrument", display: "swap" });
-const tiro = Tiro_Bangla({ subsets: ["bengali"], weight: "400", style: "italic", variable: "--font-tiro", display: "swap" });
-
-const SKIN = cn("catalogue", archivo.variable, instrument.variable, tiro.variable);
+const SKIN = cn("catalogue", ACADEMY_FACES);
 
 /** A block shows once its top passes 88% of the screen height. */
 const ARRIVE = "0px 0px -12% 0px";
@@ -25,7 +20,6 @@ export const NAV_H = 64;
 const ANCHOR_OFFSET = -(NAV_H + 52);
 
 export type CatalogueTheme = "dark" | "light";
-const THEME_KEY = "kandari-catalogue-theme";
 
 interface Catalogue {
   theme: CatalogueTheme;
@@ -57,25 +51,8 @@ const scroller = () => document.getElementById("academy-main");
 export function CatalogueRoot({ className, children }: { className?: string; children: React.ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
   const glide = useRef<Lenis | null>(null);
-  const [theme, setTheme] = useState<CatalogueTheme>(() => {
-    try {
-      return localStorage.getItem(THEME_KEY) === "light" ? "light" : "dark";
-    } catch {
-      return "dark";
-    }
-  });
-
-  const toggleTheme = useCallback(() => {
-    setTheme((t) => {
-      const next = t === "dark" ? "light" : "dark";
-      try {
-        localStorage.setItem(THEME_KEY, next);
-      } catch {
-        // Private mode: the choice holds for this visit.
-      }
-      return next;
-    });
-  }, []);
+  // One theme for the whole platform: the media frame keeps it.
+  const { theme, toggleTheme } = useMediaTheme();
 
   useEffect(() => {
     const page = root.current;

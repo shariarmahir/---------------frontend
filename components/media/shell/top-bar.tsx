@@ -9,6 +9,7 @@ import { AccountMenu } from "@/components/auth/account-menu";
 import { CURRENT_USER_HANDLE } from "@/data/media/users";
 import { NotificationBell } from "../notifications/notifications";
 import { mediaButton } from "../ui/button-styles";
+import { ThemeToggle } from "../ui/theme";
 import { MobileMenu, NumeralsToggle } from "./nav";
 import { SearchBox, UnreadBubble } from "./search-box";
 import type { UnreadSeed } from "./unread";
@@ -20,10 +21,10 @@ export function TopBar({ unreadSeed }: { unreadSeed: UnreadSeed }) {
         <MobileMenu unreadSeed={unreadSeed} me={CURRENT_USER_HANDLE} />
         <Link href="/media" className="flex min-w-0 items-center gap-2 rounded-lg sm:shrink-0 focus-visible:outline-2 focus-visible:outline-m-blue">
           <span className="frost-tile hidden rounded-xl px-1.5 py-1 sm:block">
-            <Image src="/logo/kandari-logo.png" alt="" width={1600} height={967} sizes="64px" className="h-7 w-auto" priority />
+            <Image src="/logo/kandari-logo.png" alt="" width={1600} height={967} sizes="64px" className="h-7 w-auto" />
           </span>
           <span className="flex min-w-0 flex-col leading-none">
-            <span className="truncate text-[16px] text-m-ink sm:text-[21px]">
+            <span className="truncate text-[13px] text-m-ink min-[360px]:text-[16px] sm:text-[21px]">
               <LabelText text={LABEL_TEXT.media} />
             </span>
             <span className="mt-1 hidden text-[11px] font-bold text-m-blue sm:block">দক্ষতা · প্রমাণ · সুযোগ</span>
@@ -36,11 +37,12 @@ export function TopBar({ unreadSeed }: { unreadSeed: UnreadSeed }) {
 
         <div className="ml-auto flex items-center gap-1 sm:gap-1.5 md:ml-0 max-sm:[&>a]:size-9">
           <NumeralsToggle className="frost-tile hidden border-transparent text-m-ink/80 hover:text-m-blue sm:inline-flex" />
+          <ThemeToggle className={mediaButton({ variant: "frame", size: "icon", className: "hidden min-[380px]:inline-flex" })} />
           <Link href="/media/search" className={mediaButton({ variant: "frame", size: "icon", className: "hidden sm:inline-flex md:hidden" })}>
             <Search aria-hidden />
             <span className="sr-only">খুঁজুন</span>
           </Link>
-          <Link href="/media/people" title="মানুষ খুঁজুন ও অনুসরণ করুন" className={mediaButton({ variant: "frame", size: "icon" })}>
+          <Link href="/media/people" title="মানুষ খুঁজুন ও অনুসরণ করুন" className={mediaButton({ variant: "frame", size: "icon", className: "hidden min-[420px]:inline-flex" })}>
             <UsersRound aria-hidden />
             <span className="sr-only">মানুষ</span>
           </Link>

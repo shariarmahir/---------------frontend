@@ -2,12 +2,13 @@ import Link from "next/link";
 import { ArrowUpRight, Earth, FlaskConical, FolderKanban, GraduationCap, LifeBuoy, Lock, MapPin, Megaphone, Tag, UsersRound } from "lucide-react";
 import { getCategory } from "@/data/media/categories";
 import { bgOf, feelingOf } from "@/data/media/feelings";
-import { topicOf } from "@/data/media/topics";
+import { topicOf, topics } from "@/data/media/topics";
 import type { Listing, Person, Post } from "@/data/media/types";
 import { CURRENT_USER_HANDLE, getPerson } from "@/data/media/users";
 import { BG_MAX } from "@/lib/media/schemas";
 import { roomHref } from "@/lib/media/showcase";
 import { cn } from "@/lib/utils";
+import { toneStyle } from "../academy/catalogue/tones";
 import { Ago, Taka } from "../ui/numerals";
 import { MediaGallery } from "../ui/media-gallery";
 import { PersonAvatar } from "../ui/person";
@@ -34,7 +35,10 @@ export function CategoryChip({ id, className }: { id: Post["category"]; classNam
   return (
     <Link
       href={`/media?c=${c.id}`}
-      className={cn("inline-flex min-h-7 items-center rounded-full border border-m-ink/10 bg-m-card px-2.5 text-xs font-semibold text-m-ink/80 transition-colors hover:border-m-blue/40 hover:text-m-blue", className)}
+      className={cn(
+        "inline-flex min-h-7 items-center rounded-full border border-m-ink/10 bg-m-card px-2.5 text-xs font-semibold text-m-ink/80 transition-colors hover:border-m-blue/40 hover:text-m-blue",
+        className,
+      )}
     >
       {c.bn}
     </Link>
@@ -67,7 +71,12 @@ export function PostCard({
   const bg = post.media.length === 0 && post.caption.length <= BG_MAX ? bgOf(post.bg) : undefined;
   const Audience = post.audience === "private" ? Lock : post.audience === "followers" ? UsersRound : Earth;
   return (
-    <article id={post.id} className="scroll-mt-24 rounded-2xl border border-m-ink/10 bg-m-card story-reveal transition-[translate,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-m-ink/21 hover:shadow-[0_24px_44px_-26px_var(--color-signal-orange)] active:scale-[0.99] motion-reduce:transition-none motion-reduce:hover:translate-y-0 shadow-m-tile">
+    <article
+      id={post.id}
+      style={toneStyle(topics.indexOf(topic))}
+      className="tone story-reveal relative scroll-mt-24 rounded-2xl border border-m-ink/10 bg-m-card shadow-m-tile transition-[border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-(--c-app)/50 motion-reduce:transition-none"
+    >
+      <span aria-hidden className="tone-bar" />
       <header className="flex items-start gap-3 p-4 pb-0 sm:p-6 sm:pb-0">
         <Link href={`/media/u/${author.handle}`} className="shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-m-blue">
           <PersonAvatar person={author} />
@@ -87,7 +96,9 @@ export function PostCard({
           <p className="flex min-w-0 items-center gap-1 text-xs text-m-ink/65">
             <span className="truncate">{author.headline}</span>
             <span aria-hidden>·</span>
-            <span className="shrink-0"><Ago iso={post.createdAt} live={live} /></span>
+            <span className="shrink-0">
+              <Ago iso={post.createdAt} live={live} />
+            </span>
             {post.place && (
               <span className="inline-flex shrink-0 items-center gap-0.5">
                 <span aria-hidden>·</span> <MapPin className="size-3" aria-hidden /> {post.place}
@@ -108,7 +119,14 @@ export function PostCard({
         )}
 
         {bg ? (
-          <p className={cn("grid min-h-56 place-items-center rounded-2xl px-6 py-10 text-center text-2xl leading-snug font-bold whitespace-pre-line text-balance sm:text-[1.7rem]", bg.className)}>{post.caption}</p>
+          <p
+            className={cn(
+              "grid min-h-56 place-items-center rounded-2xl px-6 py-10 text-center text-2xl leading-snug font-bold whitespace-pre-line text-balance sm:text-[1.7rem]",
+              bg.className,
+            )}
+          >
+            {post.caption}
+          </p>
         ) : post.caption ? (
           <p className="text-[15px] leading-relaxed whitespace-pre-line text-m-ink">{post.caption}</p>
         ) : null}
@@ -127,15 +145,24 @@ export function PostCard({
           {topic.id !== "skill" && (
             <Link
               href={`/media?t=${topic.id}`}
-              className="inline-flex min-h-7 items-center gap-1 rounded-full bg-m-ink/6 px-2.5 text-xs font-semibold text-m-ink/80 transition-colors hover:bg-m-ink/8"
+              className="inline-flex min-h-7 items-center gap-1 rounded-full bg-(--c-app)/15 px-2.5 text-xs font-semibold text-m-ink transition-colors hover:bg-(--c-app)/30"
             >
-              <TopicIcon className="size-3.5 text-m-blue" aria-hidden />
+              <TopicIcon className="size-3.5 text-(--c-app-ink)" aria-hidden />
               {topic.bn}
             </Link>
           )}
           {post.from && (
-            <Link href={roomHref(post.from)} className="inline-flex min-h-7 items-center gap-1 rounded-full bg-m-blue-soft px-2.5 text-xs font-semibold text-m-ink transition-colors hover:bg-m-green-soft">
-              {post.from.kind === "lab" ? <FlaskConical className="size-3.5" aria-hidden /> : post.from.kind === "team" ? <UsersRound className="size-3.5" aria-hidden /> : <GraduationCap className="size-3.5" aria-hidden />}
+            <Link
+              href={roomHref(post.from)}
+              className="inline-flex min-h-7 items-center gap-1 rounded-full bg-m-blue-soft px-2.5 text-xs font-semibold text-m-ink transition-colors hover:bg-m-green-soft"
+            >
+              {post.from.kind === "lab" ? (
+                <FlaskConical className="size-3.5" aria-hidden />
+              ) : post.from.kind === "team" ? (
+                <UsersRound className="size-3.5" aria-hidden />
+              ) : (
+                <GraduationCap className="size-3.5" aria-hidden />
+              )}
               {post.from.name}
             </Link>
           )}

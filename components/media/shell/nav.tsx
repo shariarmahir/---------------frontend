@@ -17,7 +17,6 @@ import {
   Menu,
   MessageCircle,
   Plus,
-  ShieldCheck,
   StickyNote,
   Store,
   Trophy,
@@ -32,8 +31,10 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { mediaNavGroups, mediaTabs, type NavIcon } from "@/data/media/nav";
 import { PixelMark } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
+import { toneStyle } from "../academy/catalogue/tones";
 import { mediaButton } from "../ui/button-styles";
 import { Num, useNumerals } from "../ui/numerals";
+import { ThemeToggle } from "../ui/theme";
 import { useUnread, type UnreadSeed } from "./unread";
 
 export const navIcons: Record<NavIcon, LucideIcon> = {
@@ -58,7 +59,21 @@ export const navIcons: Record<NavIcon, LucideIcon> = {
 };
 
 /** Sections the phone's "explore" tab stands for. */
-const exploreRoutes = ["/media/explore", "/media/classroom", "/media/academy", "/media/news","/media/jobs", "/media/together", "/media/civic", "/media/notes", "/media/dashboard", "/media/messages", "/media/search", "/media/notifications", "/media/settings"];
+const exploreRoutes = [
+  "/media/explore",
+  "/media/classroom",
+  "/media/academy",
+  "/media/news",
+  "/media/jobs",
+  "/media/together",
+  "/media/civic",
+  "/media/notes",
+  "/media/dashboard",
+  "/media/messages",
+  "/media/search",
+  "/media/notifications",
+  "/media/settings",
+];
 
 function isActive(pathname: string, href: string, me: string): boolean {
   if (href === "/media") return pathname === "/media" || (pathname.startsWith("/media/post/") && pathname !== "/media/post/new");
@@ -100,12 +115,16 @@ export function NumeralsToggle({ className }: { className?: string }) {
 function NavGroups({ pathname, me, unread, size }: { pathname: string; me: string; unread: number; size: "rail" | "sheet" }) {
   const reduce = useReducedMotion();
   return (
-    <div className={size === "rail" ? "space-y-5" : "space-y-4"}>
-      {mediaNavGroups.map((g) => (
-        <div key={g.title}>
-          <p className="mb-1 px-3 text-[11px] font-bold tracking-wide text-m-ink/65">{g.title}</p>
+    <div className="space-y-4">
+      {mediaNavGroups.map((g, gi) => (
+        <div key={g.title} className={cn(gi > 0 && "border-t border-m-ink/10 pt-4")}>
+          {/* "০১ / শেখা ও কাজ", like the academy's band labels. */}
+          <p className="mb-1.5 px-3 font-mono text-[11px] font-bold tracking-wide text-m-ink/50">
+            <Num value={String(gi + 1).padStart(2, "0")} /> / {g.title}
+          </p>
           <ul className="space-y-0.5">
-            {g.items.map((item) => {
+            {g.items.map((item, j) => {
+              const tone = mediaNavGroups.slice(0, gi).reduce((n, x) => n + x.items.length, j);
               const Icon = navIcons[item.icon];
               const on = isActive(pathname, item.href, me);
               return (
@@ -124,12 +143,18 @@ function NavGroups({ pathname, me, unread, size }: { pathname: string; me: strin
                         layoutId={`media-nav-${size}`}
                         transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 520, damping: 40, mass: 0.7 }}
                         aria-hidden
-                        className="absolute inset-0 -z-10 rounded-xl bg-m-yellow shadow-[0_10px_24px_-14px_var(--color-signal-orange)]"
+                        className="absolute inset-0 -z-10 rounded-xl bg-m-ink/8 ring-1 ring-m-ink/10"
                       />
                     )}
-                    <Icon className="size-5" strokeWidth={on ? 2.25 : 1.75} aria-hidden />
+                    {/* Each room in its own colour, like the academy's department icons. */}
+                    <span
+                      style={toneStyle(tone)}
+                      className={cn("tone grid size-7 shrink-0 place-items-center rounded-lg transition-colors", on ? "bg-(--c-app) text-black" : "bg-(--c-app)/15 text-(--c-app-ink)")}
+                    >
+                      <Icon className="size-4.5" strokeWidth={on ? 2.25 : 1.75} aria-hidden />
+                    </span>
                     <span className="flex-1">{item.label}</span>
-                    {item.badge && <CountBadge n={unread} className={on ? "bg-m-card text-m-blue" : undefined} />}
+                    {item.badge && <CountBadge n={unread} />}
                   </Link>
                 </li>
               );
@@ -150,21 +175,23 @@ export function LeftRail({ unreadSeed, me }: { unreadSeed: UnreadSeed; me: strin
         <Plus aria-hidden /> পোস্ট করুন
       </Link>
       <NavGroups pathname={pathname} me={me} unread={unread} size="rail" />
-      <div className="blue-band mt-6 space-y-2 rounded-2xl p-4 shadow-m-tile">
-        <PixelMark tone="dark" className="mb-3" />
-        <p className="flex items-center gap-2 text-sm font-bold text-m-on">
-          <ShieldCheck className="size-4.5 text-m-yellow" aria-hidden /> এক এনআইডি, এক অ্যাকাউন্ট
+      <div className="mt-auto space-y-3 border-t border-m-ink/10 px-1 pt-4">
+        <div className="flex items-center gap-2">
+          <ThemeToggle className={mediaButton({ variant: "frame", size: "icon" })} />
+          <NumeralsToggle />
+        </div>
+        <p className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-m-ink/60">
+          <Link href="/" className="hover:text-m-ink">
+            কাণ্ডারী-ল্যাব
+          </Link>
+          <Link href="/media/settings" className="hover:text-m-ink">
+            গোপনীয়তা
+          </Link>
+          <Link href="/media/credits" className="hover:text-m-ink">
+            ছবির কৃতজ্ঞতা
+          </Link>
         </p>
-        <p className="text-xs leading-relaxed text-white/75">ভুয়া প্রোফাইল নেই — তাই প্রতিটি রেটিং একজন সত্যিকারের মানুষের।</p>
-        <Link href="/media/onboarding" className="text-xs font-semibold text-m-yellow hover:underline">
-          দক্ষতা-প্রোফাইল খুলুন →
-        </Link>
       </div>
-      <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 px-1 text-[11px] text-m-ink/65">
-        <Link href="/" className="hover:text-m-blue">কাণ্ডারী-ল্যাব</Link>
-        <Link href="/media/settings" className="hover:text-m-blue">গোপনীয়তা</Link>
-        <Link href="/media/credits" className="hover:text-m-blue">ছবির কৃতজ্ঞতা</Link>
-      </p>
     </nav>
   );
 }
@@ -190,13 +217,13 @@ export function BottomTabs({ me }: { me: string }) {
               >
                 {on && <span aria-hidden className="live-in absolute -top-1.5 h-[3px] w-8 rounded-full bg-m-blue" />}
                 {create ? (
-                  <span className="-mt-5 flex size-12 items-center justify-center rounded-full bg-m-yellow text-m-ink shadow-[0_8px_20px_-6px_var(--color-signal-orange)] ring-4 ring-white transition-transform duration-200 active:rotate-90">
+                  <span className="-mt-5 flex size-12 items-center justify-center rounded-full bg-m-yellow text-m-ink shadow-[0_8px_20px_-6px_var(--color-signal-orange)] ring-4 ring-m-ground transition-transform duration-200 active:rotate-90">
                     <Icon className="size-6" strokeWidth={2.5} aria-hidden />
                   </span>
                 ) : (
                   <Icon className="size-6" strokeWidth={on ? 2.25 : 1.75} aria-hidden />
                 )}
-                <span>{t.label}</span>
+                <span className="max-[299px]:sr-only">{t.label}</span>
               </Link>
             </li>
           );
@@ -220,7 +247,11 @@ export function MobileMenu({ unreadSeed, me }: { unreadSeed: UnreadSeed; me: str
           <span className="sr-only">মেনু খুলুন</span>
         </button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-80 max-w-[85vw] overflow-y-auto border-m-ink/10 bg-m-canvas font-sans text-m-ink" onClick={(e) => (e.target as HTMLElement).closest("a") && setOpenOn(null)}>
+      <SheetContent
+        side="left"
+        className="w-80 max-w-[85vw] overflow-y-auto border-m-ink/10 bg-m-canvas font-sans text-m-ink"
+        onClick={(e) => (e.target as HTMLElement).closest("a") && setOpenOn(null)}
+      >
         <SheetHeader>
           <PixelMark tone="light" className="mb-2" />
           <SheetTitle className="text-lg font-bold text-m-blue">শিক্ষিতদের মিডিয়া</SheetTitle>
@@ -230,11 +261,22 @@ export function MobileMenu({ unreadSeed, me }: { unreadSeed: UnreadSeed; me: str
           <NavGroups pathname={pathname} me={me} unread={unread} size="sheet" />
         </div>
         <div className="mt-2 space-y-3 border-t border-m-ink/10 px-4 py-4">
-          <NumeralsToggle />
-          <Link href="/media/onboarding" className="block text-sm font-semibold text-m-blue">দক্ষতা-প্রোফাইল খুলুন →</Link>
-          <Link href="/media/settings" className="block text-sm text-m-ink/65">গোপনীয়তা ও সময়</Link>
-          <Link href="/media/credits" className="block text-sm text-m-ink/65">ছবির কৃতজ্ঞতা</Link>
-          <Link href="/" className="block text-sm text-m-ink/65">কাণ্ডারী-ল্যাব হোম</Link>
+          <div className="flex items-center gap-2">
+            <ThemeToggle className={mediaButton({ variant: "frame", size: "icon" })} />
+            <NumeralsToggle />
+          </div>
+          <Link href="/media/onboarding" className="block text-sm font-semibold text-m-blue">
+            দক্ষতা-প্রোফাইল খুলুন →
+          </Link>
+          <Link href="/media/settings" className="block text-sm text-m-ink/65">
+            গোপনীয়তা ও সময়
+          </Link>
+          <Link href="/media/credits" className="block text-sm text-m-ink/65">
+            ছবির কৃতজ্ঞতা
+          </Link>
+          <Link href="/" className="block text-sm text-m-ink/65">
+            কাণ্ডারী-ল্যাব হোম
+          </Link>
         </div>
       </SheetContent>
     </Sheet>

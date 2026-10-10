@@ -3,21 +3,20 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { SealCheck } from "@phosphor-icons/react/ssr";
-import { MapPin, PenLine, Settings } from "lucide-react";
-import { AccountAvatar } from "@/components/auth/account-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/lib/auth/client";
+import { personFromProfile } from "@/lib/media/my-person";
 import { useHydrated, useMediaState } from "@/lib/media/store";
 import { mediaButton } from "../ui/button-styles";
 import { EmptyState } from "../ui/empty-state";
+import { ProfileView } from "./profile-view";
 
 /**
  * "আমি" — the signed-in account's own profile. Accounts linked to a demo
- * member open that member's public page; a new account shows the profile
- * it built in onboarding, or is sent to onboarding to build one.
+ * member open that member's page; a new account gets the same profile built
+ * from what it wrote in onboarding, or is sent there to build one.
  */
-export function MyProfile({ handles, categoryNames }: { handles: string[]; categoryNames: Record<string, string> }) {
+export function MyProfile({ handles }: { handles: string[] }) {
   const router = useRouter();
   const { account } = useAuth();
   const hydrated = useHydrated();
@@ -35,7 +34,7 @@ export function MyProfile({ handles, categoryNames }: { handles: string[]; categ
       <EmptyState
         icon="profile"
         title="আপনার দক্ষতা-প্রোফাইল এখনো খোলা হয়নি"
-        body="পরিচয় যাচাই, দক্ষতার বিভাগ আর এক লাইনের পরিচয় — তিন ধাপে প্রোফাইল তৈরি হবে। তারপর পোস্ট, রেটিং আর কাজ।"
+        body="পরিচয় যাচাই, দক্ষতার বিভাগ আর এক লাইনের পরিচয় — তিন ধাপে প্রোফাইল তৈরি হবে। তারপর পোস্ট, CV আর কাজ।"
         action={
           <Link href="/media/onboarding" className={mediaButton({ variant: "primary" })}>
             প্রোফাইল খুলুন
@@ -45,44 +44,5 @@ export function MyProfile({ handles, categoryNames }: { handles: string[]; categ
     );
   }
 
-  return (
-    <article className="overflow-hidden rounded-2xl border border-m-ink/10 bg-m-card shadow-m-tile">
-      <div className="h-24 bg-linear-to-r from-m-blue to-emerald-700" />
-      <div className="px-5 pb-6 sm:px-8">
-        <AccountAvatar name={profile.displayName} className="-mt-10 size-20 border-4 border-white text-3xl" />
-        <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <h1 className="flex items-center gap-2 text-2xl font-bold text-m-ink">
-              {profile.displayName}
-              <SealCheck size={24} weight="duotone" className="text-m-blue" aria-label="পরিচয় যাচাইকৃত" />
-            </h1>
-            <p className="text-sm text-m-ink/65">@{profile.handle}</p>
-          </div>
-          <Link href="/media/settings" className={mediaButton({ variant: "quiet", size: "sm" })}>
-            <Settings aria-hidden /> সেটিংস
-          </Link>
-        </div>
-        {profile.headline ? <p className="mt-3 font-semibold text-m-ink">{profile.headline}</p> : null}
-        <p className="mt-1 flex items-center gap-1 text-sm text-m-ink/80">
-          <MapPin className="size-4 text-m-blue" aria-hidden /> {profile.district}
-        </p>
-        {profile.bio ? <p className="mt-3 max-w-prose text-[15px] leading-relaxed whitespace-pre-line text-m-ink/80">{profile.bio}</p> : null}
-        <ul className="mt-4 flex flex-wrap gap-2" aria-label="দক্ষতার বিভাগ">
-          {profile.categories.map((c) => (
-            <li key={c} className="rounded-full bg-m-ink/6 px-3 py-1 text-sm font-semibold text-m-blue">
-              {categoryNames[c] ?? c}
-            </li>
-          ))}
-        </ul>
-        <div className="mt-6 flex flex-wrap gap-2">
-          <Link href="/media/post/new?topic=skill" className={mediaButton({ variant: "primary" })}>
-            <PenLine aria-hidden /> দক্ষতার প্রমাণ পোস্ট করুন
-          </Link>
-          <Link href="/account" className={mediaButton({ variant: "quiet" })}>
-            কাণ্ডারী অ্যাকাউন্ট
-          </Link>
-        </div>
-      </div>
-    </article>
-  );
+  return <ProfileView person={personFromProfile(profile)} self />;
 }

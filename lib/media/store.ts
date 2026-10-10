@@ -5,6 +5,7 @@ import type { BoardPost, CategoryId, Challenge, CivicReport, Comment, CommunityE
 import { follows } from "@/data/media/follows";
 import { CURRENT_USER_HANDLE } from "@/data/media/users";
 import { activeAccountId, subscribeAuth } from "@/lib/auth/client";
+import { emptyCv, type CvDetails } from "./cv";
 import type { ClassMsg } from "./class-chat";
 import type { Marks, Pin } from "./class-pins";
 import type { Classroom } from "./classroom";
@@ -76,6 +77,13 @@ export interface MyNote {
   at: string;
 }
 
+/** A line on the feed's to-do list. */
+export interface Todo {
+  id: string;
+  text: string;
+  done: boolean;
+}
+
 export interface MyEntry {
   summary: string;
   link: string;
@@ -94,9 +102,11 @@ export interface Privacy {
   hideCounts: boolean;
   /** Suggest a break after this many minutes (0 = off). */
   breakAfter: number;
+  /** Who sees the posts on the viewer's profile: everyone (as each post's audience allows) or only the viewer. */
+  profileFeed: "open" | "private";
 }
 
-export const defaultPrivacy: Privacy = { districtOnly: false, messages: "verified", anonymousReports: true, hideCounts: false, breakAfter: 30 };
+export const defaultPrivacy: Privacy = { districtOnly: false, messages: "verified", anonymousReports: true, hideCounts: false, breakAfter: 30, profileFeed: "open" };
 
 export interface MediaState {
   /* community */
@@ -148,6 +158,10 @@ export interface MediaState {
   academy: AcademyState;
   /** Today's Learn → Connect → Create → Apply → Relax steps, keyed by date. */
   plan: { date: string; done: Record<string, true> };
+  /** The feed's to-do list. */
+  todos: Todo[];
+  /** The CV: contact, extra history, chosen layout and the uploaded résumé. */
+  cv: CvDetails;
 
   liked: Record<string, true>;
   /** `${postId}:${commentId}` */
@@ -216,6 +230,8 @@ const initialState: MediaState = Object.freeze({
   crimeFlags: {},
   academy: emptyAcademy,
   plan: { date: "", done: {} },
+  todos: [],
+  cv: emptyCv,
   liked: {},
   commentLikes: {},
   comments: {},
