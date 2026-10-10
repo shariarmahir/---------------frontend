@@ -5,8 +5,10 @@ import { RouteGuard } from "@/components/auth/route-guard";
 import { Toaster } from "@/components/ui/sonner";
 import { BottomTabs, LeftRail } from "@/components/media/shell/nav";
 import { TopBar } from "@/components/media/shell/top-bar";
+import { LanguageProvider } from "@/components/media/ui/language";
 import { NumeralsProvider } from "@/components/media/ui/numerals";
 import { UsageTracker } from "@/components/media/wellbeing/usage";
+import { LANG_COOKIE, readLang } from "@/lib/media/language";
 import { NUMERALS_COOKIE } from "@/lib/media/numerals-cookie";
 import { threads } from "@/data/media/chat";
 import { CURRENT_USER_HANDLE } from "@/data/media/users";
@@ -39,9 +41,12 @@ export const metadata: Metadata = {
 const unreadSeed = Object.fromEntries(threads.filter((t) => t.unread > 0).map((t) => [t.id, t.unread]));
 
 export default async function MediaLayout({ children }: { children: React.ReactNode }) {
-  const numerals = (await cookies()).get(NUMERALS_COOKIE)?.value === "latn" ? "latn" : "bn";
+  const jar = await cookies();
+  const lang = readLang(jar.get(LANG_COOKIE)?.value);
+  const numerals = jar.get(NUMERALS_COOKIE)?.value === "latn" || lang === "en" ? "latn" : "bn";
   return (
     <NumeralsProvider initial={numerals}>
+      <LanguageProvider initial={lang}>
       {/* Members only: proxy.ts redirects signed-out visitors to /login before
           this renders; the guard re-checks the browser session. */}
       <RouteGuard>
@@ -73,6 +78,7 @@ export default async function MediaLayout({ children }: { children: React.ReactN
           />
         </div>
       </RouteGuard>
+      </LanguageProvider>
     </NumeralsProvider>
   );
 }

@@ -18,6 +18,7 @@ import type { Classroom } from "@/lib/media/classroom";
 import type { LabRoom } from "@/lib/media/lab";
 import { updateMedia, useMediaState } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
+import { useLang, useT } from "../../ui/language";
 import { useFormat } from "../../ui/numerals";
 import { ReactionFace } from "./reaction-face";
 import { roomInPath } from "./rooms";
@@ -67,6 +68,8 @@ export function ClassTicker() {
   const { account } = useAuth();
   const pathname = usePathname();
   const { num } = useFormat();
+  const t = useT();
+  const { lang } = useLang();
   const reduce = useReducedMotion();
   const classMap = useMediaState((s) => s.classrooms);
   const labMap = useMediaState((s) => s.labs);
@@ -134,9 +137,9 @@ export function ClassTicker() {
   const topic = (
     <>
       {item.urgent ? (
-        <span className="mr-1.5 rounded-md bg-m-red px-1.5 py-px text-[11px] text-m-on">{item.label}</span>
+        <span className="mr-1.5 rounded-md bg-m-red px-1.5 py-px text-[11px] text-m-on">{t(item.label)}</span>
       ) : (
-        <span className="text-m-ink/70">{item.label} · </span>
+        <span className="text-m-ink/70">{t(item.label)} · </span>
       )}
       {item.text}
     </>
@@ -170,11 +173,18 @@ export function ClassTicker() {
               )}
               {item.quip && (
                 <motion.span variants={part} className={cn("block", welcome ? "line-clamp-2 md:truncate" : "truncate")}>
-                  {/* The slogan face draws Bangla on Latin codes, so readers get the Unicode line instead. */}
-                  <span aria-hidden translate="no" className={cn("font-slogan", welcome ? "text-[17px] leading-[1.15] md:text-[20px] md:leading-tight 2xl:text-[24px]" : "text-[19px] leading-tight")}>
-                    {toBijoy(item.quip)}
-                  </span>
-                  <span className="sr-only">{item.quip}</span>
+                  {lang === "en" ? (
+                    // The slogan face draws Bangla only, so English is set in the bold sans.
+                    <span className={cn("font-extrabold", welcome ? "text-[16px] leading-[1.15] md:text-[18px]" : "text-[17px] leading-tight")}>{t(item.quip)}</span>
+                  ) : (
+                    <>
+                      {/* The slogan face draws Bangla on Latin codes, so readers get the Unicode line instead. */}
+                      <span aria-hidden translate="no" className={cn("font-slogan", welcome ? "text-[17px] leading-[1.15] md:text-[20px] md:leading-tight 2xl:text-[24px]" : "text-[19px] leading-tight")}>
+                        {toBijoy(item.quip)}
+                      </span>
+                      <span className="sr-only">{item.quip}</span>
+                    </>
+                  )}
                 </motion.span>
               )}
             </span>

@@ -22,7 +22,10 @@ export function TrackHead({ n, title, titleBn, href, link }: { n: string; title:
           <span className="block font-bengali text-sm font-semibold text-white/65">{titleBn}</span>
         </span>
       </div>
-      <Link href={href} className="group inline-flex min-h-10 items-center gap-1.5 rounded-full px-4 font-grotesk text-sm font-bold text-white ring-1 ring-white/20 transition-colors hover:bg-white hover:text-text-primary">
+      <Link
+        href={href}
+        className="group inline-flex min-h-10 items-center gap-1.5 rounded-full px-4 font-grotesk text-sm font-bold text-white ring-1 ring-white/20 transition-colors hover:bg-white hover:text-text-primary"
+      >
         {link} <Icon name="arrow_forward" className="text-[18px] transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
       </Link>
     </div>
@@ -49,8 +52,8 @@ function GoldenTwoHours() {
   );
 }
 
-/** Healthcare products: Aponjon wide, then SWASTI and the Smart Pharmacy side by side. */
-export function ProductsShowcase() {
+/** Healthcare products: Aponjon, SWASTI and the Smart Pharmacy, three cards of one size. */
+export function ProductsShowcase({ poster }: { poster?: boolean }) {
   const aponjon = getProduct("aponjon");
   const swasti = getProduct("swasti");
   const pharmacy = getProduct("smart-pharmacy");
@@ -66,12 +69,13 @@ export function ProductsShowcase() {
     cta: `Explore ${p.name}`,
     tone,
     extra,
+    poster,
   });
   return (
-    <div className="grid gap-5 lg:grid-cols-2">
+    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
       {aponjon && (
-        <div className="story-reveal lg:col-span-2">
-          <ShowcaseCard {...card(aponjon, "ink", <GoldenTwoHours />)} layout="wide" priority />
+        <div className="story-reveal">
+          <ShowcaseCard {...card(aponjon, "ink", poster ? undefined : <GoldenTwoHours />)} priority />
         </div>
       )}
       {swasti && (
@@ -92,13 +96,13 @@ const SERVICE_SCENE: Record<ServiceMotion, SceneKind> = { neural: "neural", fact
 const SERVICE_TONES: CardTone[] = ["green", "ink", "gold", "white"];
 
 /**
- * The four services, two by two. On the home page each card opens its
+ * The four services, four across on wide screens. On the home page each card opens its
  * block on /products; on /products, where the reader already is, it goes
  * to the Kandari Profile sign-up, the one way to reach the team today.
  */
-export function ServicesShowcase({ on = "home" }: { on?: "home" | "products" }) {
+export function ServicesShowcase({ on = "home", poster }: { on?: "home" | "products"; poster?: boolean }) {
   return (
-    <div className="grid gap-5 lg:grid-cols-2">
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
       {services.map((s, i) => (
         <div key={s.id} id={`service-${s.id}`} className="story-reveal scroll-mt-header lg:scroll-mt-header-lg">
           <ShowcaseCard
@@ -114,6 +118,7 @@ export function ServicesShowcase({ on = "home" }: { on?: "home" | "products" }) 
             proof={s.proof}
             cta={on === "home" ? "See the service" : "Start a project"}
             tone={SERVICE_TONES[i % SERVICE_TONES.length]}
+            poster={poster}
           />
         </div>
       ))}
@@ -129,7 +134,10 @@ export function ShowcaseCta() {
         <p className="font-grotesk text-2xl font-bold uppercase sm:text-3xl">Have a problem worth solving?</p>
         <p className="mt-1 font-bengali text-[15px] font-semibold text-text-primary/80">কারখানা, অফিস, খামার বা অ্যাপ — সমস্যাটা বলুন, আমরা সমাধান বানাব।</p>
       </div>
-      <Link href="/#kandari-profile" className="inline-flex h-13 shrink-0 items-center gap-2 rounded-2xl bg-text-primary px-6 font-grotesk text-sm font-bold text-white uppercase transition-[translate,background-color] duration-200 hover:-translate-y-0.5 hover:bg-black motion-reduce:hover:translate-y-0">
+      <Link
+        href="/#kandari-profile"
+        className="inline-flex h-13 shrink-0 items-center gap-2 rounded-2xl bg-text-primary px-6 font-grotesk text-sm font-bold text-white uppercase transition-[translate,background-color] duration-200 hover:-translate-y-0.5 hover:bg-black motion-reduce:hover:translate-y-0"
+      >
         Join Kandari Profile <Icon name="arrow_forward" className="text-[18px] text-signal-orange" />
       </Link>
     </div>

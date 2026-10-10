@@ -1,5 +1,10 @@
 import { computeFees } from "./fees.ts";
 import type { Batch, RoomMessage } from "./batch.ts";
+import type { BatchExam } from "./batch-exam.ts";
+import type { StudyFile } from "./study-file.ts";
+import type { PlanNode } from "./plan.ts";
+import type { QuizPlay, QuizQuestion } from "./quiz.ts";
+import type { Notice } from "./notices.ts";
 import { bnDigits } from "./format.ts";
 
 /**
@@ -509,7 +514,28 @@ export interface AcademyState {
   /** Classrooms (batches) the viewer's academy opened on this device. */
   batches: Batch[];
   /** What the viewer wrote in batch chats, by batch id, oldest first. */
-  roomChat: Record<string, RoomMessage[]>;
+    roomChat: Record<string, RoomMessage[]>;
+  /** The notice board of a batch, by batch id (the classroom's own notice rules). */
+  boards?: Record<string, Notice[]>;
+  /** Chat lines pinned for a batch, by batch id: message ids, newest first. */
+    pins?: Record<string, string[]>;
+  /** A batch's exams with the marks given, by batch id. */
+    exams?: Record<string, BatchExam[]>;
+  /** Files the batch shared for study, by batch id, newest first. */
+    shared?: Record<string, StudyFile[]>;
+  /** What the viewer planned on a batch's mind map, by batch id. */
+    plans?: Record<string, PlanNode[]>;
+  /** The quiz questions the teacher wrote, by batch id. */
+  quizzes?: Record<string, QuizQuestion[]>;
+  /** What the viewer answered on a batch's quiz, and the days played. */
+  quizPlay?: Record<string, QuizPlay>;
+
+
+
+  /** The learner the teacher named batch leader, by batch id: a roster id, or "me". */
+  leaders?: Record<string, string>;
+
+
   /** The academy finder's three answers: the dream, what one likes, where one's talent lies. */
   finder?: Partial<{ goal: Goal; like: Like; talent: Talent }>;
   /** The goal the learner wrote for themselves on an academy's page, by academy id. */

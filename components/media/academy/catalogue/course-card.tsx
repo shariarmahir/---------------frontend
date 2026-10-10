@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useT } from "../../ui/language";
 import Link from "next/link";
 import { ArrowUpRight, Landmark, Sparkles } from "lucide-react";
 import { personOrThrow } from "@/data/media/users";
@@ -10,6 +13,7 @@ import { DeptIcon } from "../departments/dept-icons";
 import { twoDigits } from "./band";
 import type { CourseEntry } from "./entries";
 import { toneStyle } from "./tones";
+import { Tx } from "../../ui/language";
 
 /** The widest row holds four cards; their pictures load straight away. */
 const FIRST_ROW = 4;
@@ -28,7 +32,8 @@ const chip = "flex w-fit items-center gap-1 border border-(--c-line) bg-(--c-bg-
  */
 export function CourseCard({ entry, n, level, dim, preview }: { entry: CourseEntry; n: number; level?: boolean; dim?: boolean; preview?: boolean }) {
   const { course: c, dept: d, seat } = entry;
-  const [head, tail] = c.title.split(" — ");
+  const t = useT();
+  const [head, tail] = t(c.title).split(" — ");
   const teacher = personOrThrow(c.teacher);
   const title = `c-${c.id}-title`;
 
@@ -41,7 +46,10 @@ export function CourseCard({ entry, n, level, dim, preview }: { entry: CourseEnt
       className={cn("tone group relative flex h-full scroll-mt-32 flex-col bg-(--c-bg) transition-opacity duration-300 motion-reduce:transition-none", dim && "opacity-35 hover:opacity-100")}
     >
       {/* The department's colour draws across the top on hover. */}
-      <span aria-hidden className="absolute inset-x-0 top-0 z-10 h-0.5 origin-left scale-x-0 bg-(--c-app) transition-transform duration-300 group-hover:scale-x-100 motion-reduce:transition-none" />
+      <span
+        aria-hidden
+        className="absolute inset-x-0 top-0 z-10 h-0.5 origin-left scale-x-0 bg-(--c-app) transition-transform duration-300 group-hover:scale-x-100 motion-reduce:transition-none"
+      />
 
       <div className="flex items-center justify-between gap-4 border-b border-(--c-line) px-6 py-3">
         <span className="hud bg-(--c-app) px-2 py-0.5 font-bold text-black">{twoDigits(n)}</span>
@@ -60,7 +68,7 @@ export function CourseCard({ entry, n, level, dim, preview }: { entry: CourseEnt
         {level && (
           <span className="hud absolute top-3 right-3 inline-flex items-center gap-1 bg-(--c-signal) px-2 py-0.5 font-bold text-black">
             <Sparkles className="size-3.5" aria-hidden />
-            আপনার স্তর
+            <Tx k="আপনার স্তর" />
           </span>
         )}
       </div>
@@ -73,43 +81,49 @@ export function CourseCard({ entry, n, level, dim, preview }: { entry: CourseEnt
         <h3 id={title} className="display mt-4 text-[1.55rem] leading-[1.15] text-(--c-ink-strong)">
           {preview ? (
             <>
-              {head || "কোর্সের নাম"}
+              {head || <Tx k="কোর্সের নাম" />}
               {tail && <span className="text-(--c-app-ink)"> — {tail}</span>}
             </>
           ) : (
-            <Link href={`/media/academy/course/${c.id}`} className="after:absolute after:inset-0 focus-visible:outline-none after:focus-visible:outline-2 after:focus-visible:outline-(--c-app)">
+            <Link
+              href={`/media/academy/course/${c.id}`}
+              className="after:absolute after:inset-0 focus-visible:outline-none after:focus-visible:outline-2 after:focus-visible:outline-(--c-app)"
+            >
               {head}
               {tail && <span className="text-(--c-app-ink)"> — {tail}</span>}
             </Link>
           )}
         </h3>
-        <p className="mt-2 text-sm font-semibold text-(--c-app-ink)">{d.name} বিভাগ</p>
+        <p className="mt-2 text-sm font-semibold text-(--c-app-ink)">
+          <Tx k="{0} বিভাগ" v={[<Tx key="n" k={d.name} />]} />
+        </p>
         <Link
           href={`/media/academy/a/${d.academy.id}`}
           className="relative z-10 mt-1 inline-flex w-fit items-center gap-1.5 text-sm font-semibold text-(--c-muted) decoration-(--c-app) decoration-2 underline-offset-4 transition-colors hover:text-(--c-ink-strong) hover:underline"
         >
           <Landmark className="size-4 shrink-0 text-(--c-app-ink)" aria-hidden />
-          {d.academy.name}
+          {t(d.academy.name)}
         </Link>
         <p className="mt-3 leading-relaxed text-(--c-muted)">{c.outcome}</p>
 
         <ul className="mt-6 flex flex-wrap gap-1.5" aria-label="এক নজরে">
-          <li className={cn(chip, "text-(--c-app-ink)")}>{LEVELS[c.level]}</li>
+          <li className={cn(chip, "text-(--c-app-ink)")}>
+            <Tx k={LEVELS[c.level]} />
+          </li>
           <li className={cn(chip, "text-(--c-app-ink)")}>
             {!seat ? (
-              "নতুন ব্যাচ শিগগির"
+              <Tx k="নতুন ব্যাচ শিগগির" />
             ) : seat.running ? (
               <>
-                ব্যাচ চলছে · <Num value={seat.left} />
-                টি আসন
+                <Tx k="ব্যাচ চলছে · {0}টি আসন" v={[<Num key="n" value={seat.left} />]} />
               </>
             ) : (
               <>
-                পরের ব্যাচ <DateText iso={seat.starts} />
+                <Tx k="পরের ব্যাচ {0}" v={[<DateText key="d" iso={seat.starts} />]} />
               </>
             )}
           </li>
-          <li className={cn(chip, "text-(--c-muted)")}>{c.fee === 0 ? "বিনা ফি" : <Taka amount={c.fee} />}</li>
+          <li className={cn(chip, "text-(--c-muted)")}>{c.fee === 0 ? <Tx k="বিনা ফি" /> : <Taka amount={c.fee} />}</li>
           {entry.modes.map((m) => (
             <li key={m} className={cn(chip, "text-(--c-muted)")}>
               {MODES[m]}
@@ -119,7 +133,7 @@ export function CourseCard({ entry, n, level, dim, preview }: { entry: CourseEnt
 
         <div className="mt-auto flex items-center justify-between gap-3 pt-6">
           <span className="hud flex items-center gap-1.5 text-(--c-muted) transition-colors group-hover:text-(--c-ink-strong)">
-            কোর্স দেখুন
+            <Tx k="কোর্স দেখুন" />
             <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none" aria-hidden />
           </span>
           <span className="flex min-w-0 items-center gap-2 text-xs text-(--c-muted)">

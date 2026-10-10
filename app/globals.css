@@ -1980,6 +1980,9 @@ body:has(.media-shell) [data-slot="skeleton"] {
   --c-invert-bg: #fff;
   --c-invert-fg: #0b0b0c;
   /* States, always with a word or an icon beside them: done or passed, missed or refused. */
+  /* The category strip's blue, and the yellow of section names still waiting down the page. */
+  --c-blue: #0b3bd1;
+  --c-queue: #ffb423;
   --c-good: #3fd6a0;
   --c-bad: #ff7a6b;
   background: var(--c-bg);
@@ -2002,6 +2005,7 @@ body:has(.media-shell) [data-slot="skeleton"] {
   --c-turn: #013fd0;
   --c-invert-bg: #0b1020;
   --c-invert-fg: #f2f1ee;
+  --c-queue: #b36b00;
   --c-good: #0a7a55;
   --c-bad: #c0281c;
   color-scheme: light;
@@ -2048,6 +2052,31 @@ body:has(.media-shell) [data-slot="skeleton"] {
 .catalogue .tick::before { width: 1px; top: 5px; bottom: 0; left: 5px; }
 .catalogue .tick::after { height: 1px; top: 5px; left: 0; right: 0; }
 
+/* The academy strip: one row of icons drifting left. Each half carries its own
+   trailing gap so the loop is seamless; it rests under the pointer or focus, and
+   with reduced motion it is a plain row you scroll by hand. */
+.academy-strip {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+}
+.academy-strip-track {
+  display: flex;
+  width: max-content;
+  animation: academy-strip 60s linear infinite;
+}
+.academy-strip:hover .academy-strip-track,
+.academy-strip:focus-within .academy-strip-track {
+  animation-play-state: paused;
+}
+@keyframes academy-strip {
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .academy-strip { overflow-x: auto; }
+  .academy-strip-track { animation: none; }
+  .academy-strip-copy { display: none; }
+}
+
 /* The ruler's rolling readout: each digit a column that slides to its number. */
 .ruler-digits { display: inline-flex; height: 1em; overflow: hidden; line-height: 1; }
 .ruler-digit-col { display: flex; flex-direction: column; transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.2, 1); }
@@ -2085,6 +2114,22 @@ body:has(.media-shell) .catalogue [data-slot="form-message"] {
   color: var(--c-bad);
 }
 
+/* The academy scrolls inside #academy-main, which sits OUTSIDE .catalogue, so
+   its scrollbar track took the page's light colour-scheme and showed as a white
+   strip down the right edge on phones (where the ruler is off). Give the scroller
+   the catalogue's own ground and scheme, follow the theme switch, keep the bar
+   thin and gold, and never let it scroll sideways. */
+#academy-main {
+  background: #121316;
+  color-scheme: dark;
+  overflow-x: clip;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-signal-orange) transparent;
+}
+#academy-main:has(.catalogue[data-theme="light"]) {
+  background: #f2f1ee;
+  color-scheme: light;
+}
 #academy-main[data-ruler="on"] { scrollbar-width: none; }
 #academy-main[data-ruler="on"]::-webkit-scrollbar { display: none; width: 0; height: 0; }
 
@@ -2163,3 +2208,23 @@ body:has(.media-shell) .catalogue [data-slot="form-message"] {
   .catalogue [data-choreo]:not([data-in]) :is([data-draw-eyebrow], [data-draw-tick]),
   .catalogue [data-reveal]:not([data-in]) { opacity: 0; }
 }
+
+/* The classroom's mind map: links draw in, the centre breathes, signals run the links. */
+@keyframes mind-draw {
+  from { stroke-dashoffset: 1; }
+}
+@keyframes mind-breathe {
+  50% { transform: scale(1.05); }
+}
+.mind-link { stroke-dasharray: 1; stroke-dashoffset: 0; animation: mind-draw 1.2s ease-out both; }
+.mind-breathe { transform-box: fill-box; transform-origin: center; animation: mind-breathe 4s ease-in-out infinite; }
+.mind-node { transition: transform 0.2s ease; }
+.mind-node:hover > circle, .mind-node:hover > rect { filter: brightness(1.15); }
+@media (prefers-reduced-motion: reduce) {
+  .mind-link, .mind-breathe { animation: none; }
+  .mind-pulse { display: none; }
+}
+
+/* The classroom is a working screen: no ruler, and no scrollbar either. */
+#academy-main:has(.classroom-room) { scrollbar-width: none; }
+#academy-main:has(.classroom-room)::-webkit-scrollbar { display: none; width: 0; height: 0; }

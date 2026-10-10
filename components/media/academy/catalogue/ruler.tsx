@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "../../ui/language";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { digits } from "@/lib/media/format";
 import { useNumerals } from "../../ui/numerals";
@@ -26,12 +27,12 @@ const LAYOUT = {
   labelPct: 5,
   /** Where a riding word flips into the top stack, as a share of the screen height below the bar. */
   threshold: 0.12,
-  headingPx: 34,
-  ridingPx: 20,
-  queuePx: 16,
+  headingPx: 30,
+  ridingPx: 18,
+  queuePx: 14,
   topPad: 28,
   currentGap: 26,
-  queueSlot: 20,
+  queueSlot: 24,
   queuePad: 36,
 };
 /** How it moves. */
@@ -41,9 +42,9 @@ const MOTION = {
   /** Scroll distance over which a queued word moves onto the rail. */
   detachZone: 240,
   /** Per-letter delay, as a share of the flip. */
-  stagger: 0.16,
+  stagger: 0.05,
   /** How far each letter's path bows toward the page mid-flight. */
-  arc: 28,
+  arc: 10,
   /** Longest click jump, seconds; short hops take less. */
   jumpDur: 1.25,
   /** A flip left half-done resolves itself after the scroll rests this long. */
@@ -68,7 +69,7 @@ const LOOK = {
   majorLen: 20,
   ghostThick: 3,
   /** Everything but the current heading: the stack above it, the queue, a riding word. */
-  queueAlpha: 0.35,
+  queueAlpha: 0.85,
   /** Below this percent of the page the needle and its readout stay hidden. */
   needleFadePct: 3,
   bracketAlpha: 0.1,
@@ -95,7 +96,8 @@ function frostMask(solid = 40, gamma = 2.2) {
   stops.push("transparent 100%");
   return `linear-gradient(to left, ${stops.join(", ")})`;
 }
-const POOL_MASK = (at: string) => `radial-gradient(100% 100% at 100% ${at}, black 38%, rgba(0,0,0,0.82) 56%, rgba(0,0,0,0.48) 72%, rgba(0,0,0,0.2) 86%, rgba(0,0,0,0.05) 94%, transparent 97%)`;
+const POOL_MASK = (at: string) =>
+  `radial-gradient(100% 100% at 100% ${at}, black 38%, rgba(0,0,0,0.82) 56%, rgba(0,0,0,0.48) 72%, rgba(0,0,0,0.2) 86%, rgba(0,0,0,0.05) 94%, transparent 97%)`;
 
 interface Section {
   id: string;
@@ -135,6 +137,7 @@ function useMode(): Mode | null {
 
 export function CatalogueRuler() {
   const mode = useMode();
+  const t = useT();
   const { scroller, glide } = useCatalogue();
   const { numerals } = useNumerals();
   const [sections, setSections] = useState<Section[]>([]);
@@ -189,7 +192,7 @@ export function CatalogueRuler() {
       setGeom((g) => (g.docH === el.scrollHeight && g.vh === el.clientHeight ? g : { docH: el.scrollHeight, vh: el.clientHeight }));
       setSections((prev) => {
         const found = [...el.querySelectorAll<HTMLElement>("section[data-ruler-label]")].map((s) => {
-          const label = s.dataset.rulerLabel ?? "";
+          const label = t(s.dataset.rulerLabel ?? "");
           return { id: s.id, label, el: s, letters: [...graphemes.segment(label)].map((g) => g.segment) };
         });
         return prev.length === found.length && prev.every((p, i) => p.el === found[i].el) ? prev : found;
@@ -204,7 +207,7 @@ export function CatalogueRuler() {
       watch.disconnect();
       delete el.dataset.ruler;
     };
-  }, [mode, scroller]);
+  }, [mode, scroller, t]);
 
   const ticks = useMemo(() => {
     if (!geom.docH) return [];
@@ -366,6 +369,8 @@ export function CatalogueRuler() {
       const rs = LAYOUT.ridingPx / LAYOUT.headingPx;
       const tops = sections.map((sec) => sec.el.getBoundingClientRect().top - el.getBoundingClientRect().top);
       const flips = tops.map((top) => clamp01((flipAt + MOTION.flipZone - top) / MOTION.flipZone));
+      // The last section can never rise to the threshold: the page ends first. It completes its flip as the page ends instead.
+      if (flips.length) flips[flips.length - 1] = Math.max(flips[flips.length - 1], 1 - clamp01((room - s) / MOTION.flipZone));
       let current = 0;
       flips.forEach((p, i) => {
         if (p >= 0.5) current = i;
@@ -429,8 +434,12 @@ export function CatalogueRuler() {
           const alpha = from.alpha + (to.alpha - from.alpha) * e;
           span.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%) rotate(${rot}deg) scale(${scale})`;
           span.style.opacity = String(alpha);
-          span.style.color = hovered.current === w || lit > 0 ? "var(--c-accent-ink)" : "var(--c-ink-strong)";
+          // Waiting in the queue a word is yellow; as it flies up to the top stack it turns blue with the trip.
+          const blue = toStack ? Math.round(e * 100) : 0;
+          span.style.color = hovered.current === w || lit > 0 ? "var(--c-accent-ink)" : `color-mix(in srgb, var(--c-blue) ${blue}%, var(--c-signal))`;
           span.style.pointerEvents = alpha > 0.05 ? "auto" : "none";
+          // A word on the move passes over the ones at rest, never under them.
+          span.style.zIndex = t > 0.04 && t < 1 ? "2" : "1";
           maxAlpha = Math.max(maxAlpha, alpha);
           minY = Math.min(minY, y);
           maxY = Math.max(maxY, y);
@@ -541,7 +550,14 @@ export function CatalogueRuler() {
           <div
             ref={topPool}
             className="absolute top-0 right-0 opacity-0"
-            style={{ width: widest, backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)", backgroundColor: "color-mix(in srgb, var(--c-bg) 80%, transparent)", maskImage: POOL_MASK("0%"), WebkitMaskImage: POOL_MASK("0%") }}
+            style={{
+              width: widest,
+              backdropFilter: "blur(9px)",
+              WebkitBackdropFilter: "blur(9px)",
+              backgroundColor: "color-mix(in srgb, var(--c-bg) 80%, transparent)",
+              maskImage: POOL_MASK("0%"),
+              WebkitMaskImage: POOL_MASK("0%"),
+            }}
           />
           <div
             ref={bottomPool}
@@ -621,7 +637,13 @@ export function CatalogueRuler() {
         <div
           aria-hidden
           className="absolute inset-0"
-          style={{ backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)", backgroundColor: "color-mix(in srgb, var(--c-bg) 55%, transparent)", maskImage: frostMask(), WebkitMaskImage: frostMask() }}
+          style={{
+            backdropFilter: "blur(9px)",
+            WebkitBackdropFilter: "blur(9px)",
+            backgroundColor: "color-mix(in srgb, var(--c-bg) 55%, transparent)",
+            maskImage: frostMask(),
+            WebkitMaskImage: frostMask(),
+          }}
         />
         <div ref={tickStrip} aria-hidden className="absolute inset-x-0 top-0" style={{ height: geom.docH }}>
           {ticks.map((t, n) => (
@@ -640,7 +662,7 @@ export function CatalogueRuler() {
                 className="absolute top-0 right-0 block h-px origin-right bg-(--c-ink)"
                 style={{ width: t.major ? LOOK.majorLen : LOOK.minorLen, opacity: full ? 0 : t.alpha }}
               />
-              {t.major && (
+              {t.major && t.pct < 100 && (
                 <span className="absolute top-0 -translate-y-1/2 font-mono text-[9px] tracking-[0.08em] text-(--c-ink)" style={{ right: LOOK.majorLen + 4, opacity: LOOK.labelAlpha }}>
                   {digits(t.pct, numerals)}
                 </span>
@@ -703,7 +725,7 @@ export function CatalogueRuler() {
                   onPointerLeave={() => {
                     if (hovered.current === w) hovered.current = -1;
                   }}
-                  className="display absolute top-0 left-0 cursor-pointer whitespace-pre opacity-0 will-change-transform"
+                  className="font-garet absolute top-0 left-0 cursor-pointer font-extrabold whitespace-pre opacity-0 will-change-transform"
                   style={{ fontSize: LAYOUT.headingPx, lineHeight: 1, textShadow: "0 0 4px var(--c-bg), 0 0 10px var(--c-bg)" }}
                 >
                   {ch}
@@ -728,7 +750,12 @@ export function CatalogueRuler() {
           <ul className="relative flex flex-col gap-1.5">
             {sections.map((sec, w) => (
               <li key={sec.id}>
-                <a href={`#${sec.id}`} onClick={(e) => (e.preventDefault(), jumpTo(sec, w, e.timeStamp))} className="display text-(--c-ink) hover:text-(--c-ink-strong) active:text-(--c-accent-ink)" style={{ fontSize: LAYOUT.queuePx + 2 }}>
+                <a
+                  href={`#${sec.id}`}
+                  onClick={(e) => (e.preventDefault(), jumpTo(sec, w, e.timeStamp))}
+                  className="font-garet font-extrabold text-(--c-signal) transition-colors hover:text-(--c-ink-strong) active:text-(--c-blue)"
+                  style={{ fontSize: LAYOUT.queuePx + 2 }}
+                >
                   {sec.label}
                 </a>
               </li>

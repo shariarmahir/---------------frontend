@@ -7,6 +7,7 @@ import { Num } from "../../ui/numerals";
 import { CourseCard } from "./course-card";
 import type { CourseEntry } from "./entries";
 import { fillRow, lineupGrid } from "./fill-row";
+import { Tx } from "../../ui/language";
 
 const ORDER: Level[] = ["foundation", "intermediate", "advanced"];
 
@@ -29,7 +30,9 @@ export function CourseLineup({ entries, last, level: held, onLevel }: { entries:
   return (
     <div className="@container">
       <div role="group" aria-label="আপনার স্তর" className="flex flex-wrap items-stretch gap-px border-b border-(--c-line) bg-(--c-line)">
-        <p className="hud flex h-11 items-center bg-(--c-bg) px-6 text-(--c-faint) md:px-10">আপনি কোথায় আছেন?</p>
+        <p className="hud flex h-11 items-center bg-(--c-bg) px-6 text-(--c-faint) md:px-10">
+          <Tx k="আপনি কোথায় আছেন?" />
+        </p>
         {ORDER.filter((l) => count(l) > 0).map((l) => {
           const on = level === l;
           return (
@@ -50,13 +53,11 @@ export function CourseLineup({ entries, last, level: held, onLevel }: { entries:
         <p aria-live="polite" className="hud flex h-11 flex-1 items-center justify-end bg-(--c-bg) px-6 text-(--c-faint) md:px-10">
           {level ? (
             <>
-              {LEVELS[level]} স্তরে <Num value={matched} />
-              টি কোর্স
+              <Tx k="{0} স্তরে {1}টি কোর্স" v={[<Tx key="l" k={LEVELS[level]} />, <Num key="n" value={matched} />]} />
             </>
           ) : (
             <>
-              সব মিলিয়ে <Num value={entries.length} />
-              টি কোর্স
+              <Tx k="সব মিলিয়ে {0}টি কোর্স" v={[<Num key="n" value={entries.length} />]} />
             </>
           )}
         </p>

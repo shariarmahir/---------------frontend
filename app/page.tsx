@@ -1,4 +1,5 @@
 import { SiteFooter } from "@/components/layout/site-footer";
+import { SmoothScroll } from "@/components/layout/smooth-scroll";
 import { SiteHeader } from "@/components/layout/site-header";
 import { AiWidget } from "@/components/ui/ai-widget";
 import { FlagshipsSection } from "@/components/sections/flagships-section";
@@ -29,6 +30,7 @@ import { ResearchSection } from "@/components/sections/research-section";
 export default function Home() {
   return (
     <>
+      <SmoothScroll />
       <SiteHeader />
       <main className="relative w-full bg-black pt-header lg:pt-header-lg">
         <HeroSection />

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { FileText, ImageIcon, Mic, Paperclip, SendHorizontal } from "lucide-react";
+import { FileText, ImageIcon, Mic, Paperclip, Pin, PinOff, SendHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import { getCourse } from "@/data/media/academy";
 import { currentUser, personOrThrow } from "@/data/media/users";
@@ -13,8 +13,10 @@ import { newId } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
 import { DateText, Num, useFormat } from "../../ui/numerals";
 import { PersonAvatar } from "../../ui/person";
-import { updateAcademy } from "../use-academy";
+import { updateAcademy, useAcademy } from "../use-academy";
 import { useRoomChat } from "./use-batches";
+
+const NO_PINS: string[] = [];
 
 const ACCEPT: Record<RoomFile["kind"], string> = {
   file: ".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.csv,.txt,.zip",
@@ -47,7 +49,7 @@ function author(m: RoomMessage) {
  * button and three ways to add something — a file, a picture, a voice note
  * (each up to 1.5 MB, kept on this device).
  */
-export function RoomChat({ batch, compact, className }: { batch: Batch; compact?: boolean; className?: string }) {
+export function RoomChat({ batch, compact, pinner, className }: { batch: Batch; compact?: boolean; /** The teacher may pin a line to the top. */ pinner?: boolean; className?: string }) {
   const { num } = useFormat();
   const messages = useRoomChat(batch);
   const course = getCourse(batch.course);
@@ -55,6 +57,13 @@ export function RoomChat({ batch, compact, className }: { batch: Batch; compact?
   const list = useRef<HTMLOListElement>(null);
   const picker = useRef<HTMLInputElement>(null);
   const [kind, setKind] = useState<RoomFile["kind"]>("file");
+  const pins = useAcademy((a) => a.pins?.[batch.id] ?? NO_PINS);
+  const pinned = pins.flatMap((id) => messages.find((m) => m.id === id) ?? []);
+  const togglePin = (id: string) =>
+    updateAcademy((a) => {
+      const now = a.pins?.[batch.id] ?? [];
+      return { ...a, pins: { ...a.pins, [batch.id]: now.includes(id) ? now.filter((x) => x !== id) : [id, ...now] } };
+    });
 
   // New lines scroll into view.
   useEffect(() => {
@@ -112,6 +121,25 @@ export function RoomChat({ batch, compact, className }: { batch: Batch; compact?
         )}
       </header>
 
+      {pinned.length > 0 && (
+        <ul aria-label="পিন করা বার্তা" className="mx-5 mb-2 space-y-1 border border-(--c-signal)/50 bg-(--c-signal)/10 p-2">
+          {pinned.map((m) => (
+            <li key={m.id} className="flex items-center gap-2 text-sm text-(--c-ink-strong)">
+              <Pin className="size-3.5 shrink-0 text-(--c-signal)" aria-hidden />
+              <span className="min-w-0 flex-1 truncate">
+                <span className="font-semibold">{author(m).nameBn}: </span>
+                {m.text || m.file?.name}
+              </span>
+              {pinner && (
+                <button type="button" onClick={() => togglePin(m.id)} aria-label="পিন সরান" className="shrink-0 text-(--c-muted) hover:text-(--c-ink-strong)">
+                  <PinOff className="size-3.5" aria-hidden />
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+
       <ol ref={list} className={cn("min-h-0 flex-1 space-y-3 overflow-y-auto px-5 py-2 scrollbar-gold", compact ? "max-h-none" : "max-h-[26rem] xl:max-h-none")} aria-live="polite">
         {messages.length === 0 && <li className="py-8 text-center text-sm text-(--c-faint)">প্রথম বার্তাটা আপনিই লিখুন — নিজের পরিচয় দিন।</li>}
         {messages.map((m) => {
@@ -128,12 +156,22 @@ export function RoomChat({ batch, compact, className }: { batch: Batch; compact?
                     {teacher && <span className="ml-1.5 bg-(--c-signal) px-1.5 py-px text-[10px] font-bold text-black">শিক্ষক</span>}
                   </p>
                 )}
-                <div className={cn("inline-block px-3.5 py-2.5 text-left text-[15px] leading-relaxed", me ? "bg-(--c-invert-bg) text-(--c-invert-fg)" : "border border-(--c-line) bg-(--c-bg-raised) text-(--c-ink-strong)")}>
+                <div
+                  className={cn(
+                    "inline-block px-3.5 py-2.5 text-left text-[15px] leading-relaxed",
+                    me ? "bg-(--c-invert-bg) text-(--c-invert-fg)" : "border border-(--c-line) bg-(--c-bg-raised) text-(--c-ink-strong)",
+                  )}
+                >
                   {m.file && <Attachment file={m.file} me={me} />}
                   {m.text && <p className={cn(m.file && "mt-2")}>{m.text}</p>}
                 </div>
-                <p className="mt-1 text-[11px] text-(--c-faint)">
+                <p className="mt-1 flex items-center gap-2 text-[11px] text-(--c-faint)">
                   <DateText iso={m.at} time />
+                  {pinner && (
+                    <button type="button" onClick={() => togglePin(m.id)} aria-label={pins.includes(m.id) ? "পিন সরান" : "পিন করুন"} className="hover:text-(--c-signal)">
+                      {pins.includes(m.id) ? <PinOff className="size-3" aria-hidden /> : <Pin className="size-3" aria-hidden />}
+                    </button>
+                  )}
                 </p>
               </div>
             </li>
@@ -164,7 +202,12 @@ export function RoomChat({ batch, compact, className }: { batch: Batch; compact?
             placeholder="বার্তা লিখুন…"
             className="h-9 min-w-0 flex-1 bg-transparent text-[15px] text-(--c-ink-strong) placeholder:text-(--c-faint) focus:outline-none"
           />
-          <button type="submit" disabled={!text.trim()} className="grid size-9 shrink-0 place-items-center bg-(--c-signal) text-black transition-opacity duration-150 hover:opacity-80 disabled:opacity-40" aria-label="পাঠান">
+          <button
+            type="submit"
+            disabled={!text.trim()}
+            className="grid size-9 shrink-0 place-items-center bg-(--c-signal) text-black transition-opacity duration-150 hover:opacity-80 disabled:opacity-40"
+            aria-label="পাঠান"
+          >
             <SendHorizontal className="size-4" aria-hidden />
           </button>
         </div>

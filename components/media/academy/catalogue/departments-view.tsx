@@ -1,53 +1,56 @@
 import Link from "next/link";
 import { ArrowRight, Award, BookOpen, CalendarDays, Landmark, ShieldCheck, UsersRound, Video, type LucideIcon } from "lucide-react";
-import { academies, courses } from "@/data/media/academy";
+import { academies } from "@/data/media/academy";
 import { BATCH_MAX, CLASS_MINUTES, CLASS_WEEKS, COURSE_DAYS, DEPT_COURSES, FINAL_DAYS } from "@/lib/media/academy";
 import { cn } from "@/lib/utils";
 import { Num } from "../../ui/numerals";
-import { DeptIcon } from "../departments/dept-icons";
 import { Band, BandTitle, Lean, twoDigits } from "./band";
 import { blockBtn, primaryBtn, secondaryBtn } from "./buttons";
 import { CatalogueNav } from "./catalogue-nav";
+import { CategoryStrip } from "./category-strip";
 import { CatalogueRoot } from "./catalogue-root";
 import { DeptCard } from "./dept-card";
 import type { DeptEntry } from "./entries";
 import { fillRow, lineupGrid } from "./fill-row";
 import { CatalogueRuler } from "./ruler";
-import { ShareRow } from "./share-row";
-import { toneStyle } from "./tones";
-
+import { Tx } from "../../ui/language";
 
 /** The rules every department keeps, each from the academy's own constants. */
 const RULES: { Icon: LucideIcon; title: React.ReactNode; body: React.ReactNode }[] = [
   {
     Icon: BookOpen,
-    title: <>ঠিক <Num value={DEPT_COURSES} />টি কোর্স</>,
-    body: "প্রতিটি বিভাগে তিনটি কোর্স, স্তর লেখা থাকে — শুরু থেকে, মাঝারি বা অভিজ্ঞ। যেখানে আছেন, সেখান থেকে ধরুন।",
+    title: <Tx k="ঠিক {0}টি কোর্স" v={[<Num key="n" value={DEPT_COURSES} />]} />,
+    body: <Tx k="প্রতিটি বিভাগে তিনটি কোর্স, স্তর লেখা থাকে — শুরু থেকে, মাঝারি বা অভিজ্ঞ। যেখানে আছেন, সেখান থেকে ধরুন।" />,
   },
   {
     Icon: CalendarDays,
-    title: <><Num value={COURSE_DAYS} /> দিনে শেষ</>,
-    body: <><Num value={CLASS_WEEKS} /> সপ্তাহ ক্লাস, তারপর <Num value={FINAL_DAYS} /> দিন নিজের প্রজেক্ট আর প্যানেল। বছরের পর বছর নয়।</>,
+    title: <Tx k="{0} দিনে শেষ" v={[<Num key="n" value={COURSE_DAYS} />]} />,
+    body: <Tx k="{0} সপ্তাহ ক্লাস, তারপর {1} দিন নিজের প্রজেক্ট আর প্যানেল। বছরের পর বছর নয়।" v={[<Num key="a" value={CLASS_WEEKS} />, <Num key="b" value={FINAL_DAYS} />]} />,
   },
   {
     Icon: UsersRound,
-    title: "ছোট ব্যাচ",
-    body: <>একক একাডেমিতে এক ব্যাচে বড়জোর <Num value={BATCH_MAX.solo} /> জন, দলীয় একাডেমিতে <Num value={BATCH_MAX.team} /> জন — প্রত্যেকে শিক্ষকের চোখের সামনে।</>,
+    title: <Tx k="ছোট ব্যাচ" />,
+    body: (
+      <Tx
+        k="একক একাডেমিতে এক ব্যাচে বড়জোর {0} জন, দলীয় একাডেমিতে {1} জন — প্রত্যেকে শিক্ষকের চোখের সামনে।"
+        v={[<Num key="a" value={BATCH_MAX.solo} />, <Num key="b" value={BATCH_MAX.team} />]}
+      />
+    ),
   },
   {
     Icon: Video,
-    title: <><Num value={CLASS_MINUTES} /> মিনিটের লাইভ ক্লাস</>,
-    body: "সপ্তাহে একটা, রুটিনে ঠিক করা দিনে আর সময়ে। না ধরতে পারলে রেকর্ডিং আছে, হোমওয়ার্ক জমা ক্লাসরুমেই।",
+    title: <Tx k="{0} মিনিটের লাইভ ক্লাস" v={[<Num key="n" value={CLASS_MINUTES} />]} />,
+    body: <Tx k="সপ্তাহে একটা, রুটিনে ঠিক করা দিনে আর সময়ে। না ধরতে পারলে রেকর্ডিং আছে, হোমওয়ার্ক জমা ক্লাসরুমেই।" />,
   },
   {
     Icon: ShieldCheck,
-    title: "টাকা এসক্রোতে",
-    body: "প্রতিটি ক্লাস হলে সেই সপ্তাহের ভাগ শিক্ষক পান; ক্লাস না হলে সেই ভাগ আপনার কাছে ফেরত আসে।",
+    title: <Tx k="টাকা এসক্রোতে" />,
+    body: <Tx k="প্রতিটি ক্লাস হলে সেই সপ্তাহের ভাগ শিক্ষক পান; ক্লাস না হলে সেই ভাগ আপনার কাছে ফেরত আসে।" />,
   },
   {
     Icon: Award,
-    title: "যাচাইযোগ্য সনদ",
-    body: "খাতার পরীক্ষা নয় — নিজের হাতের প্রজেক্ট আর দুই পরীক্ষকের প্যানেল। পাস করলে সনদের আইডি, নাম ওঠে প্রকাশ্য বোর্ডে।",
+    title: <Tx k="যাচাইযোগ্য সনদ" />,
+    body: <Tx k="খাতার পরীক্ষা নয় — নিজের হাতের প্রজেক্ট আর দুই পরীক্ষকের প্যানেল। পাস করলে সনদের আইডি, নাম ওঠে প্রকাশ্য বোর্ডে।" />,
   },
 ];
 
@@ -62,52 +65,39 @@ export function DepartmentsView({ entries }: { entries: DeptEntry[] }) {
     <CatalogueRoot className="min-h-full">
       <CatalogueNav />
       <CatalogueRuler />
-      <Band
-        id="intro"
-        n={1}
-        label="বিভাগ"
-        now
-        note={
-          <>
-            <Num value={entries.length} />টি বিভাগ · <Num value={academies.length} />টি একাডেমি · <Num value={courses.length} />টি কোর্স
-          </>
-        }
-      >
-        <div className="px-6 py-14 md:px-10 md:py-20">
+      <Band id="intro" rulerLabel="বিভাগ" now>
+        <div className="px-6 py-14 md:px-10 md:py-20 lg:flex lg:aspect-[16/6] lg:flex-col lg:justify-center lg:py-10">
           <BandTitle as="h1" now>
-            <Num value={entries.length} />টি বিভাগ। আপনার একটাই <Lean>পথ</Lean>।
+            <Tx
+              k="{0}টি বিভাগ। আপনার একটাই {1}।"
+              v={[
+                <Num key="n" value={entries.length} />,
+                <Lean key="l">
+                  <Tx k="পথ" />
+                </Lean>,
+              ]}
+            />
           </BandTitle>
           <p data-reveal data-in className="mt-5 max-w-xl text-lg leading-relaxed text-(--c-muted)">
-            কোড আর যন্ত্র, বাড়ির নকশা, গ্যারেজ আর রান্নাঘর, গান, রং আর তাঁত, ক্যামেরা, হিসাব, সাজ, মাঠ আর অঙ্ক। দেশের <Num value={academies.length} />টি একাডেমির সব বিভাগ এক জায়গায় — মনের মতোটায় ঢুকে কোর্স দেখুন।
+            <Tx
+              k="কোড আর যন্ত্র, বাড়ির নকশা, গ্যারেজ আর রান্নাঘর, গান, রং আর তাঁত, ক্যামেরা, হিসাব, সাজ, মাঠ আর অঙ্ক। দেশের {0}টি একাডেমির সব বিভাগ এক জায়গায় — মনের মতোটায় ঢুকে কোর্স দেখুন।"
+              v={[<Num key="n" value={academies.length} />]}
+            />
           </p>
           <div data-reveal data-in className="mt-8 flex flex-wrap gap-3">
             <Link href="/media/academy/courses" className={primaryBtn}>
               <BookOpen className="size-4" aria-hidden />
-              সব কোর্স দেখুন
+              <Tx k="সব কোর্স দেখুন" />
             </Link>
             <Link href="/media/academy/academies" className={secondaryBtn}>
               <Landmark className="size-4" aria-hidden />
-              একাডেমিগুলো দেখুন
+              <Tx k="একাডেমিগুলো দেখুন" />
             </Link>
           </div>
-          <ShareRow text="কাণ্ডারী তৈরি একাডেমির সব বিভাগ — নিজের দক্ষতার পথ বেছে নিন" className="mt-6" />
-
-          <nav aria-label="বিভাগে সরাসরি যান" data-reveal data-in className="mt-12">
-            <ul className="flex flex-wrap gap-x-3 gap-y-6 sm:gap-x-5">
-              {entries.map(({ dept: d }, i) => (
-                <li key={d.id} style={toneStyle(i)} className="tone">
-                  <a href={`#d-${d.id}`} className="group flex w-18 flex-col items-center gap-2 sm:w-20">
-                    <span className="grid size-14 place-items-center rounded-2xl bg-[color-mix(in_srgb,var(--c-app)_28%,white)] drop-shadow-[0_6px_14px_rgba(0,0,0,0.28)] transition-transform duration-300 ease-out group-hover:-translate-y-1 motion-reduce:transition-none sm:size-20 sm:rounded-[1.3rem]">
-                      <DeptIcon dept={d.id} school={d.school} className="size-9 sm:size-12" />
-                    </span>
-                    <span className="line-clamp-2 text-center text-xs leading-snug font-medium text-(--c-muted) transition-colors group-hover:text-(--c-app-ink)">{d.name}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
         </div>
       </Band>
+
+      <CategoryStrip label="বিভাগে সরাসরি যান" items={entries.map(({ dept: d }, i) => ({ id: d.id, href: `#d-${d.id}`, name: d.name, dept: d.id, school: d.school, tone: i }))} />
 
       <Band id="lineup" n={2} label="সব বিভাগ" note="বিভাগে ঢুকে কোর্স দেখুন">
         <div className="@container">
@@ -116,14 +106,25 @@ export function DepartmentsView({ entries }: { entries: DeptEntry[] }) {
               <DeptCard key={entry.dept.id} entry={entry} n={i + 1} />
             ))}
             <div data-reveal className={cn("flex flex-col bg-(--c-bg) p-6 md:p-8", fillRow(entries.length))}>
-              <p className="hud text-(--c-faint)">এরপর</p>
+              <p className="hud text-(--c-faint)">
+                <Tx k="এরপর" />
+              </p>
               <h3 className="display mt-4 text-3xl leading-[1.12] text-(--c-ink-strong)">
-                আরও বিভাগ <Lean>আসছে</Lean>।
+                <Tx
+                  k="আরও বিভাগ {0}।"
+                  v={[
+                    <Lean key="l">
+                      <Tx k="আসছে" />
+                    </Lean>,
+                  ]}
+                />
               </h3>
-              <p className="mt-3 max-w-md leading-relaxed text-(--c-muted)">কোনো কাজে আপনার হাত পাকা? নিজের নামে বা বন্ধুদের নিয়ে একাডেমি খুলুন — প্রথম বিভাগ চালু হবে আপনার হাতেই।</p>
+              <p className="mt-3 max-w-md leading-relaxed text-(--c-muted)">
+                <Tx k="কোনো কাজে আপনার হাত পাকা? নিজের নামে বা বন্ধুদের নিয়ে একাডেমি খুলুন — প্রথম বিভাগ চালু হবে আপনার হাতেই।" />
+              </p>
               <div className="mt-auto pt-8">
                 <Link href="/media/academy/teach" className={blockBtn}>
-                  একাডেমি খুলুন
+                  <Tx k="একাডেমি খুলুন" />
                   <ArrowRight className="size-4" aria-hidden />
                 </Link>
               </div>
@@ -135,10 +136,17 @@ export function DepartmentsView({ entries }: { entries: DeptEntry[] }) {
       <Band id="rules" n={3} label="নিয়ম" note="সব বিভাগে একই">
         <div className="px-6 py-14 md:px-10 md:py-20">
           <BandTitle>
-            শেখার নিয়ম <Lean>সবখানে</Lean> এক।
+            <Tx
+              k="শেখার নিয়ম {0} এক।"
+              v={[
+                <Lean key="l">
+                  <Tx k="সবখানে" />
+                </Lean>,
+              ]}
+            />
           </BandTitle>
           <p data-reveal className="mt-5 max-w-xl text-lg leading-relaxed text-(--c-muted)">
-            যে বিভাগেই পড়ুন, শেখা চলে একই নিয়মে। ভর্তির আগেই জেনে নিন কী পাচ্ছেন।
+            <Tx k="যে বিভাগেই পড়ুন, শেখা চলে একই নিয়মে। ভর্তির আগেই জেনে নিন কী পাচ্ছেন।" />
           </p>
         </div>
         <ol data-reveal-group className="grid gap-px border-t border-(--c-line) bg-(--c-line) md:grid-cols-3">
@@ -159,20 +167,30 @@ export function DepartmentsView({ entries }: { entries: DeptEntry[] }) {
 
       <Band id="start" rulerLabel="এরপর কোর্স">
         <div className="flex flex-col items-center px-6 py-20 text-center md:py-28">
-          <p className="hud text-(--c-faint)">একাডেমি → বিভাগ → কোর্স</p>
+          <p className="hud text-(--c-faint)">
+            <Tx k="একাডেমি → বিভাগ → কোর্স" />
+          </p>
           <BandTitle className="mt-6 max-w-4xl text-5xl leading-[1.08] text-balance sm:text-6xl xl:text-7xl">
-            বিভাগ দেখলেন, এবার <Lean>কোর্স</Lean>।
+            <Tx
+              k="বিভাগ দেখলেন, এবার {0}।"
+              v={[
+                <Lean key="l">
+                  <Tx k="কোর্স" />
+                </Lean>,
+              ]}
+            />
           </BandTitle>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-(--c-muted)">সব বিভাগের সব কোর্স পাশাপাশি — নিজের স্তর মিলিয়ে দেখুন, তারপর ভর্তি। কোনটা আপনার, বুঝতে না পারলে প্রথম পাতার তিন প্রশ্নের উত্তর দিন।</p>
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-(--c-muted)">
+            <Tx k="সব বিভাগের সব কোর্স পাশাপাশি — নিজের স্তর মিলিয়ে দেখুন, তারপর ভর্তি। কোনটা আপনার, বুঝতে না পারলে প্রথম পাতার তিন প্রশ্নের উত্তর দিন।" />
+          </p>
           <div className="mt-10">
             <Link href="/media/academy/courses" className={primaryBtn}>
-              কোর্সে চলুন
+              <Tx k="কোর্সে চলুন" />
               <ArrowRight className="size-4" aria-hidden />
             </Link>
           </div>
         </div>
       </Band>
-
     </CatalogueRoot>
   );
 }

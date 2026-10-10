@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useT } from "../../ui/language";
 import Link from "next/link";
 import { ArrowUpRight, Landmark, Sparkles } from "lucide-react";
 import { personOrThrow } from "@/data/media/users";
@@ -15,6 +16,7 @@ import { useAcademy } from "../use-academy";
 import { twoDigits } from "./band";
 import type { DeptEntry } from "./entries";
 import { toneStyle } from "./tones";
+import { Tx } from "../../ui/language";
 
 /** From this score (of seven) a department reads "খুব মিলেছে" to the finder's answers. */
 const STRONG = 5;
@@ -35,6 +37,7 @@ const chip = "flex w-fit items-center gap-1 border border-(--c-line) bg-(--c-bg-
 export function DeptCard({ entry, n, tone = n - 1 }: { entry: DeptEntry; n: number; tone?: number }) {
   const { dept: d } = entry;
   const hydrated = useHydrated();
+  const t = useT();
   const photo = useAcademy((s) => s.academyMedia[d.id]?.photo);
   const finder = useAcademy((s) => s.finder);
   const match = hydrated && finder ? fitScore(d.fit, finder) : 0;
@@ -44,7 +47,10 @@ export function DeptCard({ entry, n, tone = n - 1 }: { entry: DeptEntry; n: numb
   return (
     <article id={`d-${d.id}`} data-reveal aria-labelledby={title} style={toneStyle(tone)} className="tone group relative flex h-full flex-col bg-(--c-bg)">
       {/* The department's colour draws across the top on hover. */}
-      <span aria-hidden className="absolute inset-x-0 top-0 z-10 h-0.5 origin-left scale-x-0 bg-(--c-app) transition-transform duration-300 group-hover:scale-x-100 motion-reduce:transition-none" />
+      <span
+        aria-hidden
+        className="absolute inset-x-0 top-0 z-10 h-0.5 origin-left scale-x-0 bg-(--c-app) transition-transform duration-300 group-hover:scale-x-100 motion-reduce:transition-none"
+      />
 
       <div className="flex items-center justify-between gap-4 border-b border-(--c-line) px-6 py-3">
         <span className="hud bg-(--c-app) px-2 py-0.5 font-bold text-black">{twoDigits(n)}</span>
@@ -63,9 +69,14 @@ export function DeptCard({ entry, n, tone = n - 1 }: { entry: DeptEntry; n: numb
           />
         )}
         {match > 0 && (
-          <span className={cn("hud absolute top-3 right-3 inline-flex items-center gap-1 px-2 py-0.5 font-bold", match >= STRONG ? "bg-(--c-signal) text-black" : "bg-(--c-bg) text-(--c-accent-ink)")}>
+          <span
+            className={cn(
+              "hud absolute top-3 right-3 inline-flex items-center gap-1 px-2 py-0.5 font-bold",
+              match >= STRONG ? "bg-(--c-signal) text-black" : "bg-(--c-bg) text-(--c-accent-ink)",
+            )}
+          >
             <Sparkles className="size-3.5" aria-hidden />
-            {match >= STRONG ? "খুব মিলেছে" : "মিলেছে"}
+            <Tx k={match >= STRONG ? "খুব মিলেছে" : "মিলেছে"} />
           </span>
         )}
       </div>
@@ -77,7 +88,10 @@ export function DeptCard({ entry, n, tone = n - 1 }: { entry: DeptEntry; n: numb
 
         <h3 id={title} className="display mt-4 text-[1.75rem] leading-[1.12] text-(--c-ink-strong)">
           <Link href={`/media/academy/dept/${d.id}`} className="after:absolute after:inset-0 focus-visible:outline-none after:focus-visible:outline-2 after:focus-visible:outline-(--c-app)">
-            {d.name} <span className="text-(--c-app-ink)">বিভাগ</span>
+            <Tx k={d.name} />{" "}
+            <span className="text-(--c-app-ink)">
+              <Tx k="বিভাগ" />
+            </span>
           </Link>
         </h3>
         <Link
@@ -85,23 +99,37 @@ export function DeptCard({ entry, n, tone = n - 1 }: { entry: DeptEntry; n: numb
           className="relative z-10 mt-2 inline-flex w-fit items-center gap-1.5 text-sm font-semibold text-(--c-muted) decoration-(--c-app) decoration-2 underline-offset-4 transition-colors hover:text-(--c-ink-strong) hover:underline"
         >
           <Landmark className="size-4 shrink-0 text-(--c-app-ink)" aria-hidden />
-          {d.academy.name}
+          <Tx k={d.academy.name} />
         </Link>
-        <p className="mt-3 leading-relaxed text-(--c-muted)">{d.blurb}</p>
+        <p className="mt-3 leading-relaxed text-(--c-muted)">{t(d.blurb)}</p>
 
         <ul className="mt-6 flex flex-wrap gap-1.5" aria-label="এক নজরে">
-          <li className={cn(chip, "text-(--c-app-ink)")}>{!entry.seat ? "নতুন ব্যাচ শিগগির" : entry.seat.running ? "ব্যাচ চলছে · আসন খালি" : <>পরের ব্যাচ <DateText iso={entry.seat.starts} /></>}</li>
+          <li className={cn(chip, "text-(--c-app-ink)")}>
+            {!entry.seat ? (
+              <Tx k="নতুন ব্যাচ শিগগির" />
+            ) : entry.seat.running ? (
+              <Tx k="ব্যাচ চলছে · আসন খালি" />
+            ) : (
+              <Tx k="পরের ব্যাচ {0}" v={[<DateText key="d" iso={entry.seat.starts} />]} />
+            )}
+          </li>
           <li className={cn(chip, "text-(--c-app-ink)")}>{DEPT_KINDS[d.kind]}</li>
           <li className={cn(chip, "text-(--c-muted)")}>
-            <Num value={entry.courses} />টি কোর্স
+            <Tx k="{0}টি কোর্স" v={[<Num key="n" value={entry.courses} />]} />
           </li>
-          <li className={cn(chip, "text-(--c-muted)")}>{entry.fees.max === 0 ? "বিনা ফি" : entry.fees.min === 0 ? "বিনা ফি থেকে শুরু" : <><Taka amount={entry.fees.min} /> থেকে</>}</li>
-          {entry.handsOn && <li className={cn(chip, "text-(--c-muted)")}>হাতে-কলমে ক্লাস</li>}
+          <li className={cn(chip, "text-(--c-muted)")}>
+            {entry.fees.max === 0 ? <Tx k="বিনা ফি" /> : entry.fees.min === 0 ? <Tx k="বিনা ফি থেকে শুরু" /> : <Tx k="{0} থেকে" v={[<Taka key="t" amount={entry.fees.min} />]} />}
+          </li>
+          {entry.handsOn && (
+            <li className={cn(chip, "text-(--c-muted)")}>
+              <Tx k="হাতে-কলমে ক্লাস" />
+            </li>
+          )}
         </ul>
 
         <div className="mt-auto flex items-center justify-between gap-3 pt-6">
           <span className="hud flex items-center gap-1.5 text-(--c-muted) transition-colors group-hover:text-(--c-ink-strong)">
-            {d.name} দেখুন
+            <Tx k="{0} দেখুন" v={[<Tx key="n" k={d.name} />]} />
             <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none" aria-hidden />
           </span>
           <span className="flex">

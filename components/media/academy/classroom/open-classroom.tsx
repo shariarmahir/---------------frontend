@@ -118,7 +118,7 @@ export function OpenClassroom({ initialCourse }: { initialCourse?: string }) {
             </>
           }
         >
-          <div className="grid gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_24rem]">
+          <div className="grid grid-cols-1 gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_24rem]">
             <form
               noValidate
               onSubmit={(e) => {
@@ -140,7 +140,7 @@ export function OpenClassroom({ initialCourse }: { initialCourse?: string }) {
                 </select>
               </div>
 
-              <div className="grid gap-5 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
                   <label htmlFor="oc-starts" className={cn(labelClass, "mb-2 block")}>
                     ব্যাচ শুরুর দিন

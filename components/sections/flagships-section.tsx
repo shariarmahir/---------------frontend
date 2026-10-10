@@ -18,11 +18,11 @@ export function FlagshipsSection() {
       />
 
       <TrackHead n="01" title="Healthcare products" titleBn="স্বাস্থ্যসেবার পণ্য — আমাদের নিজেদের" href="/products" link="All products" />
-      <ProductsShowcase />
+      <ProductsShowcase poster />
 
       <div className="mt-16 sm:mt-20">
         <TrackHead n="02" title="Services" titleBn="সেবা — আপনার জন্য আমরা বানাই" href="/products#services" link="Services in detail" />
-        <ServicesShowcase />
+        <ServicesShowcase poster />
       </div>
 
       <ShowcaseCta />

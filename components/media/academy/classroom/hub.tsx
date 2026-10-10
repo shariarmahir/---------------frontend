@@ -134,7 +134,7 @@ function LearnRooms({ rooms }: { rooms: { batch: Batch; course: Course }[] }) {
 /** Rooms two to a row, ruled; an odd last room leaves a blank beside it rather than a hole. */
 function RoomGrid({ children }: { children: React.ReactNode[] }) {
   return (
-    <ul data-reveal-group className="grid gap-px bg-(--c-line) md:grid-cols-2">
+    <ul data-reveal-group className="grid grid-cols-1 gap-px bg-(--c-line) md:grid-cols-2">
       {children}
       {children.length % 2 === 1 && <li aria-hidden className="hidden bg-(--c-bg) md:block" />}
     </ul>

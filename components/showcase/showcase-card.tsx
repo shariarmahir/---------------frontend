@@ -18,11 +18,55 @@ import { MotionScene, type SceneKind } from "./motion-scene";
 
 export type CardTone = "ink" | "green" | "gold" | "white";
 
-const TONE: Record<CardTone, { card: string; sub: string; item: string; icon: string; link: string; glow: string; beam: string }> = {
-  ink: { card: "bg-text-primary text-white ring-1 ring-white/12", sub: "text-white/70", item: "bg-white/[0.06] ring-1 ring-white/10", icon: "bg-signal-orange", link: "text-signal-orange", glow: "var(--color-signal-orange)", beam: "stroke-signal-orange" },
-  green: { card: "bg-bd-green text-white", sub: "text-white/80", item: "bg-black/15", icon: "bg-signal-orange", link: "text-signal-orange", glow: "var(--color-bdgreen-500)", beam: "stroke-signal-orange" },
-  gold: { card: "bg-signal-orange text-text-primary", sub: "text-text-primary/75", item: "bg-text-primary/10", icon: "bg-white", link: "text-text-primary", glow: "var(--color-signal-orange)", beam: "stroke-text-primary" },
-  white: { card: "bg-white text-text-primary", sub: "text-text-secondary", item: "bg-mint-subtle ring-1 ring-card-border", icon: "bg-signal-orange", link: "text-bd-green", glow: "white", beam: "stroke-signal-orange" },
+const TONE: Record<CardTone, { card: string; sub: string; item: string; icon: string; link: string; glow: string; beam: string; fade: string; pill: string; btn: string }> = {
+  ink: {
+    card: "bg-text-primary text-white ring-1 ring-white/12",
+    sub: "text-white/70",
+    item: "bg-white/[0.06] ring-1 ring-white/10",
+    icon: "bg-signal-orange",
+    link: "text-signal-orange",
+    glow: "var(--color-signal-orange)",
+    beam: "stroke-signal-orange",
+    fade: "to-text-primary",
+    pill: "bg-signal-orange text-text-primary",
+    btn: "bg-signal-orange text-text-primary",
+  },
+  green: {
+    card: "bg-bd-green text-white",
+    sub: "text-white/80",
+    item: "bg-black/15",
+    icon: "bg-signal-orange",
+    link: "text-signal-orange",
+    glow: "var(--color-bdgreen-500)",
+    beam: "stroke-signal-orange",
+    fade: "to-bd-green",
+    pill: "bg-signal-orange text-text-primary",
+    btn: "bg-white text-text-primary",
+  },
+  gold: {
+    card: "bg-signal-orange text-text-primary",
+    sub: "text-text-primary/75",
+    item: "bg-text-primary/10",
+    icon: "bg-white",
+    link: "text-text-primary",
+    glow: "var(--color-signal-orange)",
+    beam: "stroke-text-primary",
+    fade: "to-signal-orange",
+    pill: "bg-text-primary text-signal-orange",
+    btn: "bg-text-primary text-white",
+  },
+  white: {
+    card: "bg-white text-text-primary",
+    sub: "text-text-secondary",
+    item: "bg-mint-subtle ring-1 ring-card-border",
+    icon: "bg-signal-orange",
+    link: "text-bd-green",
+    glow: "white",
+    beam: "stroke-signal-orange",
+    fade: "to-white",
+    pill: "bg-text-primary text-signal-orange",
+    btn: "bg-bd-green text-white",
+  },
 };
 
 export interface ShowcaseCardProps {
@@ -47,6 +91,8 @@ export interface ShowcaseCardProps {
   priority?: boolean;
   /** Which side the photo sits on in the wide layout. */
   flip?: boolean;
+  /** The home page's poster card, shaped like the team cards: picture, name, a short line and "Learn more". */
+  poster?: boolean;
 }
 
 /** Pause a card's animations while it is off screen. */
@@ -68,6 +114,68 @@ export function ShowcaseCard(p: ShowcaseCardProps) {
   const tone = TONE[p.tone];
   const wide = p.layout === "wide";
 
+  if (p.poster) {
+    return (
+      <article
+        ref={ref}
+        data-paused={!on}
+        style={{ "--glow": tone.glow } as React.CSSProperties}
+        className={cn(
+          "ms-root group relative isolate flex h-full flex-col overflow-hidden rounded-3xl shadow-sm",
+          "transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:shadow-[0_28px_48px_-22px_var(--glow)] motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+          tone.card,
+        )}
+      >
+        {/* The picture, square like the team portraits, fading into the card colour at its foot. */}
+        <div className="relative aspect-square w-full overflow-hidden">
+          <Image
+            src={p.image.src}
+            alt={p.image.alt}
+            fill
+            priority={p.priority}
+            sizes="(min-width: 1280px) 400px, (min-width: 640px) 50vw, 100vw"
+            className="ms-zoom object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 motion-reduce:transition-none"
+          />
+          <MotionScene kind={p.scene} />
+          <div aria-hidden className={cn("absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-b from-transparent", tone.fade)} />
+        </div>
+
+        <div className="relative -mt-8 flex flex-1 flex-col px-5 pb-5 sm:px-6 sm:pb-6">
+          <span className={cn("mb-3 w-fit rounded-full px-3 py-1 font-mono text-[10px] leading-tight font-bold uppercase sm:text-[11px]", tone.pill)}>{p.eyebrow}</span>
+          <h3 className="font-grotesk text-xl leading-tight font-bold sm:text-2xl">
+            <Link
+              href={p.href}
+              className="after:absolute after:inset-0 after:z-10 after:rounded-3xl focus-visible:outline-none after:focus-visible:ring-3 after:focus-visible:ring-white after:focus-visible:ring-inset"
+            >
+              {p.title}
+            </Link>
+          </h3>
+          {p.titleBn && <p className={cn("mt-0.5 font-bengali text-sm font-semibold", tone.sub)}>{p.titleBn}</p>}
+          <p className="mt-3 line-clamp-3 font-sans text-sm leading-relaxed">{p.body}</p>
+          <span className="mt-auto pt-5">
+            <span className={cn("inline-flex h-10 items-center gap-1.5 rounded-full px-4 font-grotesk text-sm font-bold transition-[gap] duration-300 group-hover:gap-2.5", tone.btn)}>
+              Learn more <Icon name="arrow_forward" className="text-[18px]" />
+            </span>
+          </span>
+        </div>
+
+        <svg aria-hidden className="ms-beam pointer-events-none absolute inset-0 z-20 h-full w-full overflow-visible">
+          <rect
+            x="1.5"
+            y="1.5"
+            width="100%"
+            height="100%"
+            rx="22"
+            pathLength={100}
+            className={cn("fill-none", tone.beam)}
+            strokeWidth="3"
+            style={{ width: "calc(100% - 3px)", height: "calc(100% - 3px)" }}
+          />
+        </svg>
+      </article>
+    );
+  }
+
   return (
     <article
       ref={ref}
@@ -81,7 +189,7 @@ export function ShowcaseCard(p: ShowcaseCardProps) {
       )}
     >
       {/* The photograph, uncovered: only the motion layer's thin lines and chips sit on it. */}
-      <div className={cn("relative overflow-hidden", wide ? "aspect-16/10 lg:aspect-auto lg:min-h-[30rem]" : "aspect-16/10", wide && p.flip && "lg:order-2")}>
+      <div className={cn("relative overflow-hidden", wide ? "aspect-16/10 lg:aspect-auto lg:min-h-[30rem]" : "aspect-4/3", wide && p.flip && "lg:order-2")}>
         <Image
           src={p.image.src}
           alt={p.image.alt}
@@ -93,12 +201,12 @@ export function ShowcaseCard(p: ShowcaseCardProps) {
         <MotionScene kind={p.scene} />
       </div>
 
-      <div className="relative flex flex-1 flex-col gap-4 p-6 sm:p-8">
+      <div className="relative flex flex-1 flex-col gap-4 p-5 sm:p-6">
         <div className="flex items-start gap-4">
           <MotionIcon kind={p.scene} className={cn("grid size-14 shrink-0 place-items-center rounded-2xl shadow-tile", tone.icon)} />
           <div className="min-w-0">
             <p className={cn("font-mono text-[11px] font-bold tracking-wider uppercase", tone.sub)}>{p.eyebrow}</p>
-            <h3 className="mt-1 font-grotesk text-2xl leading-tight font-bold sm:text-[1.75rem]">
+            <h3 className="mt-1 font-grotesk text-xl leading-tight font-bold sm:text-2xl">
               <Link
                 href={p.href}
                 className="after:absolute after:inset-0 after:z-10 after:rounded-[2rem] focus-visible:outline-none after:focus-visible:ring-3 after:focus-visible:ring-white after:focus-visible:ring-inset"
@@ -115,7 +223,7 @@ export function ShowcaseCard(p: ShowcaseCardProps) {
         {p.extra}
 
         {p.items && p.items.length > 0 && (
-          <ul className="grid gap-2 sm:grid-cols-2">
+          <ul className="grid grid-cols-1 gap-2">
             {p.items.map((it) => (
               <li key={it.title} className={cn("rounded-2xl px-3.5 py-3", tone.item)}>
                 <span className="block font-grotesk text-sm font-bold">{it.title}</span>
@@ -142,7 +250,17 @@ export function ShowcaseCard(p: ShowcaseCardProps) {
 
       {/* The beam: a short gold dash running the rounded edge on hover and focus. */}
       <svg aria-hidden className="ms-beam pointer-events-none absolute inset-0 z-20 h-full w-full overflow-visible">
-        <rect x="1.5" y="1.5" width="100%" height="100%" rx="30" pathLength={100} className={cn("fill-none", tone.beam)} strokeWidth="3" style={{ width: "calc(100% - 3px)", height: "calc(100% - 3px)" }} />
+        <rect
+          x="1.5"
+          y="1.5"
+          width="100%"
+          height="100%"
+          rx="30"
+          pathLength={100}
+          className={cn("fill-none", tone.beam)}
+          strokeWidth="3"
+          style={{ width: "calc(100% - 3px)", height: "calc(100% - 3px)" }}
+        />
       </svg>
     </article>
   );

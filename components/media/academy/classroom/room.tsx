@@ -3,41 +3,68 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
-import { ArrowLeft, DoorOpen, Lock, Radio, UsersRound } from "lucide-react";
-import { departments, getCourse, getDepartment, rosterOf } from "@/data/media/academy";
+import {
+  ArrowLeft,
+  BellRing,
+  ClipboardCheck,
+  FolderUp,
+  Gamepad2,
+  GraduationCap,
+  Network,
+  DoorOpen,
+  FolderOpen,
+  LayoutDashboard,
+  Lock,
+  MessagesSquare,
+  PlayCircle,
+  Radio,
+  Wallet,
+  type LucideIcon,
+} from "lucide-react";
+import { getCourse, getDepartment, rosterOf } from "@/data/media/academy";
 import { DEMO_NOW } from "@/data/media/clock";
 import { personOrThrow } from "@/data/media/users";
 import { useAuth } from "@/lib/auth/client";
 import type { ClassVideo, Course } from "@/lib/media/academy";
-import { BATCH_STAGES, batchStage, nextClass, slotOf, type Batch } from "@/lib/media/batch";
+import { nextClass, type Batch } from "@/lib/media/batch";
 import { useHydrated } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
-import { Num } from "../../ui/numerals";
-import { PersonAvatar } from "../../ui/person";
+import { Tx } from "../../ui/language";
 import { Band, BandTitle } from "../catalogue/band";
 import { primaryBtn, secondaryBtn } from "../catalogue/buttons";
 import { CatalogueNav } from "../catalogue/catalogue-nav";
 import { CatalogueRoot } from "../catalogue/catalogue-root";
-import { CatalogueRuler } from "../catalogue/ruler";
-import { TabStrip } from "../catalogue/tab-strip";
-import { toneStyle } from "../catalogue/tones";
 import { AttendanceSheet } from "../desk/attendance-sheet";
 import { MaterialsDesk } from "../desk/materials-desk";
 import { useTeacher } from "../desk/use-teacher";
 import { useAcademy } from "../use-academy";
 import { useVideos } from "../videos/use-videos";
+import { BoardView, useBoard } from "./board-view";
+import { Dashboard } from "./dashboard";
+import { ExamsView, useExams, useLeader } from "./exams-view";
+import { MindMap } from "./mind-map";
+import { NotesView } from "./notes-view";
+import { QuizView } from "./quiz-view";
 import { Earnings } from "./earnings";
 import { RoomChat } from "./room-chat";
-import { LecturePanel, SyllabusRail } from "./room-panels";
+import { LecturePanel } from "./room-panels";
 import { RoomPlayer } from "./room-player";
 import { teaches, useBatches } from "./use-batches";
 
-type Tool = "room" | "attendance" | "materials" | "money";
-const TOOLS: { id: Tool; label: string }[] = [
-  { id: "room", label: "ক্লাসরুম" },
-  { id: "attendance", label: "হাজিরা" },
-  { id: "materials", label: "উপকরণ" },
-  { id: "money", label: "আয়" },
+type Tool = "dashboard" | "lessons" | "chat" | "board" | "exams" | "notes" | "map" | "quiz" | "attendance" | "materials" | "money";
+/** The classroom's side menu: the board, the lessons and the batch chat for everyone, then the teacher's three desks. */
+const TOOLS: { id: Tool; label: string; Icon: LucideIcon; teacher?: boolean }[] = [
+  { id: "dashboard", label: "ড্যাশবোর্ড", Icon: LayoutDashboard },
+  { id: "lessons", label: "পাঠ ও ফাইল", Icon: PlayCircle },
+  { id: "chat", label: "ব্যাচের আড্ডা", Icon: MessagesSquare },
+  { id: "board", label: "নোটিশ বোর্ড", Icon: BellRing },
+  { id: "exams", label: "পরীক্ষা ও লিডার", Icon: GraduationCap },
+  { id: "notes", label: "নোট ও ফাইল", Icon: FolderUp },
+  { id: "map", label: "মাইন্ড ম্যাপ", Icon: Network },
+  { id: "quiz", label: "খেলা ও কুইজ", Icon: Gamepad2 },
+  { id: "attendance", label: "হাজিরা", Icon: ClipboardCheck, teacher: true },
+  { id: "materials", label: "উপকরণ", Icon: FolderOpen, teacher: true },
+  { id: "money", label: "আয়", Icon: Wallet, teacher: true },
 ];
 const NO_WEEKS: Record<number, string[]> = {};
 
@@ -58,9 +85,8 @@ export function ClassroomRoom({ id }: { id: string }) {
   const course = batch && getCourse(batch.course);
 
   return (
-    <CatalogueRoot className="min-h-full">
+    <CatalogueRoot className="classroom-room min-h-full">
       <CatalogueNav />
-      <CatalogueRuler />
       {!hydrated ? (
         <Band id="room" n={1} label="ক্লাসরুম" now>
           <span aria-hidden className="block h-[40rem] animate-pulse bg-(--c-bg-sunken)" />
@@ -89,6 +115,9 @@ function Room({ batch, course }: { batch: Batch; course: Course }) {
   const member = teaches(course);
   const mine = Boolean(enrollment) && (enrollment!.batch ?? course.id) === batch.id;
   const next = nextClass(batch, DEMO_NOW);
+  const notices = useBoard(batch.id);
+  const leaderId = useLeader(batch.id);
+  const exams = useExams(batch.id);
   const [week, setWeek] = useState(next?.week ?? 1);
 
   const videoOf = useMemo(() => {
@@ -108,85 +137,129 @@ function Room({ batch, course }: { batch: Batch; course: Course }) {
   }
 
   const asked = params.get("tool") as Tool | null;
-  const tool: Tool = lead && asked && TOOLS.some((x) => x.id === asked) ? asked : "room";
-  const setTool = (x: Tool) => router.replace(x === "room" ? path : `${path}?tool=${x}`, { scroll: false });
-  const stage = batchStage(batch, DEMO_NOW);
+  const tool: Tool = asked && TOOLS.some((x) => x.id === asked && (lead || !x.teacher)) ? asked : "dashboard";
+  const setTool = (x: Tool) => router.replace(x === "dashboard" ? path : `${path}?tool=${x}`, { scroll: false });
   const dept = getDepartment(course.dept);
   const done = (w: number) => (lead ? Boolean(held[w]) : Boolean(enrollment?.attended.includes(w)));
   const roster = rosterOf({ id: course.id, enrolled: Math.min(batch.enrolled, 4) });
-  const first = (account?.name ?? t.person.nameBn).trim().split(/\s+/)[0];
+  const me = account?.name ?? t.person.nameBn;
+
+  const teacher = personOrThrow(course.teacher);
+  const people = [...roster, { id: "me", name: me }];
+  const leader = people.find((p) => p.id === leaderId) ?? roster[0];
+
   const lesson = course.lessons.find((l) => l.week === week) ?? course.lessons[0];
   const asBatchCourse: Course = { ...course, id: batch.id, enrolled: batch.enrolled };
 
   return (
     <>
-      <Band id="intro" n={1} label="ক্লাসরুম" now note={dept?.academy.name}>
-        <div style={toneStyle(departments.findIndex((d) => d.id === course.dept))} className="tone flex flex-wrap items-end justify-between gap-8 px-6 py-10 md:px-10 md:py-12">
-          <div className="min-w-0">
-            <Link href="/media/academy/classroom" data-reveal data-in className="hud group inline-flex items-center gap-1.5 text-(--c-muted) hover:text-(--c-ink-strong)">
-              <ArrowLeft className="size-3.5 transition-transform group-hover:-translate-x-1" aria-hidden /> সব ক্লাসরুম
-            </Link>
-            <BandTitle as="h1" now className="mt-5 text-3xl sm:text-4xl md:text-5xl">
-              {course.title}
-            </BandTitle>
-            <p data-reveal data-in className="hud mt-4 flex flex-wrap items-center gap-2">
-              <span className="bg-(--c-app) px-2 py-0.5 font-bold text-black">
-                ব্যাচ <Num value={batch.n} />
-              </span>
-              <span className="text-(--c-app-ink)">{slotOf(batch.day, batch.time)}</span>
-              <span className={cn("px-1.5 py-0.5 font-bold", stage === "running" ? "bg-(--c-signal) text-black" : "border border-(--c-line) text-(--c-muted)")}>{BATCH_STAGES[stage]}</span>
-              {lead ? <span className="text-(--c-faint)">আপনি শিক্ষক</span> : member && !mine ? <span className="text-(--c-faint)">একাডেমির সদস্য</span> : null}
-            </p>
-          </div>
-          <div data-reveal data-in className="flex flex-wrap items-center gap-5">
-            <span className="flex items-center gap-3">
-              <span className="flex -space-x-2" aria-hidden>
-                <PersonAvatar person={personOrThrow(course.teacher)} size="sm" className="ring-2 ring-(--c-bg)" />
-                {roster.map((s) => (
-                  <PersonAvatar key={s.id} person={{ nameBn: s.name, initials: s.name.slice(0, 1), tone: "green" }} size="sm" className="ring-2 ring-(--c-bg)" />
-                ))}
-              </span>
-              <span className="hud inline-flex items-center gap-1 text-(--c-muted)">
-                <UsersRound className="size-3.5" aria-hidden /> <Num value={batch.enrolled} />/<Num value={batch.seats} />
-              </span>
-            </span>
-            <Link href={`/media/academy/classroom/${encodeURIComponent(batch.id)}/live`} className={primaryBtn}>
-              <Radio className="size-4" aria-hidden /> {lead ? "লাইভ ক্লাস শুরু করুন" : "লাইভ ক্লাসে যোগ দিন"}
-            </Link>
-          </div>
-        </div>
-        {lead && <TabStrip label="শিক্ষকের কাজ" idBase="tool" value={tool} onChange={setTool} tabs={TOOLS} className="border-t" />}
-      </Band>
+      <Band wide id="desk" rulerLabel="ক্লাসরুম" now>
+        <div className="grid grid-cols-[minmax(0,1fr)] md:grid-cols-[13rem_minmax(0,1fr)] xl:grid-cols-[15rem_minmax(0,1fr)]">
+          <aside className="min-w-0 border-b border-(--c-line) bg-(--c-bg-raised) md:min-h-[calc(100dvh-4rem)] md:border-r md:border-b-0">
+            <nav aria-label="ক্লাসরুমের মেনু" className="no-scrollbar flex gap-1 overflow-x-auto p-3 md:sticky md:top-16 md:flex-col md:p-4">
+              {TOOLS.filter((x) => lead || !x.teacher).map(({ id, label, Icon }) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setTool(id)}
+                  aria-current={tool === id ? "page" : undefined}
+                  className={cn(
+                    "flex shrink-0 items-center gap-3 rounded-xl px-3.5 py-2.5 text-left text-sm font-bold whitespace-nowrap transition-colors duration-150",
+                    tool === id ? "bg-(--c-blue) text-white" : "text-(--c-muted) hover:bg-(--c-bg-sunken) hover:text-(--c-ink-strong)",
+                  )}
+                >
+                  <Icon className="size-4.5" aria-hidden />
+                  <Tx k={label} />
+                </button>
+              ))}
+              <Link
+                href={`/media/academy/classroom/${encodeURIComponent(batch.id)}/live`}
+                className="flex shrink-0 items-center gap-3 rounded-xl bg-(--c-signal) px-3.5 py-2.5 text-sm font-bold whitespace-nowrap text-black md:mt-4"
+              >
+                <Radio className="size-4.5" aria-hidden />
+                <Tx k={lead ? "লাইভ ক্লাস শুরু করুন" : "লাইভ ক্লাসে যোগ দিন"} />
+              </Link>
+              <Link
+                href="/media/academy/classroom"
+                className="flex shrink-0 items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-bold whitespace-nowrap text-(--c-muted) hover:bg-(--c-bg-sunken) hover:text-(--c-ink-strong)"
+              >
+                <DoorOpen className="size-4.5" aria-hidden />
+                <Tx k="সব ক্লাসরুম" />
+              </Link>
+            </nav>
+          </aside>
 
-      <Band
-        id="desk"
-        n={2}
-        label={TOOLS.find((x) => x.id === tool)!.label}
-        note={
-          <>
-            সপ্তাহ <Num value={week} /> · {lesson.title}
-          </>
-        }
-      >
-        <div id="tool-panel" role={lead ? "tabpanel" : undefined}>
-          {tool === "attendance" ? (
-            <div className="p-6 md:p-10">
-              <AttendanceSheet key={batch.id} course={asBatchCourse} />
-            </div>
-          ) : tool === "materials" ? (
-            <div className="p-6 md:p-10">
-              <MaterialsDesk course={course} />
-            </div>
-          ) : tool === "money" ? (
-            <Earnings course={course} batch={batch} />
-          ) : (
-            <div className="grid gap-px bg-(--c-line) xl:h-[calc(100dvh-8rem)] xl:min-h-[46rem] xl:grid-cols-[19rem_minmax(0,1fr)_21rem] xl:grid-rows-[minmax(0,1.15fr)_minmax(0,1fr)]">
-              <SyllabusRail name={first} course={course} batch={batch} week={week} onWeek={setWeek} done={done} videos={course.lessons.length} className="order-3 max-h-[40rem] xl:order-none xl:row-span-2 xl:max-h-none" />
-              <RoomPlayer key={week} batch={batch} course={course} lesson={lesson} video={videoOf(week)} teacher={lead} poster={course.image} className="order-1 xl:order-none xl:col-span-2" />
-              <RoomChat batch={batch} className="order-4 xl:order-none" />
-              <LecturePanel course={course} batch={batch} week={week} onWeek={setWeek} videoOf={videoOf} enrollment={mine ? enrollment : undefined} className="order-2 max-h-[32rem] xl:order-none xl:max-h-none" />
-            </div>
-          )}
+          <div key={tool} id="tool-panel" className="fade-in min-w-0">
+            {tool === "dashboard" ? (
+              <Dashboard
+                batch={batch}
+                course={course}
+                current={next?.week ?? course.lessons.length + 1}
+                done={done}
+                me={me}
+                photo={account?.photo ?? undefined}
+                teacher={teacher.nameBn}
+                leader={leader?.name}
+                roster={roster}
+                academy={dept?.academy.name}
+                teacherView={lead}
+                notices={notices}
+                exams={exams}
+                onOpenExams={() => setTool("exams")}
+
+                onOpenBoard={() => setTool("board")}
+                onOpenWeek={(w) => {
+                  setWeek(w);
+                  setTool("lessons");
+                }}
+                onOpenChat={() => setTool("chat")}
+              />
+            ) : tool === "attendance" ? (
+              <div className="p-6 md:p-10">
+                <AttendanceSheet key={batch.id} course={asBatchCourse} />
+              </div>
+            ) : tool === "materials" ? (
+              <div className="p-6 md:p-10">
+                <MaterialsDesk course={course} />
+              </div>
+            ) : tool === "money" ? (
+              <Earnings course={course} batch={batch} />
+            ) : tool === "chat" ? (
+              <RoomChat batch={batch} pinner={lead} className="h-[80dvh] min-h-[28rem] xl:h-[calc(100dvh-4rem)]" />
+            ) : tool === "board" ? (
+              <BoardView batch={batch} course={course} lead={lead} me={me} />
+            ) : tool === "exams" ? (
+              <ExamsView batch={batch} lead={lead} me={me} roster={roster} />
+            ) : tool === "notes" ? (
+              <NotesView batch={batch} lead={lead} me={me} />
+            ) : tool === "quiz" ? (
+              <QuizView batch={batch} lead={lead} />
+            ) : tool === "map" ? (
+              <MindMap
+                batch={batch}
+                course={course}
+                current={next?.week ?? course.lessons.length + 1}
+                done={done}
+                onOpenWeek={(w) => {
+                  setWeek(w);
+                  setTool("lessons");
+                }}
+              />
+            ) : (
+              <div className="grid grid-cols-1 gap-px bg-(--c-line) xl:h-[calc(100dvh-4rem)] xl:grid-cols-[minmax(0,1fr)_24rem]">
+                <RoomPlayer key={week} batch={batch} course={course} lesson={lesson} video={videoOf(week)} teacher={lead} poster={course.image} className="xl:min-h-[24rem]" />
+                <LecturePanel
+                  course={course}
+                  batch={batch}
+                  week={week}
+                  onWeek={setWeek}
+                  videoOf={videoOf}
+                  enrollment={mine ? enrollment : undefined}
+                  className="max-h-[32rem] xl:max-h-none"
+                />
+              </div>
+            )}
+          </div>
         </div>
       </Band>
     </>

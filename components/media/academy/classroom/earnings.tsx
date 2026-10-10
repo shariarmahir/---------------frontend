@@ -21,7 +21,7 @@ export function Earnings({ course, batch }: { course: Course; batch: Batch }) {
   }
 
   return (
-    <div className="grid gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_22rem]">
+    <div className="grid grid-cols-1 gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_22rem]">
       <div className="bg-(--c-bg) p-6 md:p-10">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>

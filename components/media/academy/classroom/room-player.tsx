@@ -48,7 +48,7 @@ export function RoomPlayer({ batch, course, lesson, video, teacher, poster, clas
   const clock = (s: number) => num(durationText(Math.floor(s)));
 
   return (
-    <section ref={box} aria-label={`সপ্তাহ ${lesson.week}: ${lesson.title}`} className={cn("group/player relative isolate min-h-60 overflow-hidden bg-black text-white", "aspect-video xl:aspect-auto", className)}>
+    <section ref={box} aria-label={`সপ্তাহ ${lesson.week}: ${lesson.title}`} className={cn("group/player relative isolate w-full max-w-full overflow-hidden bg-black text-white xl:min-h-60", "aspect-video xl:aspect-auto", className)}>
       {embed ? (
         <iframe src={embed} title={lesson.title} allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen className="absolute inset-0 size-full" />
       ) : (

@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { cn } from "@/lib/utils";
+import { Tx } from "../../ui/language";
 import { Num } from "../../ui/numerals";
 
 /** "০১", "০২" — the band and card numbers are always two digits. */
@@ -20,6 +21,7 @@ export function Band({
   rulerLabel,
   note,
   now,
+  wide,
   className,
   children,
 }: {
@@ -30,13 +32,15 @@ export function Band({
   rulerLabel?: string;
   note?: React.ReactNode;
   now?: boolean;
+  /** Fill the whole width instead of the framed column, for working screens. */
+  wide?: boolean;
   className?: string;
   children: React.ReactNode;
 }) {
   return (
     <section id={id} data-choreo data-in={now || undefined} data-ruler-label={rulerLabel ?? label} className={cn("relative", className)}>
       <span aria-hidden data-draw-rule className="absolute inset-x-0 top-0 h-px origin-left bg-(--c-line)" />
-      <div className="relative mx-auto max-w-7xl border-x border-(--c-line)">
+      <div className={cn("relative mx-auto border-x border-(--c-line)", wide ? "max-w-none" : "max-w-7xl")}>
         <span aria-hidden data-draw-tick className="tick z-31 -top-1.25 -left-1.5" style={{ "--i": 0 } as CSSProperties} />
         <span aria-hidden data-draw-tick className="tick z-31 -top-1.25 -right-1.25" style={{ "--i": 1 } as CSSProperties} />
         {label && (
@@ -51,9 +55,9 @@ export function Band({
                     </span>
                   </>
                 )}
-                {label}
+                <Tx k={label} />
               </p>
-              {note && <p className="hud hidden text-(--c-faint) sm:block">{note}</p>}
+              {note && <p className="hud hidden text-(--c-faint) sm:block">{typeof note === "string" ? <Tx k={note} /> : note}</p>}
             </div>
           </div>
         )}

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, Link2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useT } from "../../ui/language";
 
 const cell = "inline-flex h-9 items-center gap-2 bg-(--c-bg) px-3 text-xs font-semibold text-(--c-muted) transition-colors duration-150 hover:bg-(--c-invert-bg) hover:text-(--c-invert-fg)";
 
@@ -12,6 +13,7 @@ const cell = "inline-flex h-9 items-center gap-2 bg-(--c-bg) px-3 text-xs font-s
  * leaves; nothing about the viewer does.
  */
 export function ShareRow({ text, className }: { text: string; className?: string }) {
+  const t = useT();
   const [copied, setCopied] = useState(false);
   const reset = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => () => clearTimeout(reset.current), []);
@@ -34,16 +36,16 @@ export function ShareRow({ text, className }: { text: string; className?: string
 
   return (
     <div className={cn("flex w-fit flex-wrap gap-px border border-(--c-line) bg-(--c-line)", className)}>
-      <span className="hud flex h-9 items-center bg-(--c-bg) px-3 text-(--c-faint)">শেয়ার</span>
+      <span className="hud flex h-9 items-center bg-(--c-bg) px-3 text-(--c-faint)">{t("শেয়ার")}</span>
       <button type="button" onClick={copy} className={cell}>
         {copied ? <Check className="size-3.5" aria-hidden /> : <Link2 className="size-3.5" aria-hidden />}
-        <span aria-live="polite">{copied ? "কপি হয়েছে" : "লিংক কপি"}</span>
+        <span aria-live="polite">{t(copied ? "কপি হয়েছে" : "লিংক কপি")}</span>
       </button>
       <button type="button" onClick={() => open("facebook")} className={cell}>
-        ফেসবুক
+        {t("ফেসবুক")}
       </button>
       <button type="button" onClick={() => open("whatsapp")} className={cell}>
-        হোয়াটসঅ্যাপ
+        {t("হোয়াটসঅ্যাপ")}
       </button>
     </div>
   );
