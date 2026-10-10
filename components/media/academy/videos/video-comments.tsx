@@ -11,7 +11,7 @@ import { threadsOf, type ClassVideo, type CommentSort, type VideoComment } from 
 import { commentSchema } from "@/lib/media/schemas";
 import { newId, useHydrated } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
-import { mediaButton } from "../../ui/button-styles";
+import { primaryBtn } from "../catalogue/buttons";
 import { Ago, Num, useFormat } from "../../ui/numerals";
 import { PersonAvatar } from "../../ui/person";
 import { updateAcademy, useAcademy } from "../use-academy";
@@ -59,22 +59,19 @@ export function VideoComments({ video, canTalk }: { video: ClassVideo; canTalk: 
   return (
     <section aria-labelledby="comments-title" className="mt-8">
       <div className="flex items-center gap-6">
-        <h2 id="comments-title" className="text-xl font-bold text-m-ink">
-          <Num value={count} />টি মতামত
+        <h2 id="comments-title" className="text-xl font-bold text-(--c-ink-strong)">
+          <Num value={count} />
+          টি মতামত
         </h2>
         <SortMenu sort={sort} onSort={setSort} />
       </div>
 
       <div className="mt-5">
-        {canTalk ? (
-          <Composer placeholder="মতামত লিখুন…" action="মতামত দিন" onPost={(t) => post(t)} />
-        ) : (
-          <p className="rounded-xl bg-m-ink/4 px-4 py-3 text-sm text-m-ink/70">এটা কোর্সের ভিডিও — ভর্তি হলে মতামত দিতে পারবেন। পড়তে পারেন সবাই।</p>
-        )}
+        {canTalk ? <Composer placeholder="মতামত লিখুন…" action="মতামত দিন" onPost={(t) => post(t)} /> : <p className="bg-(--c-bg-sunken) px-4 py-3 text-sm text-(--c-muted)">এটা কোর্সের ভিডিও — ভর্তি হলে মতামত দিতে পারবেন। পড়তে পারেন সবাই।</p>}
       </div>
 
       {threads.length === 0 ? (
-        <p className="mt-8 text-sm text-m-ink/65">এখনো কেউ কিছু লেখেননি — প্রথম মতামতটা আপনার হোক।</p>
+        <p className="mt-8 text-sm text-(--c-muted)">এখনো কেউ কিছু লেখেননি — প্রথম মতামতটা আপনার হোক।</p>
       ) : (
         <ul className="mt-8 space-y-6">
           <AnimatePresence initial={false}>
@@ -109,11 +106,11 @@ function SortMenu({ sort, onSort }: { sort: CommentSort; onSort: (s: CommentSort
   ];
   return (
     <div ref={box} className="relative">
-      <button type="button" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)} className="inline-flex h-9 items-center gap-2 rounded-full px-2 text-sm font-semibold text-m-ink hover:bg-m-ink/6">
+      <button type="button" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)} className="inline-flex h-9 items-center gap-2 px-2 text-sm font-semibold text-(--c-ink-strong) hover:bg-(--c-bg-raised)">
         <ListFilter className="size-5" aria-hidden /> সাজান
       </button>
       {open && (
-        <div role="menu" className="absolute top-10 left-0 z-20 w-44 overflow-hidden rounded-xl bg-m-card py-2 shadow-[0_20px_40px_-12px_rgb(16_24_40/0.27)] ring-1 ring-m-ink/10">
+        <div role="menu" className="absolute top-10 left-0 z-20 w-44 overflow-hidden bg-(--c-bg) py-2 shadow-[0_24px_48px_-24px_rgb(0_0_0/0.6)] border border-(--c-line)">
           {options.map((o) => (
             <button
               key={o.id}
@@ -124,7 +121,7 @@ function SortMenu({ sort, onSort }: { sort: CommentSort; onSort: (s: CommentSort
                 onSort(o.id);
                 setOpen(false);
               }}
-              className={cn("block w-full px-4 py-2.5 text-left text-sm hover:bg-m-ink/6", sort === o.id ? "font-bold text-m-blue" : "text-m-ink")}
+              className={cn("block w-full px-4 py-2.5 text-left text-sm hover:bg-(--c-bg-raised)", sort === o.id ? "font-bold text-(--c-accent-ink)" : "text-(--c-ink-strong)")}
             >
               {o.label}
             </button>
@@ -191,16 +188,20 @@ function Composer({ placeholder, action, onPost, onCancel, autoFocus, small }: {
           onKeyDown={(e) => {
             if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) submit();
           }}
-          className="block w-full resize-none border-b border-m-ink/26 bg-transparent pb-1.5 text-[15px] text-m-ink placeholder:text-m-ink/50 focus-visible:border-b-2 focus-visible:border-m-blue focus-visible:outline-none"
+          className="block w-full resize-none border-b border-(--c-line) bg-transparent pb-1.5 text-[15px] text-(--c-ink-strong) placeholder:text-(--c-faint) focus-visible:border-b-2 focus-visible:border-(--c-signal) focus-visible:outline-none"
         />
-        {error && <p className="mt-1 text-xs text-m-red">{error}</p>}
+        {error && <p className="mt-1 text-xs text-(--c-bad)">{error}</p>}
         {active && (
           <div className="mt-2 flex items-center justify-end gap-2">
-            {text.length > 400 && <span className="mr-auto text-xs text-m-ink/60 tabular-nums">{num(text.length)}/{num(500)}</span>}
-            <button type="button" onClick={cancel} className="h-9 rounded-full px-4 text-sm font-semibold text-m-ink hover:bg-m-ink/6">
+            {text.length > 400 && (
+              <span className="mr-auto text-xs text-(--c-muted) tabular-nums">
+                {num(text.length)}/{num(500)}
+              </span>
+            )}
+            <button type="button" onClick={cancel} className="h-9 px-4 text-sm font-semibold text-(--c-ink-strong) hover:bg-(--c-bg-raised)">
               বাতিল
             </button>
-            <button type="button" onClick={submit} disabled={text.trim().length < 2} className={mediaButton({ size: "sm", className: "rounded-full px-4" })}>
+            <button type="button" onClick={submit} disabled={text.trim().length < 2} className={cn(primaryBtn, "h-9 px-4")}>
               {action}
             </button>
           </div>
@@ -216,9 +217,9 @@ function ReadMore({ text }: { text: string }) {
   const long = text.length > 240;
   return (
     <>
-      <p className={cn("mt-1 text-[15px] leading-relaxed whitespace-pre-line text-m-ink/90", long && !open && "line-clamp-4")}>{text}</p>
+      <p className={cn("mt-1 text-[15px] leading-relaxed whitespace-pre-line text-(--c-ink)", long && !open && "line-clamp-4")}>{text}</p>
       {long && (
-        <button type="button" onClick={() => setOpen((o) => !o)} className="mt-1 text-sm font-semibold text-m-ink/70 hover:text-m-ink">
+        <button type="button" onClick={() => setOpen((o) => !o)} className="mt-1 text-sm font-semibold text-(--c-muted) hover:text-(--c-ink-strong)">
           {open ? "কম দেখান" : "আরও পড়ুন"}
         </button>
       )}
@@ -256,16 +257,16 @@ function Item({
       <PersonAvatar person={who} size={small ? "sm" : "md"} className="shrink-0" />
       <div className="min-w-0 flex-1">
         {comment.pinned && (
-          <p className="mb-1 flex items-center gap-1.5 text-xs text-m-ink/65">
+          <p className="mb-1 flex items-center gap-1.5 text-xs text-(--c-muted)">
             <Pin className="size-3.5" aria-hidden /> {teacherName} পিন করেছেন
           </p>
         )}
         <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[13px]">
-          <span className={cn("font-semibold text-m-ink", isTeacher && "inline-flex items-center gap-1 rounded-full bg-m-ink/8 px-2 py-0.5")}>
+          <span className={cn("font-semibold text-(--c-ink-strong)", isTeacher && "inline-flex items-center gap-1 bg-(--c-bg-sunken) px-2 py-0.5")}>
             {who.nameBn}
             {isTeacher && <BadgeCheck className="size-3.5" aria-label="এই ক্লাসের শিক্ষক" />}
           </span>
-          <span className="text-m-ink/60">
+          <span className="text-(--c-muted)">
             <Ago iso={comment.at} />
           </span>
         </p>
@@ -273,19 +274,24 @@ function Item({
         <div className="mt-1 -ml-2 flex items-center gap-1">
           <CommentVotes id={comment.id} base={comment.likes} disabled={!canTalk} />
           {canTalk && (
-            <button type="button" onClick={() => setReplying(true)} className="h-8 rounded-full px-3 text-xs font-semibold text-m-ink hover:bg-m-ink/6">
+            <button type="button" onClick={() => setReplying(true)} className="h-8 px-3 text-xs font-semibold text-(--c-ink-strong) hover:bg-(--c-bg-raised)">
               উত্তর দিন
             </button>
           )}
           {isMine && (
-            <button type="button" onClick={() => onRemove(comment.id)} className="inline-flex h-8 items-center gap-1 rounded-full px-3 text-xs font-semibold text-m-ink/70 hover:bg-m-ink/6 hover:text-m-ink">
+            <button type="button" onClick={() => onRemove(comment.id)} className="inline-flex h-8 items-center gap-1 px-3 text-xs font-semibold text-(--c-muted) hover:bg-(--c-bg-raised) hover:text-(--c-ink-strong)">
               <Trash2 className="size-3.5" aria-hidden /> মুছুন
             </button>
           )}
         </div>
         {replying && (
           <div className="mt-2">
-            <Composer small autoFocus placeholder="উত্তর লিখুন…" action="উত্তর দিন" onPost={(t) => {
+            <Composer
+              small
+              autoFocus
+              placeholder="উত্তর লিখুন…"
+              action="উত্তর দিন"
+              onPost={(t) => {
                 const ok = onReply(small ? `@${who.nameBn} ${t}` : t);
                 if (ok !== false) setThread(true);
                 return ok;
@@ -322,14 +328,15 @@ function Replies({
   const answered = replies.some((r) => r.handle === teacher) ? byHandle.get(teacher) : undefined;
   return (
     <div className="mt-1">
-      <button type="button" aria-expanded={open} onClick={onToggle} className="-ml-3 inline-flex h-9 items-center gap-2 rounded-full px-3 text-sm font-semibold text-m-blue hover:bg-m-ink/6">
+      <button type="button" aria-expanded={open} onClick={onToggle} className="-ml-3 inline-flex h-9 items-center gap-2 px-3 text-sm font-semibold text-(--c-accent-ink) hover:bg-(--c-bg-raised)">
         <ChevronDown className={cn("size-5 transition-transform duration-200", open && "rotate-180")} aria-hidden />
         {answered && (
           <span aria-hidden>
             <PersonAvatar person={answered} size="xs" />
           </span>
         )}
-        <Num value={replies.length} />টি উত্তর
+        <Num value={replies.length} />
+        টি উত্তর
       </button>
       <AnimatePresence initial={false}>
         {open && (

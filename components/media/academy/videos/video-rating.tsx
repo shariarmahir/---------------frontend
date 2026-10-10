@@ -43,25 +43,27 @@ export function VideoRating({ video, canRate, own }: { video: ClassVideo; canRat
   }
 
   return (
-    <section aria-labelledby="rating-title" className="mt-6 grid gap-6 rounded-xl bg-m-ink/4 p-4 sm:grid-cols-[auto_minmax(0,1fr)] sm:p-5 lg:grid-cols-[auto_minmax(0,1fr)_auto]">
+    <section aria-labelledby="rating-title" className="mt-6 grid gap-6 bg-(--c-bg-sunken) p-4 sm:grid-cols-[auto_minmax(0,1fr)] sm:p-5 lg:grid-cols-[auto_minmax(0,1fr)_auto]">
       <div className="text-center sm:text-left">
-        <h2 id="rating-title" className="text-sm font-semibold text-m-ink/75">ক্লাসের রেটিং</h2>
-        <p className="mt-1 text-5xl leading-none font-bold text-m-ink tabular-nums">{r.count ? <Num value={r.avg} decimals={1} /> : "—"}</p>
+        <h2 id="rating-title" className="text-sm font-semibold text-(--c-muted)">
+          ক্লাসের রেটিং
+        </h2>
+        <p className="mt-1 text-5xl leading-none font-bold text-(--c-ink-strong) tabular-nums">{r.count ? <Num value={r.avg} decimals={1} /> : "—"}</p>
         <Stars value={r.avg} className="mt-2 justify-center sm:justify-start" />
-        <p className="mt-1 text-xs text-m-ink/65">
+        <p className="mt-1 text-xs text-(--c-muted)">
           <Num value={r.count} /> জনের রেটিং
         </p>
       </div>
 
       <ol className="space-y-1.5 self-center" aria-label="কত জন কত তারা দিয়েছেন">
         {[5, 4, 3, 2, 1].map((s) => (
-          <li key={s} className="flex items-center gap-2 text-xs text-m-ink/70">
+          <li key={s} className="flex items-center gap-2 text-xs text-(--c-muted)">
             <span className="w-3 tabular-nums">
               <Num value={s} />
             </span>
-            <span className="h-2 flex-1 overflow-hidden rounded-full bg-m-ink/6">
+            <span className="h-2 flex-1 overflow-hidden bg-(--c-bg-sunken)">
               <motion.span
-                className="block h-full rounded-full bg-m-yellow"
+                className="block h-full bg-(--c-signal)"
                 initial={reduce ? false : { width: 0 }}
                 whileInView={{ width: `${(r.stars[s - 1] / most) * 100}%` }}
                 viewport={{ once: true }}
@@ -75,10 +77,10 @@ export function VideoRating({ video, canRate, own }: { video: ClassVideo; canRat
         ))}
       </ol>
 
-      <div className="border-t border-m-ink/9 pt-4 sm:col-span-2 lg:col-span-1 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-6">
-        <p className="text-sm font-semibold text-m-ink">আপনার রেটিং</p>
+      <div className="border-t border-(--c-line) pt-4 sm:col-span-2 lg:col-span-1 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-6">
+        <p className="text-sm font-semibold text-(--c-ink-strong)">আপনার রেটিং</p>
         {locked ? (
-          <p className="mt-2 max-w-56 text-xs leading-relaxed text-m-ink/65">{own ? "নিজের ক্লাসে রেটিং দেওয়া যায় না।" : "কোর্সে ভর্তি হলে এই ক্লাসে রেটিং দিতে পারবেন।"}</p>
+          <p className="mt-2 max-w-56 text-xs leading-relaxed text-(--c-muted)">{own ? "নিজের ক্লাসে রেটিং দেওয়া যায় না।" : "কোর্সে ভর্তি হলে এই ক্লাসে রেটিং দিতে পারবেন।"}</p>
         ) : (
           <>
             <div role="radiogroup" aria-label="তারা দিন" className="mt-2 flex" onMouseLeave={() => setHover(0)}>
@@ -95,18 +97,18 @@ export function VideoRating({ video, canRate, own }: { video: ClassVideo; canRat
                   onClick={() => rate(n)}
                   whileHover={reduce ? undefined : { scale: 1.2 }}
                   whileTap={reduce ? undefined : { scale: 0.85 }}
-                  className="grid size-10 place-items-center rounded-lg focus-visible:outline-2 focus-visible:outline-m-blue"
+                  className="grid size-10 place-items-center focus-visible:outline-2 focus-visible:outline-(--c-signal)"
                 >
                   <motion.span key={`${n}-${mine}`} animate={mine && n <= mine && !reduce ? { scale: [1, 1.4, 1] } : undefined} transition={{ delay: n * 0.05, duration: 0.3 }}>
-                    <Star className={cn("size-7 transition-colors", n <= shown ? "fill-m-yellow text-m-gold" : "text-m-ink/40")} aria-hidden />
+                    <Star className={cn("size-7 transition-colors", n <= shown ? "fill-(--c-signal) text-(--c-signal)" : "text-(--c-faint)")} aria-hidden />
                   </motion.span>
                 </motion.button>
               ))}
             </div>
-            <p className="mt-1 h-5 text-xs font-semibold text-m-ink/75" aria-live="polite">
+            <p className="mt-1 h-5 text-xs font-semibold text-(--c-muted)" aria-live="polite">
               {shown ? WORDS[shown] : "তারায় চাপ দিন"}
               {mine && !hover && (
-                <button type="button" onClick={clear} className="ml-2 font-normal text-m-ink/55 underline underline-offset-2 hover:text-m-ink">
+                <button type="button" onClick={clear} className="ml-2 font-normal text-(--c-faint) underline underline-offset-2 hover:text-(--c-ink-strong)">
                   মুছুন
                 </button>
               )}
@@ -126,9 +128,9 @@ function Stars({ value, className }: { value: number; className?: string }) {
         const fill = Math.max(0, Math.min(1, value - n + 1));
         return (
           <span key={n} className="relative size-4">
-            <Star className="absolute inset-0 size-4 text-m-ink/30" />
+            <Star className="absolute inset-0 size-4 text-(--c-faint)" />
             <span className="absolute inset-0 overflow-hidden" style={{ width: `${fill * 100}%` }}>
-              <Star className="size-4 fill-m-yellow text-m-gold" />
+              <Star className="size-4 fill-(--c-signal) text-(--c-signal)" />
             </span>
           </span>
         );

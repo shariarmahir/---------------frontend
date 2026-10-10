@@ -6,9 +6,9 @@ import { toast } from "sonner";
 import { MATERIAL_KINDS, materialKindOf, sizeParts, type Course, type Material, type MaterialKind } from "@/lib/media/academy";
 import { NOTE_FILE_MAX } from "@/lib/media/classroom";
 import { cn } from "@/lib/utils";
-import { mediaButton } from "../../ui/button-styles";
-import { selectClass } from "../../ui/field-styles";
 import { Num, useFormat } from "../../ui/numerals";
+import { secondaryBtn } from "../catalogue/buttons";
+import { fieldClass } from "../catalogue/fields";
 import { updateAcademy, useAcademy } from "../use-academy";
 
 export const MATERIAL_ICON: Record<MaterialKind, LucideIcon> = { video: FileVideo, pdf: FileText, doc: FileText, sheet: FileSpreadsheet, data: Database };
@@ -112,61 +112,102 @@ export function MaterialsDesk({ course }: { course: Course }) {
           void addFiles(e.dataTransfer.files);
         }}
         className={cn(
-          "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed px-6 py-10 text-center transition-colors has-focus-visible:ring-2 has-focus-visible:ring-m-blue",
-          over ? "border-m-blue bg-m-yellow/10" : "border-m-ink/17 bg-m-card hover:border-m-ink/34",
+          "flex cursor-pointer flex-col items-center justify-center gap-2 border-2 border-dashed px-6 py-10 text-center transition-colors duration-150 has-focus-visible:border-(--c-signal)",
+          over ? "border-(--c-signal) bg-(--c-bg-sunken)" : "border-(--c-line-strong) bg-(--c-bg) hover:border-(--c-ink)",
         )}
       >
-        <input ref={input} type="file" multiple accept={ACCEPT} className="sr-only" onChange={(e) => e.target.files && void addFiles(e.target.files).then(() => { if (input.current) input.current.value = ""; })} />
-        <span className="grid size-12 place-items-center rounded-2xl bg-m-yellow text-m-ink"><Upload className="size-6" aria-hidden /></span>
-        <span className="text-base font-bold text-m-ink">{busy ? "পড়া হচ্ছে…" : "ফাইল এখানে ছেড়ে দিন, বা বেছে নিন"}</span>
-        <span className="text-sm text-m-ink/70">পিডিএফ, ওয়ার্ড, এক্সেল, স্লাইড, ডেটা, ছোট ভিডিও — প্রতিটি ১.৫ এমবি পর্যন্ত</span>
+        <input
+          ref={input}
+          type="file"
+          multiple
+          accept={ACCEPT}
+          className="sr-only"
+          onChange={(e) =>
+            e.target.files &&
+            void addFiles(e.target.files).then(() => {
+              if (input.current) input.current.value = "";
+            })
+          }
+        />
+        <span className="grid size-12 place-items-center bg-(--c-signal) text-black">
+          <Upload className="size-6" aria-hidden />
+        </span>
+        <span className="text-base font-bold text-(--c-ink-strong)">{busy ? "পড়া হচ্ছে…" : "ফাইল এখানে ছেড়ে দিন, বা বেছে নিন"}</span>
+        <span className="text-sm text-(--c-muted)">পিডিএফ, ওয়ার্ড, এক্সেল, স্লাইড, ডেটা, ছোট ভিডিও — প্রতিটি ১.৫ এমবি পর্যন্ত</span>
       </label>
 
-      <form onSubmit={addLink} className="grid gap-2 rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)_8rem_auto] sm:items-end shadow-m-tile">
+      <form onSubmit={addLink} className="grid gap-2 border border-(--c-line) bg-(--c-bg) p-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)_8rem_auto] sm:items-end">
         <label className="text-sm">
-          <span className="mb-1 block font-semibold text-m-ink">বড় ভিডিও বা ফাইলের লিংক</span>
-          <input value={link.title} onChange={(e) => setLink((l) => ({ ...l, title: e.target.value }))} placeholder="যেমন: সপ্তাহ ৩-এর ক্লাস" className="h-11 w-full rounded-lg border border-m-ink/13 bg-m-canvas px-3 text-[15px] focus-visible:border-m-blue focus-visible:outline-none" />
+          <span className="mb-1 block font-semibold text-(--c-ink-strong)">বড় ভিডিও বা ফাইলের লিংক</span>
+          <input
+            value={link.title}
+            onChange={(e) => setLink((l) => ({ ...l, title: e.target.value }))}
+            placeholder="যেমন: সপ্তাহ ৩-এর ক্লাস"
+            className="h-11 w-full border border-(--c-line-strong) bg-(--c-bg-sunken) px-3 text-[15px] text-(--c-ink-strong) placeholder:text-(--c-faint) focus-visible:border-(--c-signal) focus-visible:outline-none"
+          />
         </label>
         <label className="text-sm">
           <span className="sr-only">লিংক</span>
-          <input value={link.url} onChange={(e) => setLink((l) => ({ ...l, url: e.target.value }))} type="url" placeholder="https://youtu.be/…" className="h-11 w-full rounded-lg border border-m-ink/13 bg-m-canvas px-3 text-[15px] focus-visible:border-m-blue focus-visible:outline-none" />
+          <input
+            value={link.url}
+            onChange={(e) => setLink((l) => ({ ...l, url: e.target.value }))}
+            type="url"
+            placeholder="https://youtu.be/…"
+            className="h-11 w-full border border-(--c-line-strong) bg-(--c-bg-sunken) px-3 text-[15px] text-(--c-ink-strong) placeholder:text-(--c-faint) focus-visible:border-(--c-signal) focus-visible:outline-none"
+          />
         </label>
         <label className="text-sm">
           <span className="sr-only">ধরন</span>
-          <select value={link.kind} onChange={(e) => setLink((l) => ({ ...l, kind: e.target.value as MaterialKind }))} className={selectClass}>
-            {(Object.keys(MATERIAL_KINDS) as MaterialKind[]).map((k) => <option key={k} value={k}>{MATERIAL_KINDS[k]}</option>)}
+          <select value={link.kind} onChange={(e) => setLink((l) => ({ ...l, kind: e.target.value as MaterialKind }))} className={fieldClass}>
+            {(Object.keys(MATERIAL_KINDS) as MaterialKind[]).map((k) => (
+              <option key={k} value={k}>
+                {MATERIAL_KINDS[k]}
+              </option>
+            ))}
           </select>
         </label>
-        <button type="submit" className={mediaButton({ variant: "quiet" })}><Link2 aria-hidden /> যোগ করুন</button>
+        <button type="submit" className={cn(secondaryBtn, "h-11 px-4")}>
+          <Link2 aria-hidden /> যোগ করুন
+        </button>
       </form>
 
       <section aria-labelledby="mat-list">
-        <h3 id="mat-list" className="mb-2 text-sm font-semibold text-m-ink/80">সব উপকরণ · <Num value={added.length + course.materials.length} /></h3>
-        <ul className="divide-y divide-m-ink/9 overflow-hidden rounded-2xl bg-m-card ring-1 ring-m-ink/10 shadow-m-tile">
+        <h3 id="mat-list" className="hud mb-3 text-(--c-faint)">
+          সব উপকরণ · <Num value={added.length + course.materials.length} />
+        </h3>
+        <ul className="divide-y divide-(--c-line) border border-(--c-line) bg-(--c-bg)">
           {[...added, ...course.materials].map((m, i) => {
             const Icon = MATERIAL_ICON[m.kind];
             const mine = Boolean(m.at);
             const isLink = m.href && !m.href.startsWith("data:");
             return (
               <li key={`${m.title}-${m.at ?? i}`} className="flex items-center gap-3 px-4 py-3">
-                <Icon className="size-5 shrink-0 text-m-blue" aria-hidden />
+                <Icon className="size-5 shrink-0 text-(--c-accent-ink)" aria-hidden />
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-[15px] text-m-ink">{m.title}</span>
-                  <span className="text-xs text-m-ink/65">{MATERIAL_KINDS[m.kind]} · {m.size}{!mine && " · কোর্সের সাথে"}</span>
+                  <span className="block truncate text-[15px] text-(--c-ink-strong)">{m.title}</span>
+                  <span className="text-xs text-(--c-muted)">
+                    {MATERIAL_KINDS[m.kind]} · {m.size}
+                    {!mine && " · কোর্সের সাথে"}
+                  </span>
                 </span>
                 {m.href && (
                   <a
                     href={m.href}
                     {...(isLink ? { target: "_blank", rel: "noopener noreferrer nofollow" } : { download: m.file ?? m.title })}
-                    className={mediaButton({ variant: "ghost", size: "icon-sm" })}
+                    className="grid size-9 shrink-0 place-items-center border border-(--c-line) text-(--c-ink) transition-colors duration-150 hover:bg-(--c-invert-bg) hover:text-(--c-invert-fg)"
                     aria-label={isLink ? `${m.title} খুলুন` : `${m.title} ডাউনলোড`}
                   >
-                    {isLink ? <ExternalLink aria-hidden /> : <Download aria-hidden />}
+                    {isLink ? <ExternalLink className="size-4" aria-hidden /> : <Download className="size-4" aria-hidden />}
                   </a>
                 )}
                 {mine && (
-                  <button type="button" onClick={() => remove(m.at)} className={mediaButton({ variant: "ghost", size: "icon-sm" })} aria-label={`${m.title} মুছুন`}>
-                    <Trash2 aria-hidden />
+                  <button
+                    type="button"
+                    onClick={() => remove(m.at)}
+                    className="grid size-9 shrink-0 place-items-center border border-(--c-line) text-(--c-muted) transition-colors duration-150 hover:border-(--c-bad) hover:text-(--c-bad)"
+                    aria-label={`${m.title} মুছুন`}
+                  >
+                    <Trash2 className="size-4" aria-hidden />
                   </button>
                 )}
               </li>

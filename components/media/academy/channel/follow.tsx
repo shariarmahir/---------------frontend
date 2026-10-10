@@ -8,7 +8,7 @@ import { teacherFollowers } from "@/data/media/academy";
 import { BELLS, type Bell as BellKind } from "@/lib/media/academy";
 import { useHydrated } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
-import { mediaButton } from "../../ui/button-styles";
+import { primaryBtn } from "../catalogue/buttons";
 import { updateAcademy, useAcademy } from "../use-academy";
 
 const BELL_ICON: Record<BellKind, LucideIcon> = { all: BellRing, free: Bell, none: BellOff };
@@ -66,7 +66,7 @@ export function FollowButton({ handle, name, size = "md", className }: { handle:
           set("free");
           toast.success(`${name}-কে অনুসরণ করছেন`, { description: "প্রতি সপ্তাহের বিনামূল্যের ক্লাস এলে জানাব। ঘণ্টায় চাপ দিয়ে বদলাতে পারেন।" });
         }}
-        className={mediaButton({ className: cn("rounded-full", h, className) })}
+        className={cn(primaryBtn, h, className)}
       >
         অনুসরণ করুন
       </button>
@@ -74,7 +74,8 @@ export function FollowButton({ handle, name, size = "md", className }: { handle:
   }
 
   const Icon = BELL_ICON[bell];
-  const item = "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-m-ink hover:bg-m-ink/6 focus-visible:bg-m-ink/6 focus-visible:outline-none";
+  const item =
+    "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-(--c-muted) transition-colors duration-150 hover:bg-(--c-invert-bg) hover:text-(--c-invert-fg) focus-visible:bg-(--c-invert-bg) focus-visible:text-(--c-invert-fg) focus-visible:outline-none";
   return (
     <div ref={box} className={cn("relative", className)}>
       <button
@@ -82,15 +83,12 @@ export function FollowButton({ handle, name, size = "md", className }: { handle:
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((o) => !o)}
-        className={cn("inline-flex items-center gap-2 rounded-full bg-m-ink/6 font-semibold text-m-ink transition-colors hover:bg-m-ink/11 aria-expanded:bg-m-ink/11", h)}
+        className={cn(
+          "inline-flex items-center gap-2 border border-(--c-line-strong) font-semibold text-(--c-ink-strong) transition-colors duration-150 hover:bg-(--c-invert-bg) hover:text-(--c-invert-fg) aria-expanded:bg-(--c-invert-bg) aria-expanded:text-(--c-invert-fg)",
+          h,
+        )}
       >
-        <motion.span
-          key={bell}
-          className="inline-grid"
-          animate={reduce ? undefined : { rotate: [0, -18, 14, -10, 6, 0] }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          style={{ transformOrigin: "50% 10%" }}
-        >
+        <motion.span key={bell} className="inline-grid" animate={reduce ? undefined : { rotate: [0, -18, 14, -10, 6, 0] }} transition={{ duration: 0.6, ease: "easeOut" }} style={{ transformOrigin: "50% 10%" }}>
           <Icon className="size-4.5" aria-hidden />
         </motion.span>
         অনুসরণ করছেন
@@ -98,7 +96,7 @@ export function FollowButton({ handle, name, size = "md", className }: { handle:
         <span className="sr-only">— কী জানাব, বদলান</span>
       </button>
       {open && (
-        <div role="menu" aria-label="কী জানাব" className="absolute top-12 left-0 z-30 w-60 overflow-hidden rounded-xl bg-m-card py-2 shadow-[0_20px_40px_-12px_rgb(16_24_40/0.27)] ring-1 ring-m-ink/10">
+        <div role="menu" aria-label="কী জানাব" className="absolute top-12 left-0 z-30 w-60 border border-(--c-line) bg-(--c-bg-raised) py-2 shadow-[0_24px_48px_-24px_rgb(0_0_0/0.6)]">
           {(Object.keys(BELLS) as BellKind[]).map((b) => {
             const BIcon = BELL_ICON[b];
             return (
@@ -115,11 +113,11 @@ export function FollowButton({ handle, name, size = "md", className }: { handle:
               >
                 <BIcon className="size-4.5" aria-hidden />
                 <span className="flex-1">{BELLS[b]}</span>
-                {bell === b && <Check className="size-4 text-m-blue" aria-hidden />}
+                {bell === b && <Check className="size-4 text-(--c-accent-ink)" aria-hidden />}
               </button>
             );
           })}
-          <span className="my-1 block h-px bg-m-ink/6" aria-hidden />
+          <span className="my-1 block h-px bg-(--c-line)" aria-hidden />
           <button
             type="button"
             role="menuitem"

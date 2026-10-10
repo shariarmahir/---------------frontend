@@ -53,20 +53,21 @@ export function Shelf({
     el.scrollBy({ left: dir * el.clientWidth * 0.85, behavior: reduce ? "auto" : "smooth" });
   }
 
-  const arrow = "absolute z-10 hidden size-10 -translate-y-1/2 place-items-center rounded-full bg-m-card text-m-ink shadow-[0_8px_24px_-6px_rgb(16_24_40/0.27)] ring-1 ring-m-ink/17 transition-[opacity,background-color] hover:bg-m-blue-soft sm:grid";
+  const arrow =
+    "absolute z-10 hidden size-10 -translate-y-1/2 place-items-center border border-(--c-line-strong) bg-(--c-bg) text-(--c-ink-strong) transition-[opacity,background-color,color] duration-150 hover:bg-(--c-invert-bg) hover:text-(--c-invert-fg) sm:grid";
 
   return (
-    <section className={cn("border-b border-m-ink/9 pb-7", className)}>
-      {eyebrow && <p className="mb-1 text-xs font-semibold text-m-blue">{eyebrow}</p>}
+    <section className={cn("border-b border-(--c-line) px-6 py-8 md:px-10", className)}>
+      {eyebrow && <p className="hud mb-2 text-(--c-accent-ink)">{eyebrow}</p>}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-        <h3 className="text-lg font-bold text-m-ink sm:text-xl">{title}</h3>
+        <h3 className="display text-xl text-(--c-ink-strong) sm:text-2xl">{title}</h3>
         {playAll && (
-          <Link href={playAll} className="group inline-flex h-8 items-center gap-1.5 rounded-full px-2.5 text-sm font-semibold text-m-ink transition-colors hover:bg-m-ink/6">
+          <Link href={playAll} className="group hud inline-flex h-8 items-center gap-1.5 border border-(--c-line-strong) px-2.5 font-bold text-(--c-ink-strong) transition-colors duration-150 hover:bg-(--c-invert-bg) hover:text-(--c-invert-fg)">
             <Play className="size-4 fill-current transition-transform group-hover:scale-110 motion-reduce:transition-none" aria-hidden /> সব চালান
           </Link>
         )}
       </div>
-      {about && <p className="mt-1 line-clamp-2 max-w-3xl text-sm leading-relaxed text-m-ink/65">{about}</p>}
+      {about && <p className="mt-1 line-clamp-2 max-w-3xl text-sm leading-relaxed text-(--c-muted)">{about}</p>}
 
       <div className="relative mt-4">
         {/* Room below the cards (given back by the negative margin) keeps a card's ⋮ menu from being cut off by the sideways scroll. */}

@@ -48,7 +48,7 @@ export function RoomPlayer({ batch, course, lesson, video, teacher, poster, clas
   const clock = (s: number) => num(durationText(Math.floor(s)));
 
   return (
-    <section ref={box} aria-label={`সপ্তাহ ${lesson.week}: ${lesson.title}`} className={cn("group/player relative isolate min-h-60 overflow-hidden rounded-[1.6rem] bg-m-blue-night text-white shadow-m-lift", "aspect-video xl:aspect-auto", className)}>
+    <section ref={box} aria-label={`সপ্তাহ ${lesson.week}: ${lesson.title}`} className={cn("group/player relative isolate min-h-60 overflow-hidden bg-black text-white", "aspect-video xl:aspect-auto", className)}>
       {embed ? (
         <iframe src={embed} title={lesson.title} allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen className="absolute inset-0 size-full" />
       ) : (
@@ -69,26 +69,36 @@ export function RoomPlayer({ batch, course, lesson, video, teacher, poster, clas
       )}
 
       {/* The lesson on top, the next live class beside it. */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-3 bg-[linear-gradient(180deg,rgb(0_20_70/0.78),transparent)] p-4 pb-16 sm:p-6 sm:pb-20">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-3 bg-[linear-gradient(180deg,rgb(0_0_0/0.78),transparent)] p-4 pb-16 sm:p-6 sm:pb-20">
         <div className="min-w-0">
-          <h2 className="line-clamp-2 text-xl leading-tight font-bold sm:text-[1.75rem]">{lesson.title}</h2>
+          <h2 className="display line-clamp-2 text-xl leading-tight sm:text-[1.75rem]">{lesson.title}</h2>
           <p className="mt-1 text-sm font-semibold text-white/80">
             সপ্তাহ <Num value={lesson.week} /> • {embed ? "রেকর্ডিং" : "নমুনা রেকর্ডিং — ডেমোতে সব ক্লাসে এটাই চলে"}
           </p>
         </div>
-        <button type="button" onClick={full} className="pointer-events-auto grid size-11 shrink-0 place-items-center rounded-full bg-white text-m-ink shadow-m-tile transition-transform hover:scale-105 motion-reduce:transition-none" aria-label="পুরো পর্দা">
+        <button type="button" onClick={full} className="pointer-events-auto grid size-11 shrink-0 place-items-center bg-white text-black transition-colors duration-150 hover:bg-(--c-signal)" aria-label="পুরো পর্দা">
           <Maximize2 className="size-4.5" aria-hidden />
         </button>
       </div>
 
       <div className="absolute top-20 right-4 z-10 sm:top-24 sm:right-6">
-        <Link href={live} className="flex items-center gap-2.5 rounded-full bg-white/14 py-1.5 pr-1.5 pl-3.5 text-sm font-semibold ring-1 ring-white/30 backdrop-blur-md transition-colors hover:bg-white/22">
+        <Link href={live} className="flex items-center gap-2.5 bg-black/60 py-1.5 pr-1.5 pl-3.5 text-sm font-semibold backdrop-blur-md transition-colors duration-150 hover:bg-black/80">
           <span className="relative flex size-2.5" aria-hidden>
-            {next?.live && <span className="absolute inset-0 animate-ping rounded-full bg-m-yellow opacity-75 motion-reduce:animate-none" />}
-            <span className="relative size-2.5 rounded-full bg-m-yellow" />
+            {next?.live && <span className="absolute inset-0 animate-ping bg-(--c-signal) opacity-75 motion-reduce:animate-none" />}
+            <span className="relative size-2.5 bg-(--c-signal)" />
           </span>
-          <span className="hidden sm:inline">{next?.live ? "এখন লাইভ" : next ? <>পরের লাইভ · <DateText iso={next.at} time weekday /></> : "লাইভ রুম"}</span>
-          <span className="inline-flex h-8 items-center gap-1.5 rounded-full bg-m-yellow px-3 font-bold text-m-ink">
+          <span className="hidden sm:inline">
+            {next?.live ? (
+              "এখন লাইভ"
+            ) : next ? (
+              <>
+                পরের লাইভ · <DateText iso={next.at} time weekday />
+              </>
+            ) : (
+              "লাইভ রুম"
+            )}
+          </span>
+          <span className="inline-flex h-8 items-center gap-1.5 bg-(--c-signal) px-3 font-bold text-black">
             <Radio className="size-4" aria-hidden /> {teacher ? "লাইভ শুরু" : "যোগ দিন"}
           </span>
         </Link>
@@ -97,12 +107,12 @@ export function RoomPlayer({ batch, course, lesson, video, teacher, poster, clas
       {!embed && (
         <>
           {!playing && (
-            <button type="button" onClick={toggle} className="absolute inset-0 z-0 m-auto grid size-20 place-items-center rounded-full bg-white/18 ring-1 ring-white/40 backdrop-blur-md transition-transform hover:scale-105 motion-reduce:transition-none" aria-label="চালান">
-              <Play className="ml-1 size-8 fill-white" aria-hidden />
+            <button type="button" onClick={toggle} className="absolute inset-0 z-0 m-auto grid size-20 place-items-center bg-white text-black transition-colors duration-150 hover:bg-(--c-signal)" aria-label="চালান">
+              <Play className="ml-1 size-8 fill-current" aria-hidden />
             </button>
           )}
           {/* The control bar, as glass over the picture. */}
-          <div className="absolute inset-x-3 bottom-3 z-10 flex items-center gap-2 rounded-2xl bg-m-blue-night/55 px-2.5 py-2 ring-1 ring-white/15 backdrop-blur-md sm:inset-x-5 sm:bottom-5 sm:gap-3 sm:px-3.5">
+          <div className="absolute inset-x-3 bottom-3 z-10 flex items-center gap-2 bg-black/60 px-2.5 py-2 backdrop-blur-md sm:inset-x-5 sm:bottom-5 sm:gap-3 sm:px-3.5">
             <Ctl label="১০ সেকেন্ড পিছনে" onClick={() => skip(-10)}>
               <RotateCcw className="size-4" aria-hidden />
             </Ctl>
@@ -127,7 +137,7 @@ export function RoomPlayer({ batch, course, lesson, video, teacher, poster, clas
               }}
               aria-label="ভিডিওর কোথায়"
               aria-valuetext={`${clock(time)} / ${clock(length)}`}
-              className="h-1.5 min-w-0 flex-1 cursor-pointer accent-m-yellow"
+              className="h-1.5 min-w-0 flex-1 cursor-pointer accent-(--c-signal)"
             />
             <Ctl label={muted ? "শব্দ চালু" : "শব্দ বন্ধ"} onClick={() => setMuted((m) => !m)}>
               {muted ? <VolumeX className="size-4" aria-hidden /> : <Volume2 className="size-4" aria-hidden />}
@@ -142,7 +152,7 @@ export function RoomPlayer({ batch, course, lesson, video, teacher, poster, clas
 
 function Ctl({ label, onClick, children }: { label: string; onClick: () => void; children: React.ReactNode }) {
   return (
-    <button type="button" onClick={onClick} aria-label={label} className="grid size-8 shrink-0 place-items-center rounded-full text-white/90 transition-colors hover:bg-white/15 hover:text-white">
+    <button type="button" onClick={onClick} aria-label={label} className="grid size-8 shrink-0 place-items-center text-white/90 transition-colors duration-150 hover:bg-white hover:text-black">
       {children}
     </button>
   );

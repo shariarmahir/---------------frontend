@@ -5,23 +5,30 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, BadgeCheck, Link2, ListVideo, Play, Presentation, Quote, Search, Upload, X } from "lucide-react";
+import { ArrowUpRight, BadgeCheck, Link2, ListVideo, Play, Presentation, Quote, Search, SearchX, Upload, X } from "lucide-react";
 import { DEMO_NOW } from "@/data/media/clock";
-import { coursesBy, coursesOf, deptsOfTeacher, getCourse, teacherRecord } from "@/data/media/academy";
+import { coursesBy, coursesOf, departments, deptsOfTeacher, getCourse, teacherRecord } from "@/data/media/academy";
 import { personOrThrow } from "@/data/media/users";
-import { COURSE_DAYS, DEPT_KINDS, LEVELS, VIDEO_SORTS, canWatch, sortVideos, weekOf, type ClassVideo, type Course, type Department, type VideoSort } from "@/lib/media/academy";
+import { COURSE_DAYS, DEPT_KINDS, LEVELS, VIDEO_SORTS, canWatch, sortVideos, weekOf, type ClassVideo, type Course, type Department, type VideoSort, watchHref } from "@/lib/media/academy";
 import { useHydrated } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
-import { mediaButton } from "../../ui/button-styles";
-import { EmptyState } from "../../ui/empty-state";
-import { chipClass } from "../../ui/field-styles";
 import { Ago, Compact, Num } from "../../ui/numerals";
 import { PersonAvatar } from "../../ui/person";
+import { AssetCard, AssetGrid } from "../catalogue/asset-card";
+import { Band, twoDigits } from "../catalogue/band";
+import { primaryBtn, secondaryBtn } from "../catalogue/buttons";
+import { CatalogueFooter } from "../catalogue/catalogue-footer";
+import { CatalogueNav } from "../catalogue/catalogue-nav";
+import { CatalogueRoot } from "../catalogue/catalogue-root";
+import { blankFill, lineupGrid } from "../catalogue/fill-row";
+import { CatalogueRuler } from "../catalogue/ruler";
+import { TierTag } from "../catalogue/tier-tag";
+import { toneStyle } from "../catalogue/tones";
 import { useTeacher } from "../desk/use-teacher";
-import { TierBadge, standingOf } from "../parts";
+import { standingOf } from "../parts";
 import { useAcademy } from "../use-academy";
 import { useVideos } from "../videos/use-videos";
-import { ShortCard, Thumb, VideoCard, watchHref } from "../videos/video-card";
+import { ShortCard, Thumb, VideoCard } from "../videos/video-card";
 import { CommentVotes } from "../videos/votes";
 import { ChannelAbout } from "./channel-about";
 import { ChannelCard } from "./channel-card";
@@ -32,16 +39,18 @@ import { Shelf, ShelfItem } from "./shelf";
 type Tab = "home" | "videos" | "shorts" | "courses" | "stories" | "about" | "search";
 
 const THIS_WEEK = weekOf(DEMO_NOW.toISOString());
-const CARD_SIZES = "(min-width: 1536px) 18vw, (min-width: 1024px) 28vw, (min-width: 640px) 45vw, 78vw";
+const CARD_SIZES = "(min-width: 1280px) 22rem, (min-width: 640px) 45vw, 78vw";
+const toneOf = (dept?: string) => departments.findIndex((d) => d.id === dept);
 
 /** A course's videos in playlist order: week by week, the earliest upload first. */
 const playlist = (videos: ClassVideo[], course: string) => videos.filter((v) => v.course === course && !v.short).sort((a, b) => a.week - b.week || a.at.localeCompare(b.at));
 
 /**
- * A teacher's channel, laid out like a video site's: a banner, the face and
- * numbers, a follow button with a bell, and tabs — home (one section per
- * department they teach in, a shelf per course), videos, shorts, courses as
- * playlists, their learners' success stories, and the record behind them.
+ * A teacher's channel, in the catalogue's bands: the face, the record in
+ * numbers and the way to follow, with their course pictures fanned beside;
+ * then a ruled strip of tabs — home (one section per department they teach
+ * in, a shelf per course), videos, shorts, courses as playlists, their
+ * learners' success, and the record behind them — and a search.
  */
 export function ChannelView({ handle }: { handle: string }) {
   const params = useSearchParams();
@@ -62,6 +71,7 @@ export function ChannelView({ handle }: { handle: string }) {
   const views = videos.reduce((n, v) => n + v.views, 0);
   const own = viewer === handle;
   const locked = (v: ClassVideo) => hydrated && !canWatch(v, enrolled, viewer);
+  const tier = standingOf(record).tier;
 
   const tabs: { id: Tab; label: string }[] = [
     { id: "home", label: "হোম" },
@@ -74,58 +84,89 @@ export function ChannelView({ handle }: { handle: string }) {
   const q = params.get("q")?.trim().slice(0, 60) ?? "";
   const asked = params.get("tab");
   const tab: Tab = q ? "search" : (tabs.find((t) => t.id === asked)?.id ?? "home");
+  const tabLabel = tab === "search" ? "খোঁজ" : tabs.find((t) => t.id === tab)!.label;
 
   return (
-    <div className="mx-auto max-w-[96rem]">
-      <Banner handle={handle} depts={depts} courses={courses} />
+    <CatalogueRoot className="min-h-full">
+      <CatalogueNav />
+      <CatalogueRuler />
 
-      <header className="mt-4 flex items-start gap-4 sm:mt-6 sm:items-center sm:gap-6">
-        <PersonAvatar person={person} size="xl" className="size-18 text-3xl sm:size-40 sm:text-6xl" />
-        <div className="min-w-0 flex-1">
-          <h1 className="flex items-center gap-2 text-2xl leading-tight font-bold text-m-ink sm:text-4xl">
-            <span className="min-w-0 truncate">{person.nameBn}</span>
-            <BadgeCheck className="size-5 shrink-0 text-m-ink/75 sm:size-7" aria-label="ইন্টারভিউ-উত্তীর্ণ শিক্ষক" />
-          </h1>
-          <p className="mt-1.5 text-sm text-m-ink/70">
-            <span className="font-semibold text-m-ink">@{handle}</span> · <Compact n={followers} /> অনুসারী · <Num value={videos.length} />টি ভিডিও
-          </p>
-          <button type="button" onClick={() => setAbout(true)} className="group mt-2 flex w-full max-w-2xl min-w-0 items-baseline gap-1 text-left text-sm text-m-ink/70">
-            <span className="min-w-0 truncate">
-              {record.title}। {person.bio}
-            </span>
-            <span className="shrink-0 font-semibold text-m-ink group-hover:text-m-blue">...আরও</span>
-          </button>
-          {depts[0] && (
-            <p className="mt-1.5 flex flex-wrap items-center gap-1 text-sm">
-              <Link2 className="size-4 text-m-blue" aria-hidden />
-              <Link href={`/media/academy/dept/${depts[0].id}`} className="font-semibold text-m-blue hover:underline">
-                {depts[0].name}
-              </Link>
-              {depts.length > 1 && (
-                <button type="button" onClick={() => setAbout(true)} className="font-semibold text-m-ink hover:text-m-blue">
-                  ও আরও <Num value={depts.length - 1} />টি বিভাগ
-                </button>
+      <Band id="intro" n={1} label="শিক্ষক" now note={<>@{handle}</>}>
+        <div style={toneStyle(toneOf(depts[0]?.id))} className="tone grid gap-12 px-6 py-12 md:px-10 md:py-16 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
+            <PersonAvatar person={person} size="xl" className="size-24 shrink-0 text-4xl ring-2 ring-(--c-app) sm:size-32 sm:text-5xl" />
+            <div data-reveal data-in className="min-w-0">
+              <h1 className="display flex items-center gap-3 text-4xl leading-tight text-(--c-ink-strong) sm:text-5xl">
+                <span className="min-w-0">{person.nameBn}</span>
+                <BadgeCheck className="size-7 shrink-0 text-(--c-accent-ink)" aria-label="ইন্টারভিউ-উত্তীর্ণ শিক্ষক" />
+              </h1>
+              <p className="hud mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-(--c-muted)">
+                <TierTag tier={tier} />
+                <span>
+                  <Compact n={followers} /> অনুসারী
+                </span>
+                <span>
+                  <Num value={videos.length} />
+                  টি ভিডিও
+                </span>
+              </p>
+              <button type="button" onClick={() => setAbout(true)} className="group mt-4 flex w-full max-w-2xl min-w-0 items-baseline gap-1.5 text-left leading-relaxed text-(--c-muted)">
+                <span className="line-clamp-2 min-w-0">
+                  {record.title}। {person.bio}
+                </span>
+                <span className="shrink-0 font-semibold text-(--c-ink-strong) underline-offset-4 group-hover:underline">আরও</span>
+              </button>
+              {depts.length > 0 && (
+                <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+                  <Link2 className="size-4 text-(--c-app-ink)" aria-hidden />
+                  {depts.map((d) => (
+                    <Link key={d.id} href={`/media/academy/dept/${d.id}`} className="font-semibold text-(--c-app-ink) underline-offset-4 hover:underline">
+                      {d.name}
+                    </Link>
+                  ))}
+                </p>
               )}
-            </p>
-          )}
-          <div className="mt-3 hidden flex-wrap items-center gap-2 sm:flex">
-            <Actions own={own} handle={handle} name={person.nameBn} tier={standingOf(record).tier} />
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                {own ? (
+                  <>
+                    <Link href="/media/academy/videos?upload=1" className={cn(primaryBtn, "h-11")}>
+                      <Upload className="size-4" aria-hidden /> ভিডিও তুলুন
+                    </Link>
+                    <Link href="/media/academy/classroom" className={cn(secondaryBtn, "h-11")}>
+                      <Presentation className="size-4" aria-hidden /> আমার ক্লাসরুম
+                    </Link>
+                  </>
+                ) : (
+                  <FollowButton handle={handle} name={person.nameBn} className="h-11" />
+                )}
+              </div>
+            </div>
           </div>
+          <Fan depts={depts} courses={courses} />
         </div>
-      </header>
-      <div className="mt-4 flex flex-wrap items-center gap-2 sm:hidden">
-        <Actions own={own} handle={handle} name={person.nameBn} tier={standingOf(record).tier} />
-      </div>
+        <dl data-reveal-group className="grid grid-cols-2 gap-px border-t border-(--c-line) bg-(--c-line) md:grid-cols-4">
+          {[
+            { k: "অনুসারী", v: <Compact n={followers} /> },
+            { k: "ভিডিও দেখা", v: <Compact n={views} /> },
+            { k: "গ্র্যাজুয়েট", v: <Num value={record.graduates} /> },
+            { k: "রেটিং", v: record.rating.count ? <Num value={record.rating.avg} decimals={1} /> : "নতুন" },
+          ].map((s) => (
+            <div key={s.k} data-reveal className="flex flex-col-reverse bg-(--c-bg) px-6 py-6 md:px-10">
+              <dt className="hud mt-2 text-(--c-faint)">{s.k}</dt>
+              <dd className="display text-4xl leading-none text-(--c-ink-strong)">{s.v}</dd>
+            </div>
+          ))}
+        </dl>
+        <TabBar handle={handle} tabs={tabs} tab={tab} q={q} />
+      </Band>
 
-      <TabBar handle={handle} tabs={tabs} tab={tab} q={q} />
-
-      <div className="pt-6">
+      <Band id={`tab-${tab}`} n={2} label={tabLabel} note={person.nameBn}>
         {tab === "home" && <HomeTab handle={handle} all={all} full={full} shorts={shorts} depts={depts} courses={courses} locked={locked} />}
         {tab === "videos" && <VideosTab full={full} depts={depts} locked={locked} />}
         {tab === "shorts" && (
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
+          <ul className="grid grid-cols-2 gap-px bg-(--c-line) sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
             {sortVideos(shorts, "latest").map((v) => (
-              <li key={v.id}>
+              <li key={v.id} className="bg-(--c-bg) p-4">
                 <ShortCard video={v} />
               </li>
             ))}
@@ -135,99 +176,49 @@ export function ChannelView({ handle }: { handle: string }) {
         {tab === "stories" && <StoriesTab handle={handle} />}
         {tab === "about" && <ChannelRecord record={record} person={person} />}
         {tab === "search" && <SearchResults q={q} videos={videos} locked={locked} />}
-      </div>
+      </Band>
 
+      <CatalogueFooter />
       <ChannelAbout open={about} onOpenChange={setAbout} person={person} followers={followers} videos={videos.length} views={views} />
-    </div>
+    </CatalogueRoot>
   );
 }
 
-function Actions({ own, handle, name, tier }: { own: boolean; handle: string; name: string; tier: ReturnType<typeof standingOf>["tier"] }) {
-  return (
-    <>
-      {own ? (
-        <>
-          <Link href="/media/academy/videos?upload=1" className={mediaButton({ className: "h-10 rounded-full" })}>
-            <Upload aria-hidden /> ভিডিও তুলুন
-          </Link>
-          <Link href="/media/academy/classroom" className={mediaButton({ variant: "quiet", className: "h-10 rounded-full" })}>
-            <Presentation aria-hidden /> আমার ক্লাসরুম
-          </Link>
-        </>
-      ) : (
-        <FollowButton handle={handle} name={name} />
-      )}
-      <TierBadge tier={tier} />
-    </>
-  );
-}
-
-/* ── Banner ────────────────────────────────────────────────────────── */
-
-/**
- * The channel art: bottle green, the teacher's name large in gold over the
- * department, and their course pictures fanned on the right, drifting a
- * little. Still when the viewer asks for less motion.
- */
-function Banner({ handle, depts, courses }: { handle: string; depts: Department[]; courses: Course[] }) {
+/** Up to three of their course pictures, fanned and drifting a little; still when the viewer asks for less motion. */
+function Fan({ depts, courses }: { depts: Department[]; courses: Course[] }) {
   const reduce = useReducedMotion();
-  const person = personOrThrow(handle);
   const pics = [...new Set([...courses.map((c) => c.image), ...depts.flatMap((d) => coursesOf(d.id).map((c) => c.image))])].slice(0, 3);
   const fan = [
-    { rotate: -8, x: "-11rem", y: "0.5rem", z: 1 },
-    { rotate: 3, x: "-5.5rem", y: "-0.5rem", z: 3 },
-    { rotate: 10, x: "0rem", y: "0.75rem", z: 2 },
+    { rotate: -7, x: "-10rem", y: "0.75rem", z: 1 },
+    { rotate: 2, x: "-5rem", y: "-0.5rem", z: 3 },
+    { rotate: 8, x: "0rem", y: "1rem", z: 2 },
   ];
-
   return (
-    <div className="relative min-h-32 overflow-hidden rounded-2xl bg-m-blue-soft sm:aspect-[6/1] sm:min-h-40">
-      <div className="relative z-10 flex h-full min-h-32 flex-col justify-center px-5 py-5 sm:min-h-40 sm:px-10 lg:max-w-[60%]">
-        <p className="flex items-center gap-2 text-xs font-bold text-m-ink/85 sm:text-sm">
-          <Pixels reduce={!!reduce} />
-          {depts[0]?.name}
-        </p>
-        <p className="mt-1.5 text-3xl leading-tight font-extrabold text-m-blue sm:text-5xl">{person.nameBn}</p>
-        <p className="mt-1 text-xs font-semibold text-m-ink sm:text-sm">প্রতি সপ্তাহে একটা ক্লাস বিনামূল্যে · সবার জন্য</p>
-      </div>
-      <div className="absolute top-1/2 right-10 hidden h-0 w-0 md:block" aria-hidden>
-        {pics.map((src, i) => (
-          <span key={src} className="absolute top-0 right-0 block" style={{ zIndex: fan[i].z, transform: `translate(${fan[i].x}, calc(-50% + ${fan[i].y})) rotate(${fan[i].rotate}deg)` }}>
-            <motion.span
-              className="relative block aspect-video w-44 overflow-hidden rounded-lg bg-m-canvas ring-3 ring-white lg:w-52"
-              initial={reduce ? false : { opacity: 0, x: 60, scale: 0.9 }}
-              animate={reduce ? { opacity: 1 } : { opacity: 1, x: 0, scale: 1, y: [0, -6, 0] }}
-              transition={reduce ? undefined : { opacity: { duration: 0.5, delay: i * 0.12 }, x: { type: "spring", stiffness: 120, damping: 16, delay: i * 0.12 }, scale: { duration: 0.5, delay: i * 0.12 }, y: { duration: 5 + i, repeat: Infinity, ease: "easeInOut", delay: 0.8 } }}
-            >
-              <Image src={src} alt="" fill sizes="208px" className="object-cover" />
-            </motion.span>
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/** Four gold pixels falling into place — the brand's "one fixed pixel at a time". */
-function Pixels({ reduce }: { reduce: boolean }) {
-  return (
-    <span className="inline-grid grid-cols-2 gap-0.5" aria-hidden>
-      {[0, 1, 2, 3].map((i) => (
-        <motion.span
-          key={i}
-          className={cn("size-1.5 rounded-[1px]", i === 3 ? "bg-white" : "bg-m-yellow")}
-          initial={reduce ? false : { opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 + i * 0.12, type: "spring", stiffness: 400, damping: 18 }}
-        />
+    <div className="relative hidden h-44 w-88 lg:block" aria-hidden>
+      {pics.map((src, i) => (
+        <span key={src} className="absolute top-1/2 right-0 block" style={{ zIndex: fan[i].z, transform: `translate(${fan[i].x}, calc(-50% + ${fan[i].y})) rotate(${fan[i].rotate}deg)` }}>
+          <motion.span
+            className="relative block aspect-video w-52 overflow-hidden border-2 border-(--c-bg) bg-(--c-bg-sunken) shadow-[0_24px_48px_-24px_rgb(0_0_0/0.6)]"
+            initial={reduce ? false : { opacity: 0, x: 60, scale: 0.9 }}
+            animate={reduce ? { opacity: 1 } : { opacity: 1, x: 0, scale: 1, y: [0, -6, 0] }}
+            transition={
+              reduce
+                ? undefined
+                : { opacity: { duration: 0.5, delay: i * 0.12 }, x: { type: "spring", stiffness: 120, damping: 16, delay: i * 0.12 }, scale: { duration: 0.5, delay: i * 0.12 }, y: { duration: 5 + i, repeat: Infinity, ease: "easeInOut", delay: 0.8 } }
+            }
+          >
+            <Image src={src} alt="" fill sizes="208px" className="object-cover" />
+          </motion.span>
+        </span>
       ))}
-    </span>
+    </div>
   );
 }
 
 /* ── Tabs ──────────────────────────────────────────────────────────── */
 
+/** The channel's parts as a ruled strip of links (each a shareable address), with a search at its end. */
 function TabBar({ handle, tabs, tab, q }: { handle: string; tabs: { id: Tab; label: string }[]; tab: Tab; q: string }) {
-  const reduce = useReducedMotion();
   const router = useRouter();
   const path = usePathname();
   const [searching, setSearching] = useState(!!q);
@@ -244,32 +235,26 @@ function TabBar({ handle, tabs, tab, q }: { handle: string; tabs: { id: Tab; lab
     if (text) router.push(`${path}?q=${encodeURIComponent(text)}`, { scroll: false });
   }
 
-  // Sticks at the very top of the scrolling area: its own top padding covers the area's padding, so nothing shows through above.
   return (
-    <nav aria-label="চ্যানেলের ভাগ" className="frost-pane sticky -top-6 z-20 -mx-3 px-3 pt-6 sm:-mx-6 sm:px-6">
-      <div className="flex items-center gap-1">
-        <ul className="flex min-w-0 flex-1 overflow-x-auto scrollbar-none">
-          {tabs.map((t) => {
-            const on = tab === t.id;
-            return (
-              <li key={t.id} className="shrink-0">
-                <Link
-                  href={t.id === "home" ? base : `${base}?tab=${t.id}`}
-                  scroll={false}
-                  aria-current={on ? "page" : undefined}
-                  className={cn("relative flex h-12 items-center px-3 text-[15px] font-semibold transition-colors sm:px-4", on ? "text-m-ink" : "text-m-ink/60 hover:text-m-ink")}
-                >
-                  {t.label}
-                  {on && <motion.span layoutId="channel-tab" className="absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-white" transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 500, damping: 40 }} />}
-                  {!on && <span className="absolute inset-x-2 bottom-0 h-0.5 scale-x-0 rounded-full bg-m-ink/22 transition-transform duration-200 [a:hover>&]:scale-x-100" aria-hidden />}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+    <nav aria-label="চ্যানেলের ভাগ" className="flex flex-wrap gap-px border-t border-(--c-line) bg-(--c-line)">
+      {tabs.map((t) => {
+        const on = tab === t.id;
+        return (
+          <Link
+            key={t.id}
+            href={t.id === "home" ? base : `${base}?tab=${t.id}`}
+            scroll={false}
+            aria-current={on ? "page" : undefined}
+            className={cn("hud flex h-11 items-center px-5 font-bold transition-colors duration-150 first:pl-6 md:first:pl-10", on ? "bg-(--c-invert-bg) text-(--c-invert-fg)" : "bg-(--c-bg) text-(--c-muted) hover:text-(--c-ink-strong)")}
+          >
+            {t.label}
+          </Link>
+        );
+      })}
+      <div className="flex flex-1 items-stretch justify-end bg-(--c-bg)">
         {searching ? (
-          <form role="search" onSubmit={submit} className="flex shrink-0 items-center gap-1 border-b border-m-ink/51">
-            <Search className="size-4.5 text-m-ink/70" aria-hidden />
+          <form role="search" onSubmit={submit} className="flex items-center gap-2 border-l border-(--c-line) pl-4">
+            <Search className="size-4 text-(--c-faint)" aria-hidden />
             <label className="sr-only" htmlFor="channel-q">
               এই চ্যানেলে খুঁজুন
             </label>
@@ -282,7 +267,7 @@ function TabBar({ handle, tabs, tab, q }: { handle: string; tabs: { id: Tab; lab
               maxLength={60}
               placeholder="এই চ্যানেলে খুঁজুন"
               onKeyDown={(e) => e.key === "Escape" && setSearching(false)}
-              className="h-9 w-32 bg-transparent text-sm text-m-ink placeholder:text-m-ink/50 focus:outline-none sm:w-52"
+              className="h-11 w-36 bg-transparent text-sm text-(--c-ink-strong) placeholder:text-(--c-faint) focus:outline-none sm:w-56"
             />
             <button
               type="button"
@@ -290,15 +275,15 @@ function TabBar({ handle, tabs, tab, q }: { handle: string; tabs: { id: Tab; lab
                 setSearching(false);
                 if (q) router.push(base, { scroll: false });
               }}
-              className="grid size-8 place-items-center rounded-full text-m-ink/70 hover:bg-m-ink/6 hover:text-m-ink"
+              className="grid size-11 place-items-center text-(--c-muted) transition-colors duration-150 hover:bg-(--c-invert-bg) hover:text-(--c-invert-fg)"
             >
               <X className="size-4" aria-hidden />
               <span className="sr-only">খোঁজা বন্ধ</span>
             </button>
           </form>
         ) : (
-          <button type="button" onClick={() => setSearching(true)} className="grid size-10 shrink-0 place-items-center rounded-full text-m-ink/75 hover:bg-m-ink/6 hover:text-m-ink">
-            <Search className="size-5" aria-hidden />
+          <button type="button" onClick={() => setSearching(true)} className="grid size-11 place-items-center border-l border-(--c-line) text-(--c-muted) transition-colors duration-150 hover:bg-(--c-invert-bg) hover:text-(--c-invert-fg)">
+            <Search className="size-4.5" aria-hidden />
             <span className="sr-only">এই চ্যানেলে খুঁজুন</span>
           </button>
         )}
@@ -309,32 +294,27 @@ function TabBar({ handle, tabs, tab, q }: { handle: string; tabs: { id: Tab; lab
 
 /* ── Home ──────────────────────────────────────────────────────────── */
 
-function HomeTab({
-  handle,
-  all,
-  full,
-  shorts,
-  depts,
-  courses,
-  locked,
-}: {
-  handle: string;
-  all: ClassVideo[];
-  full: ClassVideo[];
-  shorts: ClassVideo[];
-  depts: Department[];
-  courses: Course[];
-  locked: (v: ClassVideo) => boolean;
-}) {
+function HomeTab({ handle, all, full, shorts, depts, courses, locked }: { handle: string; all: ClassVideo[]; full: ClassVideo[]; shorts: ClassVideo[]; depts: Department[]; courses: Course[]; locked: (v: ClassVideo) => boolean }) {
   const record = teacherRecord(handle)!;
   const person = personOrThrow(handle);
-  const featured = sortVideos(full.filter((v) => v.access === "free"), "latest")[0];
+  const featured = sortVideos(
+    full.filter((v) => v.access === "free"),
+    "latest",
+  )[0];
 
   // One section per department: a shelf per own course, or — for a member with no course of their own yet — the team's classes.
   const sections = depts
     .map((d) => {
-      const shelves = courses.filter((c) => c.dept === d.id).map((c) => ({ course: c, items: playlist(full, c.id) })).filter((s) => s.items.length > 0);
-      const team = shelves.length ? [] : sortVideos(all.filter((v) => !v.short && v.teacher !== handle && getCourse(v.course)?.dept === d.id), "latest");
+      const shelves = courses
+        .filter((c) => c.dept === d.id)
+        .map((c) => ({ course: c, items: playlist(full, c.id) }))
+        .filter((s) => s.items.length > 0);
+      const team = shelves.length
+        ? []
+        : sortVideos(
+            all.filter((v) => !v.short && v.teacher !== handle && getCourse(v.course)?.dept === d.id),
+            "latest",
+          );
       return { dept: d, shelves, team };
     })
     .filter((s) => s.shelves.length || s.team.length);
@@ -342,21 +322,21 @@ function HomeTab({
   const mates = [...new Set(depts.flatMap((d) => d.teachers))].filter((h) => h !== handle && teacherRecord(h));
 
   return (
-    <div className="space-y-8">
+    <div>
       {featured && <Featured video={featured} locked={locked(featured)} />}
 
       {sections.map(({ dept, shelves, team }) => (
-        <section key={dept.id} aria-labelledby={`dept-${dept.id}`} className="space-y-6">
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-            <span className="size-2.5 rounded-[2px] bg-m-yellow" aria-hidden />
-            <h2 id={`dept-${dept.id}`} className="text-xl font-bold text-m-ink sm:text-2xl">
+        <section key={dept.id} aria-labelledby={`dept-${dept.id}`} style={toneStyle(toneOf(dept.id))} className="tone">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-(--c-line) bg-(--c-bg-raised) px-6 py-4 md:px-10">
+            <span className="size-2.5 bg-(--c-app)" aria-hidden />
+            <h2 id={`dept-${dept.id}`} className="display text-xl text-(--c-ink-strong)">
               {dept.name}
             </h2>
-            <span className="rounded-md bg-m-ink/6 px-2 py-0.5 text-xs font-semibold text-m-ink/80">
+            <span className="hud border border-(--c-line) px-1.5 text-(--c-app-ink)">
               {dept.teachers[0] === handle ? "প্রধান" : "সদস্য"} · {DEPT_KINDS[dept.kind]}
             </span>
-            <Link href={`/media/academy/dept/${dept.id}`} className="group ml-auto inline-flex items-center gap-1 text-sm font-semibold text-m-ink/75 hover:text-m-blue">
-              বিভাগের পাতা <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" aria-hidden />
+            <Link href={`/media/academy/dept/${dept.id}`} className="hud group ml-auto inline-flex items-center gap-1 text-(--c-muted) hover:text-(--c-ink-strong)">
+              বিভাগের পাতা <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden />
             </Link>
           </div>
 
@@ -396,10 +376,10 @@ function HomeTab({
         <Shelf title="শিক্ষার্থীদের সফলতা" about="যাঁরা শিখে কাজে লাগিয়েছেন — তাঁদের নিজের কথায়।">
           {record.stories.map((s) => (
             <ShelfItem key={s.name}>
-              <figure className="flex h-full flex-col rounded-2xl bg-m-card p-5 ring-1 ring-m-ink/10 shadow-m-tile">
-                <Quote className="size-5 text-m-blue" aria-hidden />
-                <blockquote className="mt-2 line-clamp-4 flex-1 text-[15px] leading-relaxed text-m-ink">{s.text}</blockquote>
-                <figcaption className="mt-3 text-sm font-semibold text-m-ink/75">— {s.name}</figcaption>
+              <figure className="flex h-full flex-col border border-(--c-line) bg-(--c-bg-raised) p-5">
+                <Quote className="size-5 text-(--c-signal)" aria-hidden />
+                <blockquote className="mt-3 line-clamp-4 flex-1 leading-relaxed text-(--c-ink)">{s.text}</blockquote>
+                <figcaption className="turn mt-4 text-xl">— {s.name}</figcaption>
               </figure>
             </ShelfItem>
           ))}
@@ -408,12 +388,12 @@ function HomeTab({
 
       {mates.length > 0 && (
         <section aria-labelledby="mates">
-          <h3 id="mates" className="text-lg font-bold text-m-ink sm:text-xl">
+          <h3 id="mates" className="hud border-b border-(--c-line) px-6 py-3 text-(--c-faint) md:px-10">
             একই বিভাগের শিক্ষক
           </h3>
-          <ul className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5 2xl:grid-cols-6">
+          <ul className="grid grid-cols-2 gap-px bg-(--c-line) sm:grid-cols-3 lg:grid-cols-5">
             {mates.map((h) => (
-              <li key={h}>
+              <li key={h} className="bg-(--c-bg)">
                 <ChannelCard handle={h} />
               </li>
             ))}
@@ -429,32 +409,45 @@ function Featured({ video, locked }: { video: ClassVideo; locked: boolean }) {
   const course = getCourse(video.course);
   const thisWeek = weekOf(video.at) === THIS_WEEK;
   return (
-    <section aria-labelledby="featured" className="grid gap-4 border-b border-m-ink/9 pb-8 md:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] md:gap-6">
-      <Link href={watchHref(video)} className="group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-m-blue" aria-label={video.title}>
-        <Thumb video={video} locked={locked} className="aspect-video" sizes="(min-width: 768px) 26rem, 92vw" />
+    <section aria-labelledby="featured" className="grid gap-px border-b border-(--c-line) bg-(--c-line) md:grid-cols-[minmax(0,28rem)_minmax(0,1fr)]">
+      <Link href={watchHref(video)} className="group block bg-(--c-bg) focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-(--c-signal)" aria-label={video.title}>
+        <Thumb video={video} locked={locked} className="aspect-video" sizes="(min-width: 768px) 28rem, 92vw" />
       </Link>
-      <div className="min-w-0">
-        <p className="text-xs font-bold text-m-blue">{thisWeek ? "এ সপ্তাহের বিনামূল্যের ক্লাস" : "সর্বশেষ বিনামূল্যের ক্লাস"}</p>
-        <h2 id="featured" className="mt-1 text-lg leading-snug font-bold text-m-ink sm:text-xl">
-          <Link href={watchHref(video)} className="hover:text-m-blue">
+      <div className="min-w-0 bg-(--c-bg) p-6 md:p-8">
+        <p className="hud text-(--c-signal)">{thisWeek ? "এ সপ্তাহের বিনামূল্যের ক্লাস" : "সর্বশেষ বিনামূল্যের ক্লাস"}</p>
+        <h2 id="featured" className="display mt-2 text-2xl leading-snug text-(--c-ink-strong)">
+          <Link href={watchHref(video)} className="underline-offset-4 hover:underline">
             {video.title}
           </Link>
         </h2>
-        <p className="mt-1 text-sm text-m-ink/65">
+        <p className="hud mt-2 text-(--c-faint)">
           <Compact n={video.views} /> বার দেখা · <Ago iso={video.at} />
         </p>
-        <p className="mt-3 line-clamp-4 max-w-2xl text-sm leading-relaxed text-m-ink/80">
+        <p className="mt-4 line-clamp-4 max-w-2xl leading-relaxed text-(--c-muted)">
           {video.about ?? (
             <>
-              “{course?.title}” কোর্সের সপ্তাহ <Num value={video.week} />-এর ক্লাস — সবার জন্য বিনামূল্যে। {course?.outcome}
+              “{course?.title}” কোর্সের সপ্তাহ <Num value={video.week} />
+              -এর ক্লাস — সবার জন্য বিনামূল্যে। {course?.outcome}
             </>
           )}
         </p>
-        <Link href={watchHref(video)} className={mediaButton({ variant: "quiet", size: "sm", className: "mt-4 rounded-full" })}>
-          <Play className="fill-current" aria-hidden /> দেখুন
+        <Link href={watchHref(video)} className={cn(primaryBtn, "mt-6 h-11")}>
+          <Play className="size-4 fill-current" aria-hidden /> দেখুন
         </Link>
       </div>
     </section>
+  );
+}
+
+/** Nothing to show, said plainly in the middle of the band. */
+function Empty({ title, body, action }: { title: string; body: string; action?: React.ReactNode }) {
+  return (
+    <div className="flex flex-col items-center px-6 py-20 text-center">
+      <SearchX className="size-10 text-(--c-faint)" aria-hidden />
+      <p className="display mt-4 text-xl text-(--c-ink-strong)">{title}</p>
+      <p className="mt-2 max-w-sm text-sm text-(--c-muted)">{body}</p>
+      {action && <div className="mt-5">{action}</div>}
+    </div>
   );
 }
 
@@ -467,36 +460,43 @@ function VideosTab({ full, depts, locked }: { full: ClassVideo[]; depts: Departm
   const deptOf = (v: ClassVideo) => getCourse(v.course)?.dept;
   const withVideos = depts.filter((d) => full.some((v) => deptOf(v) === d.id));
   const shown = sortVideos(dept ? full.filter((v) => deptOf(v) === dept) : full, by);
+  const chip = (on: boolean) => cn("hud h-11 shrink-0 px-5 font-bold whitespace-nowrap transition-colors duration-150", on ? "bg-(--c-invert-bg) text-(--c-invert-fg)" : "bg-(--c-bg) text-(--c-muted) hover:text-(--c-ink-strong)");
 
-  if (full.length === 0) return <EmptyState icon="search" title="এখনো কোনো ভিডিও নেই" body="নিজের কোর্স শুরু হলে প্রতি সপ্তাহের বিনামূল্যের ক্লাস এখানে আসবে।" />;
+  if (full.length === 0) return <Empty title="এখনো কোনো ভিডিও নেই" body="নিজের কোর্স শুরু হলে প্রতি সপ্তাহের বিনামূল্যের ক্লাস এখানে আসবে।" />;
 
   return (
     <>
-      <div className="-mx-3 mb-6 flex items-center gap-2 overflow-x-auto px-3 scrollbar-none sm:mx-0 sm:px-0" role="group" aria-label="সাজান ও বিভাগ">
+      <div role="group" aria-label="সাজান ও বিভাগ" className="flex gap-px overflow-x-auto border-b border-(--c-line) bg-(--c-line) scrollbar-none">
         {(Object.keys(VIDEO_SORTS) as VideoSort[]).map((s) => (
-          <button key={s} type="button" aria-pressed={by === s} onClick={() => setBy(s)} className={chipClass(by === s)}>
+          <button key={s} type="button" aria-pressed={by === s} onClick={() => setBy(s)} className={cn(chip(by === s), "first:pl-6 md:first:pl-10")}>
             {VIDEO_SORTS[s]}
           </button>
         ))}
-        {withVideos.length > 0 && <span className="mx-1 h-6 w-px shrink-0 bg-m-ink/11" aria-hidden />}
-        {withVideos.length > 0 && (
-          <button type="button" aria-pressed={!dept} onClick={() => setDept(null)} className={chipClass(!dept)}>
-            সব বিভাগ
-          </button>
+        {withVideos.length > 1 && (
+          <>
+            <span aria-hidden className="w-3 shrink-0 bg-(--c-bg)" />
+            <button type="button" aria-pressed={!dept} onClick={() => setDept(null)} className={chip(!dept)}>
+              সব বিভাগ
+            </button>
+            {withVideos.map((d) => (
+              <button key={d.id} type="button" aria-pressed={dept === d.id} onClick={() => setDept(d.id)} className={chip(dept === d.id)}>
+                {d.name}
+              </button>
+            ))}
+          </>
         )}
-        {withVideos.map((d) => (
-          <button key={d.id} type="button" aria-pressed={dept === d.id} onClick={() => setDept(d.id)} className={chipClass(dept === d.id)}>
-            {d.name}
-          </button>
-        ))}
+        <span aria-hidden className="flex-1 bg-(--c-bg)" />
       </div>
-      <ul className="grid gap-x-4 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-        {shown.map((v) => (
-          <li key={v.id}>
-            <VideoCard video={v} locked={locked(v)} channel />
-          </li>
-        ))}
-      </ul>
+      <div className="@container">
+        <ul className={lineupGrid}>
+          {shown.map((v) => (
+            <li key={v.id} className="bg-(--c-bg) p-5">
+              <VideoCard video={v} locked={locked(v)} channel />
+            </li>
+          ))}
+          <li aria-hidden className={cn("bg-(--c-bg)", blankFill(shown.length))} />
+        </ul>
+      </div>
     </>
   );
 }
@@ -508,94 +508,94 @@ function CoursesTab({ handle, depts, courses, videos }: { handle: string; depts:
   if (groups.length === 0) {
     const d = depts[0];
     return (
-      <EmptyState
-        icon="search"
+      <Empty
         title="এখনো নিজের কোর্স নেই"
         body={`${personOrThrow(handle).nameBn} দলের সাথে শেখান। নিজের কোর্স প্যানেলে পাস হলে এখানে আসবে।`}
-        action={d && <Link href={`/media/academy/dept/${d.id}`} className="text-sm font-semibold text-m-blue hover:underline">{d.name} — দলের কোর্স দেখুন</Link>}
+        action={
+          d && (
+            <Link href={`/media/academy/dept/${d.id}`} className={secondaryBtn}>
+              {d.name} — দলের কোর্স
+            </Link>
+          )
+        }
       />
     );
   }
   return (
-    <div className="space-y-10">
+    <div>
       {groups.map(({ dept, list }) => (
-        <section key={dept.id} aria-labelledby={`pl-${dept.id}`}>
-          <h2 id={`pl-${dept.id}`} className="mb-5 flex items-center gap-3 text-lg font-bold text-m-ink sm:text-xl">
-            <span className="size-2.5 rounded-[2px] bg-m-yellow" aria-hidden />
+        <section key={dept.id} aria-labelledby={`pl-${dept.id}`} style={toneStyle(toneOf(dept.id))} className="tone">
+          <h2 id={`pl-${dept.id}`} className="display flex items-center gap-3 border-b border-(--c-line) bg-(--c-bg-raised) px-6 py-4 text-xl text-(--c-ink-strong) md:px-10">
+            <span className="size-2.5 bg-(--c-app)" aria-hidden />
             {dept.name}
           </h2>
-          <ul className="grid gap-x-4 gap-y-9 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-            {list.map((c) => (
-              <li key={c.id}>
-                <PlaylistCard course={c} items={playlist(videos, c.id)} />
+          <AssetGrid count={list.length}>
+            {list.map((c, i) => (
+              <li key={c.id} className="bg-(--c-bg)">
+                <PlaylistCard course={c} items={playlist(videos, c.id)} n={i + 1} />
               </li>
             ))}
-          </ul>
+          </AssetGrid>
         </section>
       ))}
     </div>
   );
 }
 
-/** A course as a playlist: the picture on a stack, how many videos, "সব চালান" on hover. */
-function PlaylistCard({ course, items }: { course: Course; items: ClassVideo[] }) {
+/** A course as a playlist: the picture with the count of its videos, "সব চালান" under the pointer, and the way to the course. */
+function PlaylistCard({ course, items, n }: { course: Course; items: ClassVideo[]; n: number }) {
   const href = items[0] ? watchHref(items[0]) : `/media/academy/course/${course.id}`;
   return (
-    <article className="group">
-      <Link href={href} className="relative block rounded-xl pt-2 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-m-blue" aria-label={`${course.title} — ${items.length ? "সব চালান" : "কোর্সের পাতা"}`}>
-        <span className="absolute inset-x-5 top-0 h-2 rounded-t-lg bg-m-ink/11" aria-hidden />
-        <span className="absolute inset-x-2.5 top-1 h-1.5 rounded-t-lg bg-m-ink/22" aria-hidden />
-        <span className="relative block aspect-video overflow-hidden rounded-xl bg-m-card ring-1 ring-white">
-          <Image src={course.image} alt="" fill sizes="(min-width: 1536px) 22vw, (min-width: 1024px) 30vw, (min-width: 640px) 45vw, 92vw" className="object-cover transition-transform duration-700 group-hover:scale-105 motion-reduce:transition-none" />
-          <span className="absolute right-2 bottom-2 inline-flex items-center gap-1 rounded-md bg-white/90 px-1.5 py-0.5 text-xs font-semibold text-m-ink">
-            <ListVideo className="size-3.5" aria-hidden /> <Num value={items.length} />টি ভিডিও
+    <AssetCard
+      kind={{ icon: ListVideo, label: <span className="font-mono">{course.id}</span> }}
+      n={n}
+      frame={
+        <Link href={href} className="group relative block aspect-video overflow-hidden bg-(--c-bg-sunken)" aria-label={`${course.title} — ${items.length ? "সব চালান" : "কোর্সের পাতা"}`}>
+          <Image src={course.image} alt="" fill sizes="(min-width: 1024px) 26rem, (min-width: 768px) 46vw, 94vw" className="object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transition-none" />
+          <span className="hud absolute right-2 bottom-2 inline-flex items-center gap-1 bg-black/80 px-1.5 py-0.5 text-white">
+            <ListVideo className="size-3.5" aria-hidden /> <Num value={items.length} />
+            টি ভিডিও
           </span>
-          <span className="absolute inset-0 grid place-items-center bg-white/90 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none" aria-hidden>
-            <span className="inline-flex items-center gap-2 text-sm font-bold text-m-ink">
-              <Play className="size-5 fill-current" /> {items.length ? "সব চালান" : "কোর্সের পাতা"}
+          <span className="absolute inset-0 grid place-items-center bg-black/60 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none" aria-hidden>
+            <span className="inline-flex items-center gap-2 bg-(--c-invert-bg) px-4 py-2 text-sm font-bold text-(--c-invert-fg)">
+              <Play className="size-4 fill-current" /> {items.length ? "সব চালান" : "কোর্সের পাতা"}
             </span>
           </span>
-        </span>
-      </Link>
-      <h3 className="mt-3 line-clamp-2 text-[15px] leading-snug font-semibold text-m-ink">{course.title}</h3>
-      <p className="mt-1 text-sm text-m-ink/65">
-        {course.id} · {LEVELS[course.level]} · <Num value={COURSE_DAYS} /> দিন
-      </p>
-      <Link href={`/media/academy/course/${course.id}`} className="mt-1 inline-block text-sm font-semibold text-m-ink/80 hover:text-m-blue">
-        পুরো কোর্স দেখুন
-      </Link>
-    </article>
+        </Link>
+      }
+      title={course.title}
+      text={
+        <p className="hud text-(--c-app-ink)">
+          {LEVELS[course.level]} · <Num value={COURSE_DAYS} /> দিন
+        </p>
+      }
+      action={{ href: `/media/academy/course/${course.id}`, label: "পুরো কোর্স দেখুন", icon: ArrowUpRight }}
+    />
   );
 }
 
-/* ── Stories (posts) ───────────────────────────────────────────────── */
+/* ── Stories ───────────────────────────────────────────────────────── */
 
 function StoriesTab({ handle }: { handle: string }) {
-  const person = personOrThrow(handle);
   const record = teacherRecord(handle)!;
   return (
-    <ul className="max-w-3xl space-y-4">
+    <AssetGrid count={record.stories.length}>
       {record.stories.map((s, i) => (
-        <li key={s.name}>
-          <article className="rounded-2xl bg-m-card p-5 ring-1 ring-m-ink/10 shadow-m-tile">
-            <header className="flex items-center gap-3">
-              <PersonAvatar person={person} size="md" />
-              <div className="min-w-0">
-                <p className="flex items-center gap-1 text-sm font-semibold text-m-ink">
-                  {person.nameBn} <BadgeCheck className="size-3.5 text-m-ink/70" aria-hidden />
-                </p>
-                <p className="text-xs text-m-ink/60">শিক্ষার্থীর সফলতা</p>
+        <li key={s.name} className="bg-(--c-bg)">
+          <AssetCard
+            kind={{ icon: Quote, label: "শিক্ষার্থীর সফলতা" }}
+            n={i + 1}
+            title={<span className="turn text-3xl">{s.name}</span>}
+            text={<p className="text-base text-(--c-ink)">“{s.text}”</p>}
+            extra={
+              <div className="mt-4 -ml-2">
+                <CommentVotes id={`story:${handle}:${i}`} base={30 + ((s.text.length * 7) % 90)} />
               </div>
-            </header>
-            <blockquote className="mt-4 text-[17px] leading-relaxed text-m-ink">“{s.text}”</blockquote>
-            <p className="mt-2 text-sm font-semibold text-m-ink/75">— {s.name}</p>
-            <footer className="mt-3 -ml-2">
-              <CommentVotes id={`story:${handle}:${i}`} base={30 + ((s.text.length * 7) % 90)} />
-            </footer>
-          </article>
+            }
+          />
         </li>
       ))}
-    </ul>
+    </AssetGrid>
   );
 }
 
@@ -607,21 +607,22 @@ function SearchResults({ q, videos, locked }: { q: string; videos: ClassVideo[];
     videos.filter((v) => [v.title, v.course, getCourse(v.course)?.title ?? ""].some((f) => f.toLowerCase().includes(needle))),
     "latest",
   );
-  if (found.length === 0) return <EmptyState icon="search" title={`“${q}” — এই চ্যানেলে মিলল না`} body="অন্য শব্দে খুঁজুন, বা ভিডিও ভাগে সব দেখুন।" />;
+  if (found.length === 0) return <Empty title={`“${q}” — এই চ্যানেলে মিলল না`} body="অন্য শব্দে খুঁজুন, বা ভিডিও ভাগে সব দেখুন।" />;
   return (
-    <ul className="max-w-4xl space-y-4">
-      {found.map((v) => {
+    <ul>
+      {found.map((v, i) => {
         const course = getCourse(v.course);
         return (
-          <li key={v.id}>
-            <Link href={watchHref(v)} className="group flex gap-4 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-m-blue">
-              <Thumb video={v} locked={locked(v)} className={cn("shrink-0", v.short ? "aspect-[9/14] w-24 sm:w-32" : "aspect-video w-40 sm:w-64")} sizes="256px" />
+          <li key={v.id} className="border-b border-(--c-line) last:border-b-0">
+            <Link href={watchHref(v)} className="group flex gap-5 px-6 py-5 transition-colors duration-150 hover:bg-(--c-bg-raised) md:px-10">
+              <span className="hud w-6 shrink-0 pt-1 text-(--c-faint)">{twoDigits(i + 1)}</span>
+              <Thumb video={v} locked={locked(v)} className={cn("shrink-0", v.short ? "aspect-9/14 w-24 sm:w-28" : "aspect-video w-40 sm:w-60")} sizes="240px" />
               <span className="min-w-0 py-0.5">
-                <span className="line-clamp-2 font-semibold text-m-ink group-hover:text-m-blue sm:text-lg">{v.title}</span>
-                <span className="mt-1 block text-sm text-m-ink/65">
+                <span className="display line-clamp-2 text-lg text-(--c-ink-strong) underline-offset-4 group-hover:underline">{v.title}</span>
+                <span className="hud mt-1 block text-(--c-faint)">
                   <Compact n={v.views} /> বার দেখা · <Ago iso={v.at} />
                 </span>
-                <span className="mt-2 hidden text-sm text-m-ink/65 sm:line-clamp-2">
+                <span className="mt-2 hidden text-sm text-(--c-muted) sm:line-clamp-2">
                   {course?.title} · সপ্তাহ <Num value={v.week} />
                 </span>
               </span>

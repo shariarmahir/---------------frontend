@@ -4,11 +4,10 @@ import { useMemo, useState } from "react";
 import { Check, Search } from "lucide-react";
 import { toast } from "sonner";
 import { rosterOf } from "@/data/media/academy";
-import { MIN_ATTENDANCE, attendanceOf, payoutOf, type Course } from "@/lib/media/academy";
+import { MIN_ATTENDANCE, MODES, attendanceOf, payoutOf, type Course } from "@/lib/media/academy";
 import { cn } from "@/lib/utils";
-import { mediaButton } from "../../ui/button-styles";
 import { Num, useFormat } from "../../ui/numerals";
-import { ModeTag } from "../parts";
+import { primaryBtn, secondaryBtn } from "../catalogue/buttons";
 import { updateAcademy, useAcademy } from "../use-academy";
 
 const EMPTY: Record<number, string[]> = {};
@@ -68,8 +67,8 @@ export function AttendanceSheet({ course }: { course: Course }) {
                   onClick={() => pick(l.week)}
                   aria-pressed={on}
                   className={cn(
-                    "inline-flex h-10 items-center gap-1.5 rounded-xl border px-3 text-sm font-semibold transition-colors",
-                    on ? "border-m-blue bg-m-yellow text-m-ink" : held[l.week] ? "border-m-green/50 text-m-green" : "border-m-ink/10 text-m-ink/80 hover:border-m-ink/26",
+                    "inline-flex h-10 items-center gap-1.5 border px-3 text-sm font-semibold transition-colors duration-150",
+                    on ? "border-transparent bg-(--c-signal) text-black" : held[l.week] ? "border-(--c-good) text-(--c-good)" : "border-(--c-line) text-(--c-ink) hover:border-(--c-line-strong)",
                   )}
                 >
                   {held[l.week] && <Check className="size-4" aria-label="হয়েছে" />}
@@ -81,45 +80,61 @@ export function AttendanceSheet({ course }: { course: Course }) {
         </ul>
       </nav>
 
-      <div className="rounded-2xl bg-m-card ring-1 ring-m-ink/10 shadow-m-tile">
-        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-m-ink/9 p-4 sm:p-5">
+      <div className="border border-(--c-line) bg-(--c-bg)">
+        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-(--c-line) p-4 sm:p-5">
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-m-blue">সপ্তাহ <Num value={week} />{saved && " · জমা হয়েছে"}</p>
-            <h3 className="text-lg font-bold text-m-ink">{lesson.title}</h3>
-            <ModeTag mode={lesson.mode} className="mt-1" />
+            <p className="hud text-(--c-accent-ink)">
+              সপ্তাহ <Num value={week} />
+              {saved && " · জমা হয়েছে"}
+            </p>
+            <h3 className="display mt-1 text-lg text-(--c-ink-strong)">{lesson.title}</h3>
+            <p className="hud mt-1 text-(--c-faint)">{MODES[lesson.mode]}</p>
           </div>
-          <p className="text-right text-sm text-m-ink/80">
-            <span className="block text-2xl font-bold text-m-ink tabular-nums"><Num value={present.size} /> / <Num value={roster.length} /></span>
+          <p className="text-right text-sm text-(--c-ink)">
+            <span className="display block text-3xl text-(--c-ink-strong) tabular-nums">
+              <Num value={present.size} /> / <Num value={roster.length} />
+            </span>
             উপস্থিত
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 border-b border-m-ink/9 p-3 sm:px-5">
+        <div className="flex flex-wrap items-center gap-2 border-b border-(--c-line) p-3 sm:px-5">
           <label className="relative min-w-0 flex-1">
             <span className="sr-only">নাম খুঁজুন</span>
-            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-m-ink/60" aria-hidden />
-            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="নাম খুঁজুন" className="h-10 w-full rounded-lg border border-m-ink/10 bg-m-canvas pr-3 pl-9 text-sm focus-visible:border-m-blue focus-visible:outline-none" />
+            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-(--c-muted)" aria-hidden />
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="নাম খুঁজুন"
+              className="h-10 w-full border border-(--c-line-strong) bg-(--c-bg-sunken) pr-3 pl-9 text-sm text-(--c-ink-strong) placeholder:text-(--c-faint) focus-visible:border-(--c-signal) focus-visible:outline-none"
+            />
           </label>
-          <button type="button" onClick={() => setPresent(new Set(roster.map((s) => s.id)))} className={mediaButton({ variant: "quiet", size: "sm" })}>সবাই উপস্থিত</button>
-          <button type="button" onClick={() => setPresent(new Set())} className={mediaButton({ variant: "ghost", size: "sm" })}>সব মুছুন</button>
+          <button type="button" onClick={() => setPresent(new Set(roster.map((s) => s.id)))} className={cn(secondaryBtn, "h-10 px-4")}>
+            সবাই উপস্থিত
+          </button>
+          <button type="button" onClick={() => setPresent(new Set())} className="hud h-10 px-3 font-bold text-(--c-muted) underline-offset-4 hover:text-(--c-ink-strong) hover:underline">
+            সব মুছুন
+          </button>
         </div>
 
-        <ul className="max-h-[28rem] divide-y divide-m-ink/7 overflow-y-auto scrollbar-gold">
+        <ul className="max-h-[28rem] divide-y divide-(--c-line) overflow-y-auto scrollbar-gold">
           {shown.map((s) => {
             const on = present.has(s.id);
             const rec = attendanceOf(held, s.id);
             const risk = rec.held >= 2 && rec.rate < MIN_ATTENDANCE;
             return (
               <li key={s.id}>
-                <label className="flex cursor-pointer items-center gap-3 px-4 py-2.5 hover:bg-m-ink/3 sm:px-5">
+                <label className="flex cursor-pointer items-center gap-3 px-4 py-2.5 hover:bg-(--c-bg-raised) sm:px-5">
                   <input type="checkbox" className="sr-only" checked={on} onChange={() => toggle(s.id)} />
-                  <span className={cn("grid size-7 shrink-0 place-items-center rounded-lg border-2 transition-colors", on ? "border-m-green bg-m-green-soft text-m-ink" : "border-m-ink/21")} aria-hidden>
+                  <span className={cn("grid size-7 shrink-0 place-items-center border-2 transition-colors", on ? "border-(--c-good) bg-(--c-good) text-black" : "border-(--c-line-strong)")} aria-hidden>
                     {on && <Check className="size-4" strokeWidth={3} />}
                   </span>
-                  <span className="w-7 shrink-0 text-xs text-m-ink/55 tabular-nums"><Num value={position.get(s.id) ?? 0} /></span>
-                  <span className="min-w-0 flex-1 truncate text-[15px] text-m-ink">{s.name}</span>
+                  <span className="w-7 shrink-0 text-xs text-(--c-faint) tabular-nums">
+                    <Num value={position.get(s.id) ?? 0} />
+                  </span>
+                  <span className="min-w-0 flex-1 truncate text-[15px] text-(--c-ink-strong)">{s.name}</span>
                   {rec.held > 0 && (
-                    <span className={cn("shrink-0 text-xs font-semibold tabular-nums", risk ? "text-m-blue" : "text-m-ink/65")}>
+                    <span className={cn("shrink-0 text-xs font-semibold tabular-nums", risk ? "text-(--c-accent-ink)" : "text-(--c-muted)")}>
                       {risk && "ঝুঁকিতে · "}
                       <Num value={Math.round(rec.rate * 100)} />%
                     </span>
@@ -130,9 +145,12 @@ export function AttendanceSheet({ course }: { course: Course }) {
           })}
         </ul>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-m-ink/9 p-4 sm:px-5">
-          <p className="text-xs text-m-ink/65">হাজিরা <Num value={Math.round(MIN_ATTENDANCE * 100)} />%-এর নিচে নামলে শিক্ষার্থী ফাইনালে বসতে পারে না — ঝুঁকিতে থাকা কাউকে আগে একটা বার্তা দিন।</p>
-          <button type="button" onClick={save} className={mediaButton({ variant: "primary" })}>
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-(--c-line) p-4 sm:px-5">
+          <p className="text-xs text-(--c-muted)">
+            হাজিরা <Num value={Math.round(MIN_ATTENDANCE * 100)} />
+            %-এর নিচে নামলে শিক্ষার্থী ফাইনালে বসতে পারে না — ঝুঁকিতে থাকা কাউকে আগে একটা বার্তা দিন।
+          </p>
+          <button type="button" onClick={save} className={primaryBtn}>
             {saved ? "হাজিরা হালনাগাদ করুন" : "হাজিরা জমা দিন"}
           </button>
         </div>

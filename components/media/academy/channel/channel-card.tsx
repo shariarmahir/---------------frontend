@@ -7,7 +7,8 @@ import { CURRENT_USER_HANDLE, personOrThrow } from "@/data/media/users";
 import { cn } from "@/lib/utils";
 import { Compact, Num } from "../../ui/numerals";
 import { PersonAvatar } from "../../ui/person";
-import { TierBadge, standingOf } from "../parts";
+import { TierTag } from "../catalogue/tier-tag";
+import { standingOf } from "../parts";
 import { FollowButton, useFollowers } from "./follow";
 
 const videoCount = (handle: string) => classVideos.filter((v) => v.teacher === handle).length;
@@ -22,25 +23,26 @@ export function ChannelCard({ handle, className }: { handle: string; className?:
   const followers = useFollowers(handle);
   const href = `/media/academy/teachers/${handle}`;
   return (
-    <article className={cn("group flex h-full flex-col items-center rounded-2xl px-3 py-5 text-center transition-colors hover:bg-m-ink/3", className)}>
-      <Link href={href} className="rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-m-blue" aria-label={`${person.nameBn}-এর চ্যানেল`}>
+    <article className={cn("group flex h-full flex-col items-center px-3 py-5 text-center transition-colors hover:bg-(--c-bg-raised)", className)}>
+      <Link href={href} className="focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-(--c-signal)" aria-label={`${person.nameBn}-এর চ্যানেল`}>
         <PersonAvatar person={person} size="xl" className="size-24 text-4xl transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none sm:size-28" />
       </Link>
-      <h3 className="mt-3 flex max-w-full items-center gap-1 font-bold text-m-ink">
-        <Link href={href} className="truncate hover:text-m-blue" tabIndex={-1}>
+      <h3 className="display mt-4 flex max-w-full items-center gap-1 text-base text-(--c-ink-strong)">
+        <Link href={href} className="truncate hover:text-(--c-accent-ink)" tabIndex={-1}>
           {person.nameBn}
         </Link>
-        <BadgeCheck className="size-4 shrink-0 text-m-ink/70" aria-label="ইন্টারভিউ-উত্তীর্ণ শিক্ষক" />
+        <BadgeCheck className="size-4 shrink-0 text-(--c-muted)" aria-label="ইন্টারভিউ-উত্তীর্ণ শিক্ষক" />
       </h3>
-      <p className="mt-0.5 text-xs text-m-ink/60">@{handle}</p>
-      <p className="mt-1 text-xs text-m-ink/70">
-        <Compact n={followers} /> অনুসারী · <Num value={videoCount(handle)} />টি ভিডিও
+      <p className="mt-0.5 text-xs text-(--c-muted)">@{handle}</p>
+      <p className="mt-1 text-xs text-(--c-muted)">
+        <Compact n={followers} /> অনুসারী · <Num value={videoCount(handle)} />
+        টি ভিডিও
       </p>
-      {record && <p className="mt-2 line-clamp-2 min-h-10 text-xs leading-relaxed text-m-ink/65">{record.title}</p>}
+      {record && <p className="mt-2 line-clamp-2 min-h-10 text-xs leading-relaxed text-(--c-muted)">{record.title}</p>}
       <div className="mt-auto flex flex-col items-center gap-2 pt-3">
-        {record && <TierBadge tier={standingOf(record).tier} />}
+        {record && <TierTag tier={standingOf(record).tier} />}
         {handle === CURRENT_USER_HANDLE ? (
-          <Link href={href} className="inline-flex h-9 items-center rounded-full bg-m-ink/6 px-3.5 text-sm font-semibold text-m-ink hover:bg-m-ink/11">
+          <Link href={href} className="inline-flex h-9 items-center border border-(--c-line-strong) px-3.5 text-sm font-semibold text-(--c-ink-strong) transition-colors duration-150 hover:bg-(--c-invert-bg) hover:text-(--c-invert-fg)">
             আপনার চ্যানেল
           </Link>
         ) : (

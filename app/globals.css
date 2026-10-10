@@ -1979,6 +1979,9 @@ body:has(.media-shell) [data-slot="skeleton"] {
   --c-turn: #ffb423;
   --c-invert-bg: #fff;
   --c-invert-fg: #0b0b0c;
+  /* States, always with a word or an icon beside them: done or passed, missed or refused. */
+  --c-good: #3fd6a0;
+  --c-bad: #ff7a6b;
   background: var(--c-bg);
   color: var(--c-ink);
   color-scheme: dark;
@@ -1999,6 +2002,8 @@ body:has(.media-shell) [data-slot="skeleton"] {
   --c-turn: #013fd0;
   --c-invert-bg: #0b1020;
   --c-invert-fg: #f2f1ee;
+  --c-good: #0a7a55;
+  --c-bad: #c0281c;
   color-scheme: light;
 }
 /* A department's colour: the fill is the same in both themes, the ink lightens on charcoal. */
@@ -2048,6 +2053,38 @@ body:has(.media-shell) [data-slot="skeleton"] {
 .ruler-digit-col { display: flex; flex-direction: column; transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.2, 1); }
 .ruler-digit-col > span { display: block; height: 1em; }
 /* With the ruler on, it is the scrollbar. */
+/* Form fields inside the catalogue: the /media shell dresses every shared
+   field white above, so the catalogue answers at a closer range. */
+body:has(.media-shell) .catalogue :is([data-slot="input"], [data-slot="textarea"], input[data-slot="form-control"], textarea[data-slot="form-control"], select[data-slot="form-control"]) {
+  border-color: var(--c-line-strong);
+  border-radius: 0;
+  background-color: var(--c-bg-sunken);
+  color: var(--c-ink-strong);
+  box-shadow: none;
+}
+body:has(.media-shell) .catalogue :is([data-slot="input"], [data-slot="textarea"], input[data-slot="form-control"], textarea[data-slot="form-control"])::placeholder {
+  color: var(--c-faint);
+}
+body:has(.media-shell) .catalogue :is([data-slot="input"], [data-slot="textarea"], [data-slot="form-control"]):hover {
+  border-color: var(--c-ink);
+}
+body:has(.media-shell) .catalogue :is([data-slot="input"], [data-slot="textarea"], [data-slot="form-control"]):focus-visible {
+  border-color: var(--c-signal);
+  box-shadow: none;
+}
+body:has(.media-shell) .catalogue :is([data-slot="input"], [data-slot="textarea"], [data-slot="form-control"])[aria-invalid="true"] {
+  border-color: var(--c-bad);
+}
+body:has(.media-shell) .catalogue :is([data-slot="form-label"], [data-slot="form-group-label"]) {
+  color: var(--c-ink);
+}
+body:has(.media-shell) .catalogue [data-slot="form-description"] {
+  color: var(--c-muted);
+}
+body:has(.media-shell) .catalogue [data-slot="form-message"] {
+  color: var(--c-bad);
+}
+
 #academy-main[data-ruler="on"] { scrollbar-width: none; }
 #academy-main[data-ruler="on"]::-webkit-scrollbar { display: none; width: 0; height: 0; }
 

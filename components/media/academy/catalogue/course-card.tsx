@@ -23,9 +23,10 @@ const chip = "flex w-fit items-center gap-1 border border-(--c-line) bg-(--c-bg-
  * dash, in colour), the department and academy, what you will be able to do,
  * the facts as tags, and who teaches. The whole card opens the course; the
  * academy's name opens the academy. `level` marks the card for the level the
- * viewer said they are at; `dim` sets it back when it is not.
+ * viewer said they are at; `dim` sets it back when it is not. `preview`
+ * draws a course still being written, with no link to a page it lacks yet.
  */
-export function CourseCard({ entry, n, level, dim }: { entry: CourseEntry; n: number; level?: boolean; dim?: boolean }) {
+export function CourseCard({ entry, n, level, dim, preview }: { entry: CourseEntry; n: number; level?: boolean; dim?: boolean; preview?: boolean }) {
   const { course: c, dept: d, seat } = entry;
   const [head, tail] = c.title.split(" — ");
   const teacher = personOrThrow(c.teacher);
@@ -70,10 +71,17 @@ export function CourseCard({ entry, n, level, dim }: { entry: CourseEntry; n: nu
         </span>
 
         <h3 id={title} className="display mt-4 text-[1.55rem] leading-[1.15] text-(--c-ink-strong)">
-          <Link href={`/media/academy/course/${c.id}`} className="after:absolute after:inset-0 focus-visible:outline-none after:focus-visible:outline-2 after:focus-visible:outline-(--c-app)">
-            {head}
-            {tail && <span className="text-(--c-app-ink)"> — {tail}</span>}
-          </Link>
+          {preview ? (
+            <>
+              {head || "কোর্সের নাম"}
+              {tail && <span className="text-(--c-app-ink)"> — {tail}</span>}
+            </>
+          ) : (
+            <Link href={`/media/academy/course/${c.id}`} className="after:absolute after:inset-0 focus-visible:outline-none after:focus-visible:outline-2 after:focus-visible:outline-(--c-app)">
+              {head}
+              {tail && <span className="text-(--c-app-ink)"> — {tail}</span>}
+            </Link>
+          )}
         </h3>
         <p className="mt-2 text-sm font-semibold text-(--c-app-ink)">{d.name} বিভাগ</p>
         <Link
@@ -88,7 +96,18 @@ export function CourseCard({ entry, n, level, dim }: { entry: CourseEntry; n: nu
         <ul className="mt-6 flex flex-wrap gap-1.5" aria-label="এক নজরে">
           <li className={cn(chip, "text-(--c-app-ink)")}>{LEVELS[c.level]}</li>
           <li className={cn(chip, "text-(--c-app-ink)")}>
-            {!seat ? "নতুন ব্যাচ শিগগির" : seat.running ? <>ব্যাচ চলছে · <Num value={seat.left} />টি আসন</> : <>পরের ব্যাচ <DateText iso={seat.starts} /></>}
+            {!seat ? (
+              "নতুন ব্যাচ শিগগির"
+            ) : seat.running ? (
+              <>
+                ব্যাচ চলছে · <Num value={seat.left} />
+                টি আসন
+              </>
+            ) : (
+              <>
+                পরের ব্যাচ <DateText iso={seat.starts} />
+              </>
+            )}
           </li>
           <li className={cn(chip, "text-(--c-muted)")}>{c.fee === 0 ? "বিনা ফি" : <Taka amount={c.fee} />}</li>
           {entry.modes.map((m) => (

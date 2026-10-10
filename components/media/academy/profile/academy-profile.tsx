@@ -59,7 +59,14 @@ export function AcademyProfile({ academy: a, facts: f }: { academy: Academy; fac
     { k: "কোর্স", v: <Num value={f.courses.length} /> },
     { k: "গ্র্যাজুয়েট", v: <Num value={f.graduates} /> },
     {
-      k: f.rating.count ? <>রেটিং · <Num value={f.rating.count} />টি</> : "রেটিং",
+      k: f.rating.count ? (
+        <>
+          রেটিং · <Num value={f.rating.count} />
+          টি
+        </>
+      ) : (
+        "রেটিং"
+      ),
       v: f.rating.count ? (
         <span className="inline-flex items-center gap-2">
           <Num value={f.rating.avg} />
@@ -72,7 +79,15 @@ export function AcademyProfile({ academy: a, facts: f }: { academy: Academy; fac
   ];
 
   const ways = [
-    { Icon: Video, title: <>প্রতি সপ্তাহে <Num value={CLASS_MINUTES} /> মিনিটের লাইভ ক্লাস</>, body: "না ধরতে পারলে রেকর্ডিং থাকে।" },
+    {
+      Icon: Video,
+      title: (
+        <>
+          প্রতি সপ্তাহে <Num value={CLASS_MINUTES} /> মিনিটের লাইভ ক্লাস
+        </>
+      ),
+      body: "না ধরতে পারলে রেকর্ডিং থাকে।",
+    },
     { Icon: Hammer, title: places.length ? "হাতে-কলমের কর্মশালা" : "নিজের হাতে প্রজেক্ট", body: places[0] ?? "শেষে প্যানেলের সামনে দেখান।" },
     { Icon: Award, title: "দুই পরীক্ষকের প্যানেল", body: "পাস করলে যাচাইযোগ্য সনদ।" },
     { Icon: ShieldCheck, title: "ফি এসক্রোতে", body: "ক্লাস হলে তবেই শিক্ষক পান।" },
@@ -140,7 +155,7 @@ export function AcademyProfile({ academy: a, facts: f }: { academy: Academy; fac
             </div>
           </div>
           <div data-reveal data-in>
-            <ProfileCover academy={a} fallback={f.courses.find((c) => c.image)?.image} />
+            <ProfileCover dept={first} fallback={f.courses.find((c) => c.image)?.image} />
           </div>
         </div>
 
@@ -303,7 +318,8 @@ export function AcademyProfile({ academy: a, facts: f }: { academy: Academy; fac
                 অন্য একাডেমির <Lean>বিভাগও</Lean> দেখুন।
               </h3>
               <p className="mt-3 max-w-md leading-relaxed text-(--c-muted)">
-                দেশের <Num value={departments.length} />টি বিভাগ পাশাপাশি — মিলিয়ে দেখে তবেই বাছুন।
+                দেশের <Num value={departments.length} />
+                টি বিভাগ পাশাপাশি — মিলিয়ে দেখে তবেই বাছুন।
               </p>
               <div className="mt-auto pt-8">
                 <Link href="/media/academy/departments" className={blockBtn}>

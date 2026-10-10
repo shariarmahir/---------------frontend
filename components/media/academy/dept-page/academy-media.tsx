@@ -6,7 +6,7 @@ import { Camera, ImageUp, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import type { AcademyMedia, Department } from "@/lib/media/academy";
 import { cn } from "@/lib/utils";
-import { mediaButton } from "../../ui/button-styles";
+import { secondaryBtn } from "../catalogue/buttons";
 import { updateAcademy } from "../use-academy";
 
 /** Pictures bigger than this are not read at all. */
@@ -67,8 +67,8 @@ export function AcademyMediaEditor({ dept, hasPhoto, hasLogo }: { dept: Departme
 
   return (
     <div className="relative">
-      <button type="button" aria-expanded={open} aria-controls={panelId} onClick={() => setOpen((o) => !o)} className={mediaButton({ variant: "quiet", size: "sm", className: "bg-white/75" })}>
-        <Camera aria-hidden /> ছবি ও লোগো
+      <button type="button" aria-expanded={open} aria-controls={panelId} onClick={() => setOpen((o) => !o)} className={cn(secondaryBtn, "h-10 px-4")}>
+        <Camera className="size-4" aria-hidden /> ছবি ও লোগো
       </button>
       <AnimatePresence>
         {open && (
@@ -78,16 +78,16 @@ export function AcademyMediaEditor({ dept, hasPhoto, hasLogo }: { dept: Departme
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.18 }}
-            className="absolute bottom-full left-0 z-20 mb-2 w-72 rounded-2xl bg-m-card p-4 shadow-[0_24px_48px_-16px_rgb(16_24_40/0.29)] ring-1 ring-m-ink/13 lg:right-0 lg:left-auto"
+            className="absolute bottom-full left-0 z-40 mb-2 w-76 border border-(--c-line) bg-(--c-bg-raised) p-4 shadow-[0_24px_48px_-24px_rgb(0_0_0/0.6)] lg:right-0 lg:left-auto"
           >
             <div className="flex items-center justify-between gap-2">
-              <p className="font-bold text-m-ink">{dept.academy.name}</p>
-              <button type="button" onClick={() => setOpen(false)} className="grid size-8 place-items-center rounded-full text-m-ink/75 hover:bg-m-ink/6 hover:text-m-ink">
+              <p className="display text-base text-(--c-ink-strong)">{dept.academy.name}</p>
+              <button type="button" onClick={() => setOpen(false)} className="grid size-8 place-items-center text-(--c-muted) transition-colors duration-150 hover:bg-(--c-invert-bg) hover:text-(--c-invert-fg)">
                 <X className="size-4.5" aria-hidden />
                 <span className="sr-only">বন্ধ করুন</span>
               </button>
             </div>
-            <p className="mt-1 text-xs leading-snug text-m-ink/65">দলের ছবি হিরোর পেছনে বসে, লোগো নামের পাশে। এখন শুধু এই ব্রাউজারে থাকে।</p>
+            <p className="mt-1 text-xs leading-snug text-(--c-muted)">দলের ছবি হিরোর পেছনে বসে, লোগো নামের পাশে। এখন শুধু এই ব্রাউজারে থাকে।</p>
             <div className="mt-4 space-y-3">
               <Slot label="দলের ছবি" hint="সবাই একসাথে, পাশাপাশি — চওড়া ছবি" has={hasPhoto} busy={busy === "photo"} onPick={(f) => pick("photo", f)} onClear={() => save((m) => ({ ...m, photo: undefined }))} />
               <Slot label="লোগো" hint="চারকোনা, সাদা বা স্বচ্ছ পটভূমি" has={hasLogo} busy={busy === "logo"} onPick={(f) => pick("logo", f)} onClear={() => save((m) => ({ ...m, logo: undefined }))} />
@@ -103,16 +103,26 @@ function Slot({ label, hint, has, busy, onPick, onClear }: { label: string; hint
   const input = useRef<HTMLInputElement>(null);
   return (
     <div className="flex items-center gap-2">
-      <button type="button" disabled={busy} onClick={() => input.current?.click()} className={cn("flex min-w-0 flex-1 items-center gap-2.5 rounded-xl px-3 py-2.5 text-left ring-1 transition-colors", has ? "bg-m-blue/13 ring-m-blue" : "bg-white/65 ring-m-ink/13 hover:ring-m-blue/60")}>
-        <ImageUp className="size-4.5 shrink-0 text-m-blue" aria-hidden />
+      <button
+        type="button"
+        disabled={busy}
+        onClick={() => input.current?.click()}
+        className={cn("flex min-w-0 flex-1 items-center gap-2.5 border px-3 py-2.5 text-left transition-colors duration-150", has ? "border-(--c-accent-ink) bg-(--c-bg)" : "border-(--c-line) bg-(--c-bg) hover:border-(--c-line-strong)")}
+      >
+        <ImageUp className="size-4.5 shrink-0 text-(--c-accent-ink)" aria-hidden />
         <span className="min-w-0">
-          <span className="block text-sm font-semibold text-m-ink">{busy ? "বসানো হচ্ছে…" : has ? `${label} বদলান` : `${label} দিন`}</span>
-          <span className="block truncate text-[11px] text-m-ink/60">{hint}</span>
+          <span className="block text-sm font-semibold text-(--c-ink-strong)">{busy ? "বসানো হচ্ছে…" : has ? `${label} বদলান` : `${label} দিন`}</span>
+          <span className="block truncate text-[11px] text-(--c-faint)">{hint}</span>
         </span>
       </button>
       {has && (
-        <button type="button" onClick={onClear} className={mediaButton({ variant: "ghost", size: "icon-sm" })} aria-label={`${label} সরান`}>
-          <Trash2 aria-hidden />
+        <button
+          type="button"
+          onClick={onClear}
+          className="grid size-10 shrink-0 place-items-center border border-(--c-line) text-(--c-muted) transition-colors duration-150 hover:bg-(--c-invert-bg) hover:text-(--c-invert-fg)"
+          aria-label={`${label} সরান`}
+        >
+          <Trash2 className="size-4" aria-hidden />
         </button>
       )}
       <input ref={input} type="file" accept="image/*" className="sr-only" tabIndex={-1} aria-label={label} onChange={(e) => onPick(e.target.files?.[0])} />

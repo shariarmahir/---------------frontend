@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Check } from "lucide-react";
+import { Check, Ticket } from "lucide-react";
 import { toast } from "sonner";
 import { useRequireAccount } from "@/components/auth/use-require-account";
 import type { Workshop } from "@/lib/media/academy";
 import { useHydrated } from "@/lib/media/store";
-import { mediaButton } from "../ui/button-styles";
+import { actionClass } from "./catalogue/asset-card";
 import { PayDialog } from "./pay-dialog";
 import { updateAcademy, useAcademy } from "./use-academy";
 
@@ -26,25 +26,19 @@ export function WorkshopBook({ workshop }: { workshop: Workshop }) {
 
   if (hydrated && booked) {
     return (
-      <span className="inline-flex h-9 items-center gap-1.5 text-sm font-semibold text-m-green">
+      <p className="flex h-9 items-center justify-center gap-1.5 border border-(--c-line) text-[13px] font-bold text-(--c-good)">
         <Check className="size-4" aria-hidden /> আসন রাখা হয়েছে
-      </span>
+      </p>
     );
   }
 
   return (
     <>
-      <button
-        type="button"
-        disabled={full}
-        onClick={() => ensure("কর্মশালায় আসন রাখতে") && (workshop.fee === 0 ? confirm() : setPaying(true))}
-        className={mediaButton({ variant: full ? "quiet" : "primary", size: "sm" })}
-      >
+      <button type="button" disabled={full} onClick={() => ensure("কর্মশালায় আসন রাখতে") && (workshop.fee === 0 ? confirm() : setPaying(true))} className={`${actionClass} disabled:cursor-not-allowed disabled:opacity-40`}>
+        <Ticket className="size-4" aria-hidden />
         {full ? "আসন পূর্ণ" : "আসন রাখুন"}
       </button>
-      {workshop.fee > 0 && (
-        <PayDialog open={paying} onOpenChange={setPaying} title={workshop.title} label={`কর্মশালা: ${workshop.title}`} price={workshop.fee} onPaid={confirm} />
-      )}
+      {workshop.fee > 0 && <PayDialog open={paying} onOpenChange={setPaying} title={workshop.title} label={`কর্মশালা: ${workshop.title}`} price={workshop.fee} onPaid={confirm} />}
     </>
   );
 }

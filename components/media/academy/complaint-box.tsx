@@ -6,16 +6,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Phone, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 import { useRequireAccount } from "@/components/auth/use-require-account";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormGroup, FormGroupLabel, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { coursesBy } from "@/data/media/academy";
 import { COMPLAINT_KINDS, type ComplaintKind } from "@/lib/media/academy";
 import { complaintSchema, type ComplaintInput } from "@/lib/media/schemas";
 import { newId, useHydrated } from "@/lib/media/store";
-import { mediaButton } from "../ui/button-styles";
-import { choiceClass, selectClass } from "../ui/field-styles";
+import { cn } from "@/lib/utils";
 import { Num } from "../ui/numerals";
+import { primaryBtn, secondaryBtn } from "./catalogue/buttons";
+import { choiceClass, fieldClass, labelClass, messageClass } from "./catalogue/fields";
+import { Modal } from "./catalogue/modal";
 import { updateAcademy, useAcademy } from "./use-academy";
 
 /**
@@ -42,21 +43,29 @@ export function ComplaintBox({ teacher, teacherName, course }: { teacher: string
 
   return (
     <>
-      <button type="button" onClick={() => ensure("অভিযোগ জানাতে") && setOpen(true)} className={mediaButton({ variant: "quiet", size: "sm" })}>
-        <ShieldAlert aria-hidden /> অভিযোগ বাক্স
+      <button type="button" onClick={() => ensure("অভিযোগ জানাতে") && setOpen(true)} className={cn(secondaryBtn, "h-11 px-5")}>
+        <ShieldAlert className="size-4" aria-hidden /> অভিযোগ বাক্স
       </button>
-      {mine > 0 && <p className="mt-2 text-xs text-m-ink/70">আপনার <Num value={mine} />টি অভিযোগ প্যানেলে পর্যালোচনায়।</p>}
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-m-card font-sans sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="text-lg font-bold text-m-ink">{teacherName} — অভিযোগ</DialogTitle>
-            <DialogDescription className="text-sm text-m-ink/80">শিক্ষক আপনার নাম দেখবেন না। প্যানেল ৭২ ঘণ্টার মধ্যে দেখে দুই পক্ষের কথা শোনে।</DialogDescription>
-          </DialogHeader>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-5">
-              <FormField control={form.control} name="kind" render={({ field }) => (
+      {mine > 0 && (
+        <p className="hud mt-3 text-(--c-faint)">
+          আপনার <Num value={mine} />
+          টি অভিযোগ প্যানেলে পর্যালোচনায়।
+        </p>
+      )}
+      <Modal open={open} onClose={() => setOpen(false)} label={`${teacherName} — অভিযোগ`} className="max-h-[92dvh] overflow-y-auto">
+        <div className="border-b border-(--c-line) px-6 py-5 pr-14">
+          <p className="hud text-(--c-faint)">অভিযোগ বাক্স</p>
+          <h2 className="display mt-2 text-xl text-(--c-ink-strong)">{teacherName}</h2>
+          <p className="mt-1.5 text-sm leading-relaxed text-(--c-muted)">শিক্ষক আপনার নাম দেখবেন না। প্যানেল ৭২ ঘণ্টার মধ্যে দেখে দুই পক্ষের কথা শোনে।</p>
+        </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-6 px-6 py-6">
+            <FormField
+              control={form.control}
+              name="kind"
+              render={({ field }) => (
                 <FormItem>
-                  <FormGroupLabel>কী হয়েছে</FormGroupLabel>
+                  <FormGroupLabel className={labelClass}>কী হয়েছে</FormGroupLabel>
                   <FormGroup className="flex flex-wrap gap-2">
                     {(Object.keys(COMPLAINT_KINDS) as ComplaintKind[]).map((k) => (
                       <label key={k} className={choiceClass(field.value === k)}>
@@ -65,39 +74,57 @@ export function ComplaintBox({ teacher, teacherName, course }: { teacher: string
                       </label>
                     ))}
                   </FormGroup>
-                  <FormMessage />
+                  <FormMessage className={messageClass} />
                 </FormItem>
-              )} />
-              {kind === "safety" && (
-                <div role="alert" className="rounded-xl bg-m-red p-4 text-sm leading-relaxed text-m-on">
-                  <p className="flex items-center gap-2 font-bold"><Phone className="size-4" aria-hidden /> এখনই বিপদে থাকলে ৯৯৯-এ ফোন করুন।</p>
-                  <p className="mt-1">নারী ও শিশু নির্যাতন প্রতিরোধ হেল্পলাইন ১০৯ — বিনামূল্যে, ২৪ ঘণ্টা। হয়রানির অভিযোগ প্যানেল সবার আগে দেখে।</p>
-                </div>
               )}
-              {courses.length > 0 && (
-                <FormField control={form.control} name="course" render={({ field }) => (
+            />
+            {kind === "safety" && (
+              <div role="alert" className="border-l-4 border-(--c-bad) bg-(--c-bg-sunken) p-4 text-sm leading-relaxed text-(--c-ink)">
+                <p className="flex items-center gap-2 font-bold text-(--c-bad)">
+                  <Phone className="size-4" aria-hidden /> এখনই বিপদে থাকলে ৯৯৯-এ ফোন করুন।
+                </p>
+                <p className="mt-1">নারী ও শিশু নির্যাতন প্রতিরোধ হেল্পলাইন ১০৯ — বিনামূল্যে, ২৪ ঘণ্টা। হয়রানির অভিযোগ প্যানেল সবার আগে দেখে।</p>
+              </div>
+            )}
+            {courses.length > 0 && (
+              <FormField
+                control={form.control}
+                name="course"
+                render={({ field }) => (
                   <FormItem>
-                    <FormLabel>কোন কোর্সে</FormLabel>
+                    <FormLabel className={labelClass}>কোন কোর্সে</FormLabel>
                     <FormControl>
-                      <select {...field} className={selectClass}>
-                        {courses.map((c) => <option key={c.id} value={c.id}>{c.id} · {c.title}</option>)}
+                      <select {...field} className={fieldClass}>
+                        {courses.map((c) => (
+                          <option key={c.id} value={c.id}>
+                            {c.id} · {c.title}
+                          </option>
+                        ))}
                       </select>
                     </FormControl>
                   </FormItem>
-                )} />
-              )}
-              <FormField control={form.control} name="details" render={({ field }) => (
+                )}
+              />
+            )}
+            <FormField
+              control={form.control}
+              name="details"
+              render={({ field }) => (
                 <FormItem>
-                  <FormLabel>কী হয়েছিল, কবে</FormLabel>
-                  <FormControl><Textarea rows={4} placeholder="তারিখ, ক্লাস আর যা ঘটেছে — যত নির্দিষ্ট, তত দ্রুত সমাধান।" {...field} /></FormControl>
-                  <FormMessage />
+                  <FormLabel className={labelClass}>কী হয়েছিল, কবে</FormLabel>
+                  <FormControl>
+                    <Textarea rows={4} placeholder="তারিখ, ক্লাস আর যা ঘটেছে — যত নির্দিষ্ট, তত দ্রুত সমাধান।" className={fieldClass} {...field} />
+                  </FormControl>
+                  <FormMessage className={messageClass} />
                 </FormItem>
-              )} />
-              <button type="submit" className={mediaButton({ variant: "primary", className: "w-full" })}>অভিযোগ জমা দিন</button>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
+              )}
+            />
+            <button type="submit" className={cn(primaryBtn, "w-full")}>
+              অভিযোগ জমা দিন
+            </button>
+          </form>
+        </Form>
+      </Modal>
     </>
   );
 }

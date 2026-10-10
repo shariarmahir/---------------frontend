@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, ClipboardList, ExternalLink, Hand, LayoutGrid, Loader2, MessageSquareText, Mic, MicOff, MonitorUp, PhoneOff, ShieldCheck, UsersRound, Video, VideoOff, X } from "lucide-react";
 import { toast } from "sonner";
-import { Skeleton } from "@/components/ui/skeleton";
 import { getCourse } from "@/data/media/academy";
 import { DEMO_NOW } from "@/data/media/clock";
 import { currentUser, personOrThrow } from "@/data/media/users";
@@ -15,7 +14,8 @@ import { nextClass, slotOf, type Batch } from "@/lib/media/batch";
 import { bnDigits } from "@/lib/media/format";
 import { useHydrated } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
-import { mediaButton } from "../../ui/button-styles";
+import { primaryBtn } from "../catalogue/buttons";
+import { CatalogueRoot } from "../catalogue/catalogue-root";
 import { Num, useFormat } from "../../ui/numerals";
 import { PersonAvatar } from "../../ui/person";
 import { useAcademy, updateAcademy } from "../use-academy";
@@ -31,6 +31,14 @@ import { teaches, useBatches } from "./use-batches";
  * present for the week; the teacher can end the class into the roll call.
  */
 export function LiveClass({ id }: { id: string }) {
+  return (
+    <CatalogueRoot>
+      <Stage id={id} />
+    </CatalogueRoot>
+  );
+}
+
+function Stage({ id }: { id: string }) {
   const hydrated = useHydrated();
   const all = useBatches();
   const enrollment = useAcademy((a) => {
@@ -42,15 +50,15 @@ export function LiveClass({ id }: { id: string }) {
   const batch = all.find((b) => b.id === id);
   const course = batch && getCourse(batch.course);
 
-  if (!hydrated) return <Skeleton className="fixed inset-0 z-60 rounded-none bg-m-blue-night" />;
+  if (!hydrated) return <span aria-hidden className="fixed inset-0 z-60 animate-pulse bg-(--c-bg)" />;
   const allowed = course && batch && (teaches(course) || (enrollment && (enrollment.batch ?? course.id) === batch.id));
   if (!batch || !course || !allowed) {
     return (
       <Shell>
-        <div className="m-auto max-w-md px-6 text-center text-white">
-          <h1 className="text-2xl font-bold">এই লাইভ ক্লাসে ঢোকা যাবে না</h1>
-          <p className="mt-2 text-white/75">লাইভ ক্লাস শুধু ব্যাচের শিক্ষার্থী আর একাডেমির শিক্ষকদের।</p>
-          <Link href="/media/academy/classroom" className={mediaButton({ className: "mt-6" })}>
+        <div className="m-auto max-w-md px-6 text-center">
+          <h1 className="display text-3xl text-(--c-ink-strong)">এই লাইভ ক্লাসে ঢোকা যাবে না</h1>
+          <p className="mt-3 text-(--c-muted)">লাইভ ক্লাস শুধু ব্যাচের শিক্ষার্থী আর একাডেমির শিক্ষকদের।</p>
+          <Link href="/media/academy/classroom" className={cn(primaryBtn, "mt-8")}>
             ক্লাসরুমে ফিরুন
           </Link>
         </div>
@@ -71,11 +79,10 @@ export function LiveClass({ id }: { id: string }) {
   );
 }
 
-/** The full-screen night stage both screens stand on. */
+/** The full-screen stage both screens stand on, in the page's theme. */
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 z-60 flex flex-col overflow-hidden bg-m-blue-night text-white">
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(60rem_40rem_at_85%_-10%,rgb(1_63_208/0.55),transparent_60%),radial-gradient(40rem_30rem_at_0%_110%,rgb(255_180_35/0.18),transparent_60%)]" />
+    <div className="fixed inset-0 z-60 flex flex-col overflow-hidden bg-(--c-bg) text-(--c-ink)">
       <div className="relative flex min-h-0 flex-1 flex-col">{children}</div>
     </div>
   );
@@ -123,23 +130,26 @@ function Lobby({ batch, course, onEnter }: { batch: Batch; course: Course; onEnt
   return (
     <Shell>
       <header className="flex items-center gap-3 px-4 py-4 sm:px-8">
-        <Link href={`/media/academy/classroom/${encodeURIComponent(batch.id)}`} className="inline-flex h-10 items-center gap-2 rounded-full bg-white/10 px-4 text-sm font-semibold ring-1 ring-white/20 backdrop-blur hover:bg-white/15">
+        <Link
+          href={`/media/academy/classroom/${encodeURIComponent(batch.id)}`}
+          className="inline-flex h-10 items-center gap-2 border border-(--c-line-strong) px-4 text-sm font-semibold transition-colors duration-150 hover:bg-(--c-invert-bg) hover:text-(--c-invert-fg)"
+        >
           <ArrowLeft className="size-4" aria-hidden /> ক্লাসরুমে ফিরুন
         </Link>
       </header>
       <main className="mx-auto grid w-full max-w-6xl flex-1 items-center gap-8 overflow-y-auto px-4 pb-10 sm:px-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
         <div>
-          <div className="relative aspect-video overflow-hidden rounded-[1.8rem] bg-black/40 shadow-[0_40px_80px_-30px_rgb(0_0_0/0.7)] ring-1 ring-white/15">
+          <div className="relative aspect-video overflow-hidden border border-(--c-line) bg-black">
             <video ref={preview} autoPlay playsInline muted className={cn("absolute inset-0 size-full -scale-x-100 object-cover transition-opacity duration-300", cam ? "opacity-100" : "opacity-0")} />
             {!cam && (
               <div className="absolute inset-0 grid place-items-center">
                 <div className="text-center">
-                  <PersonAvatar person={currentUser} size="xl" className="mx-auto ring-4 ring-white/15" />
-                  <p className="mt-3 text-sm text-white/70">{denied ? "ক্যামেরার অনুমতি মেলেনি" : "ক্যামেরা বন্ধ"}</p>
+                  <PersonAvatar person={currentUser} size="xl" className="mx-auto" />
+                  <p className="mt-3 text-sm text-white/75">{denied ? "ক্যামেরার অনুমতি মেলেনি" : "ক্যামেরা বন্ধ"}</p>
                 </div>
               </div>
             )}
-            <span className="absolute top-4 left-4 rounded-full bg-black/35 px-3 py-1 text-xs font-semibold backdrop-blur">{name}</span>
+            <span className="hud absolute top-4 left-4 bg-black/60 px-3 py-1 font-bold text-white">{name}</span>
             <div className="absolute inset-x-0 bottom-4 flex justify-center gap-3">
               <Round on={mic} label={mic ? "মাইক বন্ধ করুন" : "মাইক চালু করুন"} onClick={() => setMic((m) => !m)}>
                 {mic ? <Mic className="size-5" aria-hidden /> : <MicOff className="size-5" aria-hidden />}
@@ -149,34 +159,45 @@ function Lobby({ batch, course, onEnter }: { batch: Batch; course: Course; onEnt
               </Round>
             </div>
           </div>
-          <p className="mt-3 text-center text-xs text-white/55">ক্যামেরা এখানে শুধু আপনিই দেখছেন — ক্লাসে ঢোকার পর বাকিরা দেখবে।</p>
+          <p className="mt-3 text-center text-xs text-(--c-faint)">ক্যামেরা এখানে শুধু আপনিই দেখছেন — ক্লাসে ঢোকার পর বাকিরা দেখবে।</p>
         </div>
 
         <div>
-          <p className="inline-flex items-center gap-2 rounded-full bg-m-yellow/15 px-3 py-1 text-xs font-bold text-m-yellow ring-1 ring-m-yellow/30">
-            <span className="size-2 rounded-full bg-m-yellow" aria-hidden /> লাইভ ক্লাস · ব্যাচ <Num value={batch.n} />
+          <p className="hud inline-flex items-center gap-2 border border-(--c-signal) px-3 py-1 font-bold text-(--c-signal)">
+            <span className="size-2 bg-(--c-signal)" aria-hidden /> লাইভ ক্লাস · ব্যাচ <Num value={batch.n} />
           </p>
-          <h1 className="mt-4 text-[clamp(1.9rem,3.6vw,2.8rem)] leading-[1.1] font-bold">{lesson?.title ?? course.title}</h1>
-          <p className="mt-2 text-white/75">
+          <h1 className="display mt-5 text-[clamp(1.9rem,3.6vw,2.8rem)] leading-[1.1] text-(--c-ink-strong)">{lesson?.title ?? course.title}</h1>
+          <p className="mt-2 text-(--c-muted)">
             {course.title} · সপ্তাহ <Num value={week} />
           </p>
-          <div className="mt-6 flex items-center gap-3 rounded-2xl bg-white/8 p-3 ring-1 ring-white/12">
+          <div className="mt-6 flex items-center gap-3 border border-(--c-line) p-3">
             <PersonAvatar person={personOrThrow(course.teacher)} size="md" />
             <div className="min-w-0 text-sm">
               <p className="font-semibold">{personOrThrow(course.teacher).nameBn}</p>
-              <p className="text-white/65">
+              <p className="text-(--c-muted)">
                 {slotOf(batch.day, batch.time)} · <Num value={CLASS_MINUTES} /> মিনিট
               </p>
             </div>
           </div>
-          <button type="button" onClick={() => { stop(); onEnter({ mic, cam }); }} className="mt-6 inline-flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-m-yellow text-base font-bold text-m-ink shadow-[0_18px_40px_-16px_rgb(255_180_35/0.8)] transition-transform hover:-translate-y-0.5 motion-reduce:transition-none sm:w-auto sm:px-10">
+          <button
+            type="button"
+            onClick={() => {
+              stop();
+              onEnter({ mic, cam });
+            }}
+            className="mt-8 inline-flex h-14 w-full items-center justify-center gap-2 bg-(--c-signal) text-base font-bold text-black transition-opacity duration-150 hover:opacity-85 sm:w-auto sm:px-10"
+          >
             {lead ? "ক্লাস শুরু করুন" : "ক্লাসে ঢুকুন"}
           </button>
-          <p className="mt-4 flex gap-2 text-xs leading-relaxed text-white/60">
-            <ShieldCheck className="mt-0.5 size-4 shrink-0 text-m-yellow" aria-hidden />
+          <p className="mt-4 flex gap-2 text-xs leading-relaxed text-(--c-muted)">
+            <ShieldCheck className="mt-0.5 size-4 shrink-0 text-(--c-signal)" aria-hidden />
             ভিডিও কল চলে Jitsi Meet-এ ({JITSI_DOMAIN})। সেখানে শুধু আপনার নাম যায়, ইমেইল বা ফোন নয়। ক্লাসের ঘরটা এই ব্যাচের নিজের।
           </p>
-          {PUBLIC_JITSI && <p className="mt-2 text-xs leading-relaxed text-white/50">ডেমো: বিনামূল্যের meet.jit.si পাতার ভেতরে বসানো কল কয়েক মিনিটে কেটে দেয়, আর প্রথমজনকে Jitsi-তে লগইন করে ঘর খুলতে হতে পারে। পুরো ক্লাসের জন্য “নতুন ট্যাবে খুলুন” ব্যবহার করুন — আসল একাডেমিতে নিজস্ব Jitsi সার্ভার লাগবে।</p>}
+          {PUBLIC_JITSI && (
+            <p className="mt-2 text-xs leading-relaxed text-(--c-faint)">
+              ডেমো: বিনামূল্যের meet.jit.si পাতার ভেতরে বসানো কল কয়েক মিনিটে কেটে দেয়, আর প্রথমজনকে Jitsi-তে লগইন করে ঘর খুলতে হতে পারে। পুরো ক্লাসের জন্য “নতুন ট্যাবে খুলুন” ব্যবহার করুন — আসল একাডেমিতে নিজস্ব Jitsi সার্ভার লাগবে।
+            </p>
+          )}
         </div>
       </main>
     </Shell>
@@ -192,8 +213,16 @@ function Round({ on, label, onClick, children, tone }: { on: boolean; label: str
       aria-pressed={on}
       title={label}
       className={cn(
-        "grid size-12 shrink-0 place-items-center rounded-full ring-1 transition-[background-color,transform] duration-200 hover:-translate-y-0.5 motion-reduce:transition-none",
-        tone === "danger" ? "bg-m-red text-white ring-m-red" : tone === "accent" ? (on ? "bg-m-yellow text-m-ink ring-m-yellow" : "bg-white/10 text-white ring-white/20 hover:bg-white/18") : on ? "bg-white/12 text-white ring-white/20 hover:bg-white/20" : "bg-white text-m-ink ring-white",
+        "grid size-12 shrink-0 place-items-center transition-colors duration-150",
+        tone === "danger"
+          ? "bg-(--c-bad) text-black"
+          : tone === "accent"
+            ? on
+              ? "bg-(--c-signal) text-black"
+              : "border border-(--c-line-strong) bg-(--c-bg) text-(--c-ink-strong) hover:bg-(--c-bg-raised)"
+            : on
+              ? "border border-(--c-line-strong) bg-(--c-bg) text-(--c-ink-strong) hover:bg-(--c-bg-raised)"
+              : "bg-(--c-invert-bg) text-(--c-invert-fg)",
       )}
     >
       {children}
@@ -238,7 +267,7 @@ function Call({ batch, course, start }: { batch: Batch; course: Course; start: {
   // Build the room once; tear it down when leaving the page.
   useEffect(() => {
     let alive = true;
-    const night = getComputedStyle(document.documentElement).getPropertyValue("--color-m-blue-night").trim();
+    const night = host.current ? getComputedStyle(host.current).getPropertyValue("--c-bg-sunken").trim() : "";
     loadJitsi()
       .then((Jitsi) => {
         if (!alive || !host.current) return;
@@ -304,56 +333,73 @@ function Call({ batch, course, start }: { batch: Batch; course: Course; start: {
   return (
     <Shell>
       <header className="flex items-center gap-3 px-3 py-3 sm:px-5">
-        <button type="button" onClick={() => leave()} className="grid size-10 shrink-0 place-items-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/15" aria-label="ক্লাসরুমে ফিরুন">
+        <button
+          type="button"
+          onClick={() => leave()}
+          className="grid size-10 shrink-0 place-items-center border border-(--c-line-strong) transition-colors duration-150 hover:bg-(--c-invert-bg) hover:text-(--c-invert-fg)"
+          aria-label="ক্লাসরুমে ফিরুন"
+        >
           <ArrowLeft className="size-4.5" aria-hidden />
         </button>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-[15px] font-bold">{lesson?.title ?? course.title}</p>
-          <p className="truncate text-xs text-white/65">
+          <p className="display truncate text-base text-(--c-ink-strong)">{lesson?.title ?? course.title}</p>
+          <p className="truncate text-xs text-(--c-muted)">
             {course.title} · ব্যাচ <Num value={batch.n} /> · সপ্তাহ <Num value={week} />
           </p>
         </div>
-        <div className="flex items-center gap-2.5 rounded-full bg-white/10 py-1.5 pr-3 pl-1.5 ring-1 ring-white/15" aria-label="ক্লাসের সময়">
+        <div className="flex items-center gap-2.5 border border-(--c-line) py-1.5 pr-3 pl-1.5" aria-label="ক্লাসের সময়">
           <svg viewBox="0 0 36 36" className="size-7 -rotate-90" aria-hidden>
-            <circle cx="18" cy="18" r="15" className="fill-none stroke-white/15" strokeWidth="4" />
-            <circle cx="18" cy="18" r="15" className="fill-none stroke-m-yellow transition-[stroke-dashoffset] duration-1000" strokeWidth="4" strokeLinecap="round" strokeDasharray={94.25} strokeDashoffset={94.25 * (1 - Math.min(1, elapsed / total))} />
+            <circle cx="18" cy="18" r="15" className="fill-none stroke-(--c-line)" strokeWidth="4" />
+            <circle
+              cx="18"
+              cy="18"
+              r="15"
+              className="fill-none stroke-(--c-signal) transition-[stroke-dashoffset] duration-1000"
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeDasharray={94.25}
+              strokeDashoffset={94.25 * (1 - Math.min(1, elapsed / total))}
+            />
           </svg>
           <span className="text-sm font-bold tabular-nums">
-            {mmss(elapsed)} <span className="font-semibold text-white/55">/ {mmss(total)}</span>
+            {mmss(elapsed)} <span className="font-semibold text-(--c-faint)">/ {mmss(total)}</span>
           </span>
         </div>
-        <span className="hidden items-center gap-1.5 rounded-full bg-m-yellow px-3 py-1.5 text-xs font-bold text-m-ink sm:inline-flex">
-          <span className="size-2 animate-pulse rounded-full bg-m-ink motion-reduce:animate-none" aria-hidden /> লাইভ
+        <span className="hud hidden items-center gap-1.5 bg-(--c-bad) px-3 py-1.5 font-bold text-black sm:inline-flex">
+          <span className="size-2 animate-pulse bg-black motion-reduce:animate-none" aria-hidden /> লাইভ
         </span>
       </header>
 
       <div className="flex min-h-0 flex-1 gap-3 px-3 sm:px-5">
-        <div className="relative min-w-0 flex-1 overflow-hidden rounded-[1.6rem] bg-black/30 ring-1 ring-white/12">
+        <div className="relative min-w-0 flex-1 overflow-hidden border border-(--c-line) bg-black">
           <div ref={host} className="absolute inset-0" />
           {status === "on" && !joinedAt && (
-            <div role="status" className="absolute inset-x-3 top-3 z-10 flex flex-wrap items-center gap-3 rounded-2xl bg-m-blue-night/85 p-3 pl-4 text-sm ring-1 ring-white/15 backdrop-blur-md sm:inset-x-auto sm:right-auto sm:left-1/2 sm:max-w-xl sm:-translate-x-1/2">
-              <Loader2 className="size-4 shrink-0 animate-spin text-m-yellow motion-reduce:animate-none" aria-hidden />
-              <p className="min-w-0 flex-1 leading-snug text-white/85">
-                {lead ? "ঘর খুলছে — Jitsi লগইন চাইলে লগইন করুন, তারপর শিক্ষার্থীরা ঢুকতে পারবে।" : "শিক্ষক ঘর খোলার অপেক্ষা — শিক্ষক ঢুকলেই ক্লাস শুরু, হাজিরা উঠবে।"}
-              </p>
-              <a href={jitsiUrl(batch.room)} target="_blank" rel="noopener noreferrer" className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-white px-3.5 text-xs font-bold text-m-ink">
+            <div role="status" className="absolute inset-x-3 top-3 z-10 flex flex-wrap items-center gap-3 border border-(--c-line) bg-(--c-bg-raised) p-3 pl-4 text-sm sm:inset-x-auto sm:right-auto sm:left-1/2 sm:max-w-xl sm:-translate-x-1/2">
+              <Loader2 className="size-4 shrink-0 animate-spin text-(--c-signal) motion-reduce:animate-none" aria-hidden />
+              <p className="min-w-0 flex-1 leading-snug text-(--c-ink)">{lead ? "ঘর খুলছে — Jitsi লগইন চাইলে লগইন করুন, তারপর শিক্ষার্থীরা ঢুকতে পারবে।" : "শিক্ষক ঘর খোলার অপেক্ষা — শিক্ষক ঢুকলেই ক্লাস শুরু, হাজিরা উঠবে।"}</p>
+              <a
+                href={jitsiUrl(batch.room)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-9 shrink-0 items-center gap-1.5 bg-(--c-invert-bg) px-3.5 text-xs font-bold text-(--c-invert-fg) transition-opacity duration-150 hover:opacity-80"
+              >
                 <ExternalLink className="size-3.5" aria-hidden /> নতুন ট্যাবে
               </a>
             </div>
           )}
           {status !== "on" && (
-            <div className="absolute inset-0 grid place-items-center bg-m-blue-night/90 p-6 text-center">
+            <div className="absolute inset-0 grid place-items-center bg-(--c-bg)/95 p-6 text-center">
               {status === "loading" ? (
                 <div>
-                  <Loader2 className="mx-auto size-8 animate-spin text-m-yellow motion-reduce:animate-none" aria-hidden />
+                  <Loader2 className="mx-auto size-8 animate-spin text-(--c-signal) motion-reduce:animate-none" aria-hidden />
                   <p className="mt-3 font-semibold">ক্লাসঘর তৈরি হচ্ছে…</p>
-                  <p className="mt-1 text-sm text-white/60">{JITSI_DOMAIN}-এর সাথে যোগাযোগ হচ্ছে</p>
+                  <p className="mt-1 text-sm text-(--c-muted)">{JITSI_DOMAIN}-এর সাথে যোগাযোগ হচ্ছে</p>
                 </div>
               ) : (
                 <div className="max-w-sm">
-                  <p className="text-lg font-bold">ভিডিও কল চালু করা গেল না</p>
-                  <p className="mt-1 text-sm text-white/65">ইন্টারনেট বা ব্রাউজার Jitsi-র স্ক্রিপ্ট আটকে দিয়েছে। সরাসরি Jitsi-র পাতায় একই ঘরে ঢুকতে পারেন।</p>
-                  <a href={jitsiUrl(batch.room)} target="_blank" rel="noopener noreferrer" className={mediaButton({ className: "mt-5" })}>
+                  <p className="display text-xl text-(--c-ink-strong)">ভিডিও কল চালু করা গেল না</p>
+                  <p className="mt-1 text-sm text-(--c-muted)">ইন্টারনেট বা ব্রাউজার Jitsi-র স্ক্রিপ্ট আটকে দিয়েছে। সরাসরি Jitsi-র পাতায় একই ঘরে ঢুকতে পারেন।</p>
+                  <a href={jitsiUrl(batch.room)} target="_blank" rel="noopener noreferrer" className={cn(primaryBtn, "mt-5")}>
                     <ExternalLink aria-hidden /> নতুন ট্যাবে খুলুন
                   </a>
                 </div>
@@ -364,28 +410,33 @@ function Call({ batch, course, start }: { batch: Batch; course: Course; start: {
 
         {side && (
           <aside className="absolute inset-x-3 top-16 bottom-24 z-10 flex w-auto flex-col sm:static sm:inset-auto sm:w-[22rem] sm:shrink-0" aria-label={side === "chat" ? "ব্যাচের আড্ডা" : "কলে যাঁরা আছেন"}>
-            <button type="button" onClick={() => setSide(null)} className="absolute top-4 right-4 z-10 grid size-8 place-items-center rounded-full bg-m-ink/8 text-m-ink hover:bg-m-ink/15" aria-label="বন্ধ করুন">
+            <button
+              type="button"
+              onClick={() => setSide(null)}
+              className="absolute top-4 right-4 z-10 grid size-8 place-items-center text-(--c-muted) transition-colors duration-150 hover:bg-(--c-invert-bg) hover:text-(--c-invert-fg)"
+              aria-label="বন্ধ করুন"
+            >
               <X className="size-4" aria-hidden />
             </button>
             {side === "chat" ? (
-              <RoomChat batch={batch} compact className="h-full text-m-ink" />
+              <RoomChat batch={batch} compact className="h-full text-(--c-ink-strong)" />
             ) : (
-              <section className="flex h-full flex-col rounded-[1.6rem] bg-white p-5 text-m-ink">
-                <h2 className="text-xl font-bold">কলে আছেন</h2>
-                <p className="text-sm text-m-ink/60">
+              <section className="flex h-full flex-col border border-(--c-line) bg-(--c-bg) p-5 text-(--c-ink-strong)">
+                <h2 className="display text-xl">কলে আছেন</h2>
+                <p className="text-sm text-(--c-muted)">
                   <Num value={people.length} /> জন · ব্যাচে <Num value={batch.enrolled} /> জন শিক্ষার্থী
                 </p>
                 <ul className="mt-4 min-h-0 flex-1 space-y-2 overflow-y-auto">
                   {people.map((p) => {
                     const n = p.displayName || p.formattedDisplayName || "অতিথি";
                     return (
-                      <li key={p.participantId} className="flex items-center gap-3 rounded-xl bg-m-ground p-2.5">
+                      <li key={p.participantId} className="flex items-center gap-3 border border-(--c-line) p-2.5">
                         <PersonAvatar person={{ nameBn: n, initials: n.slice(0, 1), tone: "green" }} size="sm" />
                         <span className="min-w-0 flex-1 truncate text-sm font-semibold">{n}</span>
                       </li>
                     );
                   })}
-                  {people.length === 0 && <li className="py-6 text-center text-sm text-m-ink/55">কল চালু হলে এখানে নাম দেখাবে।</li>}
+                  {people.length === 0 && <li className="py-6 text-center text-sm text-(--c-faint)">কল চালু হলে এখানে নাম দেখাবে।</li>}
                 </ul>
               </section>
             )}
@@ -395,7 +446,7 @@ function Call({ batch, course, start }: { batch: Batch; course: Course; start: {
 
       {/* The dock. */}
       <footer className="flex flex-wrap items-center justify-center gap-2 px-3 py-4 sm:gap-3">
-        <div className="flex items-center gap-2 rounded-full bg-white/8 p-2 ring-1 ring-white/12 backdrop-blur-md sm:gap-2.5">
+        <div className="flex items-center gap-px border border-(--c-line) bg-(--c-line)">
           <Round on={mic} label={mic ? "মাইক বন্ধ করুন" : "মাইক চালু করুন"} onClick={() => cmd("toggleAudio")}>
             {mic ? <Mic className="size-5" aria-hidden /> : <MicOff className="size-5" aria-hidden />}
           </Round>
@@ -420,23 +471,34 @@ function Call({ batch, course, start }: { batch: Batch; course: Course; start: {
             <LayoutGrid className="size-5" aria-hidden />
           </Round>
         </div>
-        <div className="flex items-center gap-2 rounded-full bg-white/8 p-2 ring-1 ring-white/12 backdrop-blur-md sm:gap-2.5">
+        <div className="flex items-center gap-px border border-(--c-line) bg-(--c-line)">
           <Round on={side === "chat"} tone="accent" label="ব্যাচের আড্ডা" onClick={() => setSide((s) => (s === "chat" ? null : "chat"))}>
             <MessageSquareText className="size-5" aria-hidden />
           </Round>
           <Round on={side === "people"} tone="accent" label="কলে যাঁরা আছেন" onClick={() => setSide((s) => (s === "people" ? null : "people"))}>
             <UsersRound className="size-5" aria-hidden />
           </Round>
-          <a href={jitsiUrl(batch.room)} target="_blank" rel="noopener noreferrer" className="grid size-12 place-items-center rounded-full bg-white/10 text-white ring-1 ring-white/20 hover:bg-white/18" aria-label="নতুন ট্যাবে খুলুন" title="নতুন ট্যাবে খুলুন">
+          <a
+            href={jitsiUrl(batch.room)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="grid size-12 place-items-center bg-(--c-bg) text-(--c-ink-strong) transition-colors duration-150 hover:bg-(--c-bg-raised)"
+            aria-label="নতুন ট্যাবে খুলুন"
+            title="নতুন ট্যাবে খুলুন"
+          >
             <ExternalLink className="size-5" aria-hidden />
           </a>
         </div>
         {lead && (
-          <button type="button" onClick={() => leave(`${roomHref}?tool=attendance`)} className="inline-flex h-12 items-center gap-2 rounded-full bg-white px-5 text-sm font-bold text-m-ink hover:bg-m-amber-soft">
+          <button
+            type="button"
+            onClick={() => leave(`${roomHref}?tool=attendance`)}
+            className="inline-flex h-12 items-center gap-2 border border-(--c-line-strong) px-5 text-sm font-bold text-(--c-ink-strong) transition-colors duration-150 hover:bg-(--c-invert-bg) hover:text-(--c-invert-fg)"
+          >
             <ClipboardList className="size-4.5" aria-hidden /> শেষ করে হাজিরা নিন
           </button>
         )}
-        <button type="button" onClick={() => leave()} className="inline-flex h-12 items-center gap-2 rounded-full bg-m-red px-5 text-sm font-bold text-white transition-transform hover:-translate-y-0.5 motion-reduce:transition-none">
+        <button type="button" onClick={() => leave()} className="inline-flex h-12 items-center gap-2 bg-(--c-bad) px-5 text-sm font-bold text-black transition-opacity duration-150 hover:opacity-85">
           <PhoneOff className="size-4.5" aria-hidden /> বের হন
         </button>
       </footer>

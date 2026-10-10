@@ -4,16 +4,18 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Upload } from "lucide-react";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormDescription, FormField, FormGroup, FormGroupLabel, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CLASS_MINUTES, type ClassVideo } from "@/lib/media/academy";
 import { videoSchema, type VideoInput } from "@/lib/media/schemas";
 import { newId } from "@/lib/media/store";
-import { mediaButton } from "../../ui/button-styles";
-import { choiceClass, selectClass, toNumber } from "../../ui/field-styles";
+import { cn } from "@/lib/utils";
+import { toNumber } from "../../ui/field-styles";
 import { useFormat } from "../../ui/numerals";
+import { primaryBtn } from "../catalogue/buttons";
+import { choiceClass, fieldClass, labelClass, messageClass } from "../catalogue/fields";
+import { Modal } from "../catalogue/modal";
 import { useTeacher } from "../desk/use-teacher";
 import { updateAcademy } from "../use-academy";
 
@@ -57,31 +59,47 @@ export function UploadDialog({ open, onOpenChange, owes }: { open: boolean; onOp
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-2xl bg-m-card font-sans sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle className="text-xl text-m-ink">ক্লাস ভিডিও তুলুন</DialogTitle>
-          <DialogDescription className="text-m-ink/75">
-            {owes ? "এ সপ্তাহের বিনামূল্যের ক্লাসটা এখনো বাকি — প্রতি সপ্তাহে একটা, সবার জন্য।" : "ভিডিওটা ইউটিউবে (আনলিস্টেড হলেও চলে) বা ড্রাইভে তুলে লিংক দিন।"}
-          </DialogDescription>
-        </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-5">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <FormField control={form.control} name="course" render={({ field }) => (
+    <Modal open={open} onClose={() => onOpenChange(false)} label="ক্লাস ভিডিও তুলুন" className="max-h-[92dvh] overflow-y-auto">
+      <div className="border-b border-(--c-line) px-6 py-5 pr-14">
+        <p className="hud text-(--c-faint)">ক্লাস ভিডিও</p>
+        <h2 className="display mt-2 text-xl text-(--c-ink-strong)">ভিডিও তুলুন</h2>
+        <p className="mt-1.5 text-sm leading-relaxed text-(--c-muted)">{owes ? "এ সপ্তাহের বিনামূল্যের ক্লাসটা এখনো বাকি — প্রতি সপ্তাহে একটা, সবার জন্য।" : "ভিডিওটা ইউটিউবে (আনলিস্টেড হলেও চলে) বা ড্রাইভে তুলে লিংক দিন।"}</p>
+      </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-6 px-6 py-6">
+          <div className="grid gap-5 sm:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="course"
+              render={({ field }) => (
                 <FormItem>
-                  <FormLabel>কোর্স</FormLabel>
+                  <FormLabel className={labelClass}>কোর্স</FormLabel>
                   <FormControl>
-                    <select {...field} onChange={(e) => { field.onChange(e.target.value); form.setValue("week", 1); }} className={selectClass}>
-                      {t.live.map((c) => <option key={c.id} value={c.id}>{c.id} · {c.title}</option>)}
+                    <select
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e.target.value);
+                        form.setValue("week", 1);
+                      }}
+                      className={fieldClass}
+                    >
+                      {t.live.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.id} · {c.title}
+                        </option>
+                      ))}
                     </select>
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className={messageClass} />
                 </FormItem>
-              )} />
-              <FormField control={form.control} name="week" render={({ field }) => (
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="week"
+              render={({ field }) => (
                 <FormItem>
-                  <FormLabel>কোন সপ্তাহের ক্লাস</FormLabel>
+                  <FormLabel className={labelClass}>কোন সপ্তাহের ক্লাস</FormLabel>
                   <FormControl>
                     <select
                       value={field.value}
@@ -91,86 +109,132 @@ export function UploadDialog({ open, onOpenChange, owes }: { open: boolean; onOp
                         // An empty title takes the lesson's name.
                         if (!form.getValues("title").trim() && course) form.setValue("title", course.lessons[week - 1]?.title ?? "", { shouldValidate: true });
                       }}
-                      className={selectClass}
+                      className={fieldClass}
                     >
-                      {course?.lessons.map((l, i) => <option key={l.title} value={i + 1}>সপ্তাহ {num(i + 1)} — {l.title}</option>)}
+                      {course?.lessons.map((l, i) => (
+                        <option key={l.title} value={i + 1}>
+                          সপ্তাহ {num(i + 1)} — {l.title}
+                        </option>
+                      ))}
                     </select>
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className={messageClass} />
                 </FormItem>
-              )} />
-            </div>
+              )}
+            />
+          </div>
 
-            <FormField control={form.control} name="title" render={({ field }) => (
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
               <FormItem>
-                <FormLabel>ভিডিওর নাম</FormLabel>
-                <FormControl><Input placeholder="যেমন: ব্রেডবোর্ডে প্রথম সার্কিট" {...field} /></FormControl>
-                <FormMessage />
+                <FormLabel className={labelClass}>ভিডিওর নাম</FormLabel>
+                <FormControl>
+                  <Input placeholder="যেমন: ব্রেডবোর্ডে প্রথম সার্কিট" className={fieldClass} {...field} />
+                </FormControl>
+                <FormMessage className={messageClass} />
               </FormItem>
-            )} />
+            )}
+          />
 
-            <FormField control={form.control} name="href" render={({ field }) => (
+          <FormField
+            control={form.control}
+            name="href"
+            render={({ field }) => (
               <FormItem>
-                <FormLabel>ভিডিওর লিংক</FormLabel>
-                <FormControl><Input type="url" inputMode="url" placeholder="https://youtu.be/…" {...field} /></FormControl>
+                <FormLabel className={labelClass}>ভিডিওর লিংক</FormLabel>
+                <FormControl>
+                  <Input type="url" inputMode="url" placeholder="https://youtu.be/…" className={fieldClass} {...field} />
+                </FormControl>
                 <FormDescription>ইউটিউবের লিংক হলে এখানেই চলবে; ড্রাইভের লিংক নতুন ট্যাবে খুলবে।</FormDescription>
-                <FormMessage />
+                <FormMessage className={messageClass} />
               </FormItem>
-            )} />
+            )}
+          />
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <FormField control={form.control} name="short" render={({ field }) => (
+          <div className="grid gap-5 sm:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="short"
+              render={({ field }) => (
                 <FormItem>
-                  <FormGroupLabel>ধরন</FormGroupLabel>
+                  <FormGroupLabel className={labelClass}>ধরন</FormGroupLabel>
                   <FormGroup className="flex flex-wrap gap-2">
                     {[false, true].map((s) => (
                       <label key={String(s)} className={choiceClass(field.value === s)}>
-                        <input type="radio" className="sr-only" name={field.name} checked={field.value === s} onChange={() => { field.onChange(s); form.setValue("length", s ? 0 : CLASS_MINUTES); if (s) form.setValue("access", "free"); }} />
+                        <input
+                          type="radio"
+                          className="sr-only"
+                          name={field.name}
+                          checked={field.value === s}
+                          onChange={() => {
+                            field.onChange(s);
+                            form.setValue("length", s ? 0 : CLASS_MINUTES);
+                            if (s) form.setValue("access", "free");
+                          }}
+                        />
                         {s ? "ছোট (১ মিনিটের কম)" : `পুরো ক্লাস (${num(CLASS_MINUTES)} মিনিট)`}
                       </label>
                     ))}
                   </FormGroup>
                 </FormItem>
-              )} />
-              <FormField control={form.control} name="length" render={({ field }) => (
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="length"
+              render={({ field }) => (
                 <FormItem>
-                  <FormLabel>দৈর্ঘ্য ({short ? "সেকেন্ড" : "মিনিট"})</FormLabel>
-                  <FormControl><Input inputMode="numeric" className="tabular-nums" value={field.value || ""} placeholder="০" onChange={(e) => field.onChange(toNumber(e.target.value))} /></FormControl>
+                  <FormLabel className={labelClass}>দৈর্ঘ্য ({short ? "সেকেন্ড" : "মিনিট"})</FormLabel>
+                  <FormControl>
+                    <Input inputMode="numeric" className={cn(fieldClass, "tabular-nums")} value={field.value || ""} placeholder="০" onChange={(e) => field.onChange(toNumber(e.target.value))} />
+                  </FormControl>
                   {!short && <FormDescription>প্রতিটা অনলাইন ক্লাস ঠিক {num(CLASS_MINUTES)} মিনিটের।</FormDescription>}
-                  <FormMessage />
+                  <FormMessage className={messageClass} />
                 </FormItem>
-              )} />
-            </div>
+              )}
+            />
+          </div>
 
-            <FormField control={form.control} name="access" render={({ field }) => (
+          <FormField
+            control={form.control}
+            name="access"
+            render={({ field }) => (
               <FormItem>
-                <FormGroupLabel>কারা দেখবে</FormGroupLabel>
+                <FormGroupLabel className={labelClass}>কারা দেখবে</FormGroupLabel>
                 <FormGroup className="flex flex-wrap gap-2">
                   {(["free", "paid"] as const).map((a) => (
-                    <label key={a} className={choiceClass(field.value === a)}>
+                    <label key={a} className={choiceClass(field.value === a, short && a === "paid" ? "cursor-not-allowed opacity-40" : undefined)}>
                       <input type="radio" className="sr-only" name={field.name} checked={field.value === a} disabled={short && a === "paid"} onChange={() => field.onChange(a)} />
                       {a === "free" ? "সবাই — বিনামূল্যে" : "শুধু কোর্সে ভর্তিরা"}
                     </label>
                   ))}
                 </FormGroup>
-                <FormMessage />
+                <FormMessage className={messageClass} />
               </FormItem>
-            )} />
+            )}
+          />
 
-            <FormField control={form.control} name="about" render={({ field }) => (
+          <FormField
+            control={form.control}
+            name="about"
+            render={({ field }) => (
               <FormItem>
-                <FormLabel>বর্ণনা (ইচ্ছে হলে)</FormLabel>
-                <FormControl><Textarea rows={3} placeholder="এই ক্লাসে কী শিখবেন, বাড়ির কাজ কী" {...field} /></FormControl>
-                <FormMessage />
+                <FormLabel className={labelClass}>বর্ণনা (ইচ্ছে হলে)</FormLabel>
+                <FormControl>
+                  <Textarea rows={3} placeholder="এই ক্লাসে কী শিখবেন, বাড়ির কাজ কী" className={fieldClass} {...field} />
+                </FormControl>
+                <FormMessage className={messageClass} />
               </FormItem>
-            )} />
+            )}
+          />
 
-            <button type="submit" className={mediaButton({ size: "lg", className: "w-full" })}>
-              <Upload aria-hidden /> ভিডিও তুলুন
-            </button>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+          <button type="submit" className={cn(primaryBtn, "w-full")}>
+            <Upload className="size-4" aria-hidden /> ভিডিও তুলুন
+          </button>
+        </form>
+      </Form>
+    </Modal>
   );
 }

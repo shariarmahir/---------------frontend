@@ -3,33 +3,20 @@
 import Link from "next/link";
 import { AtSign, CalendarDays, Eye, GraduationCap, Link2, MapPin, MonitorPlay, Share2, UsersRound, type LucideIcon } from "lucide-react";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { deptsOfTeacher, teacherRecord } from "@/data/media/academy";
 import type { Person } from "@/data/media/types";
 import { DEPT_KINDS } from "@/lib/media/academy";
-import { mediaButton } from "../../ui/button-styles";
 import { Compact, DateText, Num } from "../../ui/numerals";
+import { actionClass } from "../catalogue/asset-card";
+import { Modal } from "../catalogue/modal";
 
 /**
- * A teacher's "about": who they are, the departments they teach in (lead
- * or member, linked), and the channel's numbers — followers, videos, views,
- * when the panel passed them, where they teach from.
+ * A teacher's "about", in the catalogue's dialog: who they are, the
+ * departments they teach in (lead or member, linked), and the channel's
+ * numbers — followers, videos, views, when the panel passed them, where
+ * they teach from.
  */
-export function ChannelAbout({
-  open,
-  onOpenChange,
-  person,
-  followers,
-  videos,
-  views,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  person: Person;
-  followers: number;
-  videos: number;
-  views: number;
-}) {
+export function ChannelAbout({ open, onOpenChange, person, followers, videos, views }: { open: boolean; onOpenChange: (open: boolean) => void; person: Person; followers: number; videos: number; views: number }) {
   const record = teacherRecord(person.handle);
   const depts = deptsOfTeacher(person.handle);
 
@@ -42,68 +29,102 @@ export function ChannelAbout({
 
   const facts: [LucideIcon, React.ReactNode][] = [
     [AtSign, <>@{person.handle}</>],
-    [UsersRound, <><Compact n={followers} /> অনুসারী</>],
-    [MonitorPlay, <><Num value={videos} />টি ভিডিও</>],
-    [Eye, <><Num value={views} /> বার দেখা</>],
+    [
+      UsersRound,
+      <>
+        <Compact n={followers} /> অনুসারী
+      </>,
+    ],
+    [
+      MonitorPlay,
+      <>
+        <Num value={videos} />
+        টি ভিডিও
+      </>,
+    ],
+    [
+      Eye,
+      <>
+        <Num value={views} /> বার দেখা
+      </>,
+    ],
     ...(record
       ? ([
-          [GraduationCap, <><Num value={record.graduates} /> জন গ্র্যাজুয়েট</>],
-          [CalendarDays, <>প্যানেল পাস করেছেন <DateText iso={record.interview.at} /></>],
+          [
+            GraduationCap,
+            <>
+              <Num value={record.graduates} /> জন গ্র্যাজুয়েট
+            </>,
+          ],
+          [
+            CalendarDays,
+            <>
+              প্যানেল পাস করেছেন <DateText iso={record.interview.at} />
+            </>,
+          ],
         ] as [LucideIcon, React.ReactNode][])
       : []),
-    [MapPin, <>{person.area ? `${person.area}, ` : ""}{person.district}</>],
+    [
+      MapPin,
+      <>
+        {person.area ? `${person.area}, ` : ""}
+        {person.district}
+      </>,
+    ],
   ];
+  const head = "hud text-(--c-faint)";
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[85dvh] overflow-y-auto rounded-2xl bg-m-card font-sans sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-m-ink">পরিচিতি</DialogTitle>
-          <DialogDescription className="sr-only">{person.nameBn}-এর চ্যানেলের তথ্য</DialogDescription>
-        </DialogHeader>
+    <Modal open={open} onClose={() => onOpenChange(false)} label={`${person.nameBn} — পরিচিতি`} className="max-h-[85dvh] overflow-y-auto">
+      <div className="border-b border-(--c-line) px-6 py-5 pr-14">
+        <p className={head}>পরিচিতি</p>
+        <h2 className="display mt-2 text-xl text-(--c-ink-strong)">{person.nameBn}</h2>
+        {record && <p className="mt-1 text-sm font-semibold text-(--c-ink)">{record.title}</p>}
+      </div>
+      <div className="space-y-6 px-6 py-6">
+        <p className="leading-relaxed text-(--c-ink)">{person.bio}</p>
 
-        <div className="space-y-2 text-[15px] leading-relaxed text-m-ink/90">
-          {record && <p className="font-semibold text-m-ink">{record.title}</p>}
-          <p>{person.bio}</p>
+        <div>
+          <h3 className={head}>যে বিভাগে শেখান</h3>
+          <ul className="mt-3 border-t border-(--c-line)">
+            {depts.map((d) => (
+              <li key={d.id} className="flex gap-3 border-b border-(--c-line) py-3">
+                <Link2 className="mt-0.5 size-4.5 shrink-0 text-(--c-faint)" aria-hidden />
+                <span className="min-w-0">
+                  <Link href={`/media/academy/dept/${d.id}`} className="font-semibold text-(--c-accent-ink) underline-offset-4 hover:underline">
+                    {d.name}
+                  </Link>
+                  <span className="hud block text-(--c-faint)">
+                    {d.teachers[0] === person.handle ? "প্রধান" : "সদস্য"} · {DEPT_KINDS[d.kind]}
+                    {d.place && ` · ${d.place}`}
+                  </span>
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <h3 className="mt-2 font-bold text-m-ink">যে বিভাগে শেখান</h3>
-        <ul className="space-y-2.5">
-          {depts.map((d) => (
-            <li key={d.id} className="flex gap-3">
-              <Link2 className="mt-0.5 size-4.5 shrink-0 text-m-ink/60" aria-hidden />
-              <span className="min-w-0">
-                <Link href={`/media/academy/dept/${d.id}`} className="font-semibold text-m-blue hover:underline">
-                  {d.name}
-                </Link>
-                <span className="block text-xs text-m-ink/65">
-                  {d.teachers[0] === person.handle ? "প্রধান" : "সদস্য"} · {DEPT_KINDS[d.kind]}
-                  {d.place && ` · ${d.place}`}
-                </span>
-              </span>
-            </li>
-          ))}
-        </ul>
+        <div>
+          <h3 className={head}>চ্যানেলের তথ্য</h3>
+          <ul className="mt-3 space-y-2.5 text-sm text-(--c-ink)">
+            {facts.map(([Icon, text], i) => (
+              <li key={i} className="flex items-center gap-3">
+                <Icon className="size-4.5 shrink-0 text-(--c-faint)" aria-hidden />
+                <span>{text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-        <h3 className="mt-2 font-bold text-m-ink">চ্যানেলের তথ্য</h3>
-        <ul className="space-y-2.5 text-sm text-m-ink/85">
-          {facts.map(([Icon, text], i) => (
-            <li key={i} className="flex items-center gap-3">
-              <Icon className="size-4.5 shrink-0 text-m-ink/60" aria-hidden />
-              <span>{text}</span>
-            </li>
-          ))}
-        </ul>
-
-        <div className="mt-3 flex flex-wrap gap-2">
-          <button type="button" onClick={share} className={mediaButton({ variant: "quiet", size: "sm", className: "rounded-full" })}>
-            <Share2 aria-hidden /> চ্যানেল শেয়ার
+        <div className="grid gap-2 sm:grid-cols-2">
+          <button type="button" onClick={share} className={actionClass}>
+            <Share2 className="size-4" aria-hidden /> চ্যানেল শেয়ার
           </button>
-          <Link href={`/media/u/${person.handle}`} className={mediaButton({ variant: "quiet", size: "sm", className: "rounded-full" })}>
+          <Link href={`/media/u/${person.handle}`} className={actionClass}>
             পুরো প্রোফাইল ও কাজ
           </Link>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </Modal>
   );
 }

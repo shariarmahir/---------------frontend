@@ -1,17 +1,22 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useMemo, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { CalendarClock, CheckCircle2, ChevronRight, Plus, Search, SearchX } from "lucide-react";
+import { useMemo, useState } from "react";
+import { CalendarClock, CheckCircle2, Plus, Search, SearchX } from "lucide-react";
 import { courses, departments, getCourse } from "@/data/media/academy";
 import { DEMO_NOW } from "@/data/media/clock";
 import { personOrThrow } from "@/data/media/users";
 import { SCHOOLS, canWatch, freeClassDone, weekOf, type ClassVideo, type School } from "@/lib/media/academy";
 import { useHydrated } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
-import { mediaButton } from "../../ui/button-styles";
 import { Num } from "../../ui/numerals";
+import { Band, BandTitle, Turn } from "../catalogue/band";
+import { primaryBtn, secondaryBtn } from "../catalogue/buttons";
+import { CatalogueFooter } from "../catalogue/catalogue-footer";
+import { CatalogueNav } from "../catalogue/catalogue-nav";
+import { CatalogueRoot } from "../catalogue/catalogue-root";
+import { blankFill, lineupGrid } from "../catalogue/fill-row";
+import { CatalogueRuler } from "../catalogue/ruler";
 import { useTeacher } from "../desk/use-teacher";
 import { useAcademy } from "../use-academy";
 import { UploadDialog } from "./upload-dialog";
@@ -28,15 +33,14 @@ const SCHOOL_CHIPS = (Object.keys(SCHOOLS) as School[]).filter((s) => department
 type Chip = "all" | "free" | "paid" | "week" | School;
 
 /**
- * ক্লাস ভিডিও, laid out like a video site's home: a search bar and a row of
- * chips on top, then a grid of classes with a shelf of shorts after the
- * first rows. Free classes play for everyone; a course video for those in
- * the course. A teacher puts videos up from here, and is reminded while
- * this week's free class is still owed.
+ * ক্লাস ভিডিও, in the catalogue's bands: the promise (a free class from
+ * every teacher every week) and how many kept it, a search and a ruled strip
+ * of filters over the grid of classes, and the shorts. Free classes play for
+ * everyone; a course video for those in the course. A teacher puts videos
+ * up from here, and is reminded while this week's free class is owed.
  */
 export function VideoFeed() {
   const hydrated = useHydrated();
-  const reduce = useReducedMotion();
   const params = useSearchParams();
   const videos = useVideos();
   const enrolled = useAcademy((a) => a.enrolled);
@@ -44,9 +48,8 @@ export function VideoFeed() {
   const [q, setQ] = useState("");
   const [chip, setChip] = useState<Chip>("all");
   const [upload, setUpload] = useState(params.get("upload") === "1");
-  const chips = useRef<HTMLDivElement>(null);
 
-  const teaching = Boolean(t.record && t.live.length);
+  const teaching = hydrated && Boolean(t.record && t.live.length);
   const owes = teaching && !freeClassDone(videos, t.handle, NOW);
   const done = DUTY.filter((h) => freeClassDone(videos, h, NOW)).length;
 
@@ -76,132 +79,128 @@ export function VideoFeed() {
     ...SCHOOL_CHIPS.map((s) => ({ id: s, label: SCHOOLS[s] })),
   ];
 
-  const grid = (list: ClassVideo[], from: number) => (
-    <ul className="grid gap-x-4 gap-y-9 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-      {list.map((v, i) => (
-        <motion.li
-          key={v.id}
-          initial={reduce ? false : { opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "0px 0px -5% 0px" }}
-          transition={{ delay: ((from + i) % 4) * 0.05, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <VideoCard video={v} locked={locked(v)} />
-        </motion.li>
-      ))}
-    </ul>
-  );
-
   return (
-    <div className="-mt-6">
-      <div className="frost-pane sticky top-0 z-20 -mx-3 px-3 pt-4 pb-3 sm:-mx-6 sm:px-6">
-        <div className="flex items-center gap-3">
-          <h1 className="hidden shrink-0 text-xl font-bold text-m-ink md:block">ক্লাস ভিডিও</h1>
-          <form role="search" onSubmit={(e) => e.preventDefault()} className="mx-auto flex min-w-0 flex-1 md:max-w-xl">
-            <label htmlFor="video-q" className="sr-only">ভিডিও খুঁজুন</label>
-            <input
-              id="video-q"
-              type="search"
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="ক্লাস, শিক্ষক বা কোর্স খুঁজুন"
-              className="h-10 min-w-0 flex-1 rounded-l-full border border-m-ink/17 bg-m-canvas px-4 text-[15px] text-m-ink placeholder:text-m-ink/45 focus-visible:border-m-blue focus-visible:outline-none"
-            />
-            <button type="submit" className="grid h-10 w-14 shrink-0 place-items-center rounded-r-full border border-l-0 border-m-ink/17 bg-m-ink/6 text-m-ink hover:bg-m-ink/8 sm:w-16">
-              <Search className="size-5" aria-hidden />
-              <span className="sr-only">খুঁজুন</span>
-            </button>
-          </form>
-          {hydrated && teaching && (
-            <button type="button" onClick={() => setUpload(true)} className="relative inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-m-ink/6 px-3 text-sm font-semibold text-m-ink transition-colors hover:bg-m-ink/11 sm:px-4">
-              <Plus className="size-5" aria-hidden />
-              <span className="hidden sm:inline">তৈরি করুন</span>
-              <span className="sr-only sm:hidden">ভিডিও তুলুন</span>
-              {owes && <span className="absolute -top-0.5 -right-0.5 size-3 rounded-full bg-m-yellow ring-2 ring-white" aria-label="এ সপ্তাহের বিনামূল্যের ক্লাস বাকি" />}
-            </button>
-          )}
-        </div>
+    <CatalogueRoot className="min-h-full">
+      <CatalogueNav />
+      <CatalogueRuler />
 
-        <div className="relative mt-3">
-          <div ref={chips} role="toolbar" aria-label="ভিডিও বাছাই" className="flex gap-3 overflow-x-auto scroll-smooth pr-10 scrollbar-none">
-            {chipList.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                aria-pressed={chip === c.id}
-                onClick={() => setChip(c.id)}
-                className={cn("h-8 shrink-0 rounded-lg px-3 text-sm font-semibold whitespace-nowrap transition-colors", chip === c.id ? "bg-white text-m-ink" : "bg-m-ink/6 text-m-ink hover:bg-m-ink/11")}
-              >
-                {c.label}
+      <Band
+        id="intro"
+        n={1}
+        label="ক্লাস ভিডিও"
+        now
+        note={
+          <>
+            এ সপ্তাহে <Num value={done} />/<Num value={DUTY.length} /> জন শিক্ষক দিয়েছেন
+          </>
+        }
+      >
+        <div className="px-6 py-14 md:px-10 md:py-20">
+          <BandTitle as="h1" now>
+            প্রতি সপ্তাহে একটা <Turn>বিনামূল্যের</Turn> ক্লাস।
+          </BandTitle>
+          <p data-reveal data-in className="mt-5 max-w-xl text-lg leading-relaxed text-(--c-muted)">
+            প্রত্যেক শিক্ষক সপ্তাহে একটা পুরো ক্লাস সবার জন্য খুলে দেন — কে কীভাবে শেখান, ভর্তির আগেই দেখে নিন। কোর্সের বাকি ভিডিও ভর্তিদের জন্য।
+          </p>
+          <p data-reveal data-in className="hud mt-5 flex items-center gap-2 text-(--c-good)">
+            <CheckCircle2 className="size-4 shrink-0" aria-hidden />
+            এ সপ্তাহে <Num value={done} />/<Num value={DUTY.length} /> জন শিক্ষক বিনামূল্যের ক্লাস দিয়েছেন
+          </p>
+          {teaching && (
+            <div data-reveal data-in className="mt-8 flex flex-wrap gap-3">
+              <button type="button" onClick={() => setUpload(true)} className={owes ? primaryBtn : secondaryBtn}>
+                <Plus className="size-4" aria-hidden />
+                ভিডিও তুলুন
               </button>
-            ))}
-          </div>
-          <button
-            type="button"
-            onClick={() => chips.current?.scrollBy({ left: 240 })}
-            className="absolute top-0 right-0 hidden size-8 place-items-center rounded-full bg-m-canvas text-m-ink shadow-[-16px_0_16px_0_var(--color-black)] hover:bg-m-ink/6 sm:grid"
-          >
-            <ChevronRight className="size-5" aria-hidden />
-            <span className="sr-only">আরও বাছাই</span>
-          </button>
-        </div>
-      </div>
-
-      {hydrated && owes && (
-        <div className="mt-3 flex flex-wrap items-center gap-3 rounded-xl bg-m-yellow px-4 py-3 text-m-ink">
-          <CalendarClock className="size-5 shrink-0" aria-hidden />
-          <p className="min-w-0 flex-1 text-sm font-semibold">এ সপ্তাহের বিনামূল্যের ক্লাস এখনো দেননি — সপ্তাহ শেষ শুক্রবার রাতে। প্রতি সপ্তাহে একটা, সবার জন্য।</p>
-          <button type="button" onClick={() => setUpload(true)} className={mediaButton({ variant: "tile", size: "sm" })}>
-            এখনই তুলুন
-          </button>
-        </div>
-      )}
-
-      <p className="mt-3 mb-5 flex items-center gap-2 text-sm text-m-ink/70">
-        <CheckCircle2 className="size-4 shrink-0 text-m-green" aria-hidden />
-        এ সপ্তাহে <Num value={done} />/<Num value={DUTY.length} /> জন শিক্ষক বিনামূল্যের ক্লাস দিয়েছেন — সবার জন্য, বিনা ফিতে
-      </p>
-
-      {classes.length === 0 && shorts.length === 0 ? (
-        <div className="mx-auto mt-16 max-w-sm text-center">
-          <SearchX className="mx-auto size-10 text-m-ink/50" aria-hidden />
-          <p className="mt-3 font-semibold text-m-ink">কোনো ভিডিও মিলল না</p>
-          <p className="mt-1 text-sm text-m-ink/65">অন্য শব্দে খুঁজুন, বা “সব” বাছুন।</p>
-        </div>
-      ) : (
-        <>
-          {grid(classes.slice(0, 8), 0)}
-          {shorts.length > 0 && (
-            <section aria-labelledby="shorts" className="my-10 border-y border-m-ink/10 py-8">
-              <h2 id="shorts" className="mb-5 flex items-center gap-2.5 text-xl font-bold text-m-ink">
-                <ShortsMark /> ছোট ক্লাস
-              </h2>
-              <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6">
-                {shorts.slice(0, 6).map((v, i) => (
-                  <li key={v.id} className={cn(i >= 2 && "hidden sm:block", i === 3 && "sm:hidden lg:block", i >= 4 && "sm:hidden 2xl:block")}>
-                    <ShortCard video={v} />
-                  </li>
-                ))}
-              </ul>
-            </section>
+            </div>
           )}
-          {grid(classes.slice(8), 8)}
-        </>
+        </div>
+        {owes && (
+          <p className="flex flex-wrap items-center gap-3 border-t border-(--c-line) bg-(--c-signal) px-6 py-3 text-sm font-semibold text-black md:px-10">
+            <CalendarClock className="size-4.5 shrink-0" aria-hidden />এ সপ্তাহের বিনামূল্যের ক্লাস এখনো দেননি — সপ্তাহ শেষ শুক্রবার রাতে।
+          </p>
+        )}
+      </Band>
+
+      <Band
+        id="classes"
+        n={2}
+        label="ক্লাস"
+        note={
+          <>
+            <Num value={classes.length} />
+            টি ভিডিও
+          </>
+        }
+      >
+        <form role="search" onSubmit={(e) => e.preventDefault()} className="flex border-b border-(--c-line)">
+          <label htmlFor="video-q" className="sr-only">
+            ভিডিও খুঁজুন
+          </label>
+          <span className="grid w-14 shrink-0 place-items-center text-(--c-faint) md:w-18" aria-hidden>
+            <Search className="size-5" />
+          </span>
+          <input
+            id="video-q"
+            type="search"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="ক্লাস, শিক্ষক বা কোর্স খুঁজুন"
+            className="h-14 min-w-0 flex-1 bg-transparent pr-6 text-lg text-(--c-ink-strong) placeholder:text-(--c-faint) focus-visible:outline-none"
+          />
+        </form>
+        <div role="toolbar" aria-label="ভিডিও বাছাই" className="flex gap-px overflow-x-auto border-b border-(--c-line) bg-(--c-line) scrollbar-none">
+          {chipList.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              aria-pressed={chip === c.id}
+              onClick={() => setChip(c.id)}
+              className={cn(
+                "hud h-11 shrink-0 px-5 font-bold whitespace-nowrap transition-colors duration-150 first:pl-6 md:first:pl-10",
+                chip === c.id ? "bg-(--c-invert-bg) text-(--c-invert-fg)" : "bg-(--c-bg) text-(--c-muted) hover:text-(--c-ink-strong)",
+              )}
+            >
+              {c.label}
+            </button>
+          ))}
+          <span aria-hidden className="flex-1 bg-(--c-bg)" />
+        </div>
+
+        {classes.length === 0 ? (
+          <div className="mx-auto max-w-sm px-6 py-20 text-center">
+            <SearchX className="mx-auto size-10 text-(--c-faint)" aria-hidden />
+            <p className="display mt-4 text-xl text-(--c-ink-strong)">কোনো ভিডিও মিলল না</p>
+            <p className="mt-1 text-sm text-(--c-muted)">অন্য শব্দে খুঁজুন, বা “সব” বাছুন।</p>
+          </div>
+        ) : (
+          <div className="@container">
+            <ul data-reveal-group className={lineupGrid}>
+              {classes.map((v) => (
+                <li key={v.id} data-reveal className="bg-(--c-bg) p-5">
+                  <VideoCard video={v} locked={locked(v)} />
+                </li>
+              ))}
+              <li aria-hidden className={cn("bg-(--c-bg)", blankFill(classes.length))} />
+            </ul>
+          </div>
+        )}
+      </Band>
+
+      {shorts.length > 0 && (
+        <Band id="shorts" n={3} label="ছোট ক্লাস" note="এক মিনিটের কম">
+          <ul data-reveal-group className="grid grid-cols-2 gap-px bg-(--c-line) sm:grid-cols-3 lg:grid-cols-6">
+            {shorts.slice(0, 6).map((v) => (
+              <li key={v.id} data-reveal className="bg-(--c-bg) p-4">
+                <ShortCard video={v} />
+              </li>
+            ))}
+          </ul>
+        </Band>
       )}
 
+      <CatalogueFooter />
       {teaching && <UploadDialog open={upload} onOpenChange={setUpload} owes={owes} />}
-    </div>
-  );
-}
-
-/** The shelf's mark: a gold tile with a play triangle that nudges forward. */
-function ShortsMark() {
-  const reduce = useReducedMotion();
-  return (
-    <span className="grid size-7 place-items-center rounded-lg bg-m-yellow" aria-hidden>
-      <motion.svg viewBox="0 0 12 12" className="size-3.5" animate={reduce ? undefined : { x: [0, 2, 0] }} transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}>
-        <path d="M2 1 L11 6 L2 11 Z" className="fill-m-ink" />
-      </motion.svg>
-    </span>
+    </CatalogueRoot>
   );
 }

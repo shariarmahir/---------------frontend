@@ -2,35 +2,41 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import { CalendarDays, CalendarPlus, DoorOpen, Radio } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { CalendarDays, CalendarPlus, DoorOpen, Landmark, Radio } from "lucide-react";
+import { departments } from "@/data/media/academy";
 import { DEMO_NOW } from "@/data/media/clock";
 import { CLASS_MINUTES, courseTimeline, type Course } from "@/lib/media/academy";
 import { WEEKDAYS, calendarFile, classSessions, slotOf, type Batch } from "@/lib/media/batch";
 import { bnDigits } from "@/lib/media/format";
 import { useHydrated } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
-import { mediaButton } from "../../ui/button-styles";
 import { DateText, Num } from "../../ui/numerals";
+import { Band, BandTitle, Turn } from "../catalogue/band";
+import { primaryBtn, secondaryBtn } from "../catalogue/buttons";
+import { CatalogueFooter } from "../catalogue/catalogue-footer";
+import { CatalogueNav } from "../catalogue/catalogue-nav";
+import { CatalogueRoot } from "../catalogue/catalogue-root";
+import { CatalogueRuler } from "../catalogue/ruler";
+import { toneStyle } from "../catalogue/tones";
 import { useMyRooms } from "../classroom/use-batches";
 
 /** The academy week runs Saturday to Friday, like the country's. */
 const WEEK = [6, 0, 1, 2, 3, 4, 5];
-/** One tint per course in the table, from the brand's soft colours. */
-const TINTS = ["bg-m-blue-soft text-m-blue ring-m-blue/20", "bg-m-amber-soft text-m-gold ring-m-yellow/40", "bg-m-green-soft text-m-green ring-m-green/25", "bg-m-mist text-m-ink ring-m-ink/10"];
+const FRIDAY = 5;
 
-type Row = { batch: Batch; course: Course; tint: string };
+type Row = { batch: Batch; course: Course; tone: number };
 
 /**
- * রুটিন — the class routine a university pins on the notice board: the
- * week from Saturday, a row for every class hour, each course in its own
- * colour; then the classes coming up, each course's forty days, and a file
- * that puts every class into the phone's calendar.
+ * রুটিন — step six, the class routine a university pins on the notice
+ * board, in the catalogue's bands: the week from Saturday with a row for
+ * every class hour, each course in its department's colour; the classes
+ * coming up; each course's forty days; and a file that puts every class
+ * into the phone's calendar.
  */
 export function RoutineView() {
   const hydrated = useHydrated();
   const rooms = useMyRooms();
-  const rows: Row[] = useMemo(() => rooms.map((r, i) => ({ ...r, tint: TINTS[i % TINTS.length] })), [rooms]);
+  const rows: Row[] = useMemo(() => rooms.map((r) => ({ ...r, tone: departments.findIndex((d) => d.id === r.course.dept) })), [rooms]);
 
   const upcoming = useMemo(() => {
     const now = DEMO_NOW.getTime();
@@ -58,49 +64,68 @@ export function RoutineView() {
     URL.revokeObjectURL(url);
   }
 
-  if (!hydrated) return <Skeleton className="mx-auto h-96 max-w-6xl rounded-3xl bg-m-ink/6" />;
-
   return (
-    <div className="mx-auto max-w-6xl pb-16">
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="text-sm font-bold text-m-blue">ধাপ ৬ · রুটিন</p>
-          <h1 className="mt-1 text-[clamp(1.8rem,3.6vw,2.6rem)] leading-tight font-bold text-m-ink">আপনার ক্লাস রুটিন</h1>
-          <p className="mt-1.5 text-[15px] text-m-ink/65">
+    <CatalogueRoot className="min-h-full">
+      <CatalogueNav />
+      <CatalogueRuler />
+
+      <Band id="intro" n={1} label="রুটিন" now note="ঢাকার সময়ে, শনিবার থেকে">
+        <div className="px-6 py-14 md:px-10 md:py-20">
+          <BandTitle as="h1" now>
+            আপনার ক্লাস <Turn>রুটিন</Turn>।
+          </BandTitle>
+          <p data-reveal data-in className="mt-5 max-w-xl text-lg leading-relaxed text-(--c-muted)">
             প্রতি কোর্সে সপ্তাহে একটা <Num value={CLASS_MINUTES} /> মিনিটের লাইভ ক্লাস — ব্যাচের ঠিক করা দিনে, ঢাকার সময়ে।
           </p>
+          {hydrated && rows.length > 0 && (
+            <div data-reveal data-in className="mt-8 flex flex-wrap gap-3">
+              {upcoming[0] && (
+                <Link href={`/media/academy/classroom/${encodeURIComponent(upcoming[0].batch.id)}/live`} className={primaryBtn}>
+                  <Radio className="size-4" aria-hidden />
+                  পরের ক্লাসে যোগ দিন
+                </Link>
+              )}
+              <button type="button" onClick={download} className={secondaryBtn}>
+                <CalendarPlus className="size-4" aria-hidden />
+                ফোনের ক্যালেন্ডারে নিন
+              </button>
+            </div>
+          )}
         </div>
-        {rows.length > 0 && (
-          <button type="button" onClick={download} className={mediaButton({ variant: "outline" })}>
-            <CalendarPlus aria-hidden /> ফোনের ক্যালেন্ডারে নিন
-          </button>
-        )}
-      </header>
+      </Band>
 
-      {rows.length === 0 ? (
-        <section className="mt-8 grid place-items-center rounded-3xl bg-white px-6 py-16 text-center shadow-m-tile ring-1 ring-m-ink/8">
-          <span className="grid size-16 place-items-center rounded-2xl bg-m-blue-soft text-m-blue">
-            <CalendarDays className="size-7" aria-hidden />
-          </span>
-          <h2 className="mt-4 text-xl font-bold text-m-ink">রুটিন আসে ভর্তির পর</h2>
-          <p className="mt-1 max-w-sm text-[15px] text-m-ink/70">কোনো কোর্সে ভর্তি হলে সেই ব্যাচের সব ক্লাস দিন-তারিখসহ এখানে বসে যাবে।</p>
-          <Link href="/media/academy" className={mediaButton({ className: "mt-6" })}>
-            একাডেমি খুঁজুন
-          </Link>
-        </section>
+      {!hydrated ? (
+        <Band id="week" n={2} label="সপ্তাহ">
+          <span aria-hidden className="block h-80 animate-pulse bg-(--c-bg-sunken)" />
+        </Band>
+      ) : rows.length === 0 ? (
+        <Band id="empty" n={2} label="রুটিন" note="ভর্তির পর">
+          <div className="flex flex-col items-center px-6 py-20 text-center md:py-28">
+            <span className="grid size-16 place-items-center border border-(--c-line) text-(--c-accent-ink)">
+              <CalendarDays className="size-7" aria-hidden />
+            </span>
+            <h2 className="display mt-6 text-3xl text-(--c-ink-strong)">
+              রুটিন আসে <Turn>ভর্তির</Turn> পর।
+            </h2>
+            <p className="mt-3 max-w-sm leading-relaxed text-(--c-muted)">কোনো কোর্সে ভর্তি হলে সেই ব্যাচের সব ক্লাস দিন-তারিখসহ এখানে বসে যাবে।</p>
+            <Link href="/media/academy/courses" className={cn(primaryBtn, "mt-8")}>
+              <Landmark className="size-4" aria-hidden />
+              কোর্স বাছুন
+            </Link>
+          </div>
+        </Band>
       ) : (
         <>
-          {/* The week, from Saturday. */}
-          <section aria-label="সাপ্তাহিক রুটিন" className="mt-8 overflow-hidden rounded-3xl bg-white shadow-m-tile ring-1 ring-m-ink/8">
+          <Band id="week" n={2} label="সপ্তাহ" note="শুক্রবার ছুটি">
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[46rem] border-collapse text-sm">
+              <table className="w-full min-w-[48rem] border-collapse text-sm">
                 <thead>
-                  <tr className="bg-m-blue-night text-white">
-                    <th scope="col" className="w-24 px-3 py-3 text-left text-xs font-semibold text-white/70">
+                  <tr className="border-b border-(--c-line)">
+                    <th scope="col" className="hud w-24 px-6 py-3 text-left font-medium text-(--c-faint) md:pl-10">
                       সময়
                     </th>
                     {WEEK.map((d) => (
-                      <th key={d} scope="col" className={cn("px-2 py-3 text-center font-bold", d === 5 && "text-white/50")}>
+                      <th key={d} scope="col" className={cn("display border-l border-(--c-line) px-2 py-3 text-center text-base", d === FRIDAY ? "text-(--c-faint)" : "text-(--c-ink-strong)")}>
                         {WEEKDAYS[d].replace("বার", "")}
                       </th>
                     ))}
@@ -108,18 +133,23 @@ export function RoutineView() {
                 </thead>
                 <tbody>
                   {times.map((t) => (
-                    <tr key={t} className="border-t border-m-ink/6">
-                      <th scope="row" className="px-3 py-3 text-left align-top text-xs font-bold text-m-ink/70">
+                    <tr key={t} className="border-b border-(--c-line)">
+                      <th scope="row" className="hud px-6 py-4 text-left align-top font-medium text-(--c-muted) md:pl-10">
                         {slotOf(0, t).split(" · ")[1]}
                       </th>
                       {WEEK.map((d) => {
                         const here = rows.filter((r) => r.batch.day === d && r.batch.time === t);
                         return (
-                          <td key={d} className={cn("px-1.5 py-2 align-top", d === 5 && "bg-m-ground/50")}>
+                          <td key={d} className={cn("border-l border-(--c-line) p-1.5 align-top", d === FRIDAY && "bg-(--c-bg-sunken)")}>
                             {here.map((r) => (
-                              <Link key={r.batch.id} href={`/media/academy/classroom/${encodeURIComponent(r.batch.id)}`} className={cn("block rounded-xl px-2.5 py-2 ring-1 transition-transform hover:-translate-y-0.5 motion-reduce:transition-none", r.tint)}>
-                                <span className="block text-xs leading-snug font-bold">{r.course.title.split(" — ")[0]}</span>
-                                <span className="mt-0.5 block text-[11px] opacity-75">
+                              <Link
+                                key={r.batch.id}
+                                href={`/media/academy/classroom/${encodeURIComponent(r.batch.id)}`}
+                                style={toneStyle(r.tone)}
+                                className="tone group block border-l-4 border-(--c-app) bg-(--c-bg-raised) px-2.5 py-2 transition-colors duration-150 hover:bg-(--c-app) hover:text-black"
+                              >
+                                <span className="block text-xs leading-snug font-bold text-(--c-ink-strong) group-hover:text-black">{r.course.title.split(" — ")[0]}</span>
+                                <span className="hud mt-0.5 block text-(--c-app-ink) group-hover:text-black">
                                   ব্যাচ <Num value={r.batch.n} /> · <Num value={CLASS_MINUTES} /> মিনিট
                                 </span>
                               </Link>
@@ -132,81 +162,72 @@ export function RoutineView() {
                 </tbody>
               </table>
             </div>
-          </section>
+          </Band>
 
-          <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
-            {/* What comes next. */}
-            <section aria-labelledby="next-title">
-              <h2 id="next-title" className="text-xl font-bold text-m-ink">
-                সামনের ক্লাস
-              </h2>
-              {upcoming.length === 0 ? (
-                <p className="mt-4 rounded-2xl bg-white p-5 text-sm text-m-ink/70 shadow-m-tile ring-1 ring-m-ink/8">ক্লাসের সপ্তাহগুলো শেষ — এখন প্রজেক্ট আর প্যানেলের সময়।</p>
-              ) : (
-                <ol className="mt-4 space-y-3">
-                  {upcoming.slice(0, 6).map((s, i) => (
-                    <li key={`${s.batch.id}-${s.week}`} className={cn("flex items-center gap-4 rounded-2xl bg-white p-4 shadow-m-tile ring-1 ring-m-ink/8", i === 0 && "ring-2 ring-m-blue/40")}>
-                      <span className={cn("grid w-16 shrink-0 place-items-center rounded-xl py-2 text-center ring-1", s.tint)}>
-                        <span className="text-[11px] font-semibold">
-                          <DateText iso={s.at} weekday />
-                        </span>
+          <Band id="next" n={3} label="সামনের ক্লাস" note="প্রথমটা লাইভে যোগ দেওয়ার">
+            {upcoming.length === 0 ? (
+              <p className="px-6 py-10 text-(--c-muted) md:px-10">ক্লাসের সপ্তাহগুলো শেষ — এখন প্রজেক্ট আর প্যানেলের সময়।</p>
+            ) : (
+              <ol>
+                {upcoming.slice(0, 6).map((s, i) => (
+                  <li key={`${s.batch.id}-${s.week}`} data-reveal style={toneStyle(s.tone)} className={cn("tone flex items-center gap-5 border-b border-(--c-line) px-6 py-5 last:border-b-0 md:px-10", i === 0 && "bg-(--c-bg-raised)")}>
+                    <span className="display grid w-20 shrink-0 place-items-center bg-(--c-app) py-2.5 text-center text-sm text-black">
+                      <DateText iso={s.at} weekday />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="hud block text-(--c-app-ink)">
+                        সপ্তাহ <Num value={s.week} /> · <DateText iso={s.at} time />
                       </span>
-                      <span className="min-w-0 flex-1">
-                        <span className="block text-xs font-semibold text-m-blue">
-                          সপ্তাহ <Num value={s.week} /> · <DateText iso={s.at} time />
-                        </span>
-                        <span className="block truncate font-bold text-m-ink">{s.lesson?.title}</span>
-                        <span className="block truncate text-xs text-m-ink/60">{s.course.title}</span>
-                      </span>
-                      <Link href={`/media/academy/classroom/${encodeURIComponent(s.batch.id)}${i === 0 ? "/live" : ""}`} className={mediaButton({ variant: i === 0 ? "green" : "quiet", size: "sm", className: "shrink-0" })}>
-                        {i === 0 ? <Radio aria-hidden /> : <DoorOpen aria-hidden />}
-                        <span className="hidden sm:inline">{i === 0 ? "লাইভে যোগ দিন" : "ক্লাসরুম"}</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ol>
-              )}
-            </section>
+                      <span className="display mt-0.5 block truncate text-lg text-(--c-ink-strong)">{s.lesson?.title}</span>
+                      <span className="block truncate text-sm text-(--c-muted)">{s.course.title}</span>
+                    </span>
+                    <Link href={`/media/academy/classroom/${encodeURIComponent(s.batch.id)}${i === 0 ? "/live" : ""}`} className={cn(i === 0 ? primaryBtn : secondaryBtn, "h-11 shrink-0 px-4")}>
+                      {i === 0 ? <Radio className="size-4" aria-hidden /> : <DoorOpen className="size-4" aria-hidden />}
+                      <span className="hidden sm:inline">{i === 0 ? "লাইভে যোগ দিন" : "ক্লাসরুম"}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </Band>
 
-            {/* Each course's forty days. */}
-            <section aria-labelledby="span-title">
-              <h2 id="span-title" className="text-xl font-bold text-m-ink">
-                কোর্সের চল্লিশ দিন
-              </h2>
-              <ul className="mt-4 space-y-3">
-                {rows.map((r) => {
-                  const t = courseTimeline(r.batch.starts);
-                  return (
-                    <li key={r.batch.id} className="rounded-2xl bg-white p-4 shadow-m-tile ring-1 ring-m-ink/8">
-                      <p className="font-bold text-m-ink">{r.course.title.split(" — ")[0]}</p>
-                      <p className="text-xs text-m-ink/60">
-                        ব্যাচ <Num value={r.batch.n} /> · {slotOf(r.batch.day, r.batch.time)}
-                      </p>
-                      <div className="mt-3 flex gap-1" aria-hidden>
-                        {t.weeks.map((w) => (
-                          <span key={w.week} className="h-2 flex-1 rounded-full bg-m-blue/70" />
-                        ))}
-                        <span className="h-2 w-8 rounded-full bg-m-yellow" />
-                      </div>
-                      <p className="mt-2 flex justify-between text-[11px] text-m-ink/60">
-                        <span>
-                          শুরু <DateText iso={r.batch.starts} />
-                        </span>
-                        <span>
-                          প্যানেল <DateText iso={t.final.from} />
-                        </span>
-                        <span>
-                          শেষ <DateText iso={t.ends} />
-                        </span>
-                      </p>
-                    </li>
-                  );
-                })}
-              </ul>
-            </section>
-          </div>
+          <Band id="span" n={4} label="চল্লিশ দিন" note="ক্লাস, প্যানেল, শেষ">
+            <ul data-reveal-group className="grid gap-px bg-(--c-line) md:grid-cols-2">
+              {rows.map((r) => {
+                const t = courseTimeline(r.batch.starts);
+                return (
+                  <li key={r.batch.id} data-reveal style={toneStyle(r.tone)} className="tone bg-(--c-bg) p-6 md:p-8">
+                    <p className="display text-xl text-(--c-ink-strong)">{r.course.title.split(" — ")[0]}</p>
+                    <p className="hud mt-1 text-(--c-faint)">
+                      ব্যাচ <Num value={r.batch.n} /> · {slotOf(r.batch.day, r.batch.time)}
+                    </p>
+                    <div className="mt-5 flex gap-px" aria-hidden>
+                      {t.weeks.map((w) => (
+                        <span key={w.week} className="h-2 flex-1 bg-(--c-app)" />
+                      ))}
+                      <span className="h-2 w-10 bg-(--c-signal)" />
+                    </div>
+                    <p className="hud mt-3 flex justify-between text-(--c-faint)">
+                      <span>
+                        শুরু <DateText iso={r.batch.starts} />
+                      </span>
+                      <span>
+                        প্যানেল <DateText iso={t.final.from} />
+                      </span>
+                      <span>
+                        শেষ <DateText iso={t.ends} />
+                      </span>
+                    </p>
+                  </li>
+                );
+              })}
+              {rows.length % 2 === 1 && <li aria-hidden className="hidden bg-(--c-bg) md:block" />}
+            </ul>
+          </Band>
         </>
       )}
-    </div>
+
+      <CatalogueFooter />
+    </CatalogueRoot>
   );
 }

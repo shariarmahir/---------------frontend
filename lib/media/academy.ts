@@ -685,6 +685,9 @@ export function canWatch(video: ClassVideo, enrolled: Record<string, unknown>, v
 }
 
 /** A YouTube link as a privacy-friendly embed address; any other link is not embedded. */
+/** A class video's own page. */
+export const watchHref = (v: Pick<ClassVideo, "id">) => `/media/academy/videos/${encodeURIComponent(v.id)}`;
+
 export function youtubeEmbed(href: string): string | null {
   let url: URL;
   try {

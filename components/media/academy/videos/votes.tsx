@@ -27,12 +27,7 @@ function Thumb({ on, down, className }: { on: boolean; down?: boolean; className
   const reduce = useReducedMotion();
   const Icon = down ? ThumbsDown : ThumbsUp;
   return (
-    <motion.span
-      key={String(on)}
-      className="inline-grid"
-      animate={on && !reduce ? { scale: [1, 1.35, 1], rotate: [0, down ? 12 : -12, 0] } : undefined}
-      transition={{ duration: 0.35, ease: "easeOut" }}
-    >
+    <motion.span key={String(on)} className="inline-grid" animate={on && !reduce ? { scale: [1, 1.35, 1], rotate: [0, down ? 12 : -12, 0] } : undefined} transition={{ duration: 0.35, ease: "easeOut" }}>
       <Icon className={cn(className, on && "fill-current")} aria-hidden />
     </motion.span>
   );
@@ -42,14 +37,14 @@ function Thumb({ on, down, className }: { on: boolean; down?: boolean; className
 export function VideoLikes({ id, base }: { id: string; base: number }) {
   const [mine, cast] = useVote(id);
   return (
-    <div className="inline-flex h-10 items-center overflow-hidden rounded-full bg-m-ink/6 text-sm font-semibold text-m-ink">
-      <button type="button" aria-pressed={mine === "up"} onClick={() => cast("up")} className="inline-flex h-full items-center gap-2 pr-3 pl-4 transition-colors hover:bg-m-ink/8">
+    <div className="inline-flex h-10 items-center border border-(--c-line-strong) text-sm font-semibold text-(--c-ink-strong)">
+      <button type="button" aria-pressed={mine === "up"} onClick={() => cast("up")} className="inline-flex h-full items-center gap-2 pr-3 pl-4 transition-colors duration-150 hover:bg-(--c-invert-bg) hover:text-(--c-invert-fg)">
         <Thumb on={mine === "up"} className="size-5" />
         <Compact n={base + (mine === "up" ? 1 : 0)} />
         <span className="sr-only">জন পছন্দ করেছেন — আপনিও করুন</span>
       </button>
-      <span className="h-6 w-px bg-m-ink/14" aria-hidden />
-      <button type="button" aria-pressed={mine === "down"} onClick={() => cast("down")} className="inline-flex h-full items-center pr-4 pl-3 transition-colors hover:bg-m-ink/8">
+      <span className="h-full w-px bg-(--c-line-strong)" aria-hidden />
+      <button type="button" aria-pressed={mine === "down"} onClick={() => cast("down")} className="inline-flex h-full items-center pr-4 pl-3 transition-colors duration-150 hover:bg-(--c-invert-bg) hover:text-(--c-invert-fg)">
         <Thumb on={mine === "down"} down className="size-5" />
         <span className="sr-only">ভালো লাগেনি</span>
       </button>
@@ -61,7 +56,7 @@ export function VideoLikes({ id, base }: { id: string; base: number }) {
 export function CommentVotes({ id, base, disabled }: { id: string; base: number; disabled?: boolean }) {
   const [mine, cast] = useVote(id);
   const likes = base + (mine === "up" ? 1 : 0);
-  const btn = "grid size-8 place-items-center rounded-full text-m-ink/80 transition-colors hover:bg-m-ink/6 hover:text-m-ink disabled:pointer-events-none disabled:opacity-50";
+  const btn = "grid size-8 place-items-center text-(--c-ink) transition-colors hover:bg-(--c-bg-raised) hover:text-(--c-ink-strong) disabled:pointer-events-none disabled:opacity-50";
   return (
     <span className="inline-flex items-center">
       <button type="button" disabled={disabled} aria-pressed={mine === "up"} onClick={() => cast("up")} className={btn}>
@@ -69,7 +64,7 @@ export function CommentVotes({ id, base, disabled }: { id: string; base: number;
         <span className="sr-only">পছন্দ</span>
       </button>
       {likes > 0 && (
-        <span className="mr-1 text-xs text-m-ink/65">
+        <span className="mr-1 text-xs text-(--c-muted)">
           <Compact n={likes} />
         </span>
       )}

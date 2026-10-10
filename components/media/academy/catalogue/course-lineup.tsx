@@ -16,10 +16,13 @@ const choice = "hud flex h-11 items-center gap-2 px-4 font-bold transition-color
  * Courses side by side, with "আপনি কোথায় আছেন?" across the top: pick a
  * level and its courses are marked while the rest step back — nothing moves,
  * so a jump link still lands where it should. The cell after the last card
- * (`last`) fills the rest of its row.
+ * (`last`) fills the rest of its row. A page that picks the level itself
+ * passes `level` and `onLevel`.
  */
-export function CourseLineup({ entries, last }: { entries: CourseEntry[]; last: React.ReactNode }) {
-  const [level, setLevel] = useState<Level | null>(null);
+export function CourseLineup({ entries, last, level: held, onLevel }: { entries: CourseEntry[]; last: React.ReactNode; level?: Level | null; onLevel?: (l: Level | null) => void }) {
+  const [own, setOwn] = useState<Level | null>(null);
+  const level = held === undefined ? own : held;
+  const setLevel = onLevel ?? setOwn;
   const count = (l: Level) => entries.filter((e) => e.course.level === l).length;
   const matched = level ? count(level) : entries.length;
 
@@ -47,11 +50,13 @@ export function CourseLineup({ entries, last }: { entries: CourseEntry[]; last: 
         <p aria-live="polite" className="hud flex h-11 flex-1 items-center justify-end bg-(--c-bg) px-6 text-(--c-faint) md:px-10">
           {level ? (
             <>
-              {LEVELS[level]} স্তরে <Num value={matched} />টি কোর্স
+              {LEVELS[level]} স্তরে <Num value={matched} />
+              টি কোর্স
             </>
           ) : (
             <>
-              সব মিলিয়ে <Num value={entries.length} />টি কোর্স
+              সব মিলিয়ে <Num value={entries.length} />
+              টি কোর্স
             </>
           )}
         </p>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { DeptView } from "@/components/media/academy/dept-detail/dept-view";
+import { DeptPage } from "@/components/media/academy/dept-page/dept-page";
 import { departments, getDepartment } from "@/data/media/academy";
 
 type Props = { params: Promise<{ id: string }> };
@@ -18,5 +18,5 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function DepartmentPage({ params }: Props) {
   const dept = getDepartment((await params).id);
   if (!dept) notFound();
-  return <DeptView dept={dept} />;
+  return <DeptPage dept={dept} />;
 }

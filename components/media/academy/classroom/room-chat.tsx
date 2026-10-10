@@ -93,27 +93,27 @@ export function RoomChat({ batch, compact, className }: { batch: Batch; compact?
   const people = new Set(messages.map((m) => author(m).key)).size;
 
   return (
-    <section aria-labelledby={`chat-${batch.id}`} className={cn("flex min-h-0 flex-col rounded-[1.6rem] bg-white shadow-m-tile ring-1 ring-m-ink/8", className)}>
+    <section aria-labelledby={`chat-${batch.id}`} className={cn("flex min-h-0 flex-col bg-(--c-bg)", className)}>
       <header className="flex items-start justify-between gap-3 px-5 pt-5 pb-3">
         <div className="min-w-0">
-          <h2 id={`chat-${batch.id}`} className="text-xl font-bold text-m-ink">
+          <h2 id={`chat-${batch.id}`} className="display text-xl text-(--c-ink-strong)">
             ব্যাচের আড্ডা
           </h2>
-          <p className="mt-0.5 text-sm text-m-ink/60">
+          <p className="mt-0.5 text-sm text-(--c-muted)">
             <Num value={batch.enrolled + 1} /> জন সদস্য · এখানে লিখেছেন <Num value={people} /> জন
           </p>
         </div>
         {course && !compact && (
           <span className="flex -space-x-2" aria-hidden>
             {[...new Map(messages.map((m) => [author(m).key, author(m).person])).values()].slice(0, 4).map((p) => (
-              <PersonAvatar key={p.nameBn} person={p} size="sm" className="ring-2 ring-white" />
+              <PersonAvatar key={p.nameBn} person={p} size="sm" className="ring-2 ring-(--c-bg)" />
             ))}
           </span>
         )}
       </header>
 
       <ol ref={list} className={cn("min-h-0 flex-1 space-y-3 overflow-y-auto px-5 py-2 scrollbar-gold", compact ? "max-h-none" : "max-h-[26rem] xl:max-h-none")} aria-live="polite">
-        {messages.length === 0 && <li className="py-8 text-center text-sm text-m-ink/55">প্রথম বার্তাটা আপনিই লিখুন — নিজের পরিচয় দিন।</li>}
+        {messages.length === 0 && <li className="py-8 text-center text-sm text-(--c-faint)">প্রথম বার্তাটা আপনিই লিখুন — নিজের পরিচয় দিন।</li>}
         {messages.map((m) => {
           const a = author(m);
           const me = "handle" in m.by && m.by.handle === currentUser.handle;
@@ -123,16 +123,16 @@ export function RoomChat({ batch, compact, className }: { batch: Batch; compact?
               {!me && <PersonAvatar person={a.person} size="sm" className="mb-5 shrink-0" />}
               <div className={cn("max-w-[82%]", me && "text-right")}>
                 {!me && (
-                  <p className="mb-1 text-xs font-semibold text-m-ink/60">
+                  <p className="mb-1 text-xs font-semibold text-(--c-muted)">
                     {a.nameBn}
-                    {teacher && <span className="ml-1.5 rounded-full bg-m-amber-soft px-1.5 py-px text-[10px] font-bold text-m-gold">শিক্ষক</span>}
+                    {teacher && <span className="ml-1.5 bg-(--c-signal) px-1.5 py-px text-[10px] font-bold text-black">শিক্ষক</span>}
                   </p>
                 )}
-                <div className={cn("inline-block rounded-2xl px-3.5 py-2.5 text-left text-[15px] leading-relaxed", me ? "rounded-br-md bg-m-blue text-m-on" : "rounded-bl-md bg-m-ground text-m-ink")}>
+                <div className={cn("inline-block px-3.5 py-2.5 text-left text-[15px] leading-relaxed", me ? "bg-(--c-invert-bg) text-(--c-invert-fg)" : "border border-(--c-line) bg-(--c-bg-raised) text-(--c-ink-strong)")}>
                   {m.file && <Attachment file={m.file} me={me} />}
                   {m.text && <p className={cn(m.file && "mt-2")}>{m.text}</p>}
                 </div>
-                <p className="mt-1 text-[11px] text-m-ink/45">
+                <p className="mt-1 text-[11px] text-(--c-faint)">
                   <DateText iso={m.at} time />
                 </p>
               </div>
@@ -149,14 +149,22 @@ export function RoomChat({ batch, compact, className }: { batch: Batch; compact?
           post(body);
           setText("");
         }}
-        className="space-y-2.5 border-t border-m-ink/6 p-4"
+        className="space-y-2.5 border-t border-(--c-line) p-4"
       >
-        <div className="flex items-center gap-2 rounded-full bg-m-ground p-1.5 pl-4 ring-1 ring-m-ink/6 focus-within:ring-m-blue/40">
+        <div className="flex items-center gap-2 border border-(--c-line-strong) bg-(--c-bg-sunken) p-1.5 pl-4 transition-colors duration-150 focus-within:border-(--c-signal)">
           <label htmlFor={`msg-${batch.id}`} className="sr-only">
             বার্তা
           </label>
-          <input id={`msg-${batch.id}`} value={text} onChange={(e) => setText(e.target.value)} maxLength={1000} autoComplete="off" placeholder="বার্তা লিখুন…" className="h-9 min-w-0 flex-1 bg-transparent text-[15px] text-m-ink placeholder:text-m-ink/45 focus:outline-none" />
-          <button type="submit" disabled={!text.trim()} className="grid size-9 shrink-0 place-items-center rounded-full bg-m-ink text-m-on transition-opacity disabled:opacity-40" aria-label="পাঠান">
+          <input
+            id={`msg-${batch.id}`}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            maxLength={1000}
+            autoComplete="off"
+            placeholder="বার্তা লিখুন…"
+            className="h-9 min-w-0 flex-1 bg-transparent text-[15px] text-(--c-ink-strong) placeholder:text-(--c-faint) focus:outline-none"
+          />
+          <button type="submit" disabled={!text.trim()} className="grid size-9 shrink-0 place-items-center bg-(--c-signal) text-black transition-opacity duration-150 hover:opacity-80 disabled:opacity-40" aria-label="পাঠান">
             <SendHorizontal className="size-4" aria-hidden />
           </button>
         </div>
@@ -169,7 +177,12 @@ export function RoomChat({ batch, compact, className }: { batch: Batch; compact?
                 ["audio", "অডিও", Mic],
               ] as const
             ).map(([k, label, Icon]) => (
-              <button key={k} type="button" onClick={() => choose(k)} className="inline-flex h-10 items-center justify-center gap-1.5 rounded-full text-sm font-semibold text-m-ink/80 ring-1 ring-m-ink/12 transition-colors hover:bg-m-blue-soft hover:text-m-blue hover:ring-m-blue/30">
+              <button
+                key={k}
+                type="button"
+                onClick={() => choose(k)}
+                className="inline-flex h-10 items-center justify-center gap-1.5 border border-(--c-line) text-sm font-semibold text-(--c-muted) transition-colors duration-150 hover:bg-(--c-invert-bg) hover:text-(--c-invert-fg)"
+              >
                 <Icon className="size-4" aria-hidden /> {label}
               </button>
             ))}
@@ -195,18 +208,18 @@ export function RoomChat({ batch, compact, className }: { batch: Batch; compact?
 function Attachment({ file, me }: { file: RoomFile; me: boolean }) {
   if (file.kind === "image") {
     return (
-      <a href={file.href} download={file.name} className="block overflow-hidden rounded-xl">
+      <a href={file.href} download={file.name} className="block overflow-hidden">
         <Image src={file.href} alt={file.name} width={320} height={200} unoptimized className="h-auto max-h-56 w-full object-cover" />
       </a>
     );
   }
   if (file.kind === "audio") return <audio src={file.href} controls preload="none" className="h-10 w-60 max-w-full" />;
   return (
-    <a href={file.href} download={file.name} className={cn("flex items-center gap-2.5 rounded-xl px-3 py-2", me ? "bg-white/15" : "bg-white")}>
+    <a href={file.href} download={file.name} className={cn("flex items-center gap-2.5 px-3 py-2", me ? "bg-black/10" : "bg-(--c-bg)")}>
       <FileText className="size-5 shrink-0" aria-hidden />
       <span className="min-w-0">
         <span className="block truncate text-sm font-semibold">{file.name}</span>
-        <span className={cn("text-xs", me ? "text-white/75" : "text-m-ink/55")}>{file.size}</span>
+        <span className={cn("text-xs", me ? "opacity-70" : "text-(--c-faint)")}>{file.size}</span>
       </span>
     </a>
   );

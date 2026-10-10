@@ -82,15 +82,6 @@ export function CatalogueRoot({ className, children }: { className?: string; chi
     const wrapper = scroller();
     if (!page || !wrapper || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    // Cards to the right of a row arrive a beat after those on the left.
-    for (const row of page.querySelectorAll<HTMLElement>("[data-reveal-group]")) {
-      const box = row.getBoundingClientRect();
-      for (const card of row.querySelectorAll<HTMLElement>("[data-reveal]")) {
-        const x = card.getBoundingClientRect().left - box.left;
-        card.style.setProperty("--d", `${box.width > 0 ? (x / box.width) * ROW_LAG : 0}s`);
-      }
-    }
-
     const watch = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
@@ -101,10 +92,30 @@ export function CatalogueRoot({ className, children }: { className?: string; chi
       },
       { rootMargin: ARRIVE },
     );
-    page.querySelectorAll("[data-choreo]:not([data-in]), [data-reveal]:not([data-in])").forEach((el) => watch.observe(el));
+
+    // Everything waiting to arrive in a part of the page; cards to the right of a row arrive a beat after those on the left.
+    const track = (part: Element) => {
+      for (const row of part.querySelectorAll<HTMLElement>("[data-reveal-group]")) {
+        const box = row.getBoundingClientRect();
+        for (const card of row.querySelectorAll<HTMLElement>("[data-reveal]")) {
+          const x = card.getBoundingClientRect().left - box.left;
+          card.style.setProperty("--d", `${box.width > 0 ? (x / box.width) * ROW_LAG : 0}s`);
+        }
+      }
+      if (part.matches("[data-choreo]:not([data-in]), [data-reveal]:not([data-in])")) watch.observe(part);
+      part.querySelectorAll("[data-choreo]:not([data-in]), [data-reveal]:not([data-in])").forEach((el) => watch.observe(el));
+    };
+    track(page);
+
+    // Parts drawn later — a form once the browser's records load, the welcome after joining, a new tab — arrive the same way.
+    const later = new MutationObserver((changes) => {
+      for (const c of changes) for (const node of c.addedNodes) if (node instanceof Element) track(node);
+    });
+    later.observe(page, { childList: true, subtree: true });
 
     glide.current = new Lenis({ wrapper, content: page, lerp: GLIDE, anchors: { offset: ANCHOR_OFFSET }, autoRaf: true });
     return () => {
+      later.disconnect();
       watch.disconnect();
       glide.current?.destroy();
       glide.current = null;

@@ -1,6 +1,6 @@
 # Academy catalogue design system
 
-**Status:** adopted 2026-10-10 for the academy's front page (`/media/academy`) and the department catalogue (`/media/academy/departments`). The owner wants every academy page rebuilt in this look, one page at a time.
+**Status:** adopted 2026-10-10. Every academy page now uses it: the front page, the department and course catalogues, each academy, department and course, admission, routine, the classrooms (hub, room, live class, opening a batch, a new course), exams, graduation, class videos, teacher channels, teaching applications and panel marking.
 **Source:** a close study of getartcraft.com/apps and getartcraft.com/press-kit: their markup, stylesheet, scroll-choreography script and page-ruler script. The study copies their layout, motion and behaviour, but not their brand, words or assets.
 **Code:** `components/media/academy/catalogue/` (the kit), plus `front/` (the front page) and `catalogue/departments-view.tsx` (the department catalogue).
 
@@ -11,7 +11,7 @@ A page is a stack of **bands**: framed columns ruled by hairlines, like a printe
 ## 2. Page frame
 
 - **The shell gives the page the whole screen.**
-  - Add the path to `FULL_SCREEN` in `components/media/academy/shell/academy-shell.tsx`.
+  - The academy shell (`components/media/academy/shell/academy-shell.tsx`) gives every page the whole screen once the gate and the opening story are done.
   - The academy header, sidebar, journey strip and phone dock then step aside.
   - `#academy-main` remains the scroll container.
 - **The page is wrapped as `<CatalogueRoot>` → `<CatalogueNav />` → `<CatalogueRuler />` → bands → `<CatalogueFooter />`.**
@@ -54,6 +54,11 @@ Tokens are scoped to `.catalogue` and prefixed `--c-`, because shadcn already de
 | `CatalogueRuler` | The right-edge page ruler on desk screens with a mouse. Details below. |
 | `Modal` | Backdrop black/70 fading over 200ms; the panel rises 10px and grows from 95%. Escape or the backdrop closes it. The glide pauses underneath. |
 | `ShareRow`, `CatalogueFooter` | The share strip (link copy, Facebook, WhatsApp) and the ruled footer grid. |
+| `CourseCard`, `CourseLineup` | The apps-page card for a course (its department's colour, code, level, next batch, fee, modes), and the line-up with "আপনি কোথায় আছেন?" across its top. The line-up can be driven from outside (`level`, `onLevel`). |
+| `TabStrip` | Tabs as a ruled strip of square cells, the chosen one inverted; arrow keys move along it. |
+| `buttons.ts`, `fields.ts` | `primaryBtn` (the one yellow button), `secondaryBtn`, `blockBtn`; `fieldClass`, `labelClass`, `messageClass`, `choiceClass`. Shared shadcn fields get their colours from `.catalogue [data-slot=…]` rules in `globals.css`, which outrank the /media shell's own. |
+| `EnrolButton`, `PayMethods`, `TierTag` | "ভর্তি হোন" into the cart and checkout; the ruled payment choices; a teacher's standing as a square tag. |
+| `fill-row.ts` | `lineupGrid`, `fillRow` (a content cell that fills the last row) and `blankFill` (a blank one, hidden where the row is full). |
 
 ## 6. Motion (from the reference's own values)
 
@@ -80,9 +85,10 @@ Tokens are scoped to `.catalogue` and prefixed `--c-`, because shadcn already de
 
 ## 8. Building the next page
 
-1. Add the path to `FULL_SCREEN`.
-2. Wrap the page in `CatalogueRoot` / `CatalogueNav` / `CatalogueRuler` / `CatalogueFooter`.
+1. Wrap the page in `CatalogueRoot` / `CatalogueNav` / `CatalogueRuler` / `CatalogueFooter`. Content drawn after the first paint (a form once the browser's records load, a new tab) still arrives with the reveal: the root watches for it.
+2. A department keeps its colour everywhere: `toneStyle(departments.findIndex(…))` on a `tone` element.
 3. Write it as numbered `Band`s. The first is `now` and carries an `h1` with one `<Turn>` word.
 4. Lists become `AssetGrid`s of `AssetCard`s with exactly one action each.
 5. Only numbers from the data, and no invented claims.
 6. Check dark, light, phone and a mid-scroll ruler state with screenshots before calling it done.
+7. Video and live-class frames stay black in both themes; everything else follows the theme tokens.
