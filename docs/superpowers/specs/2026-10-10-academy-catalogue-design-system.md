@@ -2,7 +2,9 @@
 
 **Status:** adopted 2026-10-10. Every academy page now uses it: the front page, the department and course catalogues, each academy, department and course, admission, routine, the classrooms (hub, room, live class, opening a batch, a new course), exams, graduation, class videos, teacher channels, teaching applications and panel marking.
 **Source:** a close study of getartcraft.com/apps and getartcraft.com/press-kit: their markup, stylesheet, scroll-choreography script and page-ruler script. The study copies their layout, motion and behaviour, but not their brand, words or assets.
-**Code:** `components/media/academy/catalogue/` (the kit), plus `front/` (the front page) and `catalogue/departments-view.tsx` (the department catalogue).
+**Code:** `components/media/academy/catalogue/` (the kit, the academy, department and course catalogues), plus `home/` (the home page at `/media/academy`).
+
+**Order of pages (2026-10-10, the owner's "make it organized"):** home (`/media/academy`: how it works, the three questions, a few academies, departments and courses, impact, why, each card with "বিস্তারিত" and "ভর্তি হোন") → all academies (`/academies`) → an academy (`/a/[id]`) → all departments (`/departments`) → a department (`/dept/[id]`) → all courses (`/courses`) → a course (`/course/[id]`). Pages are named only একাডেমি, বিভাগ and কোর্স — no "খুঁজুন" or "বাছুন". There is no footer.
 
 ## 1. The idea
 
@@ -14,7 +16,7 @@ A page is a stack of **bands**: framed columns ruled by hairlines, like a printe
   - The academy shell (`components/media/academy/shell/academy-shell.tsx`) gives every page the whole screen once the gate and the opening story are done.
   - The academy header, sidebar, journey strip and phone dock then step aside.
   - `#academy-main` remains the scroll container.
-- **The page is wrapped as `<CatalogueRoot>` → `<CatalogueNav />` → `<CatalogueRuler />` → bands → `<CatalogueFooter />`.**
+- **The page is wrapped as `<CatalogueRoot>` → `<CatalogueNav />` → `<CatalogueRuler />` → bands.** No footer: the last band is the page's last call.
   - `CatalogueRoot` owns the theme (dark by default, kept in localStorage `kandari-catalogue-theme`), the Lenis glide (`lerp 0.12`) on `#academy-main`, and the reveal observer.
   - It also owns the faces: Archivo (wide), Instrument Serif and Tiro Bangla (italic).
 
@@ -38,7 +40,7 @@ Tokens are scoped to `.catalogue` and prefixed `--c-`, because shadcn already de
 ## 4. Type
 
 - **`.display`:** Archivo at weight 620 and 118% width for Latin and digits; Hind Siliguri for Bangla. Use it for all headings.
-- **`.turn`:** serif italic in `--c-turn`, for the one word a heading turns on: "একাডেমি *খুঁজুন*।". Use `<Turn>`. `<Lean>` is the blue variant.
+- **`.turn`:** serif italic in `--c-turn`, for the one word a heading turns on: "দক্ষ হাতের ছোট *বিশ্ববিদ্যালয়*।". Use `<Turn>`. `<Lean>` is the blue variant.
 - **`.hud`:** 12px, mono digits with Bangla beside them. Use it for running labels, card strips and numbers. **Never** apply wide letter-spacing or uppercase to Bangla.
 - **Numbers:** always go through `Num`, `Taka` or `twoDigits`, so the user's Bangla or Latin numerals setting holds.
 
@@ -50,10 +52,13 @@ Tokens are scoped to `.catalogue` and prefixed `--c-`, because shadcn already de
 | `BandTitle` | A 4xl–6xl display heading that rises in. |
 | `AssetCard` + `AssetGrid` | The press-kit card: a strip (kind icon and name, number), a 16:9 `frameClass` frame (`FrameImage` filling it or held in, `FrameTag` inverted in the corner), a title, a line of text, and one full-width outlined `actionClass` button with a quiet aside. The grid is 1/2/3 columns of hairline cells and pads its last row with blanks. |
 | `DeptCard` | The apps-page card: a coloured number badge, a picture with the icon breaking its edge, the name with "বিভাগ" in its colour, the academy link, tags and teachers. |
-| `CatalogueNav` | 48px bar. Square hover inverts; the current page stays inverted; "বিভাগ বাছুন" is set apart after a rule; then ভর্তি, the cart, the theme switch and the inverted "আমার শেখা". Phones get a menu. |
+| `CatalogueNav` | 64px bar (`NAV_H`; band labels stick at `top-16`). The mark with "কাণ্ডারী / তৈরি একাডেমি"; the catalogue — একাডেমি, বিভাগ, কোর্স, ক্লাস ভিডিও — whose labels invert under the pointer, the current one inverted with a yellow line under it; then two menus after a rule, "আমার শেখা" (রুটিন, ক্লাসরুম, পরীক্ষা, সমাবর্তন) and "শেখান" (একাডেমি খুলুন, ক্লাসরুম খুলুন, প্যানেল মার্কিং), each entry with an icon and a line of what is there; at the right the cart, the theme switch and the yellow "ভর্তি হোন". Phones get one grouped menu. |
 | `CatalogueRuler` | The right-edge page ruler on desk screens with a mouse. Details below. |
 | `Modal` | Backdrop black/70 fading over 200ms; the panel rises 10px and grows from 95%. Escape or the backdrop closes it. The glide pauses underneath. |
-| `ShareRow`, `CatalogueFooter` | The share strip (link copy, Facebook, WhatsApp) and the ruled footer grid. |
+| `ShareRow` | The share strip (link copy, Facebook, WhatsApp). |
+| `AcademyCard`, `AcademyLineup` | An academy in the line-up, dressed like a department's card (its first department's colour and icon, the name's last word in that colour, its departments as links); the line-up puts the best match to the three questions first. |
+| `PairCard` (`home/`) | The home page's card with two doors at its foot: `moreBtn` "বিস্তারিত" and `joinBtn` "ভর্তি হোন" (a course passes its own `EnrolButton cell`). |
+| `HomeHero` (`home/`) | The first screen: the wordmark's parts rising in turn, department tiles drifting and leaning toward the pointer (`--px`, `--py`), and the department ticker (`.marquee`). |
 | `CourseCard`, `CourseLineup` | The apps-page card for a course (its department's colour, code, level, next batch, fee, modes), and the line-up with "আপনি কোথায় আছেন?" across its top. The line-up can be driven from outside (`level`, `onLevel`). |
 | `TabStrip` | Tabs as a ruled strip of square cells, the chosen one inverted; arrow keys move along it. |
 | `buttons.ts`, `fields.ts` | `primaryBtn` (the one yellow button), `secondaryBtn`, `blockBtn`; `fieldClass`, `labelClass`, `messageClass`, `choiceClass`. Shared shadcn fields get their colours from `.catalogue [data-slot=…]` rules in `globals.css`, which outrank the /media shell's own. |
@@ -85,7 +90,7 @@ Tokens are scoped to `.catalogue` and prefixed `--c-`, because shadcn already de
 
 ## 8. Building the next page
 
-1. Wrap the page in `CatalogueRoot` / `CatalogueNav` / `CatalogueRuler` / `CatalogueFooter`. Content drawn after the first paint (a form once the browser's records load, a new tab) still arrives with the reveal: the root watches for it.
+1. Wrap the page in `CatalogueRoot` / `CatalogueNav` / `CatalogueRuler`. Content drawn after the first paint (a form once the browser's records load, a new tab) still arrives with the reveal: the root watches for it.
 2. A department keeps its colour everywhere: `toneStyle(departments.findIndex(…))` on a `tone` element.
 3. Write it as numbered `Band`s. The first is `now` and carries an `h1` with one `<Turn>` word.
 4. Lists become `AssetGrid`s of `AssetCard`s with exactly one action each.

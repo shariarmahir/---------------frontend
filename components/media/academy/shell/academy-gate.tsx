@@ -19,7 +19,7 @@ import { useAcademy } from "../use-academy";
 export type AcademyRole = "learner" | "teacher";
 
 const LAST = "academy-entry";
-const FIRST_STEPS = ["বিভাগ বাছুন", "দশ মিনিটের চার প্রশ্ন", "প্রথম ক্লাস অনলাইনে"];
+const FIRST_STEPS = ["একাডেমি, বিভাগ, কোর্স", "দশ মিনিটের চার প্রশ্ন", "প্রথম ক্লাস অনলাইনে"];
 
 function remembered(): AcademyRole {
   try {

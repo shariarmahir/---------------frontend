@@ -1,5 +1,4 @@
 import { Band, BandTitle, Turn, twoDigits } from "./catalogue/band";
-import { CatalogueFooter } from "./catalogue/catalogue-footer";
 import { CatalogueNav } from "./catalogue/catalogue-nav";
 import { CatalogueRoot } from "./catalogue/catalogue-root";
 import { CatalogueRuler } from "./catalogue/ruler";
@@ -64,7 +63,6 @@ export function TeachView({ dept }: { dept?: string }) {
         </div>
       </Band>
 
-      <CatalogueFooter />
     </CatalogueRoot>
   );
 }

@@ -6,7 +6,6 @@ import { Num } from "../../ui/numerals";
 import { DeptIcon } from "../departments/dept-icons";
 import { Band, BandTitle, Lean, twoDigits } from "./band";
 import { blockBtn, primaryBtn, secondaryBtn } from "./buttons";
-import { CatalogueFooter } from "./catalogue-footer";
 import { CatalogueNav } from "./catalogue-nav";
 import { CatalogueRoot } from "./catalogue-root";
 import { CourseLineup } from "./course-lineup";
@@ -39,7 +38,7 @@ const DAYS: { from: number; to: number; title: React.ReactNode; body: React.Reac
 ];
 
 /**
- * কোর্স বাছুন — step four of the road, laid out like the department
+ * কোর্স — step four of the road, laid out like the department
  * catalogue: every course of every academy side by side, department by
  * department, each card naming its academy. A strip of departments to jump
  * to, the line-up with "আপনি কোথায় আছেন?", the three levels, a course's
@@ -56,7 +55,7 @@ export function CoursesView({ entries }: { entries: CourseEntry[] }) {
       <Band
         id="intro"
         n={1}
-        label="কোর্স বাছুন"
+        label="কোর্স"
         now
         note={
           <>
@@ -196,11 +195,9 @@ export function CoursesView({ entries }: { entries: CourseEntry[] }) {
 
       <Band id="start" rulerLabel="শুরু করুন">
         <div className="flex flex-col items-center px-6 py-20 text-center md:py-28">
-          <p className="hud text-(--c-faint)">
-            ধাপ <Num value={4} /> থেকে ধাপ <Num value={5} />
-          </p>
+          <p className="hud text-(--c-faint)">কোর্স → ভর্তি → ক্লাস</p>
           <BandTitle className="mt-6 max-w-4xl text-5xl leading-[1.08] text-balance sm:text-6xl xl:text-7xl">
-            কোর্স বাছুন, <Lean>ভর্তি</Lean> হোন।
+            কোর্স দেখলেন, এবার <Lean>ভর্তি</Lean>।
           </BandTitle>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-(--c-muted)">পছন্দের কোর্সে ঢুকে “ভর্তি হোন” চাপুন — এক ফর্মে নাম, মোবাইল, ব্যাচ আর পেমেন্ট। ফি থাকে এসক্রোতে, ক্লাস হলে তবেই শিক্ষক পান।</p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
@@ -215,7 +212,6 @@ export function CoursesView({ entries }: { entries: CourseEntry[] }) {
         </div>
       </Band>
 
-      <CatalogueFooter />
     </CatalogueRoot>
   );
 }

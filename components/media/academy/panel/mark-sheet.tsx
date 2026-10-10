@@ -14,7 +14,6 @@ import { cn } from "@/lib/utils";
 import { DateText, Num } from "../../ui/numerals";
 import { Band, BandTitle, Turn } from "../catalogue/band";
 import { primaryBtn, secondaryBtn } from "../catalogue/buttons";
-import { CatalogueFooter } from "../catalogue/catalogue-footer";
 import { CatalogueNav } from "../catalogue/catalogue-nav";
 import { CatalogueRoot } from "../catalogue/catalogue-root";
 import { CatalogueRuler } from "../catalogue/ruler";
@@ -222,7 +221,6 @@ export function MarkSheet({ seatId }: { seatId: string }) {
         </>
       )}
 
-      <CatalogueFooter />
     </CatalogueRoot>
   );
 }

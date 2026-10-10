@@ -116,7 +116,7 @@ export function AssetGrid({ count, className, children }: { count: number; class
   const two = count % 2;
   const three = (3 - (count % 3)) % 3;
   return (
-    <ul className={cn("grid gap-px bg-(--c-line) md:grid-cols-2 lg:grid-cols-3", className)}>
+    <ul data-reveal-group className={cn("grid gap-px bg-(--c-line) md:grid-cols-2 lg:grid-cols-3", className)}>
       {children}
       {/* One blank cell does both jobs: a column's worth on tablets, the rest of the row on laptops. */}
       {(two > 0 || three > 0) && <li aria-hidden className={cn("hidden bg-(--c-bg)", two > 0 && "md:block", three === 0 ? "lg:hidden" : "lg:block", FILL_LG[three])} />}

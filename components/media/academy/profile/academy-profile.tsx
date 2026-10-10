@@ -11,7 +11,6 @@ import { RememberAcademy } from "../departments/recent";
 import { AssetCard, AssetGrid, frameClass } from "../catalogue/asset-card";
 import { Band, BandTitle, Lean, Turn, twoDigits } from "../catalogue/band";
 import { blockBtn, primaryBtn, secondaryBtn } from "../catalogue/buttons";
-import { CatalogueFooter } from "../catalogue/catalogue-footer";
 import { CatalogueNav } from "../catalogue/catalogue-nav";
 import { CatalogueRoot } from "../catalogue/catalogue-root";
 import { CourseLineup } from "../catalogue/course-lineup";
@@ -31,7 +30,7 @@ import { FinderMatch, ProfileCover } from "./profile-art";
 const toneOf = (id: string) => departments.findIndex((d) => d.id === id);
 
 /**
- * একাডেমি চিনুন — an academy's own page, step two of the road, in the
+ * একাডেমির বিস্তারিত — an academy's own page, step two of the road, in the
  * catalogue's bands: who they are and their record; why their skill matters
  * and how they teach; the teachers; the departments and every course, with
  * "আপনি কোথায় আছেন?"; the learner's forty days drawn in real dates; the
@@ -102,7 +101,7 @@ export function AcademyProfile({ academy: a, facts: f }: { academy: Academy; fac
       <Band
         id="intro"
         n={1}
-        label="একাডেমি চিনুন"
+        label="একাডেমি"
         now
         note={
           <>
@@ -113,8 +112,8 @@ export function AcademyProfile({ academy: a, facts: f }: { academy: Academy; fac
         <div style={toneStyle(tone)} className="tone grid gap-14 px-6 py-14 md:px-10 md:py-20 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-center lg:gap-16">
           <div>
             <nav aria-label="অবস্থান" data-reveal data-in className="hud flex flex-wrap items-center gap-2 text-(--c-faint)">
-              <Link href="/media/academy" className="transition-colors hover:text-(--c-ink-strong)">
-                একাডেমি খুঁজুন
+              <Link href="/media/academy/academies" className="transition-colors hover:text-(--c-ink-strong)">
+                সব একাডেমি
               </Link>
               <span aria-hidden>/</span>
               <span className="text-(--c-muted)">{a.name}</span>
@@ -319,7 +318,7 @@ export function AcademyProfile({ academy: a, facts: f }: { academy: Academy; fac
               </h3>
               <p className="mt-3 max-w-md leading-relaxed text-(--c-muted)">
                 দেশের <Num value={departments.length} />
-                টি বিভাগ পাশাপাশি — মিলিয়ে দেখে তবেই বাছুন।
+                টি বিভাগ পাশাপাশি — মিলিয়ে দেখে নিন।
               </p>
               <div className="mt-auto pt-8">
                 <Link href="/media/academy/departments" className={blockBtn}>
@@ -332,7 +331,7 @@ export function AcademyProfile({ academy: a, facts: f }: { academy: Academy; fac
         </div>
       </Band>
 
-      <Band id="courses" n={5} label="কোর্স" note="স্তর মিলিয়ে বাছুন">
+      <Band id="courses" n={5} label="কোর্স" note="নিজের স্তর মিলিয়ে দেখুন">
         <CourseLineup
           entries={courses}
           last={
@@ -359,7 +358,7 @@ export function AcademyProfile({ academy: a, facts: f }: { academy: Academy; fac
             আজ থেকে <Num value={COURSE_DAYS} /> দিন — নিজের <Turn>ভবিষ্যৎ</Turn> আঁকুন।
           </BandTitle>
           <p data-reveal className="mt-5 max-w-xl text-lg leading-relaxed text-(--c-muted)">
-            কোর্স বাছুন, এক লাইনে লিখুন শেষে আপনি কী পারবেন। পাশে সবচেয়ে কাছের খোলা ব্যাচের তারিখে আপনার পথ।
+            একটা কোর্স ধরুন, এক লাইনে লিখুন শেষে আপনি কী পারবেন। পাশে সবচেয়ে কাছের খোলা ব্যাচের তারিখে আপনার পথ।
           </p>
         </div>
         <FutureCells academy={a} courses={f.courses} />
@@ -418,15 +417,13 @@ export function AcademyProfile({ academy: a, facts: f }: { academy: Academy; fac
         </AssetGrid>
       </Band>
 
-      <Band id="start" rulerLabel="শুরু করুন">
+      <Band id="start" rulerLabel="এরপর বিভাগ">
         <div className="flex flex-col items-center px-6 py-20 text-center md:py-28">
-          <p className="hud text-(--c-faint)">
-            ধাপ <Num value={2} /> থেকে ধাপ <Num value={3} />
-          </p>
+          <p className="hud text-(--c-faint)">একাডেমি → বিভাগ → কোর্স</p>
           <BandTitle className="mt-6 max-w-4xl text-5xl leading-[1.08] text-balance sm:text-6xl xl:text-7xl">
             {a.departments.length > 1 ? (
               <>
-                একটা <Turn>বিভাগ</Turn> বেছে নিন।
+                এবার <Turn>বিভাগে</Turn> চলুন।
               </>
             ) : (
               <>
@@ -444,14 +441,13 @@ export function AcademyProfile({ academy: a, facts: f }: { academy: Academy; fac
                 {d.name} বিভাগ
               </Link>
             ))}
-            <Link href="/media/academy#academies" className={secondaryBtn}>
+            <Link href="/media/academy/academies" className={secondaryBtn}>
               অন্য একাডেমি
             </Link>
           </div>
         </div>
       </Band>
 
-      <CatalogueFooter />
     </CatalogueRoot>
   );
 }

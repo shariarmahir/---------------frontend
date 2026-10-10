@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 /** The wide display face: Archivo stretched, for Latin and digits beside Hind Siliguri's Bangla. */
 const archivo = Archivo({ subsets: ["latin"], axes: ["wdth"], variable: "--font-archivo", display: "swap" });
-/** The turned word in a heading — "একাডেমি *খুঁজুন*" — is a serif italic: Instrument Serif for Latin, Tiro Bangla for Bangla. */
+/** The turned word in a heading — "ছোট *বিশ্ববিদ্যালয়*" — is a serif italic: Instrument Serif for Latin, Tiro Bangla for Bangla. */
 const instrument = Instrument_Serif({ subsets: ["latin"], weight: "400", style: "italic", variable: "--font-instrument", display: "swap" });
 const tiro = Tiro_Bangla({ subsets: ["bengali"], weight: "400", style: "italic", variable: "--font-tiro", display: "swap" });
 
@@ -21,7 +21,7 @@ const ROW_LAG = 0.18;
 /** How closely the glide follows the wheel: lower is silkier, higher is snappier. */
 const GLIDE = 0.12;
 /** The bar's height; jump links land below it and the running label. */
-export const NAV_H = 48;
+export const NAV_H = 64;
 const ANCHOR_OFFSET = -(NAV_H + 52);
 
 export type CatalogueTheme = "dark" | "light";

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Activity, Brain, Briefcase, Calculator, ChefHat, Dumbbell, Hand, HandHeart, Heart, HelpCircle, House, Laptop, Palette, Sparkles, Store, Wrench, type LucideIcon } from "lucide-react";
 import { academies } from "@/data/media/academy";
 import type { Goal, Like, Talent } from "@/lib/media/academy";
@@ -36,7 +37,7 @@ const QUESTIONS = [
 /**
  * The three questions as three cards: the frame shows the answer picked (or
  * a question mark), the options sit under the question, and the button goes
- * to the academies, which reorder as the answers come in. Picking an answer
+ * to the academies, which put the best-suited first once there are answers. Picking an answer
  * again takes it back. Kept on this device for the academy's other pages.
  */
 export function FinderCards() {
@@ -110,10 +111,10 @@ export function FinderCards() {
                 </ul>
               }
               action={
-                <a href="#academies" className={actionClass}>
+                <Link href="/media/academy/academies" className={actionClass}>
                   {answered ? "মিলে যাওয়া একাডেমি" : "সব একাডেমি দেখুন"}
                   <span className="font-normal opacity-60">{answered ? <><Num value={matched} />টি মিলেছে</> : <><Num value={academies.length} />টি</>}</span>
-                </a>
+                </Link>
               }
             />
           </li>

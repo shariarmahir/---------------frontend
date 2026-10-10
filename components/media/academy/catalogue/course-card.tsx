@@ -38,7 +38,7 @@ export function CourseCard({ entry, n, level, dim, preview }: { entry: CourseEnt
       data-reveal
       aria-labelledby={title}
       style={toneStyle(entry.tone)}
-      className={cn("tone group relative flex h-full scroll-mt-28 flex-col bg-(--c-bg) transition-opacity duration-300 motion-reduce:transition-none", dim && "opacity-35 hover:opacity-100")}
+      className={cn("tone group relative flex h-full scroll-mt-32 flex-col bg-(--c-bg) transition-opacity duration-300 motion-reduce:transition-none", dim && "opacity-35 hover:opacity-100")}
     >
       {/* The department's colour draws across the top on hover. */}
       <span aria-hidden className="absolute inset-x-0 top-0 z-10 h-0.5 origin-left scale-x-0 bg-(--c-app) transition-transform duration-300 group-hover:scale-x-100 motion-reduce:transition-none" />

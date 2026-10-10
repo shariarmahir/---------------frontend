@@ -10,7 +10,6 @@ import { PersonAvatar } from "../../ui/person";
 import { AssetCard, AssetGrid } from "../catalogue/asset-card";
 import { Band, BandTitle, Lean, Turn, twoDigits } from "../catalogue/band";
 import { blockBtn } from "../catalogue/buttons";
-import { CatalogueFooter } from "../catalogue/catalogue-footer";
 import { CatalogueNav } from "../catalogue/catalogue-nav";
 import { CatalogueRoot } from "../catalogue/catalogue-root";
 import { CourseCard } from "../catalogue/course-card";
@@ -585,7 +584,6 @@ export function CourseView({ course, dept }: { course: Course; dept: Department 
         </div>
       </Band>
 
-      <CatalogueFooter />
     </CatalogueRoot>
   );
 }

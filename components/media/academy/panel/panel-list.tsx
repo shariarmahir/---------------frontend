@@ -9,7 +9,6 @@ import { useHydrated } from "@/lib/media/store";
 import { cn } from "@/lib/utils";
 import { DateText, Num } from "../../ui/numerals";
 import { Band, BandTitle, Turn, twoDigits } from "../catalogue/band";
-import { CatalogueFooter } from "../catalogue/catalogue-footer";
 import { CatalogueNav } from "../catalogue/catalogue-nav";
 import { CatalogueRoot } from "../catalogue/catalogue-root";
 import { CatalogueRuler } from "../catalogue/ruler";
@@ -127,7 +126,6 @@ export function PanelList() {
         </div>
       </Band>
 
-      <CatalogueFooter />
     </CatalogueRoot>
   );
 }

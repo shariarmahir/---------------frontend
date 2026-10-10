@@ -43,7 +43,6 @@ import { toNumber } from "../../ui/field-styles";
 import { DateText, Num, Taka, useFormat } from "../../ui/numerals";
 import { Band, BandTitle, Turn } from "../catalogue/band";
 import { primaryBtn } from "../catalogue/buttons";
-import { CatalogueFooter } from "../catalogue/catalogue-footer";
 import { CatalogueNav } from "../catalogue/catalogue-nav";
 import { CatalogueRoot } from "../catalogue/catalogue-root";
 import { CourseCard } from "../catalogue/course-card";
@@ -105,7 +104,6 @@ export function CourseBuilder() {
       <CatalogueNav />
       <CatalogueRuler />
       <Builder />
-      <CatalogueFooter />
     </CatalogueRoot>
   );
 }

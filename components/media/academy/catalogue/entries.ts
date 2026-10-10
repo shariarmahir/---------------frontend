@@ -1,7 +1,7 @@
-import { coursesOf, departments } from "@/data/media/academy";
+import { academies, coursesOf, departments } from "@/data/media/academy";
 import { sampleBatches } from "@/data/media/batches";
 import { DEMO_NOW } from "@/data/media/clock";
-import type { Course, Department, Mode } from "@/lib/media/academy";
+import type { Academy, Course, Department, Mode } from "@/lib/media/academy";
 import { batchStage, seatsLeft } from "@/lib/media/batch";
 import { factsOf } from "../finder/facts";
 import { modesOf } from "../parts";
@@ -44,6 +44,41 @@ export function deptEntries(): DeptEntry[] {
       fees: factsOf({ departments: [dept] }).fees,
       seat: seatIn(new Set(courses.map((c) => c.id))),
       handsOn: courses.some((c) => c.lessons.some((l) => l.mode === "hands-on")),
+    };
+  });
+}
+
+/** "রফিকুল মোটরস গ্যারেজ *একাডেমি*": the name's last word in the academy's colour. */
+export function splitName(name: string): [string, string] {
+  const at = name.lastIndexOf(" ");
+  return at < 0 ? ["", name] : [name.slice(0, at + 1), name.slice(at + 1)];
+}
+
+/** What an academy's card shows. `tone` is its first department's place in the catalogue, so the academy wears that department's colour. */
+export interface AcademyEntry {
+  academy: Academy;
+  tone: number;
+  cover?: { src: string; alt: string };
+  courses: number;
+  fees: { min: number; max: number };
+  graduates: number;
+  rating: { avg: number; count: number };
+  seat?: Seat;
+}
+
+export function academyEntries(): AcademyEntry[] {
+  return academies.map((academy) => {
+    const facts = factsOf(academy);
+    const first = facts.courses.find((c) => c.image);
+    return {
+      academy,
+      tone: departments.findIndex((d) => d.id === academy.departments[0].id),
+      cover: first?.image ? { src: first.image, alt: first.title } : undefined,
+      courses: facts.courses.length,
+      fees: facts.fees,
+      graduates: facts.graduates,
+      rating: facts.rating,
+      seat: seatIn(new Set(facts.courses.map((c) => c.id))),
     };
   });
 }

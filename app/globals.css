@@ -2120,6 +2120,44 @@ body:has(.media-shell) .catalogue [data-slot="form-message"] {
     animation-delay: var(--d, 0s);
   }
 }
+/*
+ * The home page's first screen: the wordmark's parts rise one after another,
+ * the department tiles pop in, drift and lean toward the pointer (the hero
+ * sets --px and --py from -1 to 1), and a ticker of departments runs under it.
+ */
+@keyframes catalogue-letter {
+  from { opacity: 0; transform: translateY(0.3em); filter: blur(14px); }
+}
+@keyframes catalogue-tile-in {
+  from { opacity: 0; scale: 0.6; }
+}
+@keyframes catalogue-float {
+  50% { transform: translateY(-9px); }
+}
+@keyframes catalogue-marquee {
+  to { transform: translateX(-100%); }
+}
+.catalogue .marquee { display: flex; overflow: hidden; }
+.catalogue .marquee-track { display: flex; flex-shrink: 0; min-width: 100%; }
+.catalogue .hero-tile {
+  transform: translate3d(calc(var(--px, 0) * var(--depth, 1) * 28px), calc(var(--py, 0) * var(--depth, 1) * 20px), 0);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .catalogue .wm-letter {
+    animation: catalogue-letter 1.1s cubic-bezier(0.215, 0.61, 0.355, 1) backwards;
+    animation-delay: calc(0.15s + var(--i, 0) * 0.14s);
+  }
+  .catalogue .hero-tile {
+    animation: catalogue-tile-in 0.9s cubic-bezier(0.215, 0.61, 0.355, 1) backwards;
+    animation-delay: calc(0.55s + var(--i, 0) * 0.05s);
+  }
+  .catalogue .hero-float {
+    animation: catalogue-float calc(5s + var(--i, 0) * 0.37s) ease-in-out infinite;
+    animation-delay: calc(var(--i, 0) * -0.9s);
+  }
+  .catalogue .marquee-track { animation: catalogue-marquee 40s linear infinite; }
+  .catalogue .marquee:hover .marquee-track { animation-play-state: paused; }
+}
 @media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
   .catalogue [data-choreo]:not([data-in]) [data-draw-rule] { transform: scaleX(0); }
   .catalogue [data-choreo]:not([data-in]) :is([data-draw-eyebrow], [data-draw-tick]),

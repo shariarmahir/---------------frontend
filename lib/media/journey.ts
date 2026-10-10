@@ -19,10 +19,10 @@ export interface Step {
 }
 
 export const STEPS: Step[] = [
-  { id: "find", n: 1, phase: "choose", label: "একাডেমি খুঁজুন", hint: "স্বপ্ন মিলিয়ে নিজের একাডেমি" },
-  { id: "academy", n: 2, phase: "choose", label: "একাডেমি চিনুন", hint: "শিক্ষক, বিভাগ, ভবিষ্যৎ" },
-  { id: "dept", n: 3, phase: "choose", label: "বিভাগ বাছুন", hint: "কোন দক্ষতার পথে যাবেন" },
-  { id: "course", n: 4, phase: "choose", label: "কোর্স বাছুন", hint: "নিজের স্তরের কোর্স" },
+  { id: "find", n: 1, phase: "choose", label: "একাডেমি", hint: "দেশের পেশাদারদের সব একাডেমি" },
+  { id: "academy", n: 2, phase: "choose", label: "একাডেমির বিস্তারিত", hint: "শিক্ষক, বিভাগ, ভবিষ্যৎ" },
+  { id: "dept", n: 3, phase: "choose", label: "বিভাগ", hint: "কোন দক্ষতার পথে যাবেন" },
+  { id: "course", n: 4, phase: "choose", label: "কোর্স", hint: "নিজের স্তরের কোর্স" },
   { id: "admit", n: 5, phase: "admit", label: "ভর্তি", hint: "এক ফর্মে রেজিস্ট্রেশন" },
   { id: "routine", n: 6, phase: "study", label: "রুটিন", hint: "কবে, কখন ক্লাস" },
   { id: "class", n: 7, phase: "study", label: "ক্লাস", hint: "লাইভ ক্লাস ও ক্লাসরুম" },
@@ -32,14 +32,15 @@ export const STEPS: Step[] = [
 
 export const PHASES: Record<Phase, string> = { choose: "বাছাই", admit: "ভর্তি", study: "পড়াশোনা" };
 
-/** Which step a page is, by its path; teaching and side pages are on none. */
+/** Which step a page is, by its path; the home page, teaching and side pages are on none. */
 export function stepOfPath(path: string): StepId | null {
   const p = path.replace(/\/+$/, "");
-  if (p === "/media/academy") return "find";
   const rest = p.startsWith("/media/academy/") ? p.slice("/media/academy/".length) : null;
   if (rest === null) return null;
   const [head, second] = rest.split("/");
   switch (head) {
+    case "academies":
+      return "find";
     case "a":
       return "academy";
     case "departments":

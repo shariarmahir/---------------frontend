@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Award, BookOpen, CalendarDays, Landmark, ShieldCheck, Sparkles, UsersRound, Video, type LucideIcon } from "lucide-react";
+import { ArrowRight, Award, BookOpen, CalendarDays, Landmark, ShieldCheck, UsersRound, Video, type LucideIcon } from "lucide-react";
 import { academies, courses } from "@/data/media/academy";
 import { BATCH_MAX, CLASS_MINUTES, CLASS_WEEKS, COURSE_DAYS, DEPT_COURSES, FINAL_DAYS } from "@/lib/media/academy";
 import { cn } from "@/lib/utils";
@@ -7,7 +7,6 @@ import { Num } from "../../ui/numerals";
 import { DeptIcon } from "../departments/dept-icons";
 import { Band, BandTitle, Lean, twoDigits } from "./band";
 import { blockBtn, primaryBtn, secondaryBtn } from "./buttons";
-import { CatalogueFooter } from "./catalogue-footer";
 import { CatalogueNav } from "./catalogue-nav";
 import { CatalogueRoot } from "./catalogue-root";
 import { DeptCard } from "./dept-card";
@@ -53,10 +52,10 @@ const RULES: { Icon: LucideIcon; title: React.ReactNode; body: React.ReactNode }
 ];
 
 /**
- * বিভাগ বাছুন — step three of the road, laid out as a catalogue: every
+ * বিভাগ — step three of the road, laid out as a catalogue: every
  * department of every academy side by side on charcoal or ash, each card naming
  * the academy that runs it. A strip of their icons to jump to one, the
- * line-up, the rules they all keep, and a way back to the finder.
+ * line-up, the rules they all keep, and the way on to the courses.
  */
 export function DepartmentsView({ entries }: { entries: DeptEntry[] }) {
   return (
@@ -66,7 +65,7 @@ export function DepartmentsView({ entries }: { entries: DeptEntry[] }) {
       <Band
         id="intro"
         n={1}
-        label="বিভাগ বাছুন"
+        label="বিভাগ"
         now
         note={
           <>
@@ -79,14 +78,14 @@ export function DepartmentsView({ entries }: { entries: DeptEntry[] }) {
             <Num value={entries.length} />টি বিভাগ। আপনার একটাই <Lean>পথ</Lean>।
           </BandTitle>
           <p data-reveal data-in className="mt-5 max-w-xl text-lg leading-relaxed text-(--c-muted)">
-            কোড আর যন্ত্র, বাড়ির নকশা, গ্যারেজ আর রান্নাঘর, গান, রং আর তাঁত, ক্যামেরা, হিসাব, সাজ, মাঠ আর অঙ্ক। দেশের <Num value={academies.length} />টি একাডেমির সব বিভাগ এক জায়গায় — মনের মতোটায় ঢুকে কোর্স বাছুন।
+            কোড আর যন্ত্র, বাড়ির নকশা, গ্যারেজ আর রান্নাঘর, গান, রং আর তাঁত, ক্যামেরা, হিসাব, সাজ, মাঠ আর অঙ্ক। দেশের <Num value={academies.length} />টি একাডেমির সব বিভাগ এক জায়গায় — মনের মতোটায় ঢুকে কোর্স দেখুন।
           </p>
           <div data-reveal data-in className="mt-8 flex flex-wrap gap-3">
-            <Link href="/media/academy" className={primaryBtn}>
-              <Sparkles className="size-4" aria-hidden />
-              তিন প্রশ্নে মিলিয়ে নিন
+            <Link href="/media/academy/courses" className={primaryBtn}>
+              <BookOpen className="size-4" aria-hidden />
+              সব কোর্স দেখুন
             </Link>
-            <Link href="/media/academy#academies" className={secondaryBtn}>
+            <Link href="/media/academy/academies" className={secondaryBtn}>
               <Landmark className="size-4" aria-hidden />
               একাডেমিগুলো দেখুন
             </Link>
@@ -110,7 +109,7 @@ export function DepartmentsView({ entries }: { entries: DeptEntry[] }) {
         </div>
       </Band>
 
-      <Band id="lineup" n={2} label="সব বিভাগ" note="বিভাগে ঢুকে কোর্স বাছুন">
+      <Band id="lineup" n={2} label="সব বিভাগ" note="বিভাগে ঢুকে কোর্স দেখুন">
         <div className="@container">
           <div data-reveal-group className={lineupGrid}>
             {entries.map((entry, i) => (
@@ -139,7 +138,7 @@ export function DepartmentsView({ entries }: { entries: DeptEntry[] }) {
             শেখার নিয়ম <Lean>সবখানে</Lean> এক।
           </BandTitle>
           <p data-reveal className="mt-5 max-w-xl text-lg leading-relaxed text-(--c-muted)">
-            যে বিভাগই বাছুন, শেখা চলে একই নিয়মে। ভর্তির আগেই জেনে নিন কী পাচ্ছেন।
+            যে বিভাগেই পড়ুন, শেখা চলে একই নিয়মে। ভর্তির আগেই জেনে নিন কী পাচ্ছেন।
           </p>
         </div>
         <ol data-reveal-group className="grid gap-px border-t border-(--c-line) bg-(--c-line) md:grid-cols-3">
@@ -158,25 +157,22 @@ export function DepartmentsView({ entries }: { entries: DeptEntry[] }) {
         </ol>
       </Band>
 
-      <Band id="start" rulerLabel="শুরু করুন">
+      <Band id="start" rulerLabel="এরপর কোর্স">
         <div className="flex flex-col items-center px-6 py-20 text-center md:py-28">
-          <p className="hud text-(--c-faint)">
-            ধাপ <Num value={3} /> থেকে ধাপ <Num value={4} />
-          </p>
+          <p className="hud text-(--c-faint)">একাডেমি → বিভাগ → কোর্স</p>
           <BandTitle className="mt-6 max-w-4xl text-5xl leading-[1.08] text-balance sm:text-6xl xl:text-7xl">
-            বিভাগ বাছুন, <Lean>কোর্সে</Lean> চলুন।
+            বিভাগ দেখলেন, এবার <Lean>কোর্স</Lean>।
           </BandTitle>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-(--c-muted)">কোনটা আপনার, ঠিক বুঝতে পারছেন না? তিনটি প্রশ্নের উত্তর দিন — স্বপ্ন, পছন্দ আর প্রতিভা মিলিয়ে একাডেমি দেখিয়ে দেব।</p>
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-(--c-muted)">সব বিভাগের সব কোর্স পাশাপাশি — নিজের স্তর মিলিয়ে দেখুন, তারপর ভর্তি। কোনটা আপনার, বুঝতে না পারলে প্রথম পাতার তিন প্রশ্নের উত্তর দিন।</p>
           <div className="mt-10">
-            <Link href="/media/academy" className={primaryBtn}>
-              <Sparkles className="size-4" aria-hidden />
-              তিন প্রশ্নে খুঁজুন
+            <Link href="/media/academy/courses" className={primaryBtn}>
+              কোর্সে চলুন
+              <ArrowRight className="size-4" aria-hidden />
             </Link>
           </div>
         </div>
       </Band>
 
-      <CatalogueFooter />
     </CatalogueRoot>
   );
 }

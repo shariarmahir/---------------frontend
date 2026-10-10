@@ -12,7 +12,6 @@ import { cn } from "@/lib/utils";
 import { Num } from "../../ui/numerals";
 import { Band, BandTitle, Turn } from "../catalogue/band";
 import { primaryBtn, secondaryBtn } from "../catalogue/buttons";
-import { CatalogueFooter } from "../catalogue/catalogue-footer";
 import { CatalogueNav } from "../catalogue/catalogue-nav";
 import { CatalogueRoot } from "../catalogue/catalogue-root";
 import { blankFill, lineupGrid } from "../catalogue/fill-row";
@@ -199,7 +198,6 @@ export function VideoFeed() {
         </Band>
       )}
 
-      <CatalogueFooter />
       {teaching && <UploadDialog open={upload} onOpenChange={setUpload} owes={owes} />}
     </CatalogueRoot>
   );

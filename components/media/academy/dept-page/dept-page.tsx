@@ -10,7 +10,6 @@ import { PersonAvatar } from "../../ui/person";
 import { AssetCard, AssetGrid, FrameImage, frameClass } from "../catalogue/asset-card";
 import { Band, BandTitle, Lean, Turn, twoDigits } from "../catalogue/band";
 import { blockBtn, primaryBtn, secondaryBtn } from "../catalogue/buttons";
-import { CatalogueFooter } from "../catalogue/catalogue-footer";
 import { CatalogueNav } from "../catalogue/catalogue-nav";
 import { CatalogueRoot } from "../catalogue/catalogue-root";
 import { DeptCard } from "../catalogue/dept-card";
@@ -30,7 +29,7 @@ import { WeekTracks } from "./week-tracks";
 const LEVEL_ORDER = Object.keys(LEVELS) as Level[];
 
 const JOIN_STEPS = [
-  { title: "কোর্স বাছুন", body: "শুরু থেকে, মাঝারি না অভিজ্ঞ — নিজের স্তরের কোর্সে “ভর্তি হোন” চাপুন।" },
+  { title: "নিজের স্তরের কোর্স", body: "শুরু থেকে, মাঝারি না অভিজ্ঞ — নিজের স্তরের কোর্সে “ভর্তি হোন” চাপুন।" },
   { title: "চেকআউটে নিশ্চিত করুন", body: "নাম, মোবাইল, জেলা আর পেমেন্ট — এক ফর্মেই। বিভাগে যোগও এখানেই হয়ে যায়।" },
   { title: "প্রথম ক্লাস অনলাইনে", body: "পরিচয় হয়ে গেলে লাইভ আর হাতে-কলমের ক্লাস; শেষে প্রজেক্ট আর প্যানেল।" },
 ];
@@ -244,7 +243,7 @@ export function DeptPage({ dept }: { dept: Department }) {
               </a>
               <a href="#courses" className={secondaryBtn}>
                 <BookOpen className="size-4" aria-hidden />
-                কোর্স বাছুন
+                কোর্সগুলো দেখুন
               </a>
               {dept.kind === "team" && (
                 <Link href={`/media/academy/teach?dept=${dept.id}`} className={secondaryBtn}>
@@ -424,7 +423,7 @@ export function DeptPage({ dept }: { dept: Department }) {
         </Band>
       )}
 
-      <Band id="similar" n={next()} label="আরও বিভাগ" note="মিলিয়ে দেখে তবেই বাছুন">
+      <Band id="similar" n={next()} label="আরও বিভাগ" note="মিলিয়ে দেখে নিন">
         <div className="@container">
           <div data-reveal-group className={lineupGrid}>
             {similar.map((entry, i) => (
@@ -437,7 +436,7 @@ export function DeptPage({ dept }: { dept: Department }) {
               </h3>
               <p className="mt-3 max-w-md leading-relaxed text-(--c-muted)">
                 দেশের <Num value={departments.length} />
-                টি বিভাগ — মিলিয়ে দেখে তবেই বাছুন।
+                টি বিভাগ — মিলিয়ে দেখে নিন।
               </p>
               <div className="mt-auto pt-8">
                 <Link href="/media/academy/departments" className={blockBtn}>
@@ -450,13 +449,11 @@ export function DeptPage({ dept }: { dept: Department }) {
         </div>
       </Band>
 
-      <Band id="start" rulerLabel="শুরু করুন">
+      <Band id="start" rulerLabel="এরপর কোর্স">
         <div className="flex flex-col items-center px-6 py-20 text-center md:py-28">
-          <p className="hud text-(--c-faint)">
-            ধাপ <Num value={3} /> থেকে ধাপ <Num value={4} />
-          </p>
+          <p className="hud text-(--c-faint)">বিভাগ → কোর্স → ভর্তি</p>
           <BandTitle className="mt-6 max-w-4xl text-5xl leading-[1.08] text-balance sm:text-6xl xl:text-7xl">
-            এবার <Turn>কোর্স</Turn> বাছুন।
+            এবার <Turn>কোর্সে</Turn> চলুন।
           </BandTitle>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-(--c-muted)">নিজের স্তরের কোর্সে “ভর্তি হোন” চাপুন — বিভাগে যোগও সেই ফর্মেই।</p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
@@ -472,7 +469,6 @@ export function DeptPage({ dept }: { dept: Department }) {
         </div>
       </Band>
 
-      <CatalogueFooter />
     </CatalogueRoot>
   );
 }

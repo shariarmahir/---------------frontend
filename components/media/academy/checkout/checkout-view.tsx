@@ -27,7 +27,6 @@ import { useWallet } from "../../wallet/use-wallet";
 import { addToCart, removeFromCart, useCart } from "../cart";
 import { Band, BandTitle, Turn } from "../catalogue/band";
 import { primaryBtn, secondaryBtn } from "../catalogue/buttons";
-import { CatalogueFooter } from "../catalogue/catalogue-footer";
 import { CatalogueNav } from "../catalogue/catalogue-nav";
 import { CatalogueRoot } from "../catalogue/catalogue-root";
 import { fieldClass, labelClass, messageClass } from "../catalogue/fields";
@@ -51,7 +50,6 @@ export function CheckoutView() {
       <CatalogueNav />
       <CatalogueRuler />
       {receipt ? <Joined receipt={receipt} /> : <Checkout onJoined={setReceipt} />}
-      <CatalogueFooter />
     </CatalogueRoot>
   );
 }
@@ -514,7 +512,7 @@ function EmptyCart() {
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link href="/media/academy/courses" className={primaryBtn}>
             <BookOpen className="size-4" aria-hidden />
-            কোর্স বাছুন
+            কোর্স দেখুন
           </Link>
           <Link href="/media/academy/videos" className={secondaryBtn}>
             <PlayCircle className="size-4" aria-hidden />

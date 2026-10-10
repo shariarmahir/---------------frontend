@@ -11,9 +11,9 @@ test("nine steps in three phases, in the university's order", () => {
   assert.deepEqual(STEPS.map((s) => s.n), [1, 2, 3, 4, 5, 6, 7, 8, 9]);
 });
 
-test("every academy page sits on its step; teaching pages on none", () => {
+test("every academy page sits on its step; the home page and teaching pages on none", () => {
   const at = (p: string) => stepOfPath(p);
-  assert.equal(at("/media/academy"), "find");
+  assert.equal(at("/media/academy/academies"), "find");
   assert.equal(at("/media/academy/a/sorobingsho"), "academy");
   assert.equal(at("/media/academy/departments"), "dept");
   assert.equal(at("/media/academy/courses"), "course");
@@ -25,7 +25,7 @@ test("every academy page sits on its step; teaching pages on none", () => {
   assert.equal(at("/media/academy/classroom/WEB-101/live"), "class");
   assert.equal(at("/media/academy/exam"), "exam");
   assert.equal(at("/media/academy/graduation"), "graduate");
-  for (const p of ["/media/academy/classroom/open", "/media/academy/classroom/new", "/media/academy/teach", "/media/academy/panel", "/media/academy/videos", "/media"]) assert.equal(at(p), null, p);
+  for (const p of ["/media/academy/classroom/open", "/media/academy/classroom/new", "/media/academy/teach", "/media/academy/panel", "/media/academy/videos", "/media/academy", "/media"]) assert.equal(at(p), null, p);
 });
 
 test("how far the learner has come: from finding, to the routine once enrolled, to class, exam and graduation", () => {

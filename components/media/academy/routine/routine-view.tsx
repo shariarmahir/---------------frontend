@@ -13,7 +13,6 @@ import { cn } from "@/lib/utils";
 import { DateText, Num } from "../../ui/numerals";
 import { Band, BandTitle, Turn } from "../catalogue/band";
 import { primaryBtn, secondaryBtn } from "../catalogue/buttons";
-import { CatalogueFooter } from "../catalogue/catalogue-footer";
 import { CatalogueNav } from "../catalogue/catalogue-nav";
 import { CatalogueRoot } from "../catalogue/catalogue-root";
 import { CatalogueRuler } from "../catalogue/ruler";
@@ -110,7 +109,7 @@ export function RoutineView() {
             <p className="mt-3 max-w-sm leading-relaxed text-(--c-muted)">কোনো কোর্সে ভর্তি হলে সেই ব্যাচের সব ক্লাস দিন-তারিখসহ এখানে বসে যাবে।</p>
             <Link href="/media/academy/courses" className={cn(primaryBtn, "mt-8")}>
               <Landmark className="size-4" aria-hidden />
-              কোর্স বাছুন
+              কোর্স দেখুন
             </Link>
           </div>
         </Band>
@@ -227,7 +226,6 @@ export function RoutineView() {
         </>
       )}
 
-      <CatalogueFooter />
     </CatalogueRoot>
   );
 }

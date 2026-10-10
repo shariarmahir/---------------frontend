@@ -10,7 +10,6 @@ import { DateText, Num } from "../../ui/numerals";
 import { AssetCard, AssetGrid } from "../catalogue/asset-card";
 import { Band, BandTitle, Turn } from "../catalogue/band";
 import { primaryBtn } from "../catalogue/buttons";
-import { CatalogueFooter } from "../catalogue/catalogue-footer";
 import { CatalogueNav } from "../catalogue/catalogue-nav";
 import { CatalogueRoot } from "../catalogue/catalogue-root";
 import { CatalogueRuler } from "../catalogue/ruler";
@@ -69,7 +68,7 @@ export function GraduationView() {
             </h2>
             <p className="mt-3 max-w-sm leading-relaxed text-(--c-muted)">একটা কোর্সে ভর্তি হলে এখানে আপনার পাঁচটা ঘর দেখা যাবে।</p>
             <Link href="/media/academy/courses" className={cn(primaryBtn, "mt-8")}>
-              কোর্স বাছুন <ArrowRight className="size-4" aria-hidden />
+              কোর্স দেখুন <ArrowRight className="size-4" aria-hidden />
             </Link>
           </div>
         </Band>
@@ -133,7 +132,6 @@ export function GraduationView() {
         </div>
       </Band>
 
-      <CatalogueFooter />
     </CatalogueRoot>
   );
 }

@@ -17,7 +17,6 @@ import { PersonAvatar } from "../../ui/person";
 import { AssetCard, AssetGrid } from "../catalogue/asset-card";
 import { Band, twoDigits } from "../catalogue/band";
 import { primaryBtn, secondaryBtn } from "../catalogue/buttons";
-import { CatalogueFooter } from "../catalogue/catalogue-footer";
 import { CatalogueNav } from "../catalogue/catalogue-nav";
 import { CatalogueRoot } from "../catalogue/catalogue-root";
 import { blankFill, lineupGrid } from "../catalogue/fill-row";
@@ -178,7 +177,6 @@ export function ChannelView({ handle }: { handle: string }) {
         {tab === "search" && <SearchResults q={q} videos={videos} locked={locked} />}
       </Band>
 
-      <CatalogueFooter />
       <ChannelAbout open={about} onOpenChange={setAbout} person={person} followers={followers} videos={videos.length} views={views} />
     </CatalogueRoot>
   );

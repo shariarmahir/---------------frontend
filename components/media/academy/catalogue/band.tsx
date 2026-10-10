@@ -40,7 +40,7 @@ export function Band({
         <span aria-hidden data-draw-tick className="tick z-31 -top-1.25 -left-1.5" style={{ "--i": 0 } as CSSProperties} />
         <span aria-hidden data-draw-tick className="tick z-31 -top-1.25 -right-1.25" style={{ "--i": 1 } as CSSProperties} />
         {label && (
-          <div data-draw-eyebrow className="sticky top-12 z-30 border-y border-(--c-line) bg-(--c-bg)/60 backdrop-blur-md">
+          <div data-draw-eyebrow className="sticky top-16 z-30 border-y border-(--c-line) bg-(--c-bg)/60 backdrop-blur-md">
             <div className="flex items-center justify-between gap-4 px-6 py-3 md:px-10">
               <p className="hud text-(--c-muted)">
                 {n !== undefined && (
@@ -72,7 +72,7 @@ export function BandTitle({ as: Tag = "h2", now, className, children }: { as?: "
   );
 }
 
-/** The word a heading turns on — "একাডেমি *খুঁজুন*।" — in serif italic, the instrument colour. */
+/** The word a heading turns on — "দক্ষ হাতের ছোট *বিশ্ববিদ্যালয়*।" — in serif italic, the instrument colour. */
 export const Turn = ({ children }: { children: React.ReactNode }) => <span className="turn">{children}</span>;
 
 /** The phrase a heading leans on, in the accent's ink. */

@@ -16,7 +16,6 @@ import { PersonAvatar } from "../../ui/person";
 import { actionClass, frameClass } from "../catalogue/asset-card";
 import { Band, BandTitle, Turn, twoDigits } from "../catalogue/band";
 import { primaryBtn, secondaryBtn } from "../catalogue/buttons";
-import { CatalogueFooter } from "../catalogue/catalogue-footer";
 import { CatalogueNav } from "../catalogue/catalogue-nav";
 import { CatalogueRoot } from "../catalogue/catalogue-root";
 import { CatalogueRuler } from "../catalogue/ruler";
@@ -86,7 +85,6 @@ export function ClassroomHub() {
         </div>
       )}
 
-      <CatalogueFooter />
     </CatalogueRoot>
   );
 }
@@ -106,7 +104,7 @@ function LearnRooms({ rooms }: { rooms: { batch: Batch; course: Course }[] }) {
           </h2>
           <p className="mt-3 max-w-sm leading-relaxed text-(--c-muted)">কোনো কোর্সে ভর্তি হলে সেই ব্যাচের ক্লাসরুম এখানে খুলবে।</p>
           <Link href="/media/academy/courses" className={cn(primaryBtn, "mt-8")}>
-            কোর্স বাছুন <ArrowRight className="size-4" aria-hidden />
+            কোর্স দেখুন <ArrowRight className="size-4" aria-hidden />
           </Link>
         </div>
       </Band>

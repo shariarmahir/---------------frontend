@@ -10,14 +10,15 @@ import { cn } from "@/lib/utils";
 import { addToCart } from "../cart";
 import { defaultBatch, useCourseBatches } from "../classroom/use-batches";
 import { useAcademy } from "../use-academy";
-import { primaryBtn, secondaryBtn } from "./buttons";
+import { joinBtn, moreBtn, primaryBtn, secondaryBtn } from "./buttons";
 
 /**
  * "ভর্তি হোন" in the catalogue's dress: into the cart and on to the one
  * admission form. Once enrolled it is the way to the classroom; with no
- * batch left to join, it says the seats are gone.
+ * batch left to join, it says the seats are gone. `cell` fits it into a
+ * card's foot, full width.
  */
-export function EnrolButton({ course, className }: { course: Course; className?: string }) {
+export function EnrolButton({ course, cell, className }: { course: Course; cell?: boolean; className?: string }) {
   const hydrated = useHydrated();
   const ensure = useRequireAccount();
   const router = useRouter();
@@ -26,7 +27,7 @@ export function EnrolButton({ course, className }: { course: Course; className?:
 
   if (hydrated && enrolled)
     return (
-      <Link href={`/media/academy/classroom/${encodeURIComponent(enrolled.batch ?? course.id)}`} className={cn(secondaryBtn, className)}>
+      <Link href={`/media/academy/classroom/${encodeURIComponent(enrolled.batch ?? course.id)}`} className={cn(cell ? moreBtn : secondaryBtn, className)}>
         <DoorOpen className="size-4" aria-hidden />
         ক্লাসরুমে যান
       </Link>
@@ -40,7 +41,7 @@ export function EnrolButton({ course, className }: { course: Course; className?:
         addToCart(course.id);
         router.push(`/media/academy/checkout?course=${encodeURIComponent(course.id)}`);
       }}
-      className={cn(primaryBtn, className)}
+      className={cn(cell ? joinBtn : primaryBtn, className)}
     >
       <Ticket className="size-4" aria-hidden />
       {full ? "আসন পূর্ণ" : "ভর্তি হোন"}

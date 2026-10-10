@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import { DateText, Num } from "../../ui/numerals";
 import { AssetCard, AssetGrid } from "../catalogue/asset-card";
 import { Band, BandTitle, Turn, twoDigits } from "../catalogue/band";
-import { CatalogueFooter } from "../catalogue/catalogue-footer";
 import { CatalogueNav } from "../catalogue/catalogue-nav";
 import { CatalogueRoot } from "../catalogue/catalogue-root";
 import { CatalogueRuler } from "../catalogue/ruler";
@@ -88,7 +87,7 @@ export function ExamView({ asked }: { asked: string }) {
               <MyFinals />
             </div>
           </div>
-          <section id="verify" aria-labelledby="verify-title" className="scroll-mt-28 bg-(--c-bg) p-6 md:p-10">
+          <section id="verify" aria-labelledby="verify-title" className="scroll-mt-32 bg-(--c-bg) p-6 md:p-10">
             <h2 id="verify-title" className="display text-2xl text-(--c-ink-strong)">
               সনদ <Turn>যাচাই</Turn>
             </h2>
@@ -192,7 +191,6 @@ export function ExamView({ asked }: { asked: string }) {
         </AssetGrid>
       </Band>
 
-      <CatalogueFooter />
     </CatalogueRoot>
   );
 }
