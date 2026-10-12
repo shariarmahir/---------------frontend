@@ -330,14 +330,14 @@ export function CreateTeamButton() {
                       </FormDescription>
                     </FormItem>
                   )} />
-                  <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     {text("rank", "দলের র‍্যাংক", "যেমন: এস টিয়ার, ইমর্টাল")}
                     {text("scrims", "স্ক্রিমের সময়", "যেমন: রাত ৯–১১টা, সপ্তাহে ৪ দিন")}
                   </div>
                 </div>
               )}
               {kind === "lab" && (
-                <div className="live-in grid gap-4 rounded-2xl bg-white/65 p-4 ring-1 ring-m-ink/9 sm:grid-cols-2">
+                <div className="live-in grid grid-cols-1 gap-4 rounded-2xl bg-white/65 p-4 ring-1 ring-m-ink/9 sm:grid-cols-2">
                   {text("university", "বিশ্ববিদ্যালয় ও বিভাগ", "যেমন: রুয়েট · সিএসই")}
                   {text("supervisor", "তত্ত্বাবধায়ক", "শিক্ষকের নাম বা পদ")}
                   {text("focus", "গবেষণার বিষয় (কমা দিয়ে)", "এআই, কৃষি, রোবোটিক্স")}
@@ -346,7 +346,7 @@ export function CreateTeamButton() {
                 </div>
               )}
               {kind === "sports" && (
-                <div className="live-in grid gap-4 rounded-2xl bg-white/65 p-4 ring-1 ring-m-ink/9 sm:grid-cols-2">
+                <div className="live-in grid grid-cols-1 gap-4 rounded-2xl bg-white/65 p-4 ring-1 ring-m-ink/9 sm:grid-cols-2">
                   {text("sport", "খেলা", "ক্রিকেট, ফুটবল, ব্যাডমিন্টন")}
                   {text("ageGroup", "বয়স-গ্রুপ", "অনূর্ধ্ব-১৫, সবার জন্য")}
                   {text("practice", "অনুশীলনের সময়", "শুক্রবার সকাল ৭টা")}
@@ -354,7 +354,7 @@ export function CreateTeamButton() {
                 </div>
               )}
 
-              <div className="grid gap-5 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <FormField control={form.control} name="name" render={({ field }) => (
                   <FormItem>
                     <FormLabel>টিমের নাম</FormLabel>
@@ -431,7 +431,7 @@ export function MyTeams() {
   return (
     <section className="space-y-3">
       <h2 className="text-xl font-bold text-m-ink">আমার টিম</h2>
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{mine.map((t) => <TeamCard key={t.id} team={t} />)}</div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">{mine.map((t) => <TeamCard key={t.id} team={t} />)}</div>
     </section>
   );
 }
@@ -440,7 +440,7 @@ export function MyTeams() {
 export function TeamGrid({ list, hideMine }: { list: Team[]; hideMine: boolean }) {
   const status = useMediaState((s) => s.teamStatus);
   const rest = hideMine ? list.filter((t) => status[t.id] !== "member") : list;
-  return <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{rest.map((t) => <TeamCard key={t.id} team={t} />)}</div>;
+  return <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">{rest.map((t) => <TeamCard key={t.id} team={t} />)}</div>;
 }
 
 /** Join any team, open or closed, with the six-character key its lead shares — while seats last. */

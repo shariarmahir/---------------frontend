@@ -104,7 +104,7 @@ export function InnovationTab({ from, members, member, shares, onShare }: {
   const research = projects.length > 0 && (
     <div className="space-y-3">
       <h3 className="text-lg font-bold text-m-ink">চলমান গবেষণা</h3>
-      <ul className="grid gap-3 sm:grid-cols-2">
+      <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {projects.map((p) => {
           const topic = chosenTopic(p) ?? (pollOpen(p, today) ? null : leading(p.ideas));
           const pct = readiness(p);

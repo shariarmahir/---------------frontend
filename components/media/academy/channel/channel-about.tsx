@@ -116,7 +116,7 @@ export function ChannelAbout({ open, onOpenChange, person, followers, videos, vi
           </ul>
         </div>
 
-        <div className="grid gap-2 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <button type="button" onClick={share} className={actionClass}>
             <Share2 className="size-4" aria-hidden /> চ্যানেল শেয়ার
           </button>

@@ -120,7 +120,7 @@ export function PeopleDirectory() {
         </dl>
       </section>
 
-      <div className="grid gap-6 lg:grid-cols-[15rem_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[15rem_minmax(0,1fr)]">
         <nav aria-label="মানুষের তালিকা" className="lg:sticky lg:top-22 lg:self-start">
           <ul className="grid grid-cols-3 gap-1 rounded-2xl bg-m-ink/6 p-1 lg:grid-cols-1 lg:gap-1.5 lg:bg-transparent lg:p-0">
             {TABS.map(({ key, label, short, Icon }) => {

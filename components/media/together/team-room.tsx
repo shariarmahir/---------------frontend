@@ -109,7 +109,7 @@ function Hero({ team, room, canEdit, onWrite, onTab }: { team: Team; room: TeamR
 
   return (
     <section className="live-in overflow-hidden rounded-3xl bg-m-yellow text-m-ink shadow-[0_30px_70px_-40px_var(--color-signal-orange)]">
-      <div className="grid lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
         <div className="min-w-0 space-y-4 p-5 sm:p-8">
           <Link href="/media/together?v=teams" className="group inline-flex items-center gap-1.5 text-sm font-bold">
             <ArrowLeft className="size-4 transition-transform duration-200 group-hover:-translate-x-1" aria-hidden /> সব টিম
@@ -197,10 +197,10 @@ function MembersTab({ team, canEdit }: { team: Team; canEdit: boolean }) {
   const unseen = Math.max(0, count - people.length);
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
       <section aria-labelledby="members-title" className="rounded-3xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-6 shadow-m-tile">
         <h2 id="members-title" className="text-xl font-bold text-m-ink">সদস্য · <Num value={count} /> জন</h2>
-        <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+        <ul className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
           {people.map((p) => (
             <li key={p.handle}>
               <Link href={`/media/u/${p.handle}`} className="flex items-center gap-3 rounded-2xl p-2.5 ring-1 ring-m-ink/9 transition-colors hover:bg-m-ink/3 hover:ring-m-ink/21">

@@ -105,7 +105,7 @@ function LearnerCard() {
     return (
       <div className="mt-4">
         <p className="text-sm font-semibold">এখনো কোনো বিভাগে নেই — যোগ দেওয়া বিনামূল্যে</p>
-        <ol className="mt-2.5 grid gap-2 sm:grid-cols-3">
+        <ol className="mt-2.5 grid grid-cols-1 gap-2 sm:grid-cols-3">
           {FIRST_STEPS.map((s, i) => (
             <li key={s} className="flex items-center gap-2 rounded-xl bg-m-ink/4 px-3 py-2 text-sm">
               <span className="grid size-6 shrink-0 place-items-center rounded-md bg-m-yellow text-xs font-bold text-m-ink"><Num value={i + 1} /></span>

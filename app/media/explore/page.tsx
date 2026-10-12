@@ -28,7 +28,7 @@ export default function ExplorePage() {
       {mediaNavGroups.map((g) => (
         <section key={g.title} aria-labelledby={`g-${g.title}`}>
           <h2 id={`g-${g.title}`} className="mb-3 text-sm font-bold text-m-ink/65">{g.title}</h2>
-          <ul className="grid gap-3 sm:grid-cols-2">
+          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {g.items.map((item) => (
               <li key={item.href}>
                 <Link

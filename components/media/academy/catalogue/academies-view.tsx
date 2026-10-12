@@ -107,7 +107,7 @@ export function AcademiesView({ entries }: { entries: AcademyEntry[] }) {
             <Tx k="ধরন যেটাই হোক, শেখা চলে একই নিয়মে — শুধু ব্যাচের মাপ আলাদা।" />
           </p>
         </div>
-        <ol data-reveal-group className="grid gap-px border-t border-(--c-line) bg-(--c-line) md:grid-cols-3">
+        <ol data-reveal-group className="grid grid-cols-1 gap-px border-t border-(--c-line) bg-(--c-line) md:grid-cols-3">
           {KINDS.map(({ Icon, title, body }, i) => (
             <li key={title} data-reveal className="bg-(--c-bg) p-6 md:p-8">
               <div className="flex items-center justify-between gap-4">

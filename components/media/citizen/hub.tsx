@@ -101,7 +101,7 @@ export function CitizenHub() {
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       <section className="live-in overflow-hidden rounded-3xl bg-m-card ring-1 ring-m-ink/10 shadow-m-tile">
-        <div className="grid gap-8 p-5 sm:p-8 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] xl:items-center">
+        <div className="grid grid-cols-1 gap-8 p-5 sm:p-8 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] xl:items-center">
           <div className="space-y-5">
             <PixelMark tone="dark" />
             <p className="inline-flex items-center gap-2 rounded-full bg-m-red px-3 py-1 text-xs font-bold text-m-on">
@@ -176,7 +176,7 @@ export function CitizenHub() {
         </div>
       </div>
 
-      <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_19rem]">
+      <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,1fr)_19rem]">
         <div className="space-y-4">
           {shown.map((it) =>
             it.type === "crime" ? (

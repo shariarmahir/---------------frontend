@@ -69,7 +69,7 @@ export function TeachApply({ initialDept }: { initialDept?: string }) {
           render={({ field }) => (
             <FormItem>
               <FormGroupLabel>কোন ধরনের একাডেমি</FormGroupLabel>
-              <FormGroup className="grid gap-2 sm:grid-cols-2">
+              <FormGroup className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {(Object.keys(DEPT_KINDS) as DeptKind[]).map((k) => (
                   <label key={k} className={cn(choiceClass(field.value === k), "flex-col items-start py-3")}>
                     <input type="radio" className="sr-only" name={field.name} checked={field.value === k} onChange={() => field.onChange(k)} />
@@ -82,7 +82,7 @@ export function TeachApply({ initialDept }: { initialDept?: string }) {
           )}
         />
 
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <FormField
             control={form.control}
             name="dept"
@@ -137,7 +137,7 @@ export function TeachApply({ initialDept }: { initialDept?: string }) {
           )}
         </div>
         {dept === "new" && (
-          <div className="grid gap-5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <FormField
               control={form.control}
               name="academy"
@@ -183,7 +183,7 @@ export function TeachApply({ initialDept }: { initialDept?: string }) {
           />
         )}
 
-        <div className="grid gap-5 sm:grid-cols-[10rem_minmax(0,1fr)]">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-[10rem_minmax(0,1fr)]">
           <FormField
             control={form.control}
             name="years"

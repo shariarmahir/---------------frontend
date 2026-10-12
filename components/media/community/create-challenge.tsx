@@ -108,7 +108,7 @@ export function CreateChallengeButton() {
                   <FormMessage />
                 </FormItem>
               )} />
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <FormField control={form.control} name="host" render={({ field }) => (
                   <FormItem>
                     <FormLabel>আয়োজক</FormLabel>
@@ -144,7 +144,7 @@ export function CreateChallengeButton() {
                   <FormMessage />
                 </FormItem>
               )} />
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <FormField control={form.control} name="prize" render={({ field }) => (
                   <FormItem>
                     <FormLabel>পুরস্কার (৳)</FormLabel>
@@ -192,7 +192,7 @@ export function MyChallenges({ kind }: { kind?: ChallengeKind }) {
   return (
     <section className="mb-8">
       <h2 className="mb-3 text-base font-bold text-m-ink">আপনার চ্যালেঞ্জ</h2>
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {mine.map((c) => <ChallengeCard key={c.id} challenge={c} mine />)}
       </div>
     </section>

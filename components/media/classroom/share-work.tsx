@@ -118,7 +118,7 @@ export function ShareDialog({ open, onOpenChange, from, members, meId, preset, o
         <form onSubmit={submit} noValidate className="space-y-5">
           <fieldset>
             <legend className={label}>কী ধরনের কাজ?</legend>
-            <div className="grid gap-2 sm:grid-cols-3">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
               {(Object.keys(SHARE_KINDS) as ShareKind[]).map((k) => {
                 const Icon = SHARE_ICONS[k];
                 return (
@@ -239,7 +239,7 @@ export function ShowcasePanel({ shares, canShare, onShare, onStart, research }: 
             </div>
           )}
         </div>
-        <ol className="mt-5 grid gap-2 sm:grid-cols-3">
+        <ol className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-3">
           {steps.map((s) => (
             <li key={s.n} className="flex gap-3 rounded-2xl bg-m-card/8 p-3 ring-1 ring-m-ink/15">
               <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-m-card text-sm font-bold text-m-blue"><Num value={s.n} /></span>
@@ -254,7 +254,7 @@ export function ShowcasePanel({ shares, canShare, onShare, onStart, research }: 
       {shares.length === 0 ? (
         <p className="rounded-2xl bg-m-card p-5 text-center text-sm text-m-ink/65 ring-1 ring-m-ink/10 shadow-m-tile">এখনো কিছু শেয়ার হয়নি। প্রথম সমাধানটা আপনার দলেরই হোক।</p>
       ) : (
-        <ul className="grid gap-3 sm:grid-cols-2">
+        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {[...shares].sort((a, b) => b.at.localeCompare(a.at)).map((s) => {
             const Icon = SHARE_ICONS[s.kind];
             return (

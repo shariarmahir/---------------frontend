@@ -191,7 +191,7 @@ export function RoutineView() {
           </Band>
 
           <Band id="span" n={4} label="চল্লিশ দিন" note="ক্লাস, প্যানেল, শেষ">
-            <ul data-reveal-group className="grid gap-px bg-(--c-line) md:grid-cols-2">
+            <ul data-reveal-group className="grid grid-cols-1 gap-px bg-(--c-line) md:grid-cols-2">
               {rows.map((r) => {
                 const t = courseTimeline(r.batch.starts);
                 return (

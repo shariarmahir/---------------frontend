@@ -93,7 +93,7 @@ export function PostJobButton() {
                   <FormMessage />
                 </FormItem>
               )} />
-              <div className="grid gap-5 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <FormField control={form.control} name="org" render={({ field }) => (
                   <FormItem>
                     <FormLabel>প্রতিষ্ঠান / আপনার নাম</FormLabel>
@@ -126,7 +126,7 @@ export function PostJobButton() {
                   </FormGroup>
                 </FormItem>
               )} />
-              <div className="grid gap-5 sm:grid-cols-3">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
                 <FormField control={form.control} name="payMin" render={({ field }) => (
                   <FormItem>
                     <FormLabel>সর্বনিম্ন বেতন (৳)</FormLabel>
@@ -155,7 +155,7 @@ export function PostJobButton() {
               <p className="-mt-2 rounded-lg bg-m-ink/6 px-3 py-2 text-xs text-m-blue">
                 ন্যায্য মজুরি: {payUnitBn[unit]} অন্তত <Taka amount={floor} />
               </p>
-              <div className="grid gap-5 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <FormField control={form.control} name="location" render={({ field }) => (
                   <FormItem>
                     <FormLabel>কোথায়</FormLabel>

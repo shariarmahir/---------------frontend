@@ -59,7 +59,7 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
           <span className="inline-flex items-center gap-1.5"><CalendarDays className="size-3.5" aria-hidden /><DateText iso={`${day}`} weekday /></span>
           <span className="inline-flex items-center gap-1.5"><Rss className="size-3.5 text-m-blue" aria-hidden />হালনাগাদ <Ago iso={desk.at} live /> · প্রতি ১৫ মিনিটে</span>
         </div>
-        <div className="grid gap-6 p-5 sm:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+        <div className="grid grid-cols-1 gap-6 p-5 sm:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <div>
             <p className="text-sm font-bold text-m-blue">শিক্ষিতদের মিডিয়া · দৈনিক সারাংশ</p>
             <h1 className="mt-2 text-5xl leading-none font-bold tracking-tight text-m-ink sm:text-7xl">নাগরিক জীবন</h1>
@@ -100,7 +100,7 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
                 <>
                   <Icon className="size-6 shrink-0" aria-hidden />
                   <span className="min-w-0">
-                    <span className="flex items-center gap-1.5 font-bold">
+                    <span className="flex flex-wrap items-center gap-x-1.5 font-bold">
                       {EDITIONS[ed].bn}
                       {!yesterday && ed === current && <span className={cn("rounded-full px-1.5 py-px text-[10px]", on ? "bg-m-card text-m-blue" : "bg-m-yellow text-m-ink")}>এখন</span>}
                     </span>
@@ -138,7 +138,7 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
           {/* Front page: the lead, then four headlines from other desks. */}
           <section aria-labelledby="front-title" className="space-y-4">
             <SectionTitle id="front-title" Icon={Newspaper} title="এই বেলার শিরোনাম" />
-            <div className="grid gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
               <LeadStory item={lead} />
               {side.length > 0 && (
                 <ol className="rounded-3xl bg-m-card p-2 ring-1 ring-m-ink/10 shadow-m-tile">
@@ -152,7 +152,7 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
           {brief.length > 0 && (
             <section aria-labelledby="brief-title" className="space-y-3">
               <SectionTitle id="brief-title" Icon={Zap} title="এক নজরে" hint="ছোট খবর, এক লাইনে" />
-              <ol className="grid gap-x-8 rounded-3xl bg-m-card px-5 py-2 ring-1 ring-m-ink/10 md:grid-cols-2 shadow-m-tile">
+              <ol className="grid grid-cols-1 gap-x-8 rounded-3xl bg-m-card px-5 py-2 ring-1 ring-m-ink/10 md:grid-cols-2 shadow-m-tile">
                 {brief.map((n, i) => <BriefRow key={n.id} item={n} n={<Num value={i + 1} />} />)}
               </ol>
             </section>
@@ -193,7 +193,7 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
                     {CATEGORIES[cat].bn}
                     <span className="text-sm font-medium text-m-ink/50"><Num value={list.length} />টি</span>
                   </h3>
-                  <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{shown.map((n) => <StoryCard key={n.id} item={n} />)}</ul>
+                  <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">{shown.map((n) => <StoryCard key={n.id} item={n} />)}</ul>
                   {!category && list.length > shown.length && (
                     <Link href={href({ e: edition, d: yesterday, c: cat })} scroll={false} className="inline-block text-sm font-bold text-m-blue hover:underline">
                       {CATEGORIES[cat].bn}-এর আরও <Num value={list.length - shown.length} />টি খবর

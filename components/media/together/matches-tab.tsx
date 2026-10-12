@@ -36,7 +36,7 @@ export function MatchesTab({ team, canEdit }: { team: Team; canEdit: boolean }) 
   ];
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
       <div className="min-w-0 space-y-5">
         <div className="flex flex-col gap-4 rounded-3xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-6 shadow-m-tile">
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -63,7 +63,7 @@ export function MatchesTab({ team, canEdit }: { team: Team; canEdit: boolean }) 
         {list.length === 0 ? (
           <p className="rounded-2xl border border-dashed border-m-ink/10 p-6 text-center text-sm text-m-ink/65">এখনো কোনো লড়াই হয়নি। প্রথম চ্যালেঞ্জটা দিয়ে দেখুন, কে জেতে!</p>
         ) : (
-          <div className="grid gap-4 xl:grid-cols-2">{list.map((m) => <VersusCard key={m.id} match={m} all={all} mine={mine} />)}</div>
+          <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">{list.map((m) => <VersusCard key={m.id} match={m} all={all} mine={mine} />)}</div>
         )}
       </div>
       <LeagueTable rows={table} all={all} mine={mine} highlight={team.id} />

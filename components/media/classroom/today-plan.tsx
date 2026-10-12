@@ -33,7 +33,7 @@ export const TodayTab: ClassTab = ({ room, leader, onTab }) => {
   const daily = room.papers.find((p) => p.daily);
 
   return (
-    <div className="grid gap-4 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
       {next && (
         <section
           className={cn(
@@ -124,7 +124,7 @@ export const TodayTab: ClassTab = ({ room, leader, onTab }) => {
 };
 
 export const PlanTab: ClassTab = ({ room, leader }) => (
-  <div className="grid gap-4 lg:grid-cols-2">
+  <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
     <Syllabus room={room} leader={leader} />
     <ExamRoutine exams={room.exams} roomId={room.id} leader={leader} />
     <WeekRoutine room={room} leader={leader} />
@@ -177,7 +177,7 @@ function Syllabus({ room, leader }: { room: Parameters<ClassTab>[0]["room"]; lea
       </div>
       {leader && (
         <form
-          className="mt-5 grid gap-2 border-t border-m-ink/9 pt-4 sm:grid-cols-[1fr_1.4fr_auto]"
+          className="mt-5 grid grid-cols-1 gap-2 border-t border-m-ink/9 pt-4 sm:grid-cols-[1fr_1.4fr_auto]"
           onSubmit={(e) => {
             e.preventDefault();
             if (!subject.trim() || !title.trim()) return;
@@ -225,7 +225,7 @@ function ExamRoutine({ exams, roomId, leader }: { exams: Exam[]; roomId: string;
       </ul>
       {leader && (
         <form
-          className="mt-4 grid gap-2 border-t border-m-ink/9 pt-4 sm:grid-cols-2"
+          className="mt-4 grid grid-cols-1 gap-2 border-t border-m-ink/9 pt-4 sm:grid-cols-2"
           onSubmit={(e) => {
             e.preventDefault();
             if (!title.trim() || !date) return;

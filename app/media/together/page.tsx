@@ -52,7 +52,7 @@ export default async function TogetherPage({ searchParams }: { searchParams: Pro
           <circle cx="100" cy="100" r="70" fill="none" stroke="currentColor" strokeWidth="1" />
           <circle cx="100" cy="100" r="44" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="1 4" />
         </svg>
-        <div className="grid gap-8 p-5 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
+        <div className="grid grid-cols-1 gap-8 p-5 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
           <div className="space-y-5">
             <PixelMark tone="dark" />
             <h1 className="text-4xl font-bold tracking-tight text-balance text-m-ink sm:text-6xl sm:leading-[1.05]">
@@ -174,7 +174,7 @@ function EventsPart({ k }: { k?: string }) {
   return (
     <section className="space-y-5">
       <PartHead title="উদ্যোগ" line="চলো ১০০টা গাছ লাগাই, এলাকাটা পরিষ্কার করি — যে কেউ নেতৃত্ব দিতে পারেন, যে কেউ যোগ দিতে পারেন। টিম নিয়েও নামা যায়।" action={<CreateEventButton />} />
-      <ol className="grid gap-2 sm:grid-cols-3">
+      <ol className="grid grid-cols-1 gap-2 sm:grid-cols-3">
         {steps.map(({ Icon, text }, i) => (
           <li key={i} className="flex items-start gap-3 rounded-2xl bg-m-blue-soft p-3.5 text-sm text-m-ink">
             <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-m-yellow text-m-ink"><Icon className="size-4.5" aria-hidden /></span>
@@ -187,7 +187,7 @@ function EventsPart({ k }: { k?: string }) {
       {shown.length === 0 ? (
         <EmptyState icon="posts" title="এই ধরনের কোনো উদ্যোগ নেই" body="প্রথমটি আপনিই শুরু করুন।" />
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">{shown.map((e) => <EventCard key={e.id} event={e} />)}</div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">{shown.map((e) => <EventCard key={e.id} event={e} />)}</div>
       )}
     </section>
   );
@@ -207,7 +207,7 @@ function ChallengesPart({ k }: { k?: string }) {
         </p>
         <Kinds view="challenges" names={challengeKindBn} active={kind} label="চ্যালেঞ্জের ধরন" />
         <MyChallenges kind={kind} />
-        <div className="grid gap-4 md:grid-cols-2">{shown.map((c) => <ChallengeCard key={c.id} challenge={c} />)}</div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">{shown.map((c) => <ChallengeCard key={c.id} challenge={c} />)}</div>
       </section>
     </div>
   );

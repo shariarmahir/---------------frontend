@@ -83,7 +83,7 @@ function IdentityStep({ defaultName, onNext }: { defaultName: string; onNext: (v
           render={({ field }) => (
             <FormItem>
               <FormGroupLabel>কোন কাগজ দিয়ে</FormGroupLabel>
-              <FormGroup className="grid gap-2 sm:grid-cols-2">
+              <FormGroup className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {([
                   ["nid", "জাতীয় পরিচয়পত্র", "স্মার্ট বা পুরনো কার্ড"],
                   ["passport", "পাসপোর্ট", "প্রবাসী বা এনআইডি না থাকলে"],
@@ -108,7 +108,7 @@ function IdentityStep({ defaultName, onNext }: { defaultName: string; onNext: (v
           )}
         />
 
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <FormField
             control={form.control}
             name="number"
@@ -179,7 +179,7 @@ function IdentityStep({ defaultName, onNext }: { defaultName: string; onNext: (v
           )}
         />
 
-        <ul className="grid gap-2 text-xs text-m-ink/65 sm:grid-cols-3">
+        <ul className="grid grid-cols-1 gap-2 text-xs text-m-ink/65 sm:grid-cols-3">
           <li className="flex items-center gap-1.5"><UserRoundX className="size-4 text-m-blue" aria-hidden />ভুয়া ও দ্বিতীয় অ্যাকাউন্ট বন্ধ</li>
           <li className="flex items-center gap-1.5"><Lock className="size-4 text-m-blue" aria-hidden />নম্বর ও ছবি গোপন থাকে</li>
           <li className="flex items-center gap-1.5"><SealCheck size={16} weight="duotone" className="text-m-blue" aria-hidden />প্রোফাইলে শুধু সিল দেখায়</li>
@@ -214,7 +214,7 @@ function CategoryStep({ categories, onBack, onNext }: { categories: { id: Catego
                   <Num value={chosen.length} />/<Num value={5} /> বাছাই
                 </span>
               </FormGroupLabel>
-              <div className="grid gap-2 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {categories.map((c) => {
                   const on = field.value.includes(c.id);
                   const full = !on && field.value.length >= 5;
@@ -276,7 +276,7 @@ function ProfileStep({ takenHandles, defaultName, onBack, onDone }: { takenHandl
         })}
         className="space-y-5"
       >
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <FormField
             control={form.control}
             name="displayName"

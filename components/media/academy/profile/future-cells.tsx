@@ -60,7 +60,7 @@ export function FutureCells({ academy, courses }: { academy: Academy; courses: C
   ];
 
   return (
-    <div className="grid gap-px border-t border-(--c-line) bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
+    <div className="grid grid-cols-1 gap-px border-t border-(--c-line) bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
       <div data-reveal className="bg-(--c-bg) p-6 md:p-10">
         <fieldset>
           <legend className="hud text-(--c-faint)">কোন কোর্স?</legend>

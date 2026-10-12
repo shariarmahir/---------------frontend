@@ -67,7 +67,7 @@ export function UploadDialog({ open, onOpenChange, owes }: { open: boolean; onOp
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-6 px-6 py-6">
-          <div className="grid gap-5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <FormField
               control={form.control}
               name="course"
@@ -153,7 +153,7 @@ export function UploadDialog({ open, onOpenChange, owes }: { open: boolean; onOp
             )}
           />
 
-          <div className="grid gap-5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <FormField
               control={form.control}
               name="short"

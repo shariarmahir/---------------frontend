@@ -43,7 +43,7 @@ export function VideoRating({ video, canRate, own }: { video: ClassVideo; canRat
   }
 
   return (
-    <section aria-labelledby="rating-title" className="mt-6 grid gap-6 bg-(--c-bg-sunken) p-4 sm:grid-cols-[auto_minmax(0,1fr)] sm:p-5 lg:grid-cols-[auto_minmax(0,1fr)_auto]">
+    <section aria-labelledby="rating-title" className="mt-6 grid grid-cols-1 gap-6 bg-(--c-bg-sunken) p-4 sm:grid-cols-[auto_minmax(0,1fr)] sm:p-5 lg:grid-cols-[auto_minmax(0,1fr)_auto]">
       <div className="text-center sm:text-left">
         <h2 id="rating-title" className="text-sm font-semibold text-(--c-muted)">
           ক্লাসের রেটিং

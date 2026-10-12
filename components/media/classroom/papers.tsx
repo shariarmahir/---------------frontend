@@ -39,7 +39,7 @@ export const PapersTab: ClassTab = ({ room, me, member, leader }) => {
         </p>
         {member && <button type="button" onClick={() => setBuilding(true)} className={mediaButton({ variant: "primary" })}><Plus aria-hidden /> নতুন প্রশ্নপত্র</button>}
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {room.papers.map((p) => {
           const mine = me ? p.scores[me.id] : undefined;
           return (
@@ -80,7 +80,7 @@ function TakePaper({ paper, onDone, onClose }: { paper: Paper; onDone: (score: n
         {paper.questions.map((q, i) => (
           <li key={i}>
             <p className="mb-2 font-semibold text-m-ink"><Num value={i + 1} />. {q.q}</p>
-            <div className="grid gap-2 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               {q.options.map((o, k) => {
                 const picked = picks[i] === k;
                 const reveal = score !== null && (k === q.answer || picked);
@@ -147,7 +147,7 @@ function BuildPaper({ leader, onSave, onCancel }: { leader: boolean; onSave: (p:
               )}
             </div>
             <Input value={q.q} onChange={(e) => set(i, { q: e.target.value })} placeholder="প্রশ্ন লিখুন" aria-label={`প্রশ্ন ${i + 1}`} />
-            <div className="mt-2 grid gap-2 sm:grid-cols-2">
+            <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
               {q.options.map((o, k) => (
                 <label key={k} className="flex items-center gap-2">
                   <input type="radio" name={`ans-${i}`} checked={q.answer === k} onChange={() => set(i, { answer: k })} className="size-4 shrink-0 accent-m-blue" aria-label={`সঠিক উত্তর ${LETTERS[k]}`} />

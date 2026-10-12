@@ -149,7 +149,7 @@ export function DepartmentsView({ entries }: { entries: DeptEntry[] }) {
             <Tx k="যে বিভাগেই পড়ুন, শেখা চলে একই নিয়মে। ভর্তির আগেই জেনে নিন কী পাচ্ছেন।" />
           </p>
         </div>
-        <ol data-reveal-group className="grid gap-px border-t border-(--c-line) bg-(--c-line) md:grid-cols-3">
+        <ol data-reveal-group className="grid grid-cols-1 gap-px border-t border-(--c-line) bg-(--c-line) md:grid-cols-3">
           {RULES.map(({ Icon, title, body }, i) => (
             <li key={i} data-reveal className="bg-(--c-bg) p-6 md:p-8">
               <div className="flex items-center justify-between gap-4">

@@ -39,7 +39,7 @@ export function LogisticsBand() {
 /** Paid reach that never leaves the platform and never reaches an unmatched buyer. */
 export function BoostBand() {
   return (
-    <section className="story-reveal grid gap-6 rounded-3xl bg-m-yellow p-5 text-m-ink sm:p-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-center">
+    <section className="story-reveal grid grid-cols-1 gap-6 rounded-3xl bg-m-yellow p-5 text-m-ink sm:p-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-center">
       <div>
       <p className="inline-flex items-center gap-2 rounded-full bg-m-card px-3 py-1 text-xs font-bold text-m-blue">
         <Megaphone className="size-4" aria-hidden /> ম্যাচ বুস্ট

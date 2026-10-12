@@ -199,7 +199,7 @@ export function DeptPage({ dept }: { dept: Department }) {
           </>
         }
       >
-        <div style={toneStyle(tone)} className="tone grid gap-14 px-6 py-14 md:px-10 md:py-20 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-center lg:gap-16">
+        <div style={toneStyle(tone)} className="tone grid grid-cols-1 gap-14 px-6 py-14 md:px-10 md:py-20 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-center lg:gap-16">
           <div>
             <nav aria-label="অবস্থান" data-reveal data-in className="hud flex flex-wrap items-center gap-2 text-(--c-faint)">
               <Link href="/media/academy/departments" className="transition-colors hover:text-(--c-ink-strong)">
@@ -260,7 +260,7 @@ export function DeptPage({ dept }: { dept: Department }) {
       </Band>
 
       <Band id="glance" n={next()} label="এক নজরে" note="সব একাডেমির একই নিয়ম">
-        <dl data-reveal-group className="grid gap-px bg-(--c-line) sm:grid-cols-2 lg:grid-cols-4">
+        <dl data-reveal-group className="grid grid-cols-1 gap-px bg-(--c-line) sm:grid-cols-2 lg:grid-cols-4">
           {glance.map((g) => (
             <div key={g.head} data-reveal className="flex flex-col bg-(--c-bg) p-6 md:p-8">
               <dt className="hud text-(--c-faint)">{g.head}</dt>
@@ -269,7 +269,7 @@ export function DeptPage({ dept }: { dept: Department }) {
             </div>
           ))}
         </dl>
-        <ul data-reveal-group className="grid gap-px border-t border-(--c-line) bg-(--c-line) sm:grid-cols-2 lg:grid-cols-4">
+        <ul data-reveal-group className="grid grid-cols-1 gap-px border-t border-(--c-line) bg-(--c-line) sm:grid-cols-2 lg:grid-cols-4">
           {rules.map(({ Icon, head, body }, i) => (
             <li key={i} data-reveal className="bg-(--c-bg) p-6 md:p-8">
               <div className="flex items-center justify-between gap-4">
@@ -321,7 +321,7 @@ export function DeptPage({ dept }: { dept: Department }) {
             <Num value={JOIN_STEPS.length} /> ধাপে <Turn>ভর্তি</Turn>।
           </BandTitle>
         </div>
-        <ol data-reveal-group className="grid gap-px border-t border-(--c-line) bg-(--c-line) md:grid-cols-3">
+        <ol data-reveal-group className="grid grid-cols-1 gap-px border-t border-(--c-line) bg-(--c-line) md:grid-cols-3">
           {JOIN_STEPS.map((s, i) => (
             <li key={s.title} data-reveal className="bg-(--c-bg) p-6 md:p-8">
               <span className="display grid size-10 place-items-center bg-(--c-invert-bg) text-lg text-(--c-invert-fg)">

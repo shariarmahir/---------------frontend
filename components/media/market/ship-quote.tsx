@@ -26,7 +26,7 @@ export function ShipQuote({ listing }: { listing: Listing & { kg: number } }) {
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-3 sm:grid-cols-[9rem_1fr]">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-[9rem_1fr]">
         <label className="space-y-1.5">
           <span className="text-sm font-semibold text-m-ink">কত {listing.unit}</span>
           <Input inputMode="numeric" value={qtyRaw} onChange={(e) => setQty(e.target.value)} aria-describedby="qty-note" />

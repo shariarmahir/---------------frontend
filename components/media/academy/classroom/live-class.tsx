@@ -137,7 +137,7 @@ function Lobby({ batch, course, onEnter }: { batch: Batch; course: Course; onEnt
           <ArrowLeft className="size-4" aria-hidden /> ক্লাসরুমে ফিরুন
         </Link>
       </header>
-      <main className="mx-auto grid w-full max-w-6xl flex-1 items-center gap-8 overflow-y-auto px-4 pb-10 sm:px-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
+      <main className="mx-auto grid grid-cols-1 w-full max-w-6xl flex-1 items-center gap-8 overflow-y-auto px-4 pb-10 sm:px-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
         <div>
           <div className="relative aspect-video overflow-hidden border border-(--c-line) bg-black">
             <video ref={preview} autoPlay playsInline muted className={cn("absolute inset-0 size-full -scale-x-100 object-cover transition-opacity duration-300", cam ? "opacity-100" : "opacity-0")} />

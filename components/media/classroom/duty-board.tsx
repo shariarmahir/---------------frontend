@@ -164,7 +164,7 @@ export function DutyBoard({ team, members, rota, seed, now, meId, member, leader
         })}
       </ol>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-start">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-start">
         <div className="story-reveal overflow-hidden rounded-2xl bg-m-card ring-1 ring-m-ink/10 shadow-m-tile">
           <p className="flex items-center justify-between gap-2 border-b border-m-ink/9 px-4 py-3 text-sm font-bold text-m-ink">
             <span>টিম ম্যাপ · {WEEKDAYS[day]}বার</span>
@@ -221,7 +221,7 @@ export function DutyBoard({ team, members, rota, seed, now, meId, member, leader
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 md:items-start">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start">
         <div className="story-reveal rounded-2xl bg-m-blue-soft p-4 text-m-ink sm:p-5">
           <h3 className="font-bold">{ahead ? "পরের সপ্তাহে আমার দায়িত্ব" : "এই সপ্তাহে আমার দায়িত্ব"}</h3>
           {!member || !meId ? (

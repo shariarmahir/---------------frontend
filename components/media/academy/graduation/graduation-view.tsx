@@ -193,7 +193,7 @@ function Road({ course, e, dream }: { course: Course; e: Enrollment; dream?: str
           <span key={b.title} className={cn("h-1.5 flex-1", b.done ? "bg-(--c-app)" : "bg-(--c-line)")} />
         ))}
       </div>
-      <ol className="mt-6 grid gap-px border-t border-(--c-line) bg-(--c-line) sm:grid-cols-5">
+      <ol className="mt-6 grid grid-cols-1 gap-px border-t border-(--c-line) bg-(--c-line) sm:grid-cols-5">
         {boxes.map((b, i) => (
           <li key={b.title}>
             <Link href={b.href} className="group flex h-full gap-4 bg-(--c-bg) p-5 transition-colors duration-150 hover:bg-(--c-bg-raised) sm:flex-col">

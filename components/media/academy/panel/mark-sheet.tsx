@@ -103,7 +103,7 @@ export function MarkSheet({ seatId }: { seatId: string }) {
               </>
             }
           >
-            <div className="grid gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_26rem]">
+            <div className="grid grid-cols-1 gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_26rem]">
               <section aria-label="শিক্ষার্থীর ফাইল" className="flex min-w-0 flex-col gap-px">
                 <div className="bg-(--c-bg) p-6 md:p-10">
                   <p className={cn(head, "flex items-center gap-2")}>

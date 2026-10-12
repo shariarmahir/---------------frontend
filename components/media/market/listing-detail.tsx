@@ -62,7 +62,7 @@ export function ListingDetail({
   return (
     <div className="mx-auto max-w-6xl">
       <PageHeader title={listing.title} back={{ href: "/media/market", label: "বাজার" }} />
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="min-w-0 space-y-6">
           {listing.gallery ? <MediaGallery media={listing.gallery} /> : <MediaFrame slot={{ ...listing.media, ratio: "16/9" }} priority sizes="(min-width: 1024px) 720px, 100vw" />}
           {samples.length > 0 && (
@@ -87,7 +87,7 @@ export function ListingDetail({
             </p>
             <p className="mt-3 text-[15px] leading-relaxed whitespace-pre-line text-m-ink">{listing.description}</p>
             {listing.highlights.length > 0 && (
-              <ul className="mt-4 grid gap-2 sm:grid-cols-3">
+              <ul className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
                 {listing.highlights.map((h) => (
                   <li key={h} className="flex items-start gap-1.5 text-sm text-m-ink/80">
                     <CircleCheck className="mt-0.5 size-4 shrink-0 text-m-blue" aria-hidden />
@@ -115,7 +115,7 @@ export function ListingDetail({
 
           {listing.specs && listing.specs.length > 0 && (
             <Panel title="বিস্তারিত">
-              <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
+              <dl className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
                 {listing.specs.map((s) => (
                   <div key={s.k} className="border-b border-m-ink/9 pb-2">
                     <dt className="text-xs text-m-ink/60">{s.k}</dt>

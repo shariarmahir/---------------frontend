@@ -153,7 +153,7 @@ export function CrimeComposer({ open, onOpenChange, me }: { open: boolean; onOpe
             <span className={label}>শিরোনাম — এক লাইনে</span>
             <Input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} placeholder="যেমন: বাজারে প্রতি দোকান থেকে সাপ্তাহিক চাঁদা" aria-invalid={tried && title.trim().length < 8} />
           </label>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label className="block">
               <span className={label}>এলাকা বা জায়গা</span>
               <Input value={area} onChange={(e) => setArea(e.target.value)} placeholder="মোড়, বাজার, রুট — বাসার ঠিকানা নয়" aria-invalid={tried && area.trim().length < 2} />
@@ -216,7 +216,7 @@ export function CrimeComposer({ open, onOpenChange, me }: { open: boolean; onOpe
             <p className="mt-2 text-xs text-m-ink/60">{busy ? "ছবি ঠিক করা হচ্ছে…" : "মুখ বা নম্বরপ্লেট ঢাকতে ছবির সেই জায়গায় চাপুন। ভিডিও সর্বোচ্চ ১.৫ MB।"}</p>
           </div>
 
-          <div className="grid gap-2 text-sm text-m-ink/85 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2 text-sm text-m-ink/85 sm:grid-cols-3">
             <label className="flex items-center gap-2"><input type="checkbox" checked={anonymous} onChange={(e) => setAnonymous(e.target.checked)} className="size-4 accent-m-blue" /> নাম গোপন রাখুন</label>
             <label className="flex items-center gap-2"><input type="checkbox" checked={sensitive} onChange={(e) => setSensitive(e.target.checked)} className="size-4 accent-m-blue" /> <EyeOff className="size-4" aria-hidden /> সংবেদনশীল ছবি</label>
             <label className="flex items-center gap-2"><input type="checkbox" checked={reported} onChange={(e) => setReported(e.target.checked)} className="size-4 accent-m-blue" /> <Num value={line.tel} />-এ জানিয়েছি</label>

@@ -69,7 +69,7 @@ export function ExamDesk({ exams, kinds, now, meId, member, manager, teacher, te
       {sorted.length === 0 ? (
         <p className="rounded-2xl bg-m-card p-5 text-sm text-m-ink/65 ring-1 ring-m-ink/10 shadow-m-tile">কোনো পরীক্ষার তারিখ এখনো দেওয়া হয়নি।</p>
       ) : (
-        <ul className="grid gap-3 md:grid-cols-2">
+        <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {sorted.map((x) => {
             const days = daysUntil(x.date, now);
             const p = x.paper;
@@ -237,7 +237,7 @@ function PaperBuilder({ exam, onClose, onSave }: { exam: DeskExam; onClose: () =
             মোট <Num value={totalMarks(qs)} /> নম্বর · বহুনির্বাচনি <Num value={mcqTotal(qs)} /> নম্বর (এখানেই মূল্যায়ন), বাকিটা খাতায়।
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-3 sm:grid-cols-[8rem_minmax(0,1fr)]">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-[8rem_minmax(0,1fr)]">
           <label className="block"><span className={label}>সময় (মিনিট)</span><Input inputMode="numeric" value={duration ? num(duration) : ""} onChange={(e) => setDuration(toNumber(e.target.value))} /></label>
           <label className="block"><span className={label}>নির্দেশনা</span><Input value={instructions} onChange={(e) => setInstructions(e.target.value)} placeholder="যেমন: সব প্রশ্নের উত্তর দিতে হবে" /></label>
         </div>
@@ -257,7 +257,7 @@ function PaperBuilder({ exam, onClose, onSave }: { exam: DeskExam; onClose: () =
               </div>
               <Textarea rows={2} value={q.q} onChange={(e) => set(q.id, { q: e.target.value })} placeholder="প্রশ্ন লিখুন" aria-label="প্রশ্ন" />
               {q.kind === "mcq" && (
-                <div className="grid gap-2 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   {(q.options ?? []).map((o, k) => (
                     <label key={k} className={cn("flex items-center gap-2 rounded-xl px-2 py-1 ring-1", q.answer === k ? "bg-m-blue/15 ring-m-blue" : "ring-m-ink/9")}>
                       <input type="radio" name={`ans-${q.id}`} checked={q.answer === k} onChange={() => set(q.id, { answer: k })} className="size-4 accent-m-blue" aria-label={`${LETTERS[k]} সঠিক উত্তর`} />
@@ -318,7 +318,7 @@ function PaperView({ exam, paper, teacher, canTake, name, onClose, onScore }: {
                 <span className="shrink-0 text-xs font-bold text-m-ink/60">[<Num value={q.marks} />] · {QUESTION_KINDS[q.kind]}</span>
               </p>
               {q.kind === "mcq" && (
-                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
                   {q.options!.map((o, k) => {
                     const right = reveal && k === q.answer;
                     const wrong = done !== null && picks[i] === k && k !== q.answer;

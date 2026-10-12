@@ -169,7 +169,7 @@ function Standing({ course, e, fastTrack }: { course: Course; e: Enrollment; fas
   const p = progressOf(course, e);
   return (
     <section aria-label="আমার অগ্রগতি" className="border-b border-(--c-line)">
-      <div className="grid gap-px bg-(--c-line) md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-px bg-(--c-line) md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1fr)]">
         <div className="bg-(--c-bg) p-6 md:p-8">
           <p className="hud text-(--c-faint)">
             ভর্তি · <DateText iso={e.at} />
@@ -339,7 +339,7 @@ function Final({ course, e, fastTrack }: { course: Course; e: Enrollment; fastTr
   const [slot, setSlot] = useState<string>();
 
   return (
-    <section aria-labelledby="final" className="grid gap-px border-t border-(--c-line) bg-(--c-line) lg:grid-cols-2">
+    <section aria-labelledby="final" className="grid grid-cols-1 gap-px border-t border-(--c-line) bg-(--c-line) lg:grid-cols-2">
       <div className="bg-(--c-bg) p-6 md:p-10">
         <p className="hud text-(--c-faint)">ফাইনাল প্রজেক্ট</p>
         <h3 id="final" className="display mt-3 text-2xl text-(--c-ink-strong)">

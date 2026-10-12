@@ -68,7 +68,7 @@ function ParentHub({ child }: { child: Child }) {
         <p className="mt-3 max-w-[52ch] text-[15px] leading-relaxed text-m-ink/80">রুটিন, নোটিশ, পরীক্ষার কাউন্টডাউন আর ক্লাসে সন্তানের অবস্থান — সব দেখতে পারবেন। কিছু বদলানো, জমা দেওয়া বা চ্যাটে লেখা যায় না।</p>
 
         {classes.length > 0 && (
-          <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {classes.map((c) => {
               const ranked = rank(c.members);
               const at = ranked.findIndex(isChild);
@@ -102,7 +102,7 @@ function ParentHub({ child }: { child: Child }) {
       {classes.length > 0 && (
         <section aria-labelledby="child-class-title">
           <h2 id="child-class-title" className="mb-4 text-xl font-bold text-m-ink">ক্লাস</h2>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {classes.map((c, i) => <ClassCard key={c.id} room={c} i={i} />)}
           </div>
         </section>
@@ -111,7 +111,7 @@ function ParentHub({ child }: { child: Child }) {
       {labs.length > 0 && (
         <section aria-labelledby="child-lab-title">
           <h2 id="child-lab-title" className="mb-4 flex items-center gap-2 text-xl font-bold text-m-ink"><FlaskConical className="size-5 text-m-blue" aria-hidden /> ল্যাব</h2>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {labs.map((l) => <LabCard key={l.id} lab={l} />)}
           </div>
         </section>
@@ -137,7 +137,7 @@ function StudentHub() {
       {/* Hero — the home page's ink band: claim left, colour fields right, proof strip below. */}
       <section className="live-in relative isolate overflow-hidden rounded-3xl bg-m-card ring-1 ring-m-ink/10 shadow-m-tile">
         <HeroVideo />
-        <div className="grid gap-8 p-5 sm:p-8 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] xl:items-center">
+        <div className="grid grid-cols-1 gap-8 p-5 sm:p-8 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] xl:items-center">
           <div className="space-y-5">
             <PixelMark tone="dark" />
             <h1 className="text-3xl font-bold tracking-tight text-balance text-m-ink sm:text-5xl sm:leading-[1.1]">
@@ -188,7 +188,7 @@ function StudentHub() {
       {mine.length > 0 && (
         <section aria-labelledby="mine-title">
           <h2 id="mine-title" className="mb-4 text-xl font-bold text-m-ink">আমার ক্লাসরুম</h2>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {mine.map((c, i) => <ClassCard key={c.id} room={c} i={i} />)}
           </div>
         </section>
@@ -198,7 +198,7 @@ function StudentHub() {
         <section aria-labelledby="sample-title">
           <h2 id="sample-title" className="text-xl font-bold text-m-ink">নমুনা ক্লাস</h2>
           <p className="mt-1 mb-4 text-sm text-m-ink/70">ঘুরে দেখুন বা কোড দিয়ে যোগ দিন — এগুলো ডেমো, আসল প্রতিষ্ঠানের নয়।</p>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {samples.map((c, i) => <ClassCard key={c.id} room={c} i={i + mine.length} sample />)}
           </div>
         </section>
@@ -208,7 +208,7 @@ function StudentHub() {
         <section aria-labelledby="lab-title">
           <h2 id="lab-title" className="flex items-center gap-2 text-xl font-bold text-m-ink"><FlaskConical className="size-5 text-m-blue" aria-hidden /> ল্যাব রুম</h2>
           <p className="mt-1 mb-4 text-sm text-m-ink/70">এক্সপেরিমেন্টের টপিক, টাস্ক শিট, প্রশ্ন, রিপোর্ট জমার শেষ সময় আর ল্যাব পরীক্ষা — এক জায়গায়।</p>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {myLabs.map((l) => <LabCard key={l.id} lab={l} />)}
             {labSamples.map((l) => <LabCard key={l.id} lab={l} sample />)}
             <button type="button" onClick={() => setCreatingLab(true)} className="story-reveal flex min-h-48 flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-m-ink/17 p-5 text-m-ink/75 transition-colors hover:border-m-blue hover:text-m-blue">
@@ -393,7 +393,7 @@ function CreateDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v:
               {tried && !fits ? <><Num value={names.length + (asTeacher ? 0 : 1)} /> জনের নাম দিয়েছেন — সীমা বাড়ান বা নাম কমান।</> : "পূর্ণ হলে কোড দিয়ে আর কেউ যোগ দিতে পারবে না। পরে সেটিংস থেকে বদলানো যায়।"}
             </p>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {!asTeacher && (
               <label className="block">
                 <span className={label}>শিক্ষকের নাম *</span>
@@ -504,7 +504,7 @@ function CreateLabDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
             <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="যেমন: গ্রুপ বি, সেকশন খ" aria-invalid={tried && !nameOk} />
             {tried && !nameOk && <span className="mt-1 block text-xs font-semibold text-m-red">অন্তত ৩ অক্ষরের একটি নাম দিন।</span>}
           </label>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label className="block">
               <span className={label}>প্রতিষ্ঠান</span>
               <Input value={institution} onChange={(e) => setInstitution(e.target.value)} placeholder="স্কুল, কলেজ, বিশ্ববিদ্যালয়" />
@@ -521,7 +521,7 @@ function CreateLabDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
             <span className={label}>ল্যাব পার্টনারদের নাম (প্রতি লাইনে একজন)</span>
             <Textarea rows={4} value={students} onChange={(e) => setStudents(e.target.value)} placeholder={"ঋতু\nতামিম\nসাদিয়া"} />
           </label>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <span className={label}>সর্বোচ্চ সদস্য</span>
               <LimitField kind="lab" value={limit} onChange={setLimit} />
@@ -559,7 +559,7 @@ function RolePick({ asTeacher, onChange, lab }: { asTeacher: boolean; onChange: 
   return (
     <fieldset>
       <legend className="mb-1.5 block text-sm font-semibold text-m-ink">আপনি কে?</legend>
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         {options.map((o) => (
           <label key={String(o.v)} className={cn(choiceClass(asTeacher === o.v), "flex-col items-start gap-0.5 py-2")}>
             <input type="radio" name="creator-role" className="sr-only" checked={asTeacher === o.v} onChange={() => onChange(o.v)} />

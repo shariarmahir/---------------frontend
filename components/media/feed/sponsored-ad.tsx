@@ -86,7 +86,7 @@ export function SponsoredAd(props: AdProps) {
   if (props.variant === "challenge") {
     const c = props.challenge;
     return (
-      <aside ref={ref} data-paused={!on} aria-label={`প্রচার: ${c.title}`} className={cn(base, "grid gap-4 bg-m-red-soft p-5 text-m-ink sm:grid-cols-[minmax(0,1fr)_9rem] sm:items-center sm:p-6")}>
+      <aside ref={ref} data-paused={!on} aria-label={`প্রচার: ${c.title}`} className={cn(base, "grid grid-cols-1 gap-4 bg-m-red-soft p-5 text-m-ink sm:grid-cols-[minmax(0,1fr)_9rem] sm:items-center sm:p-6")}>
         <div className="space-y-3">
           <div className="flex items-center justify-between gap-2">
             <span className="rounded-full bg-m-card px-2.5 py-0.5 text-xs font-bold text-m-blue">প্রচার · চ্যালেঞ্জ</span>
@@ -120,7 +120,7 @@ export function SponsoredAd(props: AdProps) {
   // The research promotion: a chart that keeps drawing itself.
   const bars = [38, 62, 48, 80, 66, 92];
   return (
-    <aside ref={ref} data-paused={!on} aria-label="প্রচার: গবেষণাকোষ" className={cn(base, "grid gap-5 bg-m-yellow p-5 text-m-ink sm:grid-cols-[minmax(0,1fr)_11rem] sm:items-center sm:p-6")}>
+    <aside ref={ref} data-paused={!on} aria-label="প্রচার: গবেষণাকোষ" className={cn(base, "grid grid-cols-1 gap-5 bg-m-yellow p-5 text-m-ink sm:grid-cols-[minmax(0,1fr)_11rem] sm:items-center sm:p-6")}>
       <div className="space-y-3">
         <div className="flex items-center justify-between gap-2">
           <span className="rounded-full bg-m-card px-2.5 py-0.5 text-xs font-bold text-m-blue">প্রচার · গবেষণাকোষ</span>

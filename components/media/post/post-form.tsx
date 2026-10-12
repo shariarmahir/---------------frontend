@@ -452,7 +452,7 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
                 )}
               />
 
-              <div className="grid gap-5 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <FormField
                   control={form.control}
                   name="category"
@@ -539,7 +539,7 @@ export function Composer({ preset, onDone, variant = "dialog" }: { preset?: Comp
                   )}
                 />
                 {v.sellable && (
-                  <div className="fade-in grid gap-4 sm:grid-cols-2">
+                  <div className="fade-in grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <FormField
                       control={form.control}
                       name="price"

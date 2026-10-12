@@ -136,7 +136,7 @@ export function MaterialsDesk({ course }: { course: Course }) {
         <span className="text-sm text-(--c-muted)">পিডিএফ, ওয়ার্ড, এক্সেল, স্লাইড, ডেটা, ছোট ভিডিও — প্রতিটি ১.৫ এমবি পর্যন্ত</span>
       </label>
 
-      <form onSubmit={addLink} className="grid gap-2 border border-(--c-line) bg-(--c-bg) p-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)_8rem_auto] sm:items-end">
+      <form onSubmit={addLink} className="grid grid-cols-1 gap-2 border border-(--c-line) bg-(--c-bg) p-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)_8rem_auto] sm:items-end">
         <label className="text-sm">
           <span className="mb-1 block font-semibold text-(--c-ink-strong)">বড় ভিডিও বা ফাইলের লিংক</span>
           <input

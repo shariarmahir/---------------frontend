@@ -48,9 +48,9 @@ export function FeedComposer() {
         <button
           type="button"
           onClick={() => start({})}
-          className="flex h-12 flex-1 items-center rounded-full bg-m-ink/6 px-5 text-left text-[15px] text-m-ink/65 transition-colors hover:bg-m-ink/8 focus-visible:ring-2 focus-visible:ring-m-blue focus-visible:outline-none"
+          className="flex h-12 min-w-0 flex-1 items-center rounded-full bg-m-ink/6 px-5 text-left text-[15px] text-m-ink/65 transition-colors hover:bg-m-ink/8 focus-visible:ring-2 focus-visible:ring-m-blue focus-visible:outline-none"
         >
-          কী ভাবছেন, {firstName(currentUser.nameBn)}?
+          <span className="truncate">কী ভাবছেন, {firstName(currentUser.nameBn)}?</span>
         </button>
       </div>
 

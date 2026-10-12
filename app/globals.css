@@ -1716,6 +1716,33 @@ body:has(.media-shell) {
   background-color: var(--color-m-ground);
 }
 
+/*
+ * Phones and touch screens. The shell reflows at any width (long words and
+ * links wrap instead of pushing the page sideways); taps act at once, with
+ * no double-tap zoom delay or grey flash; and a field never drops below
+ * 16px while typing on a touch screen, so iOS Safari does not zoom the page
+ * in when it gets focus. Dialogs and sheets keep their scrolling to
+ * themselves, and the browser's own controls follow the dark theme.
+ */
+.media-shell {
+  overflow-wrap: break-word;
+  -webkit-tap-highlight-color: transparent;
+}
+body:has(.media-shell) :is(a, button, input, label, select, summary, textarea, [role="button"], [role="tab"]) {
+  touch-action: manipulation;
+}
+@media (pointer: coarse) {
+  body:has(.media-shell) :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"]), textarea, select) {
+    font-size: max(16px, 1em);
+  }
+}
+body:has(.media-shell) :is([data-slot="dialog-content"], [data-slot="sheet-content"]) {
+  overscroll-behavior: contain;
+}
+html:has(.media-shell[data-theme="dark"]) {
+  color-scheme: dark;
+}
+
 /* Headings in the academy's display face: Archivo stretched wide for Latin
    and digits, Hind Siliguri for Bangla. Body stays Noto Sans Bengali for
    long reading. */

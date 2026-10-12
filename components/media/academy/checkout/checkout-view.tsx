@@ -180,7 +180,7 @@ function Checkout({ onJoined }: { onJoined: (r: Receipt) => void }) {
 
       {!hydrated ? (
         <Band id="form" n={2} label="ভর্তির ফর্ম">
-          <div className="grid gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_26rem]">
+          <div className="grid grid-cols-1 gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_26rem]">
             <span aria-hidden className="h-96 animate-pulse bg-(--c-bg)" />
             <span aria-hidden className="h-72 animate-pulse bg-(--c-bg)" />
           </div>
@@ -200,10 +200,10 @@ function Checkout({ onJoined }: { onJoined: (r: Receipt) => void }) {
           }
         >
           <Form {...form}>
-            <form noValidate onSubmit={form.handleSubmit(confirm)} className="grid gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_26rem]">
+            <form noValidate onSubmit={form.handleSubmit(confirm)} className="grid grid-cols-1 gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_26rem]">
               <div className="flex flex-col gap-px">
                 <Step n={1} title="ভর্তির তথ্য" sub="শিক্ষক এই তথ্য দিয়েই আপনার সাথে যোগাযোগ করবেন।">
-                  <div className="grid gap-5 sm:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     <FormField
                       control={form.control}
                       name="name"
@@ -359,7 +359,7 @@ function BatchPicker({ course, batches, chosen, onPick, showTitle }: { course: C
   return (
     <fieldset>
       <legend className={cn("hud mb-3 text-(--c-faint)", !showTitle && "sr-only")}>{course.title}</legend>
-      <div className="grid gap-px border border-(--c-line) bg-(--c-line) sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-px border border-(--c-line) bg-(--c-line) sm:grid-cols-2">
         {batches.map((b) => {
           const open = joinable(b);
           const on = chosen?.id === b.id;

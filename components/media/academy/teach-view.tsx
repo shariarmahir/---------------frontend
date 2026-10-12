@@ -40,7 +40,7 @@ export function TeachView({ dept }: { dept?: string }) {
       </Band>
 
       <Band id="apply" n={2} label="আবেদন" note="তারপর প্যানেল ইন্টারভিউ">
-        <div className="grid gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_22rem]">
+        <div className="grid grid-cols-1 gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_22rem]">
           <TeachApply initialDept={dept} />
           <aside className="flex flex-col gap-px">
             {[

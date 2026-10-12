@@ -164,7 +164,7 @@ export function CourseView({ course, dept }: { course: Course; dept: Department 
           </>
         }
       >
-        <div style={toneStyle(tone)} className="tone grid gap-14 px-6 py-14 md:px-10 md:py-20 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-center lg:gap-16">
+        <div style={toneStyle(tone)} className="tone grid grid-cols-1 gap-14 px-6 py-14 md:px-10 md:py-20 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-center lg:gap-16">
           <div>
             <nav aria-label="অবস্থান" data-reveal data-in className="hud flex flex-wrap items-center gap-2 text-(--c-faint)">
               <Link href="/media/academy/courses" className="transition-colors hover:text-(--c-ink-strong)">
@@ -265,7 +265,7 @@ export function CourseView({ course, dept }: { course: Course; dept: Department 
             যা <Lean>শিখবেন</Lean>।
           </BandTitle>
         </div>
-        <ul data-reveal-group className="grid gap-px border-t border-(--c-line) bg-(--c-line) md:grid-cols-2">
+        <ul data-reveal-group className="grid grid-cols-1 gap-px border-t border-(--c-line) bg-(--c-line) md:grid-cols-2">
           {learnOf(course).map((item, i) => (
             <li key={i} data-reveal className="flex gap-4 bg-(--c-bg) p-6 md:px-10">
               <BadgeCheck className="mt-0.5 size-5 shrink-0 text-(--c-good)" aria-hidden />
@@ -286,7 +286,7 @@ export function CourseView({ course, dept }: { course: Course; dept: Department 
             ))}
           </ul>
         </div>
-        <ul data-reveal-group className="grid gap-px border-t border-(--c-line) bg-(--c-line) sm:grid-cols-2 lg:grid-cols-4">
+        <ul data-reveal-group className="grid grid-cols-1 gap-px border-t border-(--c-line) bg-(--c-line) sm:grid-cols-2 lg:grid-cols-4">
           {details.map(({ Icon, title, body }, i) => (
             <li key={i} data-reveal className="bg-(--c-bg) p-6 md:p-8">
               <div className="flex items-center justify-between gap-4">
@@ -323,7 +323,7 @@ export function CourseView({ course, dept }: { course: Course; dept: Department 
         <CourseProgress course={course} />
         <CourseWeeks course={course} />
         <CourseFinal course={course} />
-        <div className="grid gap-px border-t border-(--c-line) bg-(--c-line) lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-px border-t border-(--c-line) bg-(--c-line) lg:grid-cols-3">
           {papers.map(({ Icon, title, meta, file }) => (
             <div key={title} className="flex flex-col bg-(--c-bg) p-6 md:p-8">
               <span className="flex size-10 items-center justify-center bg-(--c-signal) text-black">
@@ -366,7 +366,7 @@ export function CourseView({ course, dept }: { course: Course; dept: Department 
       </Band>
 
       <Band id="teacher" n={4} label="শিক্ষক" note="প্যানেল ইন্টারভিউ পেরিয়ে আসা">
-        <div className="grid gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_24rem]">
+        <div className="grid grid-cols-1 gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_24rem]">
           <div className="bg-(--c-bg) p-6 md:p-10">
             <Link href={`/media/academy/teachers/${teacher.handle}`} className="group flex items-center gap-5">
               <PersonAvatar person={teacher} size="lg" className="ring-2 ring-(--c-line-strong)" />
@@ -435,7 +435,7 @@ export function CourseView({ course, dept }: { course: Course; dept: Department 
       </Band>
 
       <Band id="certificate" n={5} label="সনদ" note="প্রকাশ্য বোর্ডে মিলিয়ে দেখা যায়">
-        <div className="grid gap-px bg-(--c-line) lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-px bg-(--c-line) lg:grid-cols-2">
           <div className="bg-(--c-bg) px-6 py-14 md:px-10 md:py-20">
             <BandTitle className="text-4xl sm:text-5xl md:text-5xl">
               যাচাইযোগ্য <Turn>সনদ</Turn>।
@@ -504,7 +504,7 @@ export function CourseView({ course, dept }: { course: Course; dept: Department 
       )}
 
       <Band id="reviews" n={siblings.length > 0 ? 7 : 6} label="রিভিউ" note="শিক্ষকের সব ক্লাসের মিলিত রেটিং">
-        <div className="grid gap-px bg-(--c-line) md:grid-cols-[auto_minmax(0,1fr)]">
+        <div className="grid grid-cols-1 gap-px bg-(--c-line) md:grid-cols-[auto_minmax(0,1fr)]">
           <div className="bg-(--c-bg) p-6 md:p-10">
             {record.rating.count > 0 ? (
               <>

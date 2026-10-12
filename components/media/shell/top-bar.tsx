@@ -17,7 +17,7 @@ import type { UnreadSeed } from "./unread";
 export function TopBar({ unreadSeed }: { unreadSeed: UnreadSeed }) {
   return (
     <header className="frost-pane sticky top-0 z-40 text-m-ink print:hidden">
-      <div className="mx-auto flex h-16 max-w-350 items-center gap-2 px-3 sm:gap-3 lg:px-6">
+      <div className="mx-auto flex h-16 max-w-350 items-center gap-2 px-3 max-[239px]:gap-1 max-[239px]:px-1.5 sm:gap-3 lg:px-6">
         <MobileMenu unreadSeed={unreadSeed} me={CURRENT_USER_HANDLE} />
         <Link href="/media" className="flex min-w-0 items-center gap-2 rounded-lg sm:shrink-0 focus-visible:outline-2 focus-visible:outline-m-blue">
           <span className="frost-tile hidden rounded-xl px-1.5 py-1 sm:block">
@@ -36,7 +36,7 @@ export function TopBar({ unreadSeed }: { unreadSeed: UnreadSeed }) {
         </Suspense>
 
         <div className="ml-auto flex items-center gap-1 sm:gap-1.5 md:ml-0 max-sm:[&>a]:size-9">
-          <NumeralsToggle className="frost-tile hidden border-transparent text-m-ink/80 hover:text-m-blue sm:inline-flex" />
+          <NumeralsToggle className="frost-tile hidden border-transparent text-m-ink/80 hover:text-m-blue lg:inline-flex" />
           <ThemeToggle className={mediaButton({ variant: "frame", size: "icon", className: "hidden min-[380px]:inline-flex" })} />
           <Link href="/media/search" className={mediaButton({ variant: "frame", size: "icon", className: "hidden sm:inline-flex md:hidden" })}>
             <Search aria-hidden />
@@ -46,8 +46,11 @@ export function TopBar({ unreadSeed }: { unreadSeed: UnreadSeed }) {
             <UsersRound aria-hidden />
             <span className="sr-only">মানুষ</span>
           </Link>
-          <NotificationBell />
-          <Link href="/media/messages" className={mediaButton({ variant: "frame", size: "icon", className: "relative" })}>
+          {/* Under 200px (a phone at very high zoom) the bell waits in the menu's notifications link. */}
+          <span className="hidden min-[200px]:contents">
+            <NotificationBell />
+          </span>
+          <Link href="/media/messages" className={mediaButton({ variant: "frame", size: "icon", className: "relative hidden min-[260px]:inline-flex" })}>
             <MessageCircle aria-hidden />
             <span className="sr-only">বার্তা</span>
             <UnreadBubble seed={unreadSeed} />

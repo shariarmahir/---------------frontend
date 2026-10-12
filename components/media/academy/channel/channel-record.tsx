@@ -38,7 +38,7 @@ export function ChannelRecord({ record, person }: { record: TeacherRecord; perso
   const head = "hud text-(--c-faint)";
 
   return (
-    <div className="grid gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_22rem]">
+    <div className="grid grid-cols-1 gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_22rem]">
       <div className="flex min-w-0 flex-col gap-px">
         <section aria-labelledby="points" className="bg-(--c-bg) p-6 md:p-10">
           <div className="flex flex-wrap items-end justify-between gap-6">
@@ -102,7 +102,7 @@ export function ChannelRecord({ record, person }: { record: TeacherRecord; perso
           <h2 id="skills" className="display text-2xl text-(--c-ink-strong)">
             কমিউনিটি যাচাই করা দক্ষতা
           </h2>
-          <ul className="mt-6 grid gap-px border border-(--c-line) bg-(--c-line) sm:grid-cols-2">
+          <ul className="mt-6 grid grid-cols-1 gap-px border border-(--c-line) bg-(--c-line) sm:grid-cols-2">
             {person.skills.map((s) => {
               const st = STATUS[skillStatus(s.self, s.communityAvg, s.raters)];
               return (

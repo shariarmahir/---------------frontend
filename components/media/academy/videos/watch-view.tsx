@@ -92,7 +92,7 @@ function Watch({ video, videos, open, inCourse, locked, own }: { video: ClassVid
   return (
     <>
       <Band id="watch" n={1} label="ক্লাস ভিডিও" rulerLabel="ক্লাস" now note={<span className="font-mono">{video.course}</span>}>
-        <div style={toneStyle(tone)} className="tone grid gap-px bg-(--c-line) xl:grid-cols-[minmax(0,1fr)_24rem]">
+        <div style={toneStyle(tone)} className="tone grid grid-cols-1 gap-px bg-(--c-line) xl:grid-cols-[minmax(0,1fr)_24rem]">
           <div className="min-w-0 bg-(--c-bg)">
             <div className="relative aspect-video overflow-hidden bg-black">
               <Player video={video} open={open} image={course?.image} courseTitle={course?.title ?? video.course} />

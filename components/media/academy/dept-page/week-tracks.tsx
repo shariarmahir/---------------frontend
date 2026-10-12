@@ -26,7 +26,7 @@ export function WeekTracks({ dept, courses, tone }: { dept: Department; courses:
   return (
     <ol style={toneStyle(tone)} className="tone grid gap-px border-t border-(--c-line) bg-(--c-line)">
       {courses.map((c, i) => (
-        <li key={c.id} className="grid gap-px bg-(--c-line) lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
+        <li key={c.id} className="grid grid-cols-1 gap-px bg-(--c-line) lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
           <About course={c} dept={dept} n={i + 1} videos={videos} />
           <Weeks course={c} videos={videos} />
         </li>

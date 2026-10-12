@@ -229,7 +229,7 @@ export function CreateEventButton() {
                   <FormMessage />
                 </FormItem>
               )} />
-              <div className="grid gap-5 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <FormField control={form.control} name="area" render={({ field }) => (
                   <FormItem>
                     <FormLabel>এলাকা</FormLabel>
@@ -291,7 +291,7 @@ export function MyEvents() {
   return (
     <section className="space-y-3">
       <h2 className="text-base font-bold text-m-ink">আপনার শুরু করা উদ্যোগ</h2>
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {mine.map((e) => <EventCard key={e.id} event={e} />)}
       </div>
     </section>

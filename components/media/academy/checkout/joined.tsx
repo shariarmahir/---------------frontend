@@ -107,8 +107,8 @@ export function Joined({ receipt }: { receipt: Receipt }) {
       </Band>
 
       <Band id="next" n={3} label="এরপর কী" note="রুটিন থেকে সমাবর্তন">
-        <div className="grid gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_22rem]">
-          <ol className="grid gap-px bg-(--c-line) sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_22rem]">
+          <ol className="grid grid-cols-1 gap-px bg-(--c-line) sm:grid-cols-3">
             {[
               {
                 Icon: Video,

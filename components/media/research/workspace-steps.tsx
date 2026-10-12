@@ -99,7 +99,7 @@ export function TopicStep({ p, meId, inTeam, lead, today, edit, name }: StepProp
         )}
       </div>
 
-      <ol className="grid gap-4 lg:grid-cols-3">
+      <ol className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         {p.ideas.map((idea, n) => {
           const t = tally(idea);
           const chosen = p.topicId === idea.id;
@@ -197,7 +197,7 @@ export function PlanStep({ p, inTeam, lead, today, edit }: StepProps) {
         title="সময় ঠিক করুন"
         tips={["প্রতিটি ধাপের একটি শেষ তারিখ দিন — ছয় সপ্তাহের খসড়া আগেই বসানো আছে, বদলে নিন।", "পরীক্ষার সপ্তাহ এড়িয়ে চলুন; ডেটা সংগ্রহে সবচেয়ে বেশি সময় রাখুন।", "ধাপ শেষ হলে টিক দিন — সবাই অগ্রগতি দেখবে।"]}
       />
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-start">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-start">
         <div className="story-reveal rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 shadow-m-tile">
           <div className="mb-3 flex items-center justify-between">
             <button type="button" onClick={() => setMonth((m) => shiftMonth(m, -1))} className={mediaButton({ variant: "ghost", size: "icon-sm" })} aria-label="আগের মাস"><ChevronLeft aria-hidden /></button>
@@ -293,7 +293,7 @@ export function TasksStep({ p, meId, inTeam, lead, today, edit, name }: StepProp
 
       {inTeam && (
         <form
-          className="grid gap-2 rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 sm:grid-cols-[minmax(0,1fr)_12rem_10rem_auto] shadow-m-tile"
+          className="grid grid-cols-1 gap-2 rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 sm:grid-cols-[minmax(0,1fr)_12rem_10rem_auto] shadow-m-tile"
           onSubmit={(e) => {
             e.preventDefault();
             if (title.trim().length < 3 || !who) return;
@@ -312,7 +312,7 @@ export function TasksStep({ p, meId, inTeam, lead, today, edit, name }: StepProp
         </form>
       )}
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {ORDER.map((status) => {
           const list = p.tasks.filter((t) => t.status === status);
           return (
@@ -397,7 +397,7 @@ export function FilesStep({ p, meId, inTeam, lead, edit, name }: StepProps) {
     <div className="space-y-5">
       <Guide title="ফাইল ও ডেটা এক জায়গায়" tips={["উপস্থাপনার স্লাইড, পড়া পেপারের পিডিএফ আর মাপা ডেটা এখানে রাখুন।", "এক্সেলের ডেটা দলে মিলে লিখতে গুগল শিটের শেয়ার লিংক দিন — সবাই একই শিটে কাজ করবে।", "প্রতিটি ফাইল ১.৫ MB পর্যন্ত; বড় হলে ড্রাইভের লিংক দিন।"]} />
       {inTeam && (
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <div className="rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 shadow-m-tile">
             <h3 className="mb-3 text-sm font-bold text-m-ink">ফাইল তুলুন</h3>
             <div className="flex flex-wrap gap-2">
@@ -435,7 +435,7 @@ export function FilesStep({ p, meId, inTeam, lead, edit, name }: StepProps) {
       {p.files.length === 0 ? (
         <p className="rounded-2xl border-2 border-dashed border-m-ink/13 p-6 text-center text-sm text-m-ink/60">এখনো কোনো ফাইল বা লিংক নেই।</p>
       ) : (
-        <ul className="grid gap-3 sm:grid-cols-2">
+        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {p.files.map((f) => {
             const Icon = FILE_ICON[f.kind];
             return (

@@ -189,7 +189,7 @@ function RoomCard({ batch, course, n, teacher }: { batch: Batch; course: Course;
             <span>ক্লাসের সপ্তাহ শেষ — প্রজেক্ট আর প্যানেল</span>
           )}
         </p>
-        <div className="mt-auto grid gap-2 pt-5 sm:grid-cols-2">
+        <div className="mt-auto grid grid-cols-1 gap-2 pt-5 sm:grid-cols-2">
           <Link href={href} className={cn(primaryBtn, "h-10 w-full")}>
             <DoorOpen className="size-4" aria-hidden /> ক্লাসরুমে ঢুকুন
           </Link>

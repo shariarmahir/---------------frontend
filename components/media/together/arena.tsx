@@ -39,7 +39,7 @@ export function Arena() {
         </div>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
         <div className="min-w-0 space-y-6">
           {forMe.length > 0 && (
             <MatchList title="আপনার দলের জন্য চ্যালেঞ্জ" hint="গ্রহণ করলে খেলা পাকা" list={forMe} all={all} mine={mine} accent />
@@ -66,7 +66,7 @@ function MatchList({ title, hint, list, all, mine, empty, accent }: { title: str
       {list.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-m-ink/10 p-5 text-center text-sm text-m-ink/65">{empty}</p>
       ) : (
-        <div className="grid gap-4 xl:grid-cols-2">{list.map((m) => <VersusCard key={m.id} match={m} all={all} mine={mine} />)}</div>
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">{list.map((m) => <VersusCard key={m.id} match={m} all={all} mine={mine} />)}</div>
       )}
     </div>
   );

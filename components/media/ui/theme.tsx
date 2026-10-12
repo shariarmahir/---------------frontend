@@ -22,6 +22,7 @@ export function MediaThemeShell({ initial, className, children }: { initial: Med
   const toggleTheme = useCallback(() => {
     const next = theme === "dark" ? "light" : "dark";
     document.cookie = `${THEME_COOKIE}=${next}; path=/; max-age=31536000; samesite=lax`;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", next === "dark" ? "#121316" : "#f2f1ee");
     setTheme(next);
   }, [theme]);
   const value = useMemo(() => ({ theme, toggleTheme }), [theme, toggleTheme]);

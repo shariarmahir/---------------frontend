@@ -110,7 +110,7 @@ export function ClassroomAd() {
         </div>
       </div>
 
-      <div className="mt-2 grid items-center gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] sm:gap-5">
+      <div className="mt-2 grid grid-cols-1 items-center gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] sm:gap-5">
         <div className="order-2 sm:order-1">
           <div key={`${scene}-${round}`} aria-live="off">
             <p className="cb-text text-sm font-bold text-m-blue" style={{ "--d": 0 } as React.CSSProperties}>{s.tag}</p>

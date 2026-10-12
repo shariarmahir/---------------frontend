@@ -93,7 +93,7 @@ export function PostCard({
               </span>
             )}
           </p>
-          <p className="flex min-w-0 items-center gap-1 text-xs text-m-ink/65">
+          <p className="flex min-w-0 flex-wrap items-center gap-x-1 text-xs text-m-ink/65">
             <span className="truncate">{author.headline}</span>
             <span aria-hidden>·</span>
             <span className="shrink-0">

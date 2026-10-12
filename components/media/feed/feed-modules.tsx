@@ -304,7 +304,7 @@ export function ResearchModule() {
         </Link>
       }
     >
-      <div className="grid gap-3 p-4 sm:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] sm:p-5">
+      <div className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] sm:p-5">
         <Link href={`/research/${lead.slug}`} className="group flex flex-col overflow-hidden rounded-2xl bg-m-yellow text-m-ink">
           <span className="relative block aspect-16/10 overflow-hidden bg-m-blue-soft">
             {lead.image ? (
@@ -417,7 +417,7 @@ export function CommunityModule() {
   const tile = "group flex flex-col gap-2 rounded-2xl p-4 transition-[translate] duration-300 hover:-translate-y-1 motion-reduce:transition-none";
   return (
     <Module Icon={UsersRound} eyebrow="কমিউনিটি" title="এখন যা হচ্ছে" href="/media/together" link="টিম · উদ্যোগ" tone={1}>
-      <div className="grid gap-3 p-4 sm:grid-cols-3 sm:p-5">
+      <div className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-3 sm:p-5">
         <Link href={`/media/together?v=events#${ev.id}`} className={cn(tile, "bg-m-blue-soft text-m-ink")}>
           <span className="inline-flex items-center gap-1.5 text-xs font-bold text-m-ink/80">
             <HandHeart className="size-4" aria-hidden /> উদ্যোগ · {eventKindBn[ev.kind]}

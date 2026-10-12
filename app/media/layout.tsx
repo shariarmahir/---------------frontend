@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
 import { Hind_Siliguri, Noto_Sans_Bengali } from "next/font/google";
 import { RouteGuard } from "@/components/auth/route-guard";
@@ -34,6 +34,12 @@ const notoBengali = Noto_Sans_Bengali({
  * digits, Hind Siliguri for Bangla. Only the bold weights are loaded.
  */
 const hind = Hind_Siliguri({ subsets: ["bengali"], weight: ["600", "700"], variable: "--font-m-hind", display: "swap" });
+
+/** The phone's own bars take the colour of the theme the viewer chose. */
+export async function generateViewport(): Promise<Viewport> {
+  const theme = readTheme((await cookies()).get(THEME_COOKIE)?.value);
+  return { themeColor: theme === "dark" ? "#121316" : "#f2f1ee" };
+}
 
 export const metadata: Metadata = {
   title: { default: "শিক্ষিতদের মিডিয়া — দক্ষতা · প্রমাণ · সুযোগ", template: "%s · শিক্ষিতদের মিডিয়া" },

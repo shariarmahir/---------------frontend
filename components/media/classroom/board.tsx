@@ -87,7 +87,7 @@ export const BoardTab: ClassTab = ({ room, me, member, leader }) => {
     "flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl text-sm font-bold ring-1 transition-[background-color,scale] duration-200 active:scale-95 has-focus-visible:ring-2 has-focus-visible:ring-m-blue";
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_21rem]">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_21rem]">
       <div className="space-y-3">
         <ul className="flex flex-wrap gap-2">
           {(["all", ...Object.keys(NOTE_KINDS)] as (ClassNote["kind"] | "all")[]).map((k) => (
@@ -198,7 +198,7 @@ export const ChallengeTab: ClassTab = ({ room, me, member, leader }) => {
   }
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
       <div className="space-y-4">
         {room.problems.map((p) => (
           <ProblemCard

@@ -391,7 +391,7 @@ function ExperimentCard({ lab, exp, me, member, leader, now, focus, onOpen, onSh
       </button>
 
       {open && (
-        <div className="live-in grid gap-5 border-t border-m-ink/9 p-4 sm:p-5 lg:grid-cols-2">
+        <div className="live-in grid grid-cols-1 gap-5 border-t border-m-ink/9 p-4 sm:p-5 lg:grid-cols-2">
           <div className="space-y-5">
             <div>
               <h3 className="mb-1.5 text-sm font-bold text-m-blue">টপিক</h3>
@@ -561,7 +561,7 @@ function ExperimentDialog({ lab, open, onOpenChange }: { lab: LabRoom; open: boo
             <span className={label}>টপিক — উদ্দেশ্য ও যা পড়ে আসতে হবে</span>
             <Textarea rows={3} value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="কী যাচাই করা হবে, কোন অধ্যায় পড়ে আসবেন" />
           </label>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <label className="block">
               <span className={label}>ল্যাবের দিন *</span>
               <div className="flex gap-2">

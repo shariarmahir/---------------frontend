@@ -70,11 +70,7 @@ export function Stars({ value, size = 16, animate }: { value: number; size?: num
       {[0, 1, 2, 3, 4].map((i) => {
         const fill = Math.max(0, Math.min(1, value - i));
         return (
-          <span
-            key={i}
-            className={cn("relative inline-block", animate && "star-in")}
-            style={{ width: size, height: size, ["--i" as string]: i }}
-          >
+          <span key={i} className={cn("relative inline-block", animate && "star-in")} style={{ width: size, height: size, ["--i" as string]: i }}>
             <svg viewBox="0 0 24 24" width={size} height={size} className="absolute inset-0 text-slate-200">
               <path fill="currentColor" d="M12 2.5l2.9 6.1 6.6.8-4.9 4.5 1.3 6.6L12 17.3 6.1 20.5l1.3-6.6L2.5 9.4l6.6-.8z" />
             </svg>
@@ -93,43 +89,25 @@ export function Stars({ value, size = 16, animate }: { value: number; size?: num
 /**
  * The claim and the verdict, side by side and never merged into one number.
  */
-export function RatingPair({
-  self,
-  communityAvg,
-  raters,
-  compact,
-  animate,
-}: {
-  self: number;
-  communityAvg: number;
-  raters: number;
-  compact?: boolean;
-  animate?: boolean;
-}) {
+export function RatingPair({ self, communityAvg, raters, compact, animate }: { self: number; communityAvg: number; raters: number; compact?: boolean; animate?: boolean }) {
   const status = skillStatus(self, communityAvg, raters);
   const challenged = status === "challenged";
   return (
     <div className={cn("flex flex-wrap items-stretch gap-2", compact && "gap-1.5")}>
       <div className={cn("flex min-w-0 flex-1 flex-col rounded-xl border border-m-red/60 bg-m-red-soft", compact ? "px-2.5 py-1.5" : "px-3 py-2")}>
         <span className="text-[11px] font-semibold text-m-ink">নিজের দাবি</span>
-        <span className="flex items-center gap-1.5">
+        <span className="flex flex-wrap items-center gap-x-1.5">
           <span className={cn("font-bold tabular-nums text-m-ink", compact ? "text-base" : "text-xl")}>
             <Num value={self} decimals={1} />
           </span>
           <Stars value={self} size={compact ? 12 : 14} />
         </span>
       </div>
-      <div
-        className={cn(
-          "flex min-w-0 flex-1 flex-col rounded-xl border",
-          challenged ? "border-m-red/60 bg-m-red" : "border-m-blue/25 bg-m-ink/6",
-          compact ? "px-2.5 py-1.5" : "px-3 py-2",
-        )}
-      >
+      <div className={cn("flex min-w-0 flex-1 flex-col rounded-xl border", challenged ? "border-m-red/60 bg-m-red" : "border-m-blue/25 bg-m-ink/6", compact ? "px-2.5 py-1.5" : "px-3 py-2")}>
         <span className={cn("text-[11px] font-semibold", challenged ? "text-m-red" : "text-m-blue")}>
           কমিউনিটি · <Num value={raters} /> জন
         </span>
-        <span className="flex items-center gap-1.5">
+        <span className="flex flex-wrap items-center gap-x-1.5">
           <span className={cn("font-bold tabular-nums", challenged ? "text-m-red" : "text-m-blue", compact ? "text-base" : "text-xl")}>
             {raters > 0 ? <Num value={communityAvg} decimals={1} /> : "—"}
           </span>

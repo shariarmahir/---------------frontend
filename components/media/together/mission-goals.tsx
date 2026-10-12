@@ -32,7 +32,7 @@ function useDay() {
 
 export function MissionGoalsTab({ team, room, canEdit }: { team: Team; room: TeamRoom; canEdit: boolean }) {
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
       <Mission team={team} room={room} canEdit={canEdit} />
       <Goals team={team} room={room} canEdit={canEdit} />
     </div>

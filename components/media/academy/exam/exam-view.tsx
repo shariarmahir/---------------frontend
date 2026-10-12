@@ -68,7 +68,7 @@ export function ExamView({ asked }: { asked: string }) {
             কোর্স শেষ মানেই পাস নয়। সত্যিকারের একটা কাজ বানিয়ে পেশাদারদের প্যানেলের সামনে ব্যাখ্যা করতে হয় — আর সেই ইন্টারভিউ সবার জন্য খোলা।
           </p>
         </div>
-        <ol data-reveal-group className="grid gap-px border-t border-(--c-line) bg-(--c-line) sm:grid-cols-2 lg:grid-cols-4">
+        <ol data-reveal-group className="grid grid-cols-1 gap-px border-t border-(--c-line) bg-(--c-line) sm:grid-cols-2 lg:grid-cols-4">
           {RULES.map((r, i) => (
             <li key={r.title} data-reveal className="bg-(--c-bg) p-6 md:p-8">
               <p className="hud text-(--c-faint)">{twoDigits(i + 1)}</p>
@@ -80,7 +80,7 @@ export function ExamView({ asked }: { asked: string }) {
       </Band>
 
       <Band id="mine" n={2} label="আমার ফাইনাল" note="আর সনদ যাচাই">
-        <div className="grid gap-px bg-(--c-line) lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-px bg-(--c-line) lg:grid-cols-2">
           <div className="bg-(--c-bg) p-6 md:p-10">
             <h2 className="display text-2xl text-(--c-ink-strong)">আমার ফাইনাল</h2>
             <div className="mt-6">
@@ -134,7 +134,7 @@ export function ExamView({ asked }: { asked: string }) {
       <Band id="board" n={3} label="প্রকাশ্য বোর্ড" note="সামনের ইন্টারভিউ — সবার জন্য খোলা">
         <ul>
           {upcoming.map((s) => (
-            <li key={s.id} data-reveal style={toneStyle(toneOf(s.course))} className="tone grid gap-2 border-b border-(--c-line) px-6 py-6 last:border-b-0 sm:grid-cols-[13rem_minmax(0,1fr)] sm:gap-8 md:px-10">
+            <li key={s.id} data-reveal style={toneStyle(toneOf(s.course))} className="tone grid grid-cols-1 gap-2 border-b border-(--c-line) px-6 py-6 last:border-b-0 sm:grid-cols-[13rem_minmax(0,1fr)] sm:gap-8 md:px-10">
               <p className="hud text-(--c-app-ink)">
                 <DateText iso={s.at} time weekday />
               </p>

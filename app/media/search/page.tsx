@@ -139,7 +139,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
               {show("people") && foundPeople.length > 0 && (
                 <section aria-labelledby="r-people">
                   <h2 id="r-people" className="mb-3 text-base font-bold text-m-ink">মানুষ</h2>
-                  <ul className="grid gap-3 sm:grid-cols-2">
+                  <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     {foundPeople.map((p) => {
                       const s = topSkill(p);
                       return (
@@ -164,7 +164,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
               {show("posts") && foundPosts.length > 0 && (
                 <section aria-labelledby="r-posts">
                   <h2 id="r-posts" className="mb-3 text-base font-bold text-m-ink">দক্ষতার পোস্ট</h2>
-                  <ul className="grid gap-3 sm:grid-cols-2">
+                  <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     {foundPosts.map((p) => {
                       const a = personOrThrow(p.author);
                       return (
@@ -201,14 +201,14 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
               {show("events") && foundEvents.length > 0 && (
                 <section aria-labelledby="r-events">
                   <h2 id="r-events" className="mb-3 text-base font-bold text-m-ink">উদ্যোগ</h2>
-                  <div className="grid gap-4 md:grid-cols-2">{foundEvents.map((e) => <EventCard key={e.id} event={e} />)}</div>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">{foundEvents.map((e) => <EventCard key={e.id} event={e} />)}</div>
                 </section>
               )}
 
               {show("market") && foundListings.length > 0 && (
                 <section aria-labelledby="r-market">
                   <h2 id="r-market" className="mb-3 text-base font-bold text-m-ink">বাজার</h2>
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {foundListings.map((l) => (
                       <ListingCard key={l.id} listing={l} seller={personOrThrow(l.seller)} />
                     ))}

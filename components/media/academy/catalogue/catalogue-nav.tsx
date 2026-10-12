@@ -254,7 +254,7 @@ export function CatalogueNav() {
             {[{ label: "ক্যাটালগ", items: CATALOGUE }, ...GROUPS].map((g) => (
               <div key={g.label}>
                 <p className="hud border-b border-(--c-line) px-5 pt-4 pb-2 text-(--c-faint)">{t(g.label)}</p>
-                <ul className="grid gap-px border-b border-(--c-line) bg-(--c-line) sm:grid-cols-2">
+                <ul className="grid grid-cols-1 gap-px border-b border-(--c-line) bg-(--c-line) sm:grid-cols-2">
                   {g.items.map((m) => (
                     <li key={m.href}>
                       <MenuItem item={m} on={isAt(m.href, path)} onPick={() => setMenu(false)} />

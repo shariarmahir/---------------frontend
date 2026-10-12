@@ -53,7 +53,7 @@ export function MyListings() {
   return (
     <section className="mb-8">
       <h2 className="mb-3 text-base font-bold text-m-ink">আপনার বিক্রির তালিকা</h2>
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {mine.map((l) => (
           <div key={l.id} className="flex flex-col gap-2">
             <ListingCard listing={l} seller={currentUser} />

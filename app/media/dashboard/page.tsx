@@ -38,7 +38,7 @@ export default function DashboardPage() {
           </>
         }
       />
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="min-w-0 space-y-6">
           <Suspense fallback={<WalletSkeleton />}>
             <WalletView seed={walletSeed} />

@@ -50,7 +50,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
         actions={<PostJobButton />}
       />
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="min-w-0 space-y-4">
           <form action="/media/jobs" role="search">
             {sector && <input type="hidden" name="s" value={sector} />}

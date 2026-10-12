@@ -264,7 +264,7 @@ export function HomeView() {
         >
           বিশ্ববিদ্যালয়ের মতোই পথ — একাডেমি, বিভাগ, কোর্স, ভর্তি, ক্লাস, পরীক্ষা, সমাবর্তন। শুধু ছোট, কাজের, আর দেড় মাসে শেষ।
         </Opening>
-        <ol data-reveal-group className="grid gap-px border-t border-(--c-line) bg-(--c-line) md:grid-cols-2 xl:grid-cols-4">
+        <ol data-reveal-group className="grid grid-cols-1 gap-px border-t border-(--c-line) bg-(--c-line) md:grid-cols-2 xl:grid-cols-4">
           {HOW.map(({ Icon, label, title, body, href, go }, i) => (
             <li key={label} data-reveal style={toneStyle(i * 2)} className="tone group flex flex-col bg-(--c-bg)">
               <div className="flex items-center justify-between gap-4 border-b border-(--c-line) px-6 py-2.5">
@@ -481,7 +481,7 @@ export function HomeView() {
         >
           প্রতিটি সংখ্যা একাডেমির রেকর্ড থেকে — শিক্ষকের খাতা, প্যানেলের নম্বর আর প্রকাশ্য বোর্ড।
         </Opening>
-        <ul data-reveal-group className="grid gap-px border-t border-(--c-line) bg-(--c-line) md:grid-cols-2 xl:grid-cols-4">
+        <ul data-reveal-group className="grid grid-cols-1 gap-px border-t border-(--c-line) bg-(--c-line) md:grid-cols-2 xl:grid-cols-4">
           {impact.map(({ Icon, value, label, body, more, join }, i) => (
             <li key={label} className="bg-(--c-bg)">
               <PairCard
@@ -514,7 +514,7 @@ export function HomeView() {
         >
           চাকরি, নিজের ব্যবসা, ঘরে বসে আয় বা নিছক শখ — যে স্বপ্নই হোক, শুরুটা একটা কাজ ঠিকঠাক পারা দিয়ে।
         </Opening>
-        <ul data-reveal-group className="grid gap-px border-t border-(--c-line) bg-(--c-line) md:grid-cols-2 lg:grid-cols-3">
+        <ul data-reveal-group className="grid grid-cols-1 gap-px border-t border-(--c-line) bg-(--c-line) md:grid-cols-2 lg:grid-cols-3">
           {WHY.map(({ Icon, title, body, more }, i) => (
             <li key={title} className="bg-(--c-bg)">
               <PairCard

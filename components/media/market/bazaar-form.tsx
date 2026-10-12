@@ -252,7 +252,7 @@ export function BazaarForm() {
                 <>
                   <fieldset className="space-y-2">
                     <legend className="mb-2 text-sm font-semibold text-m-ink">আপনার ব্যবসা এখন কোন পর্যায়ে</legend>
-                    <div className="grid gap-2 sm:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                       {(Object.keys(STAGES) as SellerStage[]).map((k) => {
                         const Icon = STAGE_ICON[k];
                         const on = d.stage === k;
@@ -269,7 +269,7 @@ export function BazaarForm() {
                       })}
                     </div>
                   </fieldset>
-                  <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     {STAGE_FIELDS[d.stage].map((f) => (
                       <SpecField key={`${d.stage}-${f.key}`} field={f} value={d.extra[f.key] ?? ""} error={err(`spec-${f.key}`)} onChange={(v) => setExtra(f.key, v)} />
                     ))}
@@ -299,7 +299,7 @@ export function BazaarForm() {
 
           {step === 2 && (
             <>
-              <div className="grid gap-4 sm:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <Row id="price" label="দাম (৳) *" error={err("price")}>
                   <Input id="price" inputMode="numeric" value={d.price} onChange={(e) => set("price", e.target.value)} {...aria("price")} />
                 </Row>
@@ -316,7 +316,7 @@ export function BazaarForm() {
               </div>
 
               <>
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <Row id="minOrder" label="ন্যূনতম অর্ডার" hint="খালি = একটি থেকে">
                     <Input id="minOrder" inputMode="numeric" value={d.minOrder} onChange={(e) => set("minOrder", e.target.value)} />
                   </Row>
@@ -378,7 +378,7 @@ export function BazaarForm() {
               </>
 
               {farmOrFood && (
-                <div className="grid gap-2 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   <label htmlFor="organic" className="flex min-h-12 items-center justify-between gap-3 rounded-xl bg-m-ink/3 px-3 text-sm font-semibold text-m-ink">
                     <span className="inline-flex items-center gap-2"><Leaf className="size-4 text-m-green" aria-hidden />বিষমুক্ত / অর্গানিক</span>
                     <Switch id="organic" checked={d.organic} onCheckedChange={(v) => set("organic", v)} />
@@ -393,7 +393,7 @@ export function BazaarForm() {
               {fieldsForSub(d.sub).length > 0 && (
                 <div>
                   <p className="mb-3 text-sm font-semibold text-m-blue">{d.sub === "custom" ? d.custom || "আপনার বিভাগ" : resolveSub(d.sub).sub.bn} — যা ক্রেতা জানতে চান</p>
-                  <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     {fieldsForSub(d.sub).map((f) => (
                       <SpecField key={`${d.sub}-${f.key}`} field={f} value={d.extra[f.key] ?? ""} error={err(`spec-${f.key}`)} onChange={(v) => setExtra(f.key, v)} />
                     ))}
@@ -423,7 +423,7 @@ export function BazaarForm() {
                 {err("delivery") && <p id="delivery-error" className="mt-1.5 text-xs font-medium text-m-red">{err("delivery")}</p>}
               </fieldset>
               )}
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <Row id="district" label="জেলা *" error={err("district")}>
                   <select id="district" value={d.district} onChange={(e) => set("district", e.target.value)} className={selectClass} {...aria("district")}>
                     <option value="">বেছে নিন</option>

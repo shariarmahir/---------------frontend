@@ -80,7 +80,7 @@ export function DeptCourses({ dept, entries, levels }: { dept: Department; entri
   return (
     <>
       <div className="border-b border-(--c-line)">
-        <div role="radiogroup" aria-labelledby={`why-${dept.id}`} className="grid gap-px bg-(--c-line) sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_repeat(4,minmax(0,1fr))]">
+        <div role="radiogroup" aria-labelledby={`why-${dept.id}`} className="grid grid-cols-1 gap-px bg-(--c-line) sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_repeat(4,minmax(0,1fr))]">
           <p id={`why-${dept.id}`} className="display flex items-center bg-(--c-bg) px-6 py-5 text-xl text-(--c-ink-strong) sm:col-span-2 md:px-10 lg:col-span-1">
             আজ কেন এসেছেন?
           </p>

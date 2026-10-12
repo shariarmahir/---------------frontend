@@ -33,7 +33,7 @@ export function MatchPanel() {
         (buyers.length === 0 ? (
           <p className="text-sm text-m-ink/85">আপনার পণ্যের সাথে বোর্ডের কোনো ক্রেতা এখনো মেলেনি। হ্যাশট্যাগ বাড়ালে মিলের সম্ভাবনা বাড়ে।</p>
         ) : (
-          <ul className="grid gap-2 sm:grid-cols-2">
+          <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             {buyers.map((m) => (
               <li key={m.post.id + m.listing.id} className="flex items-center gap-3 rounded-2xl bg-m-card p-3">
                 <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-m-yellow text-sm font-bold text-m-ink"><Num value={m.score} />%</span>
@@ -47,7 +47,7 @@ export function MatchPanel() {
           </ul>
         ))}
       {myPosts.length > 0 && (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {myPosts.map((p) => (
             <BoardCard key={p.id} post={p} author={currentUser} mine sellers={p.side === "buy" ? sellersFor(p, offers) : []} buyers={p.side === "sell" ? buyersFor(postOffer(p), posts) : []} />
           ))}

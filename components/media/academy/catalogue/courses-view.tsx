@@ -142,7 +142,7 @@ export function CoursesView({ entries }: { entries: CourseEntry[] }) {
             <Tx k="যেখানে আছেন, সেখান থেকে ধরুন। এক বিভাগের তিনটি কোর্স একটার পর একটা নিলে পুরো দক্ষতা গড়ে ওঠে।" />
           </p>
         </div>
-        <ol data-reveal-group className="grid gap-px border-t border-(--c-line) bg-(--c-line) md:grid-cols-3">
+        <ol data-reveal-group className="grid grid-cols-1 gap-px border-t border-(--c-line) bg-(--c-line) md:grid-cols-3">
           {LEVEL_ORDER.map((l, i) => {
             const list = entries.filter((e) => e.course.level === l);
             return (
@@ -193,7 +193,7 @@ export function CoursesView({ entries }: { entries: CourseEntry[] }) {
             <Tx k="যে কোর্সই নিন, শুরু থেকে সমাবর্তন পর্যন্ত পথটা এক। বছরের পর বছর নয় — দেড় মাসেরও কম।" />
           </p>
         </div>
-        <ol data-reveal-group className="grid gap-px border-t border-(--c-line) bg-(--c-line) sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7">
+        <ol data-reveal-group className="grid grid-cols-1 gap-px border-t border-(--c-line) bg-(--c-line) sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7">
           {DAYS.map((d, i) => (
             <li key={i} data-reveal style={toneStyle(i)} className="tone flex flex-col bg-(--c-bg) p-6 last:sm:col-span-2 last:md:col-span-2 last:lg:col-span-1">
               <span aria-hidden className="h-1 w-8 bg-(--c-app)" />

@@ -70,7 +70,7 @@ export function ResearchWorkspace({ id, onBack }: { id: string; onBack: () => vo
         <ArrowLeft className="size-4" aria-hidden /> উদ্ভাবনে ফিরুন
       </button>
 
-      <section className="live-in grid gap-5 overflow-hidden rounded-3xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-7 md:grid-cols-[minmax(0,1fr)_auto] md:items-center shadow-m-tile">
+      <section className="live-in grid grid-cols-1 gap-5 overflow-hidden rounded-3xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-7 md:grid-cols-[minmax(0,1fr)_auto] md:items-center shadow-m-tile">
         <div className="min-w-0">
           <p className="inline-flex items-center gap-2 text-sm font-semibold text-m-blue"><Microscope className="size-4" aria-hidden /> দলের গবেষণা</p>
           <h1 className="mt-2 text-2xl font-bold tracking-tight text-balance text-m-ink sm:text-3xl">{topic?.title ?? "বিষয় এখনো ঠিক হয়নি — ভোট চলছে"}</h1>
@@ -191,7 +191,7 @@ function ShareStep({ p, inTeam, checks, onGo, onPaper }: StepProps & { checks: C
   return (
     <div className="space-y-5">
       <Guide title="শেয়ার ও প্রকাশ" tips={["প্রশ্ন আর ফলাফল লেখা হলেই ফিডে দেওয়া যায় — দলের নামে, সবাই দেখবে।","সব ধাপ শেষ হলে প্রকাশনার কপি প্রিন্ট বা পিডিএফ করে শিক্ষক, মেলা বা জার্নালে পাঠান।"]} />
-      <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
+      <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-5">
         {checks.map((c) => (
           <li key={c.key}>
             <button type="button" onClick={() => onGo(CHECK_STEP[c.key])} className={cn("flex h-full w-full items-start gap-2 rounded-xl p-3 text-left text-sm ring-1 transition-colors", c.done ? "bg-m-blue/13 text-m-ink ring-m-blue/60" : "bg-m-card text-m-ink/80 ring-m-ink/10 hover:ring-m-blue/50")}>
@@ -202,7 +202,7 @@ function ShareStep({ p, inTeam, checks, onGo, onPaper }: StepProps & { checks: C
         ))}
       </ul>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <article className="flex flex-col gap-3 rounded-2xl bg-m-yellow p-5 text-m-ink">
           <Newspaper className="size-6" aria-hidden />
           <h3 className="text-lg font-bold">ফিডে শেয়ার</h3>

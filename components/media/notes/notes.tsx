@@ -133,7 +133,7 @@ export function NotesBoard() {
       </Form>
 
       {!hydrated ? (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2].map((i) => <Skeleton key={i} className="h-36 rounded-xl" />)}</div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">{[0, 1, 2].map((i) => <Skeleton key={i} className="h-36 rounded-xl" />)}</div>
       ) : notes.length === 0 ? (
         <EmptyState icon="posts" title="এখনো কোনো নোট নেই" body="দিনের শেষে এক লাইন লিখে রাখুন — কী শিখলেন, কাকে সাহায্য করলেন। সেরা কাজগুলো প্রোফাইলে জমবে।" />
       ) : (
@@ -141,7 +141,7 @@ export function NotesBoard() {
           <p className="text-sm text-m-ink/65">
             <Num value={notes.length} />টি নোট · <Num value={best} />টি দিনের সেরা কাজ
           </p>
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {notes.map((n) => <NoteCard key={n.id} note={n} />)}
           </ul>
         </>
@@ -201,7 +201,7 @@ export function PinnedNotes() {
   return (
     <section aria-labelledby="pinned-notes" className="rounded-2xl border border-m-ink/10 bg-m-card p-4 sm:p-6 shadow-m-tile">
       <h2 id="pinned-notes" className="mb-4 text-base font-bold text-m-ink">নোট — সেরা কাজ ও স্মৃতি</h2>
-      <ul className="grid gap-3 sm:grid-cols-2">{pinned.map((n) => <NoteCard key={n.id} note={n} readOnly />)}</ul>
+      <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">{pinned.map((n) => <NoteCard key={n.id} note={n} readOnly />)}</ul>
     </section>
   );
 }

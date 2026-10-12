@@ -218,7 +218,7 @@ export function BusinessOverview() {
                 on ? "bg-m-yellow text-m-ink ring-m-blue shadow-[0_22px_40px_-24px_var(--color-signal-orange)]" : "bg-m-card text-m-ink ring-m-ink/10 hover:shadow-[0_22px_40px_-24px_var(--color-signal-orange)]",
               )}
             >
-              <span className="flex items-center justify-between gap-2">
+              <span className="flex flex-wrap items-center justify-between gap-2">
                 <span className="flex items-center gap-2 text-sm font-semibold opacity-85">
                   <x.Icon className="size-4" aria-hidden />
                   {x.label}
@@ -246,7 +246,7 @@ export function BusinessOverview() {
         <TrendChart current={current} previous={previous} metric={m} range={r} />
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className={card}>
           <h3 className="mb-4 flex items-baseline justify-between text-base font-bold text-m-blue">
             অর্ডারের অবস্থা <span className="text-xs font-semibold text-m-ink/65">মোট <Num value={b.count} /></span>
@@ -283,7 +283,7 @@ export function BusinessOverview() {
         </div>
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
         <div className={card}>
           <h3 className="mb-4 text-base font-bold text-m-blue">সেরা বিক্রি</h3>
           {b.top.length === 0 ? (

@@ -123,7 +123,7 @@ export function ChallengeDialog({ open, onOpenChange, from, to }: { open: boolea
           <p className="rounded-2xl bg-m-card p-4 text-sm text-m-ink/80 ring-1 ring-m-ink/10 shadow-m-tile">চ্যালেঞ্জ দিতে আগে একটা টিম বানান, বা গোপন কী দিয়ে কোনো টিমে যোগ দিন।</p>
         ) : (
           <form onSubmit={submit} noValidate className="space-y-5">
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <label className="block">
                 <span className={label}>আপনার দল</span>
                 {from ? (
@@ -150,7 +150,7 @@ export function ChallengeDialog({ open, onOpenChange, from, to }: { open: boolea
 
             <fieldset>
               <legend className={label}>কিসের লড়াই?</legend>
-              <div className="grid gap-2 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {formats.map((f, i) => {
                   const picked = format === f;
                   return (
@@ -172,7 +172,7 @@ export function ChallengeDialog({ open, onOpenChange, from, to }: { open: boolea
               <Input value={title} maxLength={TITLE_MAX} onChange={(e) => setTitle(e.target.value)} placeholder={PLACEHOLDER[format]} aria-invalid={tried && Boolean(problems.title)} />
               {err(problems.title)}
             </label>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <label className="block">
                 <span className={label}>কবে *</span>
                 <Input type="date" value={on} min={hydrated ? today : undefined} onChange={(e) => setOn(e.target.value)} aria-invalid={tried && Boolean(problems.on)} />
@@ -257,7 +257,7 @@ export function ResultDialog({ open, onOpenChange, match, all, me }: { open: boo
           </div>
           <p className="-mt-2 text-center text-xs text-m-ink/55">{unit} · ০ থেকে ৯৯৯</p>
           {tried && (hs === undefined || as === undefined) && <p role="alert" className="text-center text-xs font-semibold text-m-red">দুই দলের {unit} পূর্ণ সংখ্যায় লিখুন।</p>}
-          <div className="grid gap-2 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             {toggle(toFeed, () => setToFeed((x) => !x), Newspaper, "ফিডে শেয়ার", "সবাই ফল দেখবে")}
             {toggle(toJourney, () => setToJourney((x) => !x), BookHeart, "টিমের যাত্রায় লিখুন", `${me.team.name}-এর টাইমলাইনে`)}
           </div>

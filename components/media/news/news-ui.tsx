@@ -66,7 +66,7 @@ function Photo({ item, sizes, className }: { item: NewsItem; sizes: string; clas
 export function LeadStory({ item }: { item: NewsItem }) {
   return (
     <article className="group overflow-hidden rounded-3xl bg-m-yellow text-m-ink shadow-[0_30px_70px_-40px_var(--color-signal-orange)]">
-      <Out item={item} className="grid h-full md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+      <Out item={item} className="grid grid-cols-1 h-full md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
         <span className="flex flex-col gap-3 p-5 sm:p-7">
           <span className="flex flex-wrap items-center gap-2">
             <CategoryChip category={item.category} tone="ink" />

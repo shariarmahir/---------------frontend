@@ -91,7 +91,7 @@ export function ChannelView({ handle }: { handle: string }) {
       <CatalogueRuler />
 
       <Band id="intro" n={1} label="শিক্ষক" now note={<>@{handle}</>}>
-        <div style={toneStyle(toneOf(depts[0]?.id))} className="tone grid gap-12 px-6 py-12 md:px-10 md:py-16 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+        <div style={toneStyle(toneOf(depts[0]?.id))} className="tone grid grid-cols-1 gap-12 px-6 py-12 md:px-10 md:py-16 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
             <PersonAvatar person={person} size="xl" className="size-24 shrink-0 text-4xl ring-2 ring-(--c-app) sm:size-32 sm:text-5xl" />
             <div data-reveal data-in className="min-w-0">
@@ -202,7 +202,12 @@ function Fan({ depts, courses }: { depts: Department[]; courses: Course[] }) {
             transition={
               reduce
                 ? undefined
-                : { opacity: { duration: 0.5, delay: i * 0.12 }, x: { type: "spring", stiffness: 120, damping: 16, delay: i * 0.12 }, scale: { duration: 0.5, delay: i * 0.12 }, y: { duration: 5 + i, repeat: Infinity, ease: "easeInOut", delay: 0.8 } }
+                : {
+                    opacity: { duration: 0.5, delay: i * 0.12 },
+                    x: { type: "spring", stiffness: 120, damping: 16, delay: i * 0.12 },
+                    scale: { duration: 0.5, delay: i * 0.12 },
+                    y: { duration: 5 + i, repeat: Infinity, ease: "easeInOut", delay: 0.8 },
+                  }
             }
           >
             <Image src={src} alt="" fill sizes="208px" className="object-cover" />
@@ -243,7 +248,10 @@ function TabBar({ handle, tabs, tab, q }: { handle: string; tabs: { id: Tab; lab
             href={t.id === "home" ? base : `${base}?tab=${t.id}`}
             scroll={false}
             aria-current={on ? "page" : undefined}
-            className={cn("hud flex h-11 items-center px-5 font-bold transition-colors duration-150 first:pl-6 md:first:pl-10", on ? "bg-(--c-invert-bg) text-(--c-invert-fg)" : "bg-(--c-bg) text-(--c-muted) hover:text-(--c-ink-strong)")}
+            className={cn(
+              "hud flex h-11 items-center px-5 font-bold transition-colors duration-150 first:pl-6 md:first:pl-10",
+              on ? "bg-(--c-invert-bg) text-(--c-invert-fg)" : "bg-(--c-bg) text-(--c-muted) hover:text-(--c-ink-strong)",
+            )}
           >
             {t.label}
           </Link>
@@ -251,7 +259,7 @@ function TabBar({ handle, tabs, tab, q }: { handle: string; tabs: { id: Tab; lab
       })}
       <div className="flex flex-1 items-stretch justify-end bg-(--c-bg)">
         {searching ? (
-          <form role="search" onSubmit={submit} className="flex items-center gap-2 border-l border-(--c-line) pl-4">
+          <form role="search" onSubmit={submit} className="flex items-center gap-2 border-l border-(--c-line) pl-4 focus-within:border-(--c-signal)">
             <Search className="size-4 text-(--c-faint)" aria-hidden />
             <label className="sr-only" htmlFor="channel-q">
               এই চ্যানেলে খুঁজুন
@@ -280,7 +288,11 @@ function TabBar({ handle, tabs, tab, q }: { handle: string; tabs: { id: Tab; lab
             </button>
           </form>
         ) : (
-          <button type="button" onClick={() => setSearching(true)} className="grid size-11 place-items-center border-l border-(--c-line) text-(--c-muted) transition-colors duration-150 hover:bg-(--c-invert-bg) hover:text-(--c-invert-fg)">
+          <button
+            type="button"
+            onClick={() => setSearching(true)}
+            className="grid size-11 place-items-center border-l border-(--c-line) text-(--c-muted) transition-colors duration-150 hover:bg-(--c-invert-bg) hover:text-(--c-invert-fg)"
+          >
             <Search className="size-4.5" aria-hidden />
             <span className="sr-only">এই চ্যানেলে খুঁজুন</span>
           </button>
@@ -292,7 +304,23 @@ function TabBar({ handle, tabs, tab, q }: { handle: string; tabs: { id: Tab; lab
 
 /* ── Home ──────────────────────────────────────────────────────────── */
 
-function HomeTab({ handle, all, full, shorts, depts, courses, locked }: { handle: string; all: ClassVideo[]; full: ClassVideo[]; shorts: ClassVideo[]; depts: Department[]; courses: Course[]; locked: (v: ClassVideo) => boolean }) {
+function HomeTab({
+  handle,
+  all,
+  full,
+  shorts,
+  depts,
+  courses,
+  locked,
+}: {
+  handle: string;
+  all: ClassVideo[];
+  full: ClassVideo[];
+  shorts: ClassVideo[];
+  depts: Department[];
+  courses: Course[];
+  locked: (v: ClassVideo) => boolean;
+}) {
   const record = teacherRecord(handle)!;
   const person = personOrThrow(handle);
   const featured = sortVideos(
@@ -407,7 +435,7 @@ function Featured({ video, locked }: { video: ClassVideo; locked: boolean }) {
   const course = getCourse(video.course);
   const thisWeek = weekOf(video.at) === THIS_WEEK;
   return (
-    <section aria-labelledby="featured" className="grid gap-px border-b border-(--c-line) bg-(--c-line) md:grid-cols-[minmax(0,28rem)_minmax(0,1fr)]">
+    <section aria-labelledby="featured" className="grid grid-cols-1 gap-px border-b border-(--c-line) bg-(--c-line) md:grid-cols-[minmax(0,28rem)_minmax(0,1fr)]">
       <Link href={watchHref(video)} className="group block bg-(--c-bg) focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-(--c-signal)" aria-label={video.title}>
         <Thumb video={video} locked={locked} className="aspect-video" sizes="(min-width: 768px) 28rem, 92vw" />
       </Link>
@@ -458,7 +486,11 @@ function VideosTab({ full, depts, locked }: { full: ClassVideo[]; depts: Departm
   const deptOf = (v: ClassVideo) => getCourse(v.course)?.dept;
   const withVideos = depts.filter((d) => full.some((v) => deptOf(v) === d.id));
   const shown = sortVideos(dept ? full.filter((v) => deptOf(v) === dept) : full, by);
-  const chip = (on: boolean) => cn("hud h-11 shrink-0 px-5 font-bold whitespace-nowrap transition-colors duration-150", on ? "bg-(--c-invert-bg) text-(--c-invert-fg)" : "bg-(--c-bg) text-(--c-muted) hover:text-(--c-ink-strong)");
+  const chip = (on: boolean) =>
+    cn(
+      "hud h-11 shrink-0 px-5 font-bold whitespace-nowrap transition-colors duration-150",
+      on ? "bg-(--c-invert-bg) text-(--c-invert-fg)" : "bg-(--c-bg) text-(--c-muted) hover:text-(--c-ink-strong)",
+    );
 
   if (full.length === 0) return <Empty title="এখনো কোনো ভিডিও নেই" body="নিজের কোর্স শুরু হলে প্রতি সপ্তাহের বিনামূল্যের ক্লাস এখানে আসবে।" />;
 
@@ -549,12 +581,21 @@ function PlaylistCard({ course, items, n }: { course: Course; items: ClassVideo[
       n={n}
       frame={
         <Link href={href} className="group relative block aspect-video overflow-hidden bg-(--c-bg-sunken)" aria-label={`${course.title} — ${items.length ? "সব চালান" : "কোর্সের পাতা"}`}>
-          <Image src={course.image} alt="" fill sizes="(min-width: 1024px) 26rem, (min-width: 768px) 46vw, 94vw" className="object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transition-none" />
+          <Image
+            src={course.image}
+            alt=""
+            fill
+            sizes="(min-width: 1024px) 26rem, (min-width: 768px) 46vw, 94vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transition-none"
+          />
           <span className="hud absolute right-2 bottom-2 inline-flex items-center gap-1 bg-black/80 px-1.5 py-0.5 text-white">
             <ListVideo className="size-3.5" aria-hidden /> <Num value={items.length} />
             টি ভিডিও
           </span>
-          <span className="absolute inset-0 grid place-items-center bg-black/60 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none" aria-hidden>
+          <span
+            className="absolute inset-0 grid place-items-center bg-black/60 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
+            aria-hidden
+          >
             <span className="inline-flex items-center gap-2 bg-(--c-invert-bg) px-4 py-2 text-sm font-bold text-(--c-invert-fg)">
               <Play className="size-4 fill-current" /> {items.length ? "সব চালান" : "কোর্সের পাতা"}
             </span>

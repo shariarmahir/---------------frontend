@@ -109,7 +109,7 @@ export function AcademyProfile({ academy: a, facts: f }: { academy: Academy; fac
           </>
         }
       >
-        <div style={toneStyle(tone)} className="tone grid gap-14 px-6 py-14 md:px-10 md:py-20 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-center lg:gap-16">
+        <div style={toneStyle(tone)} className="tone grid grid-cols-1 gap-14 px-6 py-14 md:px-10 md:py-20 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-center lg:gap-16">
           <div>
             <nav aria-label="অবস্থান" data-reveal data-in className="hud flex flex-wrap items-center gap-2 text-(--c-faint)">
               <Link href="/media/academy/academies" className="transition-colors hover:text-(--c-ink-strong)">
@@ -174,7 +174,7 @@ export function AcademyProfile({ academy: a, facts: f }: { academy: Academy; fac
             কেন এই একাডেমি, কেন এই <Lean>দক্ষতা</Lean>।
           </BandTitle>
         </div>
-        <div className="grid gap-px border-t border-(--c-line) bg-(--c-line) lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-px border-t border-(--c-line) bg-(--c-line) lg:grid-cols-3">
           <div className="flex flex-col gap-px lg:col-span-2">
             {a.departments.map((d) => (
               <article key={d.id} data-reveal style={toneStyle(toneOf(d.id))} className="tone bg-(--c-bg) p-6 md:p-10">
@@ -234,7 +234,7 @@ export function AcademyProfile({ academy: a, facts: f }: { academy: Academy; fac
             )}
           </div>
         </div>
-        <ul data-reveal-group className="grid gap-px border-t border-(--c-line) bg-(--c-line) sm:grid-cols-2 lg:grid-cols-4">
+        <ul data-reveal-group className="grid grid-cols-1 gap-px border-t border-(--c-line) bg-(--c-line) sm:grid-cols-2 lg:grid-cols-4">
           {ways.map(({ Icon, title, body }, i) => (
             <li key={i} data-reveal className="bg-(--c-bg) p-6 md:p-8">
               <div className="flex items-center justify-between gap-4">

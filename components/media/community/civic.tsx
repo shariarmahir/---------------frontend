@@ -115,7 +115,7 @@ export function CivicCard({ report, live }: { report: CivicReport; live?: boolea
           {verified && <SealCheck size={18} weight="duotone" className="text-m-blue" aria-hidden />}
           <Num value={count} /> জন নিশ্চিত করেছেন
         </span>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button type="button" onClick={() => setShowSolve((v) => !v)} className={mediaButton({ variant: "ghost", size: "sm" })} aria-expanded={showSolve}>
             <Lightbulb aria-hidden /> সমাধান (<Num value={solutions.length} />)
           </button>
@@ -215,7 +215,7 @@ export function ReportButton({ defaultKind, variant = "primary", size, label = "
                   <FormMessage />
                 </FormItem>
               )} />
-              <div className="grid gap-5 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <FormField control={form.control} name="area" render={({ field }) => (
                   <FormItem>
                     <FormLabel>এলাকা</FormLabel>

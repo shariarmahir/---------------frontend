@@ -285,7 +285,7 @@ function NoticeComposer({ open, onOpenChange, role, meId, meName, today, subject
           )}
 
           {kind !== "custom" && (
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <label className="block">
                 <span className={label}>{kind === "late" ? "কবে জমা দেবেন *" : kind === "leave" ? "কবে থেকে *" : "কোন দিন *"}</span>
                 <Input type="date" value={date} min={today} onChange={(e) => setDate(e.target.value)} aria-invalid={tried && Boolean(problem.date)} />

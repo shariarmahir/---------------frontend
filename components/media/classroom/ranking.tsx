@@ -24,7 +24,7 @@ export const RankingTab: ClassTab = ({ room, me, member, leader }) => {
 
   return (
     <div className="space-y-4">
-      <ol className="grid gap-3 sm:grid-cols-3">
+      <ol className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {top.map((m, i) => {
           const s = surfaceAt([1, 0, 2][i]);
           return (
@@ -42,7 +42,7 @@ export const RankingTab: ClassTab = ({ room, me, member, leader }) => {
         })}
       </ol>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <Panel title="পুরো ক্লাসের র‍্যাংকিং">
           <p className="mb-4 text-xs text-m-ink/60">নোট শেয়ার ৫, সমাধান ১০, সাহায্য ৮ পয়েন্ট; মূল্যায়নের গড় থেকে সর্বোচ্চ ১০ — নম্বরের চেয়ে অবদান বড়।</p>
           <ol className="space-y-2">

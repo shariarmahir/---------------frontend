@@ -57,7 +57,7 @@ export function PanelList() {
           ) : undefined
         }
       >
-        <div className="grid gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_20rem]">
+        <div className="grid grid-cols-1 gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_20rem]">
           <div className="bg-(--c-bg)">
             {!hydrated ? (
               <span aria-hidden className="block h-64 animate-pulse bg-(--c-bg-sunken)" />

@@ -130,7 +130,7 @@ export function CvStudio({ person: given, self, format, base }: { person?: Perso
         </button>
       </div>
 
-      <div className={self ? "grid items-start gap-6 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]" : ""}>
+      <div className={self ? "grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]" : ""}>
         {self && (
           <aside className={`${glass} space-y-6 p-5 print:hidden lg:sticky lg:top-22`}>
             <div>

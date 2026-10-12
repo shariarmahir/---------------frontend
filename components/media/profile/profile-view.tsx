@@ -4,7 +4,7 @@ import { PeopleYouMayKnow } from "../feed/people-you-may-know";
 import { PostCard } from "../feed/post-card";
 import { HireBar } from "../hire/hire";
 import { ListingCard } from "../market/listing-card";
-import { PinnedNotes } from "../notes/notes";
+import { PinnedNotes, TodayNote } from "../notes/notes";
 import { EmptyState } from "../ui/empty-state";
 import { Compact, Num, Taka } from "../ui/numerals";
 import { IdBadge } from "../ui/trust";
@@ -64,7 +64,7 @@ export function ProfileView({ person, self }: { person: Person; self: boolean })
       <ProfileHero person={person} self={self} />
 
       <ProfileSection id="about" eyebrow="পরিচিতি" title="দক্ষতা দিয়ে গড়া পরিচয়">
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
           <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-3">
             <Tile icon={<Users className="size-5" aria-hidden />} value={<FollowerCount handle={person.handle} base={person.followers} />} label="অনুসারী" />
             <Tile icon={<BriefcaseBusiness className="size-5" aria-hidden />} value={<Compact n={person.jobsDone} />} label="সম্পন্ন কাজ" />
@@ -96,6 +96,7 @@ export function ProfileView({ person, self }: { person: Person; self: boolean })
                 ))}
               </ul>
             )}
+            {self && <TodayNote />}
           </div>
         </div>
       </ProfileSection>
@@ -167,7 +168,7 @@ export function ProfileView({ person, self }: { person: Person; self: boolean })
             {theirListings.length === 0 && !self ? (
               <EmptyState icon="market" title="বিক্রির জন্য কিছু নেই" />
             ) : (
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {self && <MyShopCards />}
                 {theirListings.map((l) => (
                   <ListingCard key={l.id} listing={l} seller={person} />
@@ -205,7 +206,7 @@ export function ProfileView({ person, self }: { person: Person; self: boolean })
 
       <ProfileSection id="connect" eyebrow={self ? "আমার CV" : "যোগাযোগ"} title={self ? "CV তৈরি করুন, নামান, আপলোড করুন" : "একসাথে কাজ করবেন?"}>
         {self ? (
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
             <div className="space-y-5">
               <CvFormatCards base="/media/me/cv" />
               <ResumeUpload />
@@ -213,7 +214,7 @@ export function ProfileView({ person, self }: { person: Person; self: boolean })
             <WalletCard seed={walletSeed} />
           </div>
         ) : (
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
             <HireBar
               target={{
                 handle: person.handle,

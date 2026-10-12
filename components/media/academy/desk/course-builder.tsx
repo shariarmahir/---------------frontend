@@ -235,7 +235,7 @@ function Builder() {
       </Band>
 
       <Band id="build" n={2} label="কোর্সের খসড়া" note={<span className="font-mono">{preview.id}</span>}>
-        <div className="grid gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_24rem]">
+        <div className="grid grid-cols-1 gap-px bg-(--c-line) lg:grid-cols-[minmax(0,1fr)_24rem]">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="flex min-w-0 flex-col gap-px">
               <section className={cell}>
@@ -253,7 +253,7 @@ function Builder() {
                     </FormItem>
                   )}
                 />
-                <div className="grid gap-5 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   <FormField
                     control={form.control}
                     name="dept"
@@ -320,7 +320,7 @@ function Builder() {
                     <p className="mt-1.5 text-xs text-(--c-muted)">প্যানেল অনুমোদন দিলে পুরোনোটির চলমান ব্যাচ শেষ হওয়ার পর বদল হবে।</p>
                   </div>
                 )}
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <FormField
                     control={form.control}
                     name="fee"
@@ -406,7 +406,7 @@ function Builder() {
                   <h2 className={cellTitle}>কোর্সের কাগজ</h2>
                   <p className="mt-1 text-sm text-(--c-muted)">তিনটিই লাগবে — প্যানেল এগুলো দেখেই অনুমোদন দেয়।</p>
                 </div>
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <PaperField name="syllabus" label="সিলেবাস" hint="পিডিএফ বা ওয়ার্ড" accept=".pdf,.doc,.docx" form={form} />
                   <PaperField name="calendar" label="কাজের ক্যালেন্ডার" hint={`${bnDigits(COURSE_DAYS)} দিনের — কোন দিন কোন ক্লাস`} accept=".pdf,.xls,.xlsx,.csv,.doc,.docx" form={form} />
                   <PromoField form={form} />

@@ -119,7 +119,7 @@ function Hero({ room, me, member, leader, teacher }: RoomProps) {
   const next = nextExam(room.exams, DEMO_NOW);
   return (
     <section className="live-in overflow-hidden rounded-3xl bg-m-yellow text-m-ink shadow-[0_30px_70px_-40px_var(--color-signal-orange)]">
-      <div className="grid gap-6 p-5 sm:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+      <div className="grid grid-cols-1 gap-6 p-5 sm:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
         <div className="min-w-0 space-y-4">
           <Link href="/media/classroom" className="group inline-flex items-center gap-1.5 text-sm font-bold">
             <ArrowLeft className="size-4 transition-transform duration-200 group-hover:-translate-x-1" aria-hidden /> সব ক্লাসরুম

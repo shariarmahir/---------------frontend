@@ -180,7 +180,7 @@ export function BoardForm() {
           </Row>
           <TagInput value={d.tags} ideas={tagIdeasFor(d.sub)} error={errors.tags} onChange={(v) => set("tags", v)} />
 
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <Row id="qty" label={buy ? "কতটা দরকার *" : "কতটা আছে *"} error={errors.qty}>
               <Input id="qty" inputMode="numeric" value={d.qty} onChange={(e) => set("qty", e.target.value)} {...aria("qty")} />
             </Row>
@@ -207,7 +207,7 @@ export function BoardForm() {
           </fieldset>
 
           {(farmOrFood || (buy && d.mode === "export")) && (
-            <div className="grid gap-2 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               {farmOrFood && (
                 <label htmlFor="organic" className="flex min-h-12 items-center justify-between gap-3 rounded-xl bg-m-ink/3 px-3 text-sm font-semibold text-m-ink">
                   {buy ? "শুধু বিষমুক্ত চাই" : "বিষমুক্ত / অর্গানিক"}
@@ -223,7 +223,7 @@ export function BoardForm() {
             </div>
           )}
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Row id="when" label={buy ? "কবে দরকার" : "কবে থেকে পাওয়া যাবে"} hint={buy ? "যেমন: প্রতি শনিবার" : "যেমন: ৩ অক্টোবর থেকে"}>
               <Input id="when" value={d.when} onChange={(e) => set("when", e.target.value)} maxLength={40} />
             </Row>

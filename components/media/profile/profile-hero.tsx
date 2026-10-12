@@ -74,7 +74,7 @@ export function ProfileHero({ person, self }: { person: Person; self: boolean })
         "bg-[radial-gradient(36rem_18rem_at_100%_0%,color-mix(in_srgb,var(--color-m-blue)_22%,transparent),transparent_70%),radial-gradient(28rem_16rem_at_0%_100%,color-mix(in_srgb,var(--color-m-yellow)_12%,transparent),transparent_70%)]",
       )}
     >
-      <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
         <div className="min-w-0">
           <p className="font-mono text-xs font-bold tracking-wide text-m-blue uppercase">হ্যালো, আমি</p>
           <h1 className="mt-2 flex flex-wrap items-center gap-x-3 text-4xl leading-tight font-bold text-m-ink sm:text-5xl">
