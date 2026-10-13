@@ -24,6 +24,12 @@ export const jobs: Job[] = [
     deadline: "2026-10-15",
     applicants: 46,
     studentFriendly: false,
+    image: "/media/dsa-code.webp",
+    hours: "সপ্তাহে ৫ দিন · সকাল ১০টা–সন্ধ্যা ৬টা",
+    openings: 2,
+    perks: ["প্রতি সপ্তাহে শেখার সেশন", "দুপুরের খাবার", "৬ মাস পর বেতন পর্যালোচনা"],
+    steps: ["প্রোফাইল ও প্রজেক্ট দেখা", "৩০ মিনিটের ভিডিও কল", "ছোট একটা কাজ বাড়িতে", "টিমের সাথে পরিচয়, তারপর অফার"],
+    courses: ["WEB-101", "WEB-201"],
   },
   {
     id: "j-content-part",
@@ -42,6 +48,12 @@ export const jobs: Job[] = [
     deadline: "2026-10-05",
     applicants: 71,
     studentFriendly: true,
+    image: "/media/shoot-after.webp",
+    hours: "সপ্তাহে ১০–১২ ঘণ্টা · নিজের সময়ে",
+    openings: 1,
+    perks: ["পুরোটা রিমোট", "প্রতি সপ্তাহে পেমেন্ট", "পোর্টফোলিওতে নাম থাকবে"],
+    steps: ["আগের এডিট দেখা", "একটা রিল এডিট করে দেখানো", "শুরু"],
+    courses: ["MED-101", "GFX-101"],
   },
   {
     id: "j-site-engineer",
@@ -60,6 +72,12 @@ export const jobs: Job[] = [
     deadline: "2026-10-10",
     applicants: 19,
     studentFriendly: false,
+    image: "/media/house-built.webp",
+    hours: "সপ্তাহে ৬ দিন · মাঠে",
+    openings: 1,
+    perks: ["থাকার ব্যবস্থা", "যাতায়াত ভাতা", "প্রকল্প শেষে বোনাস"],
+    steps: ["প্রোফাইল দেখা", "প্রধান স্থপতির সাথে কথা", "সাইট ঘুরে দেখা", "অফার"],
+    courses: ["ARC-101", "ARC-102"],
   },
   {
     id: "j-tutor",
@@ -78,6 +96,12 @@ export const jobs: Job[] = [
     deadline: "2026-10-02",
     applicants: 38,
     studentFriendly: true,
+    image: "/media/calculus.webp",
+    hours: "সন্ধ্যা ৭টা–৯টা · সপ্তাহে ৪ দিন",
+    openings: 3,
+    perks: ["পুরোটা অনলাইনে", "ছাত্রছাত্রীর ফলাফলে বোনাস"],
+    steps: ["একটা ডেমো ক্লাস", "অভিভাবকদের মতামত", "শুরু"],
+    courses: ["MTH-101"],
   },
   {
     id: "j-logo-gig",
@@ -96,6 +120,12 @@ export const jobs: Job[] = [
     deadline: "2026-09-30",
     applicants: 12,
     studentFriendly: true,
+    image: "/media/shop-grocery.webp",
+    hours: "এককালীন · ১০ দিনে জমা",
+    openings: 1,
+    perks: ["অর্ধেক টাকা আগে", "ফাইল আপনার পোর্টফোলিওতে রাখতে পারবেন"],
+    steps: ["দুটো খসড়া নকশা", "একটা বেছে নেওয়া", "চূড়ান্ত ফাইল ও ছাপা"],
+    courses: ["GFX-101", "ART-102"],
   },
   {
     id: "j-accounts-intern",
@@ -114,6 +144,12 @@ export const jobs: Job[] = [
     deadline: "2026-10-08",
     applicants: 54,
     studentFriendly: true,
+    image: "/media/tax-desk.webp",
+    hours: "সপ্তাহে ৫ দিন · ৩ মাস",
+    openings: 2,
+    perks: ["ভাতা", "শেষে অভিজ্ঞতার সনদ", "ভালো করলে স্থায়ী চাকরি"],
+    steps: ["এক্সেলের ছোট পরীক্ষা", "মুখোমুখি কথা", "শুরু"],
+    courses: ["BIZ-101"],
   },
   {
     id: "j-photo-gig",
@@ -132,6 +168,38 @@ export const jobs: Job[] = [
     deadline: "2026-10-01",
     applicants: 9,
     studentFriendly: false,
+    image: "/media/fashion-jamdani.webp",
+    hours: "এককালীন · ২ দিনের শুট",
+    openings: 1,
+    perks: ["তাঁতঘরে থাকা-খাওয়া", "ছবির সাথে নাম ছাপা হবে"],
+    steps: ["আগের শুট দেখা", "দাম ও সময় ঠিক করা", "শুট"],
+    courses: ["MED-102"],
+  },
+];
+
+/**
+ * Interview invitations the viewer has been sent, as a recruiter would send
+ * them from "কাজ চাই" or the academy's graduates. Sample data until there is
+ * a server; the viewer's answers are kept on the device.
+ */
+export const invitesForMe: { id: string; from: string; org: string; role: string; note: string; slot: string; at: string }[] = [
+  {
+    id: "inv-tanvir",
+    from: "tanvir",
+    org: "তানভীর আর্কিটেক্টস",
+    role: "বন্যা-সতর্কতার সেন্সর বসানো — এককালীন",
+    note: "বাগেরহাটের প্রকল্পে পানির উচ্চতা মাপার সেন্সর দরকার। আপনার আইওটি কাজগুলো দেখেছি — একবার কথা বলতে চাই।",
+    slot: "2026-10-16T05:00:00Z",
+    at: "2026-10-09T08:30:00Z",
+  },
+  {
+    id: "inv-anik",
+    from: "anik",
+    org: "অনিক হাসান · ফ্রিল্যান্স টিম",
+    role: "হার্ডওয়্যার পরামর্শক — খামারের অ্যাপ",
+    note: "খামারের তাপমাত্রা দেখার অ্যাপে সেন্সরের দিকটা কেউ দেখলে ভালো হয়। সপ্তাহে কয়েক ঘণ্টা, পুরোটা অনলাইনে।",
+    slot: "2026-10-18T09:00:00Z",
+    at: "2026-10-11T11:00:00Z",
   },
 ];
 

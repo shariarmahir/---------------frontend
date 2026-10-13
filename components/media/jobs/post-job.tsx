@@ -59,7 +59,10 @@ export function PostJobButton() {
       location: v.location,
       remote: v.remote,
       pay: { min: v.payMin, max: v.payMax, unit: v.payUnit },
-      tags: v.tags.split(/[\s,]+/).filter(Boolean).map((t) => (t.startsWith("#") ? t : `#${t}`)),
+      tags: v.tags
+        .split(/[\s,]+/)
+        .filter(Boolean)
+        .map((t) => (t.startsWith("#") ? t : `#${t}`)),
       description: v.description,
       requirements: [],
       postedAt: new Date().toISOString(),
@@ -86,118 +89,198 @@ export function PostJobButton() {
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-5">
-              <FormField control={form.control} name="title" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>পদের নাম</FormLabel>
-                  <FormControl><Input placeholder="যেমন: খণ্ডকালীন গ্রাফিক ডিজাইনার" {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>পদের নাম</FormLabel>
+                    <FormControl>
+                      <Input placeholder="যেমন: খণ্ডকালীন গ্রাফিক ডিজাইনার" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <FormField control={form.control} name="org" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>প্রতিষ্ঠান / আপনার নাম</FormLabel>
-                    <FormControl><Input {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-                <FormField control={form.control} name="sector" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>খাত</FormLabel>
-                    <FormControl>
-                      <select {...field} className={selectClass}>
-                        {categories.map((c) => <option key={c.id} value={c.id}>{c.bn}</option>)}
-                      </select>
-                    </FormControl>
-                    <FormDescription>এই খাতের মানুষেরাই দেখবেন।</FormDescription>
-                  </FormItem>
-                )} />
+                <FormField
+                  control={form.control}
+                  name="org"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>প্রতিষ্ঠান / আপনার নাম</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="sector"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>খাত</FormLabel>
+                      <FormControl>
+                        <select {...field} className={selectClass}>
+                          {categories.map((c) => (
+                            <option key={c.id} value={c.id}>
+                              {c.bn}
+                            </option>
+                          ))}
+                        </select>
+                      </FormControl>
+                      <FormDescription>এই খাতের মানুষেরাই দেখবেন।</FormDescription>
+                    </FormItem>
+                  )}
+                />
               </div>
-              <FormField control={form.control} name="type" render={({ field }) => (
-                <FormItem>
-                  <FormGroupLabel>ধরন</FormGroupLabel>
-                  <FormGroup className="flex flex-wrap gap-2">
-                    {(Object.keys(jobTypeBn) as JobType[]).map((t) => (
-                      <label key={t} className={choiceClass(field.value === t)}>
-                        <input type="radio" className="sr-only" name={field.name} checked={field.value === t} onChange={() => field.onChange(t)} />
-                        {jobTypeBn[t]}
-                      </label>
-                    ))}
-                  </FormGroup>
-                </FormItem>
-              )} />
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormGroupLabel>ধরন</FormGroupLabel>
+                    <FormGroup className="flex flex-wrap gap-2">
+                      {(Object.keys(jobTypeBn) as JobType[]).map((t) => (
+                        <label key={t} className={choiceClass(field.value === t)}>
+                          <input type="radio" className="sr-only" name={field.name} checked={field.value === t} onChange={() => field.onChange(t)} />
+                          {jobTypeBn[t]}
+                        </label>
+                      ))}
+                    </FormGroup>
+                  </FormItem>
+                )}
+              />
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-                <FormField control={form.control} name="payMin" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>সর্বনিম্ন বেতন (৳)</FormLabel>
-                    <FormControl><Input inputMode="numeric" className="tabular-nums" value={field.value || ""} onChange={(e) => field.onChange(toNumber(e.target.value))} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-                <FormField control={form.control} name="payMax" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>সর্বোচ্চ (৳)</FormLabel>
-                    <FormControl><Input inputMode="numeric" className="tabular-nums" value={field.value || ""} onChange={(e) => field.onChange(toNumber(e.target.value))} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-                <FormField control={form.control} name="payUnit" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>হিসাব</FormLabel>
-                    <FormControl>
-                      <select {...field} className={selectClass}>
-                        {(Object.keys(payUnitBn) as PayUnit[]).map((u) => <option key={u} value={u}>{payUnitBn[u]}</option>)}
-                      </select>
-                    </FormControl>
-                  </FormItem>
-                )} />
+                <FormField
+                  control={form.control}
+                  name="payMin"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>সর্বনিম্ন বেতন (৳)</FormLabel>
+                      <FormControl>
+                        <Input inputMode="numeric" className="tabular-nums" value={field.value || ""} onChange={(e) => field.onChange(toNumber(e.target.value))} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="payMax"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>সর্বোচ্চ (৳)</FormLabel>
+                      <FormControl>
+                        <Input inputMode="numeric" className="tabular-nums" value={field.value || ""} onChange={(e) => field.onChange(toNumber(e.target.value))} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="payUnit"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>হিসাব</FormLabel>
+                      <FormControl>
+                        <select {...field} className={selectClass}>
+                          {(Object.keys(payUnitBn) as PayUnit[]).map((u) => (
+                            <option key={u} value={u}>
+                              {payUnitBn[u]}
+                            </option>
+                          ))}
+                        </select>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
               </div>
               <p className="-mt-2 rounded-lg bg-m-ink/6 px-3 py-2 text-xs text-m-blue">
                 ন্যায্য মজুরি: {payUnitBn[unit]} অন্তত <Taka amount={floor} />
               </p>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <FormField control={form.control} name="location" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>কোথায়</FormLabel>
-                    <FormControl><Input placeholder="যেমন: মিরপুর, ঢাকা" {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-                <FormField control={form.control} name="deadline" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>আবেদনের শেষ তারিখ</FormLabel>
-                    <FormControl><Input type="date" {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>কোথায়</FormLabel>
+                      <FormControl>
+                        <Input placeholder="যেমন: মিরপুর, ঢাকা" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="deadline"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>আবেদনের শেষ তারিখ</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
-              <FormField control={form.control} name="description" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>কাজের বিবরণ</FormLabel>
-                  <FormControl><Textarea rows={4} placeholder="কী করতে হবে, কখন, কার সাথে — পরিষ্কার করে লিখুন।" {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              <FormField control={form.control} name="tags" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>হ্যাশট্যাগ</FormLabel>
-                  <FormControl><Input placeholder="#ডিজাইন #ঢাকা" {...field} /></FormControl>
-                  <FormDescription>খাতের সঠিক মানুষের কাছে পৌঁছাতে সাহায্য করে।</FormDescription>
-                </FormItem>
-              )} />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>কাজের বিবরণ</FormLabel>
+                    <FormControl>
+                      <Textarea rows={4} placeholder="কী করতে হবে, কখন, কার সাথে — পরিষ্কার করে লিখুন।" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="tags"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>হ্যাশট্যাগ</FormLabel>
+                    <FormControl>
+                      <Input placeholder="#ডিজাইন #ঢাকা" {...field} />
+                    </FormControl>
+                    <FormDescription>খাতের সঠিক মানুষের কাছে পৌঁছাতে সাহায্য করে।</FormDescription>
+                  </FormItem>
+                )}
+              />
               <div className="flex flex-wrap gap-6">
-                <FormField control={form.control} name="remote" render={({ field }) => (
-                  <FormItem className="flex flex-row items-center gap-3">
-                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                    <FormLabel>রিমোট চলবে</FormLabel>
-                  </FormItem>
-                )} />
-                <FormField control={form.control} name="studentFriendly" render={({ field }) => (
-                  <FormItem className="flex flex-row items-center gap-3">
-                    <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                    <FormLabel>শিক্ষার্থীরা পারবেন</FormLabel>
-                  </FormItem>
-                )} />
+                <FormField
+                  control={form.control}
+                  name="remote"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center gap-3">
+                      <FormControl>
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                      <FormLabel>রিমোট চলবে</FormLabel>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="studentFriendly"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center gap-3">
+                      <FormControl>
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                      <FormLabel>শিক্ষার্থীরা পারবেন</FormLabel>
+                    </FormItem>
+                  )}
+                />
               </div>
               <button type="submit" className={mediaButton({ variant: "primary", size: "lg", className: "w-full" })}>
                 <BriefcaseBusiness aria-hidden /> প্রকাশ করুন

@@ -1933,8 +1933,8 @@ body:has(.media-shell[data-theme="dark"]) .bg-m-ink {
 }
 
 /* A department's colour outside the catalogue: the ink lightens on charcoal. */
-.media-shell .tone { --c-app-ink: var(--c-tone-dark); }
-.media-shell[data-theme="light"] .tone { --c-app-ink: var(--c-tone-light); }
+body:has(.media-shell) .tone { --c-app-ink: var(--c-tone-dark); }
+body:has(.media-shell[data-theme="light"]) .tone { --c-app-ink: var(--c-tone-light); }
 
 /* A media card in a department's colour, like the academy's cards: set
    --c-app with toneStyle(); the bar draws across its top on hover, between

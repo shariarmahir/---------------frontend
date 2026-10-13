@@ -6,6 +6,7 @@ import { follows } from "@/data/media/follows";
 import { CURRENT_USER_HANDLE } from "@/data/media/users";
 import { activeAccountId, subscribeAuth } from "@/lib/auth/client";
 import { emptyCv, type CvDetails } from "./cv";
+import type { Invite, InviteReply, Seeking } from "./hiring";
 import type { ClassMsg } from "./class-chat";
 import type { Marks, Pin } from "./class-pins";
 import type { Classroom } from "./classroom";
@@ -162,6 +163,12 @@ export interface MediaState {
   todos: Todo[];
   /** The CV: contact, extra history, chosen layout and the uploaded résumé. */
   cv: CvDetails;
+  /** "আমি কাজ চাই" — the viewer's card for recruiters. */
+  seeking: Seeking | null;
+  /** Interview invitations the viewer sent, newest first. */
+  invites: Invite[];
+  /** The viewer's answers to invitations sent to them, by invitation id. */
+  inviteReplies: Record<string, InviteReply>;
 
   liked: Record<string, true>;
   /** `${postId}:${commentId}` */
@@ -232,6 +239,9 @@ const initialState: MediaState = Object.freeze({
   plan: { date: "", done: {} },
   todos: [],
   cv: emptyCv,
+  seeking: null,
+  invites: [],
+  inviteReplies: {},
   liked: {},
   commentLikes: {},
   comments: {},

@@ -270,6 +270,18 @@ export interface Job {
   applicants: number;
   /** Fits around classes — shown in the students' filter. */
   studentFriendly: boolean;
+  /** The posting's picture: the workplace or the work itself. */
+  image?: string;
+  /** Hours and days, in a line. */
+  hours?: string;
+  /** How many people they will take. */
+  openings?: number;
+  /** What comes with the pay. */
+  perks?: string[];
+  /** How the hiring goes, step by step. */
+  steps?: string[];
+  /** Academy courses that teach the work, by code. */
+  courses?: string[];
 }
 
 export type EventKind = "tree" | "cleanup" | "blood" | "relief" | "awareness" | "repair";
