@@ -1,52 +1,70 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { luminance, parseFocus, pickTone, shadeUnderScrim } from "./backdrop-tone.ts";
+import { contrast, luminance, parseFocus, pickLook, shadeUnderScrim, TONE_LUMINANCE } from "./backdrop-tone.ts";
 
-const patch = (r: number, g: number, b: number, n = 50) => Array.from({ length: n }, () => luminance(r, g, b));
+/** `n` pixels of one colour, as flat r,g,b triples. */
+const patch = (r: number, g: number, b: number, n = 50) => Array.from({ length: n }, () => [r, g, b]).flat();
 
-test("gold on a dark photograph", () => {
-  assert.equal(pickTone(patch(20, 40, 30)), "gold");
-  assert.equal(pickTone(patch(0, 0, 0)), "gold");
+/** Luminance of a colour under an ink scrim of opacity `a`. */
+const under = (r: number, g: number, b: number, a: number) =>
+  luminance(r * (1 - a) + 3 * a, g * (1 - a) + 32 * a, b * (1 - a) + 23 * a);
+
+test("gold on a dark photograph, on the lightest scrim", () => {
+  const look = pickLook(patch(20, 40, 30));
+  assert.equal(look.tone, "gold");
+  assert.equal(look.scrim, 0.12);
 });
 
-test("white where gold is not comfortable but white is", () => {
-  // Deep green, L ~0.12: gold is under 4.5:1 here, white is well over.
-  assert.equal(pickTone(patch(60, 110, 50)), "white");
+test("a deep green keeps gold on a light scrim", () => {
+  const look = pickLook(patch(60, 110, 50));
+  assert.equal(look.tone, "gold");
+  assert.ok(look.scrim <= 0.3);
 });
 
-test("green on a very bright photograph (pale sky, the mustard field)", () => {
-  assert.equal(pickTone(patch(255, 255, 255)), "green");
-  assert.equal(pickTone(patch(215, 215, 40)), "green");
+test("white on a bright, busy green, with just the scrim that brings it to 4.5:1", () => {
+  // Sunlit leaves with shadow between them: too mixed for dark text.
+  const look = pickLook([...patch(120, 160, 90, 80), ...patch(20, 35, 25, 20)]);
+  assert.equal(look.tone, "white");
+  assert.ok(contrast(1, under(120, 160, 90, look.scrim)) >= 4.5);
+  assert.ok(contrast(1, under(120, 160, 90, look.scrim - 0.02)) < 4.5, "and no more scrim than that");
 });
 
-test("navy on a mid-bright photograph", () => {
-  // L ~0.36: navy has the contrast, green is under 3:1 here.
-  assert.equal(pickTone(patch(150, 170, 60)), "navy");
+test("the mustard field with dark figures in it gets light text and a real scrim", () => {
+  // 85% bright field, 15% dark clothing: dark text would vanish on the figures.
+  const field = [...patch(215, 215, 40, 85), ...patch(25, 30, 35, 15)];
+  const look = pickLook(field);
+  assert.equal(look.tone, "white");
+  assert.ok(look.scrim > 0.4);
+  assert.ok(contrast(1, under(215, 215, 40, look.scrim)) >= 4.5);
 });
 
-test("black on the mid tone where white and navy both fall short", () => {
-  // L ~0.21: white is under 4.5:1 and navy is not yet comfortable.
-  assert.equal(pickTone(patch(100, 135, 110)), "black");
-});
-
-test("a mixed patch goes to the colour that reads on more of it", () => {
-  const mostlyBright = [...patch(250, 250, 200, 70), ...patch(10, 20, 15, 30)];
-  const mostlyDark = [...patch(250, 250, 200, 30), ...patch(10, 20, 15, 70)];
-  // The light colours read on the dark 70%, the dark ones on the bright 70%.
-  assert.ok(["gold", "white"].includes(pickTone(mostlyDark)));
-  assert.ok(["black", "navy", "green"].includes(pickTone(mostlyBright)));
-});
-
-test("every pick is one of the five UI colours", () => {
-  const five = new Set(["gold", "white", "black", "green", "navy"]);
-  for (let v = 0; v <= 255; v += 15) {
-    assert.ok(five.has(pickTone(patch(v, v, v))));
-    assert.ok(five.has(pickTone(patch(v, 255 - v, 40))));
+test("dark text only on an evenly bright patch", () => {
+  assert.equal(pickLook(patch(255, 255, 255)).tone, "green");
+  assert.equal(pickLook(patch(150, 170, 60)).tone, "navy");
+  for (const tone of ["green", "navy", "black"]) {
+    const look = pickLook(patch(255, 255, 255));
+    if (look.tone === tone) assert.equal(look.scrim, 0);
   }
 });
 
-test("an empty patch falls back to white", () => {
-  assert.equal(pickTone([]), "white");
+test("a few dark specks do not rule dark text out", () => {
+  const sky = [...patch(240, 245, 250, 98), ...patch(10, 10, 10, 2)];
+  assert.notEqual(pickLook(sky).tone, "white");
+});
+
+test("every pick reads at its bar on all but the outliers", () => {
+  for (let v = 0; v <= 255; v += 15) {
+    for (const [r, g, b] of [[v, v, v], [v, 255 - v, 40]]) {
+      const look = pickLook(patch(r, g, b));
+      const bg = under(r, g, b, look.scrim);
+      const bar = look.tone === "gold" ? 3 : 4.5;
+      assert.ok(contrast(TONE_LUMINANCE[look.tone], bg) >= bar, `${look.tone} on ${r},${g},${b}`);
+    }
+  }
+});
+
+test("an empty patch gets the safe default", () => {
+  assert.deepEqual(pickLook([]), { tone: "white", scrim: 0.45 });
 });
 
 test("the scrims darken the left and bottom, and leave the top right alone", () => {

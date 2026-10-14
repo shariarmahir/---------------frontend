@@ -1,22 +1,34 @@
 /**
- * Picks the headline colour for a patch of photograph, from the five the UI
- * already uses: gold, white, black, bottle green and deep navy.
+ * Picks how the hero's claim is coloured over a patch of photograph: one of
+ * the five UI colours (gold, white, black, bottle green, deep navy) plus the
+ * strength of a soft ink scrim laid behind the text.
  *
  * Pure maths, no DOM: the hero feeds it the pixels behind its text (see
- * components/sections/hero-tone.ts). The rule is contrast, not a brightness
- * guess. Each colour is scored by how much of the patch it reads on at the
- * WCAG large-text ratio (3:1). Only colours within a few percent of the best
- * coverage are eligible; of those, the first in brand order (gold, green,
- * navy, white, black) whose contrast on the patch's average tone is
- * comfortable (4.5:1) wins, and when none is comfortable the highest contrast
- * does. So dark photographs get gold, mid greens get white, and a bright
- * mustard field gets navy. An empty patch is white, the page's default text.
+ * components/sections/hero-tone.ts). The rule is the worst case, not the
+ * average: a photograph with people in it is mostly bright field and partly
+ * dark figure, and text that reads on "most" of it still vanishes on the
+ * figures. So:
+ *
+ *  1. Dark text (green, then navy, then black) only when even the darkest
+ *     few percent of the patch are bright enough for it at 4.5:1 — a pale
+ *     sky, an even bright wall. No scrim.
+ *  2. Otherwise light text, with the lightest scrim that brings the
+ *     brightest few percent down far enough for it: gold when the photo is
+ *     already dark enough that it costs little extra scrim, white otherwise.
+ *     White needs 4.5:1 (its subtitle is body size); gold 3:1 on 98% of
+ *     the patch (large text; a mid tone, so it gets fewer outliers than white).
  */
 
 export type TextTone = "gold" | "white" | "black" | "green" | "navy";
 
-/** Preference order when several colours read equally well. */
-const ORDER: readonly TextTone[] = ["gold", "green", "navy", "white", "black"];
+export type HeroLook = {
+  tone: TextTone;
+  /** Peak opacity of the ink scrim behind the text, 0–1. */
+  scrim: number;
+};
+
+/** What the hero shows before the photograph has been measured. */
+export const DEFAULT_LOOK: HeroLook = { tone: "white", scrim: 0.45 };
 
 /** sRGB of each colour: #E4B027, #FFFFFF, #000000, #006747, #0B1849. */
 const RGB: Record<TextTone, readonly [number, number, number]> = {
@@ -27,10 +39,22 @@ const RGB: Record<TextTone, readonly [number, number, number]> = {
   navy: [11, 24, 73],
 };
 
-/** WCAG AA for large text, which the hero title is. */
-const MIN_CONTRAST = 3;
-/** Comfortable contrast, the bar for choosing among colours that all read. */
-const COMFORT_CONTRAST = 4.5;
+/** Dark colours in preference order. */
+const DARK: readonly TextTone[] = ["green", "navy", "black"];
+
+/** The page ink the scrims are made of, #032017. */
+const INK_RGB = [3, 32, 23] as const;
+
+/** Share of the patch allowed to break the rule (specks, highlights). */
+const OUTLIERS = 0.03;
+/** Most scrim the hero will lay down; past this the photo is lost. */
+const MAX_SCRIM = 0.82;
+/** Gold keeps the title when it needs no more scrim than this… */
+const GOLD_SCRIM = 0.45;
+/** …and no more than this beyond what white would need. */
+const GOLD_EXTRA = 0.15;
+/** Least scrim, so the claim always sits on a little depth. */
+const MIN_SCRIM = 0.12;
 
 function linear(channel: number) {
   const s = channel / 255;
@@ -43,48 +67,72 @@ export function luminance(r: number, g: number, b: number) {
 }
 
 /** WCAG contrast ratio between two relative luminances. */
-function contrast(a: number, b: number) {
+export function contrast(a: number, b: number) {
   return a > b ? (a + 0.05) / (b + 0.05) : (b + 0.05) / (a + 0.05);
 }
 
-const TONE_LUMINANCE = Object.fromEntries(
-  ORDER.map((tone) => [tone, luminance(...RGB[tone])]),
+/** Relative luminance of each UI colour. */
+export const TONE_LUMINANCE = Object.fromEntries(
+  (Object.keys(RGB) as TextTone[]).map((tone) => [tone, luminance(...RGB[tone])]),
 ) as Record<TextTone, number>;
 
-/** Coverage gaps smaller than this count as a tie. */
-const TIE = 0.05;
+/** Brightest backdrop a light colour still reads on at `ratio`. */
+const ceilingFor = (tone: TextTone, ratio: number) => (TONE_LUMINANCE[tone] + 0.05) / ratio - 0.05;
 
-/** The colour that reads best on these luminances. */
-export function pickTone(luminances: ArrayLike<number>): TextTone {
-  const n = luminances.length;
-  if (n === 0) return "white";
-
-  let sum = 0;
-  for (let i = 0; i < n; i++) sum += luminances[i];
-  const mean = sum / n;
-
-  const coverage = {} as Record<TextTone, number>;
-  let best = 0;
-  for (const tone of ORDER) {
-    const lt = TONE_LUMINANCE[tone];
-    let reads = 0;
-    for (let i = 0; i < n; i++) if (contrast(lt, luminances[i]) >= MIN_CONTRAST) reads++;
-    coverage[tone] = reads / n;
-    best = Math.max(best, coverage[tone]);
-  }
-
-  const eligible = ORDER.filter((tone) => coverage[tone] >= best - TIE);
-  const comfortable = eligible.find((tone) => contrast(TONE_LUMINANCE[tone], mean) >= COMFORT_CONTRAST);
-  if (comfortable) return comfortable;
-  // Nothing is comfortable (a mid tone): the highest contrast on the mean.
-  return eligible.reduce((a, b) => (contrast(TONE_LUMINANCE[b], mean) > contrast(TONE_LUMINANCE[a], mean) ? b : a));
+/** The luminance at fraction `q` of a sorted list. */
+function quantile(sorted: Float64Array, q: number) {
+  return sorted[Math.min(sorted.length - 1, Math.max(0, Math.floor(q * sorted.length)))];
 }
 
-const INK_RGB = [3, 32, 23] as const;
+/** Luminances of `rgb` (flat r,g,b triples) under an ink scrim of opacity `a`, sorted. */
+function scrimmed(rgb: ArrayLike<number>, a: number) {
+  const n = Math.floor(rgb.length / 3);
+  const out = new Float64Array(n);
+  for (let i = 0; i < n; i++) {
+    const r = rgb[i * 3] * (1 - a) + INK_RGB[0] * a;
+    const g = rgb[i * 3 + 1] * (1 - a) + INK_RGB[1] * a;
+    const b = rgb[i * 3 + 2] * (1 - a) + INK_RGB[2] * a;
+    out[i] = luminance(r, g, b);
+  }
+  return out.sort();
+}
+
+/** Least scrim that brings the brightest pixels (bar `outliers`) to `ceiling` or below. */
+function scrimFor(rgb: ArrayLike<number>, ceiling: number, outliers = OUTLIERS) {
+  if (quantile(scrimmed(rgb, 0), 1 - outliers) <= ceiling) return 0;
+  let lo = 0;
+  let hi = MAX_SCRIM;
+  for (let step = 0; step < 14; step++) {
+    const mid = (lo + hi) / 2;
+    if (quantile(scrimmed(rgb, mid), 1 - outliers) <= ceiling) hi = mid;
+    else lo = mid;
+  }
+  return hi;
+}
+
+/** The look for a patch, given as flat r,g,b triples (0–255). */
+export function pickLook(rgb: ArrayLike<number>): HeroLook {
+  if (rgb.length < 3) return DEFAULT_LOOK;
+  const lums = scrimmed(rgb, 0);
+
+  // 1. Dark text, only if it reads on all but the darkest specks.
+  const darkest = quantile(lums, OUTLIERS);
+  for (const tone of DARK) {
+    if (contrast(TONE_LUMINANCE[tone], darkest) >= 4.5) return { tone, scrim: 0 };
+  }
+
+  // 2. Light text on as little scrim as it needs.
+  // Gold is a mid tone, so it is held to 3:1 on more of the patch than
+  // white is: a white shirt in a crowd must not eat a word.
+  const gold = scrimFor(rgb, ceilingFor("gold", 3), 0.02);
+  const white = scrimFor(rgb, ceilingFor("white", 4.5));
+  if (gold <= GOLD_SCRIM && gold - white <= GOLD_EXTRA) return { tone: "gold", scrim: Math.max(MIN_SCRIM, gold) };
+  return { tone: "white", scrim: Math.max(MIN_SCRIM, white) };
+}
 
 /**
- * The hero's two scrims, so the photograph is judged as the visitor sees
- * it, not as the file is. KEEP IN SYNC with the gradient classes in
+ * The hero's two fixed scrims, so the photograph is judged as the visitor
+ * sees it, not as the file is. KEEP IN SYNC with the gradient classes in
  * components/sections/hero-section.tsx:
  *   left → right: ink 40% → 20% (middle) → clear
  *   bottom → top: ink 30% → clear (middle) → clear

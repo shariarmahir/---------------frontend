@@ -7,39 +7,28 @@ import { Icon } from "@/components/ui/icon";
 import { heroPhotos } from "@/data/hero-gallery";
 import { btn } from "@/components/ui/section-kit";
 import { sampleHeroTone } from "@/components/sections/hero-tone";
-import type { TextTone } from "@/lib/backdrop-tone";
+import { DEFAULT_LOOK, type HeroLook, type TextTone } from "@/lib/backdrop-tone";
 import { cn } from "@/lib/utils";
 
 const SLIDE_MS = 6000;
 
 /**
- * Headline and subtitle classes per colour. Each is one of the UI's five:
- * gold, white, black, bottle green, deep navy. The halo is the opposite
- * lightness so the words still read over a busy patch; over gold the
- * subtitle drops to white, which reads wherever gold does.
+ * Headline and subtitle classes per colour, each one of the UI's five. Light
+ * text gets a tight, quiet shadow (the scrim behind it does the real work);
+ * dark text is only chosen on an evenly bright photo and needs none. Under a
+ * gold title the subtitle is white, which reads wherever gold does.
  */
+const LIFT_SHADOW = "[text-shadow:0_1px_2px_rgb(0_0_0/0.35),0_6px_24px_rgb(0_0_0/0.25)]";
 const TONE_CLASSES: Record<TextTone, { title: string; sub: string }> = {
-  gold: {
-    title: "text-signal-orange [text-shadow:0_2px_14px_rgb(0_0_0/0.55)]",
-    sub: "text-white/95 [text-shadow:0_1px_10px_rgb(0_0_0/0.55)]",
-  },
-  white: {
-    title: "text-white [text-shadow:0_2px_14px_rgb(0_0_0/0.55)]",
-    sub: "text-white/95 [text-shadow:0_1px_10px_rgb(0_0_0/0.55)]",
-  },
-  black: {
-    title: "text-black [text-shadow:0_1px_12px_rgb(255_255_255/0.5)]",
-    sub: "text-black/90 [text-shadow:0_1px_10px_rgb(255_255_255/0.5)]",
-  },
-  green: {
-    title: "text-bd-green [text-shadow:0_1px_12px_rgb(255_255_255/0.5)]",
-    sub: "text-bd-green [text-shadow:0_1px_10px_rgb(255_255_255/0.5)]",
-  },
-  navy: {
-    title: "text-bdnavy-900 [text-shadow:0_1px_12px_rgb(255_255_255/0.5)]",
-    sub: "text-bdnavy-900/90 [text-shadow:0_1px_10px_rgb(255_255_255/0.5)]",
-  },
+  gold: { title: cn("text-signal-orange", LIFT_SHADOW), sub: cn("text-white", LIFT_SHADOW) },
+  white: { title: cn("text-white", LIFT_SHADOW), sub: cn("text-white/90", LIFT_SHADOW) },
+  black: { title: "text-black", sub: "text-black/85" },
+  green: { title: "text-bd-green", sub: "text-bd-green" },
+  navy: { title: "text-bdnavy-900", sub: "text-bdnavy-900/90" },
 };
+
+/** Skip a re-render when the scrim moves by less than this. */
+const SCRIM_STEP = 0.03;
 
 /** The glass button, re-toned for dark text on a bright photograph. */
 const GHOST_ON_BRIGHT = btn.ghost
@@ -51,10 +40,9 @@ const GHOST_ON_BRIGHT = btn.ghost
 /**
  * Hero.
  *
- * The photographs are the field; the claim sits over them on the left,
- * with the right half left open so the image is never fully covered. That
- * is the reference's two-column balance, but the right column here is the
- * photograph itself rather than a drawn mark.
+ * The photographs are the field; the claim sits over them low and centred,
+ * on a soft scrim measured per photograph (see `look` below), so the upper
+ * part of every image stays clear.
  *
  * Height: the shared `hero-band` floor, so this band matches the /products
  * hero exactly (a requested change — it replaces the CLAUDE.md §4.3 16:6 ratio,
@@ -64,11 +52,12 @@ const GHOST_ON_BRIGHT = btn.ghost
  */
 export function HeroSection() {
   const [index, setIndex] = useState(0);
-  // The text colour that reads on the photograph behind it, one of gold,
-  // white, black, green or navy: gold on a dark photo, white on a mid green,
-  // navy or green on a bright one (mustard field, pale sky). Judged per
-  // slide and per band size — see backdrop-tone.ts and hero-tone.ts.
-  const [tone, setTone] = useState<TextTone>("gold");
+  // How the claim is coloured over the photograph behind it: one of gold,
+  // white, black, green or navy, plus how strong a soft ink scrim sits
+  // behind the text. Judged per slide and per band size from the darkest and
+  // brightest pixels under the text, so a dark figure in a bright field still
+  // gets readable words — see backdrop-tone.ts and hero-tone.ts.
+  const [look, setLook] = useState<HeroLook>(DEFAULT_LOOK);
   const bandRef = useRef<HTMLDivElement>(null);
   const imgRefs = useRef<(HTMLImageElement | null)[]>([]);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -120,7 +109,10 @@ export function HeroSection() {
         focus,
         box: { x: x0 - bb.left, y: y0 - bb.top, w: x1 - x0, h: y1 - y0 },
       });
-      if (next) setTone(next);
+      if (!next) return;
+      setLook((prev) =>
+        prev.tone === next.tone && Math.abs(prev.scrim - next.scrim) < SCRIM_STEP ? prev : next,
+      );
     };
 
     let raf = 0;
@@ -140,8 +132,8 @@ export function HeroSection() {
     };
   }, [index]);
 
-  const classes = TONE_CLASSES[tone];
-  const onBright = tone === "black" || tone === "green" || tone === "navy";
+  const classes = TONE_CLASSES[look.tone];
+  const onBright = look.tone === "black" || look.tone === "green" || look.tone === "navy";
 
   return (
     <section
@@ -188,50 +180,65 @@ export function HeroSection() {
         />
 
         {/* ── Claim ─────────────────────────────────────────────── */}
-        <div className="relative w-full pt-16 pb-14 sm:pb-16">
-          <div className="mx-auto flex w-full max-w-[1600px] flex-col items-center gap-space-sm px-gutter-x text-center lg:gap-space-md">
-            {/* The claim, set larger than a section title (up to 48px). It wraps
-                over two or three balanced lines on a laptop and one or two on a
-                wide screen. The colour follows the photograph behind it, easing
-                over the same second as the photo crossfade. */}
-            <h1
-              ref={titleRef}
-              className={cn(
-                "w-full max-w-[1320px] font-grotesk text-[1.625rem] leading-[1.18] font-bold tracking-tight text-balance transition-[color,text-shadow] duration-1000 ease-in-out sm:text-3xl md:text-4xl lg:text-[2.75rem] xl:text-5xl",
-                classes.title,
-              )}
-            >
-              Every problem is the door of opportunity. Therefore, it is high time we knocked on the door until it opens cause it is now or never.
-            </h1>
+        <div className="relative w-full pt-20 pb-16 sm:pb-20">
+          <div className="mx-auto flex w-full max-w-[1600px] justify-center px-gutter-x">
+            <div className="relative isolate flex max-w-full flex-col items-center text-center">
+              {/* The adaptive scrim: a soft ink ellipse behind the words, as
+                  strong as this photograph needs and no stronger (none at all
+                  under dark text). Full strength across the text block, fading
+                  out well past its edges so it never reads as a box. */}
+              <div
+                aria-hidden
+                style={{ opacity: look.scrim }}
+                className="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[200%] w-[165%] -translate-1/2 bg-[radial-gradient(closest-side,rgb(3_32_23)_0%,rgb(3_32_23)_62%,rgb(3_32_23/0.55)_80%,rgb(3_32_23/0)_100%)] transition-opacity duration-1000 ease-in-out motion-reduce:transition-none"
+              />
 
-            <p
-              ref={subRef}
-              className={cn(
-                "max-w-[44ch] font-sans text-body-md leading-relaxed text-balance transition-[color,text-shadow] duration-1000 ease-in-out sm:max-w-[60ch] lg:max-w-none lg:text-body-lg lg:whitespace-nowrap",
-                classes.sub,
-              )}
-            >
-              Kandari Lab uses technology and commercial innovation to build a smart, safe, and secure Bangladesh.
-            </p>
+              {/* The claim in two sentences: the first on its own line, the
+                  second balanced over two below it, so the block reads as a
+                  deliberate three-line stack on a laptop or wider. */}
+              <h1
+                ref={titleRef}
+                className={cn(
+                  "max-w-[24em] font-grotesk text-[clamp(1.75rem,0.9rem+2.6vw,3.25rem)] leading-[1.08] font-bold tracking-[-0.025em] text-balance transition-[color,text-shadow] duration-1000 ease-in-out",
+                  classes.title,
+                )}
+              >
+                <span className="block">Every problem is the door of opportunity.</span>{" "}
+                <span className="block">
+                  Therefore, it is high time we knocked on the door until it opens cause it is now or never.
+                </span>
+              </h1>
 
-            {/* Actions: gold for the primary route, a quiet glass pill for
-                the second, side by side and centred. */}
-            <div ref={actionsRef} className="flex flex-wrap items-center justify-center gap-3 pt-space-xs">
-              <Link href="#flagship" className={btn.gold}>
-                <Icon name="monitor_heart" className="text-[18px]" />
-                Explore the hardware
-              </Link>
+              <p
+                ref={subRef}
+                className={cn(
+                  "mt-5 max-w-[42ch] font-sans text-[clamp(1rem,0.92rem+0.3vw,1.1875rem)] leading-relaxed font-medium tracking-[-0.005em] text-balance transition-[color,text-shadow] duration-1000 ease-in-out sm:max-w-[60ch] lg:max-w-none lg:whitespace-nowrap",
+                  classes.sub,
+                )}
+              >
+                Kandari Lab uses technology and commercial innovation to build a smart, safe, and secure Bangladesh.
+              </p>
 
-              <Link href="#kandari-profile" className={cn(onBright ? GHOST_ON_BRIGHT : btn.ghost, "transition-colors duration-1000")}>
-                <Icon name="person_add" className="text-[18px] text-bdgreen-500" />
-                Join Kandari Profile
-              </Link>
+              {/* Actions: gold for the primary route, a quiet glass pill for
+                  the second, side by side and centred. */}
+              <div ref={actionsRef} className="mt-7 flex flex-wrap items-center justify-center gap-3">
+                <Link href="#flagship" className={btn.gold}>
+                  <Icon name="monitor_heart" className="text-[18px]" />
+                  Explore the hardware
+                </Link>
+
+                <Link href="#kandari-profile" className={cn(onBright ? GHOST_ON_BRIGHT : btn.ghost, "transition-colors duration-1000")}>
+                  <Icon name="person_add" className="text-[18px] text-bdgreen-500" />
+                  Join Kandari Profile
+                </Link>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Slide indicators, bottom-right. */}
-        <div className="absolute right-4 bottom-4 flex items-center gap-1.5 sm:right-6 sm:bottom-5 lg:right-8">
+        {/* Slide indicators, bottom-right, on their own dark pill so they
+            stay visible over a bright photograph. */}
+        <div className="absolute right-4 bottom-4 flex items-center gap-1.5 rounded-full bg-black/40 px-2.5 py-2 ring-1 ring-white/10 backdrop-blur-sm sm:right-6 sm:bottom-5 lg:right-8">
           {heroPhotos.map((photo, i) => (
             <button
               key={photo.src}

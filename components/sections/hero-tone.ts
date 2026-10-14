@@ -1,12 +1,12 @@
-import { luminance, parseFocus, pickTone, shadeUnderScrim, type TextTone } from "@/lib/backdrop-tone";
+import { parseFocus, pickLook, shadeUnderScrim, type HeroLook } from "@/lib/backdrop-tone";
 
-/** Pixels per sample: the band is drawn at 1/6 size, plenty for a mean-tone decision. */
+/** Pixels per sample: the band is drawn at 1/6 size, fine enough to catch a figure in a field. */
 const SCALE = 6;
 
 /**
- * The tone of text that reads on the part of a hero photograph a text box
- * covers, or null when it cannot be told yet (image not decoded, band not
- * laid out, canvas refused).
+ * The look (text colour and scrim strength) for the part of a hero
+ * photograph a text box covers, or null when it cannot be told yet (image
+ * not decoded, band not laid out, canvas refused).
  *
  * The photograph is drawn the way the band shows it (`object-fit: cover`
  * with the slide's focal point), then each pixel is darkened by the
@@ -18,7 +18,7 @@ export function sampleHeroTone(opts: {
   band: { w: number; h: number };
   focus: string | undefined;
   box: { x: number; y: number; w: number; h: number };
-}): TextTone | null {
+}): HeroLook | null {
   const { img, band, focus, box } = opts;
   if (!img.complete || !img.naturalWidth || !img.naturalHeight || band.w < 1 || band.h < 1) return null;
 
@@ -46,17 +46,17 @@ export function sampleHeroTone(opts: {
     const h = y1 - y0;
     const { data } = ctx.getImageData(x0, y0, w, h);
 
-    const lums = new Float32Array(w * h);
+    const rgb = new Float32Array(w * h * 3);
     for (let py = 0; py < h; py++) {
       for (let px = 0; px < w; px++) {
         const i = (py * w + px) * 4;
-        const [r, g, b] = shadeUnderScrim(data[i], data[i + 1], data[i + 2], (x0 + px + 0.5) / cw, (y0 + py + 0.5) / ch);
-        lums[py * w + px] = luminance(r, g, b);
+        const shaded = shadeUnderScrim(data[i], data[i + 1], data[i + 2], (x0 + px + 0.5) / cw, (y0 + py + 0.5) / ch);
+        rgb.set(shaded, (py * w + px) * 3);
       }
     }
-    return pickTone(lums);
+    return pickLook(rgb);
   } catch {
-    // A tainted canvas or a decode failure: keep whatever tone is showing.
+    // A tainted canvas or a decode failure: keep whatever look is showing.
     return null;
   }
 }
