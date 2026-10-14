@@ -38,8 +38,6 @@ export function NationalLayer() {
     <section aria-labelledby="nation-title" className="mx-auto max-w-340 px-4 py-14 sm:px-6 lg:px-8">
       <StoryHeading
         id="nation-title"
-        index="০১"
-        kicker="জাতীয় মডেল"
         title="জীবন্ত বাংলাদেশ মডেল"
         accent="জীবন্ত"
         lede="প্রতিটি সমস্যা একটি নষ্ট পিক্সেল। আপনি যত মডিউল সমাধান করবেন, মানচিত্র তত পরিষ্কার হবে — আর সব শেষে পতাকার লাল সূর্য ফুটে উঠবে। এটি খেলার মানচিত্র; কোনো জেলার বাস্তব অবস্থা নয়।"

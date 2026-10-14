@@ -24,8 +24,6 @@ export function RuralLives() {
       <div className="mx-auto max-w-7xl px-gutter-x">
         <StoryHeading
           id="rural-title"
-          index="০৩"
-          kicker="গ্রামীণ জীবন"
           title="মাঠ, নদী আর ভাটার মানুষ"
           accent="মানুষ"
           lede="পরিসংখ্যানের পেছনে মুখ আছে। যাঁদের ঘামে দেশ চলে, সমস্যার প্রথম আঘাত পড়ে তাঁদের ওপর — প্রতিটি ছবির নিচে সেই কষ্ট, আর কোন সমস্যার সাথে তা জড়িত।"

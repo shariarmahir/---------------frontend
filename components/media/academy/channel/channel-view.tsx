@@ -367,7 +367,7 @@ function HomeTab({
           </div>
 
           {shelves.map(({ course, items }) => (
-            <Shelf key={course.id} eyebrow={`${course.id} · ${LEVELS[course.level]}`} title={course.title} playAll={watchHref(items[0])} about={course.outcome}>
+            <Shelf key={course.id} title={course.title} playAll={watchHref(items[0])} about={course.outcome}>
               {items.map((v) => (
                 <ShelfItem key={v.id}>
                   <VideoCard video={v} locked={locked(v)} channel sizes={CARD_SIZES} />

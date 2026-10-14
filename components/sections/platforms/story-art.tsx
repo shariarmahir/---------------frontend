@@ -71,12 +71,6 @@ export function EndArt() {
   return (
     <div className="absolute inset-0 overflow-hidden bg-signal-orange text-text-primary">
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-[1.6cqw] text-center">
-        {/* The brand's three pixels, in colours that hold on gold. */}
-        <span aria-hidden className="pf-rise flex gap-[1cqw]" style={d(0)}>
-          {["bg-text-primary", "bg-bd-green", "bg-white"].map((c, i) => (
-            <span key={c} className={`pixel-wave size-[2cqw] rounded-[0.5cqw] ${c}`} style={{ "--i": i, "--glow": "white" } as CSSProperties} />
-          ))}
-        </span>
         <p className="pf-rise font-bengali text-[8.4cqw] leading-[1.2] font-bold" style={d(150)}>
           শিক্ষিতদের মিডিয়া
         </p>

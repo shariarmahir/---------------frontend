@@ -29,8 +29,6 @@ export function CitizenShield() {
       <div className="mx-auto max-w-7xl px-gutter-x">
         <StoryHeading
           id="shield-title"
-          index="০২"
-          kicker="নাগরিক ঢাল"
           title="নাগরিক ঢাল — নিজের এলাকা, নিজের শহর, নিজের দেশ"
           accent="ঢাল"
           lede="জাতীয় সংকটের আক্রমণ ঠেকানোর ঢাল তৈরি হয় ভেতর থেকে বাইরে। প্রতিটি স্তরে দায়িত্ব, আর প্রতিটি স্তরে দয়া — একটি স্তর টিকলে তবেই তার বাইরেরটি টেকে।"

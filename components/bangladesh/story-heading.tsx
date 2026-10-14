@@ -1,16 +1,13 @@
-import { PixelMark } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
 
 /**
- * Section heading for the country pages, in the home page's language: the
- * three-pixel mark, a small numbered Bangla kicker, a large gold Bangla title
+ * Section heading for the country pages, in the home page's language: a
+ * large gold Bangla title
  * with one word in the flag's red, and a lede. `tone="gold"` is for a heading
  * set on a gold band, where gold text would vanish: ink instead.
  */
 export function StoryHeading({
   id,
-  index,
-  kicker,
   title,
   accent,
   lede,
@@ -19,8 +16,6 @@ export function StoryHeading({
 }: {
   /** Anchor / aria id for the h2. */
   id?: string;
-  index: string;
-  kicker: string;
   title: string;
   /** A word inside `title` rendered in red. */
   accent?: string;
@@ -38,15 +33,6 @@ export function StoryHeading({
         align === "center" && "mx-auto items-center text-center",
       )}
     >
-      <PixelMark tone={onGold ? "light" : "dark"} />
-      <span
-        className={cn(
-          "inline-flex items-center gap-2 font-mono text-xs font-bold tracking-[0.2em] uppercase",
-          onGold ? "text-text-primary" : "text-white/80",
-        )}
-      >
-        {index} · <span className="font-bengali tracking-normal normal-case">{kicker}</span>
-      </span>
       <h2
         id={id}
         className={cn(

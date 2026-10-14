@@ -6,9 +6,8 @@ import { STRATEGIES } from "@/lib/gori/sim/score";
 import { cn } from "@/lib/utils";
 import { useT } from "../provider";
 import { useGori, useHydrated, type Settings } from "../store";
-import { PixelMark } from "@/components/ui/section-kit";
 
-const AVATARS = ["bg-bd-green", "bg-sky-400", "bg-bdorange-600", "bg-violet-400", "bg-signal-orange", "bg-teal-500"];
+const AVATARS = ["bg-bd-green", "bg-sky-400", "bg-bdnavy-500", "bg-violet-400", "bg-signal-orange", "bg-teal-500"];
 
 export function Profile() {
   const hydrated = useHydrated();
@@ -23,7 +22,6 @@ export function Profile() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
-      <PixelMark tone="dark" className="mb-2" />
       <h1 className="font-bengali text-3xl font-bold text-signal-orange">{t("navProfile")}</h1>
       <p className="mt-2 font-bengali text-sm text-white/80">সব সেটিংস এই ব্রাউজারে থাকে। কোনো ব্যক্তিগত তথ্য (এনআইডি, ফোন, ঠিকানা) চাওয়া হয় না।</p>
 

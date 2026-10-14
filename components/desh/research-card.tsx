@@ -7,11 +7,11 @@ import { toBanglaDigits } from "@/lib/bangla";
 import { cn } from "@/lib/utils";
 import { PixelMap } from "./pixel-map";
 
-/** Count tiles: green, gold, orange — the evidence ladder in the home palette. */
+/** Count tiles: green, gold, navy — the evidence ladder in the home palette. */
 const COUNT_SURFACES = [
   "bg-bd-green text-white",
   "bg-signal-orange text-text-primary",
-  "bg-bdorange-600 text-text-primary",
+  "bg-bdnavy-900 text-white",
 ];
 
 /**

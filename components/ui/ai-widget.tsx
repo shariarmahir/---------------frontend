@@ -73,7 +73,7 @@ export function AiWidget() {
           "animate-nav-card-in",
         )}
       >
-        <div className="flex items-center justify-between gap-space-sm border-b border-border bg-linear-to-r from-emerald-50 to-orange-50 px-space-md py-space-sm">
+        <div className="flex items-center justify-between gap-space-sm border-b border-border bg-linear-to-r from-emerald-50 to-bdnavy-50 px-space-md py-space-sm">
           <span className="flex items-center gap-space-xs font-display text-label-md font-bold text-primary">
             <Icon name="auto_awesome" className="text-[18px] text-title" />
             AI Ask

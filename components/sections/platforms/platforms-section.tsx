@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArrowRight, BookOpenText, GraduationCap, type LucideIcon, MessagesSquare, Share2, Sparkles, CalendarClock, BellRing, FlaskConical } from "lucide-react";
-import { PixelMark, SignalSeam, btn, tileLift } from "@/components/ui/section-kit";
+import { SignalSeam, btn, tileLift } from "@/components/ui/section-kit";
 import { classroomReel, mediaFilm, mediaRooms, researchReel, type Scene } from "@/data/platforms";
 import { cn } from "@/lib/utils";
 import { RoomGlyph } from "./room-glyph";
@@ -27,10 +27,6 @@ export function PlatformsSection() {
         {/* The introduction. */}
         <div className="mb-10 grid gap-6 lg:mb-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end lg:gap-12">
           <div className="story-reveal flex flex-col gap-3">
-            <PixelMark tone="dark" />
-            <p className="inline-flex w-fit items-center gap-2 rounded-full bg-text-primary px-3.5 py-1.5 font-bengali text-sm font-bold text-signal-orange">
-              <Sparkles className="size-4" aria-hidden /> কাণ্ডারী-ল্যাবের নিজের প্ল্যাটফর্ম
-            </p>
             <h2 className="font-bengali text-5xl leading-[1.2] font-bold text-signal-orange sm:text-6xl lg:text-7xl">শিক্ষিতদের মিডিয়া</h2>
             <p className="font-grotesk text-sm font-bold tracking-wider text-white/75 uppercase">The skill-first social platform</p>
           </div>

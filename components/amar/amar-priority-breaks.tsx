@@ -15,9 +15,6 @@ export function AmarPriorityBreaks() {
     >
       <div className="mx-auto flex max-w-[1320px] flex-col gap-space-xl">
         <div className="flex flex-col gap-space-xs">
-          <span className="font-code-telemetry text-label-sm font-bold uppercase text-tertiary">
-            SECTION 02 · THE FIVE PRIORITY BREAKS
-          </span>
           <h2 className="max-w-3xl font-display text-headline-lg-mobile font-bold tracking-tight text-on-surface sm:text-headline-lg">
             Where the system breaks first
           </h2>

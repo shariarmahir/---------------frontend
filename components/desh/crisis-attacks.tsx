@@ -16,8 +16,6 @@ export function CrisisAttacks() {
       <div className="mx-auto max-w-7xl px-gutter-x">
         <StoryHeading
           id="attacks-title"
-          index="০১"
-          kicker="আক্রমণ"
           title="দেশের ওপর আক্রমণ — আর প্রতিটির বিপরীতে একটি ঢাল"
           accent="আক্রমণ"
           lede="সংকট দূরের কোনো শব্দ নয়; এগুলো প্রতিদিন আমাদের ঘরে ঢোকে। সরকার এখনই সব সামলাতে পারছে না — তাই নিজের এলাকা, নিজের শহর আর নিজের দেশ রক্ষার প্রথম দায় আমাদের নিজেদের।"

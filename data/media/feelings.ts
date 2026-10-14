@@ -20,7 +20,7 @@ export const feelingOf = (id?: FeelingId) => feelings.find((f) => f.id === id);
 export const postBgs: { id: PostBg; bn: string; className: string }[] = [
   { id: "gold", bn: "সোনালি", className: "bg-signal-orange text-text-primary" },
   { id: "green", bn: "সবুজ", className: "bg-bd-green text-white" },
-  { id: "orange", bn: "কমলা", className: "bg-bdorange-600 text-text-primary" },
+  { id: "orange", bn: "লাল", className: "bg-m-red text-text-primary" },
   { id: "white", bn: "সাদা", className: "bg-white text-text-primary" },
   { id: "ink", bn: "গাঢ়", className: "bg-black text-signal-orange ring-1 ring-white/15" },
 ];

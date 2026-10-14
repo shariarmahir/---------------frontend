@@ -12,7 +12,6 @@ export function FlagshipsSection() {
     <section id="flagship" className="section-band mx-auto max-w-7xl px-gutter-x">
       <SectionHeading
         tone="dark"
-        kicker="পণ্য ও সেবা"
         title="Sovereign Deep-Tech: Products & Services"
         lead="Our own healthcare products, designed and built inside Bangladesh — and the same engineering in AI, automation, IoT and software, built for your factory, office, farm or app."
       />

@@ -18,8 +18,6 @@ export function BdNature() {
     <section id="nature" className="section-band scroll-mt-40">
       <div className="mx-auto max-w-7xl px-gutter-x">
         <StoryHeading
-          index="০৩"
-          kicker="প্রকৃতি"
           title="সবুজ, নীল আর সোনালি — রূপসী বাংলা"
           accent="রূপসী বাংলা"
           lede="পাহাড়ের মেঘ থেকে সমুদ্রের ঢেউ, ম্যানগ্রোভের নিস্তব্ধতা থেকে দিগন্তজোড়া ধানক্ষেত — এক দেশে এত রং।"
@@ -72,8 +70,6 @@ export function BdSeasons() {
     <section id="seasons" className="section-band-tinted scroll-mt-40 overflow-hidden bg-slate-950">
       <div className="mx-auto max-w-7xl px-gutter-x">
         <StoryHeading
-          index="০৪"
-          kicker="ষড়ঋতু"
           title="ছয় ঋতুর দেশ"
           accent="ছয় ঋতুর"
           lede="প্রতি দুই মাসে বদলে যায় আকাশের রং, মাঠের ফসল আর মানুষের উৎসব — পৃথিবীতে এমন দেশ খুব কম।"

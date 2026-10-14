@@ -8,7 +8,6 @@ import { ArrowUpRight, BookHeart, Flag, ImagePlus, Newspaper, PenLine, Send, Sha
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { PixelMark } from "@/components/ui/section-kit";
 import { Textarea } from "@/components/ui/textarea";
 import type { Team } from "@/data/media/types";
 import { currentUser } from "@/data/media/users";
@@ -154,7 +153,6 @@ export function StoryDialog({ team, kind, onOpenChange }: { team: Team; kind: Ki
     <Dialog open={kind !== null} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-xl">
         <DialogHeader>
-          <PixelMark tone="dark" />
           <DialogTitle className="flex items-center gap-2 text-xl font-bold text-m-ink"><PenLine className="size-5 text-m-blue" aria-hidden /> {team.name}-এর যাত্রা</DialogTitle>
           <DialogDescription>যা ঘটল, সত্যি করে লিখুন — নাম, জায়গা, সংখ্যা থাকলে গল্পটা বিশ্বাস করা সহজ।</DialogDescription>
         </DialogHeader>

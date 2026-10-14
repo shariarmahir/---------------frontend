@@ -3,7 +3,7 @@
  * page is that signal travelling, from the core to the crew to the next
  * cohort.
  * OWN-WORLD: the home page's — pitch-black ground, solid gold / ink / bottle
- * green / orange fields, gold pixel-mark headings, the gold pulse on the
+ * green / orange fields, gold headings, the gold pulse on the
  * ink bands' seams; the people are the home page's poster cards.
  * FIRST VIEWPORT: the home hero's band — claim left with the gold action,
  * the founder's galaxy right, the ink proof strip closing it.
@@ -99,8 +99,7 @@ export default function TeamPage() {
                 <Icon name="school" className="text-3xl" />
               </span>
               <div>
-                <span className="font-mono text-xs font-bold tracking-widest uppercase">R&amp;D Fellowship</span>
-                <h2 id="fellowship-title" className="mt-1 font-grotesk text-2xl font-bold tracking-tight uppercase sm:text-4xl">
+                <h2 id="fellowship-title" className="font-grotesk text-2xl font-bold tracking-tight uppercase sm:text-4xl">
                   The next orbit is yours.
                 </h2>
                 <p className="mt-2 max-w-2xl font-sans text-base leading-relaxed text-text-primary/85">

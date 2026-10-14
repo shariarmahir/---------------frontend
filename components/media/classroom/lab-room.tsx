@@ -9,7 +9,6 @@ import {
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { PixelMark } from "@/components/ui/section-kit";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LIFT, glowStyle, surfaceAt } from "@/components/ui/surfaces";
 import { Textarea } from "@/components/ui/textarea";
@@ -277,7 +276,6 @@ function Hero({ lab, member, me, leader, teacher, onSettings }: { lab: LabRoom; 
   const full = isFull(lab.members.length, lab.maxMembers);
   return (
     <section className="live-in overflow-hidden rounded-3xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-8 shadow-m-tile">
-      <PixelMark tone="dark" />
       <p className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-m-blue"><FlaskConical className="size-4" aria-hidden /> {lab.course}</p>
       <h1 className="mt-1 text-3xl font-bold tracking-tight text-balance text-m-ink sm:text-4xl">{lab.name}</h1>
       <p className="mt-2 text-sm text-m-ink/75">
@@ -541,7 +539,6 @@ function ExperimentDialog({ lab, open, onOpenChange }: { lab: LabRoom; open: boo
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-xl">
         <DialogHeader>
-          <PixelMark tone="dark" />
           <DialogTitle className="text-xl font-bold text-m-ink">নতুন এক্সপেরিমেন্ট</DialogTitle>
           <DialogDescription>টপিক, ল্যাবের দিন, রিপোর্ট জমার শেষ সময়, কাজ আর প্রশ্ন — সবাই এক কার্ডে দেখবে।</DialogDescription>
         </DialogHeader>

@@ -8,10 +8,8 @@ import { motion, useReducedMotion, type Transition } from "framer-motion";
 import { ShieldCheck, X } from "lucide-react";
 import { Dialog } from "radix-ui";
 import { AccountMenu, AccountSheetLinks } from "@/components/auth/account-menu";
-import { NewsTicker } from "@/components/layout/news-ticker";
 import { RecordDialog } from "@/components/record/record-dialog";
 import { Icon } from "@/components/ui/icon";
-import { NavIndicators } from "@/components/ui/nav-indicators";
 import { LabelText } from "@/components/brand/kandari-wordmark";
 import { LABEL_TEXT } from "@/data/logo-text";
 import { NAZRUL_MOTTO, navLinksFor, type NavLink } from "@/data/navigation";
@@ -19,7 +17,10 @@ import { cn } from "@/lib/utils";
 
 /*
  * Direction: the header is a solid gold card (the action colour, like the
- * home page's "Rural Tele-Network" pillar) under an ink telemetry strip.
+ * home page's "Rural Tele-Network" pillar), two rows: brand and actions,
+ * then the section nav. The old ink announcement strip and the centre
+ * national indicator moved to the home spotlight band
+ * (components/sections/spotlight-band.tsx).
  * Ink text reads at ~8.9:1 on the gold; green and red text do not (≈3.5:1
  * and 2.4:1), so header buttons are ink text on the gold with a thin ink ring, no
  * white fills. The logo sits bare.
@@ -212,49 +213,6 @@ function SectionNav({
   );
 }
 
-/** Level 1 readouts, set in light ink on the dark strip. */
-function TelemetryReadouts() {
-  return (
-    <div className="hidden shrink-0 items-center gap-4 font-mono text-xs md:flex">
-      <div className="hidden items-center gap-1.5 border-r border-white/15 pr-4 font-sans text-[10px] text-white/70 xl:flex">
-        <span className="mr-1 inline-flex h-3 items-end gap-0.5" aria-hidden>
-          {["h-1.5", "h-2", "h-2.5", "h-3"].map((h, i) => (
-            <span
-              key={h}
-              className={cn("header-bar w-0.5 rounded-xs bg-emerald-400", h)}
-              style={{ animationDelay: `${i * 120}ms` }}
-            />
-          ))}
-        </span>
-        <span>SYNC: 24ms</span>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <span className="font-sans text-[11px] font-medium text-white/75 sm:text-xs">
-          Golden 2-Hours Critical Response Protocol:
-        </span>
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/40 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-bold tracking-wide text-emerald-300">
-          <span className="relative flex size-1.5">
-            <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-80 motion-reduce:hidden" />
-            <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
-          </span>
-          ONLINE
-        </span>
-      </div>
-
-      <span className="h-3.5 w-px bg-white/20" aria-hidden />
-
-      <div className="flex items-center gap-1.5 font-sans font-semibold">
-        <span className="size-2 rounded-full bg-emerald-400 ring-2 ring-emerald-400/25" aria-hidden />
-        <span className="text-[11px] tracking-tight text-white/75">BD GRID:</span>
-        <span className="rounded bg-signal-orange px-1.5 py-0.5 font-mono text-xs font-bold text-text-primary tabular-nums">
-          99.98%
-        </span>
-      </div>
-    </div>
-  );
-}
-
 export function SiteHeader() {
   // The section nav is per-page: the home sections do not exist on the
   // other pages, so linking to them there would scroll nowhere.
@@ -282,35 +240,14 @@ export function SiteHeader() {
     // rather than on the card keeps the rounded corners clear of the viewport.
     <div className="fixed inset-x-0 top-0 z-40 px-3 py-2 sm:px-6 sm:py-2.5">
       <header className="header-gold relative isolate mx-auto w-full max-w-[1360px] overflow-hidden rounded-2xl text-text-primary ring-1 ring-text-primary/15">
-        {/* ── Level 1 — ink telemetry strip ───────────────────────────── */}
-        <div className="relative bg-text-primary px-4 py-1.5 font-mono text-[11px] tracking-tight text-white/75 sm:px-6 lg:px-8">
-          {/* Single row: the ticker takes whatever width the readouts leave.
-              Below md the readouts step aside so the ticker has room to be
-              read — a marquee squeezed to 100px is just motion. */}
-          <div className="flex items-center justify-between gap-x-4">
-            <NewsTicker />
-            <TelemetryReadouts />
-          </div>
-
-          {/* A signal pulse running along the seam between strip and card. */}
-          <span aria-hidden className="absolute inset-x-0 bottom-0 h-px overflow-hidden bg-white/10">
-            <span className="signal-run absolute inset-y-0 left-0 w-1/4 bg-linear-to-r from-transparent via-signal-orange to-transparent" />
-          </span>
-        </div>
-
-        {/* ── Level 2 — brand, live metric, conversion ────────────────── */}
+        {/* ── Row 1 — brand and conversion ───────────────────────────── */}
         <div className="px-4 py-1.5 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between gap-3 sm:gap-4">
             {/* Left cluster — logo tile, country pill. `min-w-0` so it
                 yields to the action cluster on narrow screens. */}
             <div className="flex min-w-0 items-center gap-3.5 sm:gap-5 lg:gap-6">
               <BrandLockup />
-
             </div>
-
-            {/* Centre — the live national readout, auto-rotating. `shrink-0`
-                so the two side clusters absorb any shortfall instead. */}
-            <NavIndicators className="hidden shrink-0 lg:flex" />
 
             {/* Right cluster — feed, account, mobile menu. Below lg the bar
                 keeps only the profile face and the menu button; the feed
@@ -466,7 +403,7 @@ export function SiteHeader() {
           </div>
         </div>
 
-        {/* ── Level 3 — section navigation + civic actions ────────────── */}
+        {/* ── Row 2 — section navigation + civic actions ──────────────── */}
         <nav className="no-scrollbar hidden overflow-x-auto border-t border-text-primary/10 bg-text-primary/[0.04] px-4 py-1 sm:px-6 lg:block lg:px-8">
           <div className="flex min-w-max items-center justify-between gap-3 xl:gap-6">
             <SectionNav links={navLinks} activeHref={activeHref} onPick={setActiveHref} />

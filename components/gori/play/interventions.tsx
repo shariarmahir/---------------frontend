@@ -13,7 +13,7 @@ const BRANCHES: { id: Branch; bn: string; tone: string }[] = [
   { id: "capacity", bn: "সেবা-সক্ষমতা", tone: "text-bdgreen-500" },
   { id: "data", bn: "তথ্য ও জবাবদিহি", tone: "text-sky-300" },
   { id: "finance", bn: "অর্থায়ন ও সমতা", tone: "text-signal-orange" },
-  { id: "infra", bn: "অবকাঠামো ও ঝুঁকি", tone: "text-bdorange-600" },
+  { id: "infra", bn: "অবকাঠামো ও ঝুঁকি", tone: "text-bdnavy-300" },
 ];
 
 type Status = "running-pilot" | "running-full" | "planned" | "available" | "blocked";
@@ -84,7 +84,7 @@ export function InterventionBuilder({
                         aria-pressed={sel === i.id}
                         className={cn(
                           "flex w-full items-start gap-2.5 rounded-xl border px-3 py-2.5 text-left transition-colors",
-                          sel === i.id ? "border-signal-orange bg-bdorange-600" : "border-white/10 hover:border-white/30",
+                          sel === i.id ? "border-signal-orange bg-bdnavy-700" : "border-white/10 hover:border-white/30",
                           s === "blocked" && sel !== i.id && "opacity-60",
                         )}
                       >
@@ -173,7 +173,7 @@ export function InterventionBuilder({
             <p className="font-bengali text-sm text-white/65">খেলা শেষ — ফলাফল দেখুন।</p>
           ) : planned ? (
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-bengali text-sm font-semibold text-bdorange-600">
+              <span className="font-bengali text-sm font-semibold text-bdnavy-300">
                 এই টার্নে পরিকল্পনায়: {planned.type === "launch" ? (planned.scale === "pilot" ? "পাইলট চালু" : "পূর্ণ চালু") : planned.type === "scale" ? "বড় করা" : "থামানো"}
               </span>
               <button type="button" onClick={unplan} className="rounded-lg border border-white/20 px-3 py-1.5 font-bengali text-sm">পরিকল্পনা থেকে সরান</button>
@@ -220,7 +220,7 @@ function StatusIcon({ s }: { s: Status }) {
   const map = {
     "running-pilot": { icon: CircleDot, cls: "text-bdgreen-500", label: "পাইলট চলছে" },
     "running-full": { icon: CheckCircle2, cls: "text-bdgreen-500", label: "পূর্ণ পরিসরে চলছে" },
-    planned: { icon: Clock3, cls: "text-bdorange-600", label: "পরিকল্পনায়" },
+    planned: { icon: Clock3, cls: "text-bdnavy-300", label: "পরিকল্পনায়" },
     available: { icon: Square, cls: "text-white/65", label: "চালু করা যায়" },
     blocked: { icon: Lock, cls: "text-white/65", label: "শর্ত বাকি" },
   }[s];

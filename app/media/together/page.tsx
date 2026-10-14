@@ -12,7 +12,7 @@ import { mediaButton } from "@/components/media/ui/button-styles";
 import { EmptyState } from "@/components/media/ui/empty-state";
 import { chipClass } from "@/components/media/ui/field-styles";
 import { Num, Taka } from "@/components/media/ui/numerals";
-import { PixelMark, SignalSeam } from "@/components/ui/section-kit";
+import { SignalSeam } from "@/components/ui/section-kit";
 import { LIFT, glowStyle } from "@/components/ui/surfaces";
 import { challengeKindBn, challenges } from "@/data/media/challenges";
 import { eventKindBn, events } from "@/data/media/events";
@@ -40,7 +40,7 @@ export default async function TogetherPage({ searchParams }: { searchParams: Pro
   const pillars = [
     { key: "teams" as const, Icon: UsersRound, title: "টিম ও গ্রুপ", line: "পরিবার, ল্যাব, প্রজেক্ট, খেলা — নিজের রুম, নিজের যাত্রা", stat: <><Num value={teams.length} />টি টিম</>, tone: "bg-m-yellow text-m-ink", tile: "bg-m-card text-m-blue", glow: "var(--color-signal-orange)" },
     { key: "events" as const, Icon: HandHeart, title: "উদ্যোগ", line: "গাছ লাগানো, পরিষ্কার, রক্তদান — স্পনসরসহ", stat: <><Num value={volunteers} /> স্বেচ্ছাসেবক</>, tone: "bg-m-blue-soft text-m-ink", tile: "bg-m-yellow text-m-ink", glow: "var(--color-bd-green)" },
-    { key: "challenges" as const, Icon: Trophy, title: "চ্যালেঞ্জ", line: "টিম বনাম টিম লিগ, আর কোড-ডিজাইন-গবেষণার পুরস্কার", stat: <><Taka amount={prizes} /> পুরস্কার</>, tone: "bg-m-red-soft text-m-ink", tile: "bg-m-card text-m-blue", glow: "var(--color-bdorange-600)" },
+    { key: "challenges" as const, Icon: Trophy, title: "চ্যালেঞ্জ", line: "টিম বনাম টিম লিগ, আর কোড-ডিজাইন-গবেষণার পুরস্কার", stat: <><Taka amount={prizes} /> পুরস্কার</>, tone: "bg-m-red-soft text-m-ink", tile: "bg-m-card text-m-blue", glow: "var(--color-m-red)" },
   ];
 
   return (
@@ -54,7 +54,6 @@ export default async function TogetherPage({ searchParams }: { searchParams: Pro
         </svg>
         <div className="grid grid-cols-1 gap-8 p-5 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
           <div className="space-y-5">
-            <PixelMark tone="dark" />
             <h1 className="text-4xl font-bold tracking-tight text-balance text-m-ink sm:text-6xl sm:leading-[1.05]">
               একা নয়, <span className="text-m-blue">একসাথে।</span>
             </h1>

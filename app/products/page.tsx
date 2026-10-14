@@ -3,7 +3,7 @@
  * ground with whole colour fields, not pale cards on a dotted sheet.
  * OWN-WORLD: the header's gold #e4b027, ink #032017 and bottle green #006747
  * as solid card and band fills; ink cards carry a faint white ring to hold an
- * edge on the black; a three-pixel mark on every heading; a gold pulse on the
+ * edge on the black; a gold pulse on the
  * seam of the dark bands. No textures (Mahir, 2026-09-30).
  * STORY: the claim over the photograph → the three products → how one patient
  * moves between them → why the country needs it now.
@@ -42,7 +42,7 @@ const CHAIN = [
 const CHAIN_SURFACES = [
   { card: "bg-signal-orange text-text-primary", num: "bg-text-primary text-signal-orange", glow: "var(--color-signal-orange)" },
   { card: "bg-text-primary text-white ring-1 ring-white/12", num: "bg-signal-orange text-text-primary", glow: "var(--color-bdgreen-500)" },
-  { card: "bg-bdorange-600 text-text-primary", num: "bg-text-primary text-signal-orange", glow: "var(--color-bdorange-600)" },
+  { card: "bg-bdnavy-900 text-white ring-1 ring-white/12", num: "bg-signal-orange text-text-primary", glow: "var(--color-bdnavy-400)" },
 ];
 
 /** The four proof points, in the ink rule below the hero band. */
@@ -72,7 +72,7 @@ const nationalStats = [
 const STAT_SURFACES = [
   { card: "bg-bd-green text-white", glow: "var(--color-bd-green)" },
   { card: "bg-signal-orange text-text-primary", glow: "var(--color-signal-orange)" },
-  { card: "bg-bdorange-600 text-text-primary", glow: "var(--color-bdorange-600)" },
+  { card: "bg-bdnavy-900 text-white ring-1 ring-white/12", glow: "var(--color-bdnavy-400)" },
   { card: "bg-text-primary text-white ring-1 ring-white/12", glow: "var(--color-bdgreen-500)" },
 ];
 
@@ -134,7 +134,6 @@ export default function ProductsPage() {
           <section className="section-band-tinted mx-auto max-w-7xl px-gutter-x">
             <SectionHeading
               tone="dark"
-              kicker="পণ্যসমূহ"
               title="Explore the products"
               lead="Each page covers the research, the core problem, how the product solves it, and what it means for Bangladesh."
             />
@@ -145,7 +144,6 @@ export default function ProductsPage() {
           <section id="services" className="section-band-tinted mx-auto max-w-7xl scroll-mt-header px-gutter-x lg:scroll-mt-header-lg">
             <SectionHeading
               tone="dark"
-              kicker="সেবা — আপনার জন্য আমরা বানাই"
               title="Services"
               lead="The skills behind Aponjon and SWASTI, put to work on your problem. Tell us what you need; we design, build and hand it over."
             />
@@ -159,7 +157,6 @@ export default function ProductsPage() {
             <div className="mx-auto max-w-7xl px-gutter-x">
               <SectionHeading
                 tone="dark"
-                kicker="একসাথে কাজ করে"
                 title="One patient journey"
                 lead="The products are designed to hand a patient from one to the next, so no hour is lost between them."
               />
@@ -201,7 +198,6 @@ export default function ProductsPage() {
           <section className="section-band-tinted mx-auto max-w-7xl px-gutter-x">
             <SectionHeading
               tone="dark"
-              kicker="কেন এখনই"
               title="Why Bangladesh needs this now"
               lead="Published national data. Every figure links to its source."
             />

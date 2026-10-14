@@ -59,10 +59,7 @@ export default function ResearchMainPage() {
       {/* Masthead and cover. */}
       <section aria-labelledby="welcome" className="live-in grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:items-stretch lg:gap-10">
         <div className="flex flex-col">
-          <p className="inline-flex items-center gap-2 self-start rounded-full px-3 py-1.5 text-sm font-bold text-signal-orange ring-1 ring-signal-orange/40">
-            <Icon name="public" className="text-[18px]" /> বাংলাদেশের উন্মুক্ত গবেষণা প্ল্যাটফর্ম
-          </p>
-          <h1 id="welcome" className="font-wiki mt-5 text-[clamp(2.6rem,6.2vw,4.6rem)] leading-[1.12] font-bold text-white">
+          <h1 id="welcome" className="font-wiki text-[clamp(2.6rem,6.2vw,4.6rem)] leading-[1.12] font-bold text-white">
             দেশের প্রশ্ন,
             <span className="block text-signal-orange">দেশের গবেষণা।</span>
           </h1>
@@ -101,7 +98,7 @@ export default function ResearchMainPage() {
 
       {today?.image && (
         <section aria-labelledby="featured" className="story-reveal space-y-5">
-          <SectionHead id="featured" eyebrow={`আজ, ${bnDate(day, false)}`} title="আজকের নির্বাচিত গবেষণা" />
+          <SectionHead id="featured" title="আজকের নির্বাচিত গবেষণা" />
           <Link href={articleHref(today)} className="group grid overflow-hidden rounded-[2rem] bg-white text-text-primary md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
             <span className="relative block aspect-16/10 overflow-hidden md:aspect-auto md:min-h-80">
               <Image src={today.image.src} alt={today.image.caption} fill sizes="(min-width: 768px) 640px, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-[1.03] motion-reduce:transition-none" />
@@ -187,7 +184,7 @@ export default function ResearchMainPage() {
       </section>
 
       <section aria-labelledby="sisters" className="space-y-5">
-        <SectionHead id="sisters" eyebrow="একই পরিবারের" title="কাণ্ডারী-ল্যাবের সহযোগী প্রকল্প" />
+        <SectionHead id="sisters" title="কাণ্ডারী-ল্যাবের সহযোগী প্রকল্প" />
         <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {SISTERS.map((s) => (
             <li key={s.href}>

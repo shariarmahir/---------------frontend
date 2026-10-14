@@ -4,8 +4,7 @@
  * running behind its hero.
  * OWN-WORLD: the header's gold #e4b027, ink #032017 and bottle green #006747
  * as solid cards and bands; ink cards carry a faint white ring; red only for
- * the urgent things (the problem plates, "Today"); a three-pixel mark on every
- * heading; a gold pulse on the seams. No textures.
+ * the urgent things (the problem plates, "Today"); a gold pulse on the seams. No textures.
  * STORY: the claim → the numbers → the core problem and fix → how it works →
  * real situations → films → what Bangladesh gains → roadmap → research → join.
  * FIRST VIEWPORT: gold header over the ink hero, copy left, the photograph

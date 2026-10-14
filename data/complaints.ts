@@ -97,7 +97,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Land Grabbing",
     labelBn: "ভূমি দখল",
     icon: "landscape",
-    chip: "bg-bdorange-600 text-text-primary",
+    chip: "bg-bdnavy-900 text-white",
     accent: "bg-title",
     describes:
       "Someone has occupied your land, forged records, or is blocking your lawful possession.",
@@ -176,7 +176,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Labour & Wages",
     labelBn: "শ্রম ও মজুরি",
     icon: "engineering",
-    chip: "bg-bdorange-600 text-text-primary",
+    chip: "bg-bdnavy-900 text-white",
     accent: "bg-teal-600",
     describes:
       "Unpaid wages, unsafe workplace, unlawful dismissal or denial of legal leave.",

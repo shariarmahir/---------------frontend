@@ -478,7 +478,7 @@ export const natureFilm: Film = {
 /* ── Seasons ─────────────────────────────────────────────────────────── */
 
 export const seasons = [
-  { name: "গ্রীষ্ম", months: "বৈশাখ – জ্যৈষ্ঠ", mood: "কালবৈশাখী, আম-কাঁঠালের মধুমাস", tone: "from-amber-500 to-orange-600", photo: P.sunsetCart },
+  { name: "গ্রীষ্ম", months: "বৈশাখ – জ্যৈষ্ঠ", mood: "কালবৈশাখী, আম-কাঁঠালের মধুমাস", tone: "from-amber-400 to-amber-600", photo: P.sunsetCart },
   { name: "বর্ষা", months: "আষাঢ় – শ্রাবণ", mood: "ভরা নদী, কদমফুল আর টিনের চালে বৃষ্টির গান", tone: "from-sky-600 to-slate-700", photo: P.monsoon },
   { name: "শরৎ", months: "ভাদ্র – আশ্বিন", mood: "নীল আকাশে সাদা মেঘ, নদীর ধারে কাশফুল", tone: "from-sky-400 to-indigo-500", photo: P.kashful },
   { name: "হেমন্ত", months: "কার্তিক – অগ্রহায়ণ", mood: "সোনালি ধান আর নবান্নের উৎসব", tone: "from-yellow-500 to-amber-700", photo: P.threshing },

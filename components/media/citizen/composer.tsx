@@ -6,7 +6,6 @@ import { Camera, EyeOff, ImagePlus, ShieldAlert, Undo2, X } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { PixelMark } from "@/components/ui/section-kit";
 import { Textarea } from "@/components/ui/textarea";
 import { districts } from "@/data/media/districts";
 import { fileTooBig } from "@/lib/media/classroom";
@@ -130,7 +129,6 @@ export function CrimeComposer({ open, onOpenChange, me }: { open: boolean; onOpe
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[94dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-2xl">
         <DialogHeader>
-          <PixelMark tone="dark" />
           <DialogTitle className="text-xl font-bold text-m-ink">ঘটনা পোস্ট করুন</DialogTitle>
           <DialogDescription>কী দেখেছেন, কোথায়, কখন — প্রমাণসহ। মানুষ নয়, ঘটনাকে দেখান।</DialogDescription>
         </DialogHeader>

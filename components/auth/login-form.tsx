@@ -87,7 +87,6 @@ export function LoginForm() {
   return (
     <div className="flex flex-col gap-space-lg">
       <AuthHeading
-        eyebrow="Kandari Profile"
         title="সাইন ইন করুন"
         subtitle={
           next.startsWith("/media")

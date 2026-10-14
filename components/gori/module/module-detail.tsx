@@ -14,7 +14,6 @@ import { useT } from "../provider";
 import { BASE } from "../shell";
 import { useGori, useHydrated } from "../store";
 import { EvidenceCheck } from "./evidence-check";
-import { PixelMark } from "@/components/ui/section-kit";
 
 export function ModuleDetail({ code }: { code: ModuleCode }) {
   const m = moduleOf(code)!;
@@ -49,7 +48,6 @@ export function ModuleDetail({ code }: { code: ModuleCode }) {
           <span className={cn("rounded-full px-2.5 py-1", point.urgency === "very-high" ? "bg-national-crimson text-white" : "bg-white/10")}>{urgencyBn[point.urgency]}</span>
           <span className="rounded-full bg-white/10 px-2.5 py-1">{evidenceBn[point.status]}</span>
         </p>
-        <PixelMark tone="dark" className="mb-2" />
         <h1 className="mt-3 font-bengali text-3xl font-bold text-white sm:text-4xl">{m.titleBn}</h1>
         <p className="text-sm text-white/80">{m.titleEn}</p>
         <p className="mt-3 max-w-[70ch] font-bengali text-base leading-7 text-white/85">

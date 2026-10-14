@@ -2,7 +2,7 @@
  * THESIS: speaking up should take seconds — call first, file fast, and see
  * that you are not the only one.
  * OWN-WORLD: the home page's — pitch-black ground, solid gold / ink / bottle
- * green / orange fields, gold pixel-mark headings, the gold pulse on the ink
+ * green / orange fields, gold headings, the gold pulse on the ink
  * bands' seams; the flag's red carries urgency here and nowhere else.
  * FIRST VIEWPORT: the home hero's band — the claim with the gold file
  * action and the red 999 call, a live board of the latest reports, the ink

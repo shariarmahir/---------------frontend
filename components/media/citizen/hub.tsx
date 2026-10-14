@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { Eye, EyeOff, Flag, MapPin, Megaphone, PhoneCall, Share2, ShieldCheck, Siren, TriangleAlert, UserRoundX, Users } from "lucide-react";
 import { toast } from "sonner";
-import { PixelMark, SignalSeam } from "@/components/ui/section-kit";
+import { SignalSeam } from "@/components/ui/section-kit";
 import { LIFT, glowStyle } from "@/components/ui/surfaces";
 import { CONFIRM_THRESHOLD, civicKindBn, civicReports, riskyAreas } from "@/data/media/civic";
 import { crimePosts } from "@/data/media/crime";
@@ -50,7 +50,7 @@ const HOTLINES = [
   { tel: "999", bn: "জরুরি সেবা", card: "bg-m-red text-m-on", glow: "var(--color-national-crimson)" },
   { tel: "109", bn: "নারী ও শিশু নির্যাতন", card: "bg-m-blue-soft text-m-ink", glow: "var(--color-bd-green)" },
   { tel: "16121", bn: "ভোক্তা অধিকার", card: "bg-m-yellow text-m-ink", glow: "var(--color-signal-orange)" },
-  { tel: "106", bn: "দুদক", card: "bg-m-red-soft text-m-ink", glow: "var(--color-bdorange-600)" },
+  { tel: "106", bn: "দুদক", card: "bg-m-red-soft text-m-ink", glow: "var(--color-m-red)" },
   { tel: "333", bn: "সরকারি তথ্য ও সেবা", card: "bg-m-card text-m-ink ring-1 ring-m-ink/13", glow: "var(--color-bdgreen-500)" },
   { tel: "1090", bn: "দুর্যোগের আগাম বার্তা", card: "bg-m-card text-m-ink ring-1 ring-m-ink/13", glow: "var(--color-bdgreen-500)" },
 ];
@@ -103,11 +103,6 @@ export function CitizenHub() {
       <section className="live-in overflow-hidden rounded-3xl bg-m-card ring-1 ring-m-ink/10 shadow-m-tile">
         <div className="grid grid-cols-1 gap-8 p-5 sm:p-8 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] xl:items-center">
           <div className="space-y-5">
-            <PixelMark tone="dark" />
-            <p className="inline-flex items-center gap-2 rounded-full bg-m-red px-3 py-1 text-xs font-bold text-m-on">
-              <span className="relative flex size-2"><span className="absolute inset-0 animate-ping rounded-full bg-m-ink/39 motion-reduce:hidden" /><span className="relative size-2 rounded-full bg-white" /></span>
-              নাগরিক বার্তা · নাগরিক সাংবাদিকতা
-            </p>
             <h1 className="text-3xl font-bold tracking-tight text-balance text-m-ink sm:text-5xl sm:leading-[1.1]">
               দেখেছেন? <span className="text-m-blue">চুপ থাকবেন না।</span>
             </h1>

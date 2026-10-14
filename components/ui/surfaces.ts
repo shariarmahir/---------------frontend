@@ -2,15 +2,15 @@ import type { CSSProperties } from "react";
 
 /**
  * Colour fields for the product pages, the home page's Pixel-Map palette in
- * its order: green, gold, orange, then ink. Ink text on gold and orange,
- * white on green and ink (white on gold or orange would fall under 4.5:1).
- * Ink cards carry a faint ring so they hold an edge on the black ground.
+ * its order: green, gold, navy, then ink. Ink text on gold, white on green,
+ * navy and ink (white on gold would fall under 4.5:1). Navy and ink cards
+ * carry a faint ring so they hold an edge on the black ground.
  * `tile` is the contrasting fill for an icon or number plate on that card.
  */
 export const SURFACES = [
   { card: "bg-bd-green text-white", tile: "bg-signal-orange text-text-primary", glow: "var(--color-bd-green)" },
   { card: "bg-signal-orange text-text-primary", tile: "bg-text-primary text-signal-orange", glow: "var(--color-signal-orange)" },
-  { card: "bg-bdorange-600 text-text-primary", tile: "bg-text-primary text-signal-orange", glow: "var(--color-bdorange-600)" },
+  { card: "bg-bdnavy-900 text-white ring-1 ring-white/12", tile: "bg-signal-orange text-text-primary", glow: "var(--color-bdnavy-400)" },
   { card: "bg-text-primary text-white ring-1 ring-white/12", tile: "bg-bdgreen-500 text-text-primary", glow: "var(--color-bdgreen-500)" },
 ] as const;
 

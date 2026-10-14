@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 const JUMPS = [
   { href: "#day", n: "০১", label: "দিনের হিসাব", card: "bg-bd-green text-white", glow: "var(--color-bd-green)" },
   { href: "#divisions", n: "০২", label: "বিভাগ", card: "bg-signal-orange text-text-primary", glow: "var(--color-signal-orange)" },
-  { href: "#rights", n: "০৩", label: "অধিকার", card: "bg-bdorange-600 text-text-primary", glow: "var(--color-bdorange-600)" },
+  { href: "#rights", n: "০৩", label: "অধিকার", card: "bg-bdnavy-900 text-white ring-1 ring-white/25", glow: "var(--color-bdnavy-400)" },
   { href: "#responsibility", n: "০৪", label: "দায়িত্ব", card: "bg-text-primary text-white ring-1 ring-white/25", glow: "var(--color-bdgreen-500)" },
   { href: "#self-check", n: "০৫", label: "আজ রাতের আয়না", card: "bg-bd-green text-white", glow: "var(--color-bd-green)" },
 ];

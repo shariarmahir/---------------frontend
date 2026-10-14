@@ -13,13 +13,6 @@ export function AmarEmergency() {
     >
       <div className="mx-auto flex max-w-[1320px] flex-col gap-space-xl">
         <div className="flex flex-col gap-space-xs">
-          <span className="flex items-center gap-space-xs font-code-telemetry text-label-sm font-bold uppercase text-tertiary">
-            <span className="relative flex size-2.5 items-center justify-center">
-              <span className="absolute size-2.5 animate-ping rounded-full bg-tertiary/60" />
-              <span className="relative size-1.5 rounded-full bg-tertiary" />
-            </span>
-            SECTION 05 · EMERGENCY CATEGORIES
-          </span>
           <h2 className="max-w-3xl font-display text-headline-lg-mobile font-bold tracking-tight text-on-surface sm:text-headline-lg">
             Solve the measurement layer first
           </h2>

@@ -103,7 +103,7 @@ export function SignupFlow() {
 
   return (
     <div className="flex flex-col gap-space-lg">
-      <AuthHeading eyebrow="Kandari Profile" title="নতুন অ্যাকাউন্ট খুলুন" subtitle="গবেষণা, পণ্য ও আপনার এলাকার আপডেট পেতে — বিনামূল্যে, দুই মিনিটে।" />
+      <AuthHeading title="নতুন অ্যাকাউন্ট খুলুন" subtitle="গবেষণা, পণ্য ও আপনার এলাকার আপডেট পেতে — বিনামূল্যে, দুই মিনিটে।" />
 
       <ol className="grid grid-cols-3 gap-2" aria-label="ধাপ">
         {STEPS.map((s, i) => (

@@ -5,7 +5,6 @@ import { CheckCircle2, Eye, EyeOff, FilePenLine, GraduationCap, ListOrdered, Plu
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { PixelMark } from "@/components/ui/section-kit";
 import { Textarea } from "@/components/ui/textarea";
 import { QUESTION_KINDS, canSeePaper, mcqTotal, questionProblem, scoreMcq, totalMarks, type ExamPaper, type ExamQuestion, type QuestionKind } from "@/lib/media/exam-paper";
 import { daysUntil } from "@/lib/media/lab";
@@ -162,7 +161,6 @@ function AddExam({ open, onOpenChange, kinds, onAdd }: { open: boolean; onOpenCh
     <Dialog open={open} onOpenChange={(o) => { if (o) { setTitle(""); setKind(first); setDate(""); setSyllabus(""); setTried(false); } onOpenChange(o); }}>
       <DialogContent className="rounded-3xl font-sans sm:max-w-lg">
         <DialogHeader>
-          <PixelMark tone="dark" />
           <DialogTitle className="text-xl font-bold text-m-ink">পরীক্ষা যোগ করুন</DialogTitle>
           <DialogDescription>তারিখ দিলে সবার কাউন্টডাউন শুরু; প্রশ্নপত্র শিক্ষক পরে বানাবেন।</DialogDescription>
         </DialogHeader>
@@ -231,7 +229,6 @@ function PaperBuilder({ exam, onClose, onSave }: { exam: DeskExam; onClose: () =
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-h-[94dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-2xl">
         <DialogHeader>
-          <PixelMark tone="dark" />
           <DialogTitle className="text-xl font-bold text-m-ink">প্রশ্নপত্র — {exam.title}</DialogTitle>
           <DialogDescription>
             মোট <Num value={totalMarks(qs)} /> নম্বর · বহুনির্বাচনি <Num value={mcqTotal(qs)} /> নম্বর (এখানেই মূল্যায়ন), বাকিটা খাতায়।
@@ -302,7 +299,6 @@ function PaperView({ exam, paper, teacher, canTake, name, onClose, onScore }: {
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-h-[94dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-2xl">
         <DialogHeader>
-          <PixelMark tone="dark" />
           <DialogTitle className="flex items-center gap-2 text-xl font-bold text-m-ink"><GraduationCap className="size-5 text-m-blue" aria-hidden /> {exam.title}</DialogTitle>
           <DialogDescription>
             পূর্ণমান <Num value={totalMarks(paper.questions)} />{paper.duration ? <> · সময় <Num value={paper.duration} /> মিনিট</> : null}

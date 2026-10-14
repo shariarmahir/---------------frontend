@@ -58,7 +58,7 @@ export function FieldError({ id, children }: { id?: string; children: React.Reac
 const STRENGTH = [
   { label: "", bar: "bg-text-primary/15" },
   { label: "দুর্বল", bar: "bg-national-crimson" },
-  { label: "চলনসই", bar: "bg-bdorange-600" },
+  { label: "চলনসই", bar: "bg-bdnavy-500" },
   { label: "ভালো", bar: "bg-bd-green" },
   { label: "শক্ত", bar: "bg-text-primary" },
 ];

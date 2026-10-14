@@ -1,21 +1,52 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { heroPhotos } from "@/data/hero-gallery";
-import { SignalSeam, btn } from "@/components/ui/section-kit";
-
-/** The four proof points, in the rule below the hero band. */
-const HERO_STATS = [
-  { label: "Citizens Monitored", value: "4.8M+" },
-  { label: "Critical Triage", value: "< 120 MIN" },
-  { label: "Bengali Data Engine", value: "10-CRORE" },
-  { label: "Sovereign Architecture", value: "100%" },
-];
+import { btn } from "@/components/ui/section-kit";
+import { sampleHeroTone } from "@/components/sections/hero-tone";
+import type { TextTone } from "@/lib/backdrop-tone";
+import { cn } from "@/lib/utils";
 
 const SLIDE_MS = 6000;
+
+/**
+ * Headline and subtitle classes per colour. Each is one of the UI's five:
+ * gold, white, black, bottle green, deep navy. The halo is the opposite
+ * lightness so the words still read over a busy patch; over gold the
+ * subtitle drops to white, which reads wherever gold does.
+ */
+const TONE_CLASSES: Record<TextTone, { title: string; sub: string }> = {
+  gold: {
+    title: "text-signal-orange [text-shadow:0_2px_14px_rgb(0_0_0/0.55)]",
+    sub: "text-white/95 [text-shadow:0_1px_10px_rgb(0_0_0/0.55)]",
+  },
+  white: {
+    title: "text-white [text-shadow:0_2px_14px_rgb(0_0_0/0.55)]",
+    sub: "text-white/95 [text-shadow:0_1px_10px_rgb(0_0_0/0.55)]",
+  },
+  black: {
+    title: "text-black [text-shadow:0_1px_12px_rgb(255_255_255/0.5)]",
+    sub: "text-black/90 [text-shadow:0_1px_10px_rgb(255_255_255/0.5)]",
+  },
+  green: {
+    title: "text-bd-green [text-shadow:0_1px_12px_rgb(255_255_255/0.5)]",
+    sub: "text-bd-green [text-shadow:0_1px_10px_rgb(255_255_255/0.5)]",
+  },
+  navy: {
+    title: "text-bdnavy-900 [text-shadow:0_1px_12px_rgb(255_255_255/0.5)]",
+    sub: "text-bdnavy-900/90 [text-shadow:0_1px_10px_rgb(255_255_255/0.5)]",
+  },
+};
+
+/** The glass button, re-toned for dark text on a bright photograph. */
+const GHOST_ON_BRIGHT = btn.ghost
+  .replace("bg-white/10", "bg-text-primary/10")
+  .replace("text-white", "text-text-primary")
+  .replace("ring-white/25", "ring-text-primary/30")
+  .replace("hover:bg-white/15", "hover:bg-text-primary/15");
 
 /**
  * Hero.
@@ -33,6 +64,16 @@ const SLIDE_MS = 6000;
  */
 export function HeroSection() {
   const [index, setIndex] = useState(0);
+  // The text colour that reads on the photograph behind it, one of gold,
+  // white, black, green or navy: gold on a dark photo, white on a mid green,
+  // navy or green on a bright one (mustard field, pale sky). Judged per
+  // slide and per band size — see backdrop-tone.ts and hero-tone.ts.
+  const [tone, setTone] = useState<TextTone>("gold");
+  const bandRef = useRef<HTMLDivElement>(null);
+  const imgRefs = useRef<(HTMLImageElement | null)[]>([]);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const subRef = useRef<HTMLParagraphElement>(null);
+  const actionsRef = useRef<HTMLDivElement>(null);
 
   // Auto-shuffle. Resets whenever `index` changes, so the dwell restarts
   // after a manual dot click rather than being cut short.
@@ -44,16 +85,78 @@ export function HeroSection() {
     return () => clearTimeout(id);
   }, [index]);
 
+  // Re-judge the backdrop whenever the slide or the band's size changes.
+  useEffect(() => {
+    const band = bandRef.current;
+    const img = imgRefs.current[index];
+    if (!band || !img) return;
+    const focus = heroPhotos[index]?.focus;
+
+    const judge = () => {
+      const bb = band.getBoundingClientRect();
+      let x0 = Infinity;
+      let y0 = Infinity;
+      let x1 = -Infinity;
+      let y1 = -Infinity;
+      const grow = (r: DOMRect) => {
+        if (r.width === 0 && r.height === 0) return;
+        x0 = Math.min(x0, r.left);
+        y0 = Math.min(y0, r.top);
+        x1 = Math.max(x1, r.right);
+        y1 = Math.max(y1, r.bottom);
+      };
+      // The text's own extent (not its full-width block), then the buttons.
+      for (const el of [titleRef.current, subRef.current]) {
+        if (!el) continue;
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        grow(range.getBoundingClientRect());
+      }
+      for (const el of Array.from(actionsRef.current?.children ?? [])) grow(el.getBoundingClientRect());
+      if (!Number.isFinite(x0)) return;
+      const next = sampleHeroTone({
+        img,
+        band: { w: bb.width, h: bb.height },
+        focus,
+        box: { x: x0 - bb.left, y: y0 - bb.top, w: x1 - x0, h: y1 - y0 },
+      });
+      if (next) setTone(next);
+    };
+
+    let raf = 0;
+    let debounce = 0;
+    if (img.complete && img.naturalWidth) raf = requestAnimationFrame(judge);
+    else img.addEventListener("load", judge, { once: true });
+    const ro = new ResizeObserver(() => {
+      window.clearTimeout(debounce);
+      debounce = window.setTimeout(judge, 150);
+    });
+    ro.observe(band);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(debounce);
+      img.removeEventListener("load", judge);
+      ro.disconnect();
+    };
+  }, [index]);
+
+  const classes = TONE_CLASSES[tone];
+  const onBright = tone === "black" || tone === "green" || tone === "navy";
+
   return (
     <section
       id="overview-mission"
       className="relative w-full"
     >
-      {/* The band — same height as the /products hero. */}
-      <div className="hero-band relative flex w-full items-center overflow-hidden bg-text-primary">
+      {/* The band — same height as the /products hero. The claim sits at the
+          bottom, centred, so the photograph keeps the upper two thirds. */}
+      <div ref={bandRef} className="hero-band relative flex w-full items-end overflow-hidden bg-text-primary">
         {heroPhotos.map((photo, i) => (
           <Image
             key={photo.src}
+            ref={(el) => {
+              imgRefs.current[i] = el;
+            }}
             src={photo.src}
             alt={i === index ? photo.alt : ""}
             aria-hidden={i !== index}
@@ -74,45 +177,52 @@ export function HeroSection() {
           />
         ))}
 
-        {/* Scrim in the brand ink. Dark enough on the left for white text
-            to clear AA over any of the ten frames, fading out to the right
-            so the image stays visible. */}
+        {/* Subtle scrim: keep text readable but let images show clearly */}
         <div
           aria-hidden
-          className="absolute inset-0 bg-linear-to-r from-text-primary/95 via-text-primary/70 to-text-primary/20"
+          className="absolute inset-0 bg-linear-to-r from-text-primary/40 via-text-primary/20 to-transparent"
         />
         <div
           aria-hidden
-          className="absolute inset-0 bg-linear-to-t from-text-primary/75 via-transparent to-text-primary/25"
+          className="absolute inset-0 bg-linear-to-t from-text-primary/30 via-transparent to-transparent"
         />
 
         {/* ── Claim ─────────────────────────────────────────────── */}
-        <div className="relative w-full py-16">
-          <div className="mx-auto flex w-full max-w-7xl flex-col items-start gap-space-md px-gutter-x lg:gap-space-lg">
-            {/* `text-pretty` not `text-balance`: balance re-flows the first
-                line to match the second and fights the explicit break
-                below. The <br /> holds the reference's two-line shape from
-                lg up, where there is width for it. */}
-            <h1 className="max-w-[20ch] text-pretty font-grotesk text-3xl leading-[1.1] font-bold tracking-tight text-white sm:text-4xl lg:max-w-none lg:text-[2.75rem] lg:leading-[1.08] xl:text-[3.25rem]">
-              Sovereign deep-tech,
-              <br className="hidden lg:inline" />{" "}
-              <span className="text-signal-orange">built in Bangladesh.</span>
+        <div className="relative w-full pt-16 pb-14 sm:pb-16">
+          <div className="mx-auto flex w-full max-w-[1600px] flex-col items-center gap-space-sm px-gutter-x text-center lg:gap-space-md">
+            {/* The claim, set larger than a section title (up to 48px). It wraps
+                over two or three balanced lines on a laptop and one or two on a
+                wide screen. The colour follows the photograph behind it, easing
+                over the same second as the photo crossfade. */}
+            <h1
+              ref={titleRef}
+              className={cn(
+                "w-full max-w-[1320px] font-grotesk text-[1.625rem] leading-[1.18] font-bold tracking-tight text-balance transition-[color,text-shadow] duration-1000 ease-in-out sm:text-3xl md:text-4xl lg:text-[2.75rem] xl:text-5xl",
+                classes.title,
+              )}
+            >
+              Every problem is the door of opportunity. Therefore, it is high time we knocked on the door until it opens cause it is now or never.
             </h1>
 
-            <p className="max-w-[46ch] font-sans text-body-md leading-relaxed text-white/85 lg:text-body-lg">
-              Native semiconductors, clinical wearables and rural telemetry —
-              engineered for the Golden Two Hours, across all 64 districts.
+            <p
+              ref={subRef}
+              className={cn(
+                "max-w-[44ch] font-sans text-body-md leading-relaxed text-balance transition-[color,text-shadow] duration-1000 ease-in-out sm:max-w-[60ch] lg:max-w-none lg:text-body-lg lg:whitespace-nowrap",
+                classes.sub,
+              )}
+            >
+              Kandari Lab uses technology and commercial innovation to build a smart, safe, and secure Bangladesh.
             </p>
 
             {/* Actions: gold for the primary route, a quiet glass pill for
-                the second. */}
-            <div className="flex flex-wrap items-center gap-3 pt-space-xs">
+                the second, side by side and centred. */}
+            <div ref={actionsRef} className="flex flex-wrap items-center justify-center gap-3 pt-space-xs">
               <Link href="#flagship" className={btn.gold}>
                 <Icon name="monitor_heart" className="text-[18px]" />
                 Explore the hardware
               </Link>
 
-              <Link href="#kandari-profile" className={btn.ghost}>
+              <Link href="#kandari-profile" className={cn(onBright ? GHOST_ON_BRIGHT : btn.ghost, "transition-colors duration-1000")}>
                 <Icon name="person_add" className="text-[18px] text-bdgreen-500" />
                 Join Kandari Profile
               </Link>
@@ -146,28 +256,6 @@ export function HeroSection() {
             </button>
           ))}
         </div>
-      </div>
-
-      {/* Proof strip — the header's ink telemetry strip at full width, with
-          the same gold pulse on its seam. Two columns on phones so the
-          values stay large; four from lg. */}
-      <div className="relative w-full bg-text-primary">
-        <SignalSeam className="top-0" />
-        <dl className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-white/10 lg:grid-cols-4">
-          {HERO_STATS.map((stat) => (
-            <div
-              key={stat.label}
-              className="flex flex-col items-center gap-1 px-space-sm py-space-md text-center max-lg:nth-[2n+1]:border-l-0 max-lg:nth-[n+3]:border-t max-lg:nth-[n+3]:border-white/10"
-            >
-              <dt className="font-mono text-label-xs font-medium tracking-widest text-white/65 uppercase">
-                {stat.label}
-              </dt>
-              <dd className="font-grotesk text-lg font-bold text-signal-orange tabular-nums sm:text-xl">
-                {stat.value}
-              </dd>
-            </div>
-          ))}
-        </dl>
       </div>
     </section>
   );

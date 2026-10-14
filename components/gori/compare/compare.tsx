@@ -13,10 +13,9 @@ import { cn } from "@/lib/utils";
 import { useT } from "../provider";
 import { BASE, LockedNotice, useFeature } from "../shell";
 import { useGori, useHydrated } from "../store";
-import { PixelMark } from "@/components/ui/section-kit";
 
 /** Validated series order for the cream surface (dataviz check). */
-const SERIES = ["#00875a", "#3651c9", "#c2410c"] as const;
+const SERIES = ["#00875a", "#3651c9", "#b7791f"] as const;
 const sc = scenarioOf("health-access");
 
 export function Compare() {
@@ -53,7 +52,6 @@ export function Compare() {
 
   return (
     <div className="mx-auto max-w-340 px-4 py-8 sm:px-6 lg:px-8">
-      <PixelMark tone="dark" className="mb-2" />
       <h1 className="font-bengali text-3xl font-bold text-signal-orange">দৃশ্যকল্প তুলনা</h1>
       <p className="mt-2 max-w-[70ch] font-bengali text-white/85">সংরক্ষিত খেলা থেকে সর্বোচ্চ তিনটি বাছুন। একই বীজ আর একই প্রেক্ষাপট হলে তুলনা ন্যায্য — দুই কৌশল একই ঘটনার মুখোমুখি হয়েছে।</p>
 
@@ -102,7 +100,7 @@ export function Compare() {
               <p className="rounded-2xl border border-white/15 p-6 font-bengali text-white/80">তুলনার জন্য অন্তত দুটি খেলা বাছুন।</p>
             ) : (
               <>
-                <p className={cn("flex items-center gap-2 rounded-xl px-4 py-2.5 font-bengali text-sm", sameSeed ? "bg-emerald-900/50 text-white/80" : "bg-orange-900/40 text-white/85")}>
+                <p className={cn("flex items-center gap-2 rounded-xl px-4 py-2.5 font-bengali text-sm", sameSeed ? "bg-emerald-900/50 text-white/80" : "bg-bdnavy-700/60 text-white/85")}>
                   {sameSeed ? <CheckCircle2 className="size-4" aria-hidden /> : <AlertTriangle className="size-4" aria-hidden />}
                   {sameSeed ? "একই বীজ ও প্রেক্ষাপট — ন্যায্য তুলনা।" : "বীজ বা প্রেক্ষাপট আলাদা — পার্থক্যের একটা অংশ ঘটনা বা প্রেক্ষাপটের, কৌশলের নয়।"}
                 </p>

@@ -63,7 +63,7 @@ export function ProfileView({ person, self }: { person: Person; self: boolean })
     <div className="mx-auto max-w-6xl space-y-5 pb-20 lg:pb-0">
       <ProfileHero person={person} self={self} />
 
-      <ProfileSection id="about" eyebrow="পরিচিতি" title="দক্ষতা দিয়ে গড়া পরিচয়">
+      <ProfileSection id="about" title="দক্ষতা দিয়ে গড়া পরিচয়">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
           <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-3">
             <Tile icon={<Users className="size-5" aria-hidden />} value={<FollowerCount handle={person.handle} base={person.followers} />} label="অনুসারী" />
@@ -101,13 +101,12 @@ export function ProfileView({ person, self }: { person: Person; self: boolean })
         </div>
       </ProfileSection>
 
-      <ProfileSection id="skills" eyebrow="দক্ষতা" title="যা আমি পারি">
+      <ProfileSection id="skills" title="যা আমি পারি">
         <ProfileSkills person={person} self={self} />
       </ProfileSection>
 
       <ProfileSection
         id="journey"
-        eyebrow="একাডেমি"
         title="শেখার পথ"
         action={
           <Link href="/media/academy" className="text-sm font-semibold text-m-blue hover:underline">
@@ -120,7 +119,7 @@ export function ProfileView({ person, self }: { person: Person; self: boolean })
 
       {self && <PinnedNotes />}
 
-      <ProfileSection id="feed" eyebrow="ফিড" title="আমার পোস্ট ও কাজ">
+      <ProfileSection id="feed" title="আমার পোস্ট ও কাজ">
         <Tabs defaultValue="feed">
           <TabsList className="w-full sm:w-fit">
             <TabsTrigger value="feed" className="flex-1 sm:flex-none">
@@ -182,7 +181,6 @@ export function ProfileView({ person, self }: { person: Person; self: boolean })
       {person.workHistory.length > 0 && (
         <ProfileSection
           id="clients"
-          eyebrow="গ্রাহকের কথা"
           title="যাঁদের কাজ করে দিয়েছি"
           action={
             <span className="text-sm text-m-ink/65">
@@ -204,7 +202,7 @@ export function ProfileView({ person, self }: { person: Person; self: boolean })
         </ProfileSection>
       )}
 
-      <ProfileSection id="connect" eyebrow={self ? "আমার CV" : "যোগাযোগ"} title={self ? "CV তৈরি করুন, নামান, আপলোড করুন" : "একসাথে কাজ করবেন?"}>
+      <ProfileSection id="connect" title={self ? "CV তৈরি করুন, নামান, আপলোড করুন" : "একসাথে কাজ করবেন?"}>
         {self ? (
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
             <div className="space-y-5">

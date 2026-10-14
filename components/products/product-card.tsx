@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 const SURFACES = [
   { card: "bg-bd-green text-white", pill: "bg-signal-orange text-text-primary", glow: "var(--color-bd-green)" },
   { card: "bg-signal-orange text-text-primary", pill: "bg-text-primary text-signal-orange", glow: "var(--color-signal-orange)" },
-  { card: "bg-bdorange-600 text-text-primary", pill: "bg-text-primary text-signal-orange", glow: "var(--color-bdorange-600)" },
+  { card: "bg-bdnavy-900 text-white ring-1 ring-white/12", pill: "bg-signal-orange text-text-primary", glow: "var(--color-bdnavy-400)" },
   { card: "bg-text-primary text-white ring-1 ring-white/12", pill: "bg-signal-orange text-text-primary", glow: "var(--color-bdgreen-500)" },
 ];
 

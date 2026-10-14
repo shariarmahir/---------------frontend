@@ -51,7 +51,6 @@ import { TOPIC_ICON } from "./topic-style";
 /** A room in the feed, dressed like an academy card: a hairline head with the room's colour badge, the bar drawing across on hover. `tone` picks the colour (tones.ts). */
 function Module({
   Icon: Glyph,
-  eyebrow,
   title,
   href,
   link,
@@ -60,7 +59,6 @@ function Module({
   extra,
 }: {
   Icon: LucideIcon;
-  eyebrow: string;
   title: string;
   href: string;
   link: string;
@@ -80,7 +78,6 @@ function Module({
             <Glyph className="size-5.5" aria-hidden />
           </span>
           <div className="min-w-0">
-            <p className="font-mono text-[11px] font-bold tracking-wide text-(--c-app-ink) uppercase">{eyebrow}</p>
             <h2 className="truncate text-lg font-bold text-m-ink sm:text-xl">{title}</h2>
           </div>
         </div>
@@ -162,7 +159,7 @@ export function Highlights() {
 export function MarketModule() {
   const items = [...listings].sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)) || b.sold - a.sold).slice(0, 8);
   return (
-    <Module Icon={Store} eyebrow="বাজার" title="আজ বাজারে যা পাওয়া যাচ্ছে" href="/media/market" link="বাজারে যান" tone={3}>
+    <Module Icon={Store} title="আজ বাজারে যা পাওয়া যাচ্ছে" href="/media/market" link="বাজারে যান" tone={3}>
       <nav aria-label="বাজারের বিভাগ" className="mt-4">
         <ul className={cn(rail, "px-4 sm:px-5")}>
           {SECTIONS.map((s) => (
@@ -246,7 +243,6 @@ export function AcademyModule() {
   return (
     <Module
       Icon={Library}
-      eyebrow="কাণ্ডারী তৈরি একাডেমি"
       title="সবার আমি ছাত্র — সামনের ক্লাস"
       href="/media/academy"
       link="একাডেমি"
@@ -293,7 +289,6 @@ export function ResearchModule() {
   return (
     <Module
       Icon={FlaskConical}
-      eyebrow="গবেষণাকোষ"
       title="দেশের প্রশ্ন, দেশের গবেষণা"
       href="/research"
       link="সব গবেষণা"
@@ -357,7 +352,6 @@ export function JobsModule() {
   return (
     <Module
       Icon={Briefcase}
-      eyebrow="কাজ"
       title="আপনার দক্ষতার সাথে মেলে"
       href="/media/jobs"
       link="সব কাজ"
@@ -416,7 +410,7 @@ export function CommunityModule() {
   const cv = civicReports.find((r) => r.status !== "solved" && r.severity === "high") ?? civicReports[0];
   const tile = "group flex flex-col gap-2 rounded-2xl p-4 transition-[translate] duration-300 hover:-translate-y-1 motion-reduce:transition-none";
   return (
-    <Module Icon={UsersRound} eyebrow="কমিউনিটি" title="এখন যা হচ্ছে" href="/media/together" link="টিম · উদ্যোগ" tone={1}>
+    <Module Icon={UsersRound} title="এখন যা হচ্ছে" href="/media/together" link="টিম · উদ্যোগ" tone={1}>
       <div className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-3 sm:p-5">
         <Link href={`/media/together?v=events#${ev.id}`} className={cn(tile, "bg-m-blue-soft text-m-ink")}>
           <span className="inline-flex items-center gap-1.5 text-xs font-bold text-m-ink/80">

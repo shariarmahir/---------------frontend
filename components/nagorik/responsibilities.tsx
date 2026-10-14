@@ -30,8 +30,6 @@ export function Responsibilities() {
       <div className="mx-auto max-w-7xl px-gutter-x">
         <StoryHeading
           id="resp-title"
-          index="০৪"
-          kicker="দায়িত্ব"
           title="প্রত্যেকের দায়িত্ব — শিশু থেকে প্রবীণ"
           accent="দায়িত্ব"
           lede="দেশ বদলানো কারও একার কাজ নয়। নিজের জায়গাটি বেছে নিন — দায়িত্ব, আজকের কাজ, আচরণ, মানসিকতা আর সাহস।"

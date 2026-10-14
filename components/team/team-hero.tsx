@@ -8,7 +8,7 @@ import { MemberAvatar } from "./member-avatar";
 /** Each ring is one solid theme colour: gold, orange, green — inside out. */
 const RINGS: { ring: OrbitRing; name: string; speed: number; color: string }[] = [
   { ring: "inner", name: "Leadership", speed: 34, color: "var(--color-signal-orange)" },
-  { ring: "mid", name: "Idea, Creative & Client", speed: 52, color: "var(--color-bdorange-600)" },
+  { ring: "mid", name: "Idea, Creative & Client", speed: 52, color: "var(--color-bdnavy-400)" },
   { ring: "outer", name: "Engineering — IoT & AI", speed: 74, color: "var(--color-bdgreen-500)" },
 ];
 

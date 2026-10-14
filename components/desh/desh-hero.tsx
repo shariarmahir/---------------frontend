@@ -11,7 +11,7 @@ import { PixelMap } from "./pixel-map";
 const CHAPTER_SURFACES = [
   { card: "bg-bd-green text-white", glow: "var(--color-bd-green)" },
   { card: "bg-signal-orange text-text-primary", glow: "var(--color-signal-orange)" },
-  { card: "bg-bdorange-600 text-text-primary", glow: "var(--color-bdorange-600)" },
+  { card: "bg-bdnavy-900 text-white ring-1 ring-white/25", glow: "var(--color-bdnavy-400)" },
   { card: "bg-text-primary text-white ring-1 ring-white/25", glow: "var(--color-bdgreen-500)" },
   { card: "bg-bd-green text-white", glow: "var(--color-bd-green)" },
 ];

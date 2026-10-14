@@ -66,7 +66,6 @@ export function StationFinder() {
       <div className="mx-auto max-w-7xl px-gutter-x">
         <SectionHeading
           tone="dark"
-          kicker="নিকটস্থ থানা"
           title={<span id="stations-title">Nearest police station</span>}
           lead="Most complaints start at a police station. Find the one nearest to you, or browse by division."
         />
@@ -89,7 +88,7 @@ export function StationFinder() {
             </button>
 
             {locateError ? (
-              <p role="status" className="live-in flex items-start gap-2 rounded-2xl bg-bdorange-600 p-3 font-sans text-[0.8125rem] leading-relaxed text-text-primary">
+              <p role="status" className="live-in flex items-start gap-2 rounded-2xl bg-bdnavy-900 p-3 font-sans text-[0.8125rem] leading-relaxed text-white ring-1 ring-white/12">
                 <Icon name="info" className="mt-px shrink-0 text-[16px]" />
                 {locateError}
               </p>

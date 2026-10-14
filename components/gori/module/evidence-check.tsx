@@ -148,8 +148,8 @@ export function EvidenceCheck({ n: moduleN }: { n: number }) {
             {p.decisions.map((d, i) => {
               const ok = result.answers[i] === d.answer;
               return (
-                <li key={i} className={cn("flex gap-3 rounded-xl p-3.5 font-bengali", ok ? "bg-white/10" : "bg-bdorange-600")}>
-                  <span className={cn("mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full text-white", ok ? "bg-bd-green" : "bg-bdorange-600")}>
+                <li key={i} className={cn("flex gap-3 rounded-xl p-3.5 font-bengali", ok ? "bg-white/10" : "bg-bdnavy-700")}>
+                  <span className={cn("mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full text-white", ok ? "bg-bd-green" : "bg-bdnavy-500")}>
                     {ok ? <Check className="size-4" aria-label="ঠিক" /> : <X className="size-4" aria-label="ভুল" />}
                   </span>
                   <div>

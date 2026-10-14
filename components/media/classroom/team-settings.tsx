@@ -5,7 +5,6 @@ import { Crown, Settings2, UserMinus, UserPlus, Users } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { PixelMark } from "@/components/ui/section-kit";
 import { newId } from "@/lib/media/store";
 import { TEAM_LIMITS, clampLimit, isFull, type TeamKind } from "@/lib/media/teamwork";
 import { cn } from "@/lib/utils";
@@ -98,7 +97,6 @@ export function TeamSettingsDialog({ open, onOpenChange, kind, name, maxMembers,
     <Dialog open={open} onOpenChange={(o) => { if (o) { setDraft(fresh()); setAdding(""); } onOpenChange(o); }}>
       <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-lg">
         <DialogHeader>
-          <PixelMark tone="dark" />
           <DialogTitle className="flex items-center gap-2 text-xl font-bold text-m-ink"><Settings2 className="size-5 text-m-blue" aria-hidden /> {kind === "lab" ? "ল্যাব দল সাজান" : "ক্লাস সাজান"}</DialogTitle>
           <DialogDescription>নাম, সর্বোচ্চ কতজন থাকতে পারবে আর কারা আছেন — যখন খুশি বদলানো যায়।</DialogDescription>
         </DialogHeader>

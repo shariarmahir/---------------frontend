@@ -76,7 +76,7 @@ export function StatusRail({ sc, run, game, budgetAfterDraft, onStakeholders }: 
                 <span className="tabular-nums">{n(Math.round(support[s.id]))}</span>
               </span>
               <span className="mt-0.5 block h-1.5 overflow-hidden rounded-full bg-white/10" aria-hidden>
-                <span className={cn("block h-full rounded-full", support[s.id] < 45 ? "bg-orange-400" : "bg-emerald-400")} style={{ width: `${support[s.id]}%` }} />
+                <span className={cn("block h-full rounded-full", support[s.id] < 45 ? "bg-bdnavy-300" : "bg-emerald-400")} style={{ width: `${support[s.id]}%` }} />
               </span>
             </li>
           ))}
@@ -178,7 +178,7 @@ export function CommandRail({
               {draft.map((a, i) => {
                 const r = results[i];
                 return (
-                  <li key={i} className={cn("flex items-start gap-2 rounded-lg px-2.5 py-2 font-bengali text-sm", r?.ok === false ? "bg-orange-900/40" : "bg-white/6")}>
+                  <li key={i} className={cn("flex items-start gap-2 rounded-lg px-2.5 py-2 font-bengali text-sm", r?.ok === false ? "bg-bdnavy-700/60" : "bg-white/6")}>
                     <span className="min-w-0 flex-1">
                       {actionLabel(sc, a)}
                       {r && (r.ok ? r.cost > 0 && <span className="block text-xs text-white/80">খরচ {n(r.cost)}</span> : <span className="block text-xs text-white/80">চলবে না: {r.reason}</span>)}

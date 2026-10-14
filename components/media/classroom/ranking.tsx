@@ -165,7 +165,7 @@ function ClassGalaxy({ room }: { room: Classroom }) {
   const third = Math.ceil(others.length / 3);
   const rings: { radius: OrbitConfig["radius"]; color: string; speed: number }[] = [
     { radius: "inner", color: "var(--color-signal-orange)", speed: 30 },
-    { radius: "mid", color: "var(--color-bdorange-600)", speed: 46 },
+    { radius: "mid", color: "var(--color-m-red)", speed: 46 },
     { radius: "outer", color: "var(--color-bdgreen-500)", speed: 64 },
   ];
   const orbits: OrbitConfig[] = rings.map((r, i) => ({

@@ -12,7 +12,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { MemberAvatar } from "@/components/team/member-avatar";
 import { MemberCard } from "@/components/team/member-card";
 import { Icon } from "@/components/ui/icon";
-import { PixelMark, SectionHeading, SignalSeam } from "@/components/ui/section-kit";
+import { SectionHeading, SignalSeam } from "@/components/ui/section-kit";
 import { LIFT, glowStyle, surfaceAt } from "@/components/ui/surfaces";
 import { crew, departments, founder, getMember, team, toneOf } from "@/data/team";
 import { cn } from "@/lib/utils";
@@ -79,7 +79,6 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
                   <Icon name="arrow_back" className="text-[16px]!" />
                   All team
                 </Link>
-                <PixelMark tone="dark" className="mt-2" />
                 <span className={cn("w-fit rounded-full px-3 py-1 font-mono text-[11px] font-bold uppercase", tone.surface)}>{m.role}</span>
                 <h1 id="member-title" className="font-grotesk text-4xl leading-[1.05] font-bold tracking-tight text-white uppercase sm:text-5xl lg:text-6xl">
                   {m.name}
@@ -137,7 +136,6 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
           {/* About, what they own, what they work on. */}
           <div className="flex flex-col gap-6 lg:col-span-7">
             <div className="story-reveal rounded-3xl bg-text-primary p-6 text-white ring-1 ring-white/12 sm:p-9">
-              <PixelMark tone="dark" />
               <h2 className="mt-3 font-grotesk text-2xl font-bold tracking-tight text-signal-orange uppercase">About</h2>
               <p className="mt-3 font-sans text-lg leading-relaxed text-white/90">{m.about}</p>
 
@@ -232,7 +230,6 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
             <div className="mx-auto max-w-7xl px-gutter-x">
               <SectionHeading
                 tone="dark"
-                kicker={isFounder ? "সংকেত পৌঁছায় সবার কাছে" : "একই কক্ষপথে"}
                 title={isFounder ? "The signal reaches" : `More from ${dept.label}`}
               />
               <ul className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-5">

@@ -66,7 +66,7 @@ export const newsCategories: CategoryMeta[] = [
     label: "Durniti",
     banglaLabel: "দুর্নীতি",
     icon: "policy",
-    chip: "bg-orange-50 text-signal-text border-orange-200",
+    chip: "bg-bdnavy-50 text-bdnavy-900 border-bdnavy-200",
     accent: "bg-signal",
   },
   {

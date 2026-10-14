@@ -8,7 +8,6 @@ import { ArrowUpRight, BookOpenCheck, ImagePlus, Lightbulb, Microscope, Newspape
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { PixelMark } from "@/components/ui/section-kit";
 import { Textarea } from "@/components/ui/textarea";
 import type { Post } from "@/data/media/types";
 import { currentUser } from "@/data/media/users";
@@ -111,7 +110,6 @@ export function ShareDialog({ open, onOpenChange, from, members, meId, preset, o
     <Dialog open={open} onOpenChange={reset}>
       <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-xl">
         <DialogHeader>
-          <PixelMark tone="dark" />
           <DialogTitle className="flex items-center gap-2 text-xl font-bold text-m-ink"><Share2 className="size-5 text-m-blue" aria-hidden /> দলের কাজ শেয়ার করুন</DialogTitle>
           <DialogDescription>যে সমস্যা মিলে সমাধান করলেন, যা নতুন বানালেন বা খুঁজে পেলেন — ফিডে দিন, সবাই শিখুক।</DialogDescription>
         </DialogHeader>

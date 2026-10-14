@@ -49,17 +49,17 @@ const EXECUTIVES = [
     title: "Chief Marketing Officer",
     blurb:
       "Leading international hardware partnerships, medical institutional adoption, and public narrative momentum.",
-    surface: "bg-bdorange-600 text-text-primary",
-    fade: "to-bdorange-600",
-    glow: "var(--color-bdorange-600)",
-    pill: "bg-text-primary text-signal-orange",
+    surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
+    fade: "to-bdnavy-900",
+    glow: "var(--color-bdnavy-400)",
+    pill: "bg-signal-orange text-text-primary",
   },
 ];
 
 /**
  * The three functional leads are solid colour cards like the Pixel-Map ones,
  * staggered against the executive row above (green under gold, gold under
- * green, ink under orange).
+ * green, ink under navy).
  */
 const LEADS = [
   {

@@ -62,7 +62,6 @@ export function ProductGrowth({ product }: { product: Product }) {
     <section id="growth" className="section-band-tinted mx-auto max-w-7xl scroll-mt-40 px-gutter-x">
       <SectionHeading
         tone="dark"
-        kicker="প্রবৃদ্ধির পথ"
         title="Growth roadmap"
         lead="From first pilot to national reach. Targets are plans, not results."
       />
@@ -120,7 +119,7 @@ export function ProductResearch({ product }: { product: Product }) {
     <section id="research" className="section-band-tinted relative isolate scroll-mt-40 overflow-hidden bg-bd-green text-white">
       <SignalSeam className="top-0" />
       <div className="mx-auto max-w-7xl px-gutter-x">
-        <SectionHeading tone="dark" kicker="গবেষণা সারসংক্ষেপ" title="Research summary" />
+        <SectionHeading tone="dark" title="Research summary" />
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
           <div className="story-reveal space-y-4 lg:col-span-5">

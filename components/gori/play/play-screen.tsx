@@ -8,7 +8,6 @@ import { BASE, LockedNotice, useFeature } from "../shell";
 import { useGori, useHydrated } from "../store";
 import { CommandCenter } from "./command-center";
 import { Setup } from "./setup";
-import { PixelMark } from "@/components/ui/section-kit";
 
 /** /play — the command centre for the running game, or a way to start one. */
 export function PlayScreen() {
@@ -52,7 +51,6 @@ export function PlayScreen() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6">
-      <PixelMark tone="dark" className="mb-2" />
       <h1 className="font-bengali text-3xl font-bold text-signal-orange">কোনো খেলা চলছে না</h1>
       <p className="mt-3 font-bengali text-white/85">অভিযান দিয়ে শুরু করুন — আট ধাপে এক পিক্সেল থেকে পুরো ব্যবস্থা।</p>
       <div className="mt-6 flex flex-wrap justify-center gap-3">

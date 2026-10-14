@@ -11,7 +11,6 @@ export function ProductSolution({ product }: { product: Product }) {
     <section id="solution" className="section-band-tinted mx-auto max-w-7xl scroll-mt-40 px-gutter-x">
       <SectionHeading
         tone="dark"
-        kicker="সমাধান"
         title={`How ${product.name} solves it`}
         lead={product.coreSolve.detail}
       />
@@ -88,7 +87,6 @@ export function ProductScenarios({ product }: { product: Product }) {
       <div className="mx-auto max-w-7xl px-gutter-x">
         <SectionHeading
           tone="dark"
-          kicker="বাস্তব পরিস্থিতি"
           title="Real-life situations"
           lead="Everyday moments in rural Bangladesh — what happens today, and what changes with the product."
         />
@@ -149,7 +147,6 @@ export function ProductVideos({ product }: { product: Product }) {
     <section id="videos" className="section-band-tinted mx-auto max-w-7xl scroll-mt-40 px-gutter-x">
       <SectionHeading
         tone="dark"
-        kicker="ভিডিও — সহজে বুঝুন"
         title="See it to understand it"
         lead="Short films on the problem, the product and the people it serves."
       />

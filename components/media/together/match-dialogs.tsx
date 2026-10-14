@@ -6,7 +6,6 @@ import { BookHeart, Flag, Newspaper, Send, Swords } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { PixelMark } from "@/components/ui/section-kit";
 import { Textarea } from "@/components/ui/textarea";
 import { teamKindBn } from "@/data/media/teams";
 import type { Team } from "@/data/media/types";
@@ -114,7 +113,6 @@ export function ChallengeDialog({ open, onOpenChange, from, to }: { open: boolea
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-xl">
         <DialogHeader>
-          <PixelMark tone="dark" />
           <DialogTitle className="flex items-center gap-2 text-xl font-bold text-m-ink"><Swords className="size-5 text-m-blue" aria-hidden /> অন্য দলকে চ্যালেঞ্জ দিন</DialogTitle>
           <DialogDescription>খেলা, কুইজ, বানানোর লড়াই — বা কে বেশি ভালো কাজ করে। ওরা গ্রহণ করলে খেলা পাকা, ফল উঠবে লিগ টেবিলে।</DialogDescription>
         </DialogHeader>

@@ -12,7 +12,6 @@ import { mediaButton } from "@/components/media/ui/button-styles";
 import { EmptyState } from "@/components/media/ui/empty-state";
 import { chipClass } from "@/components/media/ui/field-styles";
 import { Num } from "@/components/media/ui/numerals";
-import { PixelMark } from "@/components/ui/section-kit";
 import { LIFT, glowStyle, surfaceAt } from "@/components/ui/surfaces";
 import { boardPosts, MODES, SIDES, STAGES } from "@/data/media/bazaar";
 import { isCategoryId } from "@/data/media/categories";
@@ -99,7 +98,6 @@ export default async function MarketPage({ searchParams }: { searchParams: Promi
       <section className="live-in overflow-hidden rounded-3xl bg-m-card ring-1 ring-m-ink/10 shadow-m-tile">
         <div className="grid grid-cols-1 gap-8 p-5 sm:p-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] xl:items-center">
           <div className="space-y-5">
-            <PixelMark tone="dark" />
             <h1 className="text-3xl font-bold tracking-tight text-balance text-m-ink sm:text-5xl sm:leading-[1.1]">
               যা আছে বিক্রি করুন, <span className="text-m-blue">যা দরকার চেয়ে নিন।</span>
             </h1>

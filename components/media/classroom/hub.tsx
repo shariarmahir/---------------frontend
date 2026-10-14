@@ -8,7 +8,6 @@ import { toast } from "sonner";
 import { AccountAvatar } from "@/components/auth/account-menu";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { PixelMark } from "@/components/ui/section-kit";
 import { LIFT, glowStyle, surfaceAt } from "@/components/ui/surfaces";
 import { Textarea } from "@/components/ui/textarea";
 import { ROLES } from "@/data/auth";
@@ -58,7 +57,6 @@ function ParentHub({ child }: { child: Child }) {
     <div className="mx-auto max-w-6xl space-y-8">
       <section className="live-in relative isolate overflow-hidden rounded-3xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-8 shadow-m-tile">
         <HeroVideo />
-        <PixelMark tone="dark" />
         <p className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-m-yellow px-3 py-1 text-xs font-bold text-m-ink">
           <Eye className="size-3.5" aria-hidden /> অভিভাবক · শুধু দেখা
         </p>
@@ -139,7 +137,6 @@ function StudentHub() {
         <HeroVideo />
         <div className="grid grid-cols-1 gap-8 p-5 sm:p-8 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] xl:items-center">
           <div className="space-y-5">
-            <PixelMark tone="dark" />
             <h1 className="text-3xl font-bold tracking-tight text-balance text-m-ink sm:text-5xl sm:leading-[1.1]">
               পুরো ক্লাস, <span className="text-m-blue">এক জায়গায়।</span>
             </h1>
@@ -355,7 +352,6 @@ function CreateDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v:
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-lg">
         <DialogHeader>
-          <PixelMark tone="dark" />
           <DialogTitle className="text-xl font-bold text-m-ink">ক্লাস বানান</DialogTitle>
           <DialogDescription>প্রতিটি ক্লাসে একজন শিক্ষক থাকবেন — প্রশ্নপত্র, পরীক্ষা আর নোটিশ তাঁর হাতে। সিআর রুটিন আর দল সামলান।</DialogDescription>
         </DialogHeader>
@@ -488,7 +484,6 @@ function CreateLabDialog({ open, onOpenChange }: { open: boolean; onOpenChange: 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-lg">
         <DialogHeader>
-          <PixelMark tone="dark" />
           <DialogTitle className="text-xl font-bold text-m-ink">ল্যাব রুম বানান</DialogTitle>
           <DialogDescription>এক্সপেরিমেন্টের টপিক, টাস্ক শিট, প্রশ্ন, রিপোর্ট জমার শেষ সময় আর ল্যাব পরীক্ষা — সবাই রিপোর্ট আর কাজের ছবি জমা দেবে। প্রতিটি ল্যাবে একজন শিক্ষক থাকবেন।</DialogDescription>
         </DialogHeader>

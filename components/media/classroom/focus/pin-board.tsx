@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Check, ChevronDown, Circle, CircleCheck, ExternalLink, ListChecks, Pin as PinIcon, PinOff, Plus, Quote, StickyNote, Table2, type LucideIcon } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { PixelMark } from "@/components/ui/section-kit";
 import { Textarea } from "@/components/ui/textarea";
 import { canAddPin, canPin, canUnpin, daysLeft, isClassPin, PIN_COLOR, PIN_KINDS, sortPins, taskState, TITLE_MAX, VALUE_MAX, type Pin, type PinDraft, type PinKind } from "@/lib/media/class-pins";
 import { NOTE_COLORS, type NoteColor, type Role } from "@/lib/media/notices";
@@ -103,7 +102,6 @@ export function PinBoard({ pins, role, parent, meId, lab, today, onCreate, onTog
       <Dialog open={adding} onOpenChange={setAdding}>
         <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-md">
           <DialogHeader>
-            <PixelMark tone="dark" />
             <DialogTitle className="text-xl font-bold text-m-ink">নতুন পিন</DialogTitle>
             <DialogDescription className="text-sm text-m-ink/70">{role === "teacher" || role === "leader" ? "ক্লাসের সবার চোখে পড়বে।" : "শুধু আপনি দেখবেন। গুরুত্বপূর্ণ বার্তা পিন করতে চ্যাটের বার্তার নিচের পিন বোতাম চাপুন।"}</DialogDescription>
           </DialogHeader>

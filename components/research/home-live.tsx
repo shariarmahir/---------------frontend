@@ -127,7 +127,7 @@ export function TopFields() {
   const max = Math.max(1, ranked[0]?.points ?? 1);
   return (
     <section aria-labelledby="top-fields" className="space-y-5">
-      <SectionHead id="top-fields" eyebrow="পাঠকের সাড়া ধরে" title="শীর্ষ বিষয়ক্ষেত্র" />
+      <SectionHead id="top-fields" title="শীর্ষ বিষয়ক্ষেত্র" />
       <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {ranked.map((f, i) => {
           const lead = i === 0 && f.points > 0;
@@ -168,7 +168,7 @@ export function Trending({ n = 6 }: { n?: number }) {
   const top = useMemo(() => trending(list, points, n), [list, points, n]);
   return (
     <section aria-labelledby="trending" className="space-y-4">
-      <SectionHead id="trending" eyebrow="এই মুহূর্তে সবচেয়ে বেশি সাড়া" title="ট্রেন্ডিং গবেষণা" />
+      <SectionHead id="trending" title="ট্রেন্ডিং গবেষণা" />
       <ol className="divide-y divide-white/10 rounded-[1.75rem] bg-white/[0.03] ring-1 ring-white/10">
         {top.map((a, i) => (
           <li key={a.slug}>
@@ -195,7 +195,7 @@ export function TopResearchers({ n = 6 }: { n?: number }) {
   const people = useMemo(() => topResearchers(list, points).slice(0, n), [list, points, n]);
   return (
     <section aria-labelledby="researchers" className="space-y-4">
-      <SectionHead id="researchers" eyebrow="পয়েন্টের হিসাবে" title="শীর্ষ গবেষক" />
+      <SectionHead id="researchers" title="শীর্ষ গবেষক" />
       <ol className="space-y-2">
         {people.map((p, i) => (
           <li key={p.name} className="flex items-center gap-3 rounded-2xl bg-white/[0.04] p-3 ring-1 ring-white/10">

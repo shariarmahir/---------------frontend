@@ -8,7 +8,6 @@ import { scenarioOf } from "@/lib/gori/sim/engine";
 import { cn } from "@/lib/utils";
 import { useT } from "../provider";
 import { useGori, useHydrated } from "../store";
-import { PixelMark } from "@/components/ui/section-kit";
 
 const MODE_BN: Record<string, string> = { campaign: "অভিযান", sandbox: "স্যান্ডবক্স", lab: "বিজ্ঞানাগার", crisis: "সংকট", future: "ভবিষ্যৎ" };
 
@@ -30,7 +29,6 @@ export function ProgressView() {
 
   return (
     <div className="mx-auto max-w-340 px-4 py-8 sm:px-6 lg:px-8">
-      <PixelMark tone="dark" className="mb-2" />
       <h1 className="font-bengali text-3xl font-bold text-signal-orange">অগ্রগতি ও অর্জন</h1>
       <p className="mt-2 max-w-[70ch] font-bengali text-white/85">
         স্তর শুধু খেলার বিষয়বস্তু আর শেখার সরঞ্জাম খোলে — কোনো বাস্তব কর্তৃত্ব বা যোগ্যতা নয়। XP আসে শেখা আর উন্নতি থেকে: একই খেলা বারবার চালালে, বা শুধু নতুন বীজ নিলে XP বাড়ে না। কোনো টানা-খেলার চাপ বা সময়সীমা নেই।
@@ -126,7 +124,7 @@ export function ProgressView() {
             {puzzles.map((q) => {
               const s = p.quiz.best[q.n];
               return (
-                <li key={q.n} title={`${q.title}: ${s ?? "—"}`} className={cn("flex size-8 items-center justify-center rounded-md font-bengali text-xs font-bold", isSolved(s) ? "bg-emerald-400 text-text-primary" : s !== undefined ? "bg-orange-400/40" : "bg-white/8 text-white/60")}>
+                <li key={q.n} title={`${q.title}: ${s ?? "—"}`} className={cn("flex size-8 items-center justify-center rounded-md font-bengali text-xs font-bold", isSolved(s) ? "bg-emerald-400 text-text-primary" : s !== undefined ? "bg-bdnavy-400/40" : "bg-white/8 text-white/60")}>
                   {n(q.n)}
                   <span className="sr-only">{isSolved(s) ? "পুনর্গঠিত" : s !== undefined ? "চেষ্টা হয়েছে" : "বাকি"}</span>
                 </li>

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
 import { Icon } from "@/components/ui/icon";
-import { PixelMark, btn } from "@/components/ui/section-kit";
+import { btn } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
 import { districts } from "@/data/districts";
 import { useAuth } from "@/lib/auth/client";
@@ -35,9 +35,9 @@ const TIERS = [
   {
     id: "provider",
     icon: "local_pharmacy",
-    surface: "bg-bdorange-600 text-text-primary",
-    radio: "accent-text-primary",
-    tile: "bg-text-primary text-signal-orange",
+    surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
+    radio: "accent-signal-orange",
+    tile: "bg-signal-orange text-text-primary",
     title: "Healthcare Provider / Clinic",
     blurb:
       "Rural Pharmacy Node onboarding, certified diagnostic device whitelist, automated doctor video triage & API keys.",
@@ -106,7 +106,6 @@ export function KandariProfileSection() {
             <div aria-hidden className="absolute inset-0 bg-linear-to-b from-text-primary/60 via-text-primary/50 to-text-primary/75" />
 
             <div className="relative flex max-w-4xl flex-col items-center gap-3 text-center">
-              <PixelMark tone="dark" />
               <h2
                 id={headingId}
                 className="font-grotesk text-2xl leading-tight font-bold tracking-tight text-balance text-white uppercase sm:text-3xl lg:text-4xl"

@@ -96,8 +96,6 @@ export function BdMemories() {
     <section id="memories" className="section-band scroll-mt-40">
       <div className="mx-auto max-w-7xl px-gutter-x">
         <StoryHeading
-          index="০৮"
-          kicker="আপনার বাংলাদেশ"
           title="আপনার স্মৃতির বাংলাদেশ শেয়ার করুন"
           accent="স্মৃতির"
           lede="গ্রামের বাড়ি, নদীর ঘাট, প্রথম দেখা সমুদ্র, একুশের প্রভাতফেরি — একটি ছবি আর কয়েকটি লাইনে লিখুন আপনার বাংলাদেশ।"
@@ -181,7 +179,7 @@ export function BdMemories() {
 
             <button
               type="submit"
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-signal-orange px-6 py-3.5 font-bengali text-base font-bold text-text-primary shadow-glow-orange transition-all hover:-translate-y-0.5 hover:bg-bdorange-600 focus-visible:ring-3 focus-visible:ring-signal-orange/40 focus-visible:outline-none motion-reduce:hover:translate-y-0"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-signal-orange px-6 py-3.5 font-bengali text-base font-bold text-text-primary shadow-glow-orange transition-all hover:-translate-y-0.5 hover:brightness-95 focus-visible:ring-3 focus-visible:ring-signal-orange/40 focus-visible:outline-none motion-reduce:hover:translate-y-0"
             >
               <Icon name="favorite" filled className="text-[20px]!" />
               স্মৃতি শেয়ার করুন

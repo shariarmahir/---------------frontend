@@ -66,13 +66,12 @@ export function Avatar({ name, className }: { name: string; className?: string }
   );
 }
 
-/** A section's eyebrow and serif title, with an optional link at the right. */
-export function SectionHead({ id, eyebrow, title, action }: { id: string; eyebrow: string; title: React.ReactNode; action?: React.ReactNode }) {
+/** A section's serif title, with an optional link at the right. */
+export function SectionHead({ id, title, action }: { id: string; title: React.ReactNode; action?: React.ReactNode }) {
   return (
     <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
       <div>
-        <p className="text-sm font-bold text-signal-orange">{eyebrow}</p>
-        <h2 id={id} className="font-wiki mt-1 text-[1.75rem] leading-tight font-bold text-white sm:text-[2.1rem]">{title}</h2>
+        <h2 id={id} className="font-wiki text-[1.75rem] leading-tight font-bold text-white sm:text-[2.1rem]">{title}</h2>
       </div>
       {action}
     </div>

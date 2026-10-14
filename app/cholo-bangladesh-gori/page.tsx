@@ -4,7 +4,7 @@ import Link from "next/link";
 import { FileSearch, Swords } from "lucide-react";
 import { ModeMenu, PlayerStrip } from "@/components/gori/landing";
 import { NationalLayer } from "@/components/gori/national/national-layer";
-import { PixelMark, SignalSeam, btn } from "@/components/ui/section-kit";
+import { SignalSeam, btn } from "@/components/ui/section-kit";
 import { commonsPhotos } from "@/data/bangladesh-photos";
 import { cn } from "@/lib/utils";
 
@@ -23,7 +23,6 @@ export default function GoriHome() {
         <Image src={hero.src} alt="" fill priority sizes="100vw" className="-z-10 object-cover opacity-40" />
         <div className="absolute inset-0 -z-10 bg-linear-to-b from-black/70 via-black/85 to-black" aria-hidden />
         <div className="story-reveal mx-auto max-w-340 px-4 pt-12 pb-12 sm:px-6 sm:pt-16 lg:px-8">
-          <PixelMark tone="dark" />
           <p className="mt-3 inline-flex items-center gap-2 font-bengali text-sm font-semibold text-white/85">
             <span aria-hidden className="size-2 rounded-xs bg-national-crimson" />
             কাণ্ডারী-ল্যাব · জীবন্ত সভ্যতার খেলা

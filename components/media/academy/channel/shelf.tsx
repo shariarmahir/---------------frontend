@@ -14,7 +14,6 @@ export function Shelf({
   title,
   playAll,
   about,
-  eyebrow,
   children,
   tall,
   className,
@@ -22,7 +21,6 @@ export function Shelf({
   title: React.ReactNode;
   playAll?: string;
   about?: React.ReactNode;
-  eyebrow?: React.ReactNode;
   children: React.ReactNode;
   /** Tall cards (shorts): the arrows sit lower, at the picture's middle. */
   tall?: boolean;
@@ -58,7 +56,6 @@ export function Shelf({
 
   return (
     <section className={cn("border-b border-(--c-line) px-6 py-8 md:px-10", className)}>
-      {eyebrow && <p className="hud mb-2 text-(--c-accent-ink)">{eyebrow}</p>}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
         <h3 className="display text-xl text-(--c-ink-strong) sm:text-2xl">{title}</h3>
         {playAll && (

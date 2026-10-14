@@ -65,7 +65,7 @@ export function MediaFrame({
       ) : slot.kind === "audio" ? (
         <span className="absolute inset-x-6 top-1/2 flex h-2/5 -translate-y-1/2 items-center gap-0.75" aria-hidden>
           {bars(slot.label, 40).map((v, i) => (
-            <span key={i} className="w-full rounded-full bg-orange-400/70" style={{ height: `${v}%` }} />
+            <span key={i} className="w-full rounded-full bg-m-blue/70" style={{ height: `${v}%` }} />
           ))}
         </span>
       ) : slot.kind !== "video" ? (

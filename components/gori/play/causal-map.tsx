@@ -59,7 +59,7 @@ function VarNode({ data }: NodeProps<Node<VarData>>) {
           cx="46"
           cy="46"
           r={R - 5}
-          className={cn("fill-none transition-[stroke-dashoffset] duration-700", data.kind === "pressure" ? "stroke-bdorange-600" : "stroke-bdgreen-500")}
+          className={cn("fill-none transition-[stroke-dashoffset] duration-700", data.kind === "pressure" ? "stroke-bdnavy-300" : "stroke-bdgreen-500")}
           strokeWidth="5"
           strokeDasharray={c}
           strokeDashoffset={c * (1 - data.value / 100)}
@@ -70,7 +70,7 @@ function VarNode({ data }: NodeProps<Node<VarData>>) {
       <span className="relative max-w-[70px] font-bengali text-[11px] leading-tight font-semibold text-white">{data.label}</span>
       <span className="relative font-bengali text-base font-bold text-white tabular-nums">{n(Math.round(data.value))}</span>
       {better !== null && (
-        <span className={cn("relative font-bengali text-[10px] font-bold", better ? "text-bdgreen-500" : "text-bdorange-600")}>
+        <span className={cn("relative font-bengali text-[10px] font-bold", better ? "text-bdgreen-500" : "text-bdnavy-300")}>
           {data.delta > 0 ? "▲" : "▼"} {n(Math.abs(data.delta))}
         </span>
       )}
@@ -82,7 +82,7 @@ function VarNode({ data }: NodeProps<Node<VarData>>) {
 
 function IntNode({ data }: NodeProps<Node<IntData>>) {
   return (
-    <div className={cn("max-w-40 rounded-lg px-2.5 py-1.5 text-center font-bengali text-[11px] leading-tight font-semibold shadow-sm", data.scale === "planned" ? "border-2 border-dashed border-signal-orange bg-bdorange-600 text-text-primary" : "bg-black text-white")}>
+    <div className={cn("max-w-40 rounded-lg px-2.5 py-1.5 text-center font-bengali text-[11px] leading-tight font-semibold shadow-sm", data.scale === "planned" ? "border-2 border-dashed border-signal-orange bg-bdnavy-700 text-white" : "bg-black text-white")}>
       {data.label}
       <span className="block text-[10px] font-normal opacity-80">{data.scale === "pilot" ? "পাইলট" : data.scale === "full" ? "পূর্ণ" : "পরিকল্পনায়"}</span>
       <Handle type="source" position={Position.Bottom} className="!opacity-0" isConnectable={false} />
@@ -115,7 +115,7 @@ function CausalEdgeView({ id, source, target, data, markerEnd }: EdgeProps<Edge<
   const c = { x: (p1.x + p2.x) / 2 - uy * bend, y: (p1.y + p2.y) / 2 + ux * bend };
   const path = `M${p1.x},${p1.y} Q${c.x},${c.y} ${p2.x},${p2.y}`;
   const mid = { x: 0.25 * p1.x + 0.5 * c.x + 0.25 * p2.x, y: 0.25 * p1.y + 0.5 * c.y + 0.25 * p2.y };
-  const color = data.user ? "#6d4bd1" : data.sign > 0 ? "#00875a" : "#c2410c";
+  const color = data.user ? "#6d4bd1" : data.sign > 0 ? "#00875a" : "#8fa1e3";
   return (
     <>
       <BaseEdge
@@ -189,7 +189,7 @@ export function CausalMap({ sc, run, turn, puzzle }: { sc: ScenarioDef; run: Run
       target: e.to,
       type: "c",
       data: { sign: e.sign, weight: e.weight * assumptionValue(sc, run.config, e.assumption), basis: e.basis, confidence: e.confidence, delay: e.delay, selected: selEdge === e.id } satisfies EdgeData,
-      markerEnd: { type: "arrowclosed" as never, color: e.sign > 0 ? "#00875a" : "#c2410c" },
+      markerEnd: { type: "arrowclosed" as never, color: e.sign > 0 ? "#00875a" : "#8fa1e3" },
       ariaLabel: `${sc.variables.find((v) => v.id === e.from)?.bn} ${e.sign > 0 ? "বাড়ায়" : "কমায়"} ${sc.variables.find((v) => v.id === e.to)?.bn}`,
     }));
     const user: Edge[] = (game?.userEdges ?? []).map((u, i) => ({
@@ -239,8 +239,8 @@ export function CausalMap({ sc, run, turn, puzzle }: { sc: ScenarioDef; run: Run
   return (
     <div className="space-y-4">
       {puzzle && (
-        <p className="flex flex-wrap items-center gap-2 rounded-xl bg-bdorange-600 px-4 py-2.5 font-bengali text-sm text-text-primary">
-          <Search className="size-4 text-bdorange-600" aria-hidden />
+        <p className="flex flex-wrap items-center gap-2 rounded-xl bg-bdnavy-700 px-4 py-2.5 font-bengali text-sm text-white">
+          <Search className="size-4 text-bdnavy-300" aria-hidden />
           মানচিত্রে {n(hiddenLeft)}টি সম্পর্ক লুকোনো। এক বৃত্তের কমলা বিন্দু থেকে আরেক বৃত্তে টেনে সম্পর্ক প্রস্তাব করুন, অথবা নিচের ফর্ম ব্যবহার করুন। পেয়েছেন {n(found.length)}/{n(PUZZLE_TARGET)}।
         </p>
       )}
@@ -268,7 +268,7 @@ export function CausalMap({ sc, run, turn, puzzle }: { sc: ScenarioDef; run: Run
 
       <ul className="flex flex-wrap gap-x-5 gap-y-1 font-bengali text-xs text-white/80" aria-label="সংকেত">
         <li><span className="font-bold text-bdgreen-500">+</span> বাড়ায়</li>
-        <li><span className="font-bold text-bdorange-600">−</span> কমায়</li>
+        <li><span className="font-bold text-bdnavy-300">−</span> কমায়</li>
         <li>মোটা দাগ = শক্তিশালী সম্পর্ক</li>
         <li>ড্যাশ দাগ = খেলার অনুমান</li>
         <li>⏱ = দেরিতে পৌঁছায় (প্রান্তিক)</li>
@@ -281,7 +281,7 @@ export function CausalMap({ sc, run, turn, puzzle }: { sc: ScenarioDef; run: Run
             {sc.variables.find((v) => v.id === pending.from)?.bn} → {sc.variables.find((v) => v.id === pending.to)?.bn}:
           </span>
           <button type="button" onClick={() => propose(pending.from, pending.to, 1)} className="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-bold">+ বাড়ায়</button>
-          <button type="button" onClick={() => propose(pending.from, pending.to, -1)} className="rounded-lg bg-bdorange-600 px-3 py-1.5 text-sm font-bold text-text-primary">− কমায়</button>
+          <button type="button" onClick={() => propose(pending.from, pending.to, -1)} className="rounded-lg bg-bdnavy-500 px-3 py-1.5 text-sm font-bold text-white">− কমায়</button>
           <button type="button" onClick={() => setPending(null)} className="ml-auto rounded-lg p-1.5 hover:bg-white/10" aria-label="বাতিল"><X className="size-4" /></button>
         </div>
       )}
@@ -324,7 +324,7 @@ export function CausalMap({ sc, run, turn, puzzle }: { sc: ScenarioDef; run: Run
                 {varExplain.parts.map((p, i) => (
                   <li key={i} className="flex justify-between gap-3 border-b border-white/12 py-1">
                     <span>{p.label}{p.basis === "assumption" ? " (অনুমান)" : ""}</span>
-                    <span className={cn("font-bold tabular-nums", p.amount > 0 ? "text-bdgreen-500" : "text-bdorange-600")}>{p.amount > 0 ? "+" : ""}{n(p.amount)}</span>
+                    <span className={cn("font-bold tabular-nums", p.amount > 0 ? "text-bdgreen-500" : "text-bdnavy-300")}>{p.amount > 0 ? "+" : ""}{n(p.amount)}</span>
                   </li>
                 ))}
               </ul>

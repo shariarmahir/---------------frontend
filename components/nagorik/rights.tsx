@@ -16,8 +16,6 @@ export function Rights() {
       <div className="mx-auto max-w-7xl px-gutter-x">
         <StoryHeading
           id="rights-title"
-          index="০৩"
-          kicker="অধিকার"
           title="আপনার অধিকার — সংবিধানে লেখা, আদালতে বলবৎযোগ্য"
           accent="অধিকার"
           lede="বাংলাদেশের সংবিধানের তৃতীয় ভাগের মৌলিক অধিকার। অধিকার জানলে কেউ ঠকাতে পারে না — আর অধিকারের সাথেই আসে কর্তব্য।"

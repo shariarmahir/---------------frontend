@@ -29,7 +29,6 @@ import {
 import { motion, useReducedMotion } from "framer-motion";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { mediaNavGroups, mediaTabs, type NavIcon } from "@/data/media/nav";
-import { PixelMark } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
 import { toneStyle } from "../academy/catalogue/tones";
 import { mediaButton } from "../ui/button-styles";
@@ -253,7 +252,6 @@ export function MobileMenu({ unreadSeed, me }: { unreadSeed: UnreadSeed; me: str
         onClick={(e) => (e.target as HTMLElement).closest("a") && setOpenOn(null)}
       >
         <SheetHeader>
-          <PixelMark tone="light" className="mb-2" />
           <SheetTitle className="text-lg font-bold text-m-blue">শিক্ষিতদের মিডিয়া</SheetTitle>
           <SheetDescription className="text-sm text-m-ink/65">শিখুন · বানান · আয় করুন · এলাকার জন্য কিছু করুন</SheetDescription>
         </SheetHeader>

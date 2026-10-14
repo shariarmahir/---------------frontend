@@ -35,9 +35,6 @@ export function NationalIndexSection() {
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-space-xl px-gutter">
         <div className="mx-auto flex max-w-3xl flex-col items-center gap-space-xs text-center">
-          <span className="font-code-telemetry text-label-sm font-bold tracking-wider text-primary">
-            National Sovereign Index
-          </span>
           <h2 className="font-display text-headline-lg-mobile font-bold tracking-tight text-signal-orange sm:text-headline-lg">
             আমরা কাণ্ডারী — Judge Our Own Bangladesh
           </h2>

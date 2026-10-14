@@ -27,7 +27,7 @@ export function BdPride() {
         </p>
         <a
           href="#memories"
-          className="mt-10 inline-flex items-center gap-2 rounded-full bg-signal-orange px-7 py-4 font-bengali text-base font-bold text-text-primary shadow-glow-orange transition-all hover:-translate-y-0.5 hover:bg-bdorange-600 focus-visible:ring-4 focus-visible:ring-white/40 focus-visible:outline-none motion-reduce:hover:translate-y-0"
+          className="mt-10 inline-flex items-center gap-2 rounded-full bg-signal-orange px-7 py-4 font-bengali text-base font-bold text-text-primary shadow-glow-orange transition-all hover:-translate-y-0.5 hover:brightness-95 focus-visible:ring-4 focus-visible:ring-white/40 focus-visible:outline-none motion-reduce:hover:translate-y-0"
         >
           আপনার বাংলাদেশের গল্প বলুন
         </a>

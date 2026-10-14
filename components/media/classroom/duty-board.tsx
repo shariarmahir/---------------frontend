@@ -8,7 +8,6 @@ import {
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { PixelMark } from "@/components/ui/section-kit";
 import { WEEKDAYS } from "@/lib/media/classroom";
 import { newId } from "@/lib/media/store";
 import {
@@ -35,7 +34,7 @@ export const DUTY_ICONS: Record<DutyIcon, LucideIcon> = {
 const TONES = [
   { fill: "var(--color-signal-orange)", ink: "var(--color-text-primary)", chip: "bg-m-yellow text-m-ink" },
   { fill: "var(--color-bd-green)", ink: "white", chip: "bg-m-blue-soft text-m-ink" },
-  { fill: "var(--color-bdorange-600)", ink: "var(--color-text-primary)", chip: "bg-m-red-soft text-m-ink" },
+  { fill: "var(--color-m-red)", ink: "var(--color-text-primary)", chip: "bg-m-red-soft text-m-ink" },
   { fill: "white", ink: "var(--color-text-primary)", chip: "bg-m-ink text-m-on" },
   { fill: "var(--color-bdgreen-500)", ink: "var(--color-text-primary)", chip: "bg-m-green-soft text-m-ink" },
 ] as const;
@@ -453,7 +452,6 @@ function DutyEditor({ open, onOpenChange, duties, defaults, max, onSave }: { ope
     <Dialog open={open} onOpenChange={(o) => { if (o) { setDraft(duties); setTried(false); } onOpenChange(o); }}>
       <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-2xl">
         <DialogHeader>
-          <PixelMark tone="dark" />
           <DialogTitle className="text-xl font-bold text-m-ink">দায়িত্ব সাজান</DialogTitle>
           <DialogDescription>কোন কাজ, কতজন, কোন কোন দিন — নাম বসানো হয় নিজে থেকে, প্রতি সপ্তাহে নতুন করে, সবার মধ্যে সমান ভাগে।</DialogDescription>
         </DialogHeader>

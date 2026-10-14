@@ -5,16 +5,16 @@ import { cn } from "@/lib/utils";
 
 /**
  * Each project is a spec-sheet row rather than another card in a grid, on the
- * same solid colour fields as the Pixel-Map cards (orange for vision, ink
- * for the circular economy, gold for silicon). Ink text on orange and gold,
- * white on ink; the icon tile takes the contrasting colour.
+ * same solid colour fields as the Pixel-Map cards (navy for vision, ink
+ * for the circular economy, gold for silicon). Ink text on gold, white on
+ * navy and ink; the icon tile takes the contrasting colour.
  */
 const LABS = [
   {
     icon: "blind",
-    surface: "bg-bdorange-600 text-text-primary",
-    block: "bg-text-primary text-signal-orange",
-    glow: "var(--color-bdorange-600)",
+    surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
+    block: "bg-signal-orange text-text-primary",
+    glow: "var(--color-bdnavy-400)",
     title: "Eye-Consciousness AI Agent for Visually Impaired",
     description:
       "A wearable 2-meter real-time LiDAR and optical sensor array providing spatial audio mapping. Translates physical street obstacles, pedestrian movements, and Bengali road signage into low-latency haptic pulses.",

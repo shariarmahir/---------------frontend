@@ -4,7 +4,7 @@
  * part — rights known, duties done, one brave act — instead of a civics
  * lecture of bullet lists.
  * OWN-WORLD: the home page's — pitch-black ground, solid gold / ink / bottle
- * green / orange fields, gold pixel-mark headings, the gold pulse on the
+ * green / orange fields, gold headings, the gold pulse on the
  * ink bands' seams; charts use bright green and gold on ink, red only for
  * waste and for bravery.
  * STORY: see how the day is really spent → how divisions compare (sample,
@@ -48,8 +48,6 @@ export default function NagorikPage() {
           <div className="mx-auto max-w-7xl px-gutter-x">
             <StoryHeading
               id="day-title"
-              index="০১"
-              kicker="দিনের হিসাব"
               title="আমাদের দিন আসলে কোথায় যায়"
               accent="কোথায়"
               lede="দেশের প্রথম টাইম-ইউজ সার্ভে। ঘরের কাজ কার কাঁধে, আয়ের কাজ কার — সংখ্যাগুলো দেখায় দায়িত্ব কতটা অসমভাবে ভাগ হয়ে আছে।"
@@ -66,8 +64,6 @@ export default function NagorikPage() {
           <div className="mx-auto max-w-7xl px-gutter-x">
             <StoryHeading
               id="div-title"
-              index="০২"
-              kicker="বিভাগ"
               title="বিভাগে বিভাগে দিনের হিসাব"
               accent="বিভাগে"
               lede="উৎপাদনশীল সময়, ঘরের কাজ, সমাজের জন্য সময়, শেখা আর অপচয় — প্রতিটি কলামে ক্লিক করে সাজান, নারী-পুরুষ বদলে দেখুন।"

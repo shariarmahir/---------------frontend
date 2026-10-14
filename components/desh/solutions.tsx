@@ -13,8 +13,6 @@ export function SolutionResources() {
       <div className="mx-auto max-w-7xl px-gutter-x">
         <StoryHeading
           id="resources-title"
-          index="০১"
-          kicker="আমাদের পুঁজি"
           title="আমাদের যথেষ্ট আছে"
           accent="যথেষ্ট"
           lede="সমাধান বিদেশ থেকে আমদানি করার দরকার নেই। মানুষ, মাটি, নদী আর একসাথে দাঁড়ানোর ইতিহাস — এগুলোই শুরুর পুঁজি।"
@@ -54,8 +52,6 @@ export function SolutionLetGo() {
       <div className="mx-auto max-w-7xl px-gutter-x">
         <StoryHeading
           id="letgo-title"
-          index="০২"
-          kicker="ছাড়তে হবে"
           title="যা ছাড়তে হবে"
           accent="ছাড়তে"
           lede="সমস্যার বড় অংশ আমাদের নিজেদের অভ্যাসে। কয়েকটি মৌলিক ভুল শুধরালেই অনেক কিছু বদলায়।"
@@ -106,8 +102,6 @@ export function SolutionDuties() {
       <div className="mx-auto max-w-7xl px-gutter-x">
         <StoryHeading
           id="duties-title"
-          index="০৩"
-          kicker="দায়িত্ব"
           title="কে কী করবে"
           lede="রাষ্ট্রের দায় রাষ্ট্রকেই নিতে হবে — কিন্তু সেই অপেক্ষায় বসে থাকলে আমাদের এলাকা আরও পিছিয়ে যাবে। তিনটি হাত একসাথে কাজ করলে সমাধান টেকে।"
         />

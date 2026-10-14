@@ -25,9 +25,6 @@ export function AmarBaseline() {
     >
       <div className="mx-auto flex max-w-[1320px] flex-col gap-space-xl">
         <div className="flex flex-col gap-space-xs">
-          <span className="font-code-telemetry text-label-sm font-bold uppercase text-deep-container">
-            SECTION 01 · NATIONAL BASELINE
-          </span>
           <h2 className="max-w-3xl font-display text-headline-lg-mobile font-bold tracking-tight text-on-surface sm:text-headline-lg">
             The numbers every claim must be measured against
           </h2>

@@ -39,8 +39,6 @@ export function BdMap() {
     <section id="map" className="section-band-tinted scroll-mt-40 border-y border-white/12 bg-black">
       <div className="mx-auto max-w-7xl px-gutter-x">
         <StoryHeading
-          index="০২"
-          kicker="মানচিত্র"
           title="আট বিভাগ, চৌষট্টি জেলা, একটি দেশ"
           accent="একটি দেশ"
           lede="মানচিত্রে একটি বিভাগ বেছে নিন, অথবা পিনে চাপ দিয়ে দেখুন দেশের বিখ্যাত জায়গাগুলো।"

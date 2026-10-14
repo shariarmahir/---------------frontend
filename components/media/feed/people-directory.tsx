@@ -11,7 +11,6 @@ import { followersOf, mutualsOf, suggestPeople } from "@/lib/media/suggest";
 import { useMediaState } from "@/lib/media/store";
 import { digits } from "@/lib/media/format";
 import { cn } from "@/lib/utils";
-import { PixelMark } from "@/components/ui/section-kit";
 import { EmptyState } from "../ui/empty-state";
 import { chipClass, selectClass } from "../ui/field-styles";
 import { Num, useNumerals } from "../ui/numerals";
@@ -103,7 +102,6 @@ export function PeopleDirectory() {
   return (
     <div className="space-y-6">
       <section className="live-in overflow-hidden rounded-3xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-8 shadow-m-tile">
-        <PixelMark tone="dark" />
         <h1 className="mt-3 text-3xl font-bold tracking-tight text-m-ink sm:text-4xl">মানুষ</h1>
         <p className="mt-2 max-w-[52ch] text-[15px] leading-relaxed text-m-ink/80">দক্ষ মানুষ খুঁজুন, অনুসরণ করুন — একই দক্ষতা, একই জেলা, একই স্বপ্ন। কাজের বন্ধু এখানেই।</p>
         <dl className="mt-5 grid max-w-md grid-cols-3 gap-2">

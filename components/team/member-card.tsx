@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
-import { PixelMark } from "@/components/ui/section-kit";
 import { departments, toneOf, type DeptId, type TeamMember } from "@/data/team";
 import { glowStyle } from "@/components/ui/surfaces";
 import { cn } from "@/lib/utils";
@@ -9,7 +8,7 @@ import { cn } from "@/lib/utils";
 /** The fade at the portrait's foot runs into the card's own colour. */
 const FADE: Record<DeptId, string> = {
   leadership: "to-signal-orange",
-  creative: "to-bdorange-600",
+  creative: "to-bdnavy-900",
   client: "to-text-primary",
   iot: "to-bd-green",
   dev: "to-bdgreen-500",
@@ -59,7 +58,6 @@ export function MemberCard({ member, priority }: { member: TeamMember; priority?
             <span className="font-grotesk text-6xl leading-none font-bold transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 motion-reduce:transition-none sm:text-8xl">
               {member.initials}
             </span>
-            <PixelMark tone={tone.plate.includes("bg-signal-orange") ? "light" : "dark"} />
             <span className="absolute top-2.5 right-2.5 rounded-full bg-black/35 px-2 py-0.5 font-bengali text-[10px] text-white sm:top-3 sm:right-3">ছবি শীঘ্রই</span>
           </div>
         )}

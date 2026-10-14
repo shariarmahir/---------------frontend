@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Users } from "lucide-react";
-import { PixelMark } from "@/components/ui/section-kit";
 
 export const metadata: Metadata = { title: "কমিউনিটি মিশন — চলো বাংলাদেশ গড়ি | কাণ্ডারী-ল্যাব" };
 
@@ -18,7 +17,6 @@ const planned = [
 export default function CommunityPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
-      <PixelMark tone="dark" className="mb-2" />
       <h1 className="flex items-center gap-3 font-bengali text-3xl font-bold text-signal-orange"><Users className="size-8" aria-hidden /> কমিউনিটি মিশন</h1>
       <p className="mt-3 font-bengali text-base leading-8 text-white/85">
         এখানে একদল মানুষ একসাথে একটি প্রস্তাব গড়বেন। এটি এখনো চালু হয়নি — অ্যাকাউন্ট, সার্ভার, রিয়েল-টাইম সংযোগ আর মানুষের মডারেশন ছাড়া দলগত কাজ নিরাপদে চালানো যায় না। নকল “চালু আছে” দেখানোর বদলে আমরা পরিকল্পনাটা খুলে বলছি।

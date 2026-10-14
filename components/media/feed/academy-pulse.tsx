@@ -66,8 +66,7 @@ export function AcademyPulse() {
     <section style={toneStyle(0)} aria-labelledby="academy-pulse" className="tone story-reveal relative overflow-hidden rounded-3xl border border-m-ink/10 bg-m-card shadow-m-tile">
       <header className="flex flex-wrap items-end justify-between gap-3 px-4 pt-5 sm:px-6">
         <div>
-          <p className="font-mono text-[11px] font-bold tracking-wide text-(--c-app-ink) uppercase">একাডেমি থেকে</p>
-          <h2 id="academy-pulse" className="mt-1 text-xl font-bold text-m-ink sm:text-2xl">
+          <h2 id="academy-pulse" className="text-xl font-bold text-m-ink sm:text-2xl">
             শেখা, পাস, <span className="text-m-blue">কাজ</span> — এই সপ্তাহে
           </h2>
         </div>

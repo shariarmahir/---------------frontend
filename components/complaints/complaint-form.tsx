@@ -139,7 +139,6 @@ export function ComplaintForm() {
       <div className="mx-auto max-w-7xl px-gutter-x">
         <SectionHeading
           tone="dark"
-          kicker="অভিযোগ দাখিল"
           title={<span id="file-title">File a complaint</span>}
           lead="Choose what happened. The centre names the authority that handles it and what they can do about it."
         />

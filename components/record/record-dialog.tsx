@@ -5,7 +5,6 @@ import { useCallback, useEffect, useState } from "react";
 import { Dialog } from "radix-ui";
 import { X } from "lucide-react";
 import { Icon } from "@/components/ui/icon";
-import { PixelMark } from "@/components/ui/section-kit";
 import { formatDuration, formatSize, useRecorder, type Recording } from "@/components/record/use-recorder";
 import { cn } from "@/lib/utils";
 
@@ -82,7 +81,6 @@ export function RecordDialog({ open, onOpenChange }: { open: boolean; onOpenChan
               {/* Header — pixel mark, title, the ink close button of the phone menu. */}
               <div className="record-item flex items-start justify-between gap-3" style={item(0)}>
                 <div>
-                  <PixelMark tone="light" />
                   <Dialog.Title className="mt-2 flex items-center gap-2 font-bengali text-3xl leading-tight font-bold">
                     প্রমাণ রেকর্ড
                   </Dialog.Title>

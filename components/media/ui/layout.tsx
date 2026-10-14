@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { PixelMark } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
 
 /** Page title row for /media screens. */
@@ -24,7 +23,6 @@ export function PageHeader({
             {back.label}
           </Link>
         )}
-        <PixelMark tone="dark" className="mb-2" />
         <h1 className="text-2xl font-bold tracking-tight text-balance text-m-ink sm:text-[2rem] sm:leading-tight">{title}</h1>
         {subtitle && <p className="mt-2 max-w-2xl text-sm leading-relaxed text-m-ink/80">{subtitle}</p>}
       </div>

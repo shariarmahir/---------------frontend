@@ -1,5 +1,5 @@
 import { Icon } from "@/components/ui/icon";
-import { PixelMark, SignalSeam, btn } from "@/components/ui/section-kit";
+import { SignalSeam, btn } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
 
 /** Colours are set for the ink console: light tints, never the dark brand shades. */
@@ -54,7 +54,6 @@ export function NodeTerminalSection() {
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-12">
           {/* Narrative. */}
           <div className="story-reveal space-y-5 lg:col-span-5">
-            <PixelMark tone="dark" />
             <h2 className="font-grotesk text-2xl font-bold tracking-tight text-balance text-signal-orange uppercase sm:text-3xl lg:text-4xl">
               The Bangladesh Innovation Drive
             </h2>

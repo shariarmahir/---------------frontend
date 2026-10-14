@@ -23,7 +23,7 @@ const noteColor: Record<MyNote["color"], string> = {
   blue: "bg-sky-300 ring-sky-300/60",
 };
 
-const colorBn: Record<MyNote["color"], string> = { yellow: "হলুদ", green: "সবুজ", orange: "কমলা", blue: "নীল" };
+const colorBn: Record<MyNote["color"], string> = { yellow: "হলুদ", green: "সবুজ", orange: "লাল", blue: "নীল" };
 
 const sameDay = (a: string, b: string) => new Date(a).toDateString() === new Date(b).toDateString();
 

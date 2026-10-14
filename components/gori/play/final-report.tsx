@@ -116,7 +116,7 @@ export function FinalReport({ sc, run, game }: { sc: ScenarioDef; run: RunResult
               <li key={c.id}>
                 <div className="flex items-baseline justify-between gap-3 font-bengali text-sm">
                   <span className="font-semibold">
-                    {c.bn} {weights[c.id] > 1 && <span className="ml-1 rounded bg-bdorange-600 px-1.5 text-[11px] text-text-primary">ওজন ২×</span>}
+                    {c.bn} {weights[c.id] > 1 && <span className="ml-1 rounded bg-bdnavy-500 px-1.5 text-[11px] text-white">ওজন ২×</span>}
                   </span>
                   <span className="font-bold tabular-nums">{n(score.categories[c.id])}</span>
                 </div>
@@ -149,7 +149,7 @@ export function FinalReport({ sc, run, game }: { sc: ScenarioDef; run: RunResult
 
           <section className="rounded-2xl bg-black ring-1 ring-white/12 p-5">
             <h3 className="flex items-center gap-2 font-bengali text-base font-bold">
-              <Lightbulb className="size-5 text-bdorange-600" aria-hidden /> ব্যর্থতা থেকে কী শেখা যায়
+              <Lightbulb className="size-5 text-bdnavy-300" aria-hidden /> ব্যর্থতা থেকে কী শেখা যায়
             </h3>
             {lessons.length ? (
               <ul className="mt-2 space-y-2.5">

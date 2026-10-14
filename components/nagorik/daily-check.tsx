@@ -32,8 +32,6 @@ export function DailyCheck() {
         <div className="lg:sticky lg:top-44 lg:self-start">
           <StoryHeading
             id="check-title"
-            index="০৫"
-            kicker="আত্মপরীক্ষা"
             title="আজ রাতের আয়না"
             accent="আয়না"
             lede="ঘুমানোর আগে দশটি প্রশ্ন। কোথাও জমা হয় না, কেউ দেখে না — শুধু নিজের কাছে সৎ থাকা।"

@@ -15,7 +15,6 @@ export function ProductProblem({ product }: { product: Product }) {
     <section id="problem" className="section-band-tinted mx-auto max-w-7xl scroll-mt-40 px-gutter-x">
       <SectionHeading
         tone="dark"
-        kicker="সমস্যা — সংখ্যায়"
         title="The problem, in real numbers"
         lead="Published national data — every figure links to its source."
       />
@@ -90,7 +89,7 @@ export function ProductCore({ product }: { product: Product }) {
   return (
     <section id="core" className="section-band-tinted relative isolate scroll-mt-40 overflow-hidden bg-bd-green text-white">
       <div className="mx-auto max-w-7xl px-gutter-x">
-        <SectionHeading tone="dark" kicker="মূল সমস্যা → মূল সমাধান" title="The core problem — and the core fix" />
+        <SectionHeading tone="dark" title="The core problem — and the core fix" />
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
           <div
             style={glowStyle("var(--color-national-crimson)")}

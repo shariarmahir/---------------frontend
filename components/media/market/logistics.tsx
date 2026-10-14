@@ -1,7 +1,6 @@
 import { Bus, Megaphone, Snowflake, TrainFront, Truck, Package, type LucideIcon } from "lucide-react";
 import { BOOST_TIERS, SHIP_NOTE } from "@/data/media/bazaar";
 import type { ShipMode } from "@/lib/media/bazaar";
-import { PixelMark } from "@/components/ui/section-kit";
 import { LIFT, glowStyle, surfaceAt } from "@/components/ui/surfaces";
 import { cn } from "@/lib/utils";
 import { Num, Taka } from "../ui/numerals";
@@ -14,7 +13,6 @@ export function LogisticsBand() {
   const modes = Object.keys(SHIP_NOTE) as ShipMode[];
   return (
     <section className="story-reveal overflow-hidden rounded-3xl bg-m-card p-5 ring-1 ring-m-ink/10 sm:p-8 shadow-m-tile">
-      <PixelMark tone="dark" />
       <h2 className="mt-3 text-2xl font-bold text-m-ink sm:text-3xl">দেশজুড়ে ডেলিভারি — <span className="text-m-blue">খালি জায়গা কাজে লাগিয়ে</span></h2>
       <p className="mt-2 max-w-[60ch] text-sm leading-relaxed text-m-ink/75">
         প্রতিদিন হাজারো দূরপাল্লার বাসের মালের বক্স আধা-খালি যায়। সেই জায়গায় কৃষকের পণ্য যায় একই দিনে, কম খরচে। বড় চালান যায় ট্রেনে বা ট্রাকে।

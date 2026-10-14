@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
-import { PixelMark, SignalSeam } from "@/components/ui/section-kit";
+import { SignalSeam } from "@/components/ui/section-kit";
 import { Typewriter } from "@/components/ui/typewriter";
 
 export interface AuthPanelContent {
@@ -80,7 +80,6 @@ function BrandPanel({ content }: { content: AuthPanelContent }) {
 
       <div className="relative z-10 flex h-full flex-col justify-end">
         <blockquote className="flex max-w-lg flex-col gap-space-md p-space-xl pb-space-lg">
-          <PixelMark tone="dark" />
           <Icon name="format_quote" className="text-[44px] leading-none text-signal-orange" filled />
           <p className="font-bengali text-headline-md leading-snug font-bold text-white" aria-label={content.quote.text}>
             <Typewriter key={content.quote.text} text={content.quote.text} speed={55} />
@@ -105,14 +104,10 @@ function BrandPanel({ content }: { content: AuthPanelContent }) {
   );
 }
 
-/** Pixel mark, eyebrow, title and one line under it, centred over the form. */
-export function AuthHeading({ eyebrow, title, subtitle }: { eyebrow: string; title: string; subtitle?: React.ReactNode }) {
+/** Title and one line under it, centred over the form. */
+export function AuthHeading({ title, subtitle }: { title: string; subtitle?: React.ReactNode }) {
   return (
     <div className="flex flex-col items-center gap-space-sm text-center">
-      <span className="inline-flex items-center gap-space-xs rounded-full bg-text-primary px-space-md py-1.5 font-mono text-label-xs font-bold tracking-widest text-signal-orange uppercase shadow-ink">
-        <span className="radar-indicator size-1.5 rounded-full bg-bdgreen-500" />
-        {eyebrow}
-      </span>
       <h1 className="font-bengali text-4xl font-bold tracking-tight text-balance text-text-primary">{title}</h1>
       {subtitle ? <p className="max-w-[22rem] font-bengali text-body-md text-balance text-text-primary/85">{subtitle}</p> : null}
     </div>

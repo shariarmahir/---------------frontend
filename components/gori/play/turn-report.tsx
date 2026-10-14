@@ -59,7 +59,7 @@ export function TurnReportView({ sc, run, played }: { sc: ScenarioDef; run: RunR
               <li key={c.v} className="py-2.5">
                 <div className="flex items-center justify-between gap-3 font-bengali">
                   <span className="font-semibold">{c.bn}</span>
-                  <span className={cn("flex items-center gap-1 font-bold tabular-nums", c.good ? "text-bdgreen-500" : "text-bdorange-600")}>
+                  <span className={cn("flex items-center gap-1 font-bold tabular-nums", c.good ? "text-bdgreen-500" : "text-bdnavy-300")}>
                     {c.delta > 0 ? <ArrowUp className="size-3.5" aria-hidden /> : <ArrowDown className="size-3.5" aria-hidden />}
                     {n(c.from)} → {n(c.to)}
                     <span className="sr-only">{c.good ? "(ভালো দিকে)" : "(খারাপ দিকে)"}</span>

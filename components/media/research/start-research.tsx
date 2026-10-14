@@ -5,7 +5,6 @@ import { FlaskConical, GraduationCap, Rocket } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { PixelMark } from "@/components/ui/section-kit";
 import { Textarea } from "@/components/ui/textarea";
 import { addDays, chosenTopic, leading, pollOpen, readiness } from "@/lib/media/research-project";
 import type { RoomRef, SharedRef } from "@/lib/media/showcase";
@@ -55,7 +54,6 @@ function StartResearchDialog({ open, onOpenChange, from, members, onStarted }: {
     <Dialog open={open} onOpenChange={reset}>
       <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-lg">
         <DialogHeader>
-          <PixelMark tone="dark" />
           <DialogTitle className="flex items-center gap-2 text-xl font-bold text-m-ink"><Rocket className="size-5 text-m-blue" aria-hidden /> গবেষণা শুরু করুন</DialogTitle>
           <DialogDescription>ছয় ধাপে শুরু থেকে শেষ: বিষয় বাছাই ভোট → সময়সূচি → কাজ ভাগ → ফাইল ও ডেটা → লেখা → শেয়ার ও প্রকাশ।</DialogDescription>
         </DialogHeader>

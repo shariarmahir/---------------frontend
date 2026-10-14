@@ -76,8 +76,7 @@ export function ProfileHero({ person, self }: { person: Person; self: boolean })
     >
       <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
         <div className="min-w-0">
-          <p className="font-mono text-xs font-bold tracking-wide text-m-blue uppercase">হ্যালো, আমি</p>
-          <h1 className="mt-2 flex flex-wrap items-center gap-x-3 text-4xl leading-tight font-bold text-m-ink sm:text-5xl">
+          <h1 className="flex flex-wrap items-center gap-x-3 text-4xl leading-tight font-bold text-m-ink sm:text-5xl">
             {person.nameBn}
             {person.idVerified && <IdSeal size={30} />}
           </h1>

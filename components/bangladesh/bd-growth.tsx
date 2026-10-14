@@ -160,8 +160,6 @@ export function BdGrowth() {
     <section id="growth" className="section-band scroll-mt-40">
       <div className="mx-auto max-w-7xl px-gutter-x">
         <StoryHeading
-          index="০৭"
-          kicker="অগ্রযাত্রা · ১৯৭১ → ২০২৬"
           title="যুদ্ধবিধ্বস্ত দেশ থেকে উঠে দাঁড়ানোর গল্প"
           accent="উঠে দাঁড়ানোর"
           lede="সংখ্যাগুলো বিশ্বব্যাংকের প্রকাশিত তথ্য — কোনোটিই অনুমান নয়। গ্রাফের ওপর আঙুল বা মাউস রাখলে যেকোনো বছরের মান দেখা যাবে।"

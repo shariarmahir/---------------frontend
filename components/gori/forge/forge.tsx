@@ -13,7 +13,6 @@ import { useAgent } from "../ai-panel";
 import { useT } from "../provider";
 import { BASE, LockedNotice, useFeature } from "../shell";
 import { useGori, useHydrated } from "../store";
-import { PixelMark } from "@/components/ui/section-kit";
 
 const sc = scenarioOf("health-access");
 
@@ -81,7 +80,6 @@ export function Forge() {
 
   return (
     <div className="mx-auto max-w-340 px-4 py-8 sm:px-6 lg:px-8">
-      <PixelMark tone="dark" className="mb-2" />
       <h1 className="flex items-center gap-3 font-bengali text-3xl font-bold text-signal-orange"><Hammer className="size-8" aria-hidden /> দৃশ্যকল্প কারখানা</h1>
       <p className="mt-2 max-w-[70ch] font-bengali text-white/85">
         BD-001-এর মডেলে নিজের দৃশ্যকল্প সাজান — প্রেক্ষাপট, সম্পদ, ঘটনা, অনুমান। নাম আর বিবরণ মডারেশনে পরীক্ষা হয়। দৃশ্যকল্প আপাতত এই ব্রাউজারেই থাকে; অন্যদের জন্য প্রকাশ করতে সার্ভার আর মানুষের পর্যালোচনা লাগবে।

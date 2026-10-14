@@ -9,7 +9,7 @@ import { ArrowRight, BadgeCheck, Bell, Camera, Check, Gamepad2, ImagePlus, KeyRo
 import { AccountAvatar } from "@/components/auth/account-menu";
 import { FieldError, PasswordField } from "@/components/auth/fields";
 import { Icon } from "@/components/ui/icon";
-import { PixelMark, SignalSeam, btn as kit } from "@/components/ui/section-kit";
+import { SignalSeam, btn as kit } from "@/components/ui/section-kit";
 import { LIFT, glowStyle, surfaceAt } from "@/components/ui/surfaces";
 import { announcementKinds, announcements } from "@/data/announcements";
 import { FOLLOWABLE_PRODUCTS, ROLES, SECTORS, type Account, type RoleId, type SectorId } from "@/data/auth";
@@ -181,10 +181,6 @@ function ProfileHero({
           </div>
 
           <div className="flex min-w-0 flex-col items-start gap-4">
-            <span className="flex items-center gap-3 font-mono text-xs font-bold tracking-widest text-signal-orange uppercase">
-              <PixelMark tone="dark" className="py-0" />
-              Kandari Profile
-            </span>
             <h1 id="account-title" className="font-bengali text-4xl leading-tight font-bold text-white sm:text-5xl">
               {account.name}
             </h1>
@@ -298,7 +294,6 @@ function EditProfile({ account, open, onOpenChange }: { account: Account; open: 
           >
             <div className="record-item flex items-start justify-between gap-3" style={item(0)}>
               <div>
-                <PixelMark tone="light" />
                 <Dialog.Title className="mt-2 font-bengali text-3xl leading-tight font-bold">প্রোফাইল সম্পাদনা</Dialog.Title>
                 <Dialog.Description className="mt-1 font-sans text-sm text-text-primary/85">ছবি, নাম আর পরিচয় — এখানে বদলান।</Dialog.Description>
               </div>
@@ -420,7 +415,6 @@ function Updates({ account }: { account: Account }) {
     .slice(0, 5);
   return (
     <section aria-labelledby="updates-title" className={card}>
-      <PixelMark tone="dark" />
       <h2 id="updates-title" className={cn(h2, "mt-2")}>
         <Sparkles className="size-6" aria-hidden /> আপনার জন্য আপডেট
       </h2>
@@ -504,7 +498,6 @@ function Interests({ account }: { account: Account }) {
   const changed = sectors.join() !== account.sectors.join() || products.join() !== account.products.join();
   return (
     <section aria-labelledby="interests-title" className={card}>
-      <PixelMark tone="dark" />
       <h2 id="interests-title" className={cn(h2, "mt-2")}>
         <Icon name="interests" className="text-[26px]" /> আগ্রহ ও অনুসরণ
       </h2>
@@ -550,7 +543,6 @@ function Places({ account }: { account: Account }) {
   ];
   return (
     <section aria-labelledby="places-title" className={card}>
-      <PixelMark tone="dark" />
       <h2 id="places-title" className={cn(h2, "mt-2")}>
         <Icon name="apps" className="text-[26px]" /> আপনার জায়গাগুলো
       </h2>

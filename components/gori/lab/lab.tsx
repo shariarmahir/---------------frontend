@@ -13,7 +13,6 @@ import { cn } from "@/lib/utils";
 import { useT } from "../provider";
 import { LockedNotice, useFeature } from "../shell";
 import { useGori, useHydrated, type LabRecord } from "../store";
-import { PixelMark } from "@/components/ui/section-kit";
 
 const sc = scenarioOf("health-access");
 const CONFOUNDERS = [
@@ -93,7 +92,6 @@ export function Lab() {
 
   return (
     <div className="mx-auto max-w-340 px-4 py-8 sm:px-6 lg:px-8">
-      <PixelMark tone="dark" className="mb-2" />
       <h1 className="flex items-center gap-3 font-bengali text-3xl font-bold text-signal-orange"><FlaskConical className="size-8" aria-hidden /> বিজ্ঞানাগার</h1>
       <p className="mt-2 max-w-[70ch] font-bengali text-white/85">
         একটি অনুমান লিখুন, তারপর একই বীজে “কিছু না করা” আর “হস্তক্ষেপ” অনেকবার চালান। প্রতিটি জোড়া একই ঘটনা আর একই আসল প্রভাবের মুখোমুখি হয়, তাই পার্থক্যটা হস্তক্ষেপেরই। ফল খেলার মডেলের ভেতরে — মডেলটি বাস্তবের সাথে যাচাই করা হয়নি।

@@ -5,7 +5,6 @@ import { BellRing, CalendarX2, Check, ClipboardClock, Megaphone, Pin, PinOff, Pl
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { PixelMark } from "@/components/ui/section-kit";
 import { Textarea } from "@/components/ui/textarea";
 import { LEAVE_WORDS, NOTE_COLORS, NOTICE_KINDS, canPost, canRemove, isStaff, onBoard, oneWord, paperOf, type NoteColor, type Notice, type NoticeKind, type Role } from "@/lib/media/notices";
 import { newId } from "@/lib/media/store";
@@ -20,7 +19,7 @@ const ICON: Record<NoticeKind, LucideIcon> = { emergency: Siren, cancel: Calenda
 export const PAPER: Record<NoteColor | "red", { bn: string; paper: string; tag: string }> = {
   red: { bn: "লাল", paper: "bg-m-red text-m-on", tag: "bg-white text-m-red" },
   gold: { bn: "সোনালি", paper: "bg-m-yellow text-m-ink", tag: "bg-m-card text-m-blue" },
-  orange: { bn: "কমলা", paper: "bg-m-red-soft text-m-ink", tag: "bg-m-card text-m-blue" },
+  orange: { bn: "লাল", paper: "bg-m-red-soft text-m-ink", tag: "bg-m-card text-m-blue" },
   peach: { bn: "পীচ", paper: "bg-m-red-soft text-m-ink", tag: "bg-m-red-soft text-m-ink" },
   green: { bn: "সবুজ", paper: "bg-m-blue-soft text-m-ink", tag: "bg-m-yellow text-m-ink" },
   mint: { bn: "পুদিনা", paper: "bg-m-green-soft text-m-ink", tag: "bg-m-card text-m-ink" },
@@ -234,7 +233,6 @@ function NoticeComposer({ open, onOpenChange, role, meId, meName, today, subject
     <Dialog open={open} onOpenChange={reset}>
       <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-lg">
         <DialogHeader>
-          <PixelMark tone="dark" />
           <DialogTitle className="text-xl font-bold text-m-ink">নোটিশ দিন</DialogTitle>
           <DialogDescription>{isStaff(role) ? "বোর্ডে যা উঠবে, ক্লাসের সবাই সাথে সাথে দেখবে।" : "ছুটি বা দেরিতে জমার খবর আগে দিন — শিক্ষক আর লিডার দেখবেন।"}</DialogDescription>
         </DialogHeader>

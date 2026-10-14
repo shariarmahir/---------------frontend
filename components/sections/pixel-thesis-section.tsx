@@ -46,9 +46,10 @@ const PILLARS: Pillar[] = [
     title: "Assistive Tech Shield",
     description:
       "2-Meter spatial consciousness wearable for visually impaired citizens leveraging ultrasonic LiDAR, haptic feedback, and Bengali spatial voice.",
-    surface: "bg-bdorange-600 text-text-primary",
-    artClass: "text-text-primary",
-    glow: "var(--color-bdorange-600)",
+    // Navy on the black ground: a faint white ring keeps its edge.
+    surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
+    artClass: "text-signal-orange",
+    glow: "var(--color-bdnavy-400)",
   },
   {
     art: "cycle",

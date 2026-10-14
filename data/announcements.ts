@@ -45,7 +45,7 @@ export const announcementKinds: Record<
   event: {
     label: "ইভেন্ট",
     icon: "event",
-    chip: "border-orange-200 bg-orange-50 text-bdorange-600",
+    chip: "border-bdnavy-200 bg-bdnavy-50 text-bdnavy-900",
   },
   news: {
     label: "আজকের খবর",

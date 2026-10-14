@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
-import { PixelMark, SignalSeam, btn } from "@/components/ui/section-kit";
+import { SignalSeam, btn } from "@/components/ui/section-kit";
 import { LIFT, glowStyle } from "@/components/ui/surfaces";
 import { COMPLAINT_POLICY, COMPLAINT_POLICY_BN, complaintCategories, complaints, helplines } from "@/data/complaints";
 import { cn } from "@/lib/utils";
@@ -78,13 +78,6 @@ export function ComplaintMasthead() {
       <div className="hero-band relative isolate flex w-full items-center overflow-hidden bg-text-primary">
         <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-gutter-x py-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:py-10">
           <div className="flex flex-col items-start gap-space-md">
-            <span className="inline-flex items-center gap-2 rounded-full bg-national-crimson px-3 py-1 font-mono text-[11px] font-bold tracking-widest text-white uppercase">
-              <span className="relative flex size-2">
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-white opacity-75 motion-reduce:hidden" />
-                <span className="relative inline-flex size-2 rounded-full bg-white" />
-              </span>
-              Live · Complaint Centre
-            </span>
             <h1 id="protibad-title" className="font-bengali text-4xl leading-[1.12] font-bold text-white sm:text-5xl xl:text-6xl">
               অন্যায়ের বিরুদ্ধে{" "}
               <span className="text-national-crimson [text-shadow:0_0_32px_rgb(218_41_28/0.55)]">প্রতিবাদ</span>
@@ -127,7 +120,6 @@ export function ComplaintMasthead() {
             <div className="relative rounded-3xl bg-black p-4 ring-1 ring-white/15 shadow-[0_30px_60px_-30px_var(--color-national-crimson)] sm:p-5">
               <div className="mb-3 flex items-center justify-between">
                 <span className="flex items-center gap-2 font-mono text-[11px] font-bold tracking-widest text-white uppercase">
-                  <PixelMark tone="dark" className="py-0" />
                   Latest reports
                 </span>
                 <span className="font-mono text-[10px] text-white/60 uppercase">Sample data</span>
@@ -192,7 +184,7 @@ const LINE_SURFACES = [
   { card: "bg-national-crimson text-white", tile: "bg-white text-national-crimson", glow: "var(--color-national-crimson)" },
   { card: "bg-bd-green text-white", tile: "bg-signal-orange text-text-primary", glow: "var(--color-bd-green)" },
   { card: "bg-text-primary text-white", tile: "bg-signal-orange text-text-primary", glow: "var(--color-text-primary)" },
-  { card: "bg-bdorange-600 text-text-primary", tile: "bg-text-primary text-signal-orange", glow: "var(--color-bdorange-600)" },
+  { card: "bg-bdnavy-900 text-white ring-1 ring-white/12", tile: "bg-signal-orange text-text-primary", glow: "var(--color-bdnavy-400)" },
 ];
 
 /**
@@ -205,7 +197,6 @@ export function EmergencyBand() {
     <section aria-labelledby="emergency-title" className="relative bg-signal-orange text-text-primary">
       <div className="mx-auto max-w-7xl px-gutter-x py-10 sm:py-14">
         <div className="story-reveal flex flex-col gap-3">
-          <PixelMark tone="light" />
           <h2 id="emergency-title" className="font-grotesk text-2xl font-bold tracking-tight uppercase sm:text-3xl lg:text-4xl">
             In danger? <span className="text-national-crimson">Call first,</span> file later.
           </h2>

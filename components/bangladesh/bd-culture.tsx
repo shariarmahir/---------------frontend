@@ -18,8 +18,6 @@ export function BdCulture() {
     <section id="culture" className="section-band scroll-mt-40">
       <div className="mx-auto max-w-7xl px-gutter-x">
         <StoryHeading
-          index="০৫"
-          kicker="সংস্কৃতি"
           title="গানে, উৎসবে, হাতের শিল্পে বাঙালি"
           accent="বাঙালি"
           lede="বাংলার ছয়টি ঐতিহ্য আজ ইউনেস্কোর বিশ্ব-অধরা সাংস্কৃতিক ঐতিহ্যের তালিকায়।"
@@ -76,7 +74,7 @@ export function BdCulture() {
               className="glass-card story-reveal rounded-2xl border border-white/12 bg-text-primary ring-1 ring-white/12 p-6 shadow-sm"
               style={{ "--card-accent": "var(--color-signal-orange)" } as React.CSSProperties}
             >
-              <span className="mb-3 inline-flex size-11 items-center justify-center rounded-xl bg-signal-orange/15 text-bdorange-600">
+              <span className="mb-3 inline-flex size-11 items-center justify-center rounded-xl bg-signal-orange/15 text-signal-orange">
                 <Icon name={c.icon} className="text-[24px]!" />
               </span>
               <h3 className="font-bengali text-xl font-bold text-white">{c.title}</h3>
@@ -101,8 +99,6 @@ export function BdIcons() {
     <section id="icons" className="section-band-tinted scroll-mt-40 border-y border-white/12 bg-black">
       <div className="mx-auto max-w-7xl px-gutter-x">
         <StoryHeading
-          index="০৬"
-          kicker="গুণীজন"
           title="যাঁদের আলোয় আমরা আলোকিত"
           accent="আলোকিত"
           lede="কবি, মনীষী, শিল্পী আর বিজ্ঞানী — বাংলার মাটি থেকে উঠে আসা মানুষ, যাঁরা পৃথিবীকে বদলে দিয়েছেন।"

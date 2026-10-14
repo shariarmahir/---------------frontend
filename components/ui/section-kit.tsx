@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -9,64 +9,30 @@ import { cn } from "@/lib/utils";
 
 export type Tone = "light" | "dark";
 
-/**
- * Three pixels — gold, green, ink — the mark every section heading carries.
- * They run a wave one after another: each rises, turns a half-turn and
- * glows in its own colour, then settles (keyframes in globals.css).
- */
-export function PixelMark({ tone = "light", className }: { tone?: Tone; className?: string }) {
-  const pixels = [
-    { fill: "bg-signal-orange", glow: "var(--color-signal-orange)" },
-    tone === "dark"
-      ? { fill: "bg-bdgreen-500", glow: "var(--color-bdgreen-500)" }
-      : { fill: "bg-bd-green", glow: "var(--color-bd-green)" },
-    tone === "dark"
-      ? { fill: "bg-white", glow: "white" }
-      : { fill: "bg-text-primary", glow: "var(--color-text-primary)" },
-  ];
-  return (
-    <span aria-hidden className={cn("flex items-center gap-1.5 py-1", className)}>
-      {pixels.map((px, i) => (
-        <span
-          key={i}
-          style={{ "--i": i, "--glow": px.glow } as CSSProperties}
-          className={cn("pixel-wave size-2.5 rounded-[3px]", px.fill)}
-        />
-      ))}
-    </span>
-  );
-}
-
 export function SectionHeading({
-  kicker,
   title,
   lead,
   tone = "light",
   className,
 }: {
-  /** A short Bangla line above the title. */
-  kicker?: ReactNode;
   title: ReactNode;
   lead?: ReactNode;
   tone?: Tone;
   className?: string;
 }) {
   return (
-    <div className={cn("story-reveal mb-10 flex max-w-3xl flex-col gap-3", className)}>
-      <PixelMark tone={tone} />
-      {kicker ? (
-        <span className={cn("font-bengali text-sm font-bold", tone === "dark" ? "text-white/80" : "text-bd-green")}>{kicker}</span>
-      ) : null}
+    <div className={cn("story-reveal mb-10 flex flex-col gap-3", className)}>
+      {/* The hero title's style: mixed case, balanced on a phone, one line from lg up. */}
       <h2
         className={cn(
-          "font-grotesk text-2xl font-bold tracking-tight text-balance uppercase sm:text-3xl lg:text-4xl",
+          "font-grotesk text-2xl leading-[1.2] font-bold tracking-tight text-balance sm:text-3xl lg:text-4xl lg:whitespace-nowrap",
           tone === "dark" ? "text-signal-orange" : "text-text-primary",
         )}
       >
         {title}
       </h2>
       {lead ? (
-        <p className={cn("max-w-2xl font-sans text-base leading-relaxed", tone === "dark" ? "text-white/80" : "text-text-secondary")}>
+        <p className={cn("max-w-3xl font-sans text-base leading-relaxed lg:max-w-none", tone === "dark" ? "text-white/80" : "text-text-secondary")}>
           {lead}
         </p>
       ) : null}

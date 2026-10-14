@@ -16,8 +16,6 @@ export function BdHistory() {
     <section id="history" className="scroll-mt-40 bg-black">
       <div className="section-band mx-auto max-w-7xl px-gutter-x">
         <StoryHeading
-          index="০১"
-          kicker="ইতিহাস"
           title="আড়াই হাজার বছরের পথ — পুণ্ড্রনগর থেকে বিজয় দিবস"
           accent="বিজয় দিবস"
           lede="প্রাচীন নগর, পাল রাজাদের জ্ঞানচর্চা, সুলতানি আর মুঘল ঐশ্বর্য, ঔপনিবেশিক শোষণ, ভাষার জন্য রক্ত, আর একাত্তরের মুক্তিযুদ্ধ — আটটি অধ্যায়ে আমাদের গল্প। প্রতিটি অধ্যায়ের ছবিগুলো সোয়াইপ করে দেখুন।"

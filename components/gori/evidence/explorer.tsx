@@ -9,7 +9,6 @@ import { newsItems } from "@/data/news-feed";
 import { cn } from "@/lib/utils";
 import { AgentAnswerView, useAgent } from "../ai-panel";
 import { useT } from "../provider";
-import { PixelMark } from "@/components/ui/section-kit";
 
 const TYPE_BN: Record<SourceType, string> = {
   statistic: "পরিসংখ্যান",
@@ -53,7 +52,6 @@ export function EvidenceExplorer() {
 
   return (
     <div className="mx-auto max-w-340 px-4 py-8 sm:px-6 lg:px-8">
-      <PixelMark tone="dark" className="mb-2" />
       <h1 className="font-bengali text-3xl font-bold text-signal-orange">প্রমাণ অনুসন্ধান</h1>
       <p className="mt-2 max-w-[72ch] font-bengali text-white/85">
         খেলার প্রতিটি দাবি আর AI-এর প্রতিটি উদ্ধৃতি এই {n(evidence.length)}টি রেকর্ড থেকে। সব রেকর্ড জাতীয় সমস্যা প্রতিবেদনে সংকলিত; প্রকাশক আছে, কিন্তু মূল নথির লিংক প্রতিবেদনে নেই — তাই এখানেও নেই, বানানো হয়নি। সংস্করণ {EVIDENCE_VERSION}।
@@ -120,7 +118,7 @@ export function EvidenceExplorer() {
           </section>
 
           <section className="rounded-2xl bg-text-primary ring-1 ring-white/12 p-5 text-white" aria-labelledby="news-title">
-            <h2 id="news-title" className="flex items-center gap-2 font-bengali text-lg font-bold text-signal-orange"><Newspaper className="size-5 text-bdorange-600" aria-hidden /> সংবাদ ব্যাখ্যাকারী</h2>
+            <h2 id="news-title" className="flex items-center gap-2 font-bengali text-lg font-bold text-signal-orange"><Newspaper className="size-5 text-bdnavy-300" aria-hidden /> সংবাদ ব্যাখ্যাকারী</h2>
             <p className="mt-1 font-bengali text-sm text-white/80">সংবাদ সূচি এখনো নমুনা তথ্যে — আসল প্রকাশিত প্রতিবেদন নয়। ব্যাখ্যাকারী সেটা স্পষ্ট বলবে।</p>
             <label className="mt-3 block font-bengali text-sm font-semibold">
               খবর

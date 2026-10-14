@@ -10,8 +10,9 @@ const nextConfig: NextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     // Next 16 only honours qualities listed here; an unlisted `quality` prop
     // silently falls back to 75. The hero photos are small and upscaled, so
-    // the extra fidelity is worth the bytes.
-    qualities: [75, 90],
+    // the extra fidelity is worth the bytes; 80 is for the platform reels'
+    // app screenshots (story-player.tsx), where small UI text must stay sharp.
+    qualities: [75, 80, 90],
     formats: ["image/avif", "image/webp"],
   },
   // The social pages moved into শিক্ষিতদের মিডিয়া at /media. Temporary

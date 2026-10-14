@@ -72,7 +72,6 @@ export function ComplaintFeed() {
       <div className="mx-auto max-w-7xl px-gutter-x">
         <SectionHeading
           tone="dark"
-          kicker="কাণ্ডারী অভিযোগ কমিউনিটি"
           title={<span id="community-title">On public record</span>}
           lead="Support a complaint if it has happened to you too — a pattern is harder for an authority to set aside than a single report."
         />
