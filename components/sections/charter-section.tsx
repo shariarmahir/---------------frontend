@@ -165,7 +165,7 @@ function Toggle({ open, onOpen, onToggle, controls, label }: { open: boolean; on
     >
       <Icon
         name="add"
-        className={cn("text-[22px] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none", open && "rotate-45")}
+        className={cn("text-2xl transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none", open && "rotate-45")}
       />
     </button>
   );
@@ -314,13 +314,10 @@ function Slide({
   );
 }
 
-/** The shared buttons are 50px tall; the card wants them slimmer. */
-const SLIM = "py-3 sm:py-3";
-
 function Claim({ slide, gold }: { slide: CharterSlide; gold: boolean }) {
   return (
     <div className="flex flex-col justify-center p-6 sm:p-8 @2xl:py-10 @2xl:pr-8 @2xl:pl-10">
-      <h2 className="font-grotesk text-[1.75rem] leading-[1.06] font-bold tracking-[-0.03em] text-balance sm:text-[2rem]">
+      <h2 className="font-grotesk text-3xl leading-[1.06] font-bold tracking-[-0.03em] text-balance">
         <span className="block">{slide.title[0]}</span>
         <span className={cn("block text-(--accent)", slide.strike && "line-through decoration-[3px] opacity-80")}>{slide.title[1]}</span>
       </h2>
@@ -332,12 +329,12 @@ function Claim({ slide, gold }: { slide: CharterSlide; gold: boolean }) {
       ))}
 
       <div className="mt-5 flex flex-wrap gap-3">
-        <Link href={slide.primary.href} className={cn(gold ? btn.navy : btn.gold, SLIM)}>
+        <Link href={slide.primary.href} className={gold ? btn.navy : btn.gold}>
           {slide.primary.label}
           <span className="sr-only">: {slide.title.join(" ")}</span>
-          <Icon name="arrow_forward" className="text-[18px]" />
+          <Icon name="arrow_forward" className="text-lg" />
         </Link>
-        <Link href={slide.secondary.href} className={cn(gold ? btn.navyOutline : btn.ghost, SLIM)}>
+        <Link href={slide.secondary.href} className={gold ? btn.navyOutline : btn.goldOutline}>
           {slide.secondary.label}
         </Link>
       </div>
@@ -358,7 +355,7 @@ function Data({ slide, active }: { slide: CharterSlide; active: boolean }) {
     // The hairline: above the figures when stacked, beside them in a row (inset from the card's edges).
     <div className="mx-6 flex min-w-0 flex-col justify-center border-t border-(--ink)/12 pt-6 pb-4 sm:mx-8 @2xl:mx-0 @2xl:my-10 @2xl:border-t-0 @2xl:border-l @2xl:py-0 @2xl:pr-8 @2xl:pl-8 @4xl:pr-2">
       {label && (
-        <p className="mb-3 flex items-center gap-2 font-grotesk text-[11px] font-bold tracking-[0.18em] text-(--ink)/70 uppercase">
+        <p className="mb-3 flex items-center gap-2 font-grotesk text-xs font-bold text-(--ink)/80">
           <span aria-hidden className="size-1.5 rounded-full bg-(--accent)" />
           {label}
         </p>
@@ -366,14 +363,14 @@ function Data({ slide, active }: { slide: CharterSlide; active: boolean }) {
 
       {slide.oneWord && (
         <div className={cn(TILE, "px-5 py-5")}>
-          <p className="font-grotesk text-[11px] font-bold tracking-[0.18em] text-(--accent) uppercase">In one word</p>
-          <p className="mt-1.5 font-grotesk text-[clamp(1.375rem,2.4cqw,1.75rem)] leading-none font-bold tracking-tight whitespace-nowrap">
+          <p className="font-grotesk text-xs font-bold text-(--accent)">In one word</p>
+          <p className="mt-1.5 font-grotesk text-2xl leading-none font-bold tracking-tight whitespace-nowrap">
             {slide.oneWord}
             <span aria-hidden className="ch-caret ml-1 inline-block text-(--accent)">
               ▍
             </span>
           </p>
-          <p className="mt-3 text-xs leading-snug text-(--ink)/75">No timeline, no finish line: the responsibility simply continues.</p>
+          <p className="mt-3 text-xs leading-snug text-(--ink)/80">No timeline, no finish line: the responsibility simply continues.</p>
         </div>
       )}
 
@@ -381,8 +378,8 @@ function Data({ slide, active }: { slide: CharterSlide; active: boolean }) {
         <ul className="grid grid-cols-3 gap-2.5 @2xl:grid-cols-1">
           {slide.pillars.map((p) => (
             <li key={p.label} className={cn(TILE, "flex flex-col items-center gap-1.5 px-3 py-3 @2xl:flex-row @2xl:gap-3 @2xl:px-4")}>
-              <Icon name={p.icon} className="text-[24px]! text-(--accent)" />
-              <span className="font-grotesk text-xs font-bold tracking-[0.16em] uppercase">{p.label}</span>
+              <Icon name={p.icon} className="text-2xl! text-(--accent)" />
+              <span className="font-grotesk text-xs font-bold">{p.label}</span>
             </li>
           ))}
         </ul>
@@ -394,12 +391,12 @@ function Data({ slide, active }: { slide: CharterSlide; active: boolean }) {
             <li key={s.label} className={cn(TILE, "px-4 py-2.5", !fourUp && "@2xl:flex @2xl:items-center @2xl:gap-4")}>
               <p
                 style={fourUp ? undefined : { minWidth: figureWidth }}
-                className="font-grotesk text-[1.75rem] leading-none font-extrabold tracking-tight text-(--accent) @2xl:shrink-0"
+                className="font-grotesk text-3xl leading-none font-extrabold tracking-tight text-(--accent) @2xl:shrink-0"
               >
                 <CountUp stat={s} active={active} />
               </p>
               <div className={cn("mt-1.5", !fourUp && "@2xl:mt-0")}>
-                <p className="font-grotesk text-[10px] font-bold tracking-[0.16em] text-(--ink)/70 uppercase">{s.label}</p>
+                <p className="font-grotesk text-xs font-bold text-(--ink)/80">{s.label}</p>
                 <p className="mt-0.5 text-xs leading-snug text-(--ink)/80">{s.note}</p>
               </div>
             </li>

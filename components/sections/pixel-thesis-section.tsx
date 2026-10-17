@@ -224,7 +224,7 @@ export function PixelThesisSection() {
                   </div>
                 </div>
 
-                <h3 className="mb-1.5 font-grotesk text-[0.8rem] leading-tight font-bold uppercase sm:mb-2 sm:text-lg">
+                <h3 className="mb-1.5 font-grotesk text-xs leading-tight font-bold sm:mb-2 sm:text-lg">
                   {pillar.title}
                 </h3>
 
@@ -235,11 +235,11 @@ export function PixelThesisSection() {
                 {/* Pinned to the foot, so the four buttons line up. */}
                 <Link
                   href={pillar.href}
-                  className={cn(pillar.onGold ? btn.navy : btn.gold, "mt-auto self-start px-4 py-2.5 sm:px-5 sm:py-3")}
+                  className={cn(pillar.onGold ? btn.navy : btn.gold, "mt-auto self-start")}
                 >
                   Learn more
                   <span className="sr-only">: {pillar.title}</span>
-                  <Icon name="arrow_forward" className="text-[18px]" />
+                  <Icon name="arrow_forward" className="text-lg" />
                 </Link>
               </article>
             </li>

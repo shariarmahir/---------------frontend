@@ -18,7 +18,7 @@ function Chip({ x, y, w, label, delay = 0, dot = "fill-signal-orange" }: { x: nu
     <g className="ms-float" style={t(delay, 2.8)}>
       <rect x={x} y={y} width={w} height="22" rx="11" className="fill-text-primary stroke-white/25" strokeWidth="1" />
       <circle cx={x + 12} cy={y + 11} r="3.5" className={`ms-pulse ${dot}`} style={t(delay)} />
-      <text x={x + 21} y={y + 15} className="fill-white font-mono" fontSize="10" fontWeight="700">{label}</text>
+      <text x={x + 21} y={y + 15} className="fill-white font-sans tabular-nums" fontSize="12" fontWeight="700">{label}</text>
     </g>
   );
 }
@@ -90,9 +90,9 @@ function Neural() {
         <circle key={i} cx={x} cy={y} r="7" className={i % 4 === 0 ? "ms-pulse fill-signal-orange" : "fill-white"} style={t(i * 150, 2)} />
       ))}
       <g className="ms-float" style={t(0, 3)}>
-        <rect x="236" y="196" width="148" height="34" rx="17" className="fill-text-primary stroke-white/25" strokeWidth="1" />
-        <text x="252" y="217" className="fill-white" fontSize="11" fontWeight="700">এজেন্ট কাজ করছে</text>
-        <rect x="352" y="209" width="2" height="12" className="ms-blink fill-signal-orange" />
+        <rect x="230" y="196" width="160" height="34" rx="17" className="fill-text-primary stroke-white/25" strokeWidth="1" />
+        <text x="246" y="217" className="fill-white font-bengali" fontSize="12" fontWeight="700">এজেন্ট কাজ করছে</text>
+        <rect x="364" y="209" width="2" height="12" className="ms-blink fill-signal-orange" />
       </g>
     </g>
   );
@@ -170,7 +170,7 @@ function Code() {
         <rect x="30" y="160" width="44" height="8" rx="4" className="ms-type fill-text-primary/40" style={t(1100, 4.2)} />
         <rect x="30" y="200" width="62" height="20" rx="10" className="ms-type fill-bd-green" style={t(1500, 4.2)} />
       </g>
-      <text x="300" y="196" textAnchor="middle" className="ms-pulse fill-white font-mono" fontSize="26" fontWeight="800" style={t(0, 2.4)}>{"</>"}</text>
+      <text x="300" y="196" textAnchor="middle" className="ms-pulse fill-white font-sans tabular-nums" fontSize="24" fontWeight="800" style={t(0, 2.4)}>{"</>"}</text>
     </g>
   );
 }
@@ -181,30 +181,30 @@ const SCENES: Record<SceneKind, () => React.ReactElement> = { ecg: Ecg, voice: V
 const HUD: Partial<Record<SceneKind, () => React.ReactElement>> = {
   ecg: () => (
     <g>
-      <Chip x={16} y={16} w={64} label="ECG" />
-      <Chip x={16} y={44} w={66} label="SpO₂" delay={500} dot="fill-bdgreen-500" />
-      <Chip x={16} y={72} w={74} label="STRESS" delay={900} />
+      <Chip x={16} y={16} w={72} label="ECG" />
+      <Chip x={16} y={44} w={76} label="SpO₂" delay={500} dot="fill-bdgreen-500" />
+      <Chip x={16} y={72} w={84} label="Stress" delay={900} />
     </g>
   ),
   voice: () => (
     <g>
-      <Chip x={16} y={16} w={104} label="বাংলা ভয়েস" />
+      <Chip x={16} y={16} w={118} label="বাংলা ভয়েস" />
     </g>
   ),
   grid: () => (
     <g>
-      <Chip x={16} y={16} w={112} label="১ গ্রাম · ১ কেন্দ্র" />
+      <Chip x={16} y={16} w={128} label="১ গ্রাম · ১ কেন্দ্র" />
     </g>
   ),
   factory: () => (
     <g>
       <g>{[0, 1, 2].map((i) => <circle key={i} cx={22 + i * 18} cy="22" r="5" className={i === 1 ? "ms-blink fill-bdgreen-500" : "fill-signal-orange"} />)}</g>
-      <Chip x={16} y={36} w={88} label="লাইন: চালু" dot="fill-bdgreen-500" />
+      <Chip x={16} y={36} w={100} label="লাইন: চালু" dot="fill-bdgreen-500" />
     </g>
   ),
   signal: () => (
     <g>
-      <Chip x={16} y={16} w={96} label="৩ সেন্সর · লাইভ" dot="fill-bdgreen-500" />
+      <Chip x={16} y={16} w={110} label="৩ সেন্সর · লাইভ" dot="fill-bdgreen-500" />
     </g>
   ),
 };

@@ -136,7 +136,7 @@ export function LeadershipSection() {
           <li key={exec.name} className="story-reveal flex">
             <TapCard
               label={exec.name}
-              hint={<span className="font-mono text-[10px] font-bold uppercase opacity-90">{exec.short}</span>}
+              hint={<span className="font-sans tabular-nums text-xs font-bold opacity-90">{exec.short}</span>}
               style={{ "--glow": exec.glow } as CSSProperties}
               className={cn(
                 "group flex w-full flex-col overflow-hidden rounded-2xl shadow-sm sm:rounded-3xl",
@@ -158,13 +158,13 @@ export function LeadershipSection() {
               </div>
 
               <div className="relative -mt-5 flex flex-1 flex-col px-2.5 pb-1 sm:-mt-8 sm:px-6 sm:pb-6">
-                <span className={cn("mb-2 w-fit rounded-full px-2 py-0.5 font-mono text-[9px] leading-tight font-bold uppercase sm:mb-3 sm:px-3 sm:py-1 sm:text-[11px]", exec.pill)}>
+                <span className={cn("mb-2 w-fit rounded-full px-2 py-0.5 font-sans tabular-nums text-xs leading-tight font-bold sm:mb-3 sm:px-3 sm:py-1 sm:text-xs", exec.pill)}>
                   {exec.title}
                 </span>
-                <h3 className="font-grotesk text-[0.85rem] leading-tight font-bold sm:text-xl">{exec.name}</h3>
+                <h3 className="font-grotesk text-sm leading-tight font-bold sm:text-xl">{exec.name}</h3>
                 <CardDetails>
-                  <p className="mt-1 font-mono text-[9px] leading-tight font-semibold uppercase opacity-80 sm:text-xs">{exec.role}</p>
-                  <p className="mt-2 font-sans text-[11px] leading-snug sm:mt-3 sm:text-sm sm:leading-relaxed">{exec.blurb}</p>
+                  <p className="mt-1 font-sans tabular-nums text-xs leading-tight font-semibold opacity-80 sm:text-xs">{exec.role}</p>
+                  <p className="mt-2 font-sans text-xs leading-snug sm:mt-3 sm:text-sm sm:leading-relaxed">{exec.blurb}</p>
                 </CardDetails>
               </div>
             </TapCard>
@@ -193,19 +193,19 @@ export function LeadershipSection() {
                     look.tile,
                   )}
                 >
-                  <Icon name={lead.icon} className="text-[22px]" />
+                  <Icon name={lead.icon} className="text-2xl" />
                 </span>
-                <h4 className="font-grotesk text-[0.85rem] leading-tight font-bold text-balance sm:text-lg">{lead.title}</h4>
+                <h4 className="font-grotesk text-sm leading-tight font-bold text-balance sm:text-lg">{lead.title}</h4>
               </div>
               <CardDetails grow className="flex flex-col">
                 <ul aria-label="Team" className="mt-3 flex flex-wrap gap-1 sm:mt-5 sm:gap-1.5">
                   {lead.people.map((person) => (
-                    <li key={person} className={cn("rounded-full px-2 py-0.5 text-[10px] font-medium ring-1 sm:px-2.5 sm:py-1 sm:text-xs", look.chip)}>
+                    <li key={person} className={cn("rounded-full px-2 py-0.5 text-xs font-medium ring-1 sm:px-2.5 sm:py-1 sm:text-xs", look.chip)}>
                       {person}
                     </li>
                   ))}
                 </ul>
-                <p className={cn("mt-auto border-t pt-3 font-mono text-[10px] leading-snug opacity-80 sm:pt-4 sm:text-xs", look.rule)}>{lead.note}</p>
+                <p className={cn("mt-auto border-t pt-3 font-sans tabular-nums text-xs leading-snug opacity-80 sm:pt-4 sm:text-xs", look.rule)}>{lead.note}</p>
               </CardDetails>
             </TapCard>
           </li>
@@ -219,7 +219,7 @@ export function LeadershipSection() {
             <Icon name="school" className="text-2xl" />
           </span>
           <div>
-            <span className="block font-grotesk text-sm font-bold uppercase sm:text-base">R&amp;D Fellowship Cohort</span>
+            <span className="block font-grotesk text-sm font-bold sm:text-base">R&amp;D Fellowship Cohort</span>
             <p className="font-sans text-xs text-text-primary/80 sm:text-sm">
               4–5 Research Fellows &amp; Paid Innovation Interns engaged in
               active cleanroom silicon trials.
@@ -227,7 +227,7 @@ export function LeadershipSection() {
           </div>
         </div>
 
-        <a href="/signup?role=researcher" className={cn(btn.navy, "shrink-0 px-5 py-2.5")}>
+        <a href="/signup?role=researcher" className={cn(btn.navy, "shrink-0")}>
           Apply for Fellowship
         </a>
       </div>

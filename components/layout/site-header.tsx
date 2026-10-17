@@ -194,14 +194,14 @@ function AuthActions() {
   return (
     <>
       <Link href={loginHref(pathname)} className={quiet}>
-        <Icon name="login" className="text-[18px] text-signal-orange" />
+        <Icon name="login" className="text-lg text-signal-orange" />
         Log in
       </Link>
       <Link
         href="/signup"
         className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-signal-orange px-4 text-sm font-bold whitespace-nowrap text-bdnavy-900 transition-[filter,translate] duration-200 hover:-translate-y-px hover:brightness-105 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-bdnavy-900 focus-visible:outline-none motion-reduce:hover:translate-y-0"
       >
-        <Icon name="person_add" className="text-[18px]" />
+        <Icon name="person_add" className="text-lg" />
         Sign up
       </Link>
     </>
@@ -241,7 +241,7 @@ function SectionNav({
               onClick={() => onPick(link.href)}
               aria-current={isActive ? "true" : undefined}
               className={cn(
-                "group relative flex items-center gap-2 px-3 text-[15px] leading-none font-bold whitespace-nowrap text-signal-orange xl:px-3.5",
+                "group relative flex items-center gap-2 px-3 text-sm leading-none font-bold whitespace-nowrap text-signal-orange xl:px-3.5",
                 "transition-[color,filter] duration-200 hover:brightness-110",
                 "focus-visible:outline-none focus-visible:after:absolute focus-visible:after:inset-x-1 focus-visible:after:inset-y-2 focus-visible:after:rounded-md focus-visible:after:ring-2 focus-visible:after:ring-signal-orange",
               )}
@@ -250,14 +250,14 @@ function SectionNav({
                 <Icon
                   name={icon}
                   filled={isActive}
-                  className="text-[21px] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-px"
+                  className="text-xl transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-px"
                 />
               ) : null}
               <NavLabel link={link} compact />
 
               {/* The membership link carries an ID tag; keep it on that one link only. */}
               {link.href === "#kandari-profile" ? (
-                <span className="rounded bg-signal-orange px-1.5 py-0.5 font-mono text-[9.5px] font-bold text-bdnavy-900 uppercase">
+                <span className="rounded-md bg-signal-orange px-1.5 py-0.5 font-sans tabular-nums text-xs font-bold text-bdnavy-900">
                   ID
                 </span>
               ) : null}
@@ -342,7 +342,7 @@ export function SiteHeader() {
                   className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-national-crimson px-3.5 text-white transition-colors duration-200 hover:bg-red-700 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
                 >
                   <ProtestGlyph className="size-4" />
-                  <LabelText text={LABEL_TEXT.protibad} className="text-[16px] leading-none" />
+                  <LabelText text={LABEL_TEXT.protibad} className="text-base leading-none" />
                 </Link>
 
                 {/* Civic rights and responsibilities (/nagorik). */}
@@ -353,7 +353,7 @@ export function SiteHeader() {
                   className={cn("inline-flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none", pathname === "/nagorik" && "bg-white/10 ring-1 ring-white")}
                 >
                   <ShieldCheck className="size-4" aria-hidden />
-                  <LabelText text={LABEL_TEXT.nagorik} className="text-[16px] leading-none" />
+                  <LabelText text={LABEL_TEXT.nagorik} className="text-base leading-none" />
                 </Link>
 
                 {/* বাংলাদেশ সমস্যা ও সমাধান — the country page (/bangladesh).
@@ -370,7 +370,7 @@ export function SiteHeader() {
                     inDesh && "ring-2 ring-signal-orange",
                   )}
                 >
-                  <DeshLabel className="text-[16px] leading-none" />
+                  <DeshLabel className="text-base leading-none" />
                 </Link>
               </div>
 
@@ -382,7 +382,7 @@ export function SiteHeader() {
                 href="/media"
                 className="hidden h-12 shrink-0 flex-col items-start justify-center rounded-lg px-3 leading-tight transition-colors duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none lg:flex"
               >
-                <LabelText text={LABEL_TEXT.media} className="text-[16px] leading-none text-white" />
+                <LabelText text={LABEL_TEXT.media} className="text-base leading-none text-white" />
                 <span className="mt-1 font-sans text-xs font-medium whitespace-nowrap text-signal-orange">Prioritize your joy.</span>
               </Link>
 
@@ -397,7 +397,7 @@ export function SiteHeader() {
                   aria-label="Open navigation menu"
                   className="flex size-10 shrink-0 items-center justify-center rounded-md text-white transition-[background-color,scale] duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-90 lg:hidden"
                 >
-                  <Icon name="menu" className="text-[26px]" />
+                  <Icon name="menu" className="text-2xl" />
                 </Dialog.Trigger>
                 <Dialog.Portal>
                   <Dialog.Overlay className="menu-veil fixed inset-0 z-50 bg-black/55 lg:hidden" />
@@ -430,8 +430,8 @@ export function SiteHeader() {
                           style={{ "--i": 1 } as CSSProperties}
                           className="menu-item flex min-h-14 flex-col items-center justify-center rounded-2xl bg-text-primary px-3 py-2 text-center leading-tight shadow-ink [-webkit-tap-highlight-color:transparent] transition-[background-color,scale] duration-200 hover:bg-bdnavy-700 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-95"
                         >
-                          <LabelText text={LABEL_TEXT.media} className="text-[17px] leading-none text-signal-orange" />
-                          <span className="mt-1 font-sans text-xs font-semibold text-white/85">Prioritize your joy.</span>
+                          <LabelText text={LABEL_TEXT.media} className="text-base leading-none text-signal-orange" />
+                          <span className="mt-1 font-sans text-xs font-semibold text-white/80">Prioritize your joy.</span>
                         </Link>
                       </Dialog.Close>
                       <Dialog.Close asChild>
@@ -477,7 +477,7 @@ export function SiteHeader() {
                         style={{ "--i": navLinks.length + 3 } as CSSProperties}
                         className="menu-item flex items-center justify-center gap-2 rounded-full bg-signal-orange px-3.5 py-2.5 font-bengali text-sm font-bold text-bdnavy-900 transition-[scale] duration-200 active:scale-95"
                       >
-                        <DeshLabel className="text-[16px] leading-none" />
+                        <DeshLabel className="text-base leading-none" />
                       </Link>
                     </Dialog.Close>
 
@@ -489,7 +489,7 @@ export function SiteHeader() {
                           className="menu-item flex min-h-11 items-center justify-center gap-1.5 rounded-xl bg-national-crimson px-3 py-2 font-bengali text-sm font-bold text-white transition-[scale] duration-200 active:scale-95"
                         >
                           <ProtestGlyph className="size-3.5" />
-                          <LabelText text={LABEL_TEXT.protibad} className="text-[17px] leading-none" />
+                          <LabelText text={LABEL_TEXT.protibad} className="text-base leading-none" />
                         </Link>
                       </Dialog.Close>
                       <Dialog.Close asChild>
@@ -499,7 +499,7 @@ export function SiteHeader() {
                           className="menu-item flex min-h-11 items-center justify-center gap-1.5 rounded-xl px-3 py-2 ring-1 ring-white/35 transition-[background-color,scale] duration-200 hover:bg-white/10 active:scale-95"
                         >
                           <ShieldCheck className="size-4 shrink-0" aria-hidden />
-                          <LabelText text={LABEL_TEXT.nagorik} className="text-[17px] leading-none" />
+                          <LabelText text={LABEL_TEXT.nagorik} className="text-base leading-none" />
                         </Link>
                       </Dialog.Close>
                     </div>
@@ -509,7 +509,7 @@ export function SiteHeader() {
                     </div>
 
                     <p
-                      className="menu-item px-1 font-bengali text-xs font-semibold text-white/75"
+                      className="menu-item px-1 font-bengali text-xs font-semibold text-white/80"
                       style={{ "--i": navLinks.length + 7 } as CSSProperties}
                     >
                       {NAZRUL_MOTTO}

@@ -35,14 +35,14 @@ const SWIPE_PX = 48;
 const FIELDS: Record<PromoField, { card: string; muted: string; button: string; melt: string; glow: string }> = {
   navy: {
     card: "bg-bdnavy-900 text-white ring-1 ring-white/12 ring-inset",
-    muted: "text-white/75",
+    muted: "text-white/80",
     button: btn.gold,
     melt: "from-bdnavy-900",
     glow: "var(--color-bdnavy-400)",
   },
   ink: {
     card: "bg-text-primary text-white ring-1 ring-white/12 ring-inset",
-    muted: "text-white/75",
+    muted: "text-white/80",
     button: btn.gold,
     melt: "from-text-primary",
     glow: "var(--color-signal-orange)",
@@ -233,16 +233,16 @@ function Banner({ promo, onRecord, priority }: { promo: Promo; onRecord: () => v
       )}
     >
       <div className="relative order-2 flex min-h-0 flex-col justify-center gap-3 p-5 sm:order-1 sm:gap-4 sm:p-8 lg:p-12">
-        <h3 className="font-bengali text-[clamp(1.6rem,4.4cqw,3.25rem)] leading-[1.18] font-bold text-balance">{promo.title}</h3>
+        <h3 className="font-bengali text-3xl leading-[1.18] @2xl:text-4xl @5xl:text-5xl font-bold text-balance">{promo.title}</h3>
         <p className={cn("line-clamp-3 max-w-md text-sm leading-relaxed sm:text-base", field.muted)}>{promo.body}</p>
         <div className="mt-1 sm:mt-2">
           {"href" in promo.action ? (
-            <Link href={promo.action.href} draggable={false} className={cn(field.button, "py-3 font-bengali normal-case sm:py-3 sm:text-base")}>
+            <Link href={promo.action.href} draggable={false} className={cn(field.button, "font-bengali")}>
               {promo.action.label}
-              <Icon name="arrow_forward" className="text-[18px]" />
+              <Icon name="arrow_forward" className="text-lg" />
             </Link>
           ) : (
-            <button type="button" onClick={onRecord} className={cn(field.button, "py-3 font-bengali normal-case sm:py-3 sm:text-base")}>
+            <button type="button" onClick={onRecord} className={cn(field.button, "font-bengali")}>
               <span aria-hidden className="size-2.5 rounded-full bg-national-crimson" />
               {promo.action.label}
             </button>
@@ -286,7 +286,7 @@ function Banner({ promo, onRecord, priority }: { promo: Promo; onRecord: () => v
               href={art.credit.source}
               target="_blank"
               rel="noopener noreferrer"
-              className="absolute right-3 bottom-3 max-w-[70%] truncate rounded-full bg-black/55 px-2.5 py-1 text-[10px] text-white/80 hover:text-white"
+              className="absolute right-3 bottom-3 max-w-[70%] truncate rounded-full bg-black/55 px-2.5 py-1 text-xs text-white/80 hover:text-white"
             >
               Photo: {art.credit.author} · {art.credit.license}
             </a>
@@ -308,7 +308,7 @@ function RecordArt() {
             <span className="absolute inset-0 animate-ping rounded-full bg-national-crimson/70 motion-reduce:hidden" />
             <span className="relative size-3 rounded-full bg-national-crimson" />
           </span>
-          <span className="font-mono text-sm font-semibold tracking-[0.2em] text-white">REC 00:12</span>
+          <span className="font-sans tabular-nums text-sm font-semibold text-white">REC 00:12</span>
         </div>
         <div className="flex h-24 items-center gap-1.5">
           {Array.from({ length: bars }, (_, i) => (
@@ -319,7 +319,7 @@ function RecordArt() {
             />
           ))}
         </div>
-        <p className="font-mono text-[11px] tracking-[0.18em] text-white/55 uppercase">voice · video · one tap</p>
+        <p className="font-sans tabular-nums text-xs text-white/65">voice · video · one tap</p>
       </div>
     </div>
   );

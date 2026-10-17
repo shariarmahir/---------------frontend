@@ -40,12 +40,12 @@ export function AboutSection() {
             <div aria-hidden className="absolute inset-x-0 -bottom-px h-3/5 bg-linear-to-t from-bdnavy-900 via-bdnavy-900/75 to-transparent" />
           </div>
           <figcaption className="absolute inset-x-0 bottom-0 flex flex-col gap-3 p-6 sm:p-8">
-            <blockquote lang="bn" className="font-bengali text-[clamp(1.5rem,3.2vw,2.25rem)] leading-[1.3] font-bold text-white">
+            <blockquote lang="bn" className="font-bengali text-2xl leading-[1.3] md:text-3xl xl:text-4xl font-bold text-white">
               কে আছ জোয়ান? হও আগুয়ান।
               <br />
               <span className="text-signal-orange">হাঁকিছে ভবিষ্যৎ।</span>
             </blockquote>
-            <p lang="bn" className="font-bengali text-sm text-white/70">কাজী নজরুল ইসলাম, ‘কাণ্ডারী হুঁশিয়ার’</p>
+            <p lang="bn" className="font-bengali text-sm text-white/65">কাজী নজরুল ইসলাম, ‘কাণ্ডারী হুঁশিয়ার’</p>
           </figcaption>
         </figure>
 
@@ -77,11 +77,11 @@ export function AboutSection() {
                 >
                   <Icon
                     name={v.icon}
-                    className="mt-0.5 text-[26px] text-signal-orange transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/value:-rotate-6 motion-reduce:transition-none"
+                    className="mt-0.5 text-2xl text-signal-orange transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/value:-rotate-6 motion-reduce:transition-none"
                   />
                   <div className="min-w-0">
                     <h3 className="font-grotesk text-base font-bold">{v.title}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-white/70">{v.body}</p>
+                    <p className="mt-1 text-sm leading-relaxed text-white/65">{v.body}</p>
                   </div>
                 </li>
               );

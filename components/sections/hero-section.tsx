@@ -21,11 +21,11 @@ const SLIDE_MS = 6000;
 const LIFT_SHADOW = "[text-shadow:0_1px_2px_rgb(0_0_0/0.35),0_6px_24px_rgb(0_0_0/0.25)]";
 const TONE_CLASSES: Record<TextTone, { title: string; sub: string }> = {
   gold: { title: cn("text-signal-orange", LIFT_SHADOW), sub: cn("text-white", LIFT_SHADOW) },
-  white: { title: cn("text-white", LIFT_SHADOW), sub: cn("text-white/90", LIFT_SHADOW) },
+  white: { title: cn("text-white", LIFT_SHADOW), sub: cn("text-white/80", LIFT_SHADOW) },
   black: { title: "text-black", sub: "text-black/85" },
   // No green in the UI any more (bottle green was retired): a "green" verdict reads in navy.
-  green: { title: "text-bdnavy-900", sub: "text-bdnavy-900/90" },
-  navy: { title: "text-bdnavy-900", sub: "text-bdnavy-900/90" },
+  green: { title: "text-bdnavy-900", sub: "text-bdnavy-900" },
+  navy: { title: "text-bdnavy-900", sub: "text-bdnavy-900" },
 };
 
 /** Skip a re-render when the scrim moves by less than this. */
@@ -189,7 +189,7 @@ export function HeroSection() {
               <h1
                 ref={titleRef}
                 className={cn(
-                  "hero-rise max-w-[24em] font-grotesk text-[clamp(1.75rem,0.9rem+2.6vw,3.25rem)] leading-[1.08] font-bold tracking-[-0.025em] text-balance transition-[color,text-shadow] duration-1000 ease-in-out",
+                  "hero-rise max-w-[24em] font-grotesk text-3xl leading-[1.08] sm:text-4xl xl:text-5xl font-bold tracking-[-0.025em] text-balance transition-[color,text-shadow] duration-1000 ease-in-out",
                   classes.title,
                 )}
               >
@@ -203,7 +203,7 @@ export function HeroSection() {
                 ref={subRef}
                 style={{ "--d": "120ms" } as CSSProperties}
                 className={cn(
-                  "hero-rise mt-5 max-w-[42ch] font-sans text-[clamp(1rem,0.92rem+0.3vw,1.1875rem)] leading-relaxed font-medium tracking-[-0.005em] text-balance transition-[color,text-shadow] duration-1000 ease-in-out sm:max-w-[60ch] lg:max-w-none lg:whitespace-nowrap",
+                  "hero-rise mt-5 max-w-[42ch] font-sans text-base leading-relaxed lg:text-lg font-medium tracking-[-0.005em] text-balance transition-[color,text-shadow] duration-1000 ease-in-out sm:max-w-[60ch] lg:max-w-none lg:whitespace-nowrap",
                   classes.sub,
                 )}
               >
@@ -216,12 +216,12 @@ export function HeroSection() {
                 style={{ "--d": "240ms" } as CSSProperties}
                 className="hero-rise mt-8 flex flex-wrap items-center justify-center gap-3"
               >
-                <Link href="#apps" className={cn(btn.gold, "px-7")}>
-                  <Icon name="download" className="text-[18px]" />
+                <Link href="#apps" className={btn.gold}>
+                  <Icon name="download" className="text-lg" />
                   Download the App
                 </Link>
-                <Link href="#kandari-profile" className={cn(btn.navy, "px-7 ring-1 ring-white/15")}>
-                  <Icon name="group_add" className="text-[18px] text-signal-orange" />
+                <Link href="#kandari-profile" className={cn(btn.navy, "ring-1 ring-white/15")}>
+                  <Icon name="group_add" className="text-lg text-signal-orange" />
                   Join with Us
                 </Link>
               </div>

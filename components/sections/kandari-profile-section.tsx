@@ -25,7 +25,7 @@ const WAYS_IN = [
     href: "/research",
     icon: "menu_book",
     card: "bg-bdnavy-900 text-white ring-1 ring-white/12 ring-inset",
-    muted: "text-white/70",
+    muted: "text-white/65",
     glow: "var(--color-bdnavy-400)",
   },
   {
@@ -35,7 +35,7 @@ const WAYS_IN = [
     href: "/media",
     icon: "diversity_3",
     card: "bg-text-primary text-white ring-1 ring-white/12 ring-inset",
-    muted: "text-white/70",
+    muted: "text-white/65",
     glow: "var(--color-signal-orange)",
   },
 ];
@@ -59,11 +59,11 @@ export function KandariProfileSection() {
             <p className="font-grotesk text-lg font-bold text-bdnavy-900">
               Free to join, always
             </p>
-            <Link href={account ? "/account" : "/signup"} className={cn(btn.navy, "mt-2 px-8 py-4 text-sm sm:text-base")}>
-              <Icon name={account ? "account_circle" : "person_add"} className="text-[22px] text-signal-orange" />
+            <Link href={account ? "/account" : "/signup"} className={cn(btn.navy, "mt-2")}>
+              <Icon name={account ? "account_circle" : "person_add"} className="text-2xl text-signal-orange" />
               {account ? "My Profile" : "Join Kandari Profile"}
             </Link>
-            <p className="text-xs font-medium text-text-primary/75">* Sign up with a phone code or email *</p>
+            <p className="text-xs font-medium text-text-primary/80">* Sign up with a phone code or email *</p>
           </div>
 
           {/* The photograph melts into the gold at the seam, as on the team cards. */}
@@ -102,7 +102,7 @@ export function KandariProfileSection() {
                   <span className={cn("font-grotesk text-xl leading-tight font-bold", /[ঀ-৿]/.test(way.title) && "font-bengali")}>{way.title}</span>
                   <span className={cn("text-sm leading-snug", way.muted)}>{way.body}</span>
                   {/* Styled as a button; the whole card is the link. */}
-                  <span className={cn(btn.gold, "mt-1 px-5 py-2.5 sm:py-2.5")}>{way.action}</span>
+                  <span className={cn(btn.gold, "mt-1")}>{way.action}</span>
                 </span>
                 {/* A tilted gold tile on a solid offset shadow, straightening under the pointer. */}
                 <span
@@ -110,7 +110,7 @@ export function KandariProfileSection() {
                   className="grid size-20 shrink-0 -rotate-8 place-items-center rounded-2xl bg-signal-orange text-bdnavy-900 shadow-[6px_6px_0_rgb(0_0_0/0.35)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:rotate-0 motion-reduce:transition-none sm:size-24"
                 >
                   {/* `!`: Google's icon stylesheet pins every symbol at 24px and outranks the utilities. */}
-                  <Icon name={way.icon} className="text-[44px]! sm:text-[52px]!" />
+                  <Icon name={way.icon} className="text-5xl! sm:text-5xl!" />
                 </span>
               </Link>
             </li>

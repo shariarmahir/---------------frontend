@@ -27,7 +27,7 @@ const LOOKS: Record<ReviewField, { card: string; muted: string; button: string; 
   },
   gold: {
     card: "bg-signal-orange text-text-primary",
-    muted: "text-text-primary/70",
+    muted: "text-text-primary/80",
     button: "bg-bdnavy-900 text-white",
     accent: "text-bdnavy-900",
     glow: "var(--color-signal-orange)",
@@ -115,7 +115,7 @@ function ReviewCard({ review, open, onOpen, onToggle }: { review: Review; open: 
       >
         <div className="min-h-0 overflow-hidden">
           <blockquote className="pt-5 lg:w-[min(36rem,calc((100cqw-(var(--n)-1)*1rem-var(--n)*3rem)*2.6/(1.6+var(--n))))] lg:pt-0">
-            <Icon name="format_quote" className={cn("text-[32px]", look.accent)} />
+            <Icon name="format_quote" className={cn("text-3xl", look.accent)} />
             <p className="mt-1 font-grotesk text-lg leading-snug font-semibold text-pretty sm:text-xl">{review.quote}</p>
           </blockquote>
         </div>
@@ -140,7 +140,7 @@ function ReviewCard({ review, open, onOpen, onToggle }: { review: Review; open: 
         >
           <Icon
             name="add"
-            className={cn("text-[22px] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none", open && "rotate-45")}
+            className={cn("text-2xl transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none", open && "rotate-45")}
           />
         </button>
       </div>

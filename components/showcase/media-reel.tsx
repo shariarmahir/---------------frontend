@@ -43,7 +43,7 @@ function Tag({ x, y, w, label, cls, delay = 0 }: { x: number; y: number; w: numb
     <g className={`mr ${cls}`} style={d(delay)}>
       <g className="ms-float" style={{ "--dur": 2.8 } as CSSProperties}>
         <rect x={x} y={y} width={w} height="24" rx="12" className="fill-white/10 stroke-white/30" strokeWidth="1" />
-        <text x={x + w / 2} y={y + 16} textAnchor="middle" className="fill-white font-bengali" fontSize="11" fontWeight="700">
+        <text x={x + w / 2} y={y + 16} textAnchor="middle" className="fill-white font-bengali" fontSize="12" fontWeight="700">
           {label}
         </text>
       </g>
@@ -82,9 +82,9 @@ export function MediaReel() {
         <rect x="110" y="92" width="176" height="226" rx="16" className="fill-white" />
 
         <circle cx="128" cy="112" r="10" className="fill-bd-green" />
-        <text x="128" y="116" textAnchor="middle" className="fill-white font-bengali" fontSize="10" fontWeight="700">আ</text>
-        <text x="144" y="110" className="fill-text-primary font-bengali" fontSize="11" fontWeight="700">আপনি</text>
-        <text x="144" y="123" className="fill-text-primary font-bengali" fontSize="8.5" opacity="0.55">নতুন দক্ষতা পোস্ট</text>
+        <text x="128" y="116" textAnchor="middle" className="fill-white font-bengali" fontSize="12" fontWeight="700">আ</text>
+        <text x="144" y="109" className="fill-text-primary font-bengali" fontSize="12" fontWeight="700">আপনি</text>
+        <text x="144" y="124" className="fill-text-primary font-bengali" fontSize="12" opacity="0.6">নতুন দক্ষতা পোস্ট</text>
         {[0, 1, 2].map((i) => (
           <circle key={i} cx={264 + i * 5} cy="112" r="1.6" className="fill-text-primary" opacity="0.4" />
         ))}
@@ -99,11 +99,11 @@ export function MediaReel() {
           clipPath={`url(#${clipId})`}
         />
 
-        <text x="120" y="240" className="fill-text-primary font-bengali" fontSize="13" fontWeight="700">নকশিকাঁথা সেলাই</text>
+        <text x="120" y="240" className="fill-text-primary font-bengali" fontSize="14" fontWeight="700">নকশিকাঁথা সেলাই</text>
 
         {/* Where the hire button will land: a quiet placeholder until then. */}
         <rect x="120" y="276" width="156" height="30" rx="15" className="fill-text-primary" opacity="0.07" />
-        <text x="198" y="295" textAnchor="middle" className="fill-text-primary font-bengali" fontSize="9.5" opacity="0.45">যাচাইয়ের অপেক্ষায়</text>
+        <text x="198" y="295" textAnchor="middle" className="fill-text-primary font-bengali" fontSize="12" opacity="0.6">যাচাইয়ের অপেক্ষায়</text>
       </g>
 
       {/* ০২ — the self-rating, star by star. */}
@@ -116,7 +116,7 @@ export function MediaReel() {
           style={d(i * 160)}
         />
       ))}
-      <text x="208" y="259.5" className="mr mr-at1 fill-text-primary font-bengali" fontSize="9" opacity="0.6" style={d(800)}>
+      <text x="208" y="259.5" className="mr mr-at1 fill-text-primary font-bengali" fontSize="12" opacity="0.6" style={d(800)}>
         নিজের রেটিং
       </text>
 
@@ -125,8 +125,8 @@ export function MediaReel() {
         <circle key={fill} cx={246 + i * 12} cy="210" r="9" className={`mr mr-at2 ${fill} stroke-white`} strokeWidth="2" style={d(i * 140)} />
       ))}
       <g className="mr mr-at2" style={d(520)}>
-        <rect x="126" y="138" width="74" height="19" rx="9.5" className="fill-bd-green" />
-        <text x="163" y="151" textAnchor="middle" className="fill-white font-bengali" fontSize="9" fontWeight="700">✓ যাচাইকৃত</text>
+        <rect x="126" y="137" width="84" height="21" rx="10.5" className="fill-bd-green" />
+        <text x="168" y="152" textAnchor="middle" className="fill-white font-bengali" fontSize="12" fontWeight="700">✓ যাচাইকৃত</text>
       </g>
 
       {/* ০৪ — the hire: the button, a tap, the stamp. */}
@@ -140,13 +140,13 @@ export function MediaReel() {
       </g>
       <g transform="rotate(-12 198 176)">
         <g className="mr mr-stamp">
-          <rect x="140" y="158" width="116" height="36" rx="7" className="fill-white stroke-bd-green" strokeWidth="3" opacity="0.95" />
-          <text x="198" y="182" textAnchor="middle" className="fill-bd-green font-bengali" fontSize="15" fontWeight="800">নিয়োগ হয়েছে ✓</text>
+          <rect x="134" y="158" width="128" height="36" rx="7" className="fill-white stroke-bd-green" strokeWidth="3" opacity="0.95" />
+          <text x="198" y="182" textAnchor="middle" className="fill-bd-green font-bengali" fontSize="16" fontWeight="800">নিয়োগ হয়েছে ✓</text>
         </g>
       </g>
 
       {/* The player: chapter captions over a ten-second bar cut in four. */}
-      <g className="font-bengali" fontSize="13" fontWeight="700">
+      <g className="font-bengali" fontSize="14" fontWeight="700">
         {CHAPTERS.map(([n, label], i) => (
           <text key={n} x="24" y="354" className="mr mr-chapter fill-white" style={d(i * 2500)}>
             <tspan className="fill-signal-orange">{n}</tspan>

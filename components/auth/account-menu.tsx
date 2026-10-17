@@ -103,7 +103,7 @@ export function AccountMenu({ variant = "site", className }: { variant?: "site" 
         >
           <AccountAvatar name={account.name} photo={account.photo} sizes="32px" className="size-8 text-sm ring-2 ring-signal-orange" />
           <span className={cn("max-w-32 truncate", /[ঀ-৿]/.test(first) && "font-bengali")}>{first}</span>
-          <Icon name="expand_more" className="text-[18px] text-signal-orange transition-transform duration-200 group-data-[state=open]:rotate-180" />
+          <Icon name="expand_more" className="text-lg text-signal-orange transition-transform duration-200 group-data-[state=open]:rotate-180" />
         </DropdownMenu.Trigger>
       ) : (
         <DropdownMenu.Trigger
@@ -131,7 +131,7 @@ export function AccountMenu({ variant = "site", className }: { variant?: "site" 
             <AccountAvatar name={account.name} photo={account.photo} sizes="56px" className="size-12 shrink-0 text-lg ring-2 ring-signal-orange" />
             <div className="min-w-0 font-sans">
               <p className="truncate font-bengali text-body-md font-bold">{account.name}</p>
-              <p className="truncate text-xs text-white/75">
+              <p className="truncate text-xs text-white/80">
                 {role?.bn} · {formatPhone(account.phone)}
               </p>
             </div>

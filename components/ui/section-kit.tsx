@@ -50,45 +50,27 @@ export function SignalSeam({ className }: { className?: string }) {
 }
 
 /**
- * Button looks. Gold carries the primary action on light, ink and green
- * grounds; on a gold ground the primary turns ink so it never disappears.
+ * Button looks. Every button shares one shape, size and weight, in sentence
+ * case; only the colour changes. Gold is the primary on dark grounds, navy
+ * the primary on gold; each has an outline twin for the secondary action.
  */
 const LIFT =
   "[-webkit-tap-highlight-color:transparent] touch-manipulation transition-[translate,scale,rotate,transform,box-shadow,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 active:-translate-y-0.5 active:scale-[0.97] active:duration-150 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:translate-y-0 motion-reduce:active:scale-100";
 
+const BASE = cn("inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-6 py-3 font-grotesk text-sm font-bold focus-visible:outline-none", LIFT);
+const SOLID = "shadow-tile hover:shadow-tile-lift";
+
 export const btn = {
-  gold: cn(
-    "inline-flex items-center justify-center gap-2 rounded-xl bg-signal-orange px-6 py-3.5 font-grotesk text-xs font-bold text-text-primary uppercase shadow-tile hover:shadow-tile-lift sm:text-sm",
-    "focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:ring-offset-2 focus-visible:outline-none",
-    LIFT,
-  ),
-  ink: cn(
-    "inline-flex items-center justify-center gap-2 rounded-xl bg-text-primary px-6 py-3.5 font-grotesk text-xs font-bold text-white uppercase shadow-ink hover:bg-bd-green-dark sm:text-sm",
-    "focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-text-primary focus-visible:outline-none",
-    LIFT,
-  ),
-  ghost: cn(
-    "inline-flex items-center justify-center gap-2 rounded-xl bg-white/10 px-6 py-3.5 font-grotesk text-xs font-bold text-white uppercase ring-1 ring-white/25 backdrop-blur-sm hover:bg-white/15 sm:text-sm",
-    "focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none",
-    LIFT,
-  ),
-  /** The secondary of gold, on navy, ink and black. */
-  goldOutline: cn(
-    "inline-flex items-center justify-center gap-2 rounded-xl bg-signal-orange/[0.06] px-6 py-3.5 font-grotesk text-xs font-bold text-signal-orange uppercase ring-2 ring-signal-orange ring-inset hover:bg-signal-orange/12 sm:text-sm",
-    "focus-visible:ring-offset-2 focus-visible:ring-offset-black focus-visible:outline-none",
-    LIFT,
-  ),
+  gold: cn(BASE, SOLID, "bg-signal-orange text-text-primary focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:ring-offset-2"),
   /** On a gold field the buttons are navy, never gold on gold (Mahir, 2026-10-17). */
-  navy: cn(
-    "inline-flex items-center justify-center gap-2 rounded-xl bg-bdnavy-900 px-6 py-3.5 font-grotesk text-xs font-bold text-white uppercase shadow-[0_12px_24px_-12px_rgb(11_24_73/0.8)] hover:bg-bdnavy-700 sm:text-sm",
-    "focus-visible:ring-2 focus-visible:ring-bdnavy-900 focus-visible:ring-offset-2 focus-visible:ring-offset-signal-orange focus-visible:outline-none",
-    LIFT,
-  ),
-  navyOutline: cn(
-    "inline-flex items-center justify-center gap-2 rounded-xl bg-bdnavy-900/[0.06] px-6 py-3.5 font-grotesk text-xs font-bold text-bdnavy-900 uppercase ring-2 ring-bdnavy-900 ring-inset hover:bg-bdnavy-900/12 sm:text-sm",
-    "focus-visible:ring-offset-2 focus-visible:ring-offset-signal-orange focus-visible:outline-none",
-    LIFT,
-  ),
+  navy: cn(BASE, SOLID, "bg-bdnavy-900 text-white hover:bg-bdnavy-700 focus-visible:ring-2 focus-visible:ring-bdnavy-900 focus-visible:ring-offset-2 focus-visible:ring-offset-signal-orange"),
+  /** The secondary of gold, on navy, ink and black. */
+  goldOutline: cn(BASE, "text-signal-orange ring-2 ring-signal-orange ring-inset hover:bg-signal-orange/12 focus-visible:ring-offset-2 focus-visible:ring-offset-black"),
+  /** The secondary of navy, on gold. */
+  navyOutline: cn(BASE, "text-bdnavy-900 ring-2 ring-bdnavy-900 ring-inset hover:bg-bdnavy-900/12 focus-visible:ring-offset-2 focus-visible:ring-offset-signal-orange"),
+  /** Pages outside the home page still use these two. */
+  ink: cn(BASE, "bg-text-primary text-white shadow-ink hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-text-primary"),
+  ghost: cn(BASE, "bg-white/10 text-white ring-1 ring-white/25 backdrop-blur-sm hover:bg-white/15 focus-visible:ring-2 focus-visible:ring-signal-orange"),
 };
 
 /** Hover lift shared by the white tiles. */

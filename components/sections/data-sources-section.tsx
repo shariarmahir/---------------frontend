@@ -24,7 +24,7 @@ const FIELDS = [
   {
     card: "bg-signal-orange text-text-primary",
     accent: "text-bdnavy-900",
-    muted: "text-text-primary/70",
+    muted: "text-text-primary/80",
     chip: "bg-text-primary/8 ring-text-primary/20",
     glow: "var(--color-signal-orange)",
   },
@@ -98,14 +98,14 @@ function SourceCard({ source, field, copy }: { source: DataSource; field: Field;
         <Icon
           name={source.icon}
           className={cn(
-            "text-[44px]! transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-rotate-6 motion-reduce:transition-none sm:text-[52px]!",
+            "text-5xl! transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-rotate-6 motion-reduce:transition-none sm:text-5xl!",
             field.accent,
           )}
         />
         <Icon
           name="arrow_outward"
           className={cn(
-            "text-[20px] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none",
+            "text-xl transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none",
             field.muted,
           )}
         />
@@ -117,7 +117,7 @@ function SourceCard({ source, field, copy }: { source: DataSource; field: Field;
 
       {/* The tag sits on the card's foot, so the row of cards lines up. */}
       <span className="mt-auto pt-5">
-        <span className={cn("inline-block rounded-full px-2.5 py-1 font-mono text-[10px] font-semibold tracking-[0.12em] uppercase ring-1", field.chip)}>
+        <span className={cn("inline-block rounded-full px-2.5 py-1 font-sans tabular-nums text-xs font-semibold ring-1", field.chip)}>
           {source.tag}
         </span>
       </span>

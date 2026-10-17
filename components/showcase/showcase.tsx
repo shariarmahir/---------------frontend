@@ -6,6 +6,7 @@
  */
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
+import { btn } from "@/components/ui/section-kit";
 import { getProduct, type Product } from "@/data/products";
 import { services, type ServiceMotion } from "@/data/services";
 import type { SceneKind } from "./motion-scene";
@@ -26,7 +27,7 @@ export function TrackLink({ href, children }: { href: string; children: React.Re
         "focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none",
       )}
     >
-      {children} <Icon name="arrow_forward" className="text-[18px] transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
+      {children} <Icon name="arrow_forward" className="text-lg transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
     </Link>
   );
 }
@@ -44,7 +45,7 @@ function GoldenTwoHours() {
         <span className="relative size-3 rounded-full bg-white" />
       </span>
       <p className="text-sm leading-relaxed">
-        <span className="block font-mono text-xs font-bold tracking-wider uppercase">The Golden Two Hours</span>
+        <span className="block font-sans tabular-nums text-xs font-bold tracking-wider">The Golden Two Hours</span>
         Built to catch cardio-pulmonary risk early, so a patient reaches care inside the two-hour window that most changes survival.
       </p>
     </div>
@@ -91,7 +92,7 @@ function productPosters(): PosterItem[] {
     id: "media",
     face: "navy",
     // The wordmark never wraps, so it scales with the card's width (the card body is a size container).
-    title: <LabelText text={LABEL_TEXT.media} className="text-[min(1.75rem,11cqw)] leading-none" />,
+    title: <LabelText text={LABEL_TEXT.media} className="text-2xl leading-none" />,
     tagline: "Post a skill. Get verified. Get hired.",
     name: <LabelText text={LABEL_TEXT.media} className="leading-none" />,
     nameText: "শিক্ষিতদের মিডিয়া",
@@ -203,16 +204,13 @@ export function ServicesShowcase({ on = "home", poster }: { on?: "home" | "produ
 /** The close: one solid gold band with the way to reach the team. */
 export function ShowcaseCta() {
   return (
-    <div className="story-reveal mt-10 flex flex-col items-start justify-between gap-5 rounded-[2rem] bg-signal-orange p-6 text-text-primary sm:p-8 lg:flex-row lg:items-center">
+    <div className="story-reveal mt-10 flex flex-col items-start justify-between gap-5 rounded-3xl bg-signal-orange p-6 text-text-primary sm:p-8 lg:flex-row lg:items-center">
       <div>
-        <p className="font-grotesk text-2xl font-bold uppercase sm:text-3xl">Have a problem worth solving?</p>
-        <p className="mt-1 font-bengali text-[15px] font-semibold text-text-primary/80">কারখানা, অফিস, খামার বা অ্যাপ — সমস্যাটা বলুন, আমরা সমাধান বানাব।</p>
+        <p className="font-grotesk text-2xl font-bold sm:text-3xl">Have a problem worth solving?</p>
+        <p className="mt-1 font-bengali text-sm font-semibold text-text-primary/80">কারখানা, অফিস, খামার বা অ্যাপ — সমস্যাটা বলুন, আমরা সমাধান বানাব।</p>
       </div>
-      <Link
-        href="/#kandari-profile"
-        className="inline-flex h-13 shrink-0 items-center gap-2 rounded-2xl bg-text-primary px-6 font-grotesk text-sm font-bold text-white uppercase transition-[translate,background-color] duration-200 hover:-translate-y-0.5 hover:bg-black motion-reduce:hover:translate-y-0"
-      >
-        Join Kandari Profile <Icon name="arrow_forward" className="text-[18px] text-signal-orange" />
+      <Link href="/#kandari-profile" className={cn(btn.navy, "shrink-0")}>
+        Join Kandari Profile <Icon name="arrow_forward" className="text-lg text-signal-orange" />
       </Link>
     </div>
   );

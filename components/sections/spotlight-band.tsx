@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { Icon } from "@/components/ui/icon";
-import { SignalSeam } from "@/components/ui/section-kit";
+import { SignalSeam, btn } from "@/components/ui/section-kit";
 import { spotlightSlides, type SpotlightSlide } from "@/data/home-spotlight";
 import { cn } from "@/lib/utils";
 
@@ -185,12 +185,7 @@ function SpotlightButton({ label, href }: { label: string; href: string }) {
     <Link
       href={href}
       onPointerMove={follow}
-      className={cn(
-        "group/btn relative mx-auto flex h-10 w-fit items-center justify-center overflow-hidden rounded-xl bg-signal-orange px-10 text-text-primary lg:h-12",
-        "transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_30px_-10px_rgb(228_176_39/0.6)]",
-        "focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black focus-visible:outline-none",
-        "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
-      )}
+      className={cn(btn.gold, "group/btn relative mx-auto flex w-fit overflow-hidden focus-visible:ring-white focus-visible:ring-offset-black")}
     >
       <span
         aria-hidden
@@ -200,14 +195,9 @@ function SpotlightButton({ label, href }: { label: string; href: string }) {
             "radial-gradient(120px circle at var(--x, 50%) var(--y, 50%), rgb(255 255 255 / 0.5), transparent 70%)",
         }}
       />
-      <span
-        className={cn(
-          "relative z-10 flex items-center gap-1 text-base leading-6 font-semibold",
-          "tracking-tight",
-        )}
-      >
+      <span className="relative z-10 flex items-center gap-1">
         {label}
-        <Icon name="chevron_right" className="mt-px text-[20px]!" />
+        <Icon name="chevron_right" className="text-lg" />
       </span>
     </Link>
   );
@@ -218,7 +208,7 @@ function Slide({ slide, eager }: { slide: SpotlightSlide; eager: boolean }) {
     <div className="flex h-full w-full flex-col items-center justify-center px-4 py-5 text-center">
       <p
         className={cn(
-          "mb-2 text-[clamp(1.6rem,8vw,2.25rem)] font-semibold text-balance text-signal-orange md:mb-4 lg:text-7xl",
+          "mb-2 text-3xl sm:text-4xl font-semibold text-balance text-signal-orange md:mb-4 lg:text-7xl",
           BIG,
         )}
       >
@@ -229,7 +219,7 @@ function Slide({ slide, eager }: { slide: SpotlightSlide; eager: boolean }) {
         <div className="flex flex-row items-center justify-center gap-3 md:gap-4">
           <span
             className={cn(
-              "text-[clamp(1.6rem,8vw,2.25rem)] font-semibold whitespace-nowrap text-bdnavy-300 lg:text-7xl",
+              "text-3xl sm:text-4xl font-semibold whitespace-nowrap text-bdnavy-300 lg:text-7xl",
               BIG,
             )}
           >
@@ -239,14 +229,14 @@ function Slide({ slide, eager }: { slide: SpotlightSlide; eager: boolean }) {
         </div>
         <span
           className={cn(
-            "inline-flex items-center gap-1 text-[clamp(1.6rem,8vw,2.25rem)] font-semibold whitespace-nowrap text-white lg:text-7xl",
+            "inline-flex items-center gap-1 text-3xl sm:text-4xl font-semibold whitespace-nowrap text-white lg:text-7xl",
             BIG,
           )}
         >
           {slide.tailArrow ? (
             <Icon
               name={slide.tailArrow === "up" ? "arrow_upward" : "arrow_downward"}
-              className="text-[0.8em]!"
+              className="text-2xl! sm:text-3xl! lg:text-5xl!"
             />
           ) : null}
           {slide.tail}

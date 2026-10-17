@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/ui/icon";
+import { btn } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
 
 /** Starter prompts, so the empty panel is not a blank box. */
@@ -69,22 +70,22 @@ export function AiWidget() {
         hidden={!open}
         className={cn(
           "mb-space-sm w-[min(22rem,calc(100vw-2rem))] overflow-hidden rounded-2xl",
-          "border border-border bg-white shadow-xl",
+          "bg-bdnavy-900 text-white shadow-xl ring-1 ring-white/12",
           "animate-nav-card-in",
         )}
       >
-        <div className="flex items-center justify-between gap-space-sm border-b border-border bg-linear-to-r from-emerald-50 to-bdnavy-50 px-space-md py-space-sm">
-          <span className="flex items-center gap-space-xs font-display text-label-md font-bold text-primary">
-            <Icon name="auto_awesome" className="text-[18px] text-title" />
+        <div className="flex items-center justify-between gap-space-sm border-b border-white/10 px-space-md py-space-sm">
+          <span className="flex items-center gap-space-xs font-display text-label-md font-bold text-signal-orange">
+            <Icon name="auto_awesome" className="text-lg" />
             AI Ask
           </span>
           <button
             type="button"
             onClick={() => setOpen(false)}
             aria-label="Close AI Ask"
-            className="flex size-7 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-white hover:text-slate-900"
+            className="flex size-7 items-center justify-center rounded-full text-white/65 transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
           >
-            <Icon name="close" className="text-[16px]" />
+            <Icon name="close" className="text-base" />
           </button>
         </div>
 
@@ -105,22 +106,22 @@ export function AiWidget() {
               onChange={(e) => setQuery(e.target.value)}
               placeholder="জাতীয় তথ্য জিজ্ঞাসা করুন…"
               className={cn(
-                "h-10 w-full rounded-lg border border-border bg-slate-50 pr-10 pl-space-sm",
-                "font-sans text-body-sm text-slate-900 transition-all outline-none",
-                "placeholder:text-slate-500",
-                "focus:border-primary focus:bg-white focus:shadow-[0_0_0_3px_rgba(0,103,71,0.12)]",
+                "h-10 w-full rounded-lg bg-white/[0.06] pr-10 pl-space-sm ring-1 ring-white/15",
+                "font-sans text-body-sm text-white transition-all outline-none",
+                "placeholder:text-white/65",
+                "focus:ring-2 focus:ring-signal-orange",
               )}
             />
             <button
               type="submit"
               aria-label="Ask"
-              className="absolute right-1 flex size-8 items-center justify-center rounded-lg bg-primary text-white transition-colors hover:bg-emerald-800"
+              className="absolute right-1 flex size-8 items-center justify-center rounded-lg bg-signal-orange text-text-primary transition-colors hover:bg-signal-orange/85 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
             >
-              <Icon name="search" className="text-[16px]" />
+              <Icon name="search" className="text-base" />
             </button>
           </div>
 
-          <span className="font-label-sm text-label-sm text-slate-500">
+          <span className="font-label-sm text-label-sm text-white/65">
             জিজ্ঞাসার উদাহরণ
           </span>
           <div className="flex flex-col gap-1">
@@ -130,9 +131,9 @@ export function AiWidget() {
                 type="button"
                 onClick={() => setQuery(s)}
                 className={cn(
-                  "rounded-lg border border-border bg-white px-space-sm py-1.5 text-left",
-                  "font-sans text-body-sm text-slate-600 transition-colors",
-                  "hover:border-primary/40 hover:bg-emerald-50 hover:text-primary",
+                  "rounded-lg px-space-sm py-1.5 text-left ring-1 ring-white/15",
+                  "font-sans text-body-sm text-white/80 transition-colors",
+                  "hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none",
                 )}
               >
                 {s}
@@ -149,19 +150,12 @@ export function AiWidget() {
         aria-expanded={open}
         aria-controls="ai-widget-panel"
         aria-label={open ? "Close AI Ask" : "Open AI Ask"}
-        className={cn(
-          "group ml-auto flex items-center gap-space-xs rounded-full bg-primary",
-          "px-space-md py-space-sm font-display text-label-md font-bold text-white",
-          // The white ring keeps the button distinct over the home page's
-          // green and ink bands, where the green fill alone would vanish.
-          "shadow-ink ring-2 ring-white transition-all duration-300",
-          "hover:-translate-y-0.5 hover:bg-emerald-800 hover:shadow-xl active:scale-95",
-          "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none",
-        )}
+        // The page's gold primary button; the ink ring keeps its edge when it floats over the gold footer.
+        className={cn(btn.gold, "group ml-auto flex ring-2 ring-text-primary focus-visible:ring-white focus-visible:ring-offset-black")}
       >
         <Icon
           name={open ? "close" : "search"}
-          className="text-[18px] transition-transform duration-300 group-hover:scale-110"
+          className="text-lg transition-transform duration-300 group-hover:scale-110"
         />
         <span className="hidden sm:inline">AI Ask</span>
       </button>

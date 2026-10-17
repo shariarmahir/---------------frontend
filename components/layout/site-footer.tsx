@@ -28,8 +28,8 @@ const COLUMNS = [
 ];
 
 const LINK =
-  "rounded-sm text-text-primary/80 transition-colors duration-200 hover:text-bdnavy-900 focus-visible:ring-2 focus-visible:ring-bdnavy-900 focus-visible:outline-none";
-const HEADING = "font-grotesk text-xs font-bold tracking-[0.14em] text-bdnavy-900 uppercase";
+  "rounded-md text-text-primary/80 transition-colors duration-200 hover:text-bdnavy-900 focus-visible:ring-2 focus-visible:ring-bdnavy-900 focus-visible:outline-none";
+const HEADING = "font-grotesk text-sm font-bold text-bdnavy-900";
 
 /**
  * Footer: a solid gold band, ink text throughout (green and white both fall
@@ -92,7 +92,7 @@ export function SiteFooter() {
             <h2 className={HEADING}>Stay in the loop</h2>
             <p className="text-sm leading-relaxed text-text-primary/80">New research and product releases, by email.</p>
             {/* Subscribing is a Kandari Profile: the email carries over to sign-up. */}
-            <form action="/signup" method="get" className="flex overflow-hidden rounded-xl bg-text-primary/8 ring-1 ring-text-primary/30 focus-within:ring-2 focus-within:ring-bdnavy-900">
+            <form action="/signup" method="get" className="flex gap-1 rounded-xl bg-text-primary/8 p-1 ring-1 ring-text-primary/30 focus-within:ring-2 focus-within:ring-bdnavy-900">
               <label htmlFor="bulletin-email" className="sr-only">
                 Email address
               </label>
@@ -104,10 +104,7 @@ export function SiteFooter() {
                 placeholder="you@example.com"
                 className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm text-text-primary placeholder:text-text-primary/55 focus:outline-none"
               />
-              <button
-                type="submit"
-                className="shrink-0 bg-bdnavy-900 px-5 font-grotesk text-xs font-bold tracking-wide text-white uppercase transition-colors hover:bg-bdnavy-700 focus-visible:outline-none"
-              >
+              <button type="submit" className={cn(btn.navy, "shrink-0")}>
                 Subscribe
               </button>
             </form>
@@ -115,11 +112,11 @@ export function SiteFooter() {
         </div>
 
         {/* `sm:pr-32`: the floating AI button sits over this row's right end. */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-text-primary/20 py-5 text-xs text-text-primary/75 sm:flex-row sm:pr-32">
+        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-text-primary/20 py-5 text-xs text-text-primary/80 sm:flex-row sm:pr-32">
           <p>© {new Date().getFullYear()} Kandari-Lab (কাণ্ডারী-ল্যাব). All rights reserved.</p>
           <a href="#top" className={cn(LINK, "inline-flex items-center gap-1 font-semibold")}>
             Back to top
-            <Icon name="arrow_upward" className="text-[16px]" />
+            <Icon name="arrow_upward" className="text-base" />
           </a>
         </div>
       </div>

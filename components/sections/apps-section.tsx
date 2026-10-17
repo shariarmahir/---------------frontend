@@ -18,8 +18,8 @@ import { cn } from "@/lib/utils";
  */
 
 const FIELD: Record<AppId, { panel: string; muted: string; button: string }> = {
-  swasti: { panel: "bg-signal-orange text-text-primary", muted: "text-text-primary/75", button: btn.navy },
-  media: { panel: "bg-bdnavy-900 text-white ring-1 ring-white/12 ring-inset", muted: "text-white/75", button: btn.gold },
+  swasti: { panel: "bg-signal-orange text-text-primary", muted: "text-text-primary/80", button: btn.navy },
+  media: { panel: "bg-bdnavy-900 text-white ring-1 ring-white/12 ring-inset", muted: "text-white/80", button: btn.gold },
 };
 
 const isBangla = (s: string) => /[ঀ-৿]/.test(s);
@@ -67,7 +67,7 @@ function Preview({ app, active }: { app: KandariApp; active: boolean }) {
       aria-hidden={!active}
       inert={!active}
       className={cn(
-        "grid overflow-hidden rounded-4xl [grid-area:1/1] sm:grid-cols-2",
+        "grid overflow-hidden rounded-3xl [grid-area:1/1] sm:grid-cols-2",
         "transition-[opacity,scale] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
         active ? "opacity-100" : "pointer-events-none scale-[0.985] opacity-0",
         field.panel,
@@ -75,15 +75,15 @@ function Preview({ app, active }: { app: KandariApp; active: boolean }) {
     >
       <div className="flex flex-col justify-center gap-6 p-6 sm:p-8 lg:p-10">
         <div>
-          <p className={cn("font-mono text-[11px] font-semibold tracking-[0.16em] uppercase", field.muted)}>{app.kind} app</p>
+          <p className={cn("font-sans tabular-nums text-xs font-semibold", field.muted)}>{app.kind} app</p>
           {/* Not a heading: the accordion beside it already names the app. */}
           <p
             // Bangla conjuncts need real line height when the name wraps; Latin sits tight.
             className={cn(
               "mt-2 font-extrabold tracking-tight",
               isBangla(app.name)
-                ? "font-bengali text-[2.25rem] leading-[1.2] xl:text-5xl"
-                : "font-grotesk text-5xl leading-none xl:text-6xl",
+                ? "font-bengali text-4xl leading-[1.2] xl:text-5xl"
+                : "font-grotesk text-5xl leading-none",
             )}
           >
             {app.name}
@@ -102,7 +102,7 @@ function Preview({ app, active }: { app: KandariApp; active: boolean }) {
 
         <Link href={app.action.href} className={cn(field.button, "self-start py-3 sm:py-3")}>
           {app.action.label}
-          <Icon name="arrow_forward" className="text-[18px]" />
+          <Icon name="arrow_forward" className="text-lg" />
         </Link>
       </div>
 
@@ -158,14 +158,14 @@ function AccordionItem({
             >
               {app.name}
             </span>
-            <span className={cn("mt-1 block text-sm text-white/55", isBangla(app.altName) ? "font-bengali" : "font-grotesk")}>
+            <span className={cn("mt-1 block text-sm text-white/65", isBangla(app.altName) ? "font-bengali" : "font-grotesk")}>
               {app.altName} · {app.kind}
             </span>
           </span>
           <Icon
             name="expand_more"
             className={cn(
-              "shrink-0 text-[28px] text-white/60 transition-transform duration-300 motion-reduce:transition-none",
+              "shrink-0 text-3xl text-white/65 transition-transform duration-300 motion-reduce:transition-none",
               open && "rotate-180 text-signal-orange",
             )}
           />
@@ -185,15 +185,15 @@ function AccordionItem({
       >
         <div className="overflow-hidden">
           <div className="pb-6">
-            <p className="text-sm leading-relaxed text-white/75">{app.summary}</p>
+            <p className="text-sm leading-relaxed text-white/80">{app.summary}</p>
             <ul className="mt-4 flex flex-wrap gap-2">
               {app.features.map((f) => (
-                <li key={f} className="rounded-full px-3 py-1 font-grotesk text-xs font-semibold text-white/85 ring-1 ring-white/15">
+                <li key={f} className="rounded-full px-3 py-1 font-grotesk text-xs font-semibold text-white/80 ring-1 ring-white/15">
                   {f}
                 </li>
               ))}
             </ul>
-            <p className="mt-4 flex items-center gap-2 font-mono text-[11px] font-semibold tracking-wide text-white/60 uppercase">
+            <p className="mt-4 flex items-center gap-2 font-sans tabular-nums text-xs font-semibold tracking-wide text-white/65">
               <span aria-hidden className="size-1.5 rounded-full bg-signal-orange" />
               {app.stage}
             </p>
@@ -231,8 +231,8 @@ function StoreBadge({ store, href }: { store: keyof typeof STORES; href?: string
         {s.glyph}
       </svg>
       <span className="leading-none">
-        <span className="block text-[10px] font-medium tracking-wide">{href ? s.live : "Coming soon to"}</span>
-        <span className="mt-0.5 block font-grotesk text-[17px] font-semibold">{s.name}</span>
+        <span className="block text-xs font-medium tracking-wide">{href ? s.live : "Coming soon to"}</span>
+        <span className="mt-0.5 block font-grotesk text-base font-semibold">{s.name}</span>
       </span>
     </>
   );

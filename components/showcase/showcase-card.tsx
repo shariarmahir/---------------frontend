@@ -21,7 +21,7 @@ export type CardTone = "ink" | "green" | "gold" | "white";
 const TONE: Record<CardTone, { card: string; sub: string; item: string; icon: string; link: string; glow: string; beam: string; fade: string; pill: string; btn: string }> = {
   ink: {
     card: "bg-text-primary text-white ring-1 ring-white/12",
-    sub: "text-white/70",
+    sub: "text-white/65",
     item: "bg-white/[0.06] ring-1 ring-white/10",
     icon: "bg-signal-orange",
     link: "text-signal-orange",
@@ -45,7 +45,7 @@ const TONE: Record<CardTone, { card: string; sub: string; item: string; icon: st
   },
   gold: {
     card: "bg-signal-orange text-text-primary",
-    sub: "text-text-primary/75",
+    sub: "text-text-primary/80",
     item: "bg-text-primary/10",
     icon: "bg-white",
     link: "text-text-primary",
@@ -141,7 +141,7 @@ export function ShowcaseCard(p: ShowcaseCardProps) {
         </div>
 
         <div className="relative -mt-8 flex flex-1 flex-col px-5 pb-5 sm:px-6 sm:pb-6">
-          <span className={cn("mb-3 w-fit rounded-full px-3 py-1 font-mono text-[10px] leading-tight font-bold uppercase sm:text-[11px]", tone.pill)}>{p.eyebrow}</span>
+          <span className={cn("mb-3 w-fit rounded-full px-3 py-1 font-sans tabular-nums text-xs leading-tight font-bold sm:text-xs", tone.pill)}>{p.eyebrow}</span>
           <h3 className="font-grotesk text-xl leading-tight font-bold sm:text-2xl">
             <Link
               href={p.href}
@@ -154,7 +154,7 @@ export function ShowcaseCard(p: ShowcaseCardProps) {
           <p className="mt-3 line-clamp-3 font-sans text-sm leading-relaxed">{p.body}</p>
           <span className="mt-auto pt-5">
             <span className={cn("inline-flex h-10 items-center gap-1.5 rounded-full px-4 font-grotesk text-sm font-bold transition-[gap] duration-300 group-hover:gap-2.5", tone.btn)}>
-              Learn more <Icon name="arrow_forward" className="text-[18px]" />
+              Learn more <Icon name="arrow_forward" className="text-lg" />
             </span>
           </span>
         </div>
@@ -182,7 +182,7 @@ export function ShowcaseCard(p: ShowcaseCardProps) {
       data-paused={!on}
       style={{ "--glow": tone.glow } as React.CSSProperties}
       className={cn(
-        "ms-root group relative isolate flex h-full flex-col overflow-hidden rounded-[2rem]",
+        "ms-root group relative isolate flex h-full flex-col overflow-hidden rounded-3xl",
         "transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_var(--glow)] motion-reduce:transition-none motion-reduce:hover:translate-y-0",
         wide && "lg:grid lg:grid-cols-2",
         tone.card,
@@ -205,21 +205,21 @@ export function ShowcaseCard(p: ShowcaseCardProps) {
         <div className="flex items-start gap-4">
           <MotionIcon kind={p.scene} className={cn("grid size-14 shrink-0 place-items-center rounded-2xl shadow-tile", tone.icon)} />
           <div className="min-w-0">
-            <p className={cn("font-mono text-[11px] font-bold tracking-wider uppercase", tone.sub)}>{p.eyebrow}</p>
+            <p className={cn("font-sans tabular-nums text-xs font-bold tracking-wider", tone.sub)}>{p.eyebrow}</p>
             <h3 className="mt-1 font-grotesk text-xl leading-tight font-bold sm:text-2xl">
               <Link
                 href={p.href}
-                className="after:absolute after:inset-0 after:z-10 after:rounded-[2rem] focus-visible:outline-none after:focus-visible:ring-3 after:focus-visible:ring-white after:focus-visible:ring-inset"
+                className="after:absolute after:inset-0 after:z-10 after:rounded-3xl focus-visible:outline-none after:focus-visible:ring-3 after:focus-visible:ring-white after:focus-visible:ring-inset"
               >
                 {p.title}
               </Link>
             </h3>
-            {p.titleBn && <p className={cn("mt-0.5 font-bengali text-[15px] font-semibold", tone.sub)}>{p.titleBn}</p>}
+            {p.titleBn && <p className={cn("mt-0.5 font-bengali text-sm font-semibold", tone.sub)}>{p.titleBn}</p>}
           </div>
         </div>
 
-        <p className="font-sans text-[15px] leading-relaxed">{p.body}</p>
-        {p.bodyBn && <p className={cn("font-bengali text-[15px] leading-relaxed", tone.sub)}>{p.bodyBn}</p>}
+        <p className="font-sans text-sm leading-relaxed">{p.body}</p>
+        {p.bodyBn && <p className={cn("font-bengali text-sm leading-relaxed", tone.sub)}>{p.bodyBn}</p>}
         {p.extra}
 
         {p.items && p.items.length > 0 && (
@@ -227,28 +227,28 @@ export function ShowcaseCard(p: ShowcaseCardProps) {
             {p.items.map((it) => (
               <li key={it.title} className={cn("rounded-2xl px-3.5 py-3", tone.item)}>
                 <span className="block font-grotesk text-sm font-bold">{it.title}</span>
-                <span className={cn("mt-0.5 block text-[13px] leading-snug", tone.sub)}>{it.body}</span>
+                <span className={cn("mt-0.5 block text-sm leading-snug", tone.sub)}>{it.body}</span>
               </li>
             ))}
           </ul>
         )}
 
         {p.proof && (
-          <p className={cn("flex items-start gap-2 text-[13px] leading-snug", tone.sub)}>
-            <Icon name="verified" className="mt-px text-[17px]" /> {p.proof}
+          <p className={cn("flex items-start gap-2 text-sm leading-snug", tone.sub)}>
+            <Icon name="verified" className="mt-px text-base" /> {p.proof}
           </p>
         )}
 
         <div className="mt-auto flex flex-wrap items-end justify-between gap-3 pt-2">
-          <span className={cn("inline-flex items-center gap-1.5 font-grotesk text-sm font-bold uppercase", tone.link)}>
+          <span className={cn("inline-flex items-center gap-1.5 font-grotesk text-sm font-bold", tone.link)}>
             {p.cta}
             <Icon name="arrow_forward" className="transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" />
           </span>
-          {p.image.credit && <span className={cn("relative z-20 text-[11px]", tone.sub)}>{p.image.credit}</span>}
+          {p.image.credit && <span className={cn("relative z-20 text-xs", tone.sub)}>{p.image.credit}</span>}
         </div>
       </div>
 
-      {/* The beam: a short gold dash running the rounded edge on hover and focus. */}
+      {/* The beam: a short gold dash running the rounded-md edge on hover and focus. */}
       <svg aria-hidden className="ms-beam pointer-events-none absolute inset-0 z-20 h-full w-full overflow-visible">
         <rect
           x="1.5"

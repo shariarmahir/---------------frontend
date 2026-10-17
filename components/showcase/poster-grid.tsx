@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { btn } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
 import { MediaReel } from "./media-reel";
 import { PosterScene, type PosterSceneKind } from "./poster-scenes";
@@ -131,13 +132,13 @@ function PosterCard({ item, priority }: { item: PosterItem; priority: boolean })
           // The line height comes after the size: tailwind-merge drops a leading-* that precedes a text-* size.
           className={cn(
             "font-extrabold tracking-tight",
-            typeof item.title === "string" && "font-grotesk text-lg sm:text-[1.75rem]",
+            typeof item.title === "string" && "font-grotesk text-lg sm:text-3xl",
             "leading-[0.95]",
           )}
         >
           {item.title}
         </p>
-        <p className={cn("mt-1.5 font-grotesk text-xs leading-snug font-semibold sm:mt-2 sm:text-[15px]", face.sub)}>{item.tagline}</p>
+        <p className={cn("mt-1.5 font-grotesk text-xs leading-snug font-semibold sm:mt-2 sm:text-sm", face.sub)}>{item.tagline}</p>
       </div>
 
       {/* The panel, rising on hover, focus or tap: the card's own colour, blackened. */}
@@ -154,16 +155,12 @@ function PosterCard({ item, priority }: { item: PosterItem; priority: boolean })
         <p className="mt-2 line-clamp-5 text-xs leading-relaxed text-white/80 sm:mt-3 sm:text-sm">{item.pitch}</p>
         <Link
           href={item.href}
-          className={cn(
-            "mt-4 inline-flex w-fit items-center gap-1.5 rounded-full bg-signal-orange px-4 py-2 font-grotesk text-xs font-bold text-text-primary sm:mt-5 sm:px-5 sm:text-sm",
-            "transition-[filter] duration-300 hover:brightness-110",
-            "focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black focus-visible:outline-none",
-          )}
+          className={cn(btn.gold, "mt-4 w-fit sm:mt-5")}
         >
           Explore<span className="sr-only"> {item.nameText}</span>
           <span aria-hidden>→</span>
         </Link>
-        {item.note ? <p className="mt-auto hidden text-[11px] leading-snug text-white/55 sm:block">{item.note}</p> : null}
+        {item.note ? <p className="mt-auto hidden text-xs leading-snug text-white/65 sm:block">{item.note}</p> : null}
       </div>
     </article>
   );

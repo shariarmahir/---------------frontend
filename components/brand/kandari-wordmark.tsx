@@ -32,19 +32,6 @@ const logoFont = localFont({
   preload: false,
 });
 
-/**
- * The upright (Regular) cut of the same family, for the header's Bangla
- * button labels — public/font/LiSirajeeSylheti3DANSIV2-Regular.ttf,
- * subset the same way into kandari-label.woff2.
- */
-const labelFont = localFont({
-  src: "../../public/font/kandari-label.woff2",
-  display: "block",
-  weight: "400",
-  style: "normal",
-  fallback: [],
-});
-
 export const BRAND_NAME_BN = LOGO_TEXT.brand.bn;
 
 function BijoyText({ text, fontClass, className }: { text: LogoString; fontClass: string; className?: string }) {
@@ -71,9 +58,14 @@ export function LogoText({ text, className }: { text: LogoString; className?: st
   return <BijoyText text={text} fontClass={logoFont.className} className={className} />;
 }
 
-/** A string in the Regular face — the header's Bangla button labels. */
+/**
+ * The header's Bangla button labels, as plain Unicode in the site's Bangla
+ * face. They used the upright Li Sirajee cut until 2026-10-18, when the
+ * usability audit asked for fewer typefaces; kandari-label.woff2 is still in
+ * public/font if it comes back.
+ */
 export function LabelText({ text, className }: { text: LogoString; className?: string }) {
-  return <BijoyText text={text} fontClass={labelFont.className} className={className} />;
+  return <span className={cn("inline-block font-bengali font-bold whitespace-nowrap", className)}>{text.bn}</span>;
 }
 
 /** The brand name, "কাণ্ডারী-ল্যাব." */

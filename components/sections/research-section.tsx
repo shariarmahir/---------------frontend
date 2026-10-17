@@ -88,7 +88,7 @@ export function ResearchSection() {
               </span>
 
               <div className="min-w-0">
-                <h3 className="mb-2 font-grotesk text-lg font-bold uppercase">{lab.title}</h3>
+                <h3 className="mb-2 font-grotesk text-lg font-bold">{lab.title}</h3>
                 <p className="max-w-[68ch] font-sans text-sm leading-relaxed">{lab.description}</p>
               </div>
 

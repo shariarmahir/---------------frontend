@@ -40,13 +40,13 @@ export function AccessRequestButton({ project, title, href, onGold }: { project:
     return () => window.clearTimeout(t);
   }, [request]);
 
-  const solid = cn(onGold ? btn.navy : btn.gold, "py-3 sm:py-3");
-  const outline = cn(onGold ? btn.navyOutline : btn.goldOutline, "py-3 sm:py-3");
+  const solid = onGold ? btn.navy : btn.gold;
+  const outline = onGold ? btn.navyOutline : btn.goldOutline;
 
   if (status === "approved") {
     return (
       <Link href={href} className={solid}>
-        <Icon name="verified" className="text-[18px]" />
+        <Icon name="verified" className="text-lg" />
         Approved · View research
       </Link>
     );
@@ -55,7 +55,7 @@ export function AccessRequestButton({ project, title, href, onGold }: { project:
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <button type="button" onClick={() => setOpen(true)} className={status === "pending" ? outline : solid}>
-        <Icon name={status === "pending" ? "schedule" : "lock_open"} className="text-[18px]" />
+        <Icon name={status === "pending" ? "schedule" : "lock_open"} className="text-lg" />
         {status === "pending" ? "Awaiting approval" : "Request to view research"}
       </button>
       <DialogContent
@@ -64,9 +64,9 @@ export function AccessRequestButton({ project, title, href, onGold }: { project:
       >
         <header className="flex items-start justify-between gap-4">
           <div className="flex flex-col gap-2">
-            <p className="font-mono text-[11px] font-semibold tracking-[0.14em] text-signal-orange uppercase">Research access</p>
+            <p className="font-sans tabular-nums text-xs font-semibold text-signal-orange">Research access</p>
             <DialogTitle className="font-grotesk text-xl leading-tight font-bold">{title}</DialogTitle>
-            <DialogDescription className="text-sm leading-relaxed text-white/70">
+            <DialogDescription className="text-sm leading-relaxed text-white/65">
               {request
                 ? "The lab reviews every request. This button turns into a link to the research once yours is approved."
                 : "This work is still in the lab. Tell us who you are and why you want to read it, and the team will review your request."}
@@ -74,9 +74,9 @@ export function AccessRequestButton({ project, title, href, onGold }: { project:
           </div>
           <DialogClose
             aria-label="Close"
-            className="-mt-1 -mr-2 grid size-10 shrink-0 place-items-center rounded-full text-white/70 transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
+            className="-mt-1 -mr-2 grid size-10 shrink-0 place-items-center rounded-full text-white/65 transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
           >
-            <Icon name="close" className="text-[22px]" />
+            <Icon name="close" className="text-2xl" />
           </DialogClose>
         </header>
 
@@ -97,14 +97,14 @@ function Summary({ request }: { request: AccessRequest }) {
   return (
     <div className="flex flex-col gap-5">
       <p className="inline-flex items-center gap-2 self-start rounded-full bg-signal-orange/12 px-3 py-1.5 text-xs font-semibold text-signal-orange ring-1 ring-signal-orange/40">
-        <Icon name="schedule" className="text-[16px]" />
+        <Icon name="schedule" className="text-base" />
         Awaiting approval
       </p>
       <dl className="grid gap-3 text-sm">
         {rows.map(([k, v]) => (
           <div key={k} className="grid gap-1 border-t border-white/10 pt-3">
-            <dt className="text-xs font-semibold tracking-wide text-white/50 uppercase">{k}</dt>
-            <dd className="break-words text-white/90">{v}</dd>
+            <dt className="text-xs font-semibold tracking-wide text-white/65">{k}</dt>
+            <dd className="break-words text-white/80">{v}</dd>
           </div>
         ))}
       </dl>
@@ -113,8 +113,8 @@ function Summary({ request }: { request: AccessRequest }) {
 }
 
 const FIELD =
-  "border-white/15 bg-white/[0.06] text-white shadow-none placeholder:text-white/35 hover:border-white/30 focus-visible:border-signal-orange focus-visible:ring-signal-orange/25 aria-invalid:border-signal-orange aria-invalid:ring-signal-orange/25";
-const LABEL = "text-xs text-white/70";
+  "border-white/15 bg-white/[0.06] text-white shadow-none placeholder:text-white/65 hover:border-white/30 focus-visible:border-signal-orange focus-visible:ring-signal-orange/25 aria-invalid:border-signal-orange aria-invalid:ring-signal-orange/25";
+const LABEL = "text-xs text-white/65";
 
 function RequestForm({ project }: { project: string }) {
   const id = useId();
@@ -144,7 +144,7 @@ function RequestForm({ project }: { project: string }) {
   const error = (key: keyof AccessInput) =>
     errors[key] ? (
       <p id={`${id}-${key}-error`} className="flex items-center gap-1.5 text-xs text-signal-orange">
-        <Icon name="error" className="text-[15px]" />
+        <Icon name="error" className="text-sm" />
         {errors[key]}
       </p>
     ) : null;
@@ -186,7 +186,7 @@ function RequestForm({ project }: { project: string }) {
       </div>
 
       <fieldset className="grid gap-2" aria-describedby={described("role")}>
-        <legend className={cn("mb-2 font-sans font-semibold tracking-wide uppercase", LABEL)}>I am a</legend>
+        <legend className={cn("mb-2 font-sans font-semibold tracking-wide", LABEL)}>I am a</legend>
         <div className="flex flex-wrap gap-2">
           {(Object.keys(ACCESS_ROLES) as (keyof typeof ACCESS_ROLES)[]).map((role, i) => (
             <label key={role} className="cursor-pointer">
@@ -211,7 +211,7 @@ function RequestForm({ project }: { project: string }) {
       <div className="grid gap-2">
         <div className="flex items-baseline justify-between gap-3">
           <Label htmlFor={`${id}-reason`} className={LABEL}>Why do you want to read it?</Label>
-          <span className="text-xs text-white/45 tabular-nums">
+          <span className="text-xs text-white/65 tabular-nums">
             {input.reason.trim().length}/{REASON_MAX}
           </span>
         </div>
@@ -236,7 +236,7 @@ function RequestForm({ project }: { project: string }) {
       )}
 
       <button type="submit" className={cn(btn.gold, "self-start")}>
-        <Icon name="send" className="text-[18px]" />
+        <Icon name="send" className="text-lg" />
         Send request
       </button>
     </form>
