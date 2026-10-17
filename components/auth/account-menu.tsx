@@ -8,6 +8,7 @@ import { CircleUserRound, Gamepad2, LogIn, LogOut, PencilLine, UserPlus, UsersRo
 import { ROLES } from "@/data/auth";
 import { signOut, useAuth } from "@/lib/auth/client";
 import { formatPhone, initialsOf } from "@/lib/auth/validate";
+import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 
 /** Items on the gold menu: ink text, an ink field under the pointer. */
@@ -46,19 +47,26 @@ export function AccountAvatar({
   );
 }
 
+/** The name a greeting uses: the first word, without a "Dr." or "Md." in front. */
+export function firstName(name: string) {
+  return name.trim().replace(/^(ডা\.|ড\.|dr\.?|md\.?|মো\.)\s*/i, "").split(/\s+/)[0] ?? name;
+}
+
 /**
  * The account control in a header: a sign-in link when signed out, an
  * avatar with a menu when signed in. Before the browser session has been
  * read it renders the signed-out look at the same size, so nothing shifts.
+ * `chip`: the site header's wide form, the picture and the first name in
+ * one pill (signed in only; signed out, the header shows its own buttons).
  */
-export function AccountMenu({ variant = "site", className }: { variant?: "site" | "media"; className?: string }) {
+export function AccountMenu({ variant = "site", className }: { variant?: "site" | "media" | "chip"; className?: string }) {
   const { ready, account } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
   const size = variant === "site" ? "size-10" : "size-9";
 
   if (!ready || !account) {
-    return variant === "site" ? (
+    return variant !== "media" ? (
       <Link
         href={loginHref(pathname)}
         aria-label="সাইন ইন — Kandari Profile"
@@ -81,21 +89,36 @@ export function AccountMenu({ variant = "site", className }: { variant?: "site" 
   }
 
   const role = ROLES.find((r) => r.id === account.role);
+  const first = firstName(account.name);
 
   return (
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger
-        className={cn("relative shrink-0 rounded-full focus-visible:ring-2 focus-visible:ring-bd-green focus-visible:ring-offset-2 focus-visible:outline-none", className)}
-        aria-label={`অ্যাকাউন্ট মেনু — ${account.name}`}
-      >
-        <AccountAvatar
-          name={account.name}
-          photo={account.photo}
-          sizes="48px"
-          className={cn(size, "text-base transition-[scale] duration-200 hover:scale-105 active:scale-95", variant === "site" ? "ring-2 ring-text-primary" : "ring-2 ring-white")}
-        />
-        <span className={cn("absolute right-0 bottom-0 size-2.5 rounded-full bg-emerald-500 ring-2", variant === "site" ? "ring-signal-orange" : "ring-white")} aria-hidden />
-      </DropdownMenu.Trigger>
+      {variant === "chip" ? (
+        <DropdownMenu.Trigger
+          className={cn(
+            "group inline-flex h-10 shrink-0 items-center gap-2 rounded-full bg-white/8 py-1 pr-3.5 pl-1 text-sm font-bold text-white ring-1 ring-white/20 transition-colors duration-200 hover:bg-white/14 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none data-[state=open]:bg-white/14",
+            className,
+          )}
+          aria-label={`অ্যাকাউন্ট মেনু — ${account.name}`}
+        >
+          <AccountAvatar name={account.name} photo={account.photo} sizes="32px" className="size-8 text-sm ring-2 ring-signal-orange" />
+          <span className={cn("max-w-32 truncate", /[ঀ-৿]/.test(first) && "font-bengali")}>{first}</span>
+          <Icon name="expand_more" className="text-[18px] text-signal-orange transition-transform duration-200 group-data-[state=open]:rotate-180" />
+        </DropdownMenu.Trigger>
+      ) : (
+        <DropdownMenu.Trigger
+          className={cn("relative shrink-0 rounded-full focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:ring-offset-2 focus-visible:outline-none", className)}
+          aria-label={`অ্যাকাউন্ট মেনু — ${account.name}`}
+        >
+          <AccountAvatar
+            name={account.name}
+            photo={account.photo}
+            sizes="48px"
+            className={cn(size, "text-base transition-[scale] duration-200 hover:scale-105 active:scale-95", variant === "site" ? "ring-2 ring-text-primary" : "ring-2 ring-white")}
+          />
+          <span className={cn("absolute right-0 bottom-0 size-2.5 rounded-full bg-emerald-500 ring-2", variant === "site" ? "ring-signal-orange" : "ring-white")} aria-hidden />
+        </DropdownMenu.Trigger>
+      )}
       <DropdownMenu.Portal>
         <DropdownMenu.Content
           align="end"

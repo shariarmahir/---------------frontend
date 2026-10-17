@@ -10,7 +10,6 @@ import { Dialog } from "radix-ui";
 import { AccountMenu, AccountSheetLinks, loginHref } from "@/components/auth/account-menu";
 import { RecordDialog } from "@/components/record/record-dialog";
 import { Icon } from "@/components/ui/icon";
-import { SignalSeam } from "@/components/ui/section-kit";
 import { useAuth } from "@/lib/auth/client";
 import { LabelText } from "@/components/brand/kandari-wordmark";
 import { LABEL_TEXT } from "@/data/logo-text";
@@ -159,21 +158,22 @@ export function BrandLogo({ className, priority = false }: { className?: string;
 }
 
 /**
- * Header logo on its own gold plate. The artwork's "Kandari" green and
- * "Lab." black sink into the navy bar; on its own gold they read as they
- * were drawn, the way the footer shows them. Below lg it sits in the single
- * 64px row; from lg it stands in its own column spanning both rows.
+ * Header logo, bare on the navy: no plate, the mark itself large and traced
+ * in a gold outline with a soft lift (`.logo-on-navy`), so the "Kandari"
+ * green and "Lab." black hold their edge. Below lg it sits in the single
+ * 64px row; from lg it stands in its own column spanning both rows, 76px
+ * tall in the 120px bar.
  */
 function BrandLockup() {
   return (
     <Link
       href="/"
       title="Kandari-Lab Homepage"
-      className="group flex min-w-0 shrink-0 items-center rounded-xl bg-signal-orange px-2.5 py-1 shadow-[0_8px_20px_-10px_rgb(0_0_0/0.6)] select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-bdnavy-900 lg:rounded-2xl lg:px-4 lg:py-2"
+      className="group flex min-w-0 shrink-0 items-center rounded-lg select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:ring-offset-4 focus-visible:ring-offset-bdnavy-900"
     >
       <BrandLogo
         priority
-        className="h-9 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100 sm:h-10 lg:h-15"
+        className="logo-on-navy h-11 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100 lg:h-19"
       />
     </Link>
   );
@@ -181,7 +181,8 @@ function BrandLockup() {
 
 /**
  * The right end of the tab row: log in and sign up while signed out (gold
- * for the sign-up), the profile once signed in.
+ * for the sign-up); once signed in, the account itself, picture and first
+ * name, opening the account menu.
  */
 function AuthActions() {
   const { ready, account } = useAuth();
@@ -189,14 +190,7 @@ function AuthActions() {
   const quiet =
     "inline-flex h-9 items-center gap-1.5 rounded-lg px-3 text-sm font-bold whitespace-nowrap text-white transition-colors duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none";
 
-  if (ready && account) {
-    return (
-      <Link href="/account" className={cn(quiet, "ring-1 ring-white/20")}>
-        <Icon name="account_circle" className="text-[18px] text-signal-orange" />
-        My Profile
-      </Link>
-    );
-  }
+  if (ready && account) return <AccountMenu variant="chip" />;
   return (
     <>
       <Link href={loginHref(pathname)} className={quiet}>
@@ -313,9 +307,6 @@ export function SiteHeader() {
   const activeHref = clickedHref ?? pathHref ?? navLinks[0].href;
   const setActiveHref = (href: string) => setClicked({ href, path: pathname });
   const [recordOpen, setRecordOpen] = useState(false);
-  // Signed out on a wide screen, log in / sign up sit in the tab row; the round sign-in face is for phones.
-  const { ready, account } = useAuth();
-  const signedIn = ready && Boolean(account);
 
   return (
     // Full width and flush with the top, in the cards' navy. Inside, one grid:
@@ -395,8 +386,8 @@ export function SiteHeader() {
                 <span className="mt-1 font-sans text-xs font-medium whitespace-nowrap text-signal-orange">Prioritize your joy.</span>
               </Link>
 
-              {/* Account — the signed-in avatar menu; signed out, a sign-in face on phones only. */}
-              <AccountMenu className={signedIn ? undefined : "lg:hidden"} />
+              {/* Account on phones (avatar menu or sign-in face); from lg it lives at the end of the tab row. */}
+              <AccountMenu className="lg:hidden" />
 
               {/* Mobile menu — the nav row below is desktop-only. A short gold
                   pop-up that opens from the button's corner, items rising in
@@ -420,8 +411,8 @@ export function SiteHeader() {
                     className="menu-pop fixed top-3 right-3 z-50 flex max-h-[calc(100dvh-1.5rem)] w-[min(21rem,calc(100vw-1.5rem))] flex-col gap-2.5 overflow-y-auto rounded-3xl bg-bdnavy-900 p-3.5 text-white ring-1 ring-white/12 shadow-[0_28px_60px_-18px_rgb(0_0_0/0.7)] focus:outline-none lg:hidden"
                   >
                     <div className="menu-item flex items-center justify-between" style={{ "--i": 0 } as CSSProperties}>
-                      <Dialog.Title className="rounded-xl bg-signal-orange px-2.5 py-1">
-                        <BrandLogo className="h-9" />
+                      <Dialog.Title>
+                        <BrandLogo className="logo-on-navy h-10" />
                       </Dialog.Title>
                       <Dialog.Close
                         aria-label="Close menu"
@@ -532,7 +523,20 @@ export function SiteHeader() {
               the bar's bottom edge, and the account actions at the right
               end; over it, the running hairline that parts the rows. ───── */}
           <div className="relative col-start-2 hidden h-full items-stretch justify-between gap-6 lg:flex">
-            <SignalSeam className="top-0" />
+            {/* The gold seam: it starts at the logo (reaching back across the
+                column gap) and ends at the bar's far edge, a node at each
+                end. A comet, a gold head with a fading tail, leaves the logo
+                node, runs the length of the line and lands on the far node,
+                which flares as it arrives. */}
+            <span aria-hidden className="pointer-events-none absolute top-0 right-0 -left-10 h-px bg-signal-orange/30 xl:-left-14" />
+            <span aria-hidden className="pointer-events-none absolute -top-1 right-0 -left-10 h-2 overflow-hidden xl:-left-14">
+              <span className="nav-comet absolute top-1/2 flex -translate-x-full -translate-y-1/2 items-center">
+                <span className="h-0.5 w-24 rounded-full bg-linear-to-r from-transparent to-signal-orange" />
+                <span className="size-1.5 shrink-0 rounded-full bg-signal-orange" />
+              </span>
+            </span>
+            <span aria-hidden className="nav-seam-node absolute top-0 -left-10 size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-signal-orange xl:-left-14" />
+            <span aria-hidden className="nav-seam-end absolute top-0 right-0 size-1.5 translate-x-1/2 -translate-y-1/2 rounded-full bg-signal-orange" />
             <nav aria-label="Sections" className="no-scrollbar -ml-3 min-w-0 overflow-x-auto xl:-ml-3.5">
               <SectionNav links={navLinks} activeHref={activeHref} onPick={setActiveHref} />
             </nav>
