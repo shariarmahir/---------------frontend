@@ -16,7 +16,7 @@ export function FlagshipsSection() {
         lead="Our own healthcare products, designed and built inside Bangladesh — and the same engineering in AI, automation, IoT and software, built for your factory, office, farm or app."
       />
 
-      <TrackHead n="01" title="Healthcare products" titleBn="স্বাস্থ্যসেবার পণ্য — আমাদের নিজেদের" href="/products" link="All products" />
+      <TrackHead n="01" title="Our products" titleBn="আমাদের নিজেদের পণ্য — স্বাস্থ্যসেবা থেকে শিক্ষিতদের মিডিয়া" href="/products" link="All products" />
       <ProductsShowcase poster />
 
       <div className="mt-16 sm:mt-20">

@@ -9,6 +9,9 @@ import { Icon } from "@/components/ui/icon";
 import { getProduct, type Product } from "@/data/products";
 import { services, type ServiceMotion } from "@/data/services";
 import type { SceneKind } from "./motion-scene";
+import { LabelText } from "@/components/brand/kandari-wordmark";
+import { LABEL_TEXT } from "@/data/logo-text";
+import { PosterStrip, type PosterFace, type PosterItem } from "./poster-strip";
 import { ShowcaseCard, type CardTone } from "./showcase-card";
 
 /** A track's header: a big index, the English and Bangla names, and a link out. */
@@ -52,8 +55,61 @@ function GoldenTwoHours() {
   );
 }
 
+/**
+ * The home page's product posters: the three healthcare products, each
+ * photo with its own motion layer and status chips, then শিক্ষিতদের মিডিয়া,
+ * whose hill plays a short film of its core loop. Poster copy is short on
+ * purpose: the face carries a headline and one line, the panel the rest.
+ */
+const PRODUCT_POSTERS: Record<string, Pick<PosterItem, "face" | "tagline" | "scene" | "chips"> & { position?: string }> = {
+  aponjon: { face: "navy", tagline: "Catch the silent warning early", scene: "ecg", chips: ["Prototype", "ECG · SpO₂ · Stress"], position: "62% 50%" },
+  swasti: { face: "gold", tagline: "A doctor's first opinion, in Bangla", scene: "voice", chips: ["Beta", "বাংলা ভয়েস"], position: "50% 22%" },
+  "smart-pharmacy": { face: "green", tagline: "The village drug shop, now a clinic", scene: "grid", chips: ["Pilot", "১ গ্রাম · ১ কেন্দ্র"], position: "50% 45%" },
+};
+
+function productPosters(): PosterItem[] {
+  const items: PosterItem[] = ["aponjon", "swasti", "smart-pharmacy"].flatMap((slug) => {
+    const p = getProduct(slug);
+    const look = PRODUCT_POSTERS[slug];
+    if (!p || !look) return [];
+    return [
+      {
+        id: p.slug,
+        anchorId: p.slug === "swasti" ? "swasti-section" : undefined,
+        face: look.face,
+        title: p.name.toUpperCase(),
+        tagline: look.tagline,
+        name: `${p.name} · ${p.nameBn}`,
+        nameText: p.name,
+        pitch: p.tagline,
+        href: `/products/${p.slug}`,
+        image: { src: p.image.src, alt: p.image.alt, position: look.position },
+        scene: look.scene,
+        chips: look.chips,
+        note: `${p.category} · ${p.stage}`,
+      },
+    ];
+  });
+  // শিক্ষিতদের মিডিয়া — the skill-first social platform (CLAUDE.md §1), a
+  // product of its own beside the healthcare line.
+  items.push({
+    id: "media",
+    face: "white",
+    title: <LabelText text={LABEL_TEXT.media} className="text-[2.25rem] leading-none" />,
+    tagline: "Post a skill. Get verified. Get hired.",
+    name: <LabelText text={LABEL_TEXT.media} className="leading-none" />,
+    nameText: "শিক্ষিতদের মিডিয়া",
+    pitch: "The skill-first social platform: show what you can do, rate yourself, let the community verify it, and get hired at fair pay.",
+    href: "/media",
+    scene: "media-reel",
+    note: "Members only · Prioritize your joy.",
+  });
+  return items;
+}
+
 /** Healthcare products: Aponjon, SWASTI and the Smart Pharmacy, three cards of one size. */
 export function ProductsShowcase({ poster }: { poster?: boolean }) {
+  if (poster) return <PosterStrip label="Products" items={productPosters()} />;
   const aponjon = getProduct("aponjon");
   const swasti = getProduct("swasti");
   const pharmacy = getProduct("smart-pharmacy");
@@ -101,6 +157,28 @@ const SERVICE_TONES: CardTone[] = ["green", "ink", "gold", "white"];
  * to the Kandari Profile sign-up, the one way to reach the team today.
  */
 export function ServicesShowcase({ on = "home", poster }: { on?: "home" | "products"; poster?: boolean }) {
+  // The home page's poster strip (banglalink.net's "Dive Into Digital" cards).
+  if (poster) {
+    const faces: PosterFace[] = ["green", "gold", "navy", "white"];
+    return (
+      <PosterStrip
+        label="Services"
+        items={services.map((s, i) => ({
+          id: s.id,
+          anchorId: `service-${s.id}`,
+          face: faces[i % faces.length],
+          title: s.poster.title,
+          tagline: s.poster.tagline,
+          name: s.name,
+          nameText: s.name,
+          pitch: s.pitch,
+          href: on === "home" ? `/products#service-${s.id}` : "/#kandari-profile",
+          image: s.image,
+          note: s.image.credit,
+        }))}
+      />
+    );
+  }
   return (
     <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
       {services.map((s, i) => (

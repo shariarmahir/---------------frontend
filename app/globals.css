@@ -245,7 +245,7 @@
   /* `@theme inline` bakes values into utilities, so the offset points at a
      runtime variable (set in :root below) that can change per breakpoint. */
   --spacing-header: var(--header-offset);
-  --spacing-header-lg: 10.25rem;
+  --spacing-header-lg: 7.5rem;
 
   --color-title: var(--title);
   --color-signal: var(--signal);
@@ -310,15 +310,10 @@
   cursor: pointer;
 }
 
-/* Header offset below lg (see --spacing-header): phones ~87px card;
-   tablets have the taller logo row but no nav row yet — ~101px card. */
+/* Header offset below lg (see --spacing-header): the full-width bar is one
+   64px row there (the tabs fold into the menu); from lg it is 64 + 56px. */
 :root {
-  --header-offset: 5.75rem;
-}
-@media (width >= 40rem) {
-  :root {
-    --header-offset: 6.5rem;
-  }
+  --header-offset: 4rem;
 }
 
 :root {
@@ -580,13 +575,14 @@
   );
 }
 
-/* Site header — a solid gold card, the same surface as the home page's
-   gold pillar card. */
-@utility header-gold {
-  background-color: var(--color-signal-orange);
+/* The header bar: full width, the Pixel-Map cards' navy #0B1849 (Mahir,
+   2026-10-15), a hairline of white so it holds an edge over the pitch-black
+   page as it scrolls under, and a soft drop below that. */
+@utility header-bar {
+  background-color: var(--color-bdnavy-900);
   box-shadow:
-    0 1px 2px rgb(3 32 23 / 0.08),
-    0 18px 40px -18px color-mix(in oklab, var(--color-bdnavy-500) 60%, transparent);
+    inset 0 -1px 0 rgb(255 255 255 / 0.08),
+    0 10px 24px -14px rgb(0 0 0 / 0.8);
 }
 
 /* A gloss that crosses the header every few seconds. */
@@ -1059,10 +1055,46 @@
 .ms-root:hover .ms-beam,
 .ms-root:focus-within .ms-beam { opacity: 1; }
 
+/* শিক্ষিতদের মিডিয়া's poster film (components/showcase/media-reel.tsx): one
+   ten-second loop in four chapters. Each .mr-atN layer enters at its
+   chapter (0 / 25 / 50 / 72%) and every layer leaves together at the end,
+   so the loop restarts clean. Resting state = fully drawn, for reduced motion. */
+@keyframes mr-at0 { 0% { opacity: 0; transform: translateY(14px) scale(0.96); } 5%, 92% { opacity: 1; transform: none; } 98%, 100% { opacity: 0; transform: translateY(-6px); } }
+@keyframes mr-at1 { 0%, 25% { opacity: 0; transform: scale(0.5); } 30%, 92% { opacity: 1; transform: none; } 98%, 100% { opacity: 0; } }
+@keyframes mr-at2 { 0%, 50% { opacity: 0; transform: scale(0.5); } 55%, 92% { opacity: 1; transform: none; } 98%, 100% { opacity: 0; } }
+@keyframes mr-at3 { 0%, 72% { opacity: 0; transform: scale(0.6); } 77%, 92% { opacity: 1; transform: none; } 98%, 100% { opacity: 0; } }
+@keyframes mr-cursor { 0%, 70% { opacity: 0; transform: translate(70px, 64px); } 73% { opacity: 1; transform: translate(70px, 64px); } 78% { opacity: 1; transform: none; } 79.5% { transform: scale(0.82); } 81%, 90% { opacity: 1; transform: none; } 94%, 100% { opacity: 0; transform: none; } }
+@keyframes mr-click { 0%, 79% { opacity: 0; transform: scale(0.3); } 80% { opacity: 0.9; } 87%, 100% { opacity: 0; transform: scale(1.7); } }
+@keyframes mr-stamp { 0%, 81% { opacity: 0; transform: scale(1.9); } 84.5% { opacity: 1; transform: scale(0.93); } 86.5%, 92% { opacity: 1; transform: none; } 98%, 100% { opacity: 0; transform: none; } }
+@keyframes mr-chapter { 0% { opacity: 0; transform: translateY(6px); } 3%, 22% { opacity: 1; transform: none; } 25%, 100% { opacity: 0; } }
+@keyframes mr-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+.ms-root .mr {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation-duration: 10s;
+  animation-iteration-count: infinite;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-delay: calc(var(--d, 0) * 1ms);
+}
+.ms-root .mr-at0 { animation-name: mr-at0; }
+.ms-root .mr-at1 { animation-name: mr-at1; }
+.ms-root .mr-at2 { animation-name: mr-at2; }
+.ms-root .mr-at3 { animation-name: mr-at3; }
+.ms-root .mr-cursor { animation-name: mr-cursor; transform-origin: 0 0; opacity: 0; }
+.ms-root .mr-click { animation-name: mr-click; opacity: 0; }
+.ms-root .mr-stamp { animation-name: mr-stamp; }
+.ms-root .mr-chapter { animation-name: mr-chapter; animation-timing-function: ease-out; }
+.ms-root .mr-progress { transform-box: fill-box; transform-origin: left center; animation: mr-progress 10s linear infinite; }
+.mr-still { display: none; }
+
 .ms-root[data-paused="true"] * { animation-play-state: paused !important; }
 @media (prefers-reduced-motion: reduce) {
   .ms-root * { animation: none !important; }
   .ms-beam { display: none; }
+  /* The film stands still on its finished frame, one summary caption. */
+  .ms-root .mr-chapter { display: none; }
+  .ms-root .mr-still { display: inline; }
 }
 
 /* Platform films (components/sections/platforms): story players built from
@@ -2400,3 +2432,100 @@ body:has(.media-shell) .catalogue [data-slot="form-message"] {
 /* The classroom is a working screen: no ruler, and no scrollbar either. */
 #academy-main:has(.classroom-room) { scrollbar-width: none; }
 #academy-main:has(.classroom-room)::-webkit-scrollbar { display: none; width: 0; height: 0; }
+
+/* Charter card motion graphics (components/sections/charter-viz.tsx): the
+   loops pause while their slide is away and stand still under reduced
+   motion; the bars and counters are drawn by transitions instead. */
+.ch-viz * { transform-box: fill-box; }
+.ch-viz .ch-orbit, .ch-viz .ch-orbit-rev, .ch-viz .ch-spin, .ch-viz .ch-spin-rev,
+.ch-viz .ch-spin-slow { transform-box: view-box; transform-origin: 50% 50%; }
+.ch-viz .ch-upright, .ch-viz .ch-breathe, .ch-viz .ch-ping { transform-origin: 50% 50%; }
+.ch-viz .ch-ping { opacity: 0; }
+@keyframes ch-turn { to { transform: rotate(360deg); } }
+@keyframes ch-unturn { to { transform: rotate(-360deg); } }
+@keyframes ch-ping { from { transform: scale(0.6); opacity: 0.9; } to { transform: scale(2); opacity: 0; } }
+@keyframes ch-breathe { 0%, 100% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.35); opacity: 1; } }
+@keyframes ch-flow { to { stroke-dashoffset: -28; } }
+@keyframes ch-run { to { stroke-dashoffset: -100; } }
+@keyframes ch-travel { to { offset-distance: 100%; } }
+@keyframes ch-signal { from { stroke-dashoffset: 8; } to { stroke-dashoffset: -100; } }
+@keyframes ch-shimmer { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+@keyframes ch-caret { 50% { opacity: 0; } }
+.ch-viz .ch-travel { offset-rotate: 0deg; offset-distance: 0%; }
+.ch-viz .ch-travel:nth-of-type(2) { offset-distance: 50%; }
+.ch-bar { position: relative; overflow: hidden; }
+@media (prefers-reduced-motion: no-preference) {
+  .ch-viz .ch-orbit { animation: ch-turn 40s linear infinite; }
+  .ch-viz .ch-orbit .ch-upright { animation: ch-unturn 40s linear infinite; }
+  .ch-viz .ch-orbit-rev { animation: ch-unturn 56s linear infinite; }
+  .ch-viz .ch-spin-slow { animation: ch-turn 24s linear infinite; }
+  .ch-viz .ch-spin { animation: ch-turn 6s linear infinite; }
+  .ch-viz .ch-spin-rev { animation: ch-unturn 9s linear infinite; }
+  .ch-viz .ch-ping { animation: ch-ping 2.8s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 0.9s) infinite; }
+  .ch-viz .ch-breathe { animation: ch-breathe 3.2s ease-in-out calc(var(--i) * -0.4s) infinite; }
+  .ch-viz .ch-flow { animation: ch-flow 1.4s linear calc(var(--i) * -0.23s) infinite; }
+  .ch-viz .ch-run { animation: ch-run 3.6s linear infinite; }
+  .ch-viz .ch-travel { animation: ch-travel 7s linear calc(var(--i) * -3.5s) infinite; }
+  .ch-viz .ch-signal { animation: ch-signal 2.6s cubic-bezier(0.4, 0, 0.2, 1) calc(var(--i) * 0.33s) infinite; }
+  .ch-bar::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.45), transparent);
+    animation: ch-shimmer 2.6s ease-in-out infinite;
+  }
+  .ch-caret { animation: ch-caret 1s steps(2) infinite; }
+  /* Important: the shorthands above reset play-state, and the upright
+     labels must stop in step with their ring or they drift out of line. */
+  .ch-viz[data-paused="true"] *, .ch-viz[data-paused="true"] *::after { animation-play-state: paused !important; }
+}
+
+/* The proof card's colour glow: two soft pools of the card's accents
+   (`--glow-a`, `--glow-b`, set per card) drifting behind its motion graphic.
+   Radial gradients, not blur filters, so the drift stays on the compositor. */
+.ch-aura { position: absolute; inset: 0; pointer-events: none; }
+.ch-aura::before, .ch-aura::after { content: ""; position: absolute; aspect-ratio: 1; border-radius: 9999px; will-change: translate, scale; }
+.ch-aura::before { width: 78%; right: -6%; top: 2%; background: radial-gradient(closest-side, var(--glow-a), transparent); }
+.ch-aura::after { width: 52%; right: 34%; bottom: -14%; background: radial-gradient(closest-side, var(--glow-b), transparent); }
+@keyframes ch-drift-a { 50% { translate: -10% 8%; scale: 1.12; } }
+@keyframes ch-drift-b { 50% { translate: 16% -14%; scale: 0.88; } }
+@media (prefers-reduced-motion: no-preference) {
+  .ch-aura::before { animation: ch-drift-a 14s ease-in-out infinite; }
+  .ch-aura::after { animation: ch-drift-b 17s ease-in-out infinite; }
+  [data-paused="true"] > .ch-aura::before, [data-paused="true"] > .ch-aura::after { animation-play-state: paused; }
+}
+
+/* The charter carousel's arrows: a gentle push in their own direction. */
+@keyframes ch-nudge { 0%, 100% { translate: 0 0; } 50% { translate: calc(var(--dir, 1) * 5px) 0; } }
+@media (prefers-reduced-motion: no-preference) {
+  .ch-nudge { animation: ch-nudge 1.6s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
+}
+
+/* The header's current-tab bar: a light runs along the gold every few
+   seconds so the pointer reads as live, not painted on. */
+.nav-bar { overflow: hidden; }
+@media (prefers-reduced-motion: no-preference) {
+  .nav-bar::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.75), transparent);
+    animation: nav-bar-run 3.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  }
+}
+@keyframes nav-bar-run {
+  0% { translate: -110% 0; }
+  45%, 100% { translate: 260% 0; }
+}
+
+/* The logo PNG on the navy header: a 1px gold outline round its
+   silhouette so the dark "Kandari" and "Lab." letters keep their edge. */
+.logo-on-navy {
+  filter:
+    drop-shadow(1px 0 0 var(--color-signal-orange))
+    drop-shadow(-1px 0 0 var(--color-signal-orange))
+    drop-shadow(0 1px 0 var(--color-signal-orange))
+    drop-shadow(0 -1px 0 var(--color-signal-orange));
+}

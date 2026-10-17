@@ -2,6 +2,7 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { SmoothScroll } from "@/components/layout/smooth-scroll";
 import { SiteHeader } from "@/components/layout/site-header";
 import { AiWidget } from "@/components/ui/ai-widget";
+import { CharterSection } from "@/components/sections/charter-section";
 import { FlagshipsSection } from "@/components/sections/flagships-section";
 import { HeroSection } from "@/components/sections/hero-section";
 import { KandariProfileSection } from "@/components/sections/kandari-profile-section";
@@ -41,6 +42,9 @@ export default function Home() {
         <SpotlightBand />
         {/* Pitch-black ground, solid colours only (Mahir, 2026-09-30). */}
         <div className="relative">
+          {/* Problem, challenge, vision, mission, goal and impact: one card,
+              a new slide every ten seconds. */}
+          <CharterSection />
           <PixelThesisSection />
           <FlagshipsSection />
           <PlatformsSection />

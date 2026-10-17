@@ -72,6 +72,17 @@ export const btn = {
     "focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none",
     LIFT,
   ),
+  /** On a gold field the buttons are navy, never gold on gold (Mahir, 2026-10-17). */
+  navy: cn(
+    "inline-flex items-center justify-center gap-2 rounded-xl bg-bdnavy-900 px-6 py-3.5 font-grotesk text-xs font-bold text-white uppercase shadow-[0_12px_24px_-12px_rgb(11_24_73/0.8)] hover:bg-bdnavy-700 sm:text-sm",
+    "focus-visible:ring-2 focus-visible:ring-bdnavy-900 focus-visible:ring-offset-2 focus-visible:ring-offset-signal-orange focus-visible:outline-none",
+    LIFT,
+  ),
+  navyOutline: cn(
+    "inline-flex items-center justify-center gap-2 rounded-xl bg-bdnavy-900/[0.06] px-6 py-3.5 font-grotesk text-xs font-bold text-bdnavy-900 uppercase ring-2 ring-bdnavy-900 ring-inset hover:bg-bdnavy-900/12 sm:text-sm",
+    "focus-visible:ring-offset-2 focus-visible:ring-offset-signal-orange focus-visible:outline-none",
+    LIFT,
+  ),
 };
 
 /** Hover lift shared by the white tiles. */

@@ -16,14 +16,12 @@ import { NAZRUL_MOTTO, navLinksFor, type NavLink } from "@/data/navigation";
 import { cn } from "@/lib/utils";
 
 /*
- * Direction: the header is a solid gold card (the action colour, like the
- * home page's "Rural Tele-Network" pillar), two rows: brand and actions,
- * then the section nav. The old ink announcement strip and the centre
- * national indicator moved to the home spotlight band
- * (components/sections/spotlight-band.tsx).
- * Ink text reads at ~8.9:1 on the gold; green and red text do not (≈3.5:1
- * and 2.4:1), so header buttons are ink text on the gold with a thin ink ring, no
- * white fills. The logo sits bare.
+ * Direction: booking.com's header (Mahir, 2026-10-15). A full-width bar in
+ * booking blue, flush with the top of the window, its contents held to the
+ * page's content column. Row one: the logo on the left; the civic actions,
+ * the feed and the account on the right. Row two (lg and up): the section
+ * tabs alone, each an icon and a label, the current one a white-outlined
+ * pill. Below lg the second row folds into the pop-up menu.
  */
 
 /**
@@ -50,13 +48,13 @@ function NavLabel({ link, compact }: { link: NavLink; compact?: boolean }) {
   return (
     <span>
       {before}
-      <span className="text-national-crimson">{link.accentWord}</span>
+      <span className="text-crimson-bright">{link.accentWord}</span>
       {after.join(link.accentWord)}
     </span>
   );
 }
 
-/** "বাংলাদেশ সমস্যা ও সমাধান" in the label face, in the header's ink. */
+/** "বাংলাদেশ সমস্যা ও সমাধান" in the label face. */
 function DeshLabel({ className }: { className?: string }) {
   return (
     <span className={cn("flex items-center gap-[0.3em]", className)}>
@@ -66,6 +64,47 @@ function DeshLabel({ className }: { className?: string }) {
     </span>
   );
 }
+
+/**
+ * A Material Symbol for each tab, matched on the link's path or anchor so
+ * every page's nav set gets one without the data carrying it. Most specific
+ * patterns first; a link with no match shows its label alone.
+ */
+const TAB_ICONS: [pattern: RegExp, icon: string][] = [
+  [/#overview-mission$/, "flag"],
+  [/#national-index$/, "monitoring"],
+  [/kandari-profile$/, "badge"],
+  [/\/products\/aponjon/, "watch"],
+  [/\/products\/swasti/, "smartphone"],
+  [/\/products\/smart-pharmacy/, "local_pharmacy"],
+  [/\/products/, "inventory_2"],
+  [/\/research\/contents/, "toc"],
+  [/\/research\/submit/, "upload_file"],
+  [/\/research\/changes/, "history"],
+  [/\/research/, "science"],
+  [/\/team#founder/, "person"],
+  [/\/team#members/, "diversity_3"],
+  [/\/team#fellowship/, "school"],
+  [/\/team/, "groups"],
+  [/\/bangladesh\/crisis/, "crisis_alert"],
+  [/\/bangladesh\/shield/, "shield"],
+  [/\/bangladesh\/problems/, "grid_view"],
+  [/\/bangladesh\/solutions/, "lightbulb"],
+  [/\/bangladesh/, "history_edu"],
+  [/\/cholo-bangladesh-gori\/mission/, "flag"],
+  [/\/cholo-bangladesh-gori\/play/, "sports_esports"],
+  [/\/cholo-bangladesh-gori\/lab/, "science"],
+  [/\/cholo-bangladesh-gori\/evidence/, "fact_check"],
+  [/\/cholo-bangladesh-gori\/progress/, "trending_up"],
+  [/\/cholo-bangladesh-gori/, "sports_esports"],
+  [/#day$/, "schedule"],
+  [/#divisions$/, "map"],
+  [/#rights$/, "gavel"],
+  [/#responsibility$/, "handshake"],
+  [/#self-check$/, "self_improvement"],
+];
+
+const tabIcon = (href: string) => TAB_ICONS.find(([pattern]) => pattern.test(href))?.[1];
 
 /** Loudspeaker glyph for the protest link. */
 function ProtestGlyph({ className }: { className?: string }) {
@@ -108,7 +147,7 @@ export function BrandLogo({ className, priority = false }: { className?: string;
       alt="কাণ্ডারী-ল্যাব (Kandari Lab)"
       width={1600}
       height={967}
-      sizes="(min-width: 1024px) 133px, (min-width: 640px) 106px, 93px"
+      sizes="(min-width: 1024px) 113px, (min-width: 640px) 73px, 66px"
       priority={priority}
       // The artwork's own 1600:967 ratio, reserved before load so nothing shifts.
       className={cn("aspect-1600/967 w-auto shrink-0 object-contain", className)}
@@ -117,29 +156,34 @@ export function BrandLogo({ className, priority = false }: { className?: string;
 }
 
 /**
- * Header logo, straight on the gold bar: no tile and no added outline, just
- * the artwork. Sizes are 56 / 64 / 80px, so --spacing-header in globals.css
- * still holds.
+ * Header logo, straight on the navy bar with no tile. Below lg it sits in
+ * the single 64px row (40px, 44px from sm); from lg it stands in its own
+ * column spanning both rows, 68px tall in the 120px bar, so the mark reads
+ * at the scale premium two-tier headers give theirs. The artwork's
+ * "Kandari" green and "Lab." black would sink into the navy, so a thin gold
+ * outline (its own gold) traces it.
  */
 function BrandLockup() {
   return (
     <Link
       href="/"
       title="Kandari-Lab Homepage"
-      className="group flex min-w-0 shrink-0 items-center rounded-lg select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-text-primary"
+      className="group flex min-w-0 shrink-0 items-center rounded-lg select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-signal-orange"
     >
       <BrandLogo
         priority
-        className="h-14 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100 sm:h-16 lg:h-20"
+        className="logo-on-navy h-10 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100 sm:h-11 lg:h-17"
       />
     </Link>
   );
 }
 
 /**
- * Section links with two sliding pills: an ink pill that marks the current
- * section and a faint one that follows the pointer (or keyboard focus)
- * from link to link.
+ * Section tabs: no fill and no pill, just a bold gold icon and label on the
+ * navy. The current tab is pointed out by a gold bar sitting on the header's
+ * bottom edge; it springs from tab to tab and a light runs along it. On
+ * hover or focus a faint bar grows from the centre of the tab under the
+ * pointer, previewing where the gold one would go.
  */
 function SectionNav({
   links,
@@ -150,60 +194,60 @@ function SectionNav({
   activeHref: string;
   onPick: (href: string) => void;
 }) {
-  const [hovered, setHovered] = useState<string | null>(null);
   const reduce = useReducedMotion();
   const slide: Transition = reduce
     ? { duration: 0 }
-    : { type: "spring", stiffness: 480, damping: 38, mass: 0.7 };
+    : { type: "spring", stiffness: 420, damping: 34, mass: 0.8 };
 
   return (
-    <ul className="flex items-center space-x-0.5 xl:space-x-1.5" onMouseLeave={() => setHovered(null)}>
+    <ul className="flex h-full items-stretch gap-1 xl:gap-3">
       {links.map((link) => {
         const isActive = activeHref === link.href;
+        const icon = tabIcon(link.href);
         return (
-          <li key={link.href}>
+          <li key={link.href} className="flex">
             <a
               href={link.href}
               onClick={() => onPick(link.href)}
-              onMouseEnter={() => setHovered(link.href)}
-              onFocus={() => setHovered(link.href)}
-              onBlur={() => setHovered(null)}
               aria-current={isActive ? "true" : undefined}
               className={cn(
-                "relative isolate flex items-center rounded-lg px-2 py-1.5 text-sm transition-colors duration-200 xl:px-3",
-                "focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:outline-none",
-                isActive ? "font-bold text-signal-orange" : "font-medium text-text-primary",
+                "group relative flex items-center gap-2 px-3 text-[15px] leading-none font-bold whitespace-nowrap text-signal-orange xl:px-3.5",
+                "transition-[color,filter] duration-200 hover:brightness-110",
+                "focus-visible:outline-none focus-visible:after:absolute focus-visible:after:inset-x-1 focus-visible:after:inset-y-2 focus-visible:after:rounded-md focus-visible:after:ring-2 focus-visible:after:ring-signal-orange",
               )}
             >
-              {hovered === link.href && !isActive ? (
-                <motion.span
-                  layoutId="nav-hover"
-                  transition={slide}
-                  aria-hidden
-                  className="absolute inset-0 -z-10 rounded-lg bg-text-primary/10"
+              {icon ? (
+                <Icon
+                  name={icon}
+                  filled={isActive}
+                  className="text-[21px] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-px"
                 />
               ) : null}
-              {isActive ? (
-                <motion.span
-                  layoutId="nav-active"
-                  transition={slide}
-                  aria-hidden
-                  className="absolute inset-0 -z-10 rounded-lg bg-text-primary shadow-ink"
-                />
-              ) : null}
-
               <NavLabel link={link} compact />
 
               {/* The membership link carries an ID tag; keep it on that one link only. */}
               {link.href === "#kandari-profile" ? (
-                <span
-                  className={cn(
-                    "ml-1.5 rounded px-1.5 py-0.5 font-mono text-[9.5px] font-bold uppercase",
-                    isActive ? "bg-signal-orange/20 text-signal-orange" : "bg-text-primary/10 text-text-primary",
-                  )}
-                >
+                <span className="rounded bg-signal-orange px-1.5 py-0.5 font-mono text-[9.5px] font-bold text-bdnavy-900 uppercase">
                   ID
                 </span>
+              ) : null}
+
+              {/* Hover preview: a faint bar grows out from the centre. */}
+              {!isActive ? (
+                <span
+                  aria-hidden
+                  className="absolute inset-x-3 bottom-0 h-0.75 origin-center scale-x-0 rounded-t-full bg-signal-orange/35 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100 group-focus-visible:scale-x-100 motion-reduce:transition-none xl:inset-x-3.5"
+                />
+              ) : null}
+
+              {/* The pointer: one gold bar that springs between tabs. */}
+              {isActive ? (
+                <motion.span
+                  layoutId="nav-bar"
+                  transition={slide}
+                  aria-hidden
+                  className="nav-bar absolute inset-x-3 bottom-0 h-0.75 rounded-t-full bg-signal-orange xl:inset-x-3.5"
+                />
               ) : null}
             </a>
           </li>
@@ -235,37 +279,81 @@ export function SiteHeader() {
   const [recordOpen, setRecordOpen] = useState(false);
 
   return (
-    // The card floats inset from the page edges, so the fixed wrapper is the
-    // full-width track and the <header> inside it is the card. Padding here
-    // rather than on the card keeps the rounded corners clear of the viewport.
-    <div className="fixed inset-x-0 top-0 z-40 px-3 py-2 sm:px-6 sm:py-2.5">
-      <header className="header-gold relative isolate mx-auto w-full max-w-[1360px] overflow-hidden rounded-2xl text-text-primary ring-1 ring-text-primary/15">
-        {/* ── Row 1 — brand and conversion ───────────────────────────── */}
-        <div className="px-4 py-1.5 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between gap-3 sm:gap-4">
-            {/* Left cluster — logo tile, country pill. `min-w-0` so it
-                yields to the action cluster on narrow screens. */}
-            <div className="flex min-w-0 items-center gap-3.5 sm:gap-5 lg:gap-6">
-              <BrandLockup />
-            </div>
+    // Full width and flush with the top, in the cards' navy. Inside, one grid:
+    // the logo in its own column (spanning both rows from lg), the action
+    // row top right, the section tabs under it from the logo's edge.
+    <div className="fixed inset-x-0 top-0 z-40">
+      <header className="header-bar relative isolate w-full text-white">
+        <div className="mx-auto grid w-full max-w-384 grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 px-gutter-x lg:grid-rows-[4rem_3.5rem] lg:gap-x-10 xl:gap-x-14">
+          {/* Brand — one 64px row below lg, both rows from lg. */}
+          <div className="flex h-16 items-center lg:row-span-2 lg:h-full">
+            <BrandLockup />
+          </div>
 
-            {/* Right cluster — feed, account, mobile menu. Below lg the bar
-                keeps only the profile face and the menu button; the feed
-                and the recorder live in the pop-up menu there. */}
-            <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-              {/* Feed link: an ink tile, Bangla name above the tagline. */}
+          {/* ── Row 1 — civic actions, feed, account ──────────────────── */}
+          {/* Below lg the bar keeps only the profile face and the menu
+              button; the feed and the recorder live in the pop-up menu. */}
+          <div className="flex h-16 min-w-0 items-center justify-end gap-2 sm:gap-3">
+              {/* Civic actions: quiet text buttons, the protest link in solid
+                  red (urgency, CLAUDE.md §4.1) and the country page as the
+                  one white button. Desktop only; below lg they live in the
+                  pop-up menu. */}
+              <div className="hidden items-center gap-1 lg:flex xl:gap-2">
+                <button type="button" onClick={() => setRecordOpen(true)} className="inline-flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none">
+                  <span className="relative flex size-2.5">
+                    <span className="absolute inline-flex size-full animate-ping rounded-full bg-red-400 opacity-75 motion-reduce:hidden" />
+                    <span className="relative inline-flex size-2.5 rounded-full bg-red-500 ring-2 ring-red-100" />
+                  </span>
+                  <span className="max-[1279px]:sr-only">Record</span>
+                </button>
+
+                <Link
+                  href="/protibad"
+                  className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-national-crimson px-3.5 text-white transition-colors duration-200 hover:bg-red-700 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+                >
+                  <ProtestGlyph className="size-4" />
+                  <LabelText text={LABEL_TEXT.protibad} className="text-[16px] leading-none" />
+                </Link>
+
+                {/* Civic rights and responsibilities (/nagorik). */}
+                <Link
+                  href="/nagorik"
+                  title="নাগরিক অধিকার ও দায়িত্ব — দিনের হিসাব, অধিকার, প্রত্যেকের দায়িত্ব"
+                  aria-current={pathname === "/nagorik" ? "page" : undefined}
+                  className={cn("inline-flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none", pathname === "/nagorik" && "bg-white/10 ring-1 ring-white")}
+                >
+                  <ShieldCheck className="size-4" aria-hidden />
+                  <LabelText text={LABEL_TEXT.nagorik} className="text-[16px] leading-none" />
+                </Link>
+
+                {/* বাংলাদেশ সমস্যা ও সমাধান — the country page (/bangladesh).
+                    No prefetch: prefetching /bangladesh preloads its carousel
+                    stylesheet on every page, which then sits unused and
+                    raises a console "preloaded but not used" warning. */}
+                <Link
+                  href="/bangladesh"
+                  prefetch={false}
+                  title="বাংলাদেশ সমস্যা ও সমাধান — ইতিহাস, সংকট, ৩২টি সমস্যা ও সমাধান"
+                  aria-current={inDesh ? "page" : undefined}
+                  className={cn(
+                    "inline-flex h-10 items-center rounded-lg bg-white px-4 whitespace-nowrap text-bdnavy-900 transition-colors duration-200 hover:bg-white/90 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-bdnavy-900 focus-visible:outline-none",
+                    inDesh && "ring-2 ring-signal-orange",
+                  )}
+                >
+                  <DeshLabel className="text-[16px] leading-none" />
+                </Link>
+              </div>
+
+              {/* A hairline between the civic actions and the personal pair. */}
+              <span aria-hidden className="hidden h-7 w-px bg-white/15 lg:block" />
+
+              {/* Feed link: the Bangla name over a small gold line. */}
               <Link
                 href="/media"
-                className={cn(
-                  "hidden h-10 shrink-0 flex-col items-center justify-center rounded-xl bg-text-primary px-4 text-center leading-tight lg:flex",
-                  "shadow-ink transition-[transform,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
-                  "hover:-translate-y-0.5 hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none motion-reduce:transition-none motion-reduce:hover:translate-y-0",
-                )}
+                className="hidden h-12 shrink-0 flex-col items-start justify-center rounded-lg px-3 leading-tight transition-colors duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none lg:flex"
               >
-                <LabelText text={LABEL_TEXT.media} className="text-[14px] leading-none text-signal-orange sm:text-[15px]" />
-                <span className="font-sans text-[11px] font-semibold whitespace-nowrap text-white/85 sm:text-xs">
-                  Prioritize your joy.
-                </span>
+                <LabelText text={LABEL_TEXT.media} className="text-[16px] leading-none text-white" />
+                <span className="mt-1 font-sans text-xs font-medium whitespace-nowrap text-signal-orange">Prioritize your joy.</span>
               </Link>
 
               {/* Account — sign-in face, or the signed-in avatar menu. */}
@@ -277,9 +365,9 @@ export function SiteHeader() {
               <Dialog.Root>
                 <Dialog.Trigger
                   aria-label="Open navigation menu"
-                  className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-text-primary text-signal-orange transition-[background-color,scale] duration-200 hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-90 lg:hidden"
+                  className="flex size-10 shrink-0 items-center justify-center rounded-md text-white transition-[background-color,scale] duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-90 lg:hidden"
                 >
-                  <Icon name="menu" className="text-[20px]" />
+                  <Icon name="menu" className="text-[26px]" />
                 </Dialog.Trigger>
                 <Dialog.Portal>
                   <Dialog.Overlay className="menu-veil fixed inset-0 z-50 bg-black/55 lg:hidden" />
@@ -290,11 +378,11 @@ export function SiteHeader() {
                       e.preventDefault();
                       (e.currentTarget as HTMLElement).focus();
                     }}
-                    className="menu-pop fixed top-3 right-3 z-50 flex max-h-[calc(100dvh-1.5rem)] w-[min(21rem,calc(100vw-1.5rem))] flex-col gap-2.5 overflow-y-auto rounded-3xl bg-signal-orange p-3.5 text-text-primary shadow-[0_28px_60px_-18px_rgb(0_0_0/0.7)] focus:outline-none lg:hidden"
+                    className="menu-pop fixed top-3 right-3 z-50 flex max-h-[calc(100dvh-1.5rem)] w-[min(21rem,calc(100vw-1.5rem))] flex-col gap-2.5 overflow-y-auto rounded-3xl bg-bdnavy-900 p-3.5 text-white ring-1 ring-white/12 shadow-[0_28px_60px_-18px_rgb(0_0_0/0.7)] focus:outline-none lg:hidden"
                   >
                     <div className="menu-item flex items-center justify-between" style={{ "--i": 0 } as CSSProperties}>
                       <Dialog.Title>
-                        <BrandLogo className="h-12" />
+                        <BrandLogo className="logo-on-navy h-10" />
                       </Dialog.Title>
                       <Dialog.Close
                         aria-label="Close menu"
@@ -340,10 +428,10 @@ export function SiteHeader() {
                             onClick={() => setActiveHref(link.href)}
                             style={{ "--i": i + 3 } as CSSProperties}
                             className={cn(
-                              "menu-item flex min-h-11 items-center justify-center rounded-xl px-3 py-2 text-center text-sm transition-[background-color,scale] duration-200 focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:outline-none active:scale-95",
+                              "menu-item flex min-h-11 items-center justify-center rounded-xl px-3 py-2 text-center text-sm transition-[background-color,scale] duration-200 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none active:scale-95",
                               activeHref === link.href
-                                ? "bg-text-primary font-bold text-signal-orange shadow-ink"
-                                : "bg-text-primary/10 font-medium text-text-primary ring-1 ring-text-primary/25 hover:bg-text-primary/15",
+                                ? "bg-signal-orange font-bold text-text-primary shadow-ink"
+                                : "bg-white/[0.07] font-medium text-white ring-1 ring-white/20 hover:bg-white/12",
                             )}
                           >
                             <NavLabel link={link} />
@@ -378,7 +466,7 @@ export function SiteHeader() {
                         <Link
                           href="/nagorik"
                           style={{ "--i": navLinks.length + 5 } as CSSProperties}
-                          className="menu-item flex min-h-11 items-center justify-center gap-1.5 rounded-xl px-3 py-2 ring-1 ring-text-primary/45 transition-[background-color,scale] duration-200 hover:bg-text-primary/10 active:scale-95"
+                          className="menu-item flex min-h-11 items-center justify-center gap-1.5 rounded-xl px-3 py-2 ring-1 ring-white/35 transition-[background-color,scale] duration-200 hover:bg-white/10 active:scale-95"
                         >
                           <ShieldCheck className="size-4 shrink-0" aria-hidden />
                           <LabelText text={LABEL_TEXT.nagorik} className="text-[17px] leading-none" />
@@ -391,7 +479,7 @@ export function SiteHeader() {
                     </div>
 
                     <p
-                      className="menu-item px-1 font-bengali text-xs font-semibold text-text-primary/80"
+                      className="menu-item px-1 font-bengali text-xs font-semibold text-white/75"
                       style={{ "--i": navLinks.length + 7 } as CSSProperties}
                     >
                       {NAZRUL_MOTTO}
@@ -399,75 +487,17 @@ export function SiteHeader() {
                   </Dialog.Content>
                 </Dialog.Portal>
               </Dialog.Root>
-            </div>
           </div>
-        </div>
 
-        {/* ── Row 2 — section navigation + civic actions ──────────────── */}
-        <nav className="no-scrollbar hidden overflow-x-auto border-t border-text-primary/10 bg-text-primary/[0.04] px-4 py-1 sm:px-6 lg:block lg:px-8">
-          <div className="flex min-w-max items-center justify-between gap-3 xl:gap-6">
+          {/* ── Row 2 — the section tabs (lg and up), under a hairline,
+              their gold pointer sitting on the bar's bottom edge. ────── */}
+          <nav
+            aria-label="Sections"
+            className="no-scrollbar col-start-2 hidden h-full overflow-x-auto border-t border-white/8 lg:block"
+          >
             <SectionNav links={navLinks} activeHref={activeHref} onPick={setActiveHref} />
-
-            {/* Right — record, protest, civic duty, the game. */}
-            <div className="flex items-center gap-2 xl:gap-3">
-              <button
-                type="button"
-                onClick={() => setRecordOpen(true)}
-                className="group inline-flex items-center gap-2 rounded-full px-2.5 py-1.5 text-xs font-semibold tracking-tight text-text-primary ring-1 ring-text-primary/35 transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:bg-text-primary/10 focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:outline-none motion-reduce:hover:translate-y-0 xl:px-3.5"
-              >
-                <span className="relative flex size-2.5">
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-red-400 opacity-75 motion-reduce:hidden" />
-                  <span className="relative inline-flex size-2.5 rounded-full bg-red-600 ring-2 ring-red-100" />
-                </span>
-                <span className="font-sans max-[1439px]:sr-only">Record</span>
-              </button>
-
-              <Link
-                href="/protibad"
-                className="inline-flex items-center gap-1.5 rounded-lg border-t border-white/20 bg-linear-to-r from-red-600 to-rose-700 px-2.5 py-1.5 font-bengali text-xs font-bold text-white shadow-red-glow transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:from-red-700 hover:to-rose-800 focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:outline-none active:translate-y-0 motion-reduce:hover:translate-y-0 xl:px-3.5"
-              >
-                <ProtestGlyph className="size-3.5 text-white" />
-                <LabelText text={LABEL_TEXT.protibad} className="text-[16px] leading-none" />
-              </Link>
-
-              {/* Civic rights and responsibilities (/nagorik). */}
-              <Link
-                href="/nagorik"
-                title="নাগরিক অধিকার ও দায়িত্ব — দিনের হিসাব, অধিকার, প্রত্যেকের দায়িত্ব"
-                aria-current={pathname === "/nagorik" ? "page" : undefined}
-                className={cn(
-                  "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-text-primary ring-1 ring-text-primary/35 transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:bg-text-primary/10 focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:outline-none motion-reduce:hover:translate-y-0 xl:px-3.5",
-                  pathname === "/nagorik" && "bg-text-primary/10 ring-2 ring-text-primary",
-                )}
-              >
-                <ShieldCheck className="size-3.5" aria-hidden />
-                <LabelText text={LABEL_TEXT.nagorik} className="text-[15px] leading-none" />
-              </Link>
-
-              {/* বাংলাদেশ সমস্যা ও সমাধান — the country page (/bangladesh): story,
-                  crisis, the 32 problems and their solutions. The game
-                  (চলো বাংলাদেশ গড়ি) is reached from that page's own nav. */}
-              {/* No prefetch: prefetching /bangladesh preloads its carousel
-                  stylesheet on every page, which then sits unused and
-                  raises a console "preloaded but not used" warning. */}
-              <Link
-                href="/bangladesh"
-                prefetch={false}
-                title="বাংলাদেশ সমস্যা ও সমাধান — ইতিহাস, সংকট, ৩২টি সমস্যা ও সমাধান"
-                aria-current={inDesh ? "page" : undefined}
-                className={cn(
-                  "inline-flex items-center rounded-full bg-linear-to-r from-bd-green to-bdgreen-800 px-2.5 py-1.5 whitespace-nowrap text-signal-orange shadow-ink transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:from-bd-green-dark hover:to-bd-green focus-visible:ring-2 focus-visible:ring-text-primary focus-visible:outline-none motion-reduce:hover:translate-y-0 xl:px-3.5",
-                  inDesh && "ring-2 ring-text-primary",
-                )}
-              >
-                <DeshLabel className="text-[15px] leading-none" />
-              </Link>
-            </div>
-          </div>
-        </nav>
-
-        {/* A slow gloss that crosses the card now and then (decorative). */}
-        <span aria-hidden className="header-sheen" />
+          </nav>
+        </div>
       </header>
 
       <RecordDialog open={recordOpen} onOpenChange={setRecordOpen} />
