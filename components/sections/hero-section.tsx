@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
@@ -23,26 +23,22 @@ const TONE_CLASSES: Record<TextTone, { title: string; sub: string }> = {
   gold: { title: cn("text-signal-orange", LIFT_SHADOW), sub: cn("text-white", LIFT_SHADOW) },
   white: { title: cn("text-white", LIFT_SHADOW), sub: cn("text-white/90", LIFT_SHADOW) },
   black: { title: "text-black", sub: "text-black/85" },
-  green: { title: "text-bd-green", sub: "text-bd-green" },
+  // No green in the UI any more (bottle green was retired): a "green" verdict reads in navy.
+  green: { title: "text-bdnavy-900", sub: "text-bdnavy-900/90" },
   navy: { title: "text-bdnavy-900", sub: "text-bdnavy-900/90" },
 };
 
 /** Skip a re-render when the scrim moves by less than this. */
 const SCRIM_STEP = 0.03;
 
-/** The glass button, re-toned for dark text on a bright photograph. */
-const GHOST_ON_BRIGHT = btn.ghost
-  .replace("bg-white/10", "bg-text-primary/10")
-  .replace("text-white", "text-text-primary")
-  .replace("ring-white/25", "ring-text-primary/30")
-  .replace("hover:bg-white/15", "hover:bg-text-primary/15");
-
 /**
  * Hero.
  *
- * The photographs are the field; the claim sits over them low and centred,
- * on a soft scrim measured per photograph (see `look` below), so the upper
- * part of every image stays clear.
+ * The photographs are the field, cross-fading on their own with a slow
+ * push-in on the one showing (no indicators); the claim sits over them low
+ * and centred, on a soft scrim measured per photograph (see `look` below),
+ * so the upper part of every image stays clear. The claim, its line and
+ * the two actions (download the apps, join) rise in on load.
  *
  * Height: the shared `hero-band` floor, so this band matches the /products
  * hero exactly (a requested change — it replaces the CLAUDE.md §4.3 16:6 ratio,
@@ -133,7 +129,6 @@ export function HeroSection() {
   }, [index]);
 
   const classes = TONE_CLASSES[look.tone];
-  const onBright = look.tone === "black" || look.tone === "green" || look.tone === "navy";
 
   return (
     <section
@@ -163,21 +158,16 @@ export function HeroSection() {
             // Per-photo focal point: `cover` still trims to fill the band,
             // but this steers the crop away from faces and subjects.
             style={{ objectPosition: photo.focus ?? "50% 50%" }}
-            className={`object-cover transition-opacity duration-1000 ease-in-out ${
-              i === index ? "opacity-100" : "opacity-0"
-            }`}
+            // The photograph showing pushes in slowly over its dwell; one leaving fades out and settles back.
+            className={cn(
+              "object-cover [transition:opacity_1.2s_ease-in-out,scale_7s_linear] motion-reduce:scale-100 motion-reduce:transition-none",
+              i === index ? "scale-[1.06] opacity-100" : "scale-100 opacity-0",
+            )}
           />
         ))}
 
-        {/* Subtle scrim: keep text readable but let images show clearly */}
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-linear-to-r from-text-primary/40 via-text-primary/20 to-transparent"
-        />
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-linear-to-t from-text-primary/30 via-transparent to-transparent"
-        />
+        {/* A low veil so the claim's foot always sits on some depth; the upper photograph stays clear. */}
+        <div aria-hidden className="absolute inset-0 bg-linear-to-t from-text-primary/55 via-text-primary/10 via-45% to-transparent" />
 
         {/* ── Claim ─────────────────────────────────────────────── */}
         <div className="relative w-full pt-20 pb-16 sm:pb-20">
@@ -199,7 +189,7 @@ export function HeroSection() {
               <h1
                 ref={titleRef}
                 className={cn(
-                  "max-w-[24em] font-grotesk text-[clamp(1.75rem,0.9rem+2.6vw,3.25rem)] leading-[1.08] font-bold tracking-[-0.025em] text-balance transition-[color,text-shadow] duration-1000 ease-in-out",
+                  "hero-rise max-w-[24em] font-grotesk text-[clamp(1.75rem,0.9rem+2.6vw,3.25rem)] leading-[1.08] font-bold tracking-[-0.025em] text-balance transition-[color,text-shadow] duration-1000 ease-in-out",
                   classes.title,
                 )}
               >
@@ -211,57 +201,32 @@ export function HeroSection() {
 
               <p
                 ref={subRef}
+                style={{ "--d": "120ms" } as CSSProperties}
                 className={cn(
-                  "mt-5 max-w-[42ch] font-sans text-[clamp(1rem,0.92rem+0.3vw,1.1875rem)] leading-relaxed font-medium tracking-[-0.005em] text-balance transition-[color,text-shadow] duration-1000 ease-in-out sm:max-w-[60ch] lg:max-w-none lg:whitespace-nowrap",
+                  "hero-rise mt-5 max-w-[42ch] font-sans text-[clamp(1rem,0.92rem+0.3vw,1.1875rem)] leading-relaxed font-medium tracking-[-0.005em] text-balance transition-[color,text-shadow] duration-1000 ease-in-out sm:max-w-[60ch] lg:max-w-none lg:whitespace-nowrap",
                   classes.sub,
                 )}
               >
                 Kandari Lab uses technology and commercial innovation to build a smart, safe, and secure Bangladesh.
               </p>
 
-              {/* Actions: gold for the primary route, a quiet glass pill for
-                  the second, side by side and centred. */}
-              <div ref={actionsRef} className="mt-7 flex flex-wrap items-center justify-center gap-3">
-                <Link href="#flagship" className={btn.gold}>
-                  <Icon name="monitor_heart" className="text-[18px]" />
-                  Explore the hardware
+              {/* Actions: gold for the apps, solid navy for joining; both read on any photograph. */}
+              <div
+                ref={actionsRef}
+                style={{ "--d": "240ms" } as CSSProperties}
+                className="hero-rise mt-8 flex flex-wrap items-center justify-center gap-3"
+              >
+                <Link href="#apps" className={cn(btn.gold, "px-7")}>
+                  <Icon name="download" className="text-[18px]" />
+                  Download the App
                 </Link>
-
-                <Link href="#kandari-profile" className={cn(onBright ? GHOST_ON_BRIGHT : btn.ghost, "transition-colors duration-1000")}>
-                  <Icon name="person_add" className="text-[18px] text-bdgreen-500" />
-                  Join Kandari Profile
+                <Link href="#kandari-profile" className={cn(btn.navy, "px-7 ring-1 ring-white/15")}>
+                  <Icon name="group_add" className="text-[18px] text-signal-orange" />
+                  Join with Us
                 </Link>
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Slide indicators, bottom-right, on their own dark pill so they
-            stay visible over a bright photograph. */}
-        <div className="absolute right-4 bottom-4 flex items-center gap-1.5 rounded-full bg-black/40 px-2.5 py-2 ring-1 ring-white/10 backdrop-blur-sm sm:right-6 sm:bottom-5 lg:right-8">
-          {heroPhotos.map((photo, i) => (
-            <button
-              key={photo.src}
-              type="button"
-              onClick={() => setIndex(i)}
-              aria-label={`স্লাইড ${i + 1}`}
-              aria-current={i === index ? "true" : undefined}
-              className={`relative h-1.5 overflow-hidden rounded-full transition-all duration-300 ${
-                i === index ? "w-10 bg-white/25" : "w-3.5 bg-white/40 hover:bg-white/70"
-              }`}
-            >
-              {/* The active slide's timer, filling over its dwell. Keyed
-                  on the index so it restarts with every slide. */}
-              {i === index ? (
-                <span
-                  key={index}
-                  aria-hidden
-                  style={{ "--dwell": `${SLIDE_MS}ms` } as React.CSSProperties}
-                  className="hero-progress absolute inset-0 rounded-full bg-signal-orange"
-                />
-              ) : null}
-            </button>
-          ))}
         </div>
       </div>
     </section>

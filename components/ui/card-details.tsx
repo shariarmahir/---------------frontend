@@ -46,8 +46,8 @@ export function TapCard({
   );
 }
 
-/** The part of a `TapCard` that folds away on phones. */
-export function CardDetails({ children, className }: { children: ReactNode; className?: string }) {
+/** The part of a `TapCard` that folds away on phones. `grow`: fill the rest of a column card (from `sm`). */
+export function CardDetails({ children, className, grow }: { children: ReactNode; className?: string; grow?: boolean }) {
   const { open, id } = useContext(OpenContext);
 
   return (
@@ -55,6 +55,7 @@ export function CardDetails({ children, className }: { children: ReactNode; clas
       id={id}
       className={cn(
         "grid transition-[grid-template-rows] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none sm:grid-rows-[1fr]",
+        grow && "sm:flex-1",
         open ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
       )}
     >

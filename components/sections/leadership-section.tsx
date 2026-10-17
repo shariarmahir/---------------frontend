@@ -2,14 +2,15 @@ import Image from "next/image";
 import type { CSSProperties } from "react";
 import { CardDetails, TapCard } from "@/components/ui/card-details";
 import { Icon } from "@/components/ui/icon";
+import { TrackLink } from "@/components/showcase/showcase";
 import { SectionHeading, btn } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
 
 /**
  * Executives are poster cards: a solid colour field (the Pixel-Map palette),
  * the portrait bleeding off the top and fading into the colour, name and
- * role set on the colour below: gold for the CEO, green for the COO,
- * orange for the CMO. Mahir's is his own photograph
+ * role set on the colour below: gold for the CEO, ink for the COO, navy
+ * for the CMO. Mahir's is his own photograph
  * (public/team); the other two are stock mock-ups to replace with real
  * portraits.
  */
@@ -36,9 +37,9 @@ const EXECUTIVES = [
     title: "Chief Operating Officer",
     blurb:
       "Orchestrating 64-district smart pharmacy scaling, government telemetry compliance, and supply chain logistics.",
-    surface: "bg-bd-green text-white",
-    fade: "to-bd-green",
-    glow: "var(--color-bd-green)",
+    surface: "bg-text-primary text-white ring-1 ring-white/12",
+    fade: "to-text-primary",
+    glow: "var(--color-signal-orange)",
     pill: "bg-signal-orange text-text-primary",
   },
   {
@@ -57,43 +58,77 @@ const EXECUTIVES = [
 ];
 
 /**
- * The three functional leads are solid colour cards like the Pixel-Map ones,
- * staggered against the executive row above (green under gold, gold under
- * green, ink under navy).
+ * Per field for the functional leads: the card, its icon tile (the
+ * contrasting colour), the name chips and the hairline over the skills.
+ * Ink and navy keep their edge on the black ground with a faint white ring.
+ */
+const LEAD_LOOKS = {
+  navy: {
+    surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
+    tile: "bg-signal-orange text-text-primary",
+    chip: "bg-white/8 ring-white/15",
+    rule: "border-white/12",
+    glow: "var(--color-bdnavy-400)",
+  },
+  gold: {
+    surface: "bg-signal-orange text-text-primary",
+    tile: "bg-bdnavy-900 text-white",
+    chip: "bg-text-primary/8 ring-text-primary/20",
+    rule: "border-text-primary/15",
+    glow: "var(--color-signal-orange)",
+  },
+  ink: {
+    surface: "bg-text-primary text-white ring-1 ring-white/12",
+    tile: "bg-signal-orange text-text-primary",
+    chip: "bg-white/8 ring-white/15",
+    rule: "border-white/12",
+    glow: "var(--color-signal-orange)",
+  },
+};
+
+/**
+ * The three functional leads, staggered against the executive row above
+ * (navy under gold, gold under ink, ink under navy).
  */
 const LEADS = [
   {
     title: "Concept & Clinical User Empathy",
-    people: "Istiake Ahmed, Safia Mubassara Ruzba, Jamil Hossan",
+    icon: "psychology",
+    people: ["Istiake Ahmed", "Safia Mubassara Ruzba", "Jamil Hossan"],
     note: "User empathy, ergonomic medical casing, product semantics.",
-    surface: "bg-bd-green text-white",
-    glow: "var(--color-bd-green)",
+    look: LEAD_LOOKS.navy,
   },
   {
     title: "Sensors & Embedded Systems",
-    people: "Janassor Ahmed, Sharul Bhuiya, Safia Mubassara Ruzba",
+    icon: "memory",
+    people: ["Janassor Ahmed", "Sharul Bhuiya", "Safia Mubassara Ruzba"],
     note: "Micro-soldering, LiDAR circuits, low-power telemetry & antenna RF.",
-    surface: "bg-signal-orange text-text-primary",
-    glow: "var(--color-signal-orange)",
+    look: LEAD_LOOKS.gold,
   },
   {
     title: "Fullstack, AI & SWASTI Mobile",
-    people: "Luban Ahmed, Shabbin Ahmed",
+    icon: "code",
+    people: ["Luban Ahmed", "Shabbin Ahmed"],
     note: "Bengali RAG models, Flutter app core, real-time WebSockets & CNNs.",
-    // Ink on the black ground keeps its edge with a faint white ring.
-    surface: "bg-text-primary text-white ring-1 ring-white/12",
-    glow: "var(--color-bdgreen-500)",
+    look: LEAD_LOOKS.ink,
   },
 ];
 
 export function LeadershipSection() {
   return (
     <section id="leadership" className="section-band mx-auto max-w-7xl px-gutter-x">
-      <SectionHeading
-        tone="dark"
-        title={<>Foundership &amp; Engineering Command</>}
-        lead="Led by home-grown researchers, robotics specialists, and software architects determined to establish national hardware sovereignty."
-      />
+      {/* The way to the whole crew sits top-right, as on the products section. */}
+      <div className="mb-10 grid gap-x-12 gap-y-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+        <SectionHeading
+          tone="dark"
+          className="mb-0"
+          title={<>Foundership &amp; Engineering Command</>}
+          lead="Led by home-grown researchers, robotics specialists, and software architects determined to establish national hardware sovereignty."
+        />
+        <div className="story-reveal">
+          <TrackLink href="/team">Meet the Crew</TrackLink>
+        </div>
+      </div>
 
       {/* Executive row. */}
       <ul className="mb-4 grid grid-cols-3 gap-2 sm:mb-6 sm:gap-5">
@@ -139,31 +174,48 @@ export function LeadershipSection() {
 
       {/* Functional leads. */}
       <ul className="grid grid-cols-3 gap-2 sm:gap-5">
-        {LEADS.map((lead) => (
+        {LEADS.map(({ look, ...lead }) => (
           <li key={lead.title} className="story-reveal flex">
             <TapCard
               label={lead.title}
-              style={{ "--glow": lead.glow } as CSSProperties}
+              style={{ "--glow": look.glow } as CSSProperties}
               className={cn(
-                "flex w-full flex-col gap-1.5 rounded-2xl p-3 shadow-sm sm:gap-2 sm:rounded-3xl sm:p-6",
+                "group flex w-full flex-col rounded-2xl p-3 shadow-sm sm:rounded-3xl sm:p-6",
                 "[-webkit-tap-highlight-color:transparent] touch-manipulation transition-[translate,scale,rotate,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:shadow-[0_28px_48px_-22px_var(--glow)] active:-translate-y-2 active:shadow-[0_28px_48px_-22px_var(--glow)] active:scale-[0.98] active:duration-150 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
-                lead.surface,
+                look.surface,
               )}
             >
-              <h4 className="font-grotesk text-[0.85rem] leading-tight font-bold sm:text-lg">{lead.title}</h4>
-              <CardDetails className="flex flex-col gap-1.5 sm:h-full sm:gap-2">
-                <p className="font-sans text-[11px] leading-snug font-medium sm:text-sm">{lead.people}</p>
-                <p className="mt-auto pt-2 font-mono text-[10px] leading-snug opacity-80 sm:pt-3 sm:text-xs">{lead.note}</p>
+              <div className="flex items-center gap-3">
+                <span
+                  className={cn(
+                    "hidden size-11 shrink-0 place-items-center rounded-xl sm:grid",
+                    "transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-rotate-6 motion-reduce:transition-none motion-reduce:group-hover:rotate-0",
+                    look.tile,
+                  )}
+                >
+                  <Icon name={lead.icon} className="text-[22px]" />
+                </span>
+                <h4 className="font-grotesk text-[0.85rem] leading-tight font-bold text-balance sm:text-lg">{lead.title}</h4>
+              </div>
+              <CardDetails grow className="flex flex-col">
+                <ul aria-label="Team" className="mt-3 flex flex-wrap gap-1 sm:mt-5 sm:gap-1.5">
+                  {lead.people.map((person) => (
+                    <li key={person} className={cn("rounded-full px-2 py-0.5 text-[10px] font-medium ring-1 sm:px-2.5 sm:py-1 sm:text-xs", look.chip)}>
+                      {person}
+                    </li>
+                  ))}
+                </ul>
+                <p className={cn("mt-auto border-t pt-3 font-mono text-[10px] leading-snug opacity-80 sm:pt-4 sm:text-xs", look.rule)}>{lead.note}</p>
               </CardDetails>
             </TapCard>
           </li>
         ))}
       </ul>
 
-      {/* Fellowship strip — gold, with the action in ink. */}
+      {/* Fellowship strip — gold, with the action in navy. */}
       <div className="story-reveal relative isolate mt-6 flex flex-col items-start justify-between gap-4 overflow-hidden rounded-3xl bg-signal-orange p-5 text-text-primary shadow-tile sm:flex-row sm:items-center sm:p-6">
         <div className="flex items-center gap-4">
-          <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-text-primary text-signal-orange shadow-ink">
+          <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-bdnavy-900 text-signal-orange">
             <Icon name="school" className="text-2xl" />
           </span>
           <div>
@@ -175,7 +227,7 @@ export function LeadershipSection() {
           </div>
         </div>
 
-        <a href="/signup?role=researcher" className={cn(btn.ink, "shrink-0 px-5 py-2.5")}>
+        <a href="/signup?role=researcher" className={cn(btn.navy, "shrink-0 px-5 py-2.5")}>
           Apply for Fellowship
         </a>
       </div>

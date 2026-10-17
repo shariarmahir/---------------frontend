@@ -1,5 +1,7 @@
+import Link from "next/link";
 import type { CSSProperties } from "react";
-import { SectionHeading } from "@/components/ui/section-kit";
+import { Icon } from "@/components/ui/icon";
+import { SectionHeading, btn } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
 
 type ArtKind = "pulse" | "network" | "radar" | "cycle";
@@ -8,8 +10,12 @@ interface Pillar {
   art: ArtKind;
   title: string;
   description: string;
+  /** The product or research page that tells the whole story. */
+  href: string;
   /** Solid card fill and the ink that reads on it. */
   surface: string;
+  /** A gold card takes a navy button; the dark ones a gold one. */
+  onGold?: boolean;
   /** Motion-graphic stroke colour, chosen to contrast with the fill. */
   artClass: string;
   /** Hover glow, a CSS colour value. */
@@ -17,49 +23,54 @@ interface Pillar {
 }
 
 /**
- * Four solid cards, one brand colour each, like a row of album covers.
- * Every fill comes from the palette in globals.css; the ink on each was
- * picked for contrast (white on green and ink, near-black on gold and
- * orange — white on either would fall under 4.5:1).
+ * Four pixels Kandari-Lab is repairing now, each a real problem matched to
+ * the product or research line that answers it, linked to its own page.
+ * Facts follow data/products.ts and CLAUDE.md §2; nothing here claims more
+ * than the product pages do. Fields are navy, gold and ink only (Mahir,
+ * 2026-10-17), no two neighbours alike; white text on navy and ink, ink on
+ * gold.
  */
 const PILLARS: Pillar[] = [
   {
     art: "pulse",
-    title: "Healthcare & Biometrics",
+    title: "Early Warning Care",
     description:
-      "Continuous vitals capture pairing SWASTI Super App with the Aponjon wearable band for early arrhythmia, diabetic spike, and pre-stroke alerts.",
-    surface: "bg-bd-green text-white",
-    artClass: "text-signal-orange",
-    glow: "var(--color-bd-green)",
-  },
-  {
-    art: "network",
-    title: "Rural Tele-Network",
-    description:
-      "'One Village, One Smart Pharmacy' converting 12,000+ union-level medicine dispensaries into solar micro-diagnostic clinical endpoints.",
-    surface: "bg-signal-orange text-text-primary",
-    artClass: "text-bd-green",
-    glow: "var(--color-signal-orange)",
-  },
-  {
-    art: "radar",
-    title: "Assistive Tech Shield",
-    description:
-      "2-Meter spatial consciousness wearable for visually impaired citizens leveraging ultrasonic LiDAR, haptic feedback, and Bengali spatial voice.",
-    // Navy on the black ground: a faint white ring keeps its edge.
+      "SWASTI gives every family a doctor’s first opinion in Bangla, by voice, on any phone. Aponjon, a wearable band, watches heart rhythm, oxygen and stress, and raises the alarm while there is still time to act.",
+    href: "/products/swasti",
     surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
     artClass: "text-signal-orange",
     glow: "var(--color-bdnavy-400)",
   },
   {
-    art: "cycle",
-    title: "Circular Economy",
+    art: "network",
+    title: "Care in Every Village",
     description:
-      "AI Waste-to-Soil transformation converting civic municipal refuse into organic agriculture manure and segregated industrial polymers.",
-    // Ink on the black ground: a faint white ring keeps its edge.
+      "One Village, One Medical Health Care Center. The village drug shop becomes a solar-powered Smart Pharmacy with a diagnostic kiosk, verified medicine and a doctor on video.",
+    href: "/products/smart-pharmacy",
+    surface: "bg-signal-orange text-text-primary",
+    onGold: true,
+    artClass: "text-bdnavy-900",
+    glow: "var(--color-signal-orange)",
+  },
+  {
+    art: "radar",
+    title: "Independent Mobility",
+    description:
+      "A wearable for blind and visually impaired citizens that senses obstacles up to two metres away in real time and turns them into guidance, so the wearer can move without depending on a guide.",
+    href: "/research/blind-assist-wearable",
     surface: "bg-text-primary text-white ring-1 ring-white/12",
-    artClass: "text-bdgreen-500",
-    glow: "var(--color-bdgreen-500)",
+    artClass: "text-signal-orange",
+    glow: "var(--color-signal-orange)",
+  },
+  {
+    art: "cycle",
+    title: "Waste Into Soil",
+    description:
+      "AI that separates organic waste from the rest so it can return to farmland as soil nutrient, reducing what ends up in open dumps, drains and rivers.",
+    href: "/research/organic-waste-to-soil",
+    surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
+    artClass: "text-signal-orange",
+    glow: "var(--color-bdnavy-400)",
   },
 ];
 
@@ -187,8 +198,8 @@ export function PixelThesisSection() {
       <div className="mx-auto max-w-7xl px-gutter-x">
         <SectionHeading
           tone="dark"
-          title="The Pixel-Map Framework: Solving Bangladesh Pixel by Pixel"
-          lead="Bangladesh has complex systemic challenges across public health, transport, and energy. Like a high-resolution image formed by individual pixels, every national problem is a discrete data coordinate. By engineering native silicon, sensors, and algorithms for each pixel, we auto-enhance the entire digital canvas of Bangladesh."
+          title="The Pixel-Map: Repairing Bangladesh Pixel by Pixel"
+          lead="Picture Bangladesh as a high-resolution image with corrupted pixels. Each one is a real failure: a patient who reaches care too late, a village without a clinic, a citizen the system leaves behind. We take them one at a time, with hardware, software and AI built here for the people who live here. When one pixel is clear, we move to the next."
         />
 
         <ul className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
@@ -217,9 +228,19 @@ export function PixelThesisSection() {
                   {pillar.title}
                 </h3>
 
-                <p className="font-sans text-xs leading-relaxed sm:text-sm">
+                <p className="mb-4 font-sans text-xs leading-relaxed opacity-90 sm:mb-5 sm:text-sm">
                   {pillar.description}
                 </p>
+
+                {/* Pinned to the foot, so the four buttons line up. */}
+                <Link
+                  href={pillar.href}
+                  className={cn(pillar.onGold ? btn.navy : btn.gold, "mt-auto self-start px-4 py-2.5 sm:px-5 sm:py-3")}
+                >
+                  Learn more
+                  <span className="sr-only">: {pillar.title}</span>
+                  <Icon name="arrow_forward" className="text-[18px]" />
+                </Link>
               </article>
             </li>
           ))}

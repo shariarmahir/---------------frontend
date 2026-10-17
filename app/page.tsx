@@ -2,15 +2,19 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { SmoothScroll } from "@/components/layout/smooth-scroll";
 import { SiteHeader } from "@/components/layout/site-header";
 import { AiWidget } from "@/components/ui/ai-widget";
+import { AboutSection } from "@/components/sections/about-section";
+import { AppsSection } from "@/components/sections/apps-section";
 import { CharterSection } from "@/components/sections/charter-section";
-import { FlagshipsSection } from "@/components/sections/flagships-section";
+import { ProductsSection, ServicesSection } from "@/components/sections/flagships-section";
+import { DataSourcesSection } from "@/components/sections/data-sources-section";
 import { HeroSection } from "@/components/sections/hero-section";
 import { KandariProfileSection } from "@/components/sections/kandari-profile-section";
 import { LeadershipSection } from "@/components/sections/leadership-section";
 import { NodeTerminalSection } from "@/components/sections/node-terminal-section";
 import { PixelThesisSection } from "@/components/sections/pixel-thesis-section";
-import { PlatformsSection } from "@/components/sections/platforms/platforms-section";
+import { PromoGallery } from "@/components/sections/promo-gallery";
 import { ResearchSection } from "@/components/sections/research-section";
+import { ReviewsSection } from "@/components/sections/reviews-section";
 import { SpotlightBand } from "@/components/sections/spotlight-band";
 
 /*
@@ -22,9 +26,9 @@ import { SpotlightBand } from "@/components/sections/spotlight-band";
  * surface a solid colour, no textures; white tiles for anything green or red; a gold pulse running
  * the seam of each dark band.
  * STORY: the photographs and the claim → the spotlight band (news, protocol
- * status, national indicators) → the four pixels → products
- * and services → the platforms (শিক্ষিতদের মিডিয়া, গবেষণাকোষ, ক্লাসরুম) →
- * the labs → the open drive → the people → join.
+ * status, national indicators) → the four pixels → products → the
+ * apps to download → services → the banner gallery (record, protest, rights, the 32 problems, the media, research) →
+ * the labs → the open drive → who we are and our values → the people → what partners say → where the data comes from → join.
  * FIRST VIEWPORT: the gold header over the photo hero, claim left, gold
  * primary action, then the spotlight band closing it.
  * FORM: extension of the established header world (no seed roll); pacing
@@ -42,15 +46,20 @@ export default function Home() {
         <SpotlightBand />
         {/* Pitch-black ground, solid colours only (Mahir, 2026-09-30). */}
         <div className="relative">
-          {/* Problem, challenge, vision, mission, goal and impact: one card,
-              a new slide every ten seconds. */}
+          {/* Problem, challenge, vision, mission, goal and impact: a
+              carousel of cards that glides on its own. */}
           <CharterSection />
           <PixelThesisSection />
-          <FlagshipsSection />
-          <PlatformsSection />
+          <ProductsSection />
+          <AppsSection />
+          <ServicesSection />
+          <PromoGallery />
           <ResearchSection />
           <NodeTerminalSection />
+          <AboutSection />
           <LeadershipSection />
+          <ReviewsSection />
+          <DataSourcesSection />
           <KandariProfileSection />
         </div>
       </main>

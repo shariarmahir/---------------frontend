@@ -1,281 +1,137 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import { Icon } from "@/components/ui/icon";
 import { btn } from "@/components/ui/section-kit";
 import { charterSlides, type CharterSlide, type CharterStat } from "@/data/charter";
 import { cn } from "@/lib/utils";
 import { CharterVisual } from "./charter-viz";
 
-/** The glide's pace, in px a second: a half card passes in about twenty seconds. */
-const SPEED = 30;
-/** An arrow press glides to the next card edge in this long. */
-const STEP_MS = 700;
+/*
+ * Charter: problem, challenge, vision, mission, goal and impact, laid out
+ * like the partner reviews. On a wide screen (xl) it is one full-width row
+ * with one card open: the closed cards stand as narrow spines (symbol and
+ * topic, set upright), the open one takes the rest of the row and shows the
+ * whole slide. Pointing at a spine (and resting there a moment) opens it.
+ * Below xl the cards stack and open in place. A card is one solid field
+ * (navy, ink green or gold, nothing else): the claim on one side, a
+ * hairline, then its figures and motion graphic.
+ *
+ * The open slide is set at the open card's final width, so it never
+ * reflows while the card grows; its own container queries pick the
+ * layout (claim | figures, then claim | figures | graphic once there is
+ * room). The + on each card turns to × when open; it is the keyboard and
+ * touch control (focus opens, Enter or a tap toggles).
+ */
+
+const GOLD = "var(--color-signal-orange)";
+const NAVY = "var(--color-bdnavy-900)";
+const INK = "var(--color-text-primary)";
+const WHITE = "var(--color-white)";
+
+type Look = { gold: boolean; vars: Record<string, string> };
 
 /**
- * Each slide's field and accent, from the site palette only: a deep solid
- * fill (navy, ink or bottle green, all white-text grounds) and one accent
- * for its title line, figures and motion graphic. Red is the urgency colour
- * (CLAUDE.md §4.1), so only the problem slide carries it.
+ * Per field: the fill, text colour, accent (gold on dark, navy on gold),
+ * the motion graphic's second colour and tint, and the glow of the open card.
  */
-const LOOKS: Record<string, { fill: string; accent: string; text: string }> = {
-  problem: { fill: "bg-bdnavy-900", accent: "var(--color-crimson-bright)", text: "text-crimson-bright" },
-  challenge: { fill: "bg-text-primary", accent: "var(--color-signal-orange)", text: "text-signal-orange" },
-  vision: { fill: "bg-bd-green", accent: "var(--color-signal-orange)", text: "text-signal-orange" },
-  mission: { fill: "bg-bdnavy-900", accent: "var(--color-bdgreen-500)", text: "text-bdgreen-500" },
-  goal: { fill: "bg-text-primary", accent: "var(--color-signal-orange)", text: "text-signal-orange" },
-  impact: { fill: "bg-bd-green", accent: "var(--color-signal-orange)", text: "text-signal-orange" },
+const LOOK_NAVY: Look = {
+  gold: false,
+  vars: {
+    "--field": NAVY,
+    "--ink": WHITE,
+    "--accent": GOLD,
+    "--accent-2": WHITE,
+    "--accent-3": "var(--color-bdnavy-300)",
+    "--accent-on": INK,
+    "--glow": "var(--color-bdnavy-400)",
+  },
+};
+const LOOK_INK: Look = {
+  gold: false,
+  vars: {
+    "--field": INK,
+    "--ink": WHITE,
+    "--accent": GOLD,
+    "--accent-2": WHITE,
+    "--accent-3": `color-mix(in oklab, ${GOLD} 45%, ${WHITE})`,
+    "--accent-on": INK,
+    "--glow": GOLD,
+  },
+};
+const LOOK_GOLD: Look = {
+  gold: true,
+  vars: {
+    "--field": GOLD,
+    "--ink": INK,
+    "--accent": NAVY,
+    "--accent-2": INK,
+    "--accent-3": "var(--color-bdnavy-700)",
+    "--accent-on": WHITE,
+    "--glow": GOLD,
+  },
 };
 
-type Part = "claim" | "proof";
+/** No two neighbours share a field. */
+const LOOKS: Record<string, Look> = {
+  problem: LOOK_NAVY,
+  challenge: LOOK_INK,
+  vision: LOOK_GOLD,
+  mission: LOOK_NAVY,
+  goal: LOOK_GOLD,
+  impact: LOOK_INK,
+};
 
-/** Every slide as two half cards: the claim (title, copy, routes), then its proof (figures and motion graphic). */
-const CARDS = charterSlides.flatMap((slide, n) => (["claim", "proof"] as Part[]).map((part) => ({ slide, n, part })));
+/** Each topic's name and symbol, for the spine and the stacked card's header. */
+const TOPIC: Record<string, { name: string; icon: string }> = {
+  problem: { name: "Problem", icon: "broken_image" },
+  challenge: { name: "Challenge", icon: "flag" },
+  vision: { name: "Vision", icon: "visibility" },
+  mission: { name: "Mission", icon: "rocket_launch" },
+  goal: { name: "Goal", icon: "track_changes" },
+  impact: { name: "Impact", icon: "diversity_3" },
+};
 
-/** How many cards sit left of the column at first paint (the impact pair, peeking in). */
-const LEAD = 2;
+/** The heading over each slide's figures, so they read as that topic's evidence. */
+const DATA_LABEL: Record<string, string> = {
+  problem: "The problem in numbers",
+  challenge: "Where Bangladesh stands",
+  vision: "What we hold to",
+  mission: "What we are building",
+  impact: "What we are working with",
+};
 
-const mod = (a: number, b: number) => ((a % b) + b) % b;
-const ease = (p: number) => 1 - Math.pow(1 - p, 3);
+/** Pointing at a spine opens it only once the pointer settles, so sweeping across the row does not flicker. */
+const HOVER_INTENT_MS = 120;
 
-/**
- * Charter: problem, challenge, vision, mission, goal and impact (Mahir's
- * copy, 2026-10-15), laid out per his mark-up of 2026-10-17: every slide is
- * two half cards, its claim and its proof, so the page's content column
- * (the `max-w-7xl px-gutter-x` box, 1216px on a wide screen) holds one
- * slide's pair side by side and the cards either side peek in at the window
- * edges. On a phone a card is the full column.
- *
- * The whole row glides left on its own, without stopping, and holds still
- * while the pointer is over it, focus is inside it or it is being dragged
- * (mouse or finger). Each card is placed on its own and wraps from the far
- * left to the far right while out of sight, so the loop never jumps on
- * screen. The two gold arrows (← →, Mahir's mark-up) sit in the gaps either
- * side of the column and glide to the next card edge. Under reduced motion
- * the row stands still and only the arrows and dragging move it.
- */
 export function CharterSection() {
-  const root = useRef<HTMLDivElement>(null);
-  const colRef = useRef<HTMLDivElement>(null);
-  const stepRef = useRef<HTMLDivElement>(null);
-  const cards = useRef<(HTMLDivElement | null)[]>([]);
-
-  // All motion state lives in refs: the glide writes styles straight to the
-  // cards every frame instead of re-rendering React.
-  const offset = useRef(0);
-  const tween = useRef<{ from: number; to: number; t0: number } | null>(null);
-  const hold = useRef({ hover: false, focus: false, drag: false });
-  const drag = useRef({ id: -1, x: 0, start: 0, moved: false });
-  const geo = useRef({ width: 0, col: 0, step: 0, w: 0 });
-
-  useEffect(() => {
-    const sec = root.current;
-    if (!sec) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let onScreen = true;
-    let dirty = true;
-
-    const measure = () => {
-      const col = colRef.current?.offsetWidth ?? 0;
-      const width = sec.clientWidth;
-      geo.current = {
-        width,
-        col: (width - col) / 2,
-        step: stepRef.current?.offsetWidth ?? 0,
-        w: cards.current[0]?.offsetWidth ?? 0,
-      };
-      dirty = true;
-    };
-
-    const place = () => {
-      const { width, col, step, w } = geo.current;
-      if (!step) return;
-      const total = step * CARDS.length;
-      // Cards may sit up to one step left of the window before they wrap.
-      const shift = col + step;
-      cards.current.forEach((el, i) => {
-        if (!el) return;
-        const x = mod(i * step - offset.current + shift, total) - shift + col;
-        el.style.translate = `${x}px 0`;
-        // Only a card mostly on screen takes focus; the rest are scenery.
-        const live = Math.min(x + w, width) - Math.max(x, 0) >= w * 0.6;
-        if (el.inert === live) el.inert = !live;
-      });
-    };
-
-    let raf = 0;
-    let last = performance.now();
-    const frame = (t: number) => {
-      // A long gap (a background tab) must not fling the row ahead.
-      const dt = Math.min(t - last, 64);
-      last = t;
-      const tw = tween.current;
-      const h = hold.current;
-      if (tw) {
-        const p = Math.min(1, (t - tw.t0) / STEP_MS);
-        offset.current = tw.from + (tw.to - tw.from) * ease(p);
-        if (p === 1) tween.current = null;
-        dirty = true;
-      } else if (onScreen && !h.hover && !h.focus && !h.drag && !reduce.matches) {
-        offset.current += (SPEED * dt) / 1000;
-        dirty = true;
-      }
-      if (dirty) {
-        place();
-        dirty = false;
-      }
-      raf = requestAnimationFrame(frame);
-    };
-
-    measure();
-    raf = requestAnimationFrame(frame);
-    const ro = new ResizeObserver(measure);
-    ro.observe(sec);
-    const io = new IntersectionObserver(([e]) => (onScreen = e.isIntersecting));
-    io.observe(sec);
-    return () => {
-      cancelAnimationFrame(raf);
-      ro.disconnect();
-      io.disconnect();
-    };
-  }, []);
-
-  // The arrows: glide to the next card edge in that direction, so the
-  // column comes to rest on whole cards.
-  const step = (dir: 1 | -1) => {
-    const s = geo.current.step;
-    if (!s) return;
-    const from = tween.current?.to ?? offset.current;
-    const to = dir > 0 ? (Math.floor(from / s + 1e-3) + 1) * s : (Math.ceil(from / s - 1e-3) - 1) * s;
-    tween.current = { from: offset.current, to, t0: performance.now() };
-  };
-
-  // Drag with a mouse or a finger; vertical swipes still scroll the page.
-  const down = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (e.pointerType === "mouse" && e.button !== 0) return;
-    tween.current = null;
-    drag.current = { id: e.pointerId, x: e.clientX, start: offset.current, moved: false };
-    hold.current.drag = true;
-  };
-  const move = (e: ReactPointerEvent<HTMLDivElement>) => {
-    const d = drag.current;
-    if (d.id !== e.pointerId || !hold.current.drag) return;
-    const dx = e.clientX - d.x;
-    if (!d.moved && Math.abs(dx) > 6) {
-      d.moved = true;
-      e.currentTarget.setPointerCapture(e.pointerId);
-    }
-    if (d.moved) offset.current = d.start - dx;
-  };
-  const up = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (drag.current.id !== e.pointerId) return;
-    drag.current.id = -1;
-    hold.current.drag = false;
-  };
+  const [open, setOpen] = useState(0);
 
   return (
-    <section id="charter" aria-label="Kandari Lab charter" className="section-band @container relative overflow-hidden">
-      <div
-        ref={root}
-        aria-roledescription="carousel"
-        onPointerEnter={(e) => e.pointerType === "mouse" && (hold.current.hover = true)}
-        onPointerLeave={(e) => e.pointerType === "mouse" && (hold.current.hover = false)}
-        onFocus={() => (hold.current.focus = true)}
-        onBlur={(e) => {
-          if (!e.currentTarget.contains(e.relatedTarget as Node | null)) hold.current.focus = false;
-        }}
-        // --card: the content column (min(window, 80rem) less the gutters);
-        // --w: one card, half the column (less the gap) from md, all of it below.
-        className={cn(
-          "story-reveal relative [--card:calc(min(100cqw,80rem)-2*var(--spacing-gutter-x))] [--gap:0.75rem] lg:[--gap:1.25rem]",
-          "[--w:var(--card)] md:[--w:calc((var(--card)-var(--gap))/2)]",
-        )}
+    <section id="charter" aria-label="Kandari Lab charter" className="section-band">
+      {/* --n: the card count, for the open slide's width. Spines are 5rem with 0.75rem gaps. */}
+      <ul
+        style={{ "--n": charterSlides.length } as CSSProperties}
+        className="story-reveal @container flex flex-col gap-3 px-gutter-x xl:h-[32rem] xl:flex-row xl:px-6"
       >
-        {/* Rulers the glide measures: the column and one card plus its gap. */}
-        <div ref={colRef} aria-hidden className="pointer-events-none invisible absolute h-0 w-(--card)" />
-        <div ref={stepRef} aria-hidden className="pointer-events-none invisible absolute h-0 w-[calc(var(--w)+var(--gap))]" />
-
-        <div
-          onPointerDown={down}
-          onPointerMove={move}
-          onPointerUp={up}
-          onPointerCancel={up}
-          // A drag must not also count as a click on a button under it.
-          onClickCapture={(e) => {
-            if (drag.current.moved) {
-              e.preventDefault();
-              e.stopPropagation();
-              drag.current.moved = false;
-            }
-          }}
-          onDragStart={(e) => e.preventDefault()}
-          // Every card stacks in one grid cell, so the row is as tall as the
-          // tallest card and every card stretches to it.
-          className="grid touch-pan-y select-none"
-        >
-          {CARDS.map(({ slide, n, part }, i) => (
-            <div
-              key={`${slide.id}-${part}`}
-              ref={(el) => {
-                cards.current[i] = el;
-              }}
-              // The first paint, before the glide measures: the column opens
-              // on the first slide's pair, the last pair peeking in on the left.
-              style={{
-                translate: `calc((100cqw - var(--card)) / 2 + ${i < CARDS.length - LEAD ? i : i - CARDS.length} * (var(--w) + var(--gap))) 0`,
-              }}
-              className="w-(--w) [grid-area:1/1] will-change-[translate]"
-            >
-              <Card slide={slide} n={n} part={part} />
-            </div>
-          ))}
-        </div>
-
-        <Arrow side="prev" onClick={() => step(-1)} />
-        <Arrow side="next" onClick={() => step(1)} />
-      </div>
+        {charterSlides.map((slide, i) => (
+          <CharterCard
+            key={slide.id}
+            slide={slide}
+            open={open === i}
+            anyOpen={open >= 0}
+            onOpen={() => setOpen(i)}
+            onToggle={() => setOpen((o) => (o === i ? -1 : i))}
+          />
+        ))}
+      </ul>
     </section>
   );
 }
 
-/**
- * A gold arrow centred in the gap beside the content column: a bold, filled
- * arrow with a shaft (not a chevron) on no background at all, nudging in
- * its direction (`ch-nudge` in globals.css; still under reduced motion).
- */
-function Arrow({ side, onClick }: { side: "prev" | "next"; onClick: () => void }) {
-  const prev = side === "prev";
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={prev ? "Previous card" : "Next card"}
-      // Centred on the gap: the column edge, less half the gap.
-      style={{ [prev ? "left" : "right"]: "calc((100% - var(--card)) / 2 - var(--gap) / 2)" } as CSSProperties}
-      className={cn(
-        // A 48px target around a 34px arrow.
-        "group absolute top-1/2 z-10 grid size-12 -translate-y-1/2 place-items-center rounded-full text-signal-orange",
-        prev ? "-translate-x-1/2" : "translate-x-1/2",
-        "[-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none",
-      )}
-    >
-      <svg
-        viewBox="0 0 24 24"
-        aria-hidden
-        style={{ "--dir": prev ? -1 : 1 } as CSSProperties}
-        className={cn(
-          "ch-nudge size-[2.125rem] drop-shadow-[0_4px_10px_rgb(0_0_0/0.55)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-125 group-active:scale-110 motion-reduce:transition-none",
-        )}
-      >
-        <path d={prev ? "M22 9H11V3.5L1.5 12 11 20.5V15H22Z" : "M2 9h11V3.5L22.5 12 13 20.5V15H2Z"} fill="currentColor" />
-      </svg>
-    </button>
-  );
-}
-
-/** True while the card is on screen at all (`on`, its motion runs) and mostly so (`active`, its figures count up). */
-function useOnScreen<T extends Element>() {
+/** `on`: any of the card is in view (its loops run). `active`: a third or more is (its figures count up). */
+function useInView<T extends Element>() {
   const ref = useRef<T>(null);
   const [state, setState] = useState({ on: false, active: false });
   useEffect(() => {
@@ -295,53 +151,193 @@ function useOnScreen<T extends Element>() {
   return [ref, state] as const;
 }
 
-/** The compact button height the short card needs (the shared buttons are 50px). */
-const SLIM = "py-3 sm:py-3";
-
-function Card({ slide, n, part }: { slide: CharterSlide; n: number; part: Part }) {
-  const look = LOOKS[slide.id];
-  const [ref, { on, active }] = useOnScreen<HTMLDivElement>();
-  const claim = part === "claim";
+/** The + that turns to ×: focus opens, a press toggles. */
+function Toggle({ open, onOpen, onToggle, controls, label }: { open: boolean; onOpen: () => void; onToggle: () => void; controls: string; label: string }) {
   return (
-    <div
+    <button
+      type="button"
+      onFocus={onOpen}
+      onClick={onToggle}
+      aria-expanded={open}
+      aria-controls={controls}
+      aria-label={`${open ? "Close" : "Open"} ${label}`}
+      className="grid size-10 shrink-0 place-items-center rounded-xl bg-(--accent) text-(--accent-on) transition-transform duration-300 hover:scale-105 focus-visible:ring-2 focus-visible:ring-(--ink) focus-visible:ring-offset-2 focus-visible:ring-offset-(--field) focus-visible:outline-none motion-reduce:transition-none"
+    >
+      <Icon
+        name="add"
+        className={cn("text-[22px] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none", open && "rotate-45")}
+      />
+    </button>
+  );
+}
+
+function CharterCard({
+  slide,
+  open,
+  anyOpen,
+  onOpen,
+  onToggle,
+}: {
+  slide: CharterSlide;
+  open: boolean;
+  anyOpen: boolean;
+  onOpen: () => void;
+  onToggle: () => void;
+}) {
+  const look = LOOKS[slide.id];
+  const topic = TOPIC[slide.id];
+  const bodyId = useId();
+  const [ref, { on, active }] = useInView<HTMLLIElement>();
+  const intent = useRef(0);
+  const label = `${topic.name}: ${slide.title.join(" ")}`;
+
+  useEffect(() => () => window.clearTimeout(intent.current), []);
+
+  return (
+    <li
       ref={ref}
-      role="group"
-      aria-roledescription="slide"
-      aria-label={`${n + 1} of ${charterSlides.length}: ${slide.title.join(" ")}${claim ? "" : ", in figures"}`}
-      style={{ "--accent": look.accent } as CSSProperties}
+      onPointerEnter={(e) => {
+        if (e.pointerType !== "mouse" || open) return;
+        intent.current = window.setTimeout(onOpen, HOVER_INTENT_MS);
+      }}
+      onPointerLeave={() => window.clearTimeout(intent.current)}
+      style={look.vars as CSSProperties}
       className={cn(
-        "@container h-full overflow-hidden rounded-3xl p-6 text-white ring-1 ring-white/12 sm:p-8 xl:p-10",
-        "shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_40px_80px_-40px_rgb(0_0_0/0.9)]",
-        look.fill,
+        "relative flex min-w-0 flex-col overflow-hidden rounded-3xl bg-(--field) text-(--ink) xl:basis-20",
+        !look.gold && "ring-1 ring-white/12 ring-inset", // ink and navy need an edge on black
+        "transition-[flex-grow,box-shadow] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
+        open
+          ? "shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_28px_48px_-22px_var(--glow)] xl:grow"
+          : cn("shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_30px_60px_-36px_rgb(0_0_0/0.9)]", anyOpen ? "xl:grow-0" : "xl:grow"),
       )}
     >
-      {claim ? <Claim slide={slide} text={look.text} /> : <Proof slide={slide} text={look.text} on={on} active={active} />}
+      {/* Stacked (below xl): a header row that opens the card in place. */}
+      <div className="flex items-center justify-between gap-4 p-5 sm:px-8 xl:hidden">
+        <span className="flex items-center gap-3 font-grotesk text-lg font-bold">
+          <Icon name={topic.icon} className="text-(--accent)" />
+          {topic.name}
+        </span>
+        <Toggle open={open} onOpen={onOpen} onToggle={onToggle} controls={bodyId} label={label} />
+      </div>
+
+      {/* The spine (xl): the closed card's face, symbol and topic set upright. */}
+      <div
+        aria-hidden={open}
+        className={cn(
+          "absolute inset-0 hidden flex-col items-center justify-between py-6 transition-opacity duration-300 motion-reduce:transition-none xl:flex",
+          open ? "pointer-events-none opacity-0" : "opacity-100 delay-200",
+        )}
+      >
+        <Icon name={topic.icon} className="text-(--accent)" />
+        <span className="font-grotesk text-xl font-bold tracking-tight whitespace-nowrap [writing-mode:vertical-rl] rotate-180">
+          {topic.name}
+        </span>
+        <Toggle open={open} onOpen={onOpen} onToggle={onToggle} controls={bodyId} label={label} />
+      </div>
+
+      {/* The slide. Stacked: it unfolds under the header. Row: it sits at the open card's final width and fades in. */}
+      <div
+        id={bodyId}
+        inert={!open}
+        className={cn(
+          "grid transition-[grid-template-rows,opacity,translate] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
+          "xl:absolute xl:inset-y-0 xl:left-0 xl:block xl:w-[calc(100cqw-(var(--n)-1)*5.75rem)]",
+          // Opening: the slide drifts in once the card has made room. Closing: it leaves at once.
+          open ? "grid-rows-[1fr] opacity-100 duration-500 xl:translate-x-0 xl:delay-200" : "grid-rows-[0fr] opacity-0 duration-200 xl:translate-x-4",
+        )}
+      >
+        <div className="min-h-0 overflow-hidden xl:h-full">
+          <Slide slide={slide} gold={look.gold} on={on && open} active={active && open} onClose={onToggle} closeId={bodyId} label={label} />
+        </div>
+      </div>
+    </li>
+  );
+}
+
+/**
+ * A slide's content. Narrow: claim, figures and graphic stacked. From a
+ * 42rem slide: claim | figures. From 56rem: claim | figures | graphic. A
+ * slide without figures keeps its graphic beside the claim at every width.
+ * A hairline parts the claim from its figures.
+ */
+function Slide({
+  slide,
+  gold,
+  on,
+  active,
+  onClose,
+  closeId,
+  label,
+}: {
+  slide: CharterSlide;
+  gold: boolean;
+  on: boolean;
+  active: boolean;
+  onClose: () => void;
+  closeId: string;
+  label: string;
+}) {
+  const hasData = Boolean(slide.oneWord || slide.pillars || slide.stats);
+  return (
+    <div className="group/card @container relative h-full">
+      {/* The open card's ×, in the row's top corner. */}
+      <div className="absolute top-5 right-5 z-10 hidden xl:block">
+        <Toggle open onOpen={() => {}} onToggle={onClose} controls={closeId} label={label} />
+      </div>
+      <div
+        className={cn(
+          "grid h-full grid-cols-1",
+          hasData
+            ? "@2xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] @4xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)_minmax(0,1fr)]"
+            : "@2xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]",
+        )}
+      >
+        <Claim slide={slide} gold={gold} />
+        {hasData && <Data slide={slide} active={active} />}
+        <div
+          className={cn(
+            "flex min-w-0 items-center justify-center px-6 pt-2 pb-8 @2xl:py-10 @2xl:pr-10 @2xl:pl-4",
+            hasData && "@2xl:hidden @4xl:flex",
+          )}
+        >
+          <div
+            className={cn(
+              "w-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:scale-105 motion-reduce:transition-none motion-reduce:group-hover/card:scale-100",
+              slide.viz !== "impact" && "mx-auto max-w-60 @2xl:max-w-none",
+            )}
+          >
+            <CharterVisual kind={slide.viz} active={on} grow={active} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-/** The claim, its copy and the two routes. */
-function Claim({ slide, text }: { slide: CharterSlide; text: string }) {
+/** The shared buttons are 50px tall; the card wants them slimmer. */
+const SLIM = "py-3 sm:py-3";
+
+function Claim({ slide, gold }: { slide: CharterSlide; gold: boolean }) {
   return (
-    <div className="flex h-full flex-col justify-center">
+    <div className="flex flex-col justify-center p-6 sm:p-8 @2xl:py-10 @2xl:pr-8 @2xl:pl-10">
       <h2 className="font-grotesk text-[1.75rem] leading-[1.06] font-bold tracking-[-0.03em] text-balance sm:text-[2rem]">
         <span className="block">{slide.title[0]}</span>
-        <span className={cn("block", text, slide.strike && "line-through decoration-[3px] opacity-80")}>{slide.title[1]}</span>
+        <span className={cn("block text-(--accent)", slide.strike && "line-through decoration-[3px] opacity-80")}>{slide.title[1]}</span>
       </h2>
 
       {slide.body.map((p) => (
-        <p key={p.slice(0, 24)} className="mt-3 font-sans text-sm leading-[1.6] text-white/80">
+        <p key={p.slice(0, 24)} className="mt-3 font-sans text-sm leading-[1.6] text-(--ink)/80">
           {p}
         </p>
       ))}
 
       <div className="mt-5 flex flex-wrap gap-3">
-        <Link href={slide.primary.href} draggable={false} className={cn(btn.gold, SLIM)}>
+        <Link href={slide.primary.href} className={cn(gold ? btn.navy : btn.gold, SLIM)}>
           {slide.primary.label}
           <span className="sr-only">: {slide.title.join(" ")}</span>
           <Icon name="arrow_forward" className="text-[18px]" />
         </Link>
-        <Link href={slide.secondary.href} draggable={false} className={cn(btn.ghost, SLIM)}>
+        <Link href={slide.secondary.href} className={cn(gold ? btn.navyOutline : btn.ghost, SLIM)}>
           {slide.secondary.label}
         </Link>
       </div>
@@ -349,71 +345,72 @@ function Claim({ slide, text }: { slide: CharterSlide; text: string }) {
   );
 }
 
-/**
- * The figures, pillars or one word beside the motion graphic (stacked above
- * it on a narrow card). The goal has nothing for that column, so its
- * graphic takes the whole card.
- */
-function Proof({ slide, text, on, active }: { slide: CharterSlide; text: string; on: boolean; active: boolean }) {
-  const fourUp = (slide.stats?.length ?? 0) > 3;
-  const middle = Boolean(slide.oneWord || slide.pillars || slide.stats);
-  // The number column is as wide as this slide's longest figure, so the labels line up without a gap.
-  const figureWidth = `${Math.max(...(slide.stats ?? []).map((s) => `${s.value}${s.suffix ?? ""}`.length), 2) * 0.62}em`;
+/** A flat, see-through film of the text colour with a hairline edge. */
+const TILE = "rounded-2xl bg-(--ink)/[0.07] ring-1 ring-(--ink)/12 ring-inset";
+
+function Data({ slide, active }: { slide: CharterSlide; active: boolean }) {
+  const stats = slide.stats ?? [];
+  const fourUp = stats.length > 3;
+  // Wide enough for the longest figure, so the labels line up.
+  const figureWidth = `${Math.max(2, ...stats.map((s) => `${s.value}${s.suffix ?? ""}`.length)) * 0.62}em`;
+  const label = DATA_LABEL[slide.id];
   return (
-    <div className={cn("grid h-full grid-cols-1 items-center gap-5", middle && "@sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)] @sm:gap-6")}>
-      {middle && (
-        <div className="flex flex-col justify-center">
-          {slide.oneWord && (
-            <div className="rounded-2xl bg-white/[0.07] px-5 py-5 ring-1 ring-white/10">
-              <p className={cn("font-grotesk text-[11px] font-bold tracking-[0.18em] uppercase", text)}>In one word</p>
-              <p className="mt-1.5 font-grotesk text-[1.75rem] leading-none font-bold tracking-tight">
-                {slide.oneWord}
-                <span aria-hidden className={cn("ch-caret ml-1 inline-block", text)}>
-                  ▍
-                </span>
-              </p>
-              <p className="mt-3 text-xs leading-snug text-white/60">No timeline, no finish line: the responsibility simply continues.</p>
-            </div>
-          )}
+    // The hairline: above the figures when stacked, beside them in a row (inset from the card's edges).
+    <div className="mx-6 flex min-w-0 flex-col justify-center border-t border-(--ink)/12 pt-6 pb-4 sm:mx-8 @2xl:mx-0 @2xl:my-10 @2xl:border-t-0 @2xl:border-l @2xl:py-0 @2xl:pr-8 @2xl:pl-8 @4xl:pr-2">
+      {label && (
+        <p className="mb-3 flex items-center gap-2 font-grotesk text-[11px] font-bold tracking-[0.18em] text-(--ink)/70 uppercase">
+          <span aria-hidden className="size-1.5 rounded-full bg-(--accent)" />
+          {label}
+        </p>
+      )}
 
-          {slide.pillars && (
-            <ul className="grid grid-cols-3 gap-2.5 @sm:grid-cols-1">
-              {slide.pillars.map((p) => (
-                <li key={p.label} className="flex flex-col items-center gap-1.5 rounded-2xl bg-white/[0.07] px-3 py-3 ring-1 ring-white/10 @sm:flex-row @sm:gap-3 @sm:px-4">
-                  <Icon name={p.icon} className={cn("text-[24px]!", text)} />
-                  <span className="font-grotesk text-xs font-bold tracking-[0.16em] uppercase">{p.label}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-
-          {slide.stats && (
-            <ul className={cn("grid gap-2.5", fourUp ? "grid-cols-2" : "grid-cols-3 @sm:grid-cols-1")}>
-              {slide.stats.map((s) => (
-                <li key={s.label} className={cn("rounded-2xl bg-white/[0.07] px-4 py-2.5 ring-1 ring-white/10", !fourUp && "@sm:flex @sm:items-center @sm:gap-4")}>
-                  <p style={fourUp ? undefined : { minWidth: figureWidth }} className={cn("font-grotesk text-[1.75rem] leading-none font-extrabold tracking-tight @sm:shrink-0", text)}>
-                    <CountUp stat={s} active={active} />
-                  </p>
-                  <div className={cn(fourUp ? "mt-1.5" : "mt-1.5 @sm:mt-0")}>
-                    <p className="font-grotesk text-[10px] font-bold tracking-[0.16em] text-white/60 uppercase">{s.label}</p>
-                    <p className="mt-0.5 text-xs leading-snug text-white/65">{s.note}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
+      {slide.oneWord && (
+        <div className={cn(TILE, "px-5 py-5")}>
+          <p className="font-grotesk text-[11px] font-bold tracking-[0.18em] text-(--accent) uppercase">In one word</p>
+          <p className="mt-1.5 font-grotesk text-[clamp(1.375rem,2.4cqw,1.75rem)] leading-none font-bold tracking-tight whitespace-nowrap">
+            {slide.oneWord}
+            <span aria-hidden className="ch-caret ml-1 inline-block text-(--accent)">
+              ▍
+            </span>
+          </p>
+          <p className="mt-3 text-xs leading-snug text-(--ink)/75">No timeline, no finish line: the responsibility simply continues.</p>
         </div>
       )}
 
-      {/* Square drawings stay small when stacked under the figures on a narrow card. */}
-      <div className={cn("w-full", middle && slide.viz !== "impact" && "mx-auto max-w-[15rem] @sm:max-w-none")}>
-        <CharterVisual kind={slide.viz} active={on} grow={active} />
-      </div>
+      {slide.pillars && (
+        <ul className="grid grid-cols-3 gap-2.5 @2xl:grid-cols-1">
+          {slide.pillars.map((p) => (
+            <li key={p.label} className={cn(TILE, "flex flex-col items-center gap-1.5 px-3 py-3 @2xl:flex-row @2xl:gap-3 @2xl:px-4")}>
+              <Icon name={p.icon} className="text-[24px]! text-(--accent)" />
+              <span className="font-grotesk text-xs font-bold tracking-[0.16em] uppercase">{p.label}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {stats.length > 0 && (
+        <ul className={cn("grid gap-2.5", fourUp ? "grid-cols-2" : "grid-cols-3 @2xl:grid-cols-1")}>
+          {stats.map((s) => (
+            <li key={s.label} className={cn(TILE, "px-4 py-2.5", !fourUp && "@2xl:flex @2xl:items-center @2xl:gap-4")}>
+              <p
+                style={fourUp ? undefined : { minWidth: figureWidth }}
+                className="font-grotesk text-[1.75rem] leading-none font-extrabold tracking-tight text-(--accent) @2xl:shrink-0"
+              >
+                <CountUp stat={s} active={active} />
+              </p>
+              <div className={cn("mt-1.5", !fourUp && "@2xl:mt-0")}>
+                <p className="font-grotesk text-[10px] font-bold tracking-[0.16em] text-(--ink)/70 uppercase">{s.label}</p>
+                <p className="mt-0.5 text-xs leading-snug text-(--ink)/80">{s.note}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
 
-/** A figure that counts up each time its card glides into view; the real value is always in the accessible text. */
+/** Counts up whenever its card opens in view; screen readers get the final value only. */
 function CountUp({ stat, active }: { stat: CharterStat; active: boolean }) {
   const [shown, setShown] = useState(stat.value);
   useEffect(() => {
@@ -422,9 +419,8 @@ function CountUp({ stat, active }: { stat: CharterStat; active: boolean }) {
     const start = performance.now();
     const tick = (t: number) => {
       const p = Math.min(1, (t - start) / 1200);
-      setShown(stat.value * (1 - Math.pow(2, -10 * p)));
+      setShown(p < 1 ? stat.value * (1 - 2 ** (-10 * p)) : stat.value);
       if (p < 1) raf = requestAnimationFrame(tick);
-      else setShown(stat.value);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);

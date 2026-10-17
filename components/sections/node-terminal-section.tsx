@@ -2,133 +2,134 @@ import { Icon } from "@/components/ui/icon";
 import { SignalSeam, btn } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
 
-/** Colours are set for the ink console: light tints, never the dark brand shades. */
+/** How the drive works, in the order a problem travels. */
+const STEPS = [
+  { icon: "location_on", title: "Citizens register a problem", body: "A district’s pain-point, logged in the open." },
+  { icon: "terminal", title: "Engineers build the fix", body: "University teams submit open-source firmware and data." },
+  { icon: "precision_manufacturing", title: "Kandari-Lab backs it", body: "Hardware grants and cleanroom manufacturing access." },
+];
+
+/**
+ * The console's entries. On the navy console: gold for the lead line and
+ * the figure that matters, the navy tint for a second voice, white for the
+ * rest.
+ */
 const FEED = [
   {
-    head: "> DRUG_TRACE_RANGPUR // PROPOSAL",
-    headClass: "text-signal-orange",
+    tag: "Proposal",
+    head: "DRUG_TRACE_RANGPUR",
     time: "2 mins ago",
     body: "New smart-packaging barcode RFID firmware uploaded to counter spurious medicine distribution in Rangpur division.",
     meta: [
-      { text: "By: LabFellow_Tanvir", class: "" },
-      { text: "Branch: v1.0.3", class: "text-emerald-300 font-semibold" },
-      { text: "+148 Commits", class: "text-signal-orange" },
+      { label: "By", value: "LabFellow_Tanvir" },
+      { label: "Branch", value: "v1.0.3" },
+      { label: "Commits", value: "+148", strong: true },
     ],
   },
   {
-    head: "> VISUAL_CONSCIOUSNESS // RADAR CALIBRATION",
-    headClass: "text-teal-300",
+    tag: "Dataset",
+    head: "VISUAL_CONSCIOUSNESS",
     time: "18 mins ago",
     body: "Urban Dhaka sidewalk telemetry dataset uploaded: 120,000 labeled obstacle points for visually impaired sensory belt.",
     meta: [
-      { text: "By: Safia_Mubassara", class: "" },
-      { text: "Dataset: 8.4 GB", class: "text-emerald-300 font-semibold" },
-      { text: "Status: Verified", class: "text-signal-orange font-semibold" },
+      { label: "By", value: "Safia_Mubassara" },
+      { label: "Size", value: "8.4 GB" },
+      { label: "Status", value: "Verified", strong: true },
     ],
   },
   {
-    head: "> BIO_ALARM // SYLHET TEA-GARDEN PILOT",
-    headClass: "text-red-400",
+    tag: "Pilot",
+    head: "BIO_ALARM · SYLHET TEA GARDENS",
     time: "42 mins ago",
     body: "Aponjon Band deployed on 250 tea plantation workers; detected 4 asymptomatic heat-stroke pre-cursors within 2 hours.",
     meta: [
-      { text: "By: Lead_Mahir", class: "" },
-      { text: "Telemetry: 100% OK", class: "text-emerald-300 font-semibold" },
-      { text: "Alerts Saved: 4", class: "text-red-400 font-bold" },
+      { label: "By", value: "Lead_Mahir" },
+      { label: "Telemetry", value: "100% OK" },
+      { label: "Alerts saved", value: "4", strong: true },
     ],
   },
 ];
 
-const STATS = [
-  { label: "VERIFIED INNOVATORS", value: "14,280+ MEMBERS", valueClass: "text-emerald-300" },
-  { label: "COMMERCIALIZED HARDWARE", value: "19 PATENTS", valueClass: "text-signal-orange" },
-];
-
-/** The innovation drive — a full-bleed ink band around a live console. */
+/** The innovation drive: a full-bleed ink band, how it works on the left, the live console on the right. */
 export function NodeTerminalSection() {
   return (
     <section id="innovation" className="section-band-tinted relative isolate overflow-hidden bg-text-primary text-white">
       <SignalSeam className="top-0" />
 
       <div className="mx-auto max-w-7xl px-gutter-x">
-        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-12">
-          {/* Narrative. */}
-          <div className="story-reveal space-y-5 lg:col-span-5">
+        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-14">
+          <div className="story-reveal flex flex-col gap-6 lg:col-span-5">
             <h2 className="font-grotesk text-2xl font-bold tracking-tight text-balance text-signal-orange uppercase sm:text-3xl lg:text-4xl">
               The Bangladesh Innovation Drive
             </h2>
-
-            <p className="font-sans text-base leading-relaxed text-white/80">
-              GitHub meets open democracy for national problem-solving. Citizens
-              register district pain-points, university engineers submit
-              open-source firmware, and Kandari-Lab provides venture hardware
-              grants and cleanroom manufacturing access.
+            <p className="max-w-md font-sans text-base leading-relaxed text-white/80">
+              GitHub meets open democracy: the country’s problems, solved in the open, from the district that
+              names them to the cleanroom that builds the answer.
             </p>
 
-            <div className="space-y-2.5 font-mono text-xs">
-              {STATS.map((s) => (
-                <div key={s.label} className="flex items-center justify-between rounded-xl bg-white/6 p-3.5 ring-1 ring-white/10">
-                  <span className="font-medium text-white/85">{s.label}</span>
-                  <span className={cn("font-bold", s.valueClass)}>{s.value}</span>
-                </div>
+            <ol className="flex flex-col">
+              {STEPS.map((s) => (
+                <li key={s.title} className="group/step grid grid-cols-[auto_1fr] items-start gap-4 border-t border-white/10 py-4 last:border-b">
+                  <span className="grid size-10 place-items-center rounded-xl bg-signal-orange text-text-primary transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/step:-rotate-6 motion-reduce:transition-none motion-reduce:group-hover/step:rotate-0">
+                    <Icon name={s.icon} className="text-[20px]" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="font-grotesk text-sm font-bold">{s.title}</p>
+                    <p className="mt-1 text-sm leading-relaxed text-white/65">{s.body}</p>
+                  </div>
+                </li>
               ))}
-            </div>
+            </ol>
 
-            <div className="pt-2">
+            <div>
               <a href="#kandari-profile" className={btn.gold}>
-                <span>Submit a National Problem</span>
+                Submit a National Problem
                 <Icon name="send" className="text-base" />
               </a>
             </div>
           </div>
 
-          {/* Live feed console. */}
-          <div className="story-reveal overflow-hidden rounded-3xl bg-white/4 ring-1 ring-white/12 shadow-2xl lg:col-span-7">
-            {/* Window bar. */}
-            <div className="flex items-center justify-between gap-3 border-b border-white/10 bg-white/4 px-5 py-3 font-mono text-xs sm:px-6">
-              <span className="flex items-center gap-3 font-bold text-emerald-300">
-                <span aria-hidden className="flex gap-1.5">
-                  <span className="size-2.5 rounded-full bg-national-crimson" />
-                  <span className="size-2.5 rounded-full bg-signal-orange" />
-                  <span className="size-2.5 rounded-full bg-bdgreen-500" />
-                </span>
-                <span className="flex items-center gap-2">
-                  <span className="relative flex size-2">
-                    <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400 motion-reduce:hidden" />
-                    <span className="relative size-2 rounded-full bg-emerald-400" />
-                  </span>
-                  REAL-TIME INNOVATION STREAM
-                </span>
+          {/* The live console: one solid navy field. */}
+          <div className="story-reveal overflow-hidden rounded-3xl bg-bdnavy-900 shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_30px_60px_-36px_rgb(0_0_0/0.9)] ring-1 ring-white/12 lg:col-span-7">
+            <div className="flex items-center gap-3 border-b border-white/10 px-5 py-4 sm:px-7">
+              <span aria-hidden className="relative flex size-2">
+                <span className="absolute inset-0 animate-ping rounded-full bg-signal-orange/70 motion-reduce:hidden" />
+                <span className="relative size-2 rounded-full bg-signal-orange" />
               </span>
-              <span className="hidden text-white/55 sm:inline">FEED // BD-880-STREAM</span>
+              <span className="font-mono text-[11px] font-semibold tracking-[0.16em] text-signal-orange uppercase">Live innovation stream</span>
             </div>
 
-            <div className="divide-y divide-white/8 px-5 font-sans text-sm sm:px-6">
+            <ul className="px-2 py-2 sm:px-3">
               {FEED.map((item) => (
-                <div key={item.head} className="flex flex-col gap-1.5 py-4 transition-colors duration-300 hover:bg-white/3">
-                  <div className="flex items-center justify-between gap-3 font-mono text-xs">
-                    <span className={cn("font-bold", item.headClass)}>{item.head}</span>
-                    <span className="shrink-0 text-white/50">{item.time}</span>
-                  </div>
-
-                  <p className="font-medium text-white/90">{item.body}</p>
-
-                  <div className="flex flex-wrap items-center gap-3 font-mono text-[11px] text-white/55">
-                    {item.meta.map((m, i) => (
-                      <span key={m.text} className="flex items-center gap-3">
-                        {i > 0 ? <span aria-hidden>•</span> : null}
-                        <span className={m.class}>{m.text}</span>
+                <li key={item.head} className="rounded-2xl px-3 py-4 transition-colors duration-300 hover:bg-white/4 sm:px-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="flex min-w-0 items-center gap-2.5">
+                      <span className="shrink-0 rounded-md bg-signal-orange/12 px-2 py-0.5 font-mono text-[10px] font-semibold tracking-[0.12em] text-signal-orange uppercase ring-1 ring-signal-orange/30">
+                        {item.tag}
                       </span>
-                    ))}
+                      <span className="truncate font-mono text-xs font-semibold text-bdnavy-300">{item.head}</span>
+                    </span>
+                    <span className="shrink-0 font-mono text-[11px] text-white/45">{item.time}</span>
                   </div>
-                </div>
-              ))}
 
-              {/* The prompt waiting for the next entry (decorative). */}
-              <div aria-hidden className="flex items-center gap-2 py-4 font-mono text-xs text-signal-orange">
-                &gt;
-                <span className="caret-blink inline-block h-4 w-2 rounded-[1px] bg-signal-orange" />
-              </div>
+                  <p className="mt-2.5 text-[15px] leading-snug font-medium text-white/92">{item.body}</p>
+
+                  <dl className="mt-3 flex flex-wrap gap-x-5 gap-y-1 font-mono text-[11px]">
+                    {item.meta.map((m) => (
+                      <div key={m.label} className="flex gap-1.5">
+                        <dt className="text-white/45">{m.label}</dt>
+                        <dd className={cn(m.strong ? "font-semibold text-signal-orange" : "text-white/75")}>{m.value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </li>
+              ))}
+            </ul>
+
+            {/* The prompt waiting for the next entry (decorative). */}
+            <div aria-hidden className="flex items-center gap-2 border-t border-white/10 px-5 py-4 font-mono text-xs text-signal-orange sm:px-7">
+              &gt;
+              <span className="caret-blink inline-block h-4 w-2 rounded-[1px] bg-signal-orange" />
             </div>
           </div>
         </div>

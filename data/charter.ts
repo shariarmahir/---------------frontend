@@ -1,6 +1,6 @@
 /**
- * The home page's charter card: problem, challenge, vision, mission, goal and
- * impact, one slide each, rotating in a single card above the Pixel-Map.
+ * The home page's charter carousel: problem, challenge, vision, mission, goal
+ * and impact, one card each, gliding above the Pixel-Map.
  *
  * The challenge, vision, mission, goal and impact copy is Mahir's own
  * (2026-10-15). Every figure comes from the national dossier

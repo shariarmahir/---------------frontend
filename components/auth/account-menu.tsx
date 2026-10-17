@@ -15,7 +15,7 @@ const itemClass =
   "flex min-h-11 cursor-pointer items-center gap-space-sm rounded-xl px-space-sm font-sans text-body-sm font-semibold text-text-primary outline-none select-none transition-[background-color,color,scale] duration-150 active:scale-[0.98] data-highlighted:bg-text-primary data-highlighted:text-signal-orange";
 
 /** Where "sign in" should bring the visitor back to. */
-function loginHref(pathname: string) {
+export function loginHref(pathname: string) {
   return pathname === "/" || pathname === "/login" || pathname === "/signup" ? "/login" : `/login?next=${encodeURIComponent(pathname)}`;
 }
 
@@ -63,7 +63,7 @@ export function AccountMenu({ variant = "site", className }: { variant?: "site" 
         href={loginHref(pathname)}
         aria-label="সাইন ইন — Kandari Profile"
         className={cn(
-          "relative flex size-10 shrink-0 items-center justify-center rounded-full bg-text-primary text-signal-orange shadow-ink [-webkit-tap-highlight-color:transparent] transition-[background-color,scale] duration-200 hover:scale-105 hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-90",
+          "relative flex size-10 shrink-0 items-center justify-center rounded-full bg-text-primary text-signal-orange shadow-ink [-webkit-tap-highlight-color:transparent] transition-[background-color,scale] duration-200 hover:scale-105 hover:bg-bdnavy-700 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-90",
           className,
         )}
       >

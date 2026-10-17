@@ -175,16 +175,17 @@ function Loop() {
           CONTINUOUS
         </text>
       </svg>
-      <Chip className="top-0 right-[8%]">Goods</Chip>
-      <Chip className="top-[42%] -right-3">R&amp;D</Chip>
-      <Chip className="bottom-[12%] -left-2">Services</Chip>
+      {/* Inside the drawing's own box, so none of them crosses into the figures beside it. */}
+      <Chip className="top-0 right-[6%]">Goods</Chip>
+      <Chip className="top-[42%] right-0">R&amp;D</Chip>
+      <Chip className="bottom-[12%] left-0">Services</Chip>
     </div>
   );
 }
 
 function Chip({ className, children }: { className?: string; children: React.ReactNode }) {
   return (
-    <span className={cn("absolute rounded-full bg-(--ink)/8 px-3 py-1 font-grotesk text-xs font-semibold text-(--ink) ring-1 ring-(--accent)/50 backdrop-blur-sm", className)}>
+    <span className={cn("absolute rounded-full bg-(--ink)/8 px-3 py-1 font-grotesk text-xs font-semibold text-(--ink) ring-1 ring-(--accent)/50", className)}>
       {children}
     </span>
   );

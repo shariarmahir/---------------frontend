@@ -7,21 +7,24 @@ import { useState, type CSSProperties } from "react";
 import { motion, useReducedMotion, type Transition } from "framer-motion";
 import { ShieldCheck, X } from "lucide-react";
 import { Dialog } from "radix-ui";
-import { AccountMenu, AccountSheetLinks } from "@/components/auth/account-menu";
+import { AccountMenu, AccountSheetLinks, loginHref } from "@/components/auth/account-menu";
 import { RecordDialog } from "@/components/record/record-dialog";
 import { Icon } from "@/components/ui/icon";
+import { SignalSeam } from "@/components/ui/section-kit";
+import { useAuth } from "@/lib/auth/client";
 import { LabelText } from "@/components/brand/kandari-wordmark";
 import { LABEL_TEXT } from "@/data/logo-text";
 import { NAZRUL_MOTTO, navLinksFor, type NavLink } from "@/data/navigation";
 import { cn } from "@/lib/utils";
 
 /*
- * Direction: booking.com's header (Mahir, 2026-10-15). A full-width bar in
- * booking blue, flush with the top of the window, its contents held to the
- * page's content column. Row one: the logo on the left; the civic actions,
- * the feed and the account on the right. Row two (lg and up): the section
- * tabs alone, each an icon and a label, the current one a white-outlined
- * pill. Below lg the second row folds into the pop-up menu.
+ * A full-width navy bar, flush with the top of the window, its contents held
+ * to the page's content column (CLAUDE.md §4.1). The logo stands on its own
+ * gold plate, spanning both rows from lg. Row one: the civic actions, the
+ * feed and the account, right-aligned. Row two (lg and up): the section
+ * tabs on the left, log in / sign up (or the profile) on the right, so both
+ * rows run edge to edge. Between them a hairline with a gold light running
+ * along it. Below lg the second row folds into the pop-up menu.
  */
 
 /**
@@ -156,25 +159,58 @@ export function BrandLogo({ className, priority = false }: { className?: string;
 }
 
 /**
- * Header logo, straight on the navy bar with no tile. Below lg it sits in
- * the single 64px row (40px, 44px from sm); from lg it stands in its own
- * column spanning both rows, 68px tall in the 120px bar, so the mark reads
- * at the scale premium two-tier headers give theirs. The artwork's
- * "Kandari" green and "Lab." black would sink into the navy, so a thin gold
- * outline (its own gold) traces it.
+ * Header logo on its own gold plate. The artwork's "Kandari" green and
+ * "Lab." black sink into the navy bar; on its own gold they read as they
+ * were drawn, the way the footer shows them. Below lg it sits in the single
+ * 64px row; from lg it stands in its own column spanning both rows.
  */
 function BrandLockup() {
   return (
     <Link
       href="/"
       title="Kandari-Lab Homepage"
-      className="group flex min-w-0 shrink-0 items-center rounded-lg select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-signal-orange"
+      className="group flex min-w-0 shrink-0 items-center rounded-xl bg-signal-orange px-2.5 py-1 shadow-[0_8px_20px_-10px_rgb(0_0_0/0.6)] select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-bdnavy-900 lg:rounded-2xl lg:px-4 lg:py-2"
     >
       <BrandLogo
         priority
-        className="logo-on-navy h-10 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100 sm:h-11 lg:h-17"
+        className="h-9 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100 sm:h-10 lg:h-15"
       />
     </Link>
+  );
+}
+
+/**
+ * The right end of the tab row: log in and sign up while signed out (gold
+ * for the sign-up), the profile once signed in.
+ */
+function AuthActions() {
+  const { ready, account } = useAuth();
+  const pathname = usePathname();
+  const quiet =
+    "inline-flex h-9 items-center gap-1.5 rounded-lg px-3 text-sm font-bold whitespace-nowrap text-white transition-colors duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none";
+
+  if (ready && account) {
+    return (
+      <Link href="/account" className={cn(quiet, "ring-1 ring-white/20")}>
+        <Icon name="account_circle" className="text-[18px] text-signal-orange" />
+        My Profile
+      </Link>
+    );
+  }
+  return (
+    <>
+      <Link href={loginHref(pathname)} className={quiet}>
+        <Icon name="login" className="text-[18px] text-signal-orange" />
+        Log in
+      </Link>
+      <Link
+        href="/signup"
+        className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-signal-orange px-4 text-sm font-bold whitespace-nowrap text-bdnavy-900 transition-[filter,translate] duration-200 hover:-translate-y-px hover:brightness-105 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-bdnavy-900 focus-visible:outline-none motion-reduce:hover:translate-y-0"
+      >
+        <Icon name="person_add" className="text-[18px]" />
+        Sign up
+      </Link>
+    </>
   );
 }
 
@@ -277,6 +313,9 @@ export function SiteHeader() {
   const activeHref = clickedHref ?? pathHref ?? navLinks[0].href;
   const setActiveHref = (href: string) => setClicked({ href, path: pathname });
   const [recordOpen, setRecordOpen] = useState(false);
+  // Signed out on a wide screen, log in / sign up sit in the tab row; the round sign-in face is for phones.
+  const { ready, account } = useAuth();
+  const signedIn = ready && Boolean(account);
 
   return (
     // Full width and flush with the top, in the cards' navy. Inside, one grid:
@@ -356,8 +395,8 @@ export function SiteHeader() {
                 <span className="mt-1 font-sans text-xs font-medium whitespace-nowrap text-signal-orange">Prioritize your joy.</span>
               </Link>
 
-              {/* Account — sign-in face, or the signed-in avatar menu. */}
-              <AccountMenu />
+              {/* Account — the signed-in avatar menu; signed out, a sign-in face on phones only. */}
+              <AccountMenu className={signedIn ? undefined : "lg:hidden"} />
 
               {/* Mobile menu — the nav row below is desktop-only. A short gold
                   pop-up that opens from the button's corner, items rising in
@@ -381,12 +420,12 @@ export function SiteHeader() {
                     className="menu-pop fixed top-3 right-3 z-50 flex max-h-[calc(100dvh-1.5rem)] w-[min(21rem,calc(100vw-1.5rem))] flex-col gap-2.5 overflow-y-auto rounded-3xl bg-bdnavy-900 p-3.5 text-white ring-1 ring-white/12 shadow-[0_28px_60px_-18px_rgb(0_0_0/0.7)] focus:outline-none lg:hidden"
                   >
                     <div className="menu-item flex items-center justify-between" style={{ "--i": 0 } as CSSProperties}>
-                      <Dialog.Title>
-                        <BrandLogo className="logo-on-navy h-10" />
+                      <Dialog.Title className="rounded-xl bg-signal-orange px-2.5 py-1">
+                        <BrandLogo className="h-9" />
                       </Dialog.Title>
                       <Dialog.Close
                         aria-label="Close menu"
-                        className="flex size-10 items-center justify-center rounded-xl bg-text-primary text-signal-orange transition-[background-color,scale] duration-200 hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-90"
+                        className="flex size-10 items-center justify-center rounded-xl bg-text-primary text-signal-orange transition-[background-color,scale] duration-200 hover:bg-bdnavy-700 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-90"
                       >
                         <X className="size-5" aria-hidden />
                       </Dialog.Close>
@@ -398,7 +437,7 @@ export function SiteHeader() {
                         <Link
                           href="/media"
                           style={{ "--i": 1 } as CSSProperties}
-                          className="menu-item flex min-h-14 flex-col items-center justify-center rounded-2xl bg-text-primary px-3 py-2 text-center leading-tight shadow-ink [-webkit-tap-highlight-color:transparent] transition-[background-color,scale] duration-200 hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-95"
+                          className="menu-item flex min-h-14 flex-col items-center justify-center rounded-2xl bg-text-primary px-3 py-2 text-center leading-tight shadow-ink [-webkit-tap-highlight-color:transparent] transition-[background-color,scale] duration-200 hover:bg-bdnavy-700 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-95"
                         >
                           <LabelText text={LABEL_TEXT.media} className="text-[17px] leading-none text-signal-orange" />
                           <span className="mt-1 font-sans text-xs font-semibold text-white/85">Prioritize your joy.</span>
@@ -409,7 +448,7 @@ export function SiteHeader() {
                           type="button"
                           onClick={() => setRecordOpen(true)}
                           style={{ "--i": 2 } as CSSProperties}
-                          className="menu-item flex min-h-14 flex-col items-center justify-center gap-1.5 rounded-2xl bg-text-primary px-4 py-2 font-sans text-xs font-bold text-white shadow-ink [-webkit-tap-highlight-color:transparent] transition-[background-color,scale] duration-200 hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-95"
+                          className="menu-item flex min-h-14 flex-col items-center justify-center gap-1.5 rounded-2xl bg-text-primary px-4 py-2 font-sans text-xs font-bold text-white shadow-ink [-webkit-tap-highlight-color:transparent] transition-[background-color,scale] duration-200 hover:bg-bdnavy-700 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-95"
                         >
                           <span className="relative flex size-3">
                             <span className="absolute inline-flex size-full animate-ping rounded-full bg-national-crimson opacity-75 motion-reduce:hidden" />
@@ -445,7 +484,7 @@ export function SiteHeader() {
                         href="/bangladesh"
                         prefetch={false}
                         style={{ "--i": navLinks.length + 3 } as CSSProperties}
-                        className="menu-item flex items-center justify-center gap-2 rounded-full bg-linear-to-r from-bd-green to-bdgreen-800 px-3.5 py-2.5 font-bengali text-sm font-bold text-signal-orange shadow-ink transition-[scale] duration-200 active:scale-95"
+                        className="menu-item flex items-center justify-center gap-2 rounded-full bg-signal-orange px-3.5 py-2.5 font-bengali text-sm font-bold text-bdnavy-900 transition-[scale] duration-200 active:scale-95"
                       >
                         <DeshLabel className="text-[16px] leading-none" />
                       </Link>
@@ -456,7 +495,7 @@ export function SiteHeader() {
                         <Link
                           href="/protibad"
                           style={{ "--i": navLinks.length + 4 } as CSSProperties}
-                          className="menu-item flex min-h-11 items-center justify-center gap-1.5 rounded-xl bg-national-crimson px-3 py-2 font-bengali text-sm font-bold text-white shadow-red-glow transition-[scale] duration-200 active:scale-95"
+                          className="menu-item flex min-h-11 items-center justify-center gap-1.5 rounded-xl bg-national-crimson px-3 py-2 font-bengali text-sm font-bold text-white transition-[scale] duration-200 active:scale-95"
                         >
                           <ProtestGlyph className="size-3.5" />
                           <LabelText text={LABEL_TEXT.protibad} className="text-[17px] leading-none" />
@@ -489,14 +528,18 @@ export function SiteHeader() {
               </Dialog.Root>
           </div>
 
-          {/* ── Row 2 — the section tabs (lg and up), under a hairline,
-              their gold pointer sitting on the bar's bottom edge. ────── */}
-          <nav
-            aria-label="Sections"
-            className="no-scrollbar col-start-2 hidden h-full overflow-x-auto border-t border-white/8 lg:block"
-          >
-            <SectionNav links={navLinks} activeHref={activeHref} onPick={setActiveHref} />
-          </nav>
+          {/* ── Row 2 (lg and up) — the section tabs, their gold pointer on
+              the bar's bottom edge, and the account actions at the right
+              end; over it, the running hairline that parts the rows. ───── */}
+          <div className="relative col-start-2 hidden h-full items-stretch justify-between gap-6 lg:flex">
+            <SignalSeam className="top-0" />
+            <nav aria-label="Sections" className="no-scrollbar -ml-3 min-w-0 overflow-x-auto xl:-ml-3.5">
+              <SectionNav links={navLinks} activeHref={activeHref} onPick={setActiveHref} />
+            </nav>
+            <div className="flex shrink-0 items-center gap-2">
+              <AuthActions />
+            </div>
+          </div>
         </div>
       </header>
 

@@ -15,7 +15,7 @@
  * reduced motion shows the finished post, still, with a one-line summary.
  * The card pauses it off screen (.ms-root[data-paused]).
  */
-import type { CSSProperties } from "react";
+import { useId, type CSSProperties } from "react";
 
 const d = (ms: number) => ({ "--d": ms }) as CSSProperties;
 
@@ -52,6 +52,8 @@ function Tag({ x, y, w, label, cls, delay = 0 }: { x: number; y: number; w: numb
 }
 
 export function MediaReel() {
+  // The film plays in more than one place on the home page; each copy needs its own clip id.
+  const clipId = `${useId()}-photo`;
   return (
     <svg
       role="img"
@@ -60,7 +62,7 @@ export function MediaReel() {
       className="absolute inset-0 h-full w-full"
     >
       <defs>
-        <clipPath id="media-reel-photo">
+        <clipPath id={clipId}>
           <rect x="120" y="132" width="156" height="88" rx="10" />
         </clipPath>
       </defs>
@@ -94,7 +96,7 @@ export function MediaReel() {
           width="156"
           height="88"
           preserveAspectRatio="xMidYMid slice"
-          clipPath="url(#media-reel-photo)"
+          clipPath={`url(#${clipId})`}
         />
 
         <text x="120" y="240" className="fill-text-primary font-bengali" fontSize="13" fontWeight="700">নকশিকাঁথা সেলাই</text>

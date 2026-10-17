@@ -11,27 +11,23 @@ import { services, type ServiceMotion } from "@/data/services";
 import type { SceneKind } from "./motion-scene";
 import { LabelText } from "@/components/brand/kandari-wordmark";
 import { LABEL_TEXT } from "@/data/logo-text";
-import { PosterStrip, type PosterFace, type PosterItem } from "./poster-strip";
+import { cn } from "@/lib/utils";
+import { PosterGrid, type PosterFace, type PosterItem } from "./poster-grid";
 import { ShowcaseCard, type CardTone } from "./showcase-card";
 
-/** A track's header: a big index, the English and Bangla names, and a link out. */
-export function TrackHead({ n, title, titleBn, href, link }: { n: string; title: string; titleBn: string; href: string; link: string }) {
+/** The outlined pill that leads from a section to its full page. */
+export function TrackLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <div className="story-reveal mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-white/12 pb-4">
-      <div className="flex items-end gap-4">
-        <span className="font-grotesk text-5xl leading-none font-extrabold text-signal-orange sm:text-6xl">{n}</span>
-        <span>
-          <span className="block font-grotesk text-xl font-bold text-white uppercase sm:text-2xl">{title}</span>
-          <span className="block font-bengali text-sm font-semibold text-white/65">{titleBn}</span>
-        </span>
-      </div>
-      <Link
-        href={href}
-        className="group inline-flex min-h-10 items-center gap-1.5 rounded-full px-4 font-grotesk text-sm font-bold text-white ring-1 ring-white/20 transition-colors hover:bg-white hover:text-text-primary"
-      >
-        {link} <Icon name="arrow_forward" className="text-[18px] transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
-      </Link>
-    </div>
+    <Link
+      href={href}
+      className={cn(
+        "group inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full px-5 font-grotesk text-sm font-bold text-signal-orange ring-1 ring-signal-orange/45",
+        "transition-colors duration-200 hover:bg-signal-orange hover:text-text-primary",
+        "focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none",
+      )}
+    >
+      {children} <Icon name="arrow_forward" className="text-[18px] transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
+    </Link>
   );
 }
 
@@ -57,14 +53,14 @@ function GoldenTwoHours() {
 
 /**
  * The home page's product posters: the three healthcare products, each
- * photo with its own motion layer and status chips, then শিক্ষিতদের মিডিয়া,
- * whose hill plays a short film of its core loop. Poster copy is short on
- * purpose: the face carries a headline and one line, the panel the rest.
+ * photo with its own motion layer, then শিক্ষিতদের মিডিয়া, whose picture
+ * plays a short film of its core loop. Poster copy is short on purpose: the
+ * face carries a name and one line, the panel the rest.
  */
-const PRODUCT_POSTERS: Record<string, Pick<PosterItem, "face" | "tagline" | "scene" | "chips"> & { position?: string }> = {
-  aponjon: { face: "navy", tagline: "Catch the silent warning early", scene: "ecg", chips: ["Prototype", "ECG · SpO₂ · Stress"], position: "62% 50%" },
-  swasti: { face: "gold", tagline: "A doctor's first opinion, in Bangla", scene: "voice", chips: ["Beta", "বাংলা ভয়েস"], position: "50% 22%" },
-  "smart-pharmacy": { face: "green", tagline: "The village drug shop, now a clinic", scene: "grid", chips: ["Pilot", "১ গ্রাম · ১ কেন্দ্র"], position: "50% 45%" },
+const PRODUCT_POSTERS: Record<string, Pick<PosterItem, "face" | "tagline" | "scene"> & { position?: string }> = {
+  aponjon: { face: "navy", tagline: "Catch the silent warning early", scene: "ecg", position: "62% 50%" },
+  swasti: { face: "gold", tagline: "A doctor's first opinion, in Bangla", scene: "voice", position: "50% 22%" },
+  "smart-pharmacy": { face: "ink", tagline: "The village drug shop, now a clinic", scene: "grid", position: "50% 45%" },
 };
 
 function productPosters(): PosterItem[] {
@@ -85,7 +81,6 @@ function productPosters(): PosterItem[] {
         href: `/products/${p.slug}`,
         image: { src: p.image.src, alt: p.image.alt, position: look.position },
         scene: look.scene,
-        chips: look.chips,
         note: `${p.category} · ${p.stage}`,
       },
     ];
@@ -94,8 +89,9 @@ function productPosters(): PosterItem[] {
   // product of its own beside the healthcare line.
   items.push({
     id: "media",
-    face: "white",
-    title: <LabelText text={LABEL_TEXT.media} className="text-[2.25rem] leading-none" />,
+    face: "navy",
+    // The wordmark never wraps, so it scales with the card's width (the card body is a size container).
+    title: <LabelText text={LABEL_TEXT.media} className="text-[min(1.75rem,11cqw)] leading-none" />,
     tagline: "Post a skill. Get verified. Get hired.",
     name: <LabelText text={LABEL_TEXT.media} className="leading-none" />,
     nameText: "শিক্ষিতদের মিডিয়া",
@@ -109,7 +105,7 @@ function productPosters(): PosterItem[] {
 
 /** Healthcare products: Aponjon, SWASTI and the Smart Pharmacy, three cards of one size. */
 export function ProductsShowcase({ poster }: { poster?: boolean }) {
-  if (poster) return <PosterStrip label="Products" items={productPosters()} />;
+  if (poster) return <PosterGrid label="Products" items={productPosters()} />;
   const aponjon = getProduct("aponjon");
   const swasti = getProduct("swasti");
   const pharmacy = getProduct("smart-pharmacy");
@@ -157,11 +153,11 @@ const SERVICE_TONES: CardTone[] = ["green", "ink", "gold", "white"];
  * to the Kandari Profile sign-up, the one way to reach the team today.
  */
 export function ServicesShowcase({ on = "home", poster }: { on?: "home" | "products"; poster?: boolean }) {
-  // The home page's poster strip (banglalink.net's "Dive Into Digital" cards).
+  // The home page's poster grid, in the palette's three fields (no two neighbours alike).
   if (poster) {
-    const faces: PosterFace[] = ["green", "gold", "navy", "white"];
+    const faces: PosterFace[] = ["ink", "gold", "navy", "gold"];
     return (
-      <PosterStrip
+      <PosterGrid
         label="Services"
         items={services.map((s, i) => ({
           id: s.id,

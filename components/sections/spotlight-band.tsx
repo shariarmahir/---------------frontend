@@ -14,10 +14,13 @@ import { cn } from "@/lib/utils";
  * photo pill and a coloured word, a grey sub line and one button. Slides
  * travel upward on a 4.2s hold with a 0.5s move, like the original.
  *
- * Re-coloured for the pitch-black home: white line 1, grey lead word, gold
- * tail word, gold button with ink text. Each pill carries a small motion
- * graphic that says what the slide is about (an ECG trace, a scan, a
- * meter…) — see `SpotlightMotif`.
+ * Re-coloured for the pitch-black home in the UI's own colours: a gold
+ * headline, the figure or lead word in the navy tint, the tail in gold, and
+ * a gold button with ink text. Each pill is a navy field: its photograph
+ * toned navy-to-gold (a duotone, so every picture belongs to the band),
+ * with a motion graphic on top that says what the slide is about (a
+ * heartbeat, a scanner, an equaliser, radar rings, or a line chart that
+ * draws itself for an indicator) — see `SpotlightMotif`.
  *
  * English only, and no label above the headline: the slide is the headline,
  * the pill, the sub line and the button. Rotation holds while the pointer is
@@ -35,10 +38,30 @@ const ECG_PATH =
 /** Large type: tight tracking suits the Latin display face. */
 const BIG = "font-display leading-[1.08] tracking-tighter";
 
-/** The motion graphic over (or instead of) the pill photo. */
+/**
+ * An indicator's line: nine points trending up or down with a little
+ * seeded wander, on the pill's 288×80 box. Seeded from the slide id, so
+ * server and browser draw the same line.
+ */
+function sparkline(id: string, up: boolean) {
+  let s = [...id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 2147483647, 7) || 7;
+  const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  const pts = Array.from({ length: 9 }, (_, i) => {
+    const t = i / 8;
+    const trend = up ? 60 - t * 40 : 22 + t * 40;
+    return [24 + t * 240, trend + (i === 0 || i === 8 ? 0 : (rnd() - 0.5) * 14)];
+  });
+  const line = `M${pts.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join("L")}`;
+  return { line, area: `${line}L264 80L24 80Z`, end: pts[8] };
+}
+
+/**
+ * The motion graphic over the pill. Gold strokes and fills on the navy field.
+ * The drawn lines keep their normal stroke scaling: a non-scaling stroke
+ * measures its dashes in screen pixels, which breaks `pathLength={1}`.
+ */
 function Motif({ slide }: { slide: SpotlightSlide }) {
-  const { motif, progress = 0 } = slide.media;
-  const alarming = slide.media.tone === "critical";
+  const { motif } = slide.media;
 
   switch (motif) {
     case "pulse":
@@ -52,25 +75,34 @@ function Motif({ slide }: { slide: SpotlightSlide }) {
               className={cls}
               d={ECG_PATH}
               fill="none"
-              stroke="var(--color-national-crimson)"
+              stroke="var(--color-signal-orange)"
               strokeWidth="3"
               strokeLinejoin="round"
               strokeLinecap="round"
-              vectorEffect="non-scaling-stroke"
             />
           ))}
         </svg>
       );
     case "scan":
-      return <span aria-hidden className="spot-scan absolute inset-y-0 left-0 w-1/3" />;
+      return (
+        // A viewfinder: four corner brackets, and a gold line sweeping between them.
+        <span aria-hidden className="absolute inset-[18%_8%]">
+          {["top-0 left-0 border-t-2 border-l-2", "top-0 right-0 border-t-2 border-r-2", "bottom-0 left-0 border-b-2 border-l-2", "right-0 bottom-0 border-r-2 border-b-2"].map(
+            (corner) => (
+              <span key={corner} className={cn("absolute size-2.5 border-white/85 lg:size-4", corner)} />
+            ),
+          )}
+          <span className="spot-scan absolute inset-y-0 w-0.5 rounded-full bg-signal-orange" />
+        </span>
+      );
     case "bars":
       return (
-        <span aria-hidden className="absolute right-[12%] bottom-[18%] flex h-1/2 items-end gap-[3px] lg:gap-1">
-          {[0, 1, 2, 3, 4].map((i) => (
+        <span aria-hidden className="absolute inset-x-[16%] bottom-[20%] flex h-[55%] items-end justify-between">
+          {Array.from({ length: 12 }, (_, i) => (
             <span
               key={i}
               className="spot-bar h-full w-[3px] origin-bottom rounded-full bg-signal-orange lg:w-1.5"
-              style={{ animationDelay: `${i * 140}ms` }}
+              style={{ animationDelay: `${(i % 6) * 110}ms`, height: `${45 + ((i * 37) % 55)}%` }}
             />
           ))}
         </span>
@@ -80,59 +112,62 @@ function Motif({ slide }: { slide: SpotlightSlide }) {
         <span aria-hidden className="absolute inset-0 flex items-center justify-center">
           <span className="spot-ring absolute size-1/2 rounded-full border-2 border-signal-orange" />
           <span className="spot-ring absolute size-1/2 rounded-full border-2 border-signal-orange [animation-delay:1.1s]" />
+          <span className="relative size-2 rounded-full bg-signal-orange lg:size-3" />
         </span>
       );
-    case "meter":
+    case "meter": {
+      // The indicator's direction, drawn: the line writes itself, the area under it fills in, the end point lands.
+      const { line, area, end } = sparkline(slide.id, slide.tailArrow !== "down");
       return (
-        <span aria-hidden className="absolute inset-x-[14%] bottom-[16%] h-1 overflow-hidden rounded-full bg-white/25 lg:h-1.5">
+        <span aria-hidden className="absolute inset-0">
+          <svg viewBox="0 0 288 80" preserveAspectRatio="none" className="absolute inset-0 size-full">
+            <path d={area} className="spot-area" fill="var(--color-signal-orange)" fillOpacity="0.18" />
+            <path
+              d={line}
+              pathLength={1}
+              className="spot-draw"
+              fill="none"
+              stroke="var(--color-signal-orange)"
+              strokeWidth="2.5"
+              strokeLinejoin="round"
+              strokeLinecap="round"
+            />
+          </svg>
           <span
-            className={cn(
-              "spot-meter block h-full rounded-full",
-              alarming ? "bg-national-crimson" : "bg-signal-orange",
-            )}
-            style={{ width: `${progress}%` }}
+            className="spot-dot absolute size-2 -translate-1/2 rounded-full bg-white ring-2 ring-signal-orange lg:size-3"
+            style={{ left: `${(end[0] / 288) * 100}%`, top: `${(end[1] / 80) * 100}%` }}
           />
         </span>
       );
+    }
   }
 }
 
 function Pill({ slide, eager }: { slide: SpotlightSlide; eager: boolean }) {
   const { media } = slide;
-  const photo = Boolean(media.src);
   return (
     <span
       role="img"
       aria-label={media.alt}
-      className={cn(
-        "spot-pill relative block h-10 w-34 shrink-0 overflow-hidden rounded-full lg:h-20 lg:w-72",
-        // No photo: a solid ink pill carries the graphic alone.
-        !photo && "bg-text-primary ring-1 ring-white/15",
-      )}
+      className="spot-pill relative block h-10 w-34 shrink-0 overflow-hidden rounded-full bg-bdnavy-900 ring-1 ring-white/15 lg:h-24 lg:w-80"
     >
       {media.src ? (
-        <Image
-          src={media.src}
-          alt=""
-          fill
-          sizes="(min-width: 1024px) 288px, 136px"
-          loading={eager ? "eager" : "lazy"}
-          style={{ objectPosition: media.position ?? "50% 50%" }}
-          className="spot-kenburns object-cover"
-        />
-      ) : null}
-      {photo ? <span aria-hidden className="absolute inset-0 bg-linear-to-t from-black/45 to-transparent" /> : null}
-      {!photo && media.motif === "meter" ? (
-        // Ink meter pill: the bars stand behind the fill so it reads as a gauge.
-        <span aria-hidden className="absolute top-[22%] left-[14%] flex h-[40%] items-end gap-[3px] lg:gap-1">
-          {[0, 1, 2, 3, 4, 5].map((i) => (
-            <span
-              key={i}
-              className="spot-bar h-full w-[3px] origin-bottom rounded-full bg-white/35 lg:w-1.5"
-              style={{ animationDelay: `${i * 120}ms` }}
-            />
-          ))}
-        </span>
+        <>
+          {/* Duotone: the photograph in grey, its shadows lifted to navy, its lights tinted gold. */}
+          <Image
+            src={media.src}
+            alt=""
+            fill
+            sizes="(min-width: 1024px) 320px, 136px"
+            loading={eager ? "eager" : "lazy"}
+            style={{ objectPosition: media.position ?? "50% 50%" }}
+            className="spot-kenburns object-cover grayscale"
+          />
+          <span aria-hidden className="absolute inset-0 bg-bdnavy-900 mix-blend-lighten" />
+          <span aria-hidden className="absolute inset-0 bg-signal-orange opacity-80 mix-blend-multiply" />
+          {/* Deeper navy where the graphic sits, so its gold reads. */}
+          <span aria-hidden className="absolute inset-0 bg-linear-to-t from-bdnavy-900/85 via-bdnavy-900/30 to-transparent" />
+        </>
       ) : null}
       <Motif slide={slide} />
     </span>
@@ -183,7 +218,7 @@ function Slide({ slide, eager }: { slide: SpotlightSlide; eager: boolean }) {
     <div className="flex h-full w-full flex-col items-center justify-center px-4 py-5 text-center">
       <p
         className={cn(
-          "mb-2 text-[clamp(1.6rem,8vw,2.25rem)] font-semibold text-balance text-white md:mb-4 lg:text-7xl",
+          "mb-2 text-[clamp(1.6rem,8vw,2.25rem)] font-semibold text-balance text-signal-orange md:mb-4 lg:text-7xl",
           BIG,
         )}
       >
@@ -194,7 +229,7 @@ function Slide({ slide, eager }: { slide: SpotlightSlide; eager: boolean }) {
         <div className="flex flex-row items-center justify-center gap-3 md:gap-4">
           <span
             className={cn(
-              "text-[clamp(1.6rem,8vw,2.25rem)] font-semibold whitespace-nowrap text-white/40 lg:text-7xl",
+              "text-[clamp(1.6rem,8vw,2.25rem)] font-semibold whitespace-nowrap text-bdnavy-300 lg:text-7xl",
               BIG,
             )}
           >
@@ -204,7 +239,7 @@ function Slide({ slide, eager }: { slide: SpotlightSlide; eager: boolean }) {
         </div>
         <span
           className={cn(
-            "inline-flex items-center gap-1 text-[clamp(1.6rem,8vw,2.25rem)] font-semibold whitespace-nowrap text-signal-orange lg:text-7xl",
+            "inline-flex items-center gap-1 text-[clamp(1.6rem,8vw,2.25rem)] font-semibold whitespace-nowrap text-white lg:text-7xl",
             BIG,
           )}
         >
@@ -218,7 +253,7 @@ function Slide({ slide, eager }: { slide: SpotlightSlide; eager: boolean }) {
         </span>
       </div>
 
-      <p className="mt-3 line-clamp-2 max-w-2xl font-sans text-sm leading-6 text-white/55 md:mt-5 md:text-base">
+      <p className="mt-3 line-clamp-2 max-w-2xl font-sans text-sm leading-6 text-white/65 md:mt-5 md:text-base">
         {slide.sub}
       </p>
 
