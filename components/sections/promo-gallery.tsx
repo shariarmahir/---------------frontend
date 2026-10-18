@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import { RecordDialog } from "@/components/record/record-dialog";
-import { CarouselArrow, type ArrowTone } from "@/components/ui/carousel-arrow";
+import { CarouselArrow } from "@/components/ui/carousel-arrow";
 import { Icon } from "@/components/ui/icon";
 import { btn } from "@/components/ui/section-kit";
 import { promos, type Promo, type PromoField } from "@/data/promos";
@@ -47,12 +47,12 @@ const FIELDS: Record<PromoField, { card: string; muted: string; button: string; 
     melt: "from-text-primary",
     glow: "var(--color-signal-orange)",
   },
-  gold: {
-    card: "bg-signal-orange text-text-primary",
-    muted: "text-text-primary/80",
-    button: btn.navy,
-    melt: "from-signal-orange",
-    glow: "var(--color-signal-orange)",
+  cobalt: {
+    card: "bg-cobalt text-white ring-1 ring-white/12 ring-inset",
+    muted: "text-white/80",
+    button: btn.gold,
+    melt: "from-cobalt",
+    glow: "var(--color-cobalt)",
   },
 };
 
@@ -70,10 +70,7 @@ export function PromoGallery() {
   const [focus, setFocus] = useState(false);
   const [onScreen, setOnScreen] = useState(false);
   const [recorder, setRecorder] = useState(false);
-  const [tones, setTones] = useState<[ArrowTone, ArrowTone]>(["gold", "gold"]);
   const root = useRef<HTMLDivElement>(null);
-  const banner = useRef<HTMLDivElement>(null);
-  const arrows = useRef<(HTMLButtonElement | null)[]>([]);
   const swipe = useRef<{ id: number; x: number } | null>(null);
 
   const step = (by: 1 | -1) => setPos(shift(by));
@@ -94,32 +91,6 @@ export function PromoGallery() {
     const t = window.setTimeout(() => setPos(shift(1)), HOLD_MS);
     return () => window.clearTimeout(t);
   }, [pos.index, paused]);
-
-  // Each arrow takes the colour that reads on the banner under it: navy over gold, gold over the rest.
-  useEffect(() => {
-    const row = root.current;
-    if (!row) return;
-    const measure = () => {
-      const box = row.getBoundingClientRect();
-      const card = banner.current?.offsetWidth ?? box.width;
-      const gap = parseFloat(getComputedStyle(row).getPropertyValue("--gap")) || 0;
-      const toneAt = (el: HTMLButtonElement | null): ArrowTone => {
-        if (!el) return "gold";
-        const r = el.getBoundingClientRect();
-        const x = Math.round((r.left + r.width / 2 - box.left - box.width / 2) / (card + gap));
-        return promos[mod(active + x, n)].field === "gold" ? "navy" : "gold";
-      };
-      const next: [ArrowTone, ArrowTone] = [toneAt(arrows.current[0]), toneAt(arrows.current[1])];
-      setTones((t) => (t[0] === next[0] && t[1] === next[1] ? t : next));
-    };
-    // Halfway through the glide, as the banners cross under the arrows.
-    const t = window.setTimeout(measure, GLIDE_MS / 2);
-    window.addEventListener("resize", measure);
-    return () => {
-      window.clearTimeout(t);
-      window.removeEventListener("resize", measure);
-    };
-  }, [active, n]);
 
   const onPointerDown = (e: ReactPointerEvent) => {
     swipe.current = { id: e.pointerId, x: e.clientX };
@@ -152,7 +123,7 @@ export function PromoGallery() {
           e.preventDefault();
           step(e.key === "ArrowRight" ? 1 : -1);
         }}
-        // --card: the content column, as every other section uses. --gap in px: the arrows' colour reads it.
+        // --card: the content column, as every other section uses; --gap: the space between banners.
         className="group/carousel relative [--card:calc(min(100cqw,80rem)-2*var(--spacing-gutter-x))] [--gap:12px] lg:[--gap:20px]"
       >
         <div
@@ -171,7 +142,6 @@ export function PromoGallery() {
             return (
               <div
                 key={promo.id}
-                ref={i === 0 ? banner : undefined}
                 role="group"
                 aria-roledescription="slide"
                 aria-label={`${i + 1} of ${n}: ${promo.label}`}
@@ -192,14 +162,10 @@ export function PromoGallery() {
           })}
         </div>
 
-        {(["prev", "next"] as const).map((side, k) => (
+        {(["prev", "next"] as const).map((side) => (
           <CarouselArrow
             key={side}
-            ref={(el) => {
-              arrows.current[k] = el;
-            }}
             side={side}
-            tone={tones[k]}
             label={side === "prev" ? "Previous banner" : "Next banner"}
             onClick={() => step(side === "next" ? 1 : -1)}
           />
@@ -233,7 +199,7 @@ function Banner({ promo, onRecord, priority }: { promo: Promo; onRecord: () => v
       )}
     >
       <div className="relative order-2 flex min-h-0 flex-col justify-center gap-3 p-5 sm:order-1 sm:gap-4 sm:p-8 lg:p-12">
-        <h3 className="font-bengali text-3xl leading-[1.18] @2xl:text-4xl @5xl:text-5xl font-bold text-balance">{promo.title}</h3>
+        <h3 className="font-bengali text-3xl leading-[1.18] font-bold text-balance text-signal-orange @2xl:text-4xl @5xl:text-5xl">{promo.title}</h3>
         <p className={cn("line-clamp-3 max-w-md text-sm leading-relaxed sm:text-base", field.muted)}>{promo.body}</p>
         <div className="mt-1 sm:mt-2">
           {"href" in promo.action ? (

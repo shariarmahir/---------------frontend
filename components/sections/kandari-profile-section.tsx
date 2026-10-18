@@ -47,26 +47,26 @@ export function KandariProfileSection() {
     <section id="kandari-profile" aria-labelledby="kandari-profile-title" className="section-band mx-auto max-w-7xl px-gutter-x">
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.85fr)_minmax(0,1fr)]">
         {/* The invitation. */}
-        <div className="story-reveal relative grid overflow-hidden rounded-3xl bg-signal-orange text-text-primary sm:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+        <div className="story-reveal relative grid overflow-hidden rounded-3xl bg-cobalt text-white sm:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
           <div className="relative order-2 flex flex-col items-start gap-4 p-6 sm:order-1 sm:p-8 lg:p-10">
-            <h2 id="kandari-profile-title" className="font-grotesk text-2xl leading-tight font-bold tracking-tight text-balance text-bdnavy-900 sm:text-3xl">
+            <h2 id="kandari-profile-title" className="font-grotesk text-2xl leading-tight font-bold tracking-tight text-balance text-signal-orange sm:text-3xl">
               Join Kandari Profile for breakthrough R&amp;D
             </h2>
-            <p className="max-w-md text-sm leading-relaxed text-text-primary/80 sm:text-base">
+            <p className="max-w-md text-sm leading-relaxed text-white/80 sm:text-base">
               One free profile to hear first about new research, product releases and early access to what the lab
               builds.
             </p>
-            <p className="font-grotesk text-lg font-bold text-bdnavy-900">
+            <p className="font-grotesk text-xl font-bold text-signal-orange">
               Free to join, always
             </p>
-            <Link href={account ? "/account" : "/signup"} className={cn(btn.navy, "mt-2")}>
-              <Icon name={account ? "account_circle" : "person_add"} className="text-2xl text-signal-orange" />
+            <Link href={account ? "/account" : "/signup"} className={cn(btn.gold, "mt-2")}>
+              <Icon name={account ? "account_circle" : "person_add"} className="text-2xl" />
               {account ? "My Profile" : "Join Kandari Profile"}
             </Link>
-            <p className="text-xs font-medium text-text-primary/80">* Sign up with a phone code or email *</p>
+            <p className="text-xs font-medium text-white/80">* Sign up with a phone code or email *</p>
           </div>
 
-          {/* The photograph melts into the gold at the seam, as on the team cards. */}
+          {/* The photograph melts into the cobalt at the seam, as on the team cards. */}
           <div className="relative order-1 h-48 sm:order-2 sm:h-auto">
             <Image
               src="/hero/Hero-8.jpg"
@@ -78,7 +78,7 @@ export function KandariProfileSection() {
             />
             <div
               aria-hidden
-              className="absolute inset-x-0 -bottom-px h-1/2 bg-linear-to-t from-signal-orange to-transparent sm:inset-y-0 sm:-left-px sm:h-auto sm:w-1/2 sm:bg-linear-to-r"
+              className="absolute inset-x-0 -bottom-px h-1/2 bg-linear-to-t from-cobalt to-transparent sm:inset-y-0 sm:-left-px sm:h-auto sm:w-1/2 sm:bg-linear-to-r"
             />
           </div>
         </div>

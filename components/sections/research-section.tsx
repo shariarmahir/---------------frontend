@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 /**
  * Each project is a spec-sheet row rather than another card in a grid, on the
  * same solid colour fields as the Pixel-Map cards (navy for vision, ink
- * for the circular economy, gold for silicon). Ink text on gold, white on
- * navy and ink; the icon tile takes the contrasting colour. Each row ends
+ * for the circular economy, cobalt for silicon). White text throughout,
+ * the title gold on cobalt; the icon tile takes the contrasting colour. Each row ends
  * in its access button: request to read the research, wait for approval,
  * then read it (`href`).
  */
@@ -17,7 +17,6 @@ const LABS = [
     id: "eye-agent",
     href: "/research/blind-assist-wearable",
     icon: "blind",
-    gold: false,
     surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
     block: "bg-signal-orange text-text-primary",
     glow: "var(--color-bdnavy-400)",
@@ -29,7 +28,6 @@ const LABS = [
     id: "circular",
     href: "/research/organic-waste-to-soil",
     icon: "recycling",
-    gold: false,
     surface: "bg-text-primary text-white ring-1 ring-white/12",
     block: "bg-signal-orange text-text-primary",
     glow: "var(--color-signal-orange)",
@@ -42,10 +40,10 @@ const LABS = [
     // No paper of its own yet: approval opens the research library.
     href: "/research",
     icon: "developer_board",
-    gold: true,
-    surface: "bg-signal-orange text-text-primary",
-    block: "bg-bdnavy-900 text-white",
-    glow: "var(--color-signal-orange)",
+    surface: "bg-cobalt text-white ring-1 ring-white/12",
+    block: "bg-signal-orange text-text-primary",
+    heading: "text-signal-orange",
+    glow: "var(--color-cobalt)",
     title: "Semiconductor Fabrication & 10-Crore Data Engine",
     description:
       "Pioneering native RISC-V edge chip tape-outs tailored for localized bio-telemetry. Fed by an unprecedented 100-million Bengali multimodal corpus for sovereign AI execution without reliance on foreign LLMs.",
@@ -88,12 +86,12 @@ export function ResearchSection() {
               </span>
 
               <div className="min-w-0">
-                <h3 className="mb-2 font-grotesk text-lg font-bold">{lab.title}</h3>
+                <h3 className={cn("mb-2 font-grotesk text-lg font-bold", "heading" in lab && lab.heading)}>{lab.title}</h3>
                 <p className="max-w-[68ch] font-sans text-sm leading-relaxed">{lab.description}</p>
               </div>
 
               <div className="col-start-2 md:col-start-auto">
-                <AccessRequestButton project={lab.id} title={lab.title} href={lab.href} onGold={lab.gold} />
+                <AccessRequestButton project={lab.id} title={lab.title} href={lab.href} />
               </div>
             </article>
           </li>

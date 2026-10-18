@@ -40,7 +40,7 @@ export function ProductsSection() {
 export function ServicesSection() {
   return (
     <section id="services" className="section-band mx-auto max-w-7xl px-gutter-x">
-      <HeadingRow href="/products#services" link="Services in detail">
+      <HeadingRow href="/services" link="Services in detail">
         <SectionHeading
           tone="dark"
           className="mb-0"

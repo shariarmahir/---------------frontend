@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
  * (focus opens, Enter or a tap toggles).
  */
 
-const LOOKS: Record<ReviewField, { card: string; muted: string; button: string; accent: string; glow: string }> = {
+const LOOKS: Record<ReviewField, { card: string; muted: string; button: string; accent: string; glow: string; quote?: string }> = {
   navy: {
     card: "bg-bdnavy-900 text-white ring-1 ring-white/12 ring-inset",
     muted: "text-white/65",
@@ -25,11 +25,15 @@ const LOOKS: Record<ReviewField, { card: string; muted: string; button: string; 
     accent: "text-signal-orange",
     glow: "var(--color-bdnavy-400)",
   },
-  gold: {
-    card: "bg-signal-orange text-text-primary",
-    muted: "text-text-primary/80",
-    button: "bg-bdnavy-900 text-white",
-    accent: "text-bdnavy-900",
+  /* Cobalt replaced the gold field across the landing page (Mahir, 2026-10-18). Gold
+     on cobalt is ≈3.9:1, enough only for large text, so gold carries the bold
+     quote, the mark and the button, and the name and role stay white. */
+  cobalt: {
+    card: "bg-cobalt text-white ring-1 ring-white/12 ring-inset",
+    muted: "text-white/80",
+    quote: "text-signal-orange font-bold",
+    button: "bg-signal-orange text-text-primary",
+    accent: "text-signal-orange",
     glow: "var(--color-signal-orange)",
   },
   ink: {
@@ -116,7 +120,7 @@ function ReviewCard({ review, open, onOpen, onToggle }: { review: Review; open: 
         <div className="min-h-0 overflow-hidden">
           <blockquote className="pt-5 lg:w-[min(36rem,calc((100cqw-(var(--n)-1)*1rem-var(--n)*3rem)*2.6/(1.6+var(--n))))] lg:pt-0">
             <Icon name="format_quote" className={cn("text-3xl", look.accent)} />
-            <p className="mt-1 font-grotesk text-lg leading-snug font-semibold text-pretty sm:text-xl">{review.quote}</p>
+            <p className={cn("mt-1 font-grotesk text-lg leading-snug font-semibold text-pretty sm:text-xl", look.quote)}>{review.quote}</p>
           </blockquote>
         </div>
       </div>

@@ -13,12 +13,12 @@ import { cn } from "@/lib/utils";
  * Download our apps, laid out like banglalink.net's app block: a large
  * preview on the left, the apps as an accordion on the right. Opening an
  * app swaps the preview. Each preview is a solid field from the palette
- * (gold for SWASTI, navy for the media) with the name, the store badges and
+ * (cobalt for SWASTI, navy for the media) with the name, the store badges and
  * what can be done today, beside a live look at the app.
  */
 
-const FIELD: Record<AppId, { panel: string; muted: string; button: string }> = {
-  swasti: { panel: "bg-signal-orange text-text-primary", muted: "text-text-primary/80", button: btn.navy },
+const FIELD: Record<AppId, { panel: string; muted: string; button: string; title?: string }> = {
+  swasti: { panel: "bg-cobalt text-white", muted: "text-white/80", button: btn.gold, title: "text-signal-orange" },
   media: { panel: "bg-bdnavy-900 text-white ring-1 ring-white/12 ring-inset", muted: "text-white/80", button: btn.gold },
 };
 
@@ -81,6 +81,7 @@ function Preview({ app, active }: { app: KandariApp; active: boolean }) {
             // Bangla conjuncts need real line height when the name wraps; Latin sits tight.
             className={cn(
               "mt-2 font-extrabold tracking-tight",
+              field.title,
               isBangla(app.name)
                 ? "font-bengali text-4xl leading-[1.2] xl:text-5xl"
                 : "font-grotesk text-5xl leading-none",

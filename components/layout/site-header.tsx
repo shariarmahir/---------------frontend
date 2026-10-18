@@ -3,10 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { motion, useReducedMotion, type Transition } from "framer-motion";
 import { ShieldCheck, X } from "lucide-react";
-import { Dialog } from "radix-ui";
+import { Dialog, DropdownMenu } from "radix-ui";
 import { AccountMenu, AccountSheetLinks, loginHref } from "@/components/auth/account-menu";
 import { RecordDialog } from "@/components/record/record-dialog";
 import { Icon } from "@/components/ui/icon";
@@ -73,13 +73,23 @@ function DeshLabel({ className }: { className?: string }) {
  * patterns first; a link with no match shows its label alone.
  */
 const TAB_ICONS: [pattern: RegExp, icon: string][] = [
-  [/#overview-mission$/, "flag"],
+  [/^\/#top$/, "home"],
+  [/#national-desk$/, "account_balance"],
+  [/^\/nagorik/, "verified_user"],
+  [/#mission$/, "flag"],
+  [/^\/about/, "info"],
   [/#national-index$/, "monitoring"],
   [/kandari-profile$/, "badge"],
   [/\/products\/aponjon/, "watch"],
   [/\/products\/swasti/, "smartphone"],
   [/\/products\/smart-pharmacy/, "local_pharmacy"],
   [/\/products/, "inventory_2"],
+  [/^\/media/, "groups"],
+  [/\/services\/ai/, "neurology"],
+  [/\/services\/automation/, "precision_manufacturing"],
+  [/\/services\/iot/, "sensors"],
+  [/\/services\/development/, "code_blocks"],
+  [/services/, "engineering"],
   [/\/research\/contents/, "toc"],
   [/\/research\/submit/, "upload_file"],
   [/\/research\/changes/, "history"],
@@ -126,15 +136,61 @@ function ProtestGlyph({ className }: { className?: string }) {
  * in-page anchors.
  *
  * Exact path match, longest first: "/products" must not claim the tab
- * while the reader is on "/products/swasti", and when several links share
- * one path (the "/bangladesh#…" set) the first in declaration order wins.
+ * while the reader is on "/products/swasti". When several links share one
+ * path, the page itself wins over its in-page sections ("/#top", Home,
+ * over "/#mission"), then declaration order.
  */
 function matchNavHref(pathname: string, links: NavLink[]): string | null {
+  const isPage = (href: string) => !href.includes("#") || href.endsWith("#top");
   const best = links
     .map((link) => ({ link, path: link.href.split("#")[0] }))
-    .filter(({ path }) => path !== "" && pathname === path)
-    .sort((a, b) => b.path.length - a.path.length)[0];
+    // The page itself, or failing that the section it sits in (/services/automation/alliance-dyer → /services/automation).
+    .filter(({ path }) => path !== "" && (pathname === path || (path !== "/" && pathname.startsWith(`${path}/`))))
+    .sort((a, b) => b.path.length - a.path.length || Number(isPage(b.link.href)) - Number(isPage(a.link.href)))[0];
   return best?.link.href ?? null;
+}
+
+/**
+ * Scroll-spy for the tabs that point at sections of the current page
+ * ("/#mission", "/#kandari-profile" on the home page): the one whose
+ * section crosses the middle of the window, or null when none does. Each
+ * report also hands the highlight back from a clicked tab to the scroll,
+ * so the bar follows the page once a jump has landed.
+ */
+function useSectionSpy(pathname: string, links: NavLink[], onReport: () => void) {
+  const [spy, setSpy] = useState<{ href: string | null; path: string }>({ href: null, path: pathname });
+
+  useEffect(() => {
+    const targets = links.flatMap((link) => {
+      const [path, hash] = link.href.split("#");
+      if (!hash || hash === "top" || (path !== "" && path !== pathname)) return [];
+      const el = document.getElementById(hash);
+      return el ? [{ href: link.href, el }] : [];
+    });
+    if (!targets.length) return;
+
+    const visible = new Set<string>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const target = targets.find((t) => t.el === entry.target);
+          if (!target) continue;
+          if (entry.isIntersecting) visible.add(target.href);
+          else visible.delete(target.href);
+        }
+        setSpy({ href: targets.find((t) => visible.has(t.href))?.href ?? null, path: pathname });
+        onReport();
+      },
+      // A thin band across the middle of the window.
+      { rootMargin: "-45% 0px -50% 0px" },
+    );
+    for (const t of targets) io.observe(t.el);
+    return () => io.disconnect();
+    // `onReport` only clears a click; a fresh closure each render need not re-observe.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, links]);
+
+  return spy.path === pathname ? spy.href : null;
 }
 
 /**
@@ -208,12 +264,49 @@ function AuthActions() {
   );
 }
 
+/** A tab's gold bar: the current one springs between tabs; the others grow a faint preview under the pointer. */
+function TabBar({ active, slide }: { active: boolean; slide: Transition }) {
+  return active ? (
+    <motion.span
+      layoutId="nav-bar"
+      transition={slide}
+      aria-hidden
+      className="nav-bar absolute inset-x-3 bottom-0 h-0.75 rounded-t-full bg-signal-orange xl:inset-x-3.5"
+    />
+  ) : (
+    <span
+      aria-hidden
+      className="absolute inset-x-3 bottom-0 h-0.75 origin-center scale-x-0 rounded-t-full bg-signal-orange/35 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100 group-focus-visible:scale-x-100 group-data-[state=open]:scale-x-100 motion-reduce:transition-none xl:inset-x-3.5"
+    />
+  );
+}
+
+const TAB =
+  "group relative flex items-center px-3 text-sm leading-none font-bold whitespace-nowrap text-signal-orange xl:px-3.5 focus-visible:outline-none focus-visible:after:absolute focus-visible:after:inset-x-1 focus-visible:after:inset-y-2 focus-visible:after:rounded-md focus-visible:after:ring-2 focus-visible:after:ring-signal-orange";
+
+/**
+ * A tab's face, the icon and its label as one piece: it zooms straight up
+ * under the pointer or keyboard focus and pops once when the tab becomes
+ * the current one (`nav-tab-face` in globals.css).
+ */
+function TabFace({ link, active, children }: { link: NavLink; active: boolean; children?: React.ReactNode }) {
+  const icon = tabIcon(link.href);
+  return (
+    <span className={cn("nav-tab-face flex items-center gap-2", active && "nav-tab-face-on")}>
+      {icon ? <Icon name={icon} filled={active} className="text-xl" /> : null}
+      <NavLabel link={link} compact />
+      {children}
+    </span>
+  );
+}
+
 /**
  * Section tabs: no fill and no pill, just a bold gold icon and label on the
  * navy. The current tab is pointed out by a gold bar sitting on the header's
  * bottom edge; it springs from tab to tab and a light runs along it. On
  * hover or focus a faint bar grows from the centre of the tab under the
- * pointer, previewing where the gold one would go.
+ * pointer, previewing where the gold one would go. A tab with `children`
+ * opens a small navy menu of them instead (National Desk).
  */
 function SectionNav({
   links,
@@ -232,53 +325,56 @@ function SectionNav({
   return (
     <ul className="flex h-full items-stretch gap-1 xl:gap-3">
       {links.map((link) => {
+        if (link.children) {
+          const isActive = link.children.some((child) => child.href === activeHref);
+          return (
+            <li key={link.href} className="flex">
+              <DropdownMenu.Root modal={false}>
+                <DropdownMenu.Trigger className={TAB} aria-current={isActive ? "true" : undefined}>
+                  <TabFace link={link} active={isActive}>
+                    <Icon
+                      name="expand_more"
+                      className="text-lg transition-transform duration-300 group-data-[state=open]:rotate-180 motion-reduce:transition-none"
+                    />
+                  </TabFace>
+                  <TabBar active={isActive} slide={slide} />
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Portal>
+                  <DropdownMenu.Content
+                    align="start"
+                    sideOffset={6}
+                    collisionPadding={12}
+                    className="menu-pop z-60 min-w-64 rounded-2xl bg-bdnavy-900 p-2 text-white shadow-[0_28px_60px_-18px_rgb(0_0_0/0.8)] ring-1 ring-white/12"
+                  >
+                    {link.children.map((child) => (
+                      <DropdownMenu.Item key={child.href} asChild>
+                        <a
+                          href={child.href}
+                          onClick={() => onPick(child.href)}
+                          className={cn(
+                            "flex min-h-11 cursor-pointer items-center gap-3 rounded-xl px-3 text-sm font-semibold outline-none select-none transition-colors duration-150 data-highlighted:bg-white/10 data-highlighted:text-signal-orange",
+                            isBangla(child.label) && "font-bengali text-base",
+                            child.href === activeHref && "text-signal-orange",
+                          )}
+                        >
+                          <Icon name={tabIcon(child.href) ?? "arrow_forward"} className="text-xl text-signal-orange" />
+                          {child.label}
+                        </a>
+                      </DropdownMenu.Item>
+                    ))}
+                  </DropdownMenu.Content>
+                </DropdownMenu.Portal>
+              </DropdownMenu.Root>
+            </li>
+          );
+        }
+
         const isActive = activeHref === link.href;
-        const icon = tabIcon(link.href);
         return (
           <li key={link.href} className="flex">
-            <a
-              href={link.href}
-              onClick={() => onPick(link.href)}
-              aria-current={isActive ? "true" : undefined}
-              className={cn(
-                "group relative flex items-center gap-2 px-3 text-sm leading-none font-bold whitespace-nowrap text-signal-orange xl:px-3.5",
-                "transition-[color,filter] duration-200 hover:brightness-110",
-                "focus-visible:outline-none focus-visible:after:absolute focus-visible:after:inset-x-1 focus-visible:after:inset-y-2 focus-visible:after:rounded-md focus-visible:after:ring-2 focus-visible:after:ring-signal-orange",
-              )}
-            >
-              {icon ? (
-                <Icon
-                  name={icon}
-                  filled={isActive}
-                  className="text-xl transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-px"
-                />
-              ) : null}
-              <NavLabel link={link} compact />
-
-              {/* The membership link carries an ID tag; keep it on that one link only. */}
-              {link.href === "#kandari-profile" ? (
-                <span className="rounded-md bg-signal-orange px-1.5 py-0.5 font-sans tabular-nums text-xs font-bold text-bdnavy-900">
-                  ID
-                </span>
-              ) : null}
-
-              {/* Hover preview: a faint bar grows out from the centre. */}
-              {!isActive ? (
-                <span
-                  aria-hidden
-                  className="absolute inset-x-3 bottom-0 h-0.75 origin-center scale-x-0 rounded-t-full bg-signal-orange/35 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100 group-focus-visible:scale-x-100 motion-reduce:transition-none xl:inset-x-3.5"
-                />
-              ) : null}
-
-              {/* The pointer: one gold bar that springs between tabs. */}
-              {isActive ? (
-                <motion.span
-                  layoutId="nav-bar"
-                  transition={slide}
-                  aria-hidden
-                  className="nav-bar absolute inset-x-3 bottom-0 h-0.75 rounded-t-full bg-signal-orange xl:inset-x-3.5"
-                />
-              ) : null}
+            <a href={link.href} onClick={() => onPick(link.href)} aria-current={isActive ? "true" : undefined} className={TAB}>
+              <TabFace link={link} active={isActive} />
+              <TabBar active={isActive} slide={slide} />
             </a>
           </li>
         );
@@ -287,16 +383,60 @@ function SectionNav({
   );
 }
 
+const isBangla = (s: string) => /[ঀ-৿]/.test(s);
+
+/**
+ * প্রতিবাদ, in the alert red (CLAUDE.md §4.1), as a small menu: raise a
+ * protest on its page, or start recording evidence right away.
+ */
+function ProtestMenu({ onRecord }: { onRecord: () => void }) {
+  const item =
+    "flex min-h-11 cursor-pointer items-center gap-3 rounded-xl px-3 text-sm font-semibold outline-none select-none transition-colors duration-150 data-highlighted:bg-white/10";
+  return (
+    <DropdownMenu.Root modal={false}>
+      <DropdownMenu.Trigger className="group inline-flex h-10 items-center gap-1.5 rounded-lg bg-national-crimson px-3.5 text-white transition-colors duration-200 hover:bg-red-700 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none data-[state=open]:bg-red-700">
+        <ProtestGlyph className="size-4" />
+        <LabelText text={LABEL_TEXT.protibad} className="text-base leading-none" />
+        <Icon
+          name="expand_more"
+          className="text-lg transition-transform duration-300 group-data-[state=open]:rotate-180 motion-reduce:transition-none"
+        />
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Portal>
+        <DropdownMenu.Content
+          align="start"
+          sideOffset={8}
+          collisionPadding={12}
+          className="menu-pop z-60 min-w-56 rounded-2xl bg-bdnavy-900 p-2 text-white shadow-[0_28px_60px_-18px_rgb(0_0_0/0.8)] ring-1 ring-white/12"
+        >
+          <DropdownMenu.Item asChild>
+            <Link href="/protibad" className={item}>
+              <ProtestGlyph className="size-5 text-national-crimson" />
+              <span className="font-bengali text-base">প্রতিবাদ জানান</span>
+            </Link>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item className={item} onSelect={onRecord}>
+            <span className="relative flex size-5 items-center justify-center">
+              <span className="absolute inline-flex size-3 animate-ping rounded-full bg-red-400 opacity-75 motion-reduce:hidden" />
+              <span className="relative inline-flex size-3 rounded-full bg-red-500 ring-2 ring-red-100" />
+            </span>
+            Record
+          </DropdownMenu.Item>
+        </DropdownMenu.Content>
+      </DropdownMenu.Portal>
+    </DropdownMenu.Root>
+  );
+}
+
 export function SiteHeader() {
   // The section nav is per-page: the home sections do not exist on the
   // other pages, so linking to them there would scroll nowhere.
   const pathname = usePathname();
   const navLinks = navLinksFor(pathname);
-  const inDesh = pathname === "/bangladesh" || pathname.startsWith("/bangladesh/");
 
   // Which link the current page corresponds to, recomputed each render
   // so client-side navigation between two nav pages moves the highlight.
-  const pathHref = matchNavHref(pathname, navLinks);
+  const pathHref = matchNavHref(pathname, navLinks.flatMap((link) => [link, ...(link.children ?? [])]));
 
   // In-page anchor clicks (Mission, Products…) track their own
   // highlight. Storing the pathname alongside the clicked href lets a
@@ -304,7 +444,9 @@ export function SiteHeader() {
   // also keeps this clear of `react-hooks/set-state-in-effect`.
   const [clicked, setClicked] = useState<{ href: string; path: string } | null>(null);
   const clickedHref = clicked?.path === pathname ? clicked.href : null;
-  const activeHref = clickedHref ?? pathHref ?? navLinks[0].href;
+  // On the home page the bar also follows the sections in view.
+  const spyHref = useSectionSpy(pathname, navLinks, () => setClicked(null));
+  const activeHref = clickedHref ?? spyHref ?? pathHref ?? navLinks[0].href;
   const setActiveHref = (href: string) => setClicked({ href, path: pathname });
   const [recordOpen, setRecordOpen] = useState(false);
 
@@ -320,58 +462,16 @@ export function SiteHeader() {
             <BrandLockup />
           </div>
 
-          {/* ── Row 1 — civic actions, feed, account ──────────────────── */}
+          {/* ── Row 1 — protest menu, feed, account ───────────────────── */}
           {/* Below lg the bar keeps only the profile face and the menu
               button; the feed and the recorder live in the pop-up menu. */}
           <div className="flex h-16 min-w-0 items-center justify-end gap-2 sm:gap-3">
-              {/* Civic actions: quiet text buttons, the protest link in solid
-                  red (urgency, CLAUDE.md §4.1) and the country page as the
-                  one white button. Desktop only; below lg they live in the
-                  pop-up menu. */}
-              <div className="hidden items-center gap-1 lg:flex xl:gap-2">
-                <button type="button" onClick={() => setRecordOpen(true)} className="inline-flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none">
-                  <span className="relative flex size-2.5">
-                    <span className="absolute inline-flex size-full animate-ping rounded-full bg-red-400 opacity-75 motion-reduce:hidden" />
-                    <span className="relative inline-flex size-2.5 rounded-full bg-red-500 ring-2 ring-red-100" />
-                  </span>
-                  <span className="max-[1279px]:sr-only">Record</span>
-                </button>
-
-                <Link
-                  href="/protibad"
-                  className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-national-crimson px-3.5 text-white transition-colors duration-200 hover:bg-red-700 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
-                >
-                  <ProtestGlyph className="size-4" />
-                  <LabelText text={LABEL_TEXT.protibad} className="text-base leading-none" />
-                </Link>
-
-                {/* Civic rights and responsibilities (/nagorik). */}
-                <Link
-                  href="/nagorik"
-                  title="নাগরিক অধিকার ও দায়িত্ব — দিনের হিসাব, অধিকার, প্রত্যেকের দায়িত্ব"
-                  aria-current={pathname === "/nagorik" ? "page" : undefined}
-                  className={cn("inline-flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none", pathname === "/nagorik" && "bg-white/10 ring-1 ring-white")}
-                >
-                  <ShieldCheck className="size-4" aria-hidden />
-                  <LabelText text={LABEL_TEXT.nagorik} className="text-base leading-none" />
-                </Link>
-
-                {/* বাংলাদেশ সমস্যা ও সমাধান — the country page (/bangladesh).
-                    No prefetch: prefetching /bangladesh preloads its carousel
-                    stylesheet on every page, which then sits unused and
-                    raises a console "preloaded but not used" warning. */}
-                <Link
-                  href="/bangladesh"
-                  prefetch={false}
-                  title="বাংলাদেশ সমস্যা ও সমাধান — ইতিহাস, সংকট, ৩২টি সমস্যা ও সমাধান"
-                  aria-current={inDesh ? "page" : undefined}
-                  className={cn(
-                    "inline-flex h-10 items-center rounded-lg bg-white px-4 whitespace-nowrap text-bdnavy-900 transition-colors duration-200 hover:bg-white/90 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-bdnavy-900 focus-visible:outline-none",
-                    inDesh && "ring-2 ring-signal-orange",
-                  )}
-                >
-                  <DeshLabel className="text-base leading-none" />
-                </Link>
+              {/* The protest menu, in the alert red (CLAUDE.md §4.1): raise a
+                  protest, or start recording. Desktop only; below lg it
+                  lives in the pop-up menu. The civic pages moved into the
+                  National Desk tab (Mahir, 2026-10-18). */}
+              <div className="hidden lg:flex">
+                <ProtestMenu onRecord={() => setRecordOpen(true)} />
               </div>
 
               {/* A hairline between the civic actions and the personal pair. */}
@@ -385,6 +485,12 @@ export function SiteHeader() {
                 <LabelText text={LABEL_TEXT.media} className="text-base leading-none text-white" />
                 <span className="mt-1 font-sans text-xs font-medium whitespace-nowrap text-signal-orange">Prioritize your joy.</span>
               </Link>
+
+              {/* Log in and Sign up, or the signed-in face and first name (desktop). */}
+              <span aria-hidden className="hidden h-7 w-px bg-white/15 lg:block" />
+              <div className="hidden shrink-0 items-center gap-2 lg:flex">
+                <AuthActions />
+              </div>
 
               {/* Account on phones (avatar menu or sign-in face); from lg it lives at the end of the tab row. */}
               <AccountMenu className="lg:hidden" />
@@ -451,7 +557,8 @@ export function SiteHeader() {
                     </div>
 
                     <nav className="grid grid-cols-2 gap-2">
-                      {navLinks.map((link, i) => (
+                      {/* A menu tab shows its first page here; the civic pages have their own buttons below. */}
+                      {navLinks.flatMap((link) => link.children?.slice(0, 1) ?? [link]).map((link, i) => (
                         <Dialog.Close asChild key={link.href}>
                           <a
                             href={link.href}
@@ -519,10 +626,10 @@ export function SiteHeader() {
               </Dialog.Root>
           </div>
 
-          {/* ── Row 2 (lg and up) — the section tabs, their gold pointer on
-              the bar's bottom edge, and the account actions at the right
-              end; over it, the running hairline that parts the rows. ───── */}
-          <div className="relative col-start-2 hidden h-full items-stretch justify-between gap-6 lg:flex">
+          {/* ── Row 2 (lg and up) — the section tabs and their gold pointer
+              on the bar's bottom edge; over it, the running hairline that
+              parts the rows. ───────────────────────────────────────────── */}
+          <div className="relative col-start-2 hidden h-full items-stretch gap-6 lg:flex">
             {/* The gold seam: it starts at the logo (reaching back across the
                 column gap) and ends at the bar's far edge, a node at each
                 end. A comet, a gold head with a fading tail, leaves the logo
@@ -540,9 +647,6 @@ export function SiteHeader() {
             <nav aria-label="Sections" className="no-scrollbar -ml-3 min-w-0 overflow-x-auto xl:-ml-3.5">
               <SectionNav links={navLinks} activeHref={activeHref} onPick={setActiveHref} />
             </nav>
-            <div className="flex shrink-0 items-center gap-2">
-              <AuthActions />
-            </div>
           </div>
         </div>
       </header>

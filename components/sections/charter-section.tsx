@@ -6,6 +6,7 @@ import { Icon } from "@/components/ui/icon";
 import { btn } from "@/components/ui/section-kit";
 import { charterSlides, type CharterSlide, type CharterStat } from "@/data/charter";
 import { cn } from "@/lib/utils";
+import { CHARTER_DATA_LABEL, CHARTER_LOOKS, CHARTER_TOPIC } from "./charter-looks";
 import { CharterVisual } from "./charter-viz";
 
 /*
@@ -25,88 +26,22 @@ import { CharterVisual } from "./charter-viz";
  * touch control (focus opens, Enter or a tap toggles).
  */
 
-const GOLD = "var(--color-signal-orange)";
-const NAVY = "var(--color-bdnavy-900)";
-const INK = "var(--color-text-primary)";
-const WHITE = "var(--color-white)";
-
-type Look = { gold: boolean; vars: Record<string, string> };
-
-/**
- * Per field: the fill, text colour, accent (gold on dark, navy on gold),
- * the motion graphic's second colour and tint, and the glow of the open card.
- */
-const LOOK_NAVY: Look = {
-  gold: false,
-  vars: {
-    "--field": NAVY,
-    "--ink": WHITE,
-    "--accent": GOLD,
-    "--accent-2": WHITE,
-    "--accent-3": "var(--color-bdnavy-300)",
-    "--accent-on": INK,
-    "--glow": "var(--color-bdnavy-400)",
-  },
-};
-const LOOK_INK: Look = {
-  gold: false,
-  vars: {
-    "--field": INK,
-    "--ink": WHITE,
-    "--accent": GOLD,
-    "--accent-2": WHITE,
-    "--accent-3": `color-mix(in oklab, ${GOLD} 45%, ${WHITE})`,
-    "--accent-on": INK,
-    "--glow": GOLD,
-  },
-};
-const LOOK_GOLD: Look = {
-  gold: true,
-  vars: {
-    "--field": GOLD,
-    "--ink": INK,
-    "--accent": NAVY,
-    "--accent-2": INK,
-    "--accent-3": "var(--color-bdnavy-700)",
-    "--accent-on": WHITE,
-    "--glow": GOLD,
-  },
-};
-
-/** No two neighbours share a field. */
-const LOOKS: Record<string, Look> = {
-  problem: LOOK_NAVY,
-  challenge: LOOK_INK,
-  vision: LOOK_GOLD,
-  mission: LOOK_NAVY,
-  goal: LOOK_GOLD,
-  impact: LOOK_INK,
-};
-
-/** Each topic's name and symbol, for the spine and the stacked card's header. */
-const TOPIC: Record<string, { name: string; icon: string }> = {
-  problem: { name: "Problem", icon: "broken_image" },
-  challenge: { name: "Challenge", icon: "flag" },
-  vision: { name: "Vision", icon: "visibility" },
-  mission: { name: "Mission", icon: "rocket_launch" },
-  goal: { name: "Goal", icon: "track_changes" },
-  impact: { name: "Impact", icon: "diversity_3" },
-};
-
-/** The heading over each slide's figures, so they read as that topic's evidence. */
-const DATA_LABEL: Record<string, string> = {
-  problem: "The problem in numbers",
-  challenge: "Where Bangladesh stands",
-  vision: "What we hold to",
-  mission: "What we are building",
-  impact: "What we are working with",
-};
-
 /** Pointing at a spine opens it only once the pointer settles, so sweeping across the row does not flicker. */
 const HOVER_INTENT_MS = 120;
 
 export function CharterSection() {
   const [open, setOpen] = useState(0);
+
+  // Arriving at "#mission" (the header's Mission tab) or any topic's id opens that card.
+  useEffect(() => {
+    const fromHash = () => {
+      const i = charterSlides.findIndex((s) => `#${s.id}` === window.location.hash);
+      if (i >= 0) setOpen(i);
+    };
+    fromHash();
+    window.addEventListener("hashchange", fromHash);
+    return () => window.removeEventListener("hashchange", fromHash);
+  }, []);
 
   return (
     <section id="charter" aria-label="Kandari Lab charter" className="section-band">
@@ -131,7 +66,7 @@ export function CharterSection() {
 }
 
 /** `on`: any of the card is in view (its loops run). `active`: a third or more is (its figures count up). */
-function useInView<T extends Element>() {
+export function useInView<T extends Element>() {
   const ref = useRef<T>(null);
   const [state, setState] = useState({ on: false, active: false });
   useEffect(() => {
@@ -184,8 +119,8 @@ function CharterCard({
   onOpen: () => void;
   onToggle: () => void;
 }) {
-  const look = LOOKS[slide.id];
-  const topic = TOPIC[slide.id];
+  const look = CHARTER_LOOKS[slide.id];
+  const topic = CHARTER_TOPIC[slide.id];
   const bodyId = useId();
   const [ref, { on, active }] = useInView<HTMLLIElement>();
   const intent = useRef(0);
@@ -196,6 +131,7 @@ function CharterCard({
   return (
     <li
       ref={ref}
+      id={slide.id}
       onPointerEnter={(e) => {
         if (e.pointerType !== "mouse" || open) return;
         intent.current = window.setTimeout(onOpen, HOVER_INTENT_MS);
@@ -203,7 +139,7 @@ function CharterCard({
       onPointerLeave={() => window.clearTimeout(intent.current)}
       style={look.vars as CSSProperties}
       className={cn(
-        "relative flex min-w-0 flex-col overflow-hidden rounded-3xl bg-(--field) text-(--ink) xl:basis-20",
+        "relative flex min-w-0 scroll-mt-header flex-col overflow-hidden rounded-3xl bg-(--field) text-(--ink) xl:basis-20 lg:scroll-mt-header-lg",
         !look.gold && "ring-1 ring-white/12 ring-inset", // ink and navy need an edge on black
         "transition-[flex-grow,box-shadow] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
         open
@@ -350,7 +286,7 @@ function Data({ slide, active }: { slide: CharterSlide; active: boolean }) {
   const fourUp = stats.length > 3;
   // Wide enough for the longest figure, so the labels line up.
   const figureWidth = `${Math.max(2, ...stats.map((s) => `${s.value}${s.suffix ?? ""}`.length)) * 0.62}em`;
-  const label = DATA_LABEL[slide.id];
+  const label = CHARTER_DATA_LABEL[slide.id];
   return (
     // The hairline: above the figures when stacked, beside them in a row (inset from the card's edges).
     <div className="mx-6 flex min-w-0 flex-col justify-center border-t border-(--ink)/12 pt-6 pb-4 sm:mx-8 @2xl:mx-0 @2xl:my-10 @2xl:border-t-0 @2xl:border-l @2xl:py-0 @2xl:pr-8 @2xl:pl-8 @4xl:pr-2">
@@ -408,7 +344,7 @@ function Data({ slide, active }: { slide: CharterSlide; active: boolean }) {
 }
 
 /** Counts up whenever its card opens in view; screen readers get the final value only. */
-function CountUp({ stat, active }: { stat: CharterStat; active: boolean }) {
+export function CountUp({ stat, active }: { stat: CharterStat; active: boolean }) {
   const [shown, setShown] = useState(stat.value);
   useEffect(() => {
     if (!active || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;

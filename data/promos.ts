@@ -9,7 +9,7 @@
  * screenshots are Kandari-Lab's own platforms.
  */
 
-export type PromoField = "navy" | "gold" | "ink";
+export type PromoField = "navy" | "cobalt" | "ink";
 
 export interface PhotoCredit {
   author: string;
@@ -71,7 +71,7 @@ export const promos: Promo[] = [
     title: "অধিকার জানুন, দায়িত্ব পালন করুন",
     body: "Your constitutional rights, the helplines that answer, and the duties each of us owes the country, with a nightly self-check.",
     action: { label: "নাগরিক দায়িত্ব দেখুন", href: "/nagorik" },
-    field: "gold",
+    field: "cobalt",
     art: {
       kind: "photo",
       src: "/media/civic-flood.webp",
@@ -116,7 +116,7 @@ export const promos: Promo[] = [
     title: "দেশের প্রশ্ন, দেশের গবেষণা",
     body: "Read, review and publish research on Bangladesh’s problems, from the lab’s own work to yours.",
     action: { label: "গবেষণা দেখুন", href: "/research" },
-    field: "gold",
+    field: "cobalt",
     art: { kind: "screen", src: "/promos/research.webp", alt: "গবেষণাকোষের প্রধান পাতা: দেশের প্রশ্ন, দেশের গবেষণা" },
   },
 ];

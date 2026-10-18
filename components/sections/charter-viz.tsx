@@ -6,10 +6,9 @@ import { cn } from "@/lib/utils";
 
 /*
  * The charter's motion graphics, one per slide, drawn only in the card's
- * own three-colour world (Mahir, 2026-10-17: navy, ink green and gold, no
- * light green): `--accent` (gold on a dark card, navy on a gold one),
- * `--accent-2` (white, or ink on gold), `--accent-3` (a soft tint of the
- * field) and the card's text colour (`--ink`, drawn as currentColor). The
+ * own colours (navy, ink and cobalt fields since 2026-10-18): `--accent`
+ * (gold), `--accent-2` (white), `--accent-3` (a soft tint of the field)
+ * and the card's text colour (`--ink`, drawn as currentColor). The
  * card sets them. The loops live in globals.css (`ch-*`): they pause while
  * their card is off screen and stand still under reduced motion.
  */

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { btn } from "@/components/ui/section-kit";
+import { ABOUT_SUMMARY, VALUES } from "@/data/about";
 import { cn } from "@/lib/utils";
 
 /**
@@ -10,13 +11,6 @@ import { cn } from "@/lib/utils";
  * photograph carrying the line the company is named from, and beside it one
  * paragraph and four values on solid fields, navy and ink in a checker.
  */
-const VALUES = [
-  { icon: "flag", title: "Built here, for here", body: "Problems solved by people who live with them, made in Bangladesh." },
-  { icon: "diversity_3", title: "Open to all", body: "Priced and designed for every village, not only the cities." },
-  { icon: "fact_check", title: "Proof before promises", body: "We show what works, and call research what it still is." },
-  { icon: "grid_on", title: "One pixel at a time", body: "One sector fixed properly before the next. Healthcare first." },
-];
-
 const FIELDS = [
   { tile: "bg-bdnavy-900", glow: "var(--color-bdnavy-400)" },
   { tile: "bg-text-primary", glow: "var(--color-signal-orange)" },
@@ -53,12 +47,7 @@ export function AboutSection() {
           <h2 id="about-title" className="font-grotesk text-2xl leading-[1.2] font-bold tracking-tight text-balance text-signal-orange sm:text-3xl lg:text-4xl">
             Our Values, and Who We Are
           </h2>
-          <p className="max-w-xl font-sans text-base leading-relaxed text-white/80">
-            Kandari-Lab is a Bangladeshi deep-tech company. We see the country as a picture with broken
-            pixels, one for every public service that fails its people, and we repair them one sector at a
-            time with our own hardware, software and AI. Healthcare comes first: care within the golden two
-            hours, in every village.
-          </p>
+          <p className="max-w-xl font-sans text-base leading-relaxed text-white/80">{ABOUT_SUMMARY}</p>
 
           <ul className="grid gap-3 sm:grid-cols-2">
             {VALUES.map((v, i) => {
@@ -89,11 +78,11 @@ export function AboutSection() {
           </ul>
 
           <div className="flex flex-wrap gap-3 pt-1">
-            <Link href="/team" className={btn.gold}>
+            <Link href="/about" className={btn.gold}>
               Learn About Us
               <Icon name="arrow_forward" className="text-base" />
             </Link>
-            <Link href="#charter" className={btn.goldOutline}>
+            <Link href="/about#mission" className={btn.goldOutline}>
               Our Mission
             </Link>
           </div>

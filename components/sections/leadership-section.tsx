@@ -23,11 +23,12 @@ const EXECUTIVES = [
     title: "Chief Executive Officer",
     blurb:
       "Spearheading native deep-tech roadmaps, hardware prototyping, and national clinical integration protocols.",
-    surface: "bg-signal-orange text-text-primary",
-    fade: "to-signal-orange",
-    glow: "var(--color-signal-orange)",
+    surface: "bg-cobalt text-white ring-1 ring-white/12",
+    fade: "to-cobalt",
+    glow: "var(--color-cobalt)",
     // The title is a solid pill so it reads as a label, not body copy.
-    pill: "bg-text-primary text-signal-orange",
+    pill: "bg-signal-orange text-text-primary",
+    heading: "text-signal-orange",
   },
   {
     name: "Sadman bin Arif",
@@ -69,13 +70,15 @@ const LEAD_LOOKS = {
     chip: "bg-white/8 ring-white/15",
     rule: "border-white/12",
     glow: "var(--color-bdnavy-400)",
+    heading: "",
   },
-  gold: {
-    surface: "bg-signal-orange text-text-primary",
-    tile: "bg-bdnavy-900 text-white",
-    chip: "bg-text-primary/8 ring-text-primary/20",
-    rule: "border-text-primary/15",
-    glow: "var(--color-signal-orange)",
+  cobalt: {
+    surface: "bg-cobalt text-white ring-1 ring-white/12",
+    tile: "bg-signal-orange text-text-primary",
+    chip: "bg-white/8 ring-white/15",
+    rule: "border-white/12",
+    glow: "var(--color-cobalt)",
+    heading: "text-signal-orange",
   },
   ink: {
     surface: "bg-text-primary text-white ring-1 ring-white/12",
@@ -83,12 +86,13 @@ const LEAD_LOOKS = {
     chip: "bg-white/8 ring-white/15",
     rule: "border-white/12",
     glow: "var(--color-signal-orange)",
+    heading: "",
   },
 };
 
 /**
  * The three functional leads, staggered against the executive row above
- * (navy under gold, gold under ink, ink under navy).
+ * (navy under cobalt, cobalt under ink, ink under navy).
  */
 const LEADS = [
   {
@@ -103,7 +107,7 @@ const LEADS = [
     icon: "memory",
     people: ["Janassor Ahmed", "Sharul Bhuiya", "Safia Mubassara Ruzba"],
     note: "Micro-soldering, LiDAR circuits, low-power telemetry & antenna RF.",
-    look: LEAD_LOOKS.gold,
+    look: LEAD_LOOKS.cobalt,
   },
   {
     title: "Fullstack, AI & SWASTI Mobile",
@@ -161,7 +165,7 @@ export function LeadershipSection() {
                 <span className={cn("mb-2 w-fit rounded-full px-2 py-0.5 font-sans tabular-nums text-xs leading-tight font-bold sm:mb-3 sm:px-3 sm:py-1 sm:text-xs", exec.pill)}>
                   {exec.title}
                 </span>
-                <h3 className="font-grotesk text-sm leading-tight font-bold sm:text-xl">{exec.name}</h3>
+                <h3 className={cn("font-grotesk text-sm leading-tight font-bold sm:text-xl", "heading" in exec && exec.heading)}>{exec.name}</h3>
                 <CardDetails>
                   <p className="mt-1 font-sans tabular-nums text-xs leading-tight font-semibold opacity-80 sm:text-xs">{exec.role}</p>
                   <p className="mt-2 font-sans text-xs leading-snug sm:mt-3 sm:text-sm sm:leading-relaxed">{exec.blurb}</p>
@@ -195,7 +199,7 @@ export function LeadershipSection() {
                 >
                   <Icon name={lead.icon} className="text-2xl" />
                 </span>
-                <h4 className="font-grotesk text-sm leading-tight font-bold text-balance sm:text-lg">{lead.title}</h4>
+                <h4 className={cn("font-grotesk text-sm leading-tight font-bold text-balance sm:text-lg", look.heading)}>{lead.title}</h4>
               </div>
               <CardDetails grow className="flex flex-col">
                 <ul aria-label="Team" className="mt-3 flex flex-wrap gap-1 sm:mt-5 sm:gap-1.5">
@@ -212,22 +216,22 @@ export function LeadershipSection() {
         ))}
       </ul>
 
-      {/* Fellowship strip — gold, with the action in navy. */}
-      <div className="story-reveal relative isolate mt-6 flex flex-col items-start justify-between gap-4 overflow-hidden rounded-3xl bg-signal-orange p-5 text-text-primary shadow-tile sm:flex-row sm:items-center sm:p-6">
+      {/* Fellowship strip — cobalt, gold carrying the title and the action. */}
+      <div className="story-reveal relative isolate mt-6 flex flex-col items-start justify-between gap-4 overflow-hidden rounded-3xl bg-cobalt p-5 text-white shadow-tile ring-1 ring-white/12 sm:flex-row sm:items-center sm:p-6">
         <div className="flex items-center gap-4">
-          <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-bdnavy-900 text-signal-orange">
+          <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-signal-orange text-text-primary">
             <Icon name="school" className="text-2xl" />
           </span>
           <div>
-            <span className="block font-grotesk text-sm font-bold sm:text-base">R&amp;D Fellowship Cohort</span>
-            <p className="font-sans text-xs text-text-primary/80 sm:text-sm">
+            <span className="block font-grotesk text-lg font-bold text-signal-orange sm:text-xl">R&amp;D Fellowship Cohort</span>
+            <p className="font-sans text-xs text-white/80 sm:text-sm">
               4–5 Research Fellows &amp; Paid Innovation Interns engaged in
               active cleanroom silicon trials.
             </p>
           </div>
         </div>
 
-        <a href="/signup?role=researcher" className={cn(btn.navy, "shrink-0")}>
+        <a href="/signup?role=researcher" className={cn(btn.gold, "shrink-0")}>
           Apply for Fellowship
         </a>
       </div>

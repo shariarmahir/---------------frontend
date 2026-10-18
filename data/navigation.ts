@@ -1,3 +1,5 @@
+import { services } from "./services";
+
 export interface NavLink {
   href: string;
   label: string;
@@ -10,31 +12,41 @@ export interface NavLink {
    * adjacent nav items read as one red block.
    */
   accentWord?: string;
+  /** A tab that opens a menu of these links instead of going anywhere itself. */
+  children?: NavLink[];
 }
 
 /**
- * Primary navigation.
+ * Primary navigation (Mahir, 2026-10-18): Home, National Desk, Products,
+ * Research, Mission, About us, Team, Join. National Desk is a menu: the
+ * National Index and the two civic pages that used to sit in the header's
+ * top row (নাগরিক দায়িত্ব, বাংলাদেশ সমস্যা ও সমাধান).
  *
- * Every `href` here must match a real `id` rendered on the page it points
- * at — three of these previously pointed at ids that did not exist
- * (`#kandari-member-portal`, `#rnd-innovations`, `#founder-vision`), so
- * the links focused nothing and scrolled nowhere. Labels are named after
- * the heading each section actually carries, so the nav and the page
- * agree.
+ * Every `href` here must match a real page, or a real `id` on the page it
+ * points at. Anchors are full root paths ("/#mission"), so the same set
+ * works from /about and every other page that falls back to it; on the
+ * home page they are in-page jumps, and the header keeps the gold bar on
+ * whichever of them is in view.
  */
 export const navLinks: NavLink[] = [
   {
-    href: "#overview-mission",
-    label: "Mission",
-    shortLabel: "Mission",
+    // "#top" scrolls to the top of the page (HTML's built-in fragment), so on
+    // the home page this glides up instead of reloading.
+    href: "/#top",
+    label: "Home",
+    shortLabel: "Home",
   },
   {
-    // A full path, not a bare "#national-index" anchor: the section lives
-    // on the country page, so the fragment alone would resolve to nothing
-    // on the home page and the link would silently do nothing.
-    href: "/bangladesh/problems#national-index",
-    label: "National Index",
-    shortLabel: "Index",
+    // A menu, not a page: the key below only names it (icon, active state).
+    href: "#national-desk",
+    label: "National Desk",
+    shortLabel: "Desk",
+    children: [
+      // A full path: the section lives on the country page.
+      { href: "/bangladesh/problems#national-index", label: "National Index", shortLabel: "Index" },
+      { href: "/nagorik", label: "নাগরিক দায়িত্ব", shortLabel: "দায়িত্ব" },
+      { href: "/bangladesh", label: "বাংলাদেশ সমস্যা ও সমাধান", shortLabel: "বাংলাদেশ" },
+    ],
   },
   {
     // The product overview page; each product has its own detail route.
@@ -49,6 +61,19 @@ export const navLinks: NavLink[] = [
     shortLabel: "R&D",
   },
   {
+    // The charter's Mission card on the home page; arriving with this hash
+    // opens that card (see charter-section.tsx).
+    href: "/#mission",
+    label: "Mission",
+    shortLabel: "Mission",
+  },
+  {
+    // Who we are and what we hold to: the About Us page.
+    href: "/about",
+    label: "About us",
+    shortLabel: "About",
+  },
+  {
     // The team page (orbit, founder, crew directory and profiles).
     href: "/team",
     label: "Team",
@@ -56,7 +81,7 @@ export const navLinks: NavLink[] = [
   },
   {
     // "Join Kandari Profile" — the subscriber conversion section.
-    href: "#kandari-profile",
+    href: "/#kandari-profile",
     label: "Join",
     shortLabel: "Join",
   },
@@ -100,6 +125,16 @@ export const productNavLinks: NavLink[] = [
   { href: "/products/aponjon", label: "Aponjon", shortLabel: "Aponjon" },
   { href: "/products/swasti", label: "SWASTI", shortLabel: "SWASTI" },
   { href: "/products/smart-pharmacy", label: "Smart Pharmacy", shortLabel: "Pharmacy" },
+  { href: "/media", label: "শিক্ষিতদের মিডিয়া", shortLabel: "মিডিয়া" },
+  {
+    href: "#services",
+    label: "Services",
+    shortLabel: "Services",
+    children: [
+      { href: "/services", label: "All services", shortLabel: "All" },
+      ...services.map((s) => ({ href: `/services/${s.id}`, label: s.name, shortLabel: s.name })),
+    ],
+  },
   { href: "/research", label: "Research", shortLabel: "R&D" },
   { href: "/#kandari-profile", label: "Join", shortLabel: "Join" },
 ];
@@ -149,7 +184,7 @@ export const goriNavLinks: NavLink[] = [
  *
  */
 export function navLinksFor(pathname: string): NavLink[] {
-  if (pathname === "/products" || pathname.startsWith("/products/")) {
+  if (["/products", "/services"].some((root) => pathname === root || pathname.startsWith(`${root}/`))) {
     return productNavLinks;
   }
   if (pathname === "/bangladesh" || pathname.startsWith("/bangladesh/")) {

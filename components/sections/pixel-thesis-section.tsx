@@ -14,8 +14,8 @@ interface Pillar {
   href: string;
   /** Solid card fill and the ink that reads on it. */
   surface: string;
-  /** A gold card takes a navy button; the dark ones a gold one. */
-  onGold?: boolean;
+  /** The title's colour, when it differs from the card's text (gold on cobalt). */
+  heading?: string;
   /** Motion-graphic stroke colour, chosen to contrast with the fill. */
   artClass: string;
   /** Hover glow, a CSS colour value. */
@@ -26,9 +26,9 @@ interface Pillar {
  * Four pixels Kandari-Lab is repairing now, each a real problem matched to
  * the product or research line that answers it, linked to its own page.
  * Facts follow data/products.ts and CLAUDE.md §2; nothing here claims more
- * than the product pages do. Fields are navy, gold and ink only (Mahir,
- * 2026-10-17), no two neighbours alike; white text on navy and ink, ink on
- * gold.
+ * than the product pages do. Fields are navy, cobalt and ink (Mahir,
+ * 2026-10-18: cobalt replaced gold), no two neighbours alike; white text,
+ * gold titles on cobalt, gold buttons.
  */
 const PILLARS: Pillar[] = [
   {
@@ -47,10 +47,10 @@ const PILLARS: Pillar[] = [
     description:
       "One Village, One Medical Health Care Center. The village drug shop becomes a solar-powered Smart Pharmacy with a diagnostic kiosk, verified medicine and a doctor on video.",
     href: "/products/smart-pharmacy",
-    surface: "bg-signal-orange text-text-primary",
-    onGold: true,
-    artClass: "text-bdnavy-900",
-    glow: "var(--color-signal-orange)",
+    surface: "bg-cobalt text-white ring-1 ring-white/12",
+    heading: "text-signal-orange",
+    artClass: "text-signal-orange",
+    glow: "var(--color-cobalt)",
   },
   {
     art: "radar",
@@ -224,7 +224,7 @@ export function PixelThesisSection() {
                   </div>
                 </div>
 
-                <h3 className="mb-1.5 font-grotesk text-xs leading-tight font-bold sm:mb-2 sm:text-lg">
+                <h3 className={cn("mb-1.5 font-grotesk text-xs leading-tight font-bold sm:mb-2 sm:text-lg", pillar.heading)}>
                   {pillar.title}
                 </h3>
 
@@ -235,7 +235,7 @@ export function PixelThesisSection() {
                 {/* Pinned to the foot, so the four buttons line up. */}
                 <Link
                   href={pillar.href}
-                  className={cn(pillar.onGold ? btn.navy : btn.gold, "mt-auto self-start")}
+                  className={cn(btn.gold, "mt-auto self-start")}
                 >
                   Learn more
                   <span className="sr-only">: {pillar.title}</span>

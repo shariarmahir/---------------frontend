@@ -9,7 +9,7 @@
  * one.
  */
 
-export type ReviewField = "navy" | "gold" | "ink";
+export type ReviewField = "navy" | "cobalt" | "ink";
 
 export interface Review {
   id: string;
@@ -42,7 +42,7 @@ export const reviews: Review[] = [
     org: "Village pharmacy partner",
     quote:
       "They sat in my shop for a week before writing a line of code. The stock alerts are built around how we actually work, not how an office thinks we do.",
-    field: "gold",
+    field: "cobalt",
     sample: true,
   },
   {
@@ -72,7 +72,7 @@ export const reviews: Review[] = [
     org: "Community clinic partner",
     quote:
       "They asked what slows us down on a home visit, then built around the answer. The tools fit in my bag and work where the signal does not.",
-    field: "gold",
+    field: "cobalt",
     sample: true,
   },
 ];

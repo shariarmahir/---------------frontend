@@ -92,7 +92,7 @@ export const charterSlides: CharterSlide[] = [
     ],
     oneWord: "Development",
     primary: { label: "Learn more", href: "/research" },
-    secondary: { label: "Our services", href: "/products#services" },
+    secondary: { label: "Our services", href: "/services" },
     viz: "loop",
   },
   {

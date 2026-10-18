@@ -84,6 +84,10 @@
   --color-bdnavy-500: #3d56b8;
   --color-bdnavy-700: #1a2c7a;
   --color-bdnavy-900: #0b1849;
+  /* Cobalt: the landing page's third card field, in place of gold (Mahir, 2026-10-18); gold on it only for titles, accents and buttons. */
+  --color-cobalt: #035397;
+  /* Link blue: outbound citations on the black ground (≈7:1). */
+  --color-link-blue: #5aaeff;
 
   /* Landing-page system (code.html / DESIGN.md "Clinical Cleanroom").
      Scoped to the page body; the navbar keeps its own palette above. */
@@ -645,6 +649,118 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .nav-comet { display: none; }
+}
+
+/* Section tabs (site-header.tsx): the icon and its label zoom as one,
+   straight up, under the pointer or keyboard focus, and pop once when the
+   tab becomes the current one, as the gold bar springs over. Still under
+   reduced motion. */
+@keyframes nav-face-pop {
+  0% { scale: 1; }
+  45% { scale: 1.12; }
+  100% { scale: 1; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .nav-tab-face {
+    transform-origin: center;
+    transition: scale 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .group:hover > .nav-tab-face,
+  .group:focus-visible > .nav-tab-face,
+  .group[data-state="open"] > .nav-tab-face {
+    scale: 1.08;
+  }
+  .nav-tab-face-on { animation: nav-face-pop 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
+}
+
+/* Catalogue pages (components/catalog): the cobalt feature strip runs as a
+   slow marquee, and the hero's photos fade up in turn.
+   Under reduced motion the strip stops and wraps, and nothing else moves. */
+@keyframes catalog-marquee { to { translate: -50% 0; } }
+@keyframes catalog-fade {
+  from { opacity: 0; translate: 0 12px; }
+  to { opacity: 1; translate: 0 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .catalog-marquee { animation: catalog-marquee 48s linear infinite; }
+  .catalog-marquee:hover { animation-play-state: paused; }
+  .catalog-fade { animation: catalog-fade 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .catalog-marquee { width: auto; justify-content: center; }
+  .catalog-marquee > ul { flex-wrap: wrap; justify-content: center; row-gap: 0.75rem; padding-inline: 1rem; }
+  .catalog-marquee > [aria-hidden] { display: none; }
+}
+
+/* The Golden Two Hours note on /products: it rests at a slight angle and
+   tilts gently to and fro; a pointer on it holds it still. Under reduced
+   motion it simply rests at its angle. */
+.golden-note { rotate: -2deg; }
+@keyframes golden-note-tilt {
+  0%, 100% { rotate: -2deg; }
+  50% { rotate: 1.5deg; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .golden-note { animation: golden-note-tilt 6s ease-in-out infinite; }
+  .golden-note:hover { animation-play-state: paused; }
+}
+
+/* The stroke quote on /products, in a hand-drawn speech balloon: gold
+   words in a cobalt balloon. As the quote zooms a little the balloon turns
+   the alert red with the words in white, holds, and cools back. Under
+   reduced motion it stays cobalt and still. */
+.alert-bubble { fill: var(--color-cobalt); }
+.alert-bubble-text { color: var(--color-signal-orange); }
+@keyframes alert-quote {
+  0%, 30%, 65%, 100% { scale: 1; }
+  50% { scale: 1.04; }
+}
+@keyframes alert-bubble {
+  0%, 30%, 100% { fill: var(--color-cobalt); }
+  50%, 85% { fill: var(--color-national-crimson); }
+}
+@keyframes alert-bubble-text {
+  0%, 30%, 100% { color: var(--color-signal-orange); }
+  50%, 85% { color: var(--color-white); }
+}
+
+/* Icons in the "What you can use it for" tiles (detail-blocks.tsx), each
+   moving the way its subject does: a heartbeat, a signal pulse or a slow
+   float. Straight motion only, and none under reduced motion. */
+@keyframes use-icon-beat {
+  0%, 60%, 100% { scale: 1; }
+  15% { scale: 1.18; }
+  30% { scale: 0.96; }
+  45% { scale: 1.1; }
+}
+@keyframes use-icon-pulse {
+  0%, 100% { opacity: 1; scale: 1; }
+  50% { opacity: 0.55; scale: 0.9; }
+}
+@keyframes use-icon-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -4px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .alert-quote { transform-origin: center; animation: alert-quote 5s ease-in-out infinite; }
+  .alert-bubble { animation: alert-bubble 5s ease-in-out infinite; }
+  .alert-bubble-text { animation: alert-bubble-text 5s ease-in-out infinite; }
+  .use-icon-beat { animation: use-icon-beat 1.6s ease-in-out infinite; }
+  .use-icon-pulse { animation: use-icon-pulse 2s ease-in-out infinite; }
+  .use-icon-float { animation: use-icon-float 3s ease-in-out infinite; }
+}
+
+/* Technology stickers on a project page (components/projects/tech-row.tsx):
+   each rests at its own angle (`--tilt`) and bobs gently; a pointer on one
+   straightens and lifts it. Still under reduced motion. */
+.tech-sticker { rotate: var(--tilt, 0deg); transition: scale 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes tech-sticker-bob {
+  0%, 100% { translate: 0 0; rotate: var(--tilt, 0deg); }
+  50% { translate: 0 -6px; rotate: calc(var(--tilt, 0deg) * -0.5); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .tech-sticker { animation: tech-sticker-bob 3.6s ease-in-out infinite; }
+  li:hover > .tech-sticker { animation-play-state: paused; scale: 1.12; }
 }
 
 /* Hero entrance (components/sections/hero-section.tsx): the claim, its line

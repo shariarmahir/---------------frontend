@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
  * takes from it, and a link out. One full-width row that drifts left on
  * its own, the list running twice so the loop has no seam; it holds under
  * the pointer or keyboard focus. Reduced motion: no drift, the row scrolls
- * by hand. Fields run navy, gold, ink, so no card touches its own colour,
+ * by hand. Fields run navy, cobalt, ink, so no card touches its own colour,
  * round the loop too (see `fieldOf`).
  */
 const FIELDS = [
@@ -22,11 +22,11 @@ const FIELDS = [
     glow: "var(--color-bdnavy-400)",
   },
   {
-    card: "bg-signal-orange text-text-primary",
-    accent: "text-bdnavy-900",
-    muted: "text-text-primary/80",
-    chip: "bg-text-primary/8 ring-text-primary/20",
-    glow: "var(--color-signal-orange)",
+    card: "bg-cobalt text-white ring-1 ring-white/12 ring-inset",
+    accent: "text-signal-orange",
+    muted: "text-white/80",
+    chip: "bg-white/8 ring-white/15",
+    glow: "var(--color-cobalt)",
   },
   {
     card: "bg-text-primary text-white ring-1 ring-white/12 ring-inset",
@@ -40,9 +40,9 @@ const FIELDS = [
 type Field = (typeof FIELDS)[number];
 
 /**
- * navy, gold, ink in turn. When the count leaves one over (n mod 3 = 1) the
+ * navy, cobalt, ink in turn. When the count leaves one over (n mod 3 = 1) the
  * last card would be navy beside the first navy across the loop's seam, so
- * it takes gold instead (its other neighbour is ink).
+ * it takes cobalt instead (its other neighbour is ink).
  */
 const fieldOf = (i: number, n: number) => FIELDS[i === n - 1 && n % 3 === 1 ? 1 : i % 3];
 

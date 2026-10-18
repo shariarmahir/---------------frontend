@@ -60,7 +60,7 @@ function GoldenTwoHours() {
  */
 const PRODUCT_POSTERS: Record<string, Pick<PosterItem, "face" | "tagline" | "scene"> & { position?: string }> = {
   aponjon: { face: "navy", tagline: "Catch the silent warning early", scene: "ecg", position: "62% 50%" },
-  swasti: { face: "gold", tagline: "A doctor's first opinion, in Bangla", scene: "voice", position: "50% 22%" },
+  swasti: { face: "cobalt", tagline: "A doctor's first opinion, in Bangla", scene: "voice", position: "50% 22%" },
   "smart-pharmacy": { face: "ink", tagline: "The village drug shop, now a clinic", scene: "grid", position: "50% 45%" },
 };
 
@@ -156,7 +156,7 @@ const SERVICE_TONES: CardTone[] = ["green", "ink", "gold", "white"];
 export function ServicesShowcase({ on = "home", poster }: { on?: "home" | "products"; poster?: boolean }) {
   // The home page's poster grid, in the palette's three fields (no two neighbours alike).
   if (poster) {
-    const faces: PosterFace[] = ["ink", "gold", "navy", "gold"];
+    const faces: PosterFace[] = ["ink", "cobalt", "navy", "cobalt"];
     return (
       <PosterGrid
         label="Services"
@@ -201,16 +201,16 @@ export function ServicesShowcase({ on = "home", poster }: { on?: "home" | "produ
   );
 }
 
-/** The close: one solid gold band with the way to reach the team. */
+/** The close: one solid cobalt band with the way to reach the team. */
 export function ShowcaseCta() {
   return (
-    <div className="story-reveal mt-10 flex flex-col items-start justify-between gap-5 rounded-3xl bg-signal-orange p-6 text-text-primary sm:p-8 lg:flex-row lg:items-center">
+    <div className="story-reveal mt-10 flex flex-col items-start justify-between gap-5 rounded-3xl bg-cobalt p-6 text-white ring-1 ring-white/12 sm:p-8 lg:flex-row lg:items-center">
       <div>
-        <p className="font-grotesk text-2xl font-bold sm:text-3xl">Have a problem worth solving?</p>
-        <p className="mt-1 font-bengali text-sm font-semibold text-text-primary/80">কারখানা, অফিস, খামার বা অ্যাপ — সমস্যাটা বলুন, আমরা সমাধান বানাব।</p>
+        <p className="font-grotesk text-2xl font-bold text-signal-orange sm:text-3xl">Have a problem worth solving?</p>
+        <p className="mt-1 font-bengali text-sm font-semibold text-white/80">কারখানা, অফিস, খামার বা অ্যাপ — সমস্যাটা বলুন, আমরা সমাধান বানাব।</p>
       </div>
-      <Link href="/#kandari-profile" className={cn(btn.navy, "shrink-0")}>
-        Join Kandari Profile <Icon name="arrow_forward" className="text-lg text-signal-orange" />
+      <Link href="/#kandari-profile" className={cn(btn.gold, "shrink-0")}>
+        Join Kandari Profile <Icon name="arrow_forward" className="text-lg" />
       </Link>
     </div>
   );

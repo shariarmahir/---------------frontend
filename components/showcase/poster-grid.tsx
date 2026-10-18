@@ -17,11 +17,11 @@ import { PosterScene, type PosterSceneKind } from "./poster-scenes";
  * and "Explore".
  */
 
-/** The three fields of the palette, nothing else (Mahir, 2026-10-17): navy, gold, ink. */
+/** The three fields of the palette (Mahir, 2026-10-18): navy, cobalt, ink; gold only for titles on cobalt and actions. */
 const FACES = {
-  navy: { card: "bg-bdnavy-900 text-white ring-1 ring-white/12 ring-inset", field: "var(--color-bdnavy-900)", glow: "var(--color-bdnavy-400)", sub: "text-white/80" },
-  gold: { card: "bg-signal-orange text-text-primary", field: "var(--color-signal-orange)", glow: "var(--color-signal-orange)", sub: "text-text-primary/80" },
-  ink: { card: "bg-text-primary text-white ring-1 ring-white/12 ring-inset", field: "var(--color-text-primary)", glow: "var(--color-signal-orange)", sub: "text-white/80" },
+  navy: { card: "bg-bdnavy-900 text-white ring-1 ring-white/12 ring-inset", field: "var(--color-bdnavy-900)", glow: "var(--color-bdnavy-400)", sub: "text-white/80", title: "" },
+  cobalt: { card: "bg-cobalt text-white ring-1 ring-white/12 ring-inset", field: "var(--color-cobalt)", glow: "var(--color-cobalt)", sub: "text-white/80", title: "text-signal-orange" },
+  ink: { card: "bg-text-primary text-white ring-1 ring-white/12 ring-inset", field: "var(--color-text-primary)", glow: "var(--color-signal-orange)", sub: "text-white/80", title: "" },
 } as const;
 
 export type PosterFace = keyof typeof FACES;
@@ -132,6 +132,7 @@ function PosterCard({ item, priority }: { item: PosterItem; priority: boolean })
           // The line height comes after the size: tailwind-merge drops a leading-* that precedes a text-* size.
           className={cn(
             "font-extrabold tracking-tight",
+            face.title,
             typeof item.title === "string" && "font-grotesk text-lg sm:text-3xl",
             "leading-[0.95]",
           )}
