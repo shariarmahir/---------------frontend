@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import type { Article } from "./core.ts";
-import { findTrack, inTopic, problemCode, problemCoverage, TRACKS } from "./tracks.ts";
+import { FIELDS, type Article } from "./core.ts";
+import { findTrack, inTopic, problemCode, problemCoverage, shelfLetter, SUBJECT_GROUPS, TRACKS } from "./tracks.ts";
 
 const art = (x: Partial<Article>): Article => ({
   slug: "a",
@@ -53,6 +53,32 @@ test("problem coverage counts published work per dossier problem", () => {
 
 test("track ids are unique and findable; codes are zero-padded", () => {
   assert.equal(new Set(TRACKS.map((t) => t.id)).size, TRACKS.length);
-  assert.equal(findTrack("global")?.en, "Global research");
+  assert.equal(findTrack("global")?.title, "Global Research");
   assert.equal(problemCode(7), "BD-007");
+});
+
+test("culture and technology collect their subjects", () => {
+  const list = [art({ slug: "soc", field: "society" }), art({ slug: "edu", field: "education" }), art({ slug: "ai", field: "computing" }), art({ slug: "hw", field: "engineering" })];
+  assert.deepEqual(inTopic(list, "culture").map((a) => a.slug).sort(), ["edu", "soc"]);
+  assert.deepEqual(inTopic(list, "technology").map((a) => a.slug).sort(), ["ai", "hw"]);
+});
+
+test("Bangladesh Real Issues & Solutions collects its own subject", () => {
+  const list = [art({ slug: "crow", field: "solutions" }), art({ slug: "hw", field: "engineering" })];
+  assert.deepEqual(inTopic(list, "bd-solutions").map((a) => a.slug), ["crow"]);
+  assert.equal(findTrack("bd-solutions")?.title, "Bangladesh Real Issues & Solutions");
+});
+
+test("every subject sits under exactly one Browse by Subject heading", () => {
+  const all = SUBJECT_GROUPS.flatMap((g) => g.fields);
+  const subjects = Object.keys(FIELDS).length;
+  assert.equal(all.length, subjects);
+  assert.equal(new Set(all).size, subjects);
+});
+
+test("titles shelve by their first letter, skipping a leading article", () => {
+  assert.equal(shelfLetter("The Structure of Policy"), "S");
+  assert.equal(shelfLetter("a sub-Tk 1,000 sensor"), "S");
+  assert.equal(shelfLetter("2-metre wearable"), "0–9");
+  assert.equal(shelfLetter("লবণ"), "#");
 });

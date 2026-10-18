@@ -8,10 +8,13 @@ import { useAuth } from "@/lib/auth/client";
 import { POINTS, thread, type Article, type TalkNote } from "@/lib/research/core";
 import { toggleIn, updateResearch, useResearch } from "@/lib/research/store";
 import { cn } from "@/lib/utils";
-import { Avatar, bn, bnDate } from "./ui";
+import { Avatar, BTN, BTN_SOLID, FIELD, fmtDate, fmtNum, H2 } from "./kit";
 
 const NONE: TalkNote[] = [];
 const LIMIT = 1500;
+
+/** A small text action under a comment. */
+const NOTE_ACTION = "inline-flex h-9 items-center gap-1.5 rounded-lg px-2 transition-colors hover:text-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none";
 
 function Composer({ a, parent, onDone, autoFocus }: { a: Article; parent?: string; onDone?: () => void; autoFocus?: boolean }) {
   const { account } = useAuth();
@@ -21,22 +24,22 @@ function Composer({ a, parent, onDone, autoFocus }: { a: Article; parent?: strin
   function send(e: React.FormEvent) {
     e.preventDefault();
     const t = text.trim();
-    if (t.length < 4) return toast.error("মন্তব্যটা আরেকটু লিখুন");
-    if (t.length > LIMIT) return toast.error("মন্তব্য ছোট করুন (১৫০০ অক্ষরের মধ্যে)");
-    const by = account?.name ?? "পাঠক";
-    const role = a.authors.some((x) => x.name === by) ? "লেখক" : undefined;
+    if (t.length < 4) return toast.error("Write a little more");
+    if (t.length > LIMIT) return toast.error("Keep comments within 1,500 characters");
+    const by = account?.name ?? "Reader";
+    const role = a.authors.some((x) => (x.nameEn ?? x.name) === by || x.name === by) ? "Author" : undefined;
     const note: TalkNote = { id: `n-${Date.now().toString(36)}`, by, at: new Date().toISOString(), text: t, ...(role ? { role } : {}), ...(parent ? { parent } : {}) };
-    if (!updateResearch((s) => ({ ...s, talk: { ...s.talk, [a.slug]: [...(s.talk[a.slug] ?? []), note] } }))) return toast.error("মন্তব্য রাখা গেল না", { description: "সাইন ইন আছেন কি না দেখুন।" });
+    if (!updateResearch((s) => ({ ...s, talk: { ...s.talk, [a.slug]: [...(s.talk[a.slug] ?? []), note] } }))) return toast.error("Could not post", { description: "Check that you are logged in." });
     setText("");
     onDone?.();
-    toast.success(parent ? "উত্তর যোগ হলো" : "মন্তব্য যোগ হলো", { description: `গবেষকের স্কোরে +${bn(POINTS.comment)}` });
+    toast.success(parent ? "Reply posted" : "Comment posted", { description: `+${POINTS.comment} points for the researcher` });
   }
 
   return (
     <form onSubmit={send} className="flex gap-3">
-      <Avatar name={account?.name ?? "পাঠক"} className={parent ? "size-8 text-xs" : undefined} />
+      <Avatar name={account?.name ?? "Reader"} className={parent ? "size-8 text-xs" : undefined} />
       <div className="min-w-0 flex-1">
-        <label htmlFor={id} className="sr-only">{parent ? "উত্তর লিখুন" : "মন্তব্য লিখুন"}</label>
+        <label htmlFor={id} className="sr-only">{parent ? "Write a reply" : "Write a comment"}</label>
         <textarea
           id={id}
           rows={parent ? 2 : 3}
@@ -44,16 +47,14 @@ function Composer({ a, parent, onDone, autoFocus }: { a: Article; parent?: strin
           autoFocus={autoFocus}
           onChange={(e) => setText(e.target.value)}
           maxLength={LIMIT}
-          placeholder={parent ? "উত্তর লিখুন…" : "পদ্ধতি নিয়ে প্রশ্ন, তথ্যের উৎস, পরামর্শ — কী ভাবছেন?"}
-          className="w-full resize-y rounded-2xl bg-white/[0.06] p-3.5 text-[15px] leading-relaxed text-white ring-1 ring-white/12 placeholder:text-white/40 focus:ring-2 focus:ring-signal-orange focus:outline-none"
+          placeholder={parent ? "Write a reply…" : "A question about the method, a source, a suggestion…"}
+          className={cn(FIELD, "resize-y py-3 leading-relaxed")}
         />
-        <div className="mt-2 flex items-center justify-between gap-3">
-          <span className="text-xs text-white/40 tabular-nums">{bn(text.length)}/{bn(LIMIT)}</span>
+        <div className="mt-3 flex items-center justify-between gap-3">
+          <span className="text-xs text-white/65 tabular-nums">{fmtNum(text.length)}/{fmtNum(LIMIT)}</span>
           <span className="flex gap-2">
-            {onDone && <button type="button" onClick={onDone} className="h-10 rounded-xl px-3 text-sm font-semibold text-white/70 hover:text-white">বাতিল</button>}
-            <button type="submit" className="inline-flex h-10 items-center gap-1.5 rounded-xl bg-signal-orange px-4 text-sm font-bold text-text-primary transition-colors hover:bg-white">
-              <Icon name="send" className="text-[18px]" /> {parent ? "উত্তর দিন" : "মন্তব্য করুন"}
-            </button>
+            {onDone && <button type="button" onClick={onDone} className={BTN}>Cancel</button>}
+            <button type="submit" className={BTN_SOLID}>{parent ? "Reply" : "Post comment"}</button>
           </span>
         </div>
       </div>
@@ -67,27 +68,25 @@ function Comment({ a, n, reply, onReply, replying, children }: { a: Article; n: 
   const { account } = useAuth();
   const likes = (n.likes ?? 0) + (liked ? 1 : 0);
   const like = () => {
-    if (!toggleIn("noteLikes", key)) toast.error("পছন্দ করতে সাইন ইন করুন");
+    if (!toggleIn("noteLikes", key)) toast.error("Log in to like comments");
   };
   return (
     <li className={cn("flex gap-3", reply && "mt-4")}>
       <Avatar name={n.by} className={reply ? "size-8 text-xs" : undefined} />
       <div className="min-w-0 flex-1">
-        <div className={cn("rounded-2xl px-4 py-3", reply ? "bg-text-primary" : "bg-bdnavy-900 ring-1 ring-white/12 ring-inset")}>
-          <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
-            <span className="font-bold text-white">{n.by}</span>
-            {n.role && <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-bold", n.role === "লেখক" ? "bg-signal-orange text-text-primary" : "bg-cobalt text-white")}>{n.role}</span>}
-            <span className="text-xs text-white/45">{bnDate(n.at)}</span>
-          </p>
-          <p className="mt-1.5 text-[15px] leading-relaxed whitespace-pre-line text-white/85">{n.text}</p>
-        </div>
-        <div className="mt-1.5 flex items-center gap-1 pl-2 text-xs font-bold">
-          <button type="button" onClick={like} aria-pressed={liked} className={cn("inline-flex h-8 items-center gap-1 rounded-lg px-2 transition-colors", liked ? "text-signal-orange" : "text-white/55 hover:text-white")}>
-            <Icon name="thumb_up" className="text-[16px]" filled={liked} /> {likes > 0 ? bn(likes) : "পছন্দ"}
+        <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+          <span className="font-semibold text-white">{n.by}</span>
+          {n.role && <span className={cn("rounded-md px-2 text-xs leading-5 font-semibold", n.role === "Author" ? "bg-signal-orange text-text-primary" : "text-bdnavy-300 ring-1 ring-bdnavy-300/60 ring-inset")}>{n.role}</span>}
+          <span className="text-white/65">{fmtDate(n.at)}</span>
+        </p>
+        <p className="mt-1 text-sm leading-relaxed whitespace-pre-line text-white/80">{n.text}</p>
+        <div className="mt-1 flex items-center gap-1 text-sm font-semibold text-white/65">
+          <button type="button" onClick={like} aria-pressed={liked} className={cn(NOTE_ACTION, liked && "text-signal-orange")}>
+            <Icon name="thumb_up" className="text-lg" filled={liked} /> {likes > 0 ? fmtNum(likes) : "Like"}
           </button>
           {onReply && account && (
-            <button type="button" onClick={onReply} aria-expanded={replying} className="inline-flex h-8 items-center gap-1 rounded-lg px-2 text-white/55 transition-colors hover:text-white">
-              <Icon name="reply" className="text-[16px]" /> উত্তর
+            <button type="button" onClick={onReply} aria-expanded={replying} className={NOTE_ACTION}>
+              <Icon name="reply" className="text-lg" /> Reply
             </button>
           )}
         </div>
@@ -97,7 +96,7 @@ function Comment({ a, n, reply, onReply, replying, children }: { a: Article; n: 
   );
 }
 
-/** আলোচনা: questions and suggestions under the article, newest or most liked first, one level of replies. */
+/** Comments: questions and suggestions under the work, newest or most liked first, one level of replies. */
 export function Discussion({ a }: { a: Article }) {
   const { account, ready } = useAuth();
   const mine = useResearch((s) => s.talk[a.slug] ?? NONE);
@@ -108,42 +107,40 @@ export function Discussion({ a }: { a: Article }) {
   const tree = thread(notes, (n) => (n.likes ?? 0) + (likedMap[`${a.slug}:${n.id}`] ? 1 : 0), order);
 
   return (
-    <section id="discussion" aria-labelledby="discussion-title" className="scroll-mt-56">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h2 id="discussion-title" className="text-2xl font-bold text-signal-orange sm:text-3xl">মন্তব্য ও আলোচনা <span className="text-white/65">{bn(notes.length)}</span></h2>
-        </div>
+    <section id="discussion" aria-labelledby="discussion-title">
+      <div className="flex flex-wrap items-end justify-between gap-3 border-b border-white/12 pb-4">
+        <h2 id="discussion-title" className={H2}>Comments <span className="text-white/65 tabular-nums">({fmtNum(notes.length)})</span></h2>
         {notes.length > 1 && (
-          <div role="group" aria-label="সাজানো" className="flex rounded-xl bg-white/[0.06] p-1 ring-1 ring-white/10">
-            {(["new", "top"] as const).map((o) => (
-              <button key={o} type="button" onClick={() => setOrder(o)} aria-pressed={order === o} className={cn("h-9 rounded-lg px-3 text-sm font-bold transition-colors", order === o ? "bg-signal-orange text-text-primary" : "text-white/80 hover:text-white")}>
-                {o === "new" ? "নতুন আগে" : "সবচেয়ে পছন্দের"}
-              </button>
-            ))}
-          </div>
+          <label className="flex items-center gap-2 text-sm font-semibold text-white/80">
+            Sort by
+            <select value={order} onChange={(e) => setOrder(e.target.value as "new" | "top")} className={cn(FIELD, "h-10 w-auto px-3 text-sm")}>
+              <option value="new">Newest</option>
+              <option value="top">Most liked</option>
+            </select>
+          </label>
         )}
       </div>
-      <p className="mt-3 max-w-[65ch] text-sm leading-relaxed text-white/55">আলোচনা গবেষণাটি ভালো করার জন্য — পদ্ধতির প্রশ্ন, তথ্যের উৎস, পরামর্শ। ব্যক্তিগত আক্রমণ নয়; অংশগ্রহণকারীদের নাম বা ফোন নম্বর লিখবেন না।</p>
+      <p className="mt-4 max-w-[70ch] text-sm leading-relaxed text-white/65">Comments are for improving the research: questions on method, sources and suggestions. No personal attacks, and never post a participant&apos;s name or phone number.</p>
 
       <div className="mt-6">
         {account ? (
           <Composer a={a} />
         ) : ready ? (
-          <p className="flex flex-wrap items-center gap-3 rounded-2xl bg-white/[0.04] p-4 text-sm text-white/75 ring-1 ring-white/10">
-            <Icon name="lock" className="text-[20px] text-signal-orange" /> মন্তব্য, উত্তর আর পছন্দের জন্য কাণ্ডারী প্রোফাইল লাগে।
-            <Link href={`/login?next=${encodeURIComponent(`/research/${a.slug}#discussion`)}`} className="ml-auto inline-flex h-10 items-center rounded-xl bg-signal-orange px-4 font-bold text-text-primary">সাইন ইন</Link>
+          <p className="flex flex-wrap items-center gap-3 rounded-2xl bg-black/30 p-4 text-sm text-white/80 ring-1 ring-white/12 ring-inset">
+            <Icon name="lock" className="text-xl text-signal-orange" /> Log in with your Kandari Profile to comment, reply and like.
+            <Link href={`/login?next=${encodeURIComponent(`/research/${a.slug}#discussion`)}`} className={cn(BTN_SOLID, "ml-auto")}>Log in</Link>
           </p>
         ) : null}
       </div>
 
       {tree.length === 0 ? (
-        <p className="mt-8 rounded-2xl border border-dashed border-white/15 p-6 text-center text-sm text-white/55">এখনো কোনো আলোচনা নেই। প্রথম প্রশ্নটা আপনিই করুন।</p>
+        <p className="mt-6 rounded-2xl border border-dashed border-white/20 p-6 text-center text-sm text-white/65">No comments yet. Ask the first question.</p>
       ) : (
-        <ol className="mt-8 space-y-6">
+        <ol className="mt-7 space-y-7">
           {tree.map(({ note, replies }) => (
             <Comment key={note.id} a={a} n={note} onReply={() => setReplyTo(replyTo === note.id ? null : note.id)} replying={replyTo === note.id}>
               {(replies.length > 0 || replyTo === note.id) && (
-                <div className="mt-3 border-l-2 border-white/10 pl-4">
+                <div className="mt-3 border-l border-white/15 pl-4">
                   {replies.length > 0 && <ol>{replies.map((r) => <Comment key={r.id} a={a} n={r} reply />)}</ol>}
                   {replyTo === note.id && <div className="mt-4"><Composer a={a} parent={note.id} onDone={() => setReplyTo(null)} autoFocus /></div>}
                 </div>

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { libraryArticles } from "@/data/research/library";
 
-/** এলোমেলো নিবন্ধ: a different published article on every visit. */
+/** A random work: a different published item on every visit. */
 export const dynamic = "force-dynamic";
 
 export function GET(request: Request) {

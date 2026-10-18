@@ -1,53 +1,76 @@
 /**
- * গবেষণাকোষ (Kandari ResearchPedia): an open library where Bangladeshi
- * students and researchers publish theses, papers and innovations, laid
- * out the way Wikipedia lays out an encyclopedia. Pure rules here — types,
- * search, contents, citation, the submission checks — tested in
- * core.test.ts.
+ * Genius (Kandari-Lab): an open digital library where Bangladeshi students and
+ * researchers publish theses, papers, innovations, projects and ideas, browsed
+ * the way JSTOR is browsed (subjects, collections, titles, institutions).
+ * Pure rules here — types, search, contents, citation, the submission
+ * checks — tested in core.test.ts.
  */
 
-export type ResearchKind = "thesis" | "paper" | "innovation" | "project";
+export type ResearchKind = "thesis" | "paper" | "innovation" | "project" | "idea";
 
-export const KINDS: Record<ResearchKind, { bn: string; en: string; icon: string }> = {
-  thesis: { bn: "থিসিস", en: "Thesis", icon: "school" },
-  paper: { bn: "গবেষণাপত্র", en: "Paper", icon: "article" },
-  innovation: { bn: "উদ্ভাবন", en: "Innovation", icon: "lightbulb" },
-  project: { bn: "প্রকল্প", en: "Project", icon: "construction" },
+/**
+ * `en` is the short name; `type` is the catalogue label printed above a
+ * title, as JSTOR prints "BOOK CHAPTER". `bn` is for the Bangla-language
+ * media feed, which shows research too; the library itself is in English.
+ */
+export const KINDS: Record<ResearchKind, { en: string; bn: string; type: string; plural: string; icon: string }> = {
+  thesis: { en: "Thesis", bn: "থিসিস", type: "Thesis", plural: "Theses", icon: "school" },
+  paper: { en: "Paper", bn: "গবেষণাপত্র", type: "Research paper", plural: "Research papers", icon: "article" },
+  innovation: { en: "Innovation", bn: "উদ্ভাবন", type: "Innovation report", plural: "Innovation reports", icon: "lightbulb" },
+  project: { en: "Project", bn: "প্রকল্প", type: "Project report", plural: "Project reports", icon: "construction" },
+  /** Mahir, 2026-10-19: an untested proposal, published to find collaborators, a supervisor or funding. */
+  idea: { en: "Idea", bn: "আইডিয়া", type: "Idea", plural: "Ideas", icon: "tips_and_updates" },
 };
 
-export type FieldId = "health" | "agriculture" | "climate" | "engineering" | "computing" | "society" | "education" | "economy" | "science";
+/**
+ * The sections an upload starts with, by content type: the structure
+ * reviewers and examiners expect for it (data/research/roadmap.ts asks for
+ * the same). The author can rename, add or remove any of them.
+ */
+export const SECTION_TEMPLATES: Record<ResearchKind, string[]> = {
+  thesis: ["Introduction", "Literature review", "Methodology", "Results", "Discussion", "Conclusion"],
+  paper: ["Introduction", "Methods", "Results", "Discussion"],
+  innovation: ["The problem", "The design", "Prototype and testing", "Cost and impact"],
+  project: ["Background and objectives", "What we built or did", "Results", "Next steps"],
+  idea: ["The problem", "The idea", "How it could be tested", "What it needs"],
+};
 
-export const FIELDS: Record<FieldId, { bn: string; en: string; icon: string }> = {
-  health: { bn: "স্বাস্থ্য ও চিকিৎসা", en: "Health & Medicine", icon: "health_and_safety" },
-  agriculture: { bn: "কৃষি ও খাদ্য", en: "Agriculture & Food", icon: "agriculture" },
-  climate: { bn: "জলবায়ু ও পরিবেশ", en: "Climate & Environment", icon: "eco" },
-  engineering: { bn: "প্রকৌশল ও হার্ডওয়্যার", en: "Engineering", icon: "memory" },
-  computing: { bn: "কম্পিউটিং ও এআই", en: "Computing & AI", icon: "neurology" },
-  society: { bn: "সমাজ ও নীতি", en: "Society & Policy", icon: "diversity_3" },
-  education: { bn: "শিক্ষা", en: "Education", icon: "menu_book" },
-  economy: { bn: "অর্থনীতি ও ব্যবসা", en: "Economy & Business", icon: "monitoring" },
-  science: { bn: "মৌলিক বিজ্ঞান", en: "Basic Science", icon: "science" },
+export type FieldId = "solutions" | "health" | "agriculture" | "climate" | "engineering" | "computing" | "society" | "education" | "economy" | "science";
+
+/** `bn` is for the Bangla-language media feed (see KINDS). */
+export const FIELDS: Record<FieldId, { en: string; bn: string; icon: string }> = {
+  /** Mahir, 2026-10-19: a subject of its own for real Bangladeshi problems studied to a costed, testable solution. */
+  solutions: { en: "Bangladesh Real Issues & Solutions", bn: "বাংলাদেশের বাস্তব সমস্যা ও সমাধান", icon: "emoji_objects" },
+  health: { en: "Health & Medicine", bn: "স্বাস্থ্য ও চিকিৎসা", icon: "health_and_safety" },
+  agriculture: { en: "Agriculture & Food", bn: "কৃষি ও খাদ্য", icon: "agriculture" },
+  climate: { en: "Climate & Environment", bn: "জলবায়ু ও পরিবেশ", icon: "eco" },
+  engineering: { en: "Engineering & Hardware", bn: "প্রকৌশল ও হার্ডওয়্যার", icon: "memory" },
+  computing: { en: "Computing & AI", bn: "কম্পিউটিং ও এআই", icon: "neurology" },
+  society: { en: "Society, Culture & Policy", bn: "সমাজ ও নীতি", icon: "diversity_3" },
+  education: { en: "Education", bn: "শিক্ষা", icon: "menu_book" },
+  economy: { en: "Economy & Business", bn: "অর্থনীতি ও ব্যবসা", icon: "monitoring" },
+  science: { en: "Basic Science", bn: "মৌলিক বিজ্ঞান", icon: "science" },
 };
 
 export type Level = "school" | "undergrad" | "masters" | "phd" | "independent";
 
 export const LEVELS: Record<Level, string> = {
-  school: "স্কুল-কলেজ",
-  undergrad: "স্নাতক",
-  masters: "স্নাতকোত্তর",
-  phd: "পিএইচডি",
-  independent: "স্বাধীন গবেষক",
+  school: "School & college",
+  undergrad: "Undergraduate",
+  masters: "Master's",
+  phd: "PhD",
+  independent: "Independent researcher",
 };
 
 export type Status = "published" | "review";
 
 export type Scope = "bangladesh" | "global";
 
-export const SCOPES: Record<Scope, string> = { bangladesh: "বাংলাদেশ", global: "বৈশ্বিক" };
+export const SCOPES: Record<Scope, string> = { bangladesh: "Bangladesh", global: "Global" };
 
 export interface Author {
   name: string;
-  /** The Latin spelling, for share cards that cannot shape Bangla. */
+  /** The Latin spelling, when `name` is written in Bangla. */
   nameEn?: string;
   affiliation?: string;
 }
@@ -64,7 +87,7 @@ export interface FigureRow {
 export interface Figure {
   kind: "bars" | "waterfall";
   title: string;
-  /** Printed after each value, e.g. "%" or " টাকা/কেজি". */
+  /** Printed after each value, e.g. "%" or " Tk/kg". */
   unit: string;
   rows: FigureRow[];
   caption: string;
@@ -114,6 +137,7 @@ export interface TalkNote {
 export interface Article {
   slug: string;
   title: string;
+  /** An alternative title, e.g. the Bangla original of an English title. */
   titleEn?: string;
   kind: ResearchKind;
   field: FieldId;
@@ -132,11 +156,13 @@ export interface Article {
   sections: Section[];
   references: Reference[];
   image?: { src: string; caption: string; credit?: string };
-  /** Work still under way is shown as চলমান গবেষণা, not as a finished result. */
+  /** Photographs of the work itself (a prototype, a field site, a poster), each captioned. */
+  gallery?: { src: string; caption: string }[];
+  /** Work still under way is shown as ongoing research, not as a finished result. */
   ongoing?: boolean;
   /** Extra infobox rows, e.g. cost or sample size. */
   facts?: { label: string; value: string }[];
-  /** A "আপনি কি জানেন…" hook, phrased as the end of that question. */
+  /** A "Did you know…" hook, phrased as the end of that question. */
   dyk?: string;
   /** The uploaded PDF, if any: a data URL for the viewer's own, a path for samples. */
   file?: { name: string; size: number; url?: string };
@@ -255,7 +281,7 @@ export function search(list: Article[], query: string): Article[] {
         [norm(`${a.title} ${a.titleEn ?? ""}`), 6],
         [norm(a.keywords.join(" ")), 4],
         [norm(`${a.authors.map((x) => x.name).join(" ")} ${a.institution} ${a.supervisor ?? ""} ${a.district ?? ""}`), 3],
-        [norm(`${FIELDS[a.field].bn} ${FIELDS[a.field].en} ${KINDS[a.kind].bn} ${KINDS[a.kind].en}`), 2],
+        [norm(`${FIELDS[a.field].en} ${KINDS[a.kind].en} ${KINDS[a.kind].type}`), 2],
         [norm(`${a.summary} ${a.sections.map((s) => `${s.heading} ${s.body}`).join(" ")}`), 1],
       ];
       let score = 0;
@@ -295,7 +321,7 @@ export function rotate<T>(items: T[], day: string, n: number): T[] {
 
 export const newest = (list: Article[], n: number) => [...list].filter((a) => a.status === "published").sort((a, b) => b.published.localeCompare(a.published)).slice(0, n);
 
-/** Every edit across the library, newest first — the "সাম্প্রতিক পরিবর্তন" list. */
+/** Every edit across the library, newest first. */
 export function recentChanges(list: Article[], n: number): { article: Article; rev: Revision }[] {
   return list
     .flatMap((article) => article.revisions.map((rev) => ({ article, rev })))
@@ -316,15 +342,15 @@ export function counts(list: Article[]) {
 
 /* ---------- Citing ---------- */
 
-/** "নাম ১, নাম ২ ও নাম ৩" — Bangla list style. */
+/** "Name 1, Name 2 and Name 3". */
 export function nameList(names: string[]): string {
   if (names.length <= 1) return names.join("");
-  return `${names.slice(0, -1).join(", ")} ও ${names[names.length - 1]}`;
+  return `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
 }
 
-/** How to cite it: authors (year). Title. Kind, institution. গবেষণাকোষ. URL. */
+/** How to cite it: authors (year). Title. Type, institution. Genius (Kandari-Lab). URL */
 export function citation(a: Article, url: string): string {
-  return `${nameList(a.authors.map((x) => x.name))} (${a.year})। ${a.title}। ${KINDS[a.kind].bn}, ${a.institution}। কাণ্ডারী গবেষণাকোষ। ${url}`;
+  return `${nameList(a.authors.map((x) => x.nameEn ?? x.name))} (${a.year}). ${a.title}. ${a.preprint ? "Working paper" : KINDS[a.kind].type}, ${a.institution}. Genius (Kandari-Lab). ${url}`;
 }
 
 /* ---------- Publishing ---------- */
@@ -339,6 +365,10 @@ export const LIMITS = {
   keywords: 8,
   references: 30,
   fileBytes: 1_500_000,
+  /** The largest photo accepted before it is scaled down in the browser. */
+  imageBytes: 12_000_000,
+  gallery: 6,
+  caption: 200,
 } as const;
 
 export interface Draft {
@@ -361,9 +391,28 @@ export interface Draft {
   scope?: Scope;
   /** Optional: one dossier problem the work speaks to, by number ("" for none). */
   problem?: string;
+  /** The thumbnail (required): a photo scaled down in the browser, as a data URL. */
+  cover?: string;
+  /** What the thumbnail shows, and whose it is. */
+  coverCaption?: string;
+  /** Project images (optional), scaled down the same way, each with a caption. */
+  gallery?: { src: string; caption: string }[];
 }
 
-export type DraftProblems = Partial<Record<"title" | "kind" | "field" | "level" | "authors" | "institution" | "year" | "summary" | "keywords" | "sections" | "references" | "agree", string>>;
+export type DraftProblems = Partial<Record<"title" | "kind" | "field" | "level" | "authors" | "institution" | "year" | "summary" | "keywords" | "sections" | "references" | "cover" | "gallery" | "agree", string>>;
+
+/* ---------- Uploaded media ---------- */
+
+// Only what the upload form itself produces (a JPEG, PNG or WebP drawn on a
+// canvas, a PDF read as base64) or a file the site serves. Anything else
+// found in storage (a javascript: or remote URL, an SVG) is dropped.
+const SAFE_IMAGE = /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/]+={0,2}$/;
+const SAFE_PDF = /^data:application\/pdf;base64,[A-Za-z0-9+/]+={0,2}$/;
+const SITE_PATH = /^\/(?![/\\])[\w\-./%]+$/;
+
+export const isSafeImage = (s: unknown): s is string => typeof s === "string" && (SAFE_IMAGE.test(s) || SITE_PATH.test(s));
+export const isSafePdf = (s: unknown): s is string => typeof s === "string" && (SAFE_PDF.test(s) || SITE_PATH.test(s));
+const isWebLink = (s: unknown): s is string => typeof s === "string" && /^https?:\/\/[^\s"<>]+$/i.test(s);
 
 const splitList = (s: string, sep: RegExp) => s.split(sep).map((x) => x.trim()).filter(Boolean);
 export const authorNames = (s: string) => splitList(s, /[,\n،]/).slice(0, LIMITS.authors + 1);
@@ -377,33 +426,40 @@ export function parseReferences(s: string): Reference[] {
   });
 }
 
-/** Everything a submission still needs, in plain Bangla; empty when it is ready. */
+/** Everything a submission still needs, in plain English; empty when it is ready. */
 export function draftProblems(d: Draft, thisYear: number): DraftProblems {
   const p: DraftProblems = {};
   const len = (s: string) => s.trim().length;
-  if (len(d.title) < LIMITS.title[0]) p.title = "শিরোনাম অন্তত ৮ অক্ষরের দিন";
-  else if (len(d.title) > LIMITS.title[1]) p.title = "শিরোনাম ছোট করুন (১৬০ অক্ষরের মধ্যে)";
-  if (!d.kind) p.kind = "ধরন বাছুন";
-  if (!d.field) p.field = "বিষয়ক্ষেত্র বাছুন";
-  if (!d.level) p.level = "পর্যায় বাছুন";
+  if (len(d.title) < LIMITS.title[0]) p.title = "Give a title of at least 8 characters";
+  else if (len(d.title) > LIMITS.title[1]) p.title = "Shorten the title (160 characters at most)";
+  if (!d.kind) p.kind = "Choose a content type";
+  if (!d.field) p.field = "Choose a subject";
+  if (!d.level) p.level = "Choose a level";
   const names = authorNames(d.authors);
-  if (names.length === 0) p.authors = "অন্তত একজন লেখকের নাম দিন";
-  else if (names.length > LIMITS.authors) p.authors = "সর্বোচ্চ ৮ জন লেখক";
-  if (len(d.institution) < 3) p.institution = "প্রতিষ্ঠানের নাম দিন";
+  if (names.length === 0) p.authors = "Name at least one author";
+  else if (names.length > LIMITS.authors) p.authors = "8 authors at most";
+  if (len(d.institution) < 3) p.institution = "Name the institution";
   const year = Number(latinDigits(d.year.trim()));
-  if (!Number.isInteger(year) || year < 1971 || year > thisYear) p.year = `১৯৭১ থেকে ${thisYear}-এর মধ্যে সাল দিন`;
-  if (len(d.summary) < LIMITS.summary[0]) p.summary = "সারসংক্ষেপ অন্তত ৮০ অক্ষরে লিখুন — কী প্রশ্ন, কী পেলেন";
-  else if (len(d.summary) > LIMITS.summary[1]) p.summary = "সারসংক্ষেপ ১২০০ অক্ষরের মধ্যে রাখুন";
-  if (keywordList(d.keywords).length > LIMITS.keywords) p.keywords = "সর্বোচ্চ ৮টি মূলশব্দ";
+  if (!Number.isInteger(year) || year < 1971 || year > thisYear) p.year = `Give a year from 1971 to ${thisYear}`;
+  if (len(d.summary) < LIMITS.summary[0]) p.summary = "Write an abstract of at least 80 characters: the question and what you found";
+  else if (len(d.summary) > LIMITS.summary[1]) p.summary = "Keep the abstract within 1,200 characters";
+  if (keywordList(d.keywords).length > LIMITS.keywords) p.keywords = "8 keywords at most";
   const filled = d.sections.filter((s) => len(s.heading) > 0 || len(s.body) > 0);
-  if (filled.length < LIMITS.sections[0]) p.sections = "অন্তত দুটি অংশ লিখুন (যেমন: পদ্ধতি, ফলাফল)";
-  else if (filled.length > LIMITS.sections[1]) p.sections = "সর্বোচ্চ ১০টি অংশ";
-  else if (filled.some((s) => len(s.heading) < LIMITS.heading[0] || len(s.heading) > LIMITS.heading[1])) p.sections = "প্রতিটি অংশের একটা শিরোনাম দিন";
-  else if (filled.some((s) => len(s.body) < LIMITS.body[0])) p.sections = "প্রতিটি অংশে অন্তত দুই লাইন লিখুন";
-  else if (filled.some((s) => len(s.body) > LIMITS.body[1])) p.sections = "একটি অংশ বেশি বড় — ভাগ করুন";
+  if (filled.length < LIMITS.sections[0]) p.sections = "Write at least two sections (for example: Method, Results)";
+  else if (filled.length > LIMITS.sections[1]) p.sections = "10 sections at most";
+  else if (filled.some((s) => len(s.heading) < LIMITS.heading[0] || len(s.heading) > LIMITS.heading[1])) p.sections = "Give every section a heading";
+  else if (filled.some((s) => len(s.body) < LIMITS.body[0])) p.sections = "Write at least two lines in every section";
+  else if (filled.some((s) => len(s.body) > LIMITS.body[1])) p.sections = "One section is too long; split it";
   const refs = parseReferences(d.references);
-  if (refs.length > LIMITS.references) p.references = "সর্বোচ্চ ৩০টি তথ্যসূত্র";
-  if (!d.agree) p.agree = "নিশ্চিত করুন যে কাজটি আপনার (বা সহলেখকদের অনুমতি আছে)";
+  if (refs.length > LIMITS.references) p.references = "30 references at most";
+  if (!isSafeImage(d.cover)) p.cover = "Add a thumbnail image: a photo of the work, the site or the device";
+  else if ((d.coverCaption ?? "").length > LIMITS.caption) p.cover = "Keep the thumbnail caption within 200 characters";
+  const gallery = d.gallery ?? [];
+  if (gallery.length > LIMITS.gallery) p.gallery = "6 project images at most";
+  else if (gallery.some((g) => !isSafeImage(g.src))) p.gallery = "One project image could not be read; remove it and add it again";
+  else if (gallery.some((g) => len(g.caption) < 3)) p.gallery = "Write a short caption for every project image";
+  else if (gallery.some((g) => len(g.caption) > LIMITS.caption)) p.gallery = "Keep each caption within 200 characters";
+  if (!d.agree) p.agree = "Confirm the work is yours (or your co-authors agree)";
   return p;
 }
 
@@ -431,12 +487,65 @@ export function buildArticle(d: Draft, opts: { now: Date; taken: Set<string>; ow
     keywords: keywordList(d.keywords).slice(0, LIMITS.keywords),
     sections,
     references: parseReferences(d.references),
+    ...(isSafeImage(d.cover) ? { image: { src: d.cover, caption: d.coverCaption?.trim() || d.title.trim() } } : {}),
+    ...(d.gallery?.length ? { gallery: d.gallery.slice(0, LIMITS.gallery).map((g) => ({ src: g.src, caption: g.caption.trim() })) } : {}),
     ...(opts.file ? { file: opts.file } : {}),
     ...(d.scope === "global" ? { scope: "global" as const } : {}),
     ...(Number(d.problem) >= 1 && Number(d.problem) <= 32 ? { problems: [Number(d.problem)] } : {}),
     owner: opts.owner,
-    revisions: [{ at, by: opts.ownerName, note: "প্রথম জমা — পর্যালোচনার অপেক্ষায়" }],
+    revisions: [{ at, by: opts.ownerName, note: "First submission, awaiting review" }],
   };
+}
+
+const isStr = (x: unknown): x is string => typeof x === "string";
+
+/**
+ * The viewer's own submissions as read back from browser storage, which
+ * anything else on the device can edit: keep only well-formed works, only
+ * the fields an upload can have, and only media the upload form makes.
+ * A submission is always "in review" until a server publishes it.
+ */
+export function sanitizeOwn(raw: unknown): Article[] {
+  if (!Array.isArray(raw)) return [];
+  const out: Article[] = [];
+  for (const item of raw) {
+    if (!item || typeof item !== "object") continue;
+    const x = item as Partial<Article>;
+    if (!isStr(x.slug) || !x.slug || !isStr(x.title) || !isStr(x.summary) || !isStr(x.institution) || !isStr(x.published)) continue;
+    if (!isStr(x.kind) || !Object.hasOwn(KINDS, x.kind) || !isStr(x.field) || !Object.hasOwn(FIELDS, x.field) || !isStr(x.level) || !Object.hasOwn(LEVELS, x.level)) continue;
+    if (!Number.isInteger(x.year) || !Array.isArray(x.authors) || !Array.isArray(x.sections) || !Array.isArray(x.keywords)) continue;
+    const authors = x.authors.filter((a) => a && isStr(a.name)).map((a) => ({ name: a.name }));
+    const sections = x.sections.filter((s) => s && isStr(s.id) && isStr(s.heading) && isStr(s.body)).map((s) => ({ id: s.id, heading: s.heading, body: s.body }));
+    if (authors.length === 0 || sections.length === 0) continue;
+    const gallery = Array.isArray(x.gallery) ? x.gallery.filter((g) => g && isSafeImage(g.src) && isStr(g.caption)).slice(0, LIMITS.gallery).map((g) => ({ src: g.src, caption: g.caption })) : [];
+    out.push({
+      slug: x.slug,
+      title: x.title,
+      ...(isStr(x.titleEn) && x.titleEn ? { titleEn: x.titleEn } : {}),
+      kind: x.kind,
+      field: x.field,
+      level: x.level,
+      status: "review",
+      authors,
+      institution: x.institution,
+      ...(isStr(x.supervisor) && x.supervisor ? { supervisor: x.supervisor } : {}),
+      year: x.year as number,
+      ...(isStr(x.district) && x.district ? { district: x.district } : {}),
+      published: x.published,
+      summary: x.summary,
+      keywords: x.keywords.filter(isStr),
+      sections,
+      references: (Array.isArray(x.references) ? x.references : []).filter((r) => r && isStr(r.text)).map((r) => ({ text: r.text, ...(isWebLink(r.url) ? { url: r.url } : {}) })),
+      ...(x.image && isSafeImage(x.image.src) ? { image: { src: x.image.src, caption: isStr(x.image.caption) ? x.image.caption : x.title } } : {}),
+      ...(gallery.length ? { gallery } : {}),
+      ...(x.file && isStr(x.file.name) && (x.file.url === undefined || isSafePdf(x.file.url)) ? { file: { name: x.file.name, size: Number(x.file.size) || 0, ...(x.file.url ? { url: x.file.url } : {}) } } : {}),
+      ...(x.scope === "global" ? { scope: "global" as const } : {}),
+      ...(Array.isArray(x.problems) ? { problems: x.problems.filter((n) => Number.isInteger(n) && n >= 1 && n <= 32) } : {}),
+      ...(isStr(x.owner) ? { owner: x.owner } : {}),
+      revisions: (Array.isArray(x.revisions) ? x.revisions : []).filter((r) => r && isStr(r.at) && isStr(r.by) && isStr(r.note)).map((r) => ({ at: r.at, by: r.by, note: r.note })),
+    });
+  }
+  return out;
 }
 
 /* ---------- Reactions, points and rankings ---------- */
@@ -444,11 +553,11 @@ export function buildArticle(d: Draft, opts: { now: Date; taken: Set<string>; ow
 export type ReactionKind = "insight" | "method" | "useful" | "inspire";
 
 /** What a reader can say about a piece of research, one reaction each. */
-export const REACTIONS: Record<ReactionKind, { bn: string; icon: string }> = {
-  insight: { bn: "নতুন ভাবনা", icon: "lightbulb" },
-  method: { bn: "মজবুত পদ্ধতি", icon: "verified" },
-  useful: { bn: "কাজের", icon: "handyman" },
-  inspire: { bn: "অনুপ্রেরণা", icon: "local_fire_department" },
+export const REACTIONS: Record<ReactionKind, { label: string; icon: string }> = {
+  insight: { label: "New insight", icon: "lightbulb" },
+  method: { label: "Sound method", icon: "verified" },
+  useful: { label: "Useful", icon: "handyman" },
+  inspire: { label: "Inspiring", icon: "local_fire_department" },
 };
 export const REACTION_KINDS = Object.keys(REACTIONS) as ReactionKind[];
 
@@ -523,7 +632,7 @@ export function topResearchers(list: Article[], score: Score): { name: string; i
       by.set(au.name, r);
     }
   }
-  return [...by.values()].sort((x, y) => y.points - x.points || y.articles - x.articles || x.name.localeCompare(y.name, "bn"));
+  return [...by.values()].sort((x, y) => y.points - x.points || y.articles - x.articles || x.name.localeCompare(y.name, "en"));
 }
 
 /** Further reading: same field first, then same kind, then the rest, newest first within each. */
@@ -550,15 +659,15 @@ export function thread(notes: TalkNote[], likes: (n: TalkNote) => number, order:
 export type SocialChannel = "facebook" | "x" | "linkedin" | "whatsapp" | "telegram";
 
 export const SOCIAL: Record<SocialChannel, string> = {
-  facebook: "ফেসবুক",
-  x: "এক্স (টুইটার)",
-  linkedin: "লিংকডইন",
-  whatsapp: "হোয়াটসঅ্যাপ",
-  telegram: "টেলিগ্রাম",
+  facebook: "Facebook",
+  x: "X (Twitter)",
+  linkedin: "LinkedIn",
+  whatsapp: "WhatsApp",
+  telegram: "Telegram",
 };
 
 /** The line that goes with a shared link. */
-export const shareText = (a: Pick<Article, "title" | "authors">) => `${a.title} — ${nameList(a.authors.map((x) => x.name))} | গবেষণাকোষ`;
+export const shareText = (a: Pick<Article, "title" | "authors">) => `${a.title} — ${nameList(a.authors.map((x) => x.nameEn ?? x.name))} | Genius`;
 
 /** Each network's own share page for a link; nothing is sent until the reader confirms there. */
 export function shareLinks(url: string, text: string): Record<SocialChannel, string> {
@@ -576,6 +685,6 @@ export function shareLinks(url: string, text: string): Record<SocialChannel, str
 /** The Kandari feed's share page, prefilled with this article (the feed reads only the query). */
 export function feedIntent(a: Pick<Article, "slug" | "title" | "summary" | "kind" | "keywords">): string {
   const summary = a.summary.length > 280 ? `${a.summary.slice(0, 279).trimEnd()}…` : a.summary;
-  const q = new URLSearchParams({ u: `/research/${a.slug}`, t: a.title, s: summary, src: "গবেষণাকোষ", k: KINDS[a.kind].bn, tags: a.keywords.slice(0, 4).join(",") });
+  const q = new URLSearchParams({ u: `/research/${a.slug}`, t: a.title, s: summary, src: "Genius", k: KINDS[a.kind].type, tags: a.keywords.slice(0, 4).join(",") });
   return `/media/share?${q.toString()}`;
 }

@@ -140,16 +140,16 @@ export const productNavLinks: NavLink[] = [
 ];
 
 /**
- * Navigation for গবেষণাকোষ (/research): the library's own pages, then the
- * company pages a researcher is most likely to want next.
+ * Navigation for Genius (/research): the library's own pages, then
+ * the company pages a researcher is most likely to want next.
  */
 export const researchNavLinks: NavLink[] = [
-  { href: "/research", label: "গবেষণাকোষ", shortLabel: "কোষ" },
-  { href: "/research/contents", label: "সূচিপত্র", shortLabel: "সূচি" },
-  { href: "/research/submit", label: "প্রকাশ করুন", shortLabel: "প্রকাশ" },
-  { href: "/research/changes", label: "সাম্প্রতিক পরিবর্তন", shortLabel: "পরিবর্তন" },
+  { href: "/research", label: "Research", shortLabel: "Research" },
+  { href: "/research/subjects", label: "Subjects", shortLabel: "Subjects" },
+  { href: "/research/collections", label: "Collections", shortLabel: "Collections" },
+  { href: "/research/workspace", label: "Workspace", shortLabel: "Workspace" },
+  { href: "/research/submit", label: "Upload", shortLabel: "Upload" },
   { href: "/products", label: "Products", shortLabel: "Products" },
-  { href: "/team", label: "Team", shortLabel: "Team" },
 ];
 
 /**

@@ -12,18 +12,18 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const a = find((await params).slug);
-  if (!a) return { title: "নিবন্ধ — গবেষণাকোষ" };
+  if (!a) return { title: "Item — Genius" };
   const description = a.summary.length > 200 ? `${a.summary.slice(0, 199)}…` : a.summary;
   return {
-    title: `${a.title} — গবেষণাকোষ`,
+    title: `${a.title} — Genius`,
     description,
     // Social previews: the card image comes from opengraph-image.tsx next to this page.
-    openGraph: { type: "article", title: shareText(a), description, publishedTime: a.published, authors: a.authors.map((x) => x.nameEn ?? x.name), siteName: "কাণ্ডারী গবেষণাকোষ" },
+    openGraph: { type: "article", title: shareText(a), description, publishedTime: a.published, authors: a.authors.map((x) => x.nameEn ?? x.name), siteName: "Genius" },
     twitter: { card: "summary_large_image", title: shareText(a), description },
   };
 }
 
-/** A library article is rendered here; anything else is looked up in the viewer's own submissions. */
+/** A work's stable page; anything not in the library is looked up in the viewer's own submissions. */
 export default async function ResearchArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const a = find(slug);

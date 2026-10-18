@@ -1,6 +1,4 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { TopicView } from "@/components/research/topic-view";
+import { notFound, permanentRedirect } from "next/navigation";
 import { FIELDS, type FieldId } from "@/lib/research/core";
 import { findTrack, isFieldId, TRACK_IDS } from "@/lib/research/tracks";
 
@@ -10,15 +8,10 @@ export function generateStaticParams() {
   return [...TRACK_IDS, ...(Object.keys(FIELDS) as FieldId[])].map((id) => ({ id }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
-  const { id } = await params;
-  const name = findTrack(id)?.bn ?? (isFieldId(id) ? FIELDS[id].bn : "ধারা");
-  return { title: `${name} — গবেষণাকোষ`, description: findTrack(id)?.blurb ?? `${name} বিষয়ের গবেষণা — গবেষণাকোষ।` };
-}
-
-/** One research track or subject field: its head, its works as cards, and the other topics. */
+/** The old topic pages now live as JSTOR-style collections and subjects. */
 export default async function ResearchTopicPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!findTrack(id) && !isFieldId(id)) notFound();
-  return <TopicView id={id} />;
+  if (findTrack(id)) permanentRedirect(`/research/collections/${id}`);
+  if (isFieldId(id)) permanentRedirect(`/research/subjects/${id}`);
+  notFound();
 }

@@ -1,41 +1,48 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { COLUMN, Crumbs, H1, LINK, PANEL_COBALT, TITLE } from "@/components/research/kit";
 import { SubmitForm } from "@/components/research/submit-form";
 import { Icon } from "@/components/ui/icon";
+import { cn } from "@/lib/utils";
 
-export const metadata: Metadata = { title: "গবেষণা প্রকাশ করুন — গবেষণাকোষ" };
+export const metadata: Metadata = { title: "Upload Research — Genius" };
 
 const RULES = [
-  { icon: "verified_user", title: "নিজের কাজ", body: "আপনি বা আপনার দল যা করেছেন, তা-ই প্রকাশ করুন। সহলেখকদের সম্মতি নিন।" },
-  { icon: "fact_check", title: "সৎ তথ্য", body: "তথ্য বানানো বা বদলানো চলবে না। যা পাননি, তা লিখবেন না; সীমাবদ্ধতা স্পষ্ট করুন।" },
-  { icon: "menu_book", title: "সূত্র দিন", body: "অন্যের তথ্য, লেখা বা ছবি ব্যবহার করলে তথ্যসূত্রে উল্লেখ করুন।" },
-  { icon: "shield_person", title: "মানুষের গোপনীয়তা", body: "জরিপ বা সাক্ষাৎকারের অংশগ্রহণকারীদের নাম, ফোন বা ঠিকানা প্রকাশ করবেন না।" },
-  { icon: "rate_review", title: "পর্যালোচনা", body: "প্রতিটি জমা পর্যালোচকেরা দেখেন; প্রয়োজনে আলোচনা পাতায় প্রশ্ন বা পরামর্শ আসবে।" },
-  { icon: "public", title: "সবার জন্য খোলা", body: "প্রকাশিত নিবন্ধ যে কেউ পড়তে ও সূত্রসহ উদ্ধৃত করতে পারবেন।" },
+  { icon: "verified_user", title: "Your own work", body: "Publish what you or your team did. Get your co-authors' consent." },
+  { icon: "fact_check", title: "Honest data", body: "Never invent or alter data. Do not claim what you did not find; state the limitations plainly." },
+  { icon: "menu_book", title: "Cite your sources", body: "Credit anyone else's data, text or images in the references." },
+  { icon: "photo_camera", title: "Your own photos", body: "Use photos you took or may use, with a credit. Ask before photographing people, and leave out anyone who said no." },
+  { icon: "shield_person", title: "Protect participants", body: "Never publish survey or interview participants' names, phone numbers or addresses." },
+  { icon: "rate_review", title: "Review", body: "Reviewers read every submission; questions or suggestions may come through the comments." },
+  { icon: "public", title: "Open to all", body: "Anyone can read, download and cite published work, with a link to it." },
 ];
 
 export default function ResearchSubmitPage() {
   return (
-    <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
-      <div className="min-w-0 space-y-4">
-        <header className="pb-2">
-          <p className="text-sm font-bold text-signal-orange">বিনামূল্যে, সবার জন্য খোলা</p>
-          <h1 className="font-wiki mt-1 text-[clamp(2.2rem,5vw,3.4rem)] leading-tight font-bold text-white">গবেষণা প্রকাশ করুন</h1>
-          <p className="mt-3 max-w-[60ch] text-[15px] leading-relaxed text-white/70">থিসিস, গবেষণাপত্র, উদ্ভাবন বা প্রকল্প — স্কুল থেকে পিএইচডি, বা স্বাধীন গবেষক। লিখুন সহজ ভাষায়, যাতে দেশের যে কেউ বুঝতে পারেন।</p>
-        </header>
-        <SubmitForm />
+    <div className={cn(COLUMN, "py-10 lg:py-12")}>
+      <Crumbs items={[{ href: "/research", label: "Genius" }, { label: "Upload research" }]} />
+      <div className="mt-8 grid gap-8 xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start">
+        <div className="min-w-0">
+          <header className="hero-rise pb-8">
+            <h1 className={H1}>Upload research</h1>
+            <p className="mt-4 max-w-[62ch] text-lg leading-relaxed text-white/80">Theses, papers, innovations, projects and ideas, from school to PhD, or as an independent researcher. Free to publish, free to read. Write plainly, so anyone in the country can follow it.</p>
+          </header>
+          <SubmitForm />
+        </div>
+        <aside id="rules" aria-labelledby="rules-title" className={cn(PANEL_COBALT, "p-6 sm:p-7 xl:sticky xl:top-[calc(var(--research-top)+1rem)]")}>
+          <h2 id="rules-title" className={cn(TITLE, "text-2xl")}>Publishing rules</h2>
+          <ul className="mt-5 space-y-5">
+            {RULES.map((r) => (
+              <li key={r.title} className="flex gap-3">
+                <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-xl bg-signal-orange text-text-primary"><Icon name={r.icon} className="text-xl" /></span>
+                <span><span className="block font-grotesk font-bold text-white">{r.title}</span><span className="mt-0.5 block text-sm leading-relaxed text-white/80">{r.body}</span></span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-6 border-t border-white/20 pt-5 text-sm leading-relaxed text-white/80">Once published, share your work in one click to the Kandari feed, Facebook, LinkedIn or WhatsApp. Readers&apos; reactions, comments and shares add to your research score.</p>
+          <p className="mt-4 text-sm leading-relaxed text-white/80">Not ready yet? <Link href="/research/workspace/start#step-upload" className={cn(LINK, "font-semibold")}>Follow the step-by-step guide</Link>: it ends with this form&apos;s checklist.</p>
+        </aside>
       </div>
-      <aside id="rules" aria-labelledby="rules-title" className="scroll-mt-56 rounded-[1.75rem] bg-white/[0.04] p-5 ring-1 ring-white/10 xl:sticky xl:top-[calc(var(--spacing-header-lg)+1rem)]">
-        <h2 id="rules-title" className="font-wiki flex items-center gap-2 text-xl font-bold text-white"><Icon name="gavel" className="text-[22px] text-signal-orange" /> প্রকাশের নিয়ম</h2>
-        <ul className="mt-4 space-y-4">
-          {RULES.map((r) => (
-            <li key={r.title} className="flex gap-3">
-              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-signal-orange text-text-primary"><Icon name={r.icon} className="text-[20px]" /></span>
-              <span><span className="block font-bold text-white">{r.title}</span><span className="mt-0.5 block text-sm leading-relaxed text-white/70">{r.body}</span></span>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-5 rounded-2xl bg-signal-orange p-4 text-sm leading-relaxed font-semibold text-text-primary">প্রকাশের পর নিবন্ধ থেকেই এক চাপে কাণ্ডারী ফিড, ফেসবুক, লিংকডইন, হোয়াটসঅ্যাপে শেয়ার করতে পারবেন; পাঠকের প্রতিক্রিয়া, মন্তব্য আর শেয়ারে আপনার পয়েন্ট বাড়বে।</p>
-      </aside>
     </div>
   );
 }

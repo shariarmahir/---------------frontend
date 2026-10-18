@@ -3,10 +3,10 @@
 import { useMemo, useSyncExternalStore } from "react";
 import { libraryArticles } from "@/data/research/library";
 import { activeAccountId, subscribeAuth } from "@/lib/auth/client";
-import { engagementOf, pointsOf, type Article, type Engagement, type ReactionKind, type TalkNote } from "./core";
+import { engagementOf, pointsOf, sanitizeOwn, type Article, type Engagement, type ReactionKind, type TalkNote } from "./core";
 
 /**
- * The viewer's own গবেষণাকোষ activity: what they submitted (waiting for
+ * The viewer's own Genius activity: what they submitted (waiting for
  * review), their comments, reactions, shares, citations and saves. Kept in
  * this browser per Kandari account until a backend exists; signed out,
  * nothing is read or saved. Selectors return values already in the state.
@@ -37,6 +37,24 @@ const listeners = new Set<() => void>();
 
 const keyFor = (id: string | null) => (id ? `${BASE}:${id}` : null);
 
+const isMap = (x: unknown): x is Record<string, never> => Boolean(x) && typeof x === "object" && !Array.isArray(x);
+
+/** Saved state, checked: browser storage can be edited by anything on the device, so every part falls back to empty. */
+function parseState(v: unknown): ResearchState {
+  const x = isMap(v) ? (v as Partial<ResearchState>) : {};
+  const note = (n: unknown) => isMap(n) && ["id", "by", "at", "text"].every((k) => typeof (n as Record<string, unknown>)[k] === "string");
+  const talk = isMap(x.talk) ? Object.fromEntries(Object.entries(x.talk as Record<string, unknown>).map(([slug, list]) => [slug, Array.isArray(list) ? list.filter(note) : []])) : {};
+  return {
+    mine: sanitizeOwn(x.mine),
+    talk: talk as ResearchState["talk"],
+    reactions: isMap(x.reactions) ? x.reactions : {},
+    shared: isMap(x.shared) ? x.shared : {},
+    cited: isMap(x.cited) ? x.cited : {},
+    saved: isMap(x.saved) ? x.saved : {},
+    noteLikes: isMap(x.noteLikes) ? x.noteLikes : {},
+  };
+}
+
 function load() {
   if (loaded || typeof window === "undefined") return;
   loaded = true;
@@ -45,7 +63,7 @@ function load() {
   if (!scope) return;
   try {
     const raw = window.localStorage.getItem(scope);
-    if (raw) state = { ...EMPTY, ...(JSON.parse(raw) as Partial<ResearchState>) };
+    if (raw) state = parseState(JSON.parse(raw));
   } catch {
     // Blocked or broken storage: start empty.
   }

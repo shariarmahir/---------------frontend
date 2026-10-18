@@ -46,7 +46,7 @@ test("pictures exist, and pictures from Wikimedia carry a credit", () => {
 
 test("ongoing research says so, so it is never shown as a finished result", () => {
   for (const a of sampleArticles.filter((x) => x.ongoing)) {
-    assert.ok(a.facts?.some((f) => f.value === "চলমান গবেষণা"), `${a.slug} must show its status`);
+    assert.ok(a.facts?.some((f) => f.value === "Ongoing research"), `${a.slug} must show its status`);
   }
 });
 

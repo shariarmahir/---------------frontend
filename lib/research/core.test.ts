@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  blocks, buildArticle, citation, citeParts, contents, counts, draftProblems, engagementOf, feedIntent, featured, initials, nameList, paragraphs, parseReferences, pointsOf, POINTS, readMinutes, recentChanges, related, rotate, search, shareLinks, slugify, thread, topFields, topResearchers, trending, uniqueSlug, waterfall, type Article, type Draft, type TalkNote,
+  blocks, buildArticle, citation, isSafeImage, isSafePdf, KINDS, sanitizeOwn, SECTION_TEMPLATES, citeParts, contents, counts, draftProblems, engagementOf, feedIntent, featured, FIELDS, initials, nameList, paragraphs, parseReferences, pointsOf, POINTS, readMinutes, recentChanges, related, rotate, search, shareLinks, slugify, thread, topFields, topResearchers, trending, uniqueSlug, waterfall, type Article, type Draft, type TalkNote,
 } from "./core.ts";
 
 const art = (x: Partial<Article>): Article => ({
@@ -23,6 +23,9 @@ const art = (x: Partial<Article>): Article => ({
   ...x,
 });
 
+/** A 1×1 PNG, as the upload form's canvas would hand it over. */
+const PNG = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+
 const draft = (x: Partial<Draft> = {}): Draft => ({
   title: "স্মার্টফোনে আর্সেনিক মাপার কিট",
   titleEn: "",
@@ -43,6 +46,8 @@ const draft = (x: Partial<Draft> = {}): Draft => ({
   ],
   references: "WHO Guidelines for drinking-water quality, 4th ed. https://www.who.int/publications/i/item/9789241549950\nবিবিএস জনশুমারি ২০২২",
   agree: true,
+  cover: PNG,
+  coverCaption: "আলো-বাক্সে কিট",
   ...x,
 });
 
@@ -99,10 +104,13 @@ test("recent changes run newest first across articles; counts skip what is still
   assert.deepEqual([c.articles, c.authors, c.institutions, c.byKind.paper, c.byField.health], [1, 1, 1, 1, 1]);
 });
 
-test("citations list names the Bangla way and end with the link", () => {
-  assert.equal(nameList(["ক"]), "ক");
-  assert.equal(nameList(["ক", "খ", "গ"]), "ক, খ ও গ");
-  assert.equal(citation(art({ authors: [{ name: "রিয়া" }, { name: "তানভীর" }], title: "কিট" }), "https://x/research/kit"), "রিয়া ও তানভীর (2025)। কিট। গবেষণাপত্র, ঢাকা বিশ্ববিদ্যালয়। কাণ্ডারী গবেষণাকোষ। https://x/research/kit");
+test("citations list names in English, prefer Latin spellings, and end with the link", () => {
+  assert.equal(nameList(["A"]), "A");
+  assert.equal(nameList(["A", "B", "C"]), "A, B and C");
+  assert.equal(
+    citation(art({ authors: [{ name: "রিয়া", nameEn: "Riya Das" }, { name: "Tanvir Haque" }], title: "Kit", institution: "University of Dhaka" }), "https://x/research/kit"),
+    "Riya Das and Tanvir Haque (2025). Kit. Research paper, University of Dhaka. Genius (Kandari-Lab). https://x/research/kit",
+  );
 });
 
 test("references take one line each, and only web links become links", () => {
@@ -117,9 +125,54 @@ test("a complete draft has no problems; each missing piece is named", () => {
   assert.deepEqual(draftProblems(draft(), 2026), {});
   const p = draftProblems(draft({ title: "ছোট", kind: "", authors: " , ", year: "1950", summary: "ছোট", sections: [{ heading: "এক", body: "অল্প" }], agree: false }), 2026);
   assert.deepEqual(Object.keys(p).sort(), ["agree", "authors", "kind", "sections", "summary", "title", "year"]);
-  assert.equal(draftProblems(draft({ year: "2027" }), 2026).year, "১৯৭১ থেকে 2026-এর মধ্যে সাল দিন");
-  assert.equal(draftProblems(draft({ sections: [{ heading: "পদ্ধতি", body: "ক".repeat(50) }, { heading: "", body: "ক".repeat(50) }] }), 2026).sections, "প্রতিটি অংশের একটা শিরোনাম দিন");
-  assert.equal(draftProblems(draft({ keywords: "a,b,c,d,e,f,g,h,i" }), 2026).keywords, "সর্বোচ্চ ৮টি মূলশব্দ");
+  assert.equal(draftProblems(draft({ year: "2027" }), 2026).year, "Give a year from 1971 to 2026");
+  assert.equal(draftProblems(draft({ sections: [{ heading: "পদ্ধতি", body: "ক".repeat(50) }, { heading: "", body: "ক".repeat(50) }] }), 2026).sections, "Give every section a heading");
+  assert.equal(draftProblems(draft({ keywords: "a,b,c,d,e,f,g,h,i" }), 2026).keywords, "8 keywords at most");
+});
+
+test("a thumbnail is required; project images need captions and stay within six", () => {
+  assert.match(draftProblems(draft({ cover: undefined }), 2026).cover ?? "", /thumbnail/);
+  assert.match(draftProblems(draft({ cover: "https://evil.example/x.png" }), 2026).cover ?? "", /thumbnail/);
+  assert.match(draftProblems(draft({ cover: "data:image/svg+xml;base64,PHN2Zz4=" }), 2026).cover ?? "", /thumbnail/);
+  assert.equal(draftProblems(draft({ gallery: [{ src: PNG, caption: "" }] }), 2026).gallery, "Write a short caption for every project image");
+  assert.equal(draftProblems(draft({ gallery: Array.from({ length: 7 }, () => ({ src: PNG, caption: "প্রোটোটাইপ" })) }), 2026).gallery, "6 project images at most");
+  assert.deepEqual(draftProblems(draft({ gallery: [{ src: PNG, caption: "প্রোটোটাইপ" }] }), 2026), {});
+});
+
+test("an idea is a content type of its own, and every type starts from its expected sections", () => {
+  assert.equal(KINDS.idea.type, "Idea");
+  assert.deepEqual(Object.keys(SECTION_TEMPLATES).sort(), Object.keys(KINDS).sort());
+  for (const list of Object.values(SECTION_TEMPLATES)) assert.ok(list.length >= 4);
+  assert.deepEqual(draftProblems(draft({ kind: "idea" }), 2026), {});
+});
+
+test("only the upload form's own media are trusted", () => {
+  assert.ok(isSafeImage(PNG) && isSafeImage("/research/house-crow-dhaka.jpg"));
+  for (const bad of ["javascript:alert(1)", "//evil.example/x.png", "https://evil.example/x.png", "data:image/svg+xml;base64,PHN2Zz4=", "data:text/html;base64,PGI+", "/x.png\"onerror=1"]) assert.ok(!isSafeImage(bad), bad);
+  assert.ok(isSafePdf("data:application/pdf;base64,JVBERi0=") && !isSafePdf("data:text/html;base64,PGI+"));
+});
+
+test("own submissions read back from storage are cleaned, and broken ones dropped", () => {
+  const good = buildArticle(draft({ gallery: [{ src: PNG, caption: "প্রোটোটাইপ" }] }), { now: new Date("2026-10-02T10:00:00Z"), taken: new Set(), owner: "acc-1", ownerName: "রিয়া" });
+  const tampered = {
+    ...good,
+    slug: "b",
+    status: "published",
+    pinned: true,
+    engagement: { shares: 9999 },
+    image: { src: "javascript:alert(1)", caption: "x" },
+    gallery: [{ src: "https://evil.example/x.png", caption: "x" }],
+    file: { name: "a.pdf", size: 10, url: "javascript:alert(1)" },
+    references: [{ text: "x", url: "javascript:alert(1)" }],
+  };
+  const out = sanitizeOwn([good, tampered, null, { slug: "c" }, "x"]);
+  assert.deepEqual(out.map((a) => a.slug), [good.slug, "b"]);
+  assert.deepEqual(out[0], good);
+  const b = out[1];
+  assert.equal(b.status, "review");
+  assert.ok(!("pinned" in b) && !("engagement" in b) && !("image" in b) && !("gallery" in b) && !("file" in b));
+  assert.deepEqual(b.references, [{ text: "x" }]);
+  assert.deepEqual(sanitizeOwn("nope"), []);
 });
 
 test("a built article waits for review, drops empty sections, and takes a free slug", () => {
@@ -132,8 +185,9 @@ test("a built article waits for review, drops empty sections, and takes a free s
   assert.deepEqual(a.keywords, ["আর্সেনিক", "পানি", "স্মার্টফোন"]);
   assert.equal(a.references[0].url, "https://www.who.int/publications/i/item/9789241549950");
   assert.equal(a.published, "2026-10-02");
-  assert.equal(a.revisions[0].note, "প্রথম জমা — পর্যালোচনার অপেক্ষায়");
+  assert.equal(a.revisions[0].note, "First submission, awaiting review");
   assert.ok(!("supervisor" in a) && !("titleEn" in a));
+  assert.deepEqual(a.image, { src: PNG, caption: "আলো-বাক্সে কিট" });
   assert.equal(new Set(a.sections.map((s) => s.id)).size, 2);
 });
 
@@ -174,7 +228,7 @@ test("rankings: trending, fields and researchers skip unpublished work", () => {
   assert.deepEqual(trending(list, score, 2).map((x) => x.slug), ["b", "a"]);
   const f = topFields(list, score);
   assert.deepEqual(f.slice(0, 2), [{ field: "economy", articles: 2, points: 11 }, { field: "health", articles: 1, points: 10 }]);
-  assert.equal(f.length, 9);
+  assert.equal(f.length, Object.keys(FIELDS).length);
   assert.equal(f.find((x) => x.field === "climate")!.articles, 0);
   const r = topResearchers(list, score);
   assert.deepEqual(r.map((x) => [x.name, x.articles, x.points]), [["রিয়া", 2, 20 + 2 * POINTS.article], ["তানভীর", 1, 10 + POINTS.article], ["সুমি", 1, 1 + POINTS.article]]);
@@ -199,4 +253,9 @@ test("share links encode the link and text; the feed intent carries a relative l
   assert.equal(q.get("u"), "/research/farm-gate");
   assert.equal(q.get("s")!.length, 280);
   assert.equal(q.get("tags"), "এক,দুই,তিন,চার");
+});
+
+test("a working paper is cited as one, not as a finished paper", () => {
+  const c = citation(art({ authors: [{ name: "Riya Das" }], title: "Kit", institution: "Kandari-Lab", preprint: true }), "https://x/research/kit");
+  assert.equal(c, "Riya Das (2025). Kit. Working paper, Kandari-Lab. Genius (Kandari-Lab). https://x/research/kit");
 });

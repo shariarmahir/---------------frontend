@@ -15,6 +15,22 @@ const nextConfig: NextConfig = {
     qualities: [75, 80, 90],
     formats: ["image/avif", "image/webp"],
   },
+  // Genius keeps readers' uploads (photos, PDFs) and lets them download
+  // files, so its pages refuse to be framed by other sites, never sniff a
+  // file's type, embed no plugins, and send only the origin to other sites.
+  // Scripts are left to Next's defaults: no script policy is set here.
+  async headers() {
+    const security = [
+      { key: "Content-Security-Policy", value: "frame-ancestors 'self'; object-src 'none'; base-uri 'self'" },
+      { key: "X-Frame-Options", value: "SAMEORIGIN" },
+      { key: "X-Content-Type-Options", value: "nosniff" },
+      { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+    ];
+    return [
+      { source: "/research", headers: security },
+      { source: "/research/:path*", headers: security },
+    ];
+  },
   // The social pages moved into শিক্ষিতদের মিডিয়া at /media. Temporary
   // redirects keep old links working without browsers caching the move.
   async redirects() {
@@ -35,6 +51,9 @@ const nextConfig: NextConfig = {
       { source: "/media/teams", destination: "/media/together?v=teams", permanent: false },
       { source: "/media/events", destination: "/media/together?v=events", permanent: false },
       { source: "/media/challenges", destination: "/media/together?v=challenges", permanent: false },
+      // Genius moved to a JSTOR-style catalogue: the contents list is now Browse by Title.
+      { source: "/research/contents", destination: "/research/titles", permanent: false },
+      { source: "/research/changes", destination: "/research", permanent: false },
     ];
   },
 };

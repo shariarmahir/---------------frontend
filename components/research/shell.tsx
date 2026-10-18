@@ -1,104 +1,162 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
+import { Suspense, useCallback, useId, useRef, useState, useSyncExternalStore } from "react";
 import { Icon } from "@/components/ui/icon";
-import { useResearch } from "@/lib/research/store";
+import { btn } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
-import { bn } from "./ui";
+import { useDismiss } from "./actions";
+import { CONTENT_TYPES, GeniusLogo, MENU, MENU_ITEM } from "./kit";
 
-const NAV = [
-  { href: "/research", label: "প্রধান পাতা", icon: "auto_stories" },
-  { href: "/research/topic/bd-live", label: "রিয়েল-টাইম বাংলাদেশ", icon: "crisis_alert" },
-  { href: "/research/topic/global", label: "বৈশ্বিক", icon: "public" },
-  { href: "/research#categories", label: "সব ধারা", icon: "category" },
-  { href: "/research/contents", label: "সূচিপত্র", icon: "list_alt" },
-  { href: "/research/changes", label: "সাম্প্রতিক পরিবর্তন", icon: "history" },
-  { href: "/research/random", label: "এলোমেলো নিবন্ধ", icon: "shuffle" },
-  { href: "/research/contents#mine", label: "আমার জমা", icon: "folder_shared" },
-  { href: "/research/submit#rules", label: "প্রকাশের নিয়ম", icon: "gavel" },
+const BROWSE = [
+  { href: "/research/subjects", title: "By subject", sub: "Theses, papers, projects and ideas" },
+  { href: "/research/titles", title: "By title", sub: "Every work, A to Z" },
+  { href: "/research/institutions", title: "Institutions" },
+  { href: "/research/collections", title: "Collections" },
+  { href: "/research/images", title: "Images and figures" },
 ];
 
-/** The wordmark: a gold library tile, the serif name, and its Latin name underneath. */
-export function Wordmark() {
-  return (
-    <Link href="/research" className="group flex items-center gap-3" aria-label="গবেষণাকোষ — প্রধান পাতা">
-      <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-signal-orange text-text-primary transition-transform duration-300 group-hover:-rotate-6 motion-reduce:transition-none">
-        <Icon name="local_library" className="text-[28px]" />
-      </span>
-      <span className="leading-tight">
-        <span className="block text-[1.7rem] leading-tight font-bold text-white">গবেষণাকোষ</span>
-        <span lang="en" className="block text-xs font-semibold text-white/65">Kandari ResearchPedia</span>
-      </span>
-    </Link>
-  );
-}
+const subscribeWide = (cb: () => void) => {
+  const m = window.matchMedia("(min-width: 768px)");
+  m.addEventListener("change", cb);
+  return () => m.removeEventListener("change", cb);
+};
+/** True from md up; false on the server and on phones, whose short placeholder is the safe default. */
+const useWide = () => useSyncExternalStore(subscribeWide, () => window.matchMedia("(min-width: 768px)").matches, () => false);
 
-function SearchBox() {
-  const q = useSearchParams().get("q") ?? "";
+/**
+ * The library's one search: "All Content", the field and a gold Search
+ * button in a navy bar whose hairline turns gold while you type, like the
+ * footer's email bar. It lives in the tool bar on every page and goes to
+ * /research/search. On phones the type menu folds away and the button keeps
+ * only its icon.
+ */
+export function SearchBar({ defaultValue = "", defaultType = "", id }: { defaultValue?: string; defaultType?: string; id: string }) {
+  const wide = useWide();
   return (
-    <form role="search" action="/research/search" className="relative w-full lg:max-w-xl">
-      <label htmlFor="research-q" className="sr-only">গবেষণাকোষে খুঁজুন</label>
-      <Icon name="search" className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-[22px] text-white/65" />
+    <form role="search" action="/research/search" className="flex h-12 w-full items-stretch rounded-2xl bg-bdnavy-900 p-1 ring-1 ring-white/15 transition-shadow focus-within:ring-2 focus-within:ring-signal-orange">
+      <label htmlFor={`${id}-type`} className="sr-only">Content type</label>
+      <span className="relative hidden shrink-0 md:block">
+        <select
+          id={`${id}-type`}
+          name="type"
+          defaultValue={defaultType}
+          className="h-full appearance-none rounded-xl bg-transparent pr-9 pl-3.5 text-sm font-semibold text-white transition-colors hover:text-signal-orange focus:outline-none focus-visible:ring-2 focus-visible:ring-signal-orange [&>option]:bg-bdnavy-900"
+        >
+          {CONTENT_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
+        </select>
+        <Icon name="expand_more" className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-xl text-signal-orange" />
+      </span>
+      <span aria-hidden className="my-1.5 hidden w-px bg-white/15 md:block" />
+      <label htmlFor={id} className="sr-only">Search Genius</label>
       <input
-        id="research-q"
+        id={id}
         name="q"
         type="search"
-        defaultValue={q}
-        key={q}
-        placeholder="বিষয়, লেখক, প্রতিষ্ঠান বা জেলা খুঁজুন"
-        className="h-13 w-full rounded-2xl bg-bdnavy-900 pr-28 pl-12 text-[15px] text-white ring-1 ring-white/15 transition-shadow placeholder:text-white/65 focus:ring-2 focus:ring-signal-orange focus:outline-none"
+        defaultValue={defaultValue}
+        maxLength={200}
+        placeholder={wide ? "Search theses, papers, projects and ideas" : "Search"}
+        className="min-w-0 flex-1 bg-transparent px-3 text-base text-white placeholder:text-white/65 focus:outline-none md:px-4"
       />
-      <button type="submit" className="absolute top-1.5 right-1.5 h-10 rounded-xl bg-signal-orange px-4 text-sm font-bold text-text-primary transition-colors hover:bg-signal-orange/85">খুঁজুন</button>
+      <button type="submit" aria-label="Search" className={cn(btn.gold, "min-h-0 shrink-0 px-3 py-0 md:px-5")}>
+        <Icon name="search" className="text-xl" /> <span aria-hidden className="hidden md:inline">Search</span>
+      </button>
     </form>
   );
 }
 
-/** The library's frame: brand, search and publish on top; the sections as pills below; the page under them. */
-export function ResearchShell({ children }: { children: React.ReactNode }) {
+/** The bar's search, holding the current query on the results page. */
+function BarSearch() {
+  const p = useSearchParams();
+  const onResults = usePathname() === "/research/search";
+  const q = onResults ? (p.get("q") ?? "") : "";
+  const type = onResults ? (p.get("type") ?? "") : "";
+  return <SearchBar id="bar-q" defaultValue={q} defaultType={type} key={`${q}|${type}`} />;
+}
+
+/** A tool-bar link in the header's tab style: gold icon, white label, a gold bar on the bar's bottom edge under the current one. */
+const TAB = "relative flex h-11 items-center gap-1.5 rounded-lg px-2.5 text-sm font-semibold whitespace-nowrap text-white/80 transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none";
+const ON = "text-white after:absolute after:inset-x-2.5 after:-bottom-2.5 after:h-0.5 after:rounded-full after:bg-signal-orange";
+
+function BrowseMenu() {
+  const [open, setOpen] = useState(false);
+  const box = useRef<HTMLDivElement>(null);
+  const menuId = useId();
   const pathname = usePathname();
-  const mine = useResearch((s) => s.mine.length);
+  const close = useCallback(() => setOpen(false), []);
+  useDismiss(open, close, box);
+  const on = BROWSE.some((b) => pathname.startsWith(b.href));
+  const advanced = pathname.startsWith("/research/advanced-search");
+  return (
+    <div ref={box} className="relative">
+      <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls={menuId} className={cn(TAB, (on || open) && ON)}>
+        <Icon name="travel_explore" className="text-xl text-signal-orange" /> <span className="sr-only md:not-sr-only">Browse</span>
+        <Icon name="expand_more" className={cn("text-xl transition-transform duration-300 motion-reduce:transition-none", open && "rotate-180")} />
+      </button>
+      {open && (
+        <ul id={menuId} className={cn(MENU, "top-full left-0 w-72 max-w-[calc(100vw-2rem)]")}>
+          {BROWSE.map((b) => (
+            <li key={b.href}>
+              <Link href={b.href} onClick={close} aria-current={pathname.startsWith(b.href) ? "page" : undefined} className={cn(MENU_ITEM, "flex-col gap-0.5 aria-[current=page]:text-signal-orange")}>
+                <span className="font-semibold">{b.title}</span>
+                {b.sub && <span className="text-white/65">{b.sub}</span>}
+              </Link>
+            </li>
+          ))}
+          {/* Below lg the bar has no room for its own Advanced Search tab. */}
+          <li className="border-t border-white/12 lg:hidden">
+            <Link href="/research/advanced-search" onClick={close} aria-current={advanced ? "page" : undefined} className={cn(MENU_ITEM, "items-center font-semibold aria-[current=page]:text-signal-orange")}>
+              <Icon name="manage_search" className="text-xl text-signal-orange" /> Advanced Search
+            </Link>
+          </li>
+        </ul>
+      )}
+    </div>
+  );
+}
+
+/**
+ * The library's tool bar, pinned under the site header so it never scrolls
+ * away: the animated Genius logo (home), Browse and Advanced Search, and
+ * the search on the right. One 64px row at every width (the sticky offsets
+ * in globals.css count on it); the header's second row already carries
+ * Research, Subjects, Collections, Workspace and Upload, so the bar holds
+ * only what the header lacks.
+ */
+function ToolBar() {
+  const pathname = usePathname();
+  const home = pathname === "/research";
+  const advanced = pathname.startsWith("/research/advanced-search");
+  return (
+    <div className="sticky top-header z-30 border-b border-white/12 bg-black lg:top-header-lg">
+      <div className="mx-auto flex h-16 max-w-7xl items-center gap-2 px-gutter-x sm:gap-3">
+        <Link href="/research" aria-label="Genius home" aria-current={home ? "page" : undefined} className="shrink-0 rounded-lg p-1 transition-transform duration-300 hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none motion-reduce:transition-none">
+          <GeniusLogo priority className="h-7 sm:h-9" />
+        </Link>
+        <span aria-hidden className="hidden h-7 w-px bg-white/15 sm:block" />
+        <nav aria-label="Library" className="flex shrink-0 items-center gap-1">
+          <BrowseMenu />
+          <Link href="/research/advanced-search" aria-current={advanced ? "page" : undefined} className={cn(TAB, "hidden lg:flex", advanced && ON)}>
+            <Icon name="manage_search" className="text-xl text-signal-orange" /> Advanced Search
+          </Link>
+        </nav>
+        <div className="ml-auto min-w-0 flex-1 lg:max-w-2xl">
+          <Suspense fallback={<SearchBar id="bar-q" />}>
+            <BarSearch />
+          </Suspense>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** The library's frame: the slim tool bar over the page. The site footer closes it (app/research/layout.tsx). */
+export function ResearchShell({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <div className="border-b border-white/10">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-gutter-x pt-6 pb-4 lg:flex-row lg:items-center lg:gap-8">
-          <Wordmark />
-          <div className="flex flex-1 items-center gap-3 lg:justify-end">
-            <Suspense fallback={<div className="h-13 w-full rounded-2xl bg-bdnavy-900 lg:max-w-xl" />}>
-              <SearchBox />
-            </Suspense>
-            <Link href="/research/submit" className="hidden h-13 shrink-0 items-center gap-2 rounded-2xl bg-signal-orange px-5 text-sm font-bold text-text-primary transition-[translate,background-color] duration-200 hover:-translate-y-0.5 hover:bg-signal-orange/85 motion-reduce:hover:translate-y-0 sm:inline-flex">
-              <Icon name="upload_file" className="text-[20px]" /> গবেষণা আপলোড করুন
-            </Link>
-          </div>
-        </div>
-        <nav aria-label="গবেষণাকোষের অংশ" className="mx-auto max-w-7xl px-gutter-x">
-          <ul className="-mx-gutter-x flex gap-1 overflow-x-auto px-gutter-x scrollbar-none">
-            {NAV.map((l) => {
-              const on = l.href === pathname;
-              return (
-                <li key={l.href} className="shrink-0">
-                  <Link
-                    href={l.href}
-                    aria-current={on ? "page" : undefined}
-                    className={cn(
-                      "relative flex h-12 items-center gap-2 px-3 text-sm font-semibold whitespace-nowrap transition-colors",
-                      "after:absolute after:inset-x-3 after:bottom-0 after:h-[3px] after:rounded-t-full after:transition-colors",
-                      on ? "text-white after:bg-signal-orange" : "text-white/80 after:bg-transparent hover:text-white",
-                    )}
-                  >
-                    <Icon name={l.icon} className={cn("text-[19px]", on ? "text-signal-orange" : "text-white/65")} />
-                    {l.label}
-                    {l.label === "আমার জমা" && mine > 0 && <span className="rounded-full bg-cobalt px-1.5 text-xs font-bold text-white">{bn(mine)}</span>}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-      </div>
-      <div className="mx-auto max-w-7xl px-gutter-x pt-8 pb-20 sm:pt-10">{children}</div>
+      <ToolBar />
+      <div className="min-h-[60vh]">{children}</div>
     </>
   );
 }

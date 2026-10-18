@@ -29,6 +29,38 @@ const COLUMNS = [
   },
 ];
 
+/** Genius's own columns, merged into this footer on /research (it has no footer of its own). */
+const RESEARCH_COLUMNS = [
+  {
+    title: "Explore research",
+    links: [
+      { label: "Advanced Search", href: "/research/advanced-search" },
+      { label: "By subject", href: "/research/subjects" },
+      { label: "By title", href: "/research/titles" },
+      { label: "Collections", href: "/research/collections" },
+      { label: "Institutions", href: "/research/institutions" },
+      { label: "Images and figures", href: "/research/images" },
+    ],
+  },
+  {
+    title: "Research tools",
+    links: [
+      { label: "Workspace", href: "/research/workspace" },
+      { label: "Upload research", href: "/research/submit" },
+      { label: "A random work", href: "/research/random" },
+      { label: "Publishing rules", href: "/research/submit#rules" },
+    ],
+  },
+  {
+    title: "Your profile",
+    links: [
+      { label: "Get a Kandari Profile", href: "/signup" },
+      { label: "Log in", href: "/login?next=/research" },
+      { label: "Bangladesh: problems and solutions", href: "/bangladesh" },
+    ],
+  },
+];
+
 const LINK =
   "rounded-md text-white/80 transition-colors duration-200 hover:text-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none";
 const HEADING = "font-grotesk text-sm font-bold text-signal-orange";
@@ -40,8 +72,34 @@ const HEADING = "font-grotesk text-sm font-bold text-signal-orange";
  * release list, gold headings over white links; then the rights line, and
  * the Bangla name drawn as a fine gold outline, cut by the page's edge.
  * The bottom row keeps clear of the floating AI button over its right end.
+ * With `research`, the library's columns join the company's and the email
+ * bar moves under the brand, so /research closes on this one footer.
  */
-export function SiteFooter() {
+export function SiteFooter({ research = false }: { research?: boolean }) {
+  const columns = research ? [...RESEARCH_COLUMNS, ...COLUMNS] : COLUMNS;
+  const subscribe = (
+    <div className="flex flex-col gap-4">
+      <h2 className={HEADING}>Stay in the loop</h2>
+      <p className="text-sm leading-relaxed text-white/80">New research and product releases, by email.</p>
+      {/* Subscribing is a Kandari Profile: the email carries over to sign-up. */}
+      <form action="/signup" method="get" className="flex gap-1 rounded-xl bg-black/25 p-1 ring-1 ring-white/15 focus-within:ring-2 focus-within:ring-signal-orange">
+        <label htmlFor="bulletin-email" className="sr-only">
+          Email address
+        </label>
+        <input
+          id="bulletin-email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          placeholder="you@example.com"
+          className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm text-white placeholder:text-white/65 focus:outline-none"
+        />
+        <button type="submit" className={cn(btn.gold, "shrink-0 focus-visible:ring-white focus-visible:ring-offset-bdnavy-900")}>
+          Subscribe
+        </button>
+      </form>
+    </div>
+  );
   return (
     <footer className="relative isolate z-20 overflow-hidden bg-bdnavy-900 text-white">
       <SignalSeam className="top-0" />
@@ -56,8 +114,15 @@ export function SiteFooter() {
           </Link>
         </div>
 
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.3fr)] lg:gap-12">
-          <div className="flex flex-col gap-5">
+        <div
+          className={cn(
+            "grid gap-10",
+            research
+              ? "sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[minmax(0,2fr)_repeat(5,minmax(0,1fr))] lg:gap-10"
+              : "sm:grid-cols-2 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.3fr)] lg:gap-12",
+          )}
+        >
+          <div className={cn("flex flex-col gap-5", research && "sm:col-span-2 md:col-span-3 lg:col-span-1")}>
             <Link
               href="/"
               className="w-fit rounded-lg focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
@@ -75,9 +140,18 @@ export function SiteFooter() {
               A Bangladeshi deep-tech company repairing the country’s public services one sector at a time, with
               its own hardware, software and AI. Healthcare comes first.
             </p>
+            {research && (
+              <>
+                <p className="max-w-sm text-sm leading-relaxed text-white/80">
+                  Genius, Kandari-Lab&apos;s open research library, is free to read, download and cite. Sample entries are labelled: their
+                  people, institutions and figures are illustrative.
+                </p>
+                {subscribe}
+              </>
+            )}
           </div>
 
-          {COLUMNS.map((col) => (
+          {columns.map((col) => (
             <nav key={col.title} aria-label={col.title} className="flex flex-col gap-4">
               <h2 className={HEADING}>{col.title}</h2>
               <ul className="flex flex-col gap-2.5 text-sm">
@@ -92,27 +166,7 @@ export function SiteFooter() {
             </nav>
           ))}
 
-          <div className="flex flex-col gap-4">
-            <h2 className={HEADING}>Stay in the loop</h2>
-            <p className="text-sm leading-relaxed text-white/80">New research and product releases, by email.</p>
-            {/* Subscribing is a Kandari Profile: the email carries over to sign-up. */}
-            <form action="/signup" method="get" className="flex gap-1 rounded-xl bg-black/25 p-1 ring-1 ring-white/15 focus-within:ring-2 focus-within:ring-signal-orange">
-              <label htmlFor="bulletin-email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="bulletin-email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                placeholder="you@example.com"
-                className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm text-white placeholder:text-white/65 focus:outline-none"
-              />
-              <button type="submit" className={cn(btn.gold, "shrink-0 focus-visible:ring-white focus-visible:ring-offset-bdnavy-900")}>
-                Subscribe
-              </button>
-            </form>
-          </div>
+          {!research && subscribe}
         </div>
 
         {/* `sm:pr-32`: the floating AI button sits over this row's right end. */}

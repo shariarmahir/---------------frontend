@@ -3,23 +3,37 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { useAuth } from "@/lib/auth/client";
+import type { Article } from "@/lib/research/core";
 import { useResearch } from "@/lib/research/store";
+import { cn } from "@/lib/utils";
 import { ArticleView } from "./article-view";
+import { ContentView } from "./content-view";
+import { BTN, BTN_GOLD, COLUMN, H1, PANEL } from "./kit";
 
-/** An article that is not a sample: the viewer's own submission, read from this browser. */
-export function OwnArticle({ slug }: { slug: string }) {
-  const { ready } = useAuth();
-  const article = useResearch((s) => s.mine.find((a) => a.slug === slug));
-  if (article) return <ArticleView a={article} />;
-  if (!ready) return <div className="h-96 animate-pulse rounded-3xl bg-white/5" aria-label="লোড হচ্ছে" />;
+function Missing({ slug }: { slug: string }) {
   return (
-    <div className="rounded-3xl bg-paper p-8 text-text-primary">
-      <h1 className="font-wiki text-3xl font-bold">এই নামে কোনো নিবন্ধ নেই</h1>
-      <p className="mt-3 text-[15px] text-text-secondary">লিংকটি ভুল হতে পারে, অথবা নিবন্ধটি এখনো পর্যালোচনায় আছে — পর্যালোচনার আগে শুধু লেখক নিজে দেখতে পান।</p>
-      <div className="mt-5 flex flex-wrap gap-3">
-        <Link href={`/research/search?q=${encodeURIComponent(decodeURIComponent(slug).replace(/-/g, " "))}`} className="inline-flex h-11 items-center gap-2 rounded-xl bg-text-primary px-4 text-sm font-bold text-signal-orange"><Icon name="search" className="text-[18px]" /> এই নামে খুঁজুন</Link>
-        <Link href="/research/submit" className="inline-flex h-11 items-center gap-2 rounded-xl bg-signal-orange px-4 text-sm font-bold text-text-primary"><Icon name="upload_file" className="text-[18px]" /> এ নিয়ে লিখুন</Link>
+    <div className={cn(COLUMN, "py-14")}>
+      <div className={cn(PANEL, "hero-rise max-w-2xl p-8")}>
+        <h1 className={H1}>This item is not available</h1>
+        <p className="mt-4 text-base leading-relaxed text-white/80">The link may be wrong, or the work may still be in review. Until reviewers publish it, only its author can see it.</p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link href={`/research/search?q=${encodeURIComponent(slug.replace(/-/g, " "))}`} className={BTN}><Icon name="search" className="text-xl" /> Search for it</Link>
+          <Link href="/research/submit" className={BTN_GOLD}><Icon name="upload_file" className="text-xl" /> Upload research on it</Link>
+        </div>
       </div>
     </div>
   );
 }
+
+/** A work that is not in the shipped library: the viewer's own submission, read from this browser. */
+function Own({ slug, render }: { slug: string; render: (a: Article) => React.ReactNode }) {
+  const { ready } = useAuth();
+  const article = useResearch((s) => s.mine.find((a) => a.slug === slug));
+  if (article) return render(article);
+  if (!ready) return <div className={cn(COLUMN, "py-10")}><div className="h-96 animate-pulse rounded-3xl bg-bdnavy-900 motion-reduce:animate-none" aria-label="Loading" /></div>;
+  return <Missing slug={slug} />;
+}
+
+export const OwnArticle = ({ slug }: { slug: string }) => <Own slug={slug} render={(a) => <ArticleView a={a} />} />;
+
+export const OwnContent = ({ slug }: { slug: string }) => <Own slug={slug} render={(a) => <ContentView a={a} />} />;

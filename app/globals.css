@@ -447,6 +447,21 @@
   section[id] {
     @apply scroll-mt-header lg:scroll-mt-header-lg;
   }
+  /* /research: anchors land below the fixed header and the library's tool bar. */
+  .research-ground [id] {
+    scroll-margin-top: calc(var(--research-top) + 1rem);
+  }
+}
+
+/* /research: the fixed site header plus the library's sticky 64px tool bar
+   (components/research/shell.tsx). Sticky panels pin under both. */
+.research-ground {
+  --research-top: calc(var(--header-offset) + 4rem);
+}
+@media (width >= 64rem) {
+  .research-ground {
+    --research-top: calc(var(--spacing-header-lg) + 4rem);
+  }
 }
 
 @utility no-scrollbar {
@@ -1149,6 +1164,22 @@
       animation-range: entry 10% cover 35%;
     }
   }
+}
+
+/* Genius hero slider (components/research/home.tsx): the active dot is a
+   pill that fills with gold over the slide's time (--slide-ms); pausing the
+   slider pauses the fill. Under reduced motion there is no autoplay, so the
+   pill simply stands full. */
+@keyframes slide-dot-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.slide-dot-fill {
+  transform-origin: left center;
+  animation: slide-dot-fill var(--slide-ms, 6000ms) linear both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .slide-dot-fill { animation: none; }
 }
 
 /* Classroom banner (components/media/feed/classroom-ad*.tsx): a four-scene
