@@ -219,26 +219,6 @@ export function Avatar({ name, className }: { name: string; className?: string }
   );
 }
 
-/** The breadcrumb: white links, slashes, the current page quieter. */
-export function Crumbs({ items }: { items: { href?: string; label: string }[] }) {
-  return (
-    <nav aria-label="Breadcrumb" className="text-sm">
-      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
-        {items.map((it, i) => (
-          <li key={i} className="flex min-w-0 items-center gap-2">
-            {i > 0 && <Icon name="chevron_right" className="text-base text-white/65" />}
-            {it.href ? (
-              <Link href={it.href} className="max-w-[18rem] truncate rounded-sm text-white/80 underline decoration-white/30 underline-offset-4 transition-colors hover:text-signal-orange hover:decoration-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none">{it.label}</Link>
-            ) : (
-              <span aria-current="page" className="max-w-[22rem] truncate text-white/65">{it.label}</span>
-            )}
-          </li>
-        ))}
-      </ol>
-    </nav>
-  );
-}
-
 /** A section heading with a hairline under it, as JSTOR's "Table of Contents". */
 export function RuleHeading({ id, children, className }: { id?: string; children: React.ReactNode; className?: string }) {
   return (

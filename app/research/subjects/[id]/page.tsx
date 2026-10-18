@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
-import { COLUMN, Crumbs, H1, LINK, subjectHref } from "@/components/research/kit";
+import { COLUMN, H1, LINK, subjectHref } from "@/components/research/kit";
 import { Results } from "@/components/research/results";
 import { FIELDS, type FieldId } from "@/lib/research/core";
 import { isFieldId, SUBJECT_GROUPS } from "@/lib/research/tracks";
@@ -27,8 +27,7 @@ export default async function SubjectPage({ params }: { params: Promise<{ id: st
   const sisters = group.fields.filter((f) => f !== id);
   return (
     <div className={cn(COLUMN, "py-10 lg:py-12")}>
-      <Crumbs items={[{ href: "/research/subjects", label: "Browse by Subject" }, { label: group.title }, { label: FIELDS[id].en }]} />
-      <h1 className={cn(H1, "hero-rise mt-6 flex items-center gap-3")}>
+      <h1 className={cn(H1, "hero-rise flex items-center gap-3")}>
         <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-signal-orange text-text-primary"><Icon name={FIELDS[id].icon} className="text-3xl" /></span> {FIELDS[id].en}
       </h1>
       {sisters.length > 0 && (

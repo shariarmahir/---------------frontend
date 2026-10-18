@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { COLUMN, Crumbs, H1, LINK, PANEL_COBALT, TITLE } from "@/components/research/kit";
+import { COLUMN, H1, LINK, PANEL_COBALT, TITLE } from "@/components/research/kit";
 import { SubmitForm } from "@/components/research/submit-form";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
@@ -20,8 +20,7 @@ const RULES = [
 export default function ResearchSubmitPage() {
   return (
     <div className={cn(COLUMN, "py-10 lg:py-12")}>
-      <Crumbs items={[{ href: "/research", label: "Genius" }, { label: "Upload research" }]} />
-      <div className="mt-8 grid gap-8 xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start">
+      <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start">
         <div className="min-w-0">
           <header className="hero-rise pb-8">
             <h1 className={H1}>Upload research</h1>

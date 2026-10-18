@@ -13,7 +13,7 @@ import { problemCode, TRACKS } from "@/lib/research/tracks";
 import { cn } from "@/lib/utils";
 import { CiteButton, DownloadButton, Reactions, SaveButton, ShareButton } from "./actions";
 import { Discussion } from "./discussion";
-import { ARROW, articleHref, byline, collectionHref, contentHref, Cover, Crumbs, fmtDate, fmtNum, H1, ICON_BTN, LINK, OpenAccess, PANEL_COBALT, PANEL_INK, plural, searchHref, StatusTags, subjectHref, TITLE_LINK, TypeLabel, typeOf } from "./kit";
+import { ARROW, articleHref, byline, collectionHref, contentHref, Cover, fmtDate, fmtNum, H1, ICON_BTN, LINK, OpenAccess, PANEL_COBALT, PANEL_INK, plural, searchHref, StatusTags, subjectHref, TITLE_LINK, TypeLabel, typeOf } from "./kit";
 import { openSeq, Viewer } from "./viewer";
 
 const noop = () => () => {};
@@ -177,7 +177,7 @@ function Activity({ a }: { a: Article }) {
 }
 
 /**
- * A work's stable page, after JSTOR's: breadcrumb, type, title and source
+ * A work's stable page, after JSTOR's: type, title and source
  * line, the stable URL, Cite / Save / Share / Download; on the left the
  * folds (About, Table of contents, Reactions, Related text, Terms), on the
  * right the content viewer; comments underneath on an ink panel.
@@ -199,17 +199,15 @@ export function ArticleView({ a }: { a: Article }) {
   };
 
   return (
-    <div className="mx-auto w-full max-w-384 px-gutter-x pt-8 pb-20">
-      <Crumbs items={[{ href: subjectHref(a.field), label: FIELDS[a.field].en }, { href: contentHref(a), label: a.title }, { label: typeOf(a) }]} />
-
+    <div className="mx-auto w-full max-w-384 px-gutter-x pt-10 pb-20">
       {a.status === "review" && (
-        <p className={cn(PANEL_COBALT, "mt-5 flex items-start gap-3 px-5 py-4 text-sm text-white/80")}>
+        <p className={cn(PANEL_COBALT, "flex items-start gap-3 px-5 py-4 text-sm text-white/80")}>
           <Icon name="hourglass_top" className="mt-0.5 text-xl text-signal-orange" /> In review. Only you can see this work until the reviewers publish it.
         </p>
       )}
 
       {/* Its own layer, above the sticky viewer below, so the Share and Download menus open over it. */}
-      <header className="hero-rise relative z-20 mt-6">
+      <header className="hero-rise relative z-20 mt-6 first:mt-0">
         <TypeLabel a={a} className="text-sm" />
         <h1 className={cn(H1, "mt-2 max-w-240")}>{a.title}</h1>
         <p className="mt-4 text-base text-white/80">

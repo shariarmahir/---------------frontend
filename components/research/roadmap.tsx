@@ -5,7 +5,7 @@ import { useMemo, useSyncExternalStore } from "react";
 import { Icon } from "@/components/ui/icon";
 import { allChecks, checksOf, ROADMAP_KINDS, stepsFor, type RoadmapKind, type RoadmapStep } from "@/data/research/roadmap";
 import { cn } from "@/lib/utils";
-import { articleHref, BTN, BTN_GOLD, COLUMN, Crumbs, H1, LINK, PANEL, PANEL_COBALT, TITLE } from "./kit";
+import { articleHref, BTN, BTN_GOLD, COLUMN, H1, LINK, PANEL, PANEL_COBALT, TITLE } from "./kit";
 
 /*
  * Progress lives in this browser only (localStorage): it is a reader's own
@@ -170,8 +170,7 @@ export function RoadmapView() {
 
   return (
     <div className={cn(COLUMN, "py-10 lg:py-14")}>
-      <Crumbs items={[{ href: "/research/workspace", label: "Workspace" }, { label: "Start a research" }]} />
-      <header className="hero-rise mt-6 max-w-3xl">
+      <header className="hero-rise max-w-3xl">
         <h1 className={H1}>Start your research, step by step</h1>
         <p className="mt-4 text-lg leading-relaxed text-white/80">
           From a real question to a publication international journals and examiners accept, and on to Genius. Each step lists what to do, names the standard reviewers will hold you to, and points to the Genius pages that help.
