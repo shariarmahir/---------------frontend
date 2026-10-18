@@ -58,7 +58,7 @@ export default function ProductsPage() {
       <SiteHeader />
       <main className="relative w-full bg-black pt-header lg:pt-header-lg">
         <PageHero
-          art={productItems.map((item) => item.image)}
+          art={productItems.flatMap((item) => (item.image ? [item.image] : []))}
           title={
             <>
               Four products. <span className="text-signal-orange">Four services.</span>

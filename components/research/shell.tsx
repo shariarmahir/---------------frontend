@@ -10,6 +10,9 @@ import { bn } from "./ui";
 
 const NAV = [
   { href: "/research", label: "প্রধান পাতা", icon: "auto_stories" },
+  { href: "/research/topic/bd-live", label: "রিয়েল-টাইম বাংলাদেশ", icon: "crisis_alert" },
+  { href: "/research/topic/global", label: "বৈশ্বিক", icon: "public" },
+  { href: "/research#categories", label: "সব ধারা", icon: "category" },
   { href: "/research/contents", label: "সূচিপত্র", icon: "list_alt" },
   { href: "/research/changes", label: "সাম্প্রতিক পরিবর্তন", icon: "history" },
   { href: "/research/random", label: "এলোমেলো নিবন্ধ", icon: "shuffle" },
@@ -25,8 +28,8 @@ export function Wordmark() {
         <Icon name="local_library" className="text-[28px]" />
       </span>
       <span className="leading-tight">
-        <span className="font-wiki block text-[1.7rem] font-bold text-white">গবেষণাকোষ</span>
-        <span lang="en" className="block text-[11px] font-semibold tracking-[0.18em] text-white/55 uppercase">Kandari ResearchPedia</span>
+        <span className="block text-[1.7rem] leading-tight font-bold text-white">গবেষণাকোষ</span>
+        <span lang="en" className="block text-xs font-semibold text-white/65">Kandari ResearchPedia</span>
       </span>
     </Link>
   );
@@ -37,7 +40,7 @@ function SearchBox() {
   return (
     <form role="search" action="/research/search" className="relative w-full lg:max-w-xl">
       <label htmlFor="research-q" className="sr-only">গবেষণাকোষে খুঁজুন</label>
-      <Icon name="search" className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-[22px] text-white/50" />
+      <Icon name="search" className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-[22px] text-white/65" />
       <input
         id="research-q"
         name="q"
@@ -45,9 +48,9 @@ function SearchBox() {
         defaultValue={q}
         key={q}
         placeholder="বিষয়, লেখক, প্রতিষ্ঠান বা জেলা খুঁজুন"
-        className="h-13 w-full rounded-2xl bg-white/[0.07] pr-28 pl-12 text-[15px] text-white ring-1 ring-white/12 transition-shadow placeholder:text-white/45 focus:ring-2 focus:ring-signal-orange focus:outline-none"
+        className="h-13 w-full rounded-2xl bg-bdnavy-900 pr-28 pl-12 text-[15px] text-white ring-1 ring-white/15 transition-shadow placeholder:text-white/65 focus:ring-2 focus:ring-signal-orange focus:outline-none"
       />
-      <button type="submit" className="absolute top-1.5 right-1.5 h-10 rounded-xl bg-white px-4 text-sm font-bold text-text-primary transition-colors hover:bg-signal-orange">খুঁজুন</button>
+      <button type="submit" className="absolute top-1.5 right-1.5 h-10 rounded-xl bg-signal-orange px-4 text-sm font-bold text-text-primary transition-colors hover:bg-signal-orange/85">খুঁজুন</button>
     </form>
   );
 }
@@ -62,11 +65,11 @@ export function ResearchShell({ children }: { children: React.ReactNode }) {
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-gutter-x pt-6 pb-4 lg:flex-row lg:items-center lg:gap-8">
           <Wordmark />
           <div className="flex flex-1 items-center gap-3 lg:justify-end">
-            <Suspense fallback={<div className="h-13 w-full rounded-2xl bg-white/[0.07] lg:max-w-xl" />}>
+            <Suspense fallback={<div className="h-13 w-full rounded-2xl bg-bdnavy-900 lg:max-w-xl" />}>
               <SearchBox />
             </Suspense>
-            <Link href="/research/submit" className="hidden h-13 shrink-0 items-center gap-2 rounded-2xl bg-signal-orange px-5 text-sm font-bold text-text-primary transition-[translate,background-color] duration-200 hover:-translate-y-0.5 hover:bg-white motion-reduce:hover:translate-y-0 sm:inline-flex">
-              <Icon name="upload_file" className="text-[20px]" /> গবেষণা প্রকাশ করুন
+            <Link href="/research/submit" className="hidden h-13 shrink-0 items-center gap-2 rounded-2xl bg-signal-orange px-5 text-sm font-bold text-text-primary transition-[translate,background-color] duration-200 hover:-translate-y-0.5 hover:bg-signal-orange/85 motion-reduce:hover:translate-y-0 sm:inline-flex">
+              <Icon name="upload_file" className="text-[20px]" /> গবেষণা আপলোড করুন
             </Link>
           </div>
         </div>
@@ -82,12 +85,12 @@ export function ResearchShell({ children }: { children: React.ReactNode }) {
                     className={cn(
                       "relative flex h-12 items-center gap-2 px-3 text-sm font-semibold whitespace-nowrap transition-colors",
                       "after:absolute after:inset-x-3 after:bottom-0 after:h-[3px] after:rounded-t-full after:transition-colors",
-                      on ? "text-white after:bg-signal-orange" : "text-white/60 after:bg-transparent hover:text-white",
+                      on ? "text-white after:bg-signal-orange" : "text-white/80 after:bg-transparent hover:text-white",
                     )}
                   >
-                    <Icon name={l.icon} className={cn("text-[19px]", on ? "text-signal-orange" : "text-white/45")} />
+                    <Icon name={l.icon} className={cn("text-[19px]", on ? "text-signal-orange" : "text-white/65")} />
                     {l.label}
-                    {l.label === "আমার জমা" && mine > 0 && <span className="rounded-full bg-bd-green px-1.5 text-[11px] font-bold text-white">{bn(mine)}</span>}
+                    {l.label === "আমার জমা" && mine > 0 && <span className="rounded-full bg-cobalt px-1.5 text-xs font-bold text-white">{bn(mine)}</span>}
                   </Link>
                 </li>
               );

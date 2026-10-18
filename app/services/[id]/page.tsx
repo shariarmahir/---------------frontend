@@ -24,6 +24,7 @@ import { btn } from "@/components/ui/section-kit";
 import { SERVICE_PIPELINE, SERVICE_PIPELINE_NOTES, serviceRunsIn, type Access } from "@/data/catalog";
 import { projectsFor } from "@/data/projects";
 import { services } from "@/data/services";
+import { cn } from "@/lib/utils";
 
 export function generateStaticParams() {
   return services.map((s) => ({ id: s.id }));
@@ -61,7 +62,7 @@ export default async function ServicePage({ params }: Props) {
       <SiteHeader />
       <main className="relative w-full bg-black pt-header lg:pt-header-lg">
         <PageHero
-          art={[service.image]}
+          art={[{ film: service.film }, ...projects.slice(0, 2).map((p) => ({ src: p.shots[0].src, alt: p.shots[0].alt }))]}
           title={<span className="text-signal-orange">{service.name}</span>}
           lead={service.pitch}
         >
@@ -85,12 +86,13 @@ export default async function ServicePage({ params }: Props) {
 
         {projects.length ? (
           <DetailSection id="projects" title="Projects" lead={`What we have proposed and built in ${service.name.toLowerCase()}.`}>
-            <ul className="grid gap-6 md:grid-cols-2">
+            {/* Two across, or three once there are three or more. */}
+            <ul className={cn("grid gap-6 md:grid-cols-2", projects.length >= 3 && "xl:grid-cols-3")}>
               {projects.map((project) => (
                 <li key={project.id} className="flex">
                   <CatalogCard
                     className="w-full"
-                    sizes="(min-width: 768px) 45vw, 100vw"
+                    sizes={projects.length >= 3 ? "(min-width: 1280px) 30vw, (min-width: 768px) 45vw, 100vw" : "(min-width: 768px) 45vw, 100vw"}
                     item={{
                       href: `/services/${service.id}/${project.id}`,
                       name: project.name,

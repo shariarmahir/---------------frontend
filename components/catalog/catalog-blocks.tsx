@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { FilmFrame, type FilmId } from "@/components/films/motion-film";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 
@@ -9,9 +10,9 @@ const ART_SIZE = ["size-56 xl:size-64", "size-44 xl:size-52", "size-36 xl:size-4
 /**
  * The opening band of every catalogue page, after banglalink.net's offer
  * pages: a short navy band under the header, the title and one line on the
- * left; on the right, round photos in front of a cobalt disc that
- * sits off-centre behind them. Below md the art is dropped and the band is
- * text alone.
+ * left; on the right, round photos or 3D films in front of a cobalt disc
+ * that sits off-centre behind them. Below md the art is dropped and the
+ * band is text alone.
  */
 export function PageHero({
   title,
@@ -23,10 +24,9 @@ export function PageHero({
   title: ReactNode;
   lead: string;
   leadLang?: "bn";
-  art: { src: string; alt: string; credit?: string }[];
+  art: ({ src: string; alt: string } | { film: FilmId })[];
   children?: ReactNode;
 }) {
-  const credits = art.flatMap((img) => (img.credit ? [img.credit] : []));
   return (
     <section className="relative overflow-hidden border-t border-white/10 bg-bdnavy-900">
       <div className="mx-auto grid min-h-72 max-w-7xl items-center gap-8 px-gutter-x py-10 md:grid-cols-[minmax(0,1fr)_auto] lg:min-h-80">
@@ -36,23 +36,22 @@ export function PageHero({
             {lead}
           </p>
           {children ? <div className="mt-2 flex flex-wrap gap-3">{children}</div> : null}
-          {credits.length ? (
-            <p lang="bn" className="hidden font-bengali text-xs text-white/65 md:block">
-              {credits.join(" · ")}
-            </p>
-          ) : null}
         </div>
 
         <div aria-hidden className="relative hidden items-center justify-end md:flex">
           <span className="absolute top-1/2 right-0 size-52 -translate-y-1/2 rounded-full bg-cobalt xl:size-60" />
           <div className="relative flex -space-x-10 pr-12">
-            {art.map((img, i) => (
+            {art.map((item, i) => (
               <div
-                key={img.src}
+                key={"film" in item ? item.film : item.src}
                 style={{ animationDelay: `${i * 90}ms` }}
                 className={cn("catalog-fade relative shrink-0 overflow-hidden rounded-full bg-text-primary ring-4 ring-bdnavy-900", ART_SIZE[Math.min(art.length, 4) - 1])}
               >
-                <Image src={img.src} alt="" fill priority sizes="256px" className="object-cover" />
+                {"film" in item ? (
+                  <FilmFrame film={item.film} className="absolute inset-0" />
+                ) : (
+                  <Image src={item.src} alt="" fill priority sizes="256px" className="object-cover" />
+                )}
               </div>
             ))}
           </div>

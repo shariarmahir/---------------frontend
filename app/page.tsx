@@ -53,11 +53,11 @@ export default function Home() {
           <ProductsSection />
           <AppsSection />
           <ServicesSection />
-          <PromoGallery />
           <ResearchSection />
           <NodeTerminalSection />
           <AboutSection />
           <LeadershipSection />
+          <PromoGallery />
           <ReviewsSection />
           <DataSourcesSection />
           <KandariProfileSection />

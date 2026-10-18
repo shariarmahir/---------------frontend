@@ -54,6 +54,9 @@ const LOOK_COBALT: CharterLook = {
   },
 };
 
+/** The three fields by name, for other rows built like the charter (the home page's promo row). */
+export const FIELD_LOOKS: Record<"navy" | "ink" | "cobalt", CharterLook> = { navy: LOOK_NAVY, ink: LOOK_INK, cobalt: LOOK_COBALT };
+
 /** No two neighbours share a field. */
 export const CHARTER_LOOKS: Record<string, CharterLook> = {
   problem: LOOK_NAVY,

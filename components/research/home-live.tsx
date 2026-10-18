@@ -110,9 +110,9 @@ export function LiveStats() {
   return (
     <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-white/10 sm:grid-cols-4">
       {stats.map((s) => (
-        <div key={s.label} className="bg-black px-4 py-4">
-          <dt className="text-xs font-semibold text-white/55">{s.label}</dt>
-          <dd className="font-wiki mt-1 text-3xl font-bold text-white">{bnNum(s.value)}</dd>
+        <div key={s.label} className="bg-text-primary px-5 py-5">
+          <dt className="text-sm font-semibold text-white/80">{s.label}</dt>
+          <dd className="mt-1 text-4xl font-bold text-signal-orange tabular-nums">{bnNum(s.value)}</dd>
         </div>
       ))}
     </dl>
@@ -137,7 +137,7 @@ export function TopFields() {
                 href={`/research/contents#${f.field}`}
                 className={cn(
                   "group flex h-full items-center gap-4 rounded-2xl p-4 transition-[translate,box-shadow,background-color] duration-200 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0",
-                  lead ? "bg-bd-green text-white" : "bg-white/[0.04] text-white ring-1 ring-white/10 hover:bg-white/[0.07] hover:ring-signal-orange/50",
+                  lead ? "bg-cobalt text-white" : "bg-white/[0.04] text-white ring-1 ring-white/10 hover:bg-white/[0.07] hover:ring-signal-orange/50",
                 )}
               >
                 <span className={cn("font-wiki w-9 shrink-0 text-3xl font-bold", lead ? "text-signal-orange" : "text-white/25 group-hover:text-signal-orange")}>{bn(String(i + 1).padStart(2, "0"))}</span>
@@ -198,28 +198,28 @@ export function TopResearchers({ n = 6 }: { n?: number }) {
       <SectionHead id="researchers" title="শীর্ষ গবেষক" />
       <ol className="space-y-2">
         {people.map((p, i) => (
-          <li key={p.name} className="flex items-center gap-3 rounded-2xl bg-white/[0.04] p-3 ring-1 ring-white/10">
+          <li key={p.name} className="flex items-center gap-3 rounded-2xl bg-bdnavy-900 p-3 ring-1 ring-white/12 ring-inset">
             <span className={cn("grid size-7 shrink-0 place-items-center rounded-full text-xs font-bold", i === 0 ? "bg-signal-orange text-text-primary" : "text-white/60 ring-1 ring-white/20")}>{bn(i + 1)}</span>
             <Avatar name={p.name} className="size-9 text-xs" />
             <span className="min-w-0 flex-1">
               <span className="block truncate text-sm font-bold text-white">{p.name}</span>
-              <span className="block truncate text-xs text-white/50">{p.institution.split(",")[0]} · {bn(p.articles)}টি নিবন্ধ</span>
+              <span className="block truncate text-xs text-white/65">{p.institution.split(",")[0]} · {bn(p.articles)}টি নিবন্ধ</span>
             </span>
             <span className="text-right">
-              <span className="font-wiki block text-lg leading-none font-bold text-signal-orange">{bnNum(p.points)}</span>
-              <span className="text-[11px] text-white/45">পয়েন্ট</span>
+              <span className="block text-lg leading-none font-bold text-signal-orange tabular-nums">{bnNum(p.points)}</span>
+              <span className="text-xs text-white/65">পয়েন্ট</span>
             </span>
           </li>
         ))}
       </ol>
-      <div className="rounded-2xl bg-white p-4 text-text-primary">
-        <p className="flex items-center gap-2 font-bold"><Icon name="bolt" className="text-[20px] text-bd-green" /> পয়েন্ট কীভাবে আসে</p>
-        <ul className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-text-secondary">
-          <li>প্রতিক্রিয়া <strong className="text-text-primary">+{bn(POINTS.reaction)}</strong></li>
-          <li>মন্তব্য <strong className="text-text-primary">+{bn(POINTS.comment)}</strong></li>
-          <li>উদ্ধৃতি কপি <strong className="text-text-primary">+{bn(POINTS.cite)}</strong></li>
-          <li>প্রতিটি মাধ্যমে শেয়ার <strong className="text-text-primary">+{bn(POINTS.share)}</strong></li>
-          <li className="col-span-2">গবেষকের প্রতিটি প্রকাশিত নিবন্ধ <strong className="text-text-primary">+{bn(POINTS.article)}</strong></li>
+      <div className="rounded-2xl bg-cobalt p-4 text-white ring-1 ring-white/12 ring-inset">
+        <p className="flex items-center gap-2 font-bold"><Icon name="bolt" className="text-[20px] text-signal-orange" /> পয়েন্ট কীভাবে আসে</p>
+        <ul className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-white/80">
+          <li>প্রতিক্রিয়া <strong className="text-signal-orange">+{bn(POINTS.reaction)}</strong></li>
+          <li>মন্তব্য <strong className="text-signal-orange">+{bn(POINTS.comment)}</strong></li>
+          <li>উদ্ধৃতি কপি <strong className="text-signal-orange">+{bn(POINTS.cite)}</strong></li>
+          <li>প্রতিটি মাধ্যমে শেয়ার <strong className="text-signal-orange">+{bn(POINTS.share)}</strong></li>
+          <li className="col-span-2">গবেষকের প্রতিটি প্রকাশিত নিবন্ধ <strong className="text-signal-orange">+{bn(POINTS.article)}</strong></li>
         </ul>
       </div>
     </section>

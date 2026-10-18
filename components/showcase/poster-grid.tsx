@@ -3,14 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { FilmFrame, type FilmId } from "@/components/films/motion-film";
 import { btn } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
 import { MediaReel } from "./media-reel";
 import { PosterScene, type PosterSceneKind } from "./poster-scenes";
 
 /*
- * The home page's product and service cards: four across inside the
- * content column, laid out and lifted like the Pixel-Map cards, cut like
+ * The home page's product and service cards: four across the full width
+ * of the screen, laid out and lifted like the Pixel-Map cards, cut like
  * the team portraits (the picture melting into a solid field, the name and
  * one line on the colour below). On hover, focus or tap a panel rises in a
  * blackened shade of the card's own colour with the full name, the promise
@@ -41,6 +42,8 @@ export interface PosterItem {
   href: string;
   /** The photograph; left out when a film fills the picture instead. */
   image?: { src: string; alt: string; position?: string };
+  /** A 3D film (components/films) that fills the picture in place of the photograph. */
+  film3d?: FilmId;
   /** A motion layer: drawn over the photograph, or the film itself. */
   scene?: PosterSceneKind | "media-reel";
   /** The panel's foot line: a photo credit or the stage. */
@@ -102,14 +105,15 @@ function PosterCard({ item, priority }: { item: PosterItem; priority: boolean })
       )}
     >
       {/* The picture, melting into the field at its foot like the team portraits. */}
-      <div className={cn("relative aspect-[1/0.92] shrink-0 overflow-hidden", film && "bg-text-primary")}>
+      <div className={cn("relative aspect-[1/0.92] shrink-0 overflow-hidden", (film || item.film3d) && "bg-text-primary")}>
+        {item.film3d ? <FilmFrame film={item.film3d} className="absolute inset-0" /> : null}
         {item.image && (
           <Image
             src={item.image.src}
             alt={item.image.alt}
             fill
             priority={priority}
-            sizes="(min-width: 1024px) 300px, 50vw"
+            sizes="(min-width: 1024px) 25vw, 50vw"
             style={{ objectPosition: item.image.position }}
             className={cn(
               "object-cover transition-[scale] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100",

@@ -692,6 +692,20 @@
   .catalog-marquee > [aria-hidden] { display: none; }
 }
 
+/* The About page's story: five chapter cards drifting sideways in one row
+   (the same keyframes as the catalogue strip, slower so the cards can be
+   read). A pointer or keyboard focus holds the row still. Under reduced
+   motion the copy is dropped and the row scrolls by hand. */
+@media (prefers-reduced-motion: no-preference) {
+  .story-marquee { animation: catalog-marquee 70s linear infinite; }
+  .story-row:hover .story-marquee,
+  .story-row:focus-within .story-marquee { animation-play-state: paused; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .story-row { overflow-x: auto; scrollbar-width: none; }
+  .story-marquee > [aria-hidden] { display: none; }
+}
+
 /* The Golden Two Hours note on /products: it rests at a slight angle and
    tilts gently to and fro; a pointer on it holds it still. Under reduced
    motion it simply rests at its angle. */
@@ -748,6 +762,51 @@
   .use-icon-beat { animation: use-icon-beat 1.6s ease-in-out infinite; }
   .use-icon-pulse { animation: use-icon-pulse 2s ease-in-out infinite; }
   .use-icon-float { animation: use-icon-float 3s ease-in-out infinite; }
+}
+
+/* Problem and fix panels (ProblemSolve in components/catalog/detail-blocks.tsx),
+   one 7s cycle on both bars so they read side by side. Late: the bar fills
+   slowly and the red marker only appears near the end. Early: the gold
+   marker appears a quarter in with a ping (the alert), then the rest of the
+   track lights as the time left to act. The bars fade, reset and run again;
+   a gold pulse crosses the node between the panels. Under reduced motion
+   the bars rest at their marks. */
+@keyframes ps-cycle { 0%, 90% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes ps-fill-late { 0% { scale: 0 1; } 62%, 100% { scale: 1 1; } }
+@keyframes ps-mark-late {
+  0%, 60% { scale: 0; }
+  67% { scale: 1.35; }
+  73%, 100% { scale: 1; }
+}
+@keyframes ps-fill-early { 0% { scale: 0 1; } 18%, 100% { scale: 1 1; } }
+@keyframes ps-mark-early {
+  0%, 16% { scale: 0; }
+  23% { scale: 1.35; }
+  29%, 100% { scale: 1; }
+}
+@keyframes ps-ping {
+  0%, 20% { scale: 1; opacity: 0; }
+  22% { opacity: 0.8; }
+  48%, 100% { scale: 3; opacity: 0; }
+}
+@keyframes ps-window { 0%, 28% { scale: 0 1; } 58%, 100% { scale: 1 1; } }
+@keyframes ps-travel {
+  0% { left: 0; opacity: 0; }
+  15%, 85% { opacity: 1; }
+  100% { left: calc(100% - 0.375rem); opacity: 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ps-cycle { animation: ps-cycle 7s linear infinite; }
+  .ps-fill-late { animation: ps-fill-late 7s linear infinite; }
+  .ps-mark-late { animation: ps-mark-late 7s cubic-bezier(0.22, 1, 0.36, 1) infinite; }
+  .ps-fill-early { animation: ps-fill-early 7s linear infinite; }
+  .ps-mark-early { animation: ps-mark-early 7s cubic-bezier(0.22, 1, 0.36, 1) infinite; }
+  .ps-ping { animation: ps-ping 7s ease-out infinite; }
+  .ps-window { animation: ps-window 7s cubic-bezier(0.22, 1, 0.36, 1) infinite; }
+  .ps-travel { animation: ps-travel 2.4s ease-in-out infinite; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ps-ping, .ps-travel { display: none !important; }
 }
 
 /* Technology stickers on a project page (components/projects/tech-row.tsx):

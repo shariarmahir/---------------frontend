@@ -9,6 +9,7 @@ import type { Article } from "@/lib/research/core";
  */
 export const farmGatePaper: Article = {
   slug: "farm-gate-to-fake-seal",
+  problems: [2, 14],
   title: "খামার থেকে নকল সিল: বাংলাদেশের মূল্যশৃঙ্খলের বিকৃতি ও নকল পণ্যের অর্থনীতি",
   titleEn: "From Farm Gate to Fake Seal: an atomic decomposition of Bangladesh's price-chain distortions and counterfeit economy",
   kind: "paper",

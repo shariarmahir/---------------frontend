@@ -1,93 +1,34 @@
-import type { CSSProperties } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { RepairBand } from "@/components/about/blocks";
 import { Icon } from "@/components/ui/icon";
 import { btn } from "@/components/ui/section-kit";
-import { ABOUT_SUMMARY, VALUES } from "@/data/about";
-import { cn } from "@/lib/utils";
+import { ABOUT_SUMMARY } from "@/data/about";
 
 /**
- * Who Kandari-Lab is and what it holds to, readable in one glance: a
- * photograph carrying the line the company is named from, and beside it one
- * paragraph and four values on solid fields, navy and ink in a checker.
+ * Who Kandari-Lab is, on the home page: the About page's "We repair
+ * Bangladesh" band set as a navy card in the content column, the size of
+ * the Kandari Profile section, its round photograph repairing itself pixel
+ * by pixel when it comes into view.
  */
-const FIELDS = [
-  { tile: "bg-bdnavy-900", glow: "var(--color-bdnavy-400)" },
-  { tile: "bg-text-primary", glow: "var(--color-signal-orange)" },
-];
-
 export function AboutSection() {
   return (
-    <section id="about" aria-labelledby="about-title" className="section-band mx-auto max-w-7xl px-gutter-x">
-      <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
-        <figure className="story-reveal group/photo relative overflow-hidden rounded-3xl bg-bdnavy-900 shadow-[0_30px_60px_-36px_rgb(0_0_0/0.9)] ring-1 ring-white/12">
-          <div className="relative aspect-4/5 sm:aspect-5/4 lg:aspect-4/5">
-            <Image
-              src="/hero/Hero-10.jpg"
-              alt="ভোরের কুয়াশায় দুই প্রবীণ একে অপরকে পানি এগিয়ে দিচ্ছেন"
-              fill
-              sizes="(min-width: 1024px) 560px, 100vw"
-              style={{ objectPosition: "50% 28%" }}
-              className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/photo:scale-105 motion-reduce:transition-none motion-reduce:group-hover/photo:scale-100"
-            />
-            {/* The photograph melts into the navy under the line, as on the team cards. */}
-            <div aria-hidden className="absolute inset-x-0 -bottom-px h-3/5 bg-linear-to-t from-bdnavy-900 via-bdnavy-900/75 to-transparent" />
-          </div>
-          <figcaption className="absolute inset-x-0 bottom-0 flex flex-col gap-3 p-6 sm:p-8">
-            <blockquote lang="bn" className="font-bengali text-2xl leading-[1.3] md:text-3xl xl:text-4xl font-bold text-white">
-              কে আছ জোয়ান? হও আগুয়ান।
-              <br />
-              <span className="text-signal-orange">হাঁকিছে ভবিষ্যৎ।</span>
-            </blockquote>
-            <p lang="bn" className="font-bengali text-sm text-white/65">কাজী নজরুল ইসলাম, ‘কাণ্ডারী হুঁশিয়ার’</p>
-          </figcaption>
-        </figure>
-
-        <div className="story-reveal flex flex-col gap-6">
-          <h2 id="about-title" className="font-grotesk text-2xl leading-[1.2] font-bold tracking-tight text-balance text-signal-orange sm:text-3xl lg:text-4xl">
-            Our Values, and Who We Are
-          </h2>
-          <p className="max-w-xl font-sans text-base leading-relaxed text-white/80">{ABOUT_SUMMARY}</p>
-
-          <ul className="grid gap-3 sm:grid-cols-2">
-            {VALUES.map((v, i) => {
-              // A checker: navy and ink alternate along each row and down each column.
-              const field = FIELDS[(i + Math.floor(i / 2)) % 2];
-              return (
-                <li
-                  key={v.title}
-                  style={{ "--glow": field.glow } as CSSProperties}
-                  className={cn(
-                    "group/value flex gap-4 rounded-2xl p-5 text-white ring-1 ring-white/12 ring-inset",
-                    "transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-[0_24px_40px_-22px_var(--glow)]",
-                    "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
-                    field.tile,
-                  )}
-                >
-                  <Icon
-                    name={v.icon}
-                    className="mt-0.5 text-2xl text-signal-orange transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/value:-rotate-6 motion-reduce:transition-none"
-                  />
-                  <div className="min-w-0">
-                    <h3 className="font-grotesk text-base font-bold">{v.title}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-white/65">{v.body}</p>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-
-          <div className="flex flex-wrap gap-3 pt-1">
-            <Link href="/about" className={btn.gold}>
-              Learn About Us
-              <Icon name="arrow_forward" className="text-base" />
-            </Link>
-            <Link href="/about#mission" className={btn.goldOutline}>
-              Our Mission
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
+    <RepairBand
+      id="about"
+      card
+      title={
+        <>
+          We repair Bangladesh, <span className="text-signal-orange">one pixel at a time.</span>
+        </>
+      }
+      lead={ABOUT_SUMMARY}
+    >
+      <Link href="#kandari-profile" className={btn.gold}>
+        Join Kandari Profile
+        <Icon name="arrow_forward" className="text-lg" />
+      </Link>
+      <Link href="/about" className={btn.goldOutline}>
+        Read our story
+      </Link>
+    </RepairBand>
   );
 }

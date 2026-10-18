@@ -14,6 +14,7 @@ const cc = (author: string, licence: string) => `ছবি: ${author}, ${licence
 export const sampleArticles: Article[] = [
   {
     slug: "flood-early-warning-sensor",
+    problems: [16, 18],
     title: "৳১,০০০-এর নিচে বন্যার আগাম সতর্কসংকেত যন্ত্র",
     titleEn: "A sub-৳1,000 flood early-warning sensor",
     kind: "innovation",
@@ -71,6 +72,7 @@ export const sampleArticles: Article[] = [
   },
   {
     slug: "salt-tolerant-rice-satkhira",
+    problems: [17, 10],
     title: "সাতক্ষীরায় লবণসহিষ্ণু ধান: কৃষকেরা কেন নেন, কেন ছাড়েন",
     titleEn: "Salt-tolerant rice in Satkhira: why farmers adopt and drop it",
     kind: "thesis",
@@ -124,6 +126,7 @@ export const sampleArticles: Article[] = [
   },
   {
     slug: "brick-kilns-dhaka-winter-air",
+    problems: [16, 13],
     title: "শীতে ঢাকার বাতাস আর চারপাশের ইটভাটা",
     titleEn: "Brick kilns around Dhaka and its winter air",
     kind: "paper",
@@ -176,6 +179,7 @@ export const sampleArticles: Article[] = [
   },
   {
     slug: "bangla-voice-health-hotline",
+    problems: [1],
     title: "গ্রামের স্বাস্থ্য হটলাইনের জন্য বাংলা কণ্ঠস্বর চেনা",
     titleEn: "Bangla speech recognition for a rural health hotline",
     kind: "thesis",
@@ -217,6 +221,7 @@ export const sampleArticles: Article[] = [
   },
   {
     slug: "organic-waste-to-soil",
+    problems: [13, 17],
     title: "জৈব বর্জ্য থেকে মাটি: শ্রেণিবিন্যাস ও পুনর্ব্যবহার",
     titleEn: "Organic waste to soil: classification and recycling",
     kind: "project",
@@ -253,6 +258,7 @@ export const sampleArticles: Article[] = [
   },
   {
     slug: "blind-assist-wearable",
+    problems: [1],
     title: "দৃষ্টিহীনদের জন্য দুই মিটারের সতর্ক-সংবেদী পরিধেয়",
     titleEn: "A 2-metre sensing wearable for blind people",
     kind: "innovation",
@@ -290,6 +296,7 @@ export const sampleArticles: Article[] = [
   },
   {
     slug: "char-flood-household-coping",
+    problems: [10, 16],
     title: "যমুনার চরে বন্যার সাথে পরিবারগুলোর লড়াই",
     titleEn: "How char households cope with floods on the Jamuna",
     kind: "paper",
@@ -330,6 +337,7 @@ export const sampleArticles: Article[] = [
   },
   {
     slug: "game-based-math-lessons",
+    problems: [11],
     title: "খেলার মাধ্যমে গণিত: অষ্টম শ্রেণির ভয় কমানো",
     titleEn: "Learning maths through games in class eight",
     kind: "project",

@@ -73,10 +73,10 @@ function Comment({ a, n, reply, onReply, replying, children }: { a: Article; n: 
     <li className={cn("flex gap-3", reply && "mt-4")}>
       <Avatar name={n.by} className={reply ? "size-8 text-xs" : undefined} />
       <div className="min-w-0 flex-1">
-        <div className={cn("rounded-2xl px-4 py-3", reply ? "bg-white/[0.04]" : "bg-white/[0.06] ring-1 ring-white/10")}>
+        <div className={cn("rounded-2xl px-4 py-3", reply ? "bg-text-primary" : "bg-bdnavy-900 ring-1 ring-white/12 ring-inset")}>
           <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
             <span className="font-bold text-white">{n.by}</span>
-            {n.role && <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-bold", n.role === "লেখক" ? "bg-signal-orange text-text-primary" : "bg-bd-green text-white")}>{n.role}</span>}
+            {n.role && <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-bold", n.role === "লেখক" ? "bg-signal-orange text-text-primary" : "bg-cobalt text-white")}>{n.role}</span>}
             <span className="text-xs text-white/45">{bnDate(n.at)}</span>
           </p>
           <p className="mt-1.5 text-[15px] leading-relaxed whitespace-pre-line text-white/85">{n.text}</p>
@@ -111,13 +111,12 @@ export function Discussion({ a }: { a: Article }) {
     <section id="discussion" aria-labelledby="discussion-title" className="scroll-mt-56">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="text-sm font-bold text-signal-orange">প্রশ্ন, পরামর্শ, প্রমাণ</p>
-          <h2 id="discussion-title" className="font-wiki mt-1 text-3xl font-bold text-white">আলোচনা <span className="text-white/40">{bn(notes.length)}</span></h2>
+          <h2 id="discussion-title" className="text-2xl font-bold text-signal-orange sm:text-3xl">মন্তব্য ও আলোচনা <span className="text-white/65">{bn(notes.length)}</span></h2>
         </div>
         {notes.length > 1 && (
           <div role="group" aria-label="সাজানো" className="flex rounded-xl bg-white/[0.06] p-1 ring-1 ring-white/10">
             {(["new", "top"] as const).map((o) => (
-              <button key={o} type="button" onClick={() => setOrder(o)} aria-pressed={order === o} className={cn("h-9 rounded-lg px-3 text-sm font-bold transition-colors", order === o ? "bg-white text-text-primary" : "text-white/65 hover:text-white")}>
+              <button key={o} type="button" onClick={() => setOrder(o)} aria-pressed={order === o} className={cn("h-9 rounded-lg px-3 text-sm font-bold transition-colors", order === o ? "bg-signal-orange text-text-primary" : "text-white/80 hover:text-white")}>
                 {o === "new" ? "নতুন আগে" : "সবচেয়ে পছন্দের"}
               </button>
             ))}

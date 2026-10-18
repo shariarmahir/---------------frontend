@@ -11,6 +11,37 @@
  * data/services.ts; this file only adds the release view on top.
  */
 
+import {
+  siAndroid,
+  siBluetooth,
+  siDocker,
+  siEspressif,
+  siExpo,
+  siFastapi,
+  siKicad,
+  siLangchain,
+  siMqtt,
+  siNordicsemiconductor,
+  siPostgresql,
+  siPython,
+  siPytorch,
+  siRaspberrypi,
+  siTensorflow,
+  siTypescript,
+  siWebrtc,
+  type SimpleIcon,
+} from "simple-icons";
+
+/** One technology behind a product or project, shown as a sticker (components/catalog/tech-row.tsx). */
+export interface TechItem {
+  /** The brand logo (simple-icons): its path, colour and name. */
+  logo: SimpleIcon;
+  /** What it does here, in a few words. */
+  role: string;
+  /** `built`: the live product is built with it; `demo`: a working demo is; `proposed`: part of the plan. */
+  layer: "built" | "demo" | "proposed";
+}
+
 export interface Pipeline {
   stages: string[];
   /** Index of the stage being worked on now; earlier stages are done. */
@@ -29,10 +60,17 @@ export interface Access {
 }
 
 export interface ProductRelease {
-  pipeline: Pipeline;
+  pipeline: Pipeline & {
+    /** One line per stage, under the timeline. */
+    notes: string[];
+  };
   access: Access;
   /** What the product reads or produces, shown under "Data". */
   reads: string[];
+  /** The stack it is being built on: all planned, since nothing has launched. */
+  tech: TechItem[];
+  /** The 3D film on its page: the line above it, and what it shows, for screen readers. */
+  film: { lead: string; label: string };
 }
 
 export const productReleases: Record<string, ProductRelease> = {
@@ -41,6 +79,13 @@ export const productReleases: Record<string, ProductRelease> = {
       stages: ["Research", "Prototype", "Clinical testing", "Pilot", "Launch"],
       current: 1,
       note: "The band and its on-device model are being built and tested in the lab.",
+      notes: [
+        "The signals that change first, and the risks they predict, from published research.",
+        "The band and its on-device model, built and tested in the lab.",
+        "Readings compared against clinical reference devices with partner doctors.",
+        "Elderly and high-risk households around the first Smart Pharmacies.",
+        "Subsidised bands through pharmacies, NGOs and employers.",
+      ],
     },
     access: {
       label: "Join the early list",
@@ -49,12 +94,33 @@ export const productReleases: Record<string, ProductRelease> = {
       icon: "watch",
     },
     reads: ["Heart rhythm (ECG)", "Blood oxygen (SpO₂)", "Body temperature", "Muscle signal (EMG)", "Heart-rate variability"],
+    tech: [
+      { logo: siNordicsemiconductor, role: "Band chip", layer: "proposed" },
+      { logo: siKicad, role: "Circuit design", layer: "proposed" },
+      { logo: siTensorflow, role: "On-device AI", layer: "proposed" },
+      { logo: siPython, role: "Signal research", layer: "proposed" },
+      { logo: siBluetooth, role: "Phone link", layer: "proposed" },
+      { logo: siAndroid, role: "Family app", layer: "proposed" },
+      { logo: siFastapi, role: "Alert service", layer: "proposed" },
+      { logo: siPostgresql, role: "Readings history", layer: "proposed" },
+    ],
+    film: {
+      lead: "An elder wears the band at home. It reads every heartbeat, catches an irregular rhythm, and alerts his son and the village health worker, so the journey to care starts in time.",
+      label: "A film of Aponjon: an elder on a bench wears the band, his heartbeat turns irregular, the band's chip flags it, his son's phone and the health worker are alerted, and the clinic lights up.",
+    },
   },
   swasti: {
     pipeline: {
       stages: ["Research", "Prototype", "Beta", "Pilot", "Launch"],
       current: 2,
       note: "The app is in beta: voice, triage and the health record are being tested.",
+      notes: [
+        "How rural families look for care, and what a first step must answer.",
+        "The voice assistant, the risk check and the record, first builds.",
+        "A closed group of testers tries voice, triage and the record.",
+        "Partner doctors take calls, linked to Aponjon readings and pharmacies.",
+        "A free public release with regional dialects and an offline mode.",
+      ],
     },
     access: {
       label: "Get the beta",
@@ -63,12 +129,33 @@ export const productReleases: Record<string, ProductRelease> = {
       icon: "install_mobile",
     },
     reads: ["Symptoms, spoken in Bangla", "Readings from Aponjon", "Prescriptions and reports", "Doctor's notes", "Lifelong health record"],
+    tech: [
+      { logo: siExpo, role: "Phone app", layer: "proposed" },
+      { logo: siTypescript, role: "App code", layer: "proposed" },
+      { logo: siPython, role: "Health engine", layer: "proposed" },
+      { logo: siLangchain, role: "Guidance (RAG)", layer: "proposed" },
+      { logo: siPytorch, role: "Diagnostic model", layer: "proposed" },
+      { logo: siWebrtc, role: "Doctor calls", layer: "proposed" },
+      { logo: siFastapi, role: "App service", layer: "proposed" },
+      { logo: siPostgresql, role: "Health record", layer: "proposed" },
+    ],
+    film: {
+      lead: "A mother asks about her child's fever by voice. SWASTI checks the guidance, scores how urgent it is, connects a doctor, and keeps the prescription in one record that comes back to her phone.",
+      label: "A film of SWASTI: a mother speaks into her phone about her child's fever, the guidance gathers round SWASTI's core, the risk check settles on go today, a doctor takes the call, and the prescription joins her health record.",
+    },
   },
   "smart-pharmacy": {
     pipeline: {
       stages: ["Research", "Design", "Pilot", "Union network", "Scale"],
       current: 2,
       note: "The first pilot, in Kazaikat village, Nakla, Sherpur, is being planned.",
+      notes: [
+        "Who visits the village drug shop, and what they are sold.",
+        "The kiosk, solar cold storage and the video-doctor counter, on paper.",
+        "The first shops, starting with Kazaikat village, Nakla, Sherpur.",
+        "A union-wide network with a shared doctor panel and supply chain.",
+        "A franchise model, toward a centre within reach of every village.",
+      ],
     },
     access: {
       label: "Partner with the pilot",
@@ -77,6 +164,20 @@ export const productReleases: Record<string, ProductRelease> = {
       icon: "handshake",
     },
     reads: ["Blood pressure and glucose", "Stock and expiry dates", "Cold-storage temperature", "Video consultations", "Prescriptions dispensed"],
+    tech: [
+      { logo: siRaspberrypi, role: "Vitals kiosk", layer: "proposed" },
+      { logo: siEspressif, role: "Fridge sensor", layer: "proposed" },
+      { logo: siMqtt, role: "Device signals", layer: "proposed" },
+      { logo: siAndroid, role: "Counter tablet", layer: "proposed" },
+      { logo: siWebrtc, role: "Video doctor", layer: "proposed" },
+      { logo: siFastapi, role: "Pharmacy service", layer: "proposed" },
+      { logo: siPostgresql, role: "Stock and records", layer: "proposed" },
+      { logo: siDocker, role: "Deployment", layer: "proposed" },
+    ],
+    film: {
+      lead: "A villager walks into the shop he already uses. The sun powers the counter, the health worker measures his blood pressure, a doctor joins by video, and verified medicine goes home with him.",
+      label: "A film of Smart Pharmacy: the sun charges solar panels on the shop roof, a villager walks in, the kiosk reads his blood pressure high, a doctor joins on the wall screen, medicine is handed over, and the shop stays linked to others in the union.",
+    },
   },
 };
 

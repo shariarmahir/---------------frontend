@@ -11,10 +11,10 @@ export interface Value {
 }
 
 export const VALUES: Value[] = [
-  { icon: "flag", title: "Built here, for here", body: "Problems solved by people who live with them, made in Bangladesh." },
-  { icon: "diversity_3", title: "Open to all", body: "Priced and designed for every village, not only the cities." },
-  { icon: "fact_check", title: "Proof before promises", body: "We show what works, and call research what it still is." },
-  { icon: "grid_on", title: "One pixel at a time", body: "One sector fixed properly before the next. Healthcare first." },
+  { icon: "flag", title: "Made by those who live it", body: "Problems solved by people who live with them, made in Bangladesh." },
+  { icon: "diversity_3", title: "Every village, every pocket", body: "Priced and designed for every village, not only the cities." },
+  { icon: "fact_check", title: "Proof before every promise", body: "We show what works, and call research what it still is." },
+  { icon: "grid_on", title: "One sector, fixed for good", body: "One sector fixed properly before the next. Healthcare first." },
 ];
 
 /** The company in one paragraph. */

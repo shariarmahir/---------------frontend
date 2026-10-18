@@ -5,8 +5,10 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Icon } from "@/components/ui/icon";
+import { sourcePoints } from "@/data/amar-bangladesh";
 import { useAuth } from "@/lib/auth/client";
-import { buildArticle, draftProblems, FIELDS, KINDS, LEVELS, LIMITS, type Article, type Draft, type DraftProblems, type FieldId, type Level, type ResearchKind } from "@/lib/research/core";
+import { buildArticle, draftProblems, FIELDS, KINDS, LEVELS, LIMITS, SCOPES, type Article, type Draft, type DraftProblems, type FieldId, type Level, type ResearchKind, type Scope } from "@/lib/research/core";
+import { problemCode } from "@/lib/research/tracks";
 import { updateResearch, useLibrary } from "@/lib/research/store";
 import { cn } from "@/lib/utils";
 import { articleHref, bn } from "./ui";
@@ -157,6 +159,27 @@ export function SubmitForm() {
           <label className="block">
             <span className={label}>জেলা (যেখানে কাজ হয়েছে)</span>
             <input className={field} value={d.district} onChange={(e) => set("district", e.target.value)} />
+          </label>
+          <label className="block">
+            <span className={label}>পরিসর</span>
+            <select className={field} value={d.scope ?? "bangladesh"} onChange={(e) => set("scope", e.target.value as Scope)}>
+              {(Object.keys(SCOPES) as Scope[]).map((k) => (
+                <option key={k} value={k}>
+                  {SCOPES[k]}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block">
+            <span className={label}>দেশের কোন সমস্যা নিয়ে (ঐচ্ছিক)</span>
+            <select className={field} value={d.problem ?? ""} onChange={(e) => set("problem", e.target.value)}>
+              <option value="">কোনোটি নয়</option>
+              {sourcePoints.map((sp) => (
+                <option key={sp.n} value={String(sp.n)}>
+                  {problemCode(sp.n)} · {sp.topic}
+                </option>
+              ))}
+            </select>
           </label>
         </div>
       </fieldset>

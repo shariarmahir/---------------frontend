@@ -41,6 +41,10 @@ export const LEVELS: Record<Level, string> = {
 
 export type Status = "published" | "review";
 
+export type Scope = "bangladesh" | "global";
+
+export const SCOPES: Record<Scope, string> = { bangladesh: "বাংলাদেশ", global: "বৈশ্বিক" };
+
 export interface Author {
   name: string;
   /** The Latin spelling, for share cards that cannot shape Bangla. */
@@ -138,6 +142,10 @@ export interface Article {
   file?: { name: string; size: number; url?: string };
   /** Demo content, labelled as such on the page. */
   sample?: boolean;
+  /** Where the question sits: Bangladesh (the default) or the wider world (global and comparative work). */
+  scope?: Scope;
+  /** The national dossier's problems this work speaks to (BD-001 … BD-032, by number). */
+  problems?: number[];
   /** A working paper: published for reading and comment, not yet peer reviewed. */
   preprint?: boolean;
   /** Put on the main page's cover by the editors. */
@@ -349,6 +357,10 @@ export interface Draft {
   sections: { heading: string; body: string }[];
   references: string;
   agree: boolean;
+  /** Optional: Bangladesh unless the author says the work is global. */
+  scope?: Scope;
+  /** Optional: one dossier problem the work speaks to, by number ("" for none). */
+  problem?: string;
 }
 
 export type DraftProblems = Partial<Record<"title" | "kind" | "field" | "level" | "authors" | "institution" | "year" | "summary" | "keywords" | "sections" | "references" | "agree", string>>;
@@ -420,6 +432,8 @@ export function buildArticle(d: Draft, opts: { now: Date; taken: Set<string>; ow
     sections,
     references: parseReferences(d.references),
     ...(opts.file ? { file: opts.file } : {}),
+    ...(d.scope === "global" ? { scope: "global" as const } : {}),
+    ...(Number(d.problem) >= 1 && Number(d.problem) <= 32 ? { problems: [Number(d.problem)] } : {}),
     owner: opts.owner,
     revisions: [{ at, by: opts.ownerName, note: "প্রথম জমা — পর্যালোচনার অপেক্ষায়" }],
   };

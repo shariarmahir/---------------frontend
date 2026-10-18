@@ -14,6 +14,7 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { KandariProfileSection } from "@/components/sections/kandari-profile-section";
 import { SERVICE_PIPELINE, SERVICE_PIPELINE_NOTES } from "@/data/catalog";
+import { projects } from "@/data/projects";
 import { services } from "@/data/services";
 
 export const metadata: Metadata = {
@@ -34,7 +35,7 @@ export default function ServicesPage() {
       <SiteHeader />
       <main className="relative w-full bg-black pt-header lg:pt-header-lg">
         <PageHero
-          art={services.map((s) => s.image)}
+          art={projects.map((p) => ({ src: p.shots[0].src, alt: p.shots[0].alt }))}
           title={
             <>
               Our engineering, <span className="text-signal-orange">built for you.</span>

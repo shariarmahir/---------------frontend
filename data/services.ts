@@ -2,13 +2,15 @@
  * Kandari-Lab's services: the four kinds of work the team builds for
  * others, beside its own healthcare products (data/products.ts).
  *
- * Every line here describes a capability, not a result. There are no
- * client names, project counts or performance figures, because none have
- * been published to cite. `proof` points only at Kandari-Lab's own
- * products, where the same skills are already in use.
+ * Every line here describes a capability, not a result; the client work
+ * itself lives in data/projects.ts. `proof` points only at Kandari-Lab's
+ * own products, where the same skills are already in use.
  *
- * Photos are from Wikimedia Commons and carry their credit; the card shows it.
+ * The catalogue pages show each service as its 3D `film`. The photos, from
+ * Wikimedia Commons with their credits, serve the home page showcase.
  */
+
+import type { FilmId } from "@/components/films/motion-film";
 
 export type ServiceMotion = "neural" | "factory" | "signal" | "code";
 
@@ -29,12 +31,16 @@ export interface Service {
   icon: string;
   /** Which motion-graphic scene plays over the photo. */
   motion: ServiceMotion;
+  /** Its photo, for the home page showcase. */
   image: { src: string; alt: string; credit: string };
+  /** The 3D film that stands for it on the catalogue pages (components/films). */
+  film: FilmId;
 }
 
 export const services: Service[] = [
   {
     id: "ai",
+    film: "svc-ai",
     name: "AI · LLM · Agents",
     nameBn: "এআই, এলএলএম ও এজেন্ট",
     pitch: "Bangla-first AI that reads your documents, talks to your customers and runs routine work.",
@@ -57,6 +63,7 @@ export const services: Service[] = [
   },
   {
     id: "automation",
+    film: "svc-automation",
     name: "Automation",
     nameBn: "অটোমেশন — কারখানা, বাসা, অফিস",
     pitch: "Machines, homes and offices that run themselves, and tell you when they need you.",
@@ -79,6 +86,7 @@ export const services: Service[] = [
   },
   {
     id: "iot",
+    film: "svc-iot",
     name: "IoT Solutions",
     nameBn: "আইওটি সমাধান",
     pitch: "Sensors that keep working where power and signal do not — farms, rivers, clinics, cold rooms.",
@@ -101,6 +109,7 @@ export const services: Service[] = [
   },
   {
     id: "development",
+    film: "svc-development",
     name: "Development",
     nameBn: "ডেভেলপমেন্ট — ওয়েবসাইট, অ্যাপ, ইউআই",
     pitch: "Websites, apps and interfaces that load fast on a cheap phone and read well in Bangla.",

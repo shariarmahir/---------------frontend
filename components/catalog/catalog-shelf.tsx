@@ -5,8 +5,8 @@ import type { AppId, KandariApp } from "@/data/apps";
 import { cn } from "@/lib/utils";
 import { CatalogCard, type CatalogItem } from "./catalog-card";
 
-/** The catalogue rows run the full width of the screen, with the page gutter. */
-const WIDE = "mx-auto w-full max-w-[120rem] px-gutter-x";
+/** The catalogue rows run the full width of the screen, with the page gutter (the home page's product and service rows too). */
+export const WIDE = "mx-auto w-full max-w-[120rem] px-gutter-x";
 
 /**
  * One row of the catalogue: the title (and a link to the full list) over a

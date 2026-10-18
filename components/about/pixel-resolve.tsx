@@ -34,7 +34,7 @@ export function PixelResolve({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const started = useRef(false);
-  const [readout, setReadout] = useState<string | null>(null);
+  const [drawing, setDrawing] = useState(false);
   const [resolved, setResolved] = useState(false);
 
   const run = useCallback(
@@ -73,7 +73,7 @@ export function PixelResolve({
         sctx.drawImage(img, sx, sy, sw, sh, 0, 0, cols, rows);
         ctx.imageSmoothingEnabled = false;
         ctx.drawImage(small, 0, 0, cols, rows, 0, 0, canvas.width, canvas.height);
-        setReadout(`${cols} × ${rows}`);
+        setDrawing(true);
       };
 
       // The coarsest frame goes up at once; the repair waits until the photo is in view
@@ -122,14 +122,9 @@ export function PixelResolve({
         aria-hidden
         className={cn(
           "absolute inset-0 size-full transition-opacity duration-700 ease-out motion-reduce:hidden",
-          readout && !resolved ? "opacity-100" : "opacity-0",
+          drawing && !resolved ? "opacity-100" : "opacity-0",
         )}
       />
-      {/* The repair, read out like a scan: resolution climbing to full. */}
-      <p aria-hidden className="absolute top-4 left-4 flex items-center gap-2 rounded-full bg-black/60 px-3 py-1.5 font-sans text-xs font-semibold text-white tabular-nums">
-        <span className={cn("size-2 rounded-full", resolved ? "bg-signal-orange" : "animate-pulse bg-white motion-reduce:animate-none")} />
-        {resolved || !readout ? "Repaired: full resolution" : `Repairing: ${readout} pixels`}
-      </p>
     </div>
   );
 }

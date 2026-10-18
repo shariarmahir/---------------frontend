@@ -150,7 +150,7 @@ const SERVICE_TONES: CardTone[] = ["green", "ink", "gold", "white"];
 
 /**
  * The four services, four across on wide screens. On the home page each card opens its
- * block on /products; on /products, where the reader already is, it goes
+ * service page, its picture the service's 3D film; on /products it goes
  * to the Kandari Profile sign-up, the one way to reach the team today.
  */
 export function ServicesShowcase({ on = "home", poster }: { on?: "home" | "products"; poster?: boolean }) {
@@ -169,9 +169,8 @@ export function ServicesShowcase({ on = "home", poster }: { on?: "home" | "produ
           name: s.name,
           nameText: s.name,
           pitch: s.pitch,
-          href: on === "home" ? `/products#service-${s.id}` : "/#kandari-profile",
-          image: s.image,
-          note: s.image.credit,
+          href: on === "home" ? `/services/${s.id}` : "/#kandari-profile",
+          film3d: s.film,
         }))}
       />
     );
@@ -181,7 +180,7 @@ export function ServicesShowcase({ on = "home", poster }: { on?: "home" | "produ
       {services.map((s, i) => (
         <div key={s.id} id={`service-${s.id}`} className="story-reveal scroll-mt-header lg:scroll-mt-header-lg">
           <ShowcaseCard
-            href={on === "home" ? `/products#service-${s.id}` : "/#kandari-profile"}
+            href={on === "home" ? `/services/${s.id}` : "/#kandari-profile"}
             image={s.image}
             scene={SERVICE_SCENE[s.motion]}
             eyebrow={`Service ${String(i + 1).padStart(2, "0")}`}

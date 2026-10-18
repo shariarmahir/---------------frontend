@@ -1,9 +1,7 @@
 /*
- * গবেষণাকোষ's kit. The world: the home page's pitch-black ground; solid
- * gold for what matters most (the cover, the score), solid bottle green for
- * rank and field, white tiles for reference facts, neutral glass-free dark
- * tiles for lists. The encyclopedia serif (font-wiki) carries titles and big
- * numbers; Bangla never gets letter-spacing.
+ * গবেষণাকোষ's kit, in the home page's world: pitch-black ground; navy,
+ * ink and cobalt as the only fields; gold for titles, figures and actions.
+ * Bangla never gets letter-spacing.
  */
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
@@ -12,10 +10,10 @@ import { cn } from "@/lib/utils";
 
 export const articleHref = (a: Pick<Article, "slug">) => `/research/${encodeURIComponent(a.slug)}`;
 
-/** An inline link to an article (gold on black, green on paper). */
+/** An inline link to an article, in gold. */
 export function ALink({ article, paper, className, children }: { article: Pick<Article, "slug" | "title">; paper?: boolean; className?: string; children?: React.ReactNode }) {
   return (
-    <Link href={articleHref(article)} className={cn("font-semibold underline-offset-2 hover:underline", paper ? "text-bd-green" : "text-signal-orange", className)}>
+    <Link href={articleHref(article)} className={cn("font-semibold underline-offset-2 hover:underline", paper ? "text-signal-orange" : "text-signal-orange", className)}>
       {children ?? article.title}
     </Link>
   );
@@ -23,7 +21,7 @@ export function ALink({ article, paper, className, children }: { article: Pick<A
 
 export function KindChip({ article, paper }: { article: Pick<Article, "kind">; paper?: boolean }) {
   return (
-    <span className={cn("inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] leading-none font-bold", paper ? "bg-text-primary text-signal-orange" : "bg-white/8 text-white/85 ring-1 ring-white/12")}>
+    <span className={cn("inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs leading-none font-bold", paper ? "bg-text-primary text-signal-orange" : "bg-white/8 text-white/85 ring-1 ring-white/12")}>
       <Icon name={KINDS[article.kind].icon} className="text-[14px]" /> {KINDS[article.kind].bn}
     </span>
   );
@@ -31,29 +29,29 @@ export function KindChip({ article, paper }: { article: Pick<Article, "kind">; p
 
 export function FieldChip({ article }: { article: Pick<Article, "field"> }) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-bd-green px-2.5 py-1 text-[11px] leading-none font-bold text-white">
+    <span className="inline-flex items-center gap-1 rounded-full bg-cobalt px-2.5 py-1 text-xs leading-none font-bold text-white">
       <Icon name={FIELDS[article.field].icon} className="text-[14px]" /> {FIELDS[article.field].bn}
     </span>
   );
 }
 
 export function LevelChip({ article }: { article: Pick<Article, "level"> }) {
-  return <span className="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] leading-none font-bold text-white/70 ring-1 ring-white/15">{LEVELS[article.level]}</span>;
+  return <span className="inline-flex items-center rounded-full px-2.5 py-1 text-xs leading-none font-bold text-white/80 ring-1 ring-white/15">{LEVELS[article.level]}</span>;
 }
 
 /** Status badges: working paper, ongoing, in review, sample. */
 export function StatusChips({ article }: { article: Pick<Article, "preprint" | "ongoing" | "status" | "sample"> }) {
   return (
     <>
-      {article.preprint && <span className="inline-flex items-center gap-1 rounded-full bg-signal-orange px-2.5 py-1 text-[11px] leading-none font-bold text-text-primary"><Icon name="edit_note" className="text-[14px]" /> ওয়ার্কিং পেপার</span>}
-      {article.ongoing && <span className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[11px] leading-none font-bold text-bd-green"><Icon name="science" className="text-[14px]" /> চলমান গবেষণা</span>}
-      {article.status === "review" && <span className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[11px] leading-none font-bold text-text-primary"><Icon name="hourglass_top" className="text-[14px]" /> পর্যালোচনায়</span>}
-      {article.sample && <span className="inline-flex items-center rounded-full px-2.5 py-1 text-[11px] leading-none font-bold text-white/55 ring-1 ring-white/15">নমুনা</span>}
+      {article.preprint && <span className="inline-flex items-center gap-1 rounded-full bg-signal-orange px-2.5 py-1 text-xs leading-none font-bold text-text-primary"><Icon name="edit_note" className="text-[14px]" /> ওয়ার্কিং পেপার</span>}
+      {article.ongoing && <span className="inline-flex items-center gap-1 rounded-full bg-bdnavy-900 px-2.5 py-1 text-xs leading-none font-bold text-signal-orange ring-1 ring-white/15"><Icon name="science" className="text-[14px]" /> চলমান গবেষণা</span>}
+      {article.status === "review" && <span className="inline-flex items-center gap-1 rounded-full bg-bdnavy-900 px-2.5 py-1 text-xs leading-none font-bold text-white ring-1 ring-white/15"><Icon name="hourglass_top" className="text-[14px]" /> পর্যালোচনায়</span>}
+      {article.sample && <span className="inline-flex items-center rounded-full px-2.5 py-1 text-xs leading-none font-bold text-white/65 ring-1 ring-white/15">নমুনা</span>}
     </>
   );
 }
 
-const TONES = ["bg-signal-orange text-text-primary", "bg-bd-green text-white", "bg-white text-text-primary"] as const;
+const TONES = ["bg-signal-orange text-text-primary", "bg-cobalt text-white", "bg-bdnavy-400 text-white"] as const;
 
 /** A solid initials disc; the colour follows the name so a person keeps theirs everywhere. */
 export function Avatar({ name, className }: { name: string; className?: string }) {
@@ -71,7 +69,7 @@ export function SectionHead({ id, title, action }: { id: string; title: React.Re
   return (
     <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
       <div>
-        <h2 id={id} className="font-wiki text-[1.75rem] leading-tight font-bold text-white sm:text-[2.1rem]">{title}</h2>
+        <h2 id={id} className="text-2xl leading-tight font-bold text-signal-orange sm:text-3xl">{title}</h2>
       </div>
       {action}
     </div>
@@ -81,7 +79,7 @@ export function SectionHead({ id, title, action }: { id: string; title: React.Re
 /** "সব দেখুন →" style link for a section head. */
 export function MoreLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link href={href} className="group inline-flex min-h-10 items-center gap-1 rounded-full px-3 text-sm font-bold text-white/80 ring-1 ring-white/15 transition-colors hover:bg-white hover:text-text-primary">
+    <Link href={href} className="group inline-flex min-h-10 items-center gap-1 rounded-full px-4 text-sm font-bold text-signal-orange ring-1 ring-signal-orange/45 transition-colors hover:bg-signal-orange hover:text-text-primary">
       {children} <Icon name="arrow_forward" className="text-[18px] transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none" />
     </Link>
   );
@@ -111,7 +109,7 @@ export function ArticleItem({ a, note }: { a: Article; note?: React.ReactNode })
   return (
     <Link href={articleHref(a)} className="group block rounded-2xl p-4 transition-colors hover:bg-white/[0.05] sm:p-5">
       <span className="flex flex-wrap gap-1.5"><KindChip article={a} /><FieldChip article={a} /><StatusChips article={a} /></span>
-      <span className="font-wiki mt-2.5 block text-lg leading-snug font-bold text-white group-hover:text-signal-orange sm:text-xl">{a.title}</span>
+      <span className="mt-2.5 block text-lg leading-snug font-bold text-white group-hover:text-signal-orange sm:text-xl">{a.title}</span>
       <span className="mt-1.5 line-clamp-2 block text-[15px] leading-relaxed text-white/60">{a.summary}</span>
       <span className="mt-2 block text-xs text-white/45">{byline(a, 2)} · {a.institution.split(",")[0]} · {bnDate(a.published)}{note}</span>
     </Link>

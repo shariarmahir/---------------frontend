@@ -1,12 +1,16 @@
 import type { ReactNode } from "react";
+import { WIDE } from "@/components/catalog/catalog-shelf";
 import { ProductsShowcase, ServicesShowcase, ShowcaseCta, TrackLink } from "@/components/showcase/showcase";
 import { SectionHeading } from "@/components/ui/section-kit";
+import { cn } from "@/lib/utils";
 
 /*
  * Products and services, as two sections of their own with the apps
  * section between them on the home page. Products keeps `#flagship` (the
  * hero button and the footer link to it); `#swasti-section` lives on the
- * SWASTI poster.
+ * SWASTI poster. Both run the full width of the screen, as the catalogue
+ * rows on /products and /services do; the apps section between them keeps
+ * the content column.
  */
 
 /** A section heading with the link to its full page level with the title, at the right. */
@@ -23,7 +27,7 @@ function HeadingRow({ children, href, link }: { children: ReactNode; href: strin
 
 export function ProductsSection() {
   return (
-    <section id="flagship" className="section-band mx-auto max-w-7xl px-gutter-x">
+    <section id="flagship" className={cn(WIDE, "section-band")}>
       <HeadingRow href="/products" link="All products">
         <SectionHeading
           tone="dark"
@@ -39,7 +43,7 @@ export function ProductsSection() {
 
 export function ServicesSection() {
   return (
-    <section id="services" className="section-band mx-auto max-w-7xl px-gutter-x">
+    <section id="services" className={cn(WIDE, "section-band")}>
       <HeadingRow href="/services" link="Services in detail">
         <SectionHeading
           tone="dark"

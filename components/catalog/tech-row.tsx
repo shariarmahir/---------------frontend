@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import type { ProjectTech } from "@/data/projects";
+import type { TechItem } from "@/data/catalog";
 
 /** Each sticker rests at its own slight angle, so the row reads hand-stuck. */
 const TILTS = [-6, 4, -3, 7, -5, 3, -7, 5];
@@ -12,13 +12,21 @@ const TILTS = [-6, 4, -3, 7, -5, 3, -7, 5];
  * pointed at. Under reduced motion the row wraps in place and stays still
  * (`.catalog-marquee` and `.tech-sticker` in globals.css).
  */
-export function TechRow({ items }: { items: ProjectTech[] }) {
+/** How each layer reads in a sticker's tooltip and to screen readers. */
+const LAYER = { built: "built with it", demo: "in the demo", proposed: "planned" } as const;
+
+/** A short stack is repeated so that one pass of the row is always wider than the screen. */
+const MIN_PER_PASS = 12;
+
+export function TechRow({ items }: { items: TechItem[] }) {
+  const pass = Array.from({ length: Math.ceil(MIN_PER_PASS / items.length) }, () => items).flat();
   const row = (copy: boolean) => (
     <ul aria-hidden={copy || undefined} className="flex shrink-0 items-start gap-14 pr-14">
-      {items.map((item, i) => (
+      {pass.map((item, i) => (
         <li
-          key={item.logo.slug}
-          title={`${item.logo.title}: ${item.role}${item.layer === "demo" ? ", in the demo" : ", proposed"}`}
+          key={`${item.logo.slug}-${i}`}
+          aria-hidden={i >= items.length || undefined}
+          title={`${item.logo.title}: ${item.role}, ${LAYER[item.layer]}`}
           className="group flex w-28 flex-col items-center gap-3 text-center"
         >
           <span
@@ -33,7 +41,7 @@ export function TechRow({ items }: { items: ProjectTech[] }) {
             <span className="font-grotesk text-sm font-bold text-white">{item.logo.title}</span>
             <span className="font-sans text-xs text-white/60">
               {item.role}
-              {copy ? null : <span className="sr-only">{item.layer === "demo" ? ", used in the demo" : ", proposed for the floor"}</span>}
+              {copy ? null : <span className="sr-only">, {LAYER[item.layer]}</span>}
             </span>
           </span>
         </li>

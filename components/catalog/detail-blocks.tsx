@@ -1,10 +1,10 @@
+import Image from "next/image";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { Icon } from "@/components/ui/icon";
 import { btn } from "@/components/ui/section-kit";
 import type { Access, Pipeline } from "@/data/catalog";
-import { completePercent } from "@/data/catalog";
-import type { Phase, Stat, Source } from "@/data/products";
+import type { Scenario, Source } from "@/data/products";
 import { cn } from "@/lib/utils";
 import { SourceLink } from "./source-link";
 
@@ -53,7 +53,7 @@ export function DetailSection({
   );
 }
 
-/* ── Status: running, complete, access ────────────────────────────────── */
+/* ── Status: running, access ──────────────────────────────────────────── */
 
 const CARD = "story-reveal flex flex-col gap-4 rounded-3xl p-7 ring-1 ring-white/12";
 
@@ -66,38 +66,6 @@ export function RunningCard({ title, note, label = "Running now" }: { title: str
       </span>
       <p className="font-grotesk text-3xl font-bold text-signal-orange">{title}</p>
       <p className="font-sans text-base leading-relaxed text-white/80">{note}</p>
-    </div>
-  );
-}
-
-/** How much of the pipeline is finished, as a ring and in words. */
-export function CompleteCard({ pipeline }: { pipeline: Pipeline }) {
-  const percent = completePercent(pipeline);
-  const r = 34;
-  const length = 2 * Math.PI * r;
-  return (
-    <div className={cn(CARD, "bg-text-primary text-white")}>
-      <span className="font-sans text-sm font-semibold text-white/80">Complete</span>
-      <div className="flex items-center gap-5">
-        <svg viewBox="0 0 80 80" className="size-20 shrink-0 -rotate-90" aria-hidden>
-          <circle cx="40" cy="40" r={r} fill="none" strokeWidth="6" className="stroke-white/12" />
-          <circle
-            cx="40"
-            cy="40"
-            r={r}
-            fill="none"
-            strokeWidth="6"
-            strokeLinecap="round"
-            strokeDasharray={length}
-            strokeDashoffset={length * (1 - percent / 100)}
-            className="stroke-signal-orange"
-          />
-        </svg>
-        <p className="font-grotesk text-5xl font-bold text-signal-orange tabular-nums">{percent}%</p>
-      </div>
-      <p className="font-sans text-base leading-relaxed text-white/80">
-        {pipeline.current} of {pipeline.stages.length} stages finished; {pipeline.stages[pipeline.current]} is under way.
-      </p>
     </div>
   );
 }
@@ -229,93 +197,151 @@ export function UseGrid({ items }: { items: { icon?: string; tag?: string; title
 
 /* ── Problem and fix ──────────────────────────────────────────────────── */
 
-/** The core problem on ink beside the fix on cobalt. */
-export function ProblemSolve({ problem, solve }: { problem: { statement: string; detail: string }; solve: { statement: string; detail: string } }) {
-  const panel = "story-reveal flex flex-col gap-4 rounded-3xl p-7 ring-1 ring-white/12 sm:p-9";
-  return (
-    <div className="grid gap-4 lg:grid-cols-2">
-      <div className={cn(panel, "bg-text-primary")}>
-        <span className="inline-flex items-center gap-2 font-sans text-sm font-semibold text-white/80">
-          <Icon name="error" className="text-xl text-national-crimson" /> The problem
-        </span>
-        <p className="font-grotesk text-2xl leading-snug font-bold text-white">{problem.statement}</p>
-        <p className="font-sans text-base leading-relaxed text-white/80">{problem.detail}</p>
-      </div>
-      <div className={cn(panel, "bg-cobalt")}>
-        <span className="inline-flex items-center gap-2 font-sans text-sm font-semibold text-white/80">
-          <Icon name="task_alt" className="text-xl text-signal-orange" /> How it solves it
-        </span>
-        <p className="font-grotesk text-2xl leading-snug font-bold text-signal-orange">{solve.statement}</p>
-        <p className="font-sans text-base leading-relaxed text-white/80">{solve.detail}</p>
-      </div>
-    </div>
-  );
-}
-
-/* ── Data ─────────────────────────────────────────────────────────────── */
-
-const STAT_FIELDS = ["bg-cobalt", "bg-bdnavy-900", "bg-text-primary", "bg-bdnavy-900"];
+type Readout = { statement: string; detail: string };
 
 /**
- * The data behind a product: what it reads, the national figures that
- * make the case (each linked to its source), and the research findings.
+ * How each side of the problem/fix pair reads: its field, its accent, and
+ * where on the way from start to due the trouble is seen (`mark`, in %).
  */
-export function DataBlock({ reads, stats, findings }: { reads: string[]; stats: Stat[]; findings: { text: string; source: Source }[] }) {
+const SIDES = {
+  problem: {
+    label: "The problem",
+    field: "bg-text-primary",
+    icon: "hourglass_bottom",
+    badge: "bg-national-crimson text-white",
+    dot: "bg-national-crimson",
+    fill: "bg-white/40",
+    statement: "text-white",
+    pace: "late",
+    mark: 90,
+  },
+  fix: {
+    label: "How it solves it",
+    field: "bg-cobalt",
+    icon: "notifications_active",
+    badge: "bg-signal-orange text-black",
+    dot: "bg-signal-orange",
+    fill: "bg-signal-orange",
+    statement: "text-signal-orange",
+    pace: "early",
+    mark: 26,
+  },
+} as const;
+
+/**
+ * The batch's way from start to due, and the moment the trouble is seen.
+ * Late: time runs almost out before the red marker appears. Early: the
+ * gold marker appears a quarter of the way in with a ping (the alert), and
+ * the rest of the track lights up as the time left to act.
+ */
+function SeenBar({ side }: { side: keyof typeof SIDES }) {
+  const s = SIDES[side];
   return (
-    <div className="flex flex-col gap-10">
-      <div className="story-reveal flex flex-col gap-4">
-        <h3 className="font-grotesk text-lg font-bold text-white">What it reads</h3>
-        <ul className="flex flex-wrap gap-2">
-          {reads.map((r) => (
-            <li key={r} className="inline-flex items-center gap-2 rounded-full px-4 py-2 font-sans text-sm font-semibold text-white/80 ring-1 ring-white/20">
-              <Icon name="sensors" className="text-lg text-signal-orange" />
-              {r}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat, i) => (
-          <li key={stat.label} className={cn("story-reveal flex flex-col justify-between gap-6 rounded-3xl p-6 text-white ring-1 ring-white/12", STAT_FIELDS[i % STAT_FIELDS.length])}>
-            <div className="flex flex-col gap-2">
-              <span className="font-grotesk text-4xl font-bold tracking-tight text-signal-orange tabular-nums">{stat.value}</span>
-              <span className="font-sans text-sm leading-relaxed text-white/80">{stat.label}</span>
-            </div>
-            <SourceLink source={stat.source} className="text-white/80" />
-          </li>
-        ))}
-      </ul>
-
-      <div className="story-reveal flex flex-col gap-4">
-        <h3 className="font-grotesk text-lg font-bold text-white">What the research says</h3>
-        <ul className="grid gap-x-10 gap-y-5 border-t border-white/12 pt-6 md:grid-cols-2">
-          {findings.map((f) => (
-            <li key={f.text} className="flex flex-col gap-2">
-              <p className="font-sans text-base leading-relaxed text-white/80">{f.text}</p>
-              <SourceLink source={f.source} className="self-start" />
-            </li>
-          ))}
-        </ul>
-      </div>
+    <div aria-hidden className="ps-cycle relative mt-auto h-1.5 rounded-full bg-white/15" style={{ "--mark": `${s.mark}%` } as CSSProperties}>
+      {s.pace === "early" ? <span className="ps-window absolute inset-y-0 right-0 left-(--mark) origin-left rounded-r-full bg-white/45" /> : null}
+      <span className={cn("absolute inset-y-0 left-0 w-(--mark) origin-left rounded-full", s.fill, `ps-fill-${s.pace}`)} />
+      <span className="absolute top-1/2 left-(--mark) size-4 -translate-1/2">
+        {s.pace === "early" ? <span className={cn("ps-ping absolute inset-0 rounded-full", s.dot)} /> : null}
+        <span className={cn("absolute inset-0 rounded-full ring-4 ring-black/40", s.dot, `ps-mark-${s.pace}`)} />
+      </span>
     </div>
   );
 }
 
-/* ── Roadmap ──────────────────────────────────────────────────────────── */
-
-/** The growth phases, each with its goal labelled as a target, not a result. */
-export function RoadmapGrid({ phases }: { phases: Phase[] }) {
+function ReadoutPanel({ side, readout }: { side: keyof typeof SIDES; readout: Readout }) {
+  const s = SIDES[side];
   return (
-    <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {phases.map((p) => (
-        <li key={p.phase} className="story-reveal flex flex-col gap-3 rounded-3xl bg-text-primary p-6 ring-1 ring-white/12">
-          <span className="font-sans text-sm font-semibold text-white/65">{p.phase}</span>
-          <h3 className="font-grotesk text-xl font-bold text-signal-orange">{p.title}</h3>
-          <p className="font-sans text-sm leading-relaxed text-white/80">{p.body}</p>
-          <p className="mt-auto border-t border-white/12 pt-3 font-sans text-xs font-semibold text-white/65">Target: {p.target}</p>
+    <article className={cn("story-reveal flex flex-col gap-5 rounded-3xl p-7 ring-1 ring-white/12 sm:p-8", s.field)}>
+      <header className="flex items-center gap-3">
+        <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-full", s.badge)}>
+          <Icon name={s.icon} filled className="text-xl" />
+        </span>
+        <h3 className="font-grotesk text-base font-bold text-white">{s.label}</h3>
+      </header>
+      <p className={cn("font-grotesk text-xl leading-snug font-bold text-balance sm:text-2xl", s.statement)}>{readout.statement}</p>
+      <p className="pb-3 font-sans text-base leading-relaxed text-white/80">{readout.detail}</p>
+      <SeenBar side={side} />
+    </article>
+  );
+}
+
+/**
+ * The core problem and its fix as two readout panels, ink and cobalt,
+ * joined by a node that a gold pulse crosses from one to the other. Each
+ * panel ends on the batch's way from start to due, marking when the
+ * trouble is seen: near the end without the product, early with it and
+ * time left to act. Everything moves only when motion is welcome (`ps-*`
+ * in globals.css); otherwise the bars rest at their marks.
+ */
+export function ProblemSolve({ problem, solve }: { problem: Readout; solve: Readout }) {
+  return (
+    <div className="grid max-w-5xl lg:grid-cols-[1fr_3.5rem_1fr]">
+      <ReadoutPanel side="problem" readout={problem} />
+      <div aria-hidden className="relative flex h-14 items-center justify-center lg:h-auto">
+        <span className="absolute inset-y-0 left-1/2 w-px bg-white/20 lg:inset-x-0 lg:inset-y-auto lg:top-1/2 lg:left-0 lg:h-px lg:w-auto" />
+        <span className="ps-travel absolute top-1/2 left-0 hidden size-1.5 -translate-y-1/2 rounded-full bg-signal-orange lg:block" />
+        <span className="relative flex size-10 items-center justify-center rounded-full bg-black ring-1 ring-signal-orange">
+          <Icon name="bolt" filled className="text-lg text-signal-orange" />
+        </span>
+      </div>
+      <ReadoutPanel side="fix" readout={solve} />
+    </div>
+  );
+}
+
+/* ── Figures and scenarios ─────────────────────────────────────────────── */
+
+const FIGURE_FIELDS = ["bg-cobalt", "bg-bdnavy-900", "bg-text-primary"];
+/** Sourced figures skip cobalt, where the blue source link would be hard to read. */
+const SOURCED_FIELDS = ["bg-bdnavy-900", "bg-text-primary"];
+
+/** Big figures on cobalt, navy and ink tiles; each links to its source when it has one. */
+export function FigureTiles({ items }: { items: { value: string; label: string; source?: Source }[] }) {
+  const fields = items.some((d) => d.source) ? SOURCED_FIELDS : FIGURE_FIELDS;
+  return (
+    <ul className={cn("grid gap-4 sm:grid-cols-2", items.length % 3 === 0 ? "lg:grid-cols-3" : "lg:grid-cols-4")}>
+      {items.map((d, i) => (
+        <li key={d.label} className={cn("story-reveal flex flex-col gap-2 rounded-3xl p-6 ring-1 ring-white/12", fields[i % fields.length])}>
+          <span className="font-grotesk text-4xl font-bold tracking-tight text-signal-orange tabular-nums">{d.value}</span>
+          <span className="font-sans text-sm leading-relaxed text-white/80">{d.label}</span>
+          {d.source ? <SourceLink source={d.source} className="mt-auto pt-3 text-sm" /> : null}
         </li>
       ))}
-    </ol>
+    </ul>
+  );
+}
+
+/**
+ * Real situations, a photo each: what happens today, and what happens with
+ * the product. The icons match the problem and fix panels above.
+ */
+export function ScenarioGrid({ product, items }: { product: string; items: Scenario[] }) {
+  return (
+    <ul className="grid gap-6 lg:grid-cols-2">
+      {items.map((s) => (
+        <li key={s.title} className="story-reveal flex flex-col overflow-hidden rounded-3xl bg-bdnavy-900 ring-1 ring-white/12">
+          <div className="relative aspect-video">
+            <Image src={s.image} alt={s.imageAlt} fill sizes="(min-width: 1024px) 40rem, 100vw" className="object-cover" />
+          </div>
+          <div className="flex flex-col gap-4 p-7 sm:p-8">
+            <h3 className="font-grotesk text-xl font-bold text-signal-orange">{s.title}</h3>
+            <p className="flex gap-3 font-sans text-base leading-relaxed text-white/80">
+              <Icon name="hourglass_bottom" filled className="mt-0.5 shrink-0 text-xl text-national-crimson" />
+              <span>
+                <strong className="font-semibold text-white">Today. </strong>
+                {s.without}
+              </span>
+            </p>
+            <p className="flex gap-3 font-sans text-base leading-relaxed text-white/80">
+              <Icon name="notifications_active" filled className="mt-0.5 shrink-0 text-xl text-signal-orange" />
+              <span>
+                <strong className="font-semibold text-white">With {product}. </strong>
+                {s.withProduct}
+              </span>
+            </p>
+          </div>
+        </li>
+      ))}
+    </ul>
   );
 }

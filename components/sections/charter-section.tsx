@@ -27,7 +27,7 @@ import { CharterVisual } from "./charter-viz";
  */
 
 /** Pointing at a spine opens it only once the pointer settles, so sweeping across the row does not flicker. */
-const HOVER_INTENT_MS = 120;
+export const HOVER_INTENT_MS = 120;
 
 export function CharterSection() {
   const [open, setOpen] = useState(0);
@@ -87,7 +87,7 @@ export function useInView<T extends Element>() {
 }
 
 /** The + that turns to ×: focus opens, a press toggles. */
-function Toggle({ open, onOpen, onToggle, controls, label }: { open: boolean; onOpen: () => void; onToggle: () => void; controls: string; label: string }) {
+export function Toggle({ open, onOpen, onToggle, controls, label }: { open: boolean; onOpen: () => void; onToggle: () => void; controls: string; label: string }) {
   return (
     <button
       type="button"

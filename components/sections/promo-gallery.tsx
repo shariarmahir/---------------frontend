@@ -2,281 +2,216 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import { RecordDialog } from "@/components/record/record-dialog";
-import { CarouselArrow } from "@/components/ui/carousel-arrow";
 import { Icon } from "@/components/ui/icon";
 import { btn } from "@/components/ui/section-kit";
-import { promos, type Promo, type PromoField } from "@/data/promos";
+import { promos, type Promo } from "@/data/promos";
 import { cn } from "@/lib/utils";
+import { FIELD_LOOKS } from "./charter-looks";
+import { HOVER_INTENT_MS, Toggle } from "./charter-section";
 
 /*
- * The banner gallery, after banglalink.net's home carousel and framed like
- * the charter row: one wide banner centred in the content column, its
- * neighbours peeking in at the window edges. A banner holds, then the row
- * glides one place on. It holds still under the pointer, with focus
- * inside, off screen, or while the recorder is open; with reduced motion
- * it never moves on its own. By hand: the bare arrows at the window edges
- * (hidden until the row is pointed at), a swipe, or ← →.
- *
- * Every banner keeps its own translate. A banner is at most two places
- * left of the centre and n − 3 to the right; one that has to wrap round
- * jumps while out of sight, with its transition switched off, so the loop
- * never runs backwards across the screen.
+ * The things Kandari-Lab asks a citizen to do, as a row built like the
+ * charter's (charter-section.tsx): on a wide screen (xl) one card stands
+ * open and the rest are narrow spines, symbol and name set upright;
+ * pointing at a spine, once the pointer settles, opens it. Below xl the
+ * cards stack and open in place. Each card is one solid field (navy, ink
+ * or cobalt), the message on one side and its picture on the other, and
+ * the + on each card turns to × when open (focus opens, Enter or a tap
+ * toggles). The row keeps the content column's width and the Kandari
+ * Profile band's low height.
  */
 
-/** How long a banner holds, ms. */
-const HOLD_MS = 6000;
-/** One glide from banner to banner, ms. */
-const GLIDE_MS = 900;
-/** A swipe shorter than this is a tap, px. */
-const SWIPE_PX = 48;
-
-const FIELDS: Record<PromoField, { card: string; muted: string; button: string; melt: string; glow: string }> = {
-  navy: {
-    card: "bg-bdnavy-900 text-white ring-1 ring-white/12 ring-inset",
-    muted: "text-white/80",
-    button: btn.gold,
-    melt: "from-bdnavy-900",
-    glow: "var(--color-bdnavy-400)",
-  },
-  ink: {
-    card: "bg-text-primary text-white ring-1 ring-white/12 ring-inset",
-    muted: "text-white/80",
-    button: btn.gold,
-    melt: "from-text-primary",
-    glow: "var(--color-signal-orange)",
-  },
-  cobalt: {
-    card: "bg-cobalt text-white ring-1 ring-white/12 ring-inset",
-    muted: "text-white/80",
-    button: btn.gold,
-    melt: "from-cobalt",
-    glow: "var(--color-cobalt)",
-  },
+/** Each promo's symbol, for its spine and its stacked header. */
+const PROMO_ICON: Record<string, string> = {
+  record: "radio_button_checked",
+  protibad: "campaign",
+  nagorik: "balance",
+  bangladesh: "map",
+  media: "groups",
+  research: "science",
 };
 
-type Pos = { index: number; prev: number };
-
-const mod = (a: number, b: number) => ((a % b) + b) % b;
-/** A banner's place relative to the centre: −2 … n − 3. */
-const place = (i: number, index: number, n: number) => mod(i - index + 2, n) - 2;
-const shift = (by: number) => (p: Pos): Pos => ({ index: p.index + by, prev: p.index });
-
 export function PromoGallery() {
-  const n = promos.length;
-  const [pos, setPos] = useState<Pos>({ index: 0, prev: 0 });
-  const [hover, setHover] = useState(false);
-  const [focus, setFocus] = useState(false);
-  const [onScreen, setOnScreen] = useState(false);
+  const [open, setOpen] = useState(0);
   const [recorder, setRecorder] = useState(false);
-  const root = useRef<HTMLDivElement>(null);
-  const swipe = useRef<{ id: number; x: number } | null>(null);
-
-  const step = (by: 1 | -1) => setPos(shift(by));
-  const active = mod(pos.index, n);
-  const paused = hover || focus || !onScreen || recorder;
-
-  useEffect(() => {
-    const el = root.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => setOnScreen(e.isIntersecting), { threshold: 0.3 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  // The hold. Any move or pause restarts it, so a banner always gets its full time.
-  useEffect(() => {
-    if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const t = window.setTimeout(() => setPos(shift(1)), HOLD_MS);
-    return () => window.clearTimeout(t);
-  }, [pos.index, paused]);
-
-  const onPointerDown = (e: ReactPointerEvent) => {
-    swipe.current = { id: e.pointerId, x: e.clientX };
-  };
-  const onPointerUp = (e: ReactPointerEvent) => {
-    const s = swipe.current;
-    swipe.current = null;
-    if (!s || s.id !== e.pointerId) return;
-    const dx = e.clientX - s.x;
-    if (Math.abs(dx) > SWIPE_PX) step(dx < 0 ? 1 : -1);
-  };
 
   return (
-    <section id="gallery" aria-label="What you can do with Kandari-Lab" className="section-band @container relative overflow-hidden">
-      <div
-        ref={root}
-        aria-roledescription="carousel"
-        onPointerEnter={(e) => {
-          if (e.pointerType === "mouse") setHover(true);
-        }}
-        onPointerLeave={(e) => {
-          if (e.pointerType === "mouse") setHover(false);
-        }}
-        onFocus={() => setFocus(true)}
-        onBlur={(e) => {
-          if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setFocus(false);
-        }}
-        onKeyDown={(e) => {
-          if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-          e.preventDefault();
-          step(e.key === "ArrowRight" ? 1 : -1);
-        }}
-        // --card: the content column, as every other section uses; --gap: the space between banners.
-        className="group/carousel relative [--card:calc(min(100cqw,80rem)-2*var(--spacing-gutter-x))] [--gap:12px] lg:[--gap:20px]"
-      >
-        <div
-          onPointerDown={onPointerDown}
-          onPointerUp={onPointerUp}
-          onPointerCancel={() => (swipe.current = null)}
-          onDragStart={(e) => e.preventDefault()}
-          // Room above and below for the hover lift and its glow.
-          className="relative grid touch-pan-y py-4"
-        >
-          {promos.map((promo, i) => {
-            const x = place(i, pos.index, n);
-            // A wrap is a jump of more than one place: it happens out of sight, unanimated.
-            const jump = Math.abs(x - place(i, pos.prev, n)) > 1;
-            const current = i === active;
-            return (
-              <div
-                key={promo.id}
-                role="group"
-                aria-roledescription="slide"
-                aria-label={`${i + 1} of ${n}: ${promo.label}`}
-                aria-hidden={!current}
-                inert={!current}
-                style={{
-                  translate: `calc((100cqw - var(--card)) / 2 + ${x} * (var(--card) + var(--gap))) 0`,
-                  transitionDuration: `${GLIDE_MS}ms`,
-                }}
-                className={cn(
-                  "aspect-3/4 w-(--card) will-change-[translate] [grid-area:1/1] sm:aspect-video lg:aspect-21/9",
-                  !jump && "transition-[translate] ease-[cubic-bezier(0.65,0,0.35,1)] motion-reduce:transition-none",
-                )}
-              >
-                <Banner promo={promo} onRecord={() => setRecorder(true)} priority={i === 0} />
-              </div>
-            );
-          })}
-        </div>
-
-        {(["prev", "next"] as const).map((side) => (
-          <CarouselArrow
-            key={side}
-            side={side}
-            label={side === "prev" ? "Previous banner" : "Next banner"}
-            onClick={() => step(side === "next" ? 1 : -1)}
+    <section id="gallery" aria-label="What you can do with Kandari-Lab" className="section-band mx-auto max-w-7xl px-gutter-x">
+      {/* --n: the card count, for the open card's width. Spines are 5rem with 0.75rem gaps. */}
+      <ul style={{ "--n": promos.length } as CSSProperties} className="story-reveal @container flex flex-col gap-3 xl:h-88 xl:flex-row">
+        {promos.map((promo, i) => (
+          <PromoCard
+            key={promo.id}
+            promo={promo}
+            open={open === i}
+            anyOpen={open >= 0}
+            onOpen={() => setOpen(i)}
+            onToggle={() => setOpen((o) => (o === i ? -1 : i))}
+            onRecord={() => setRecorder(true)}
           />
         ))}
-      </div>
-
+      </ul>
       <RecordDialog open={recorder} onOpenChange={setRecorder} />
     </section>
   );
 }
 
-/**
- * One banner: the message on its solid field, the picture beside it (above
- * it on a phone), the photograph melting into the field at the seam. Lifts
- * on hover with a glow in its own colour and the picture leans in, as the
- * charter cards do.
- */
-function Banner({ promo, onRecord, priority }: { promo: Promo; onRecord: () => void; priority: boolean }) {
-  const field = FIELDS[promo.field];
-  const art = promo.art;
+function PromoCard({
+  promo,
+  open,
+  anyOpen,
+  onOpen,
+  onToggle,
+  onRecord,
+}: {
+  promo: Promo;
+  open: boolean;
+  anyOpen: boolean;
+  onOpen: () => void;
+  onToggle: () => void;
+  onRecord: () => void;
+}) {
+  const look = FIELD_LOOKS[promo.field];
+  const icon = PROMO_ICON[promo.id] ?? "arrow_forward";
+  const bodyId = useId();
+  const intent = useRef(0);
+  const bangla = /[ঀ-৿]/.test(promo.label);
+
+  useEffect(() => () => window.clearTimeout(intent.current), []);
+
   return (
-    <article
-      style={{ "--glow": field.glow } as CSSProperties}
+    <li
+      id={`promo-${promo.id}`}
+      onPointerEnter={(e) => {
+        if (e.pointerType !== "mouse" || open) return;
+        intent.current = window.setTimeout(onOpen, HOVER_INTENT_MS);
+      }}
+      onPointerLeave={() => window.clearTimeout(intent.current)}
+      style={look.vars as CSSProperties}
       className={cn(
-        "group/card @container grid h-full grid-rows-[42%_minmax(0,1fr)] overflow-hidden rounded-3xl sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] sm:grid-rows-1",
-        field.card,
-        "shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_30px_60px_-36px_rgb(0_0_0/0.9)]",
-        "transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
-        "hover:-translate-y-1.5 hover:shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_28px_48px_-22px_var(--glow)]",
-        "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+        "relative flex min-w-0 flex-col overflow-hidden rounded-3xl bg-(--field) text-(--ink) ring-1 ring-white/12 ring-inset xl:basis-20",
+        "transition-[flex-grow,box-shadow] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
+        open
+          ? "shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_28px_48px_-22px_var(--glow)] xl:grow"
+          : cn("shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_30px_60px_-36px_rgb(0_0_0/0.9)]", anyOpen ? "xl:grow-0" : "xl:grow"),
       )}
     >
-      <div className="relative order-2 flex min-h-0 flex-col justify-center gap-3 p-5 sm:order-1 sm:gap-4 sm:p-8 lg:p-12">
-        <h3 className="font-bengali text-3xl leading-[1.18] font-bold text-balance text-signal-orange @2xl:text-4xl @5xl:text-5xl">{promo.title}</h3>
-        <p className={cn("line-clamp-3 max-w-md text-sm leading-relaxed sm:text-base", field.muted)}>{promo.body}</p>
-        <div className="mt-1 sm:mt-2">
-          {"href" in promo.action ? (
-            <Link href={promo.action.href} draggable={false} className={cn(field.button, "font-bengali")}>
-              {promo.action.label}
-              <Icon name="arrow_forward" className="text-lg" />
-            </Link>
-          ) : (
-            <button type="button" onClick={onRecord} className={cn(field.button, "font-bengali")}>
-              <span aria-hidden className="size-2.5 rounded-full bg-national-crimson" />
-              {promo.action.label}
-            </button>
-          )}
-        </div>
+      {/* Stacked (below xl): a header row that opens the card in place. */}
+      <div className="flex items-center justify-between gap-4 p-5 sm:px-8 xl:hidden">
+        <span className={cn("flex items-center gap-3 text-lg font-bold", bangla ? "font-bengali" : "font-grotesk")}>
+          <Icon name={icon} className="text-(--accent)" />
+          {promo.label}
+        </span>
+        <Toggle open={open} onOpen={onOpen} onToggle={onToggle} controls={bodyId} label={promo.label} />
       </div>
 
-      <div className="relative order-1 min-h-0 overflow-hidden sm:order-2">
-        <div className="absolute inset-0 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:scale-105 motion-reduce:transition-none motion-reduce:group-hover/card:scale-100">
-          {art.kind === "photo" && (
-            <Image
-              src={art.src}
-              alt={art.alt}
-              fill
-              priority={priority}
-              sizes="(min-width: 1280px) 640px, (min-width: 640px) 55vw, 100vw"
-              style={{ objectPosition: art.position }}
-              className="object-cover"
-            />
-          )}
-          {art.kind === "screen" && (
-            // The platform's own screen, set like a window sliding in from the corner.
-            <div className="absolute top-[10%] left-[8%] h-[110%] w-[110%] overflow-hidden rounded-tl-2xl shadow-[0_30px_60px_-20px_rgb(0_0_0/0.7)] ring-1 ring-black/20">
-              <Image src={art.src} alt={art.alt} fill sizes="(min-width: 1280px) 700px, 60vw" className="object-cover object-top-left" />
-            </div>
-          )}
-          {art.kind === "record" && <RecordArt />}
+      {/* The spine (xl): the closed card's face, symbol and name set upright. */}
+      <div
+        aria-hidden={open}
+        className={cn(
+          "absolute inset-0 hidden flex-col items-center justify-between py-6 transition-opacity duration-300 motion-reduce:transition-none xl:flex",
+          open ? "pointer-events-none opacity-0" : "opacity-100 delay-200",
+        )}
+      >
+        <Icon name={icon} className="text-(--accent)" />
+        <span className={cn("text-xl font-bold tracking-tight whitespace-nowrap [writing-mode:vertical-rl] rotate-180", bangla ? "font-bengali" : "font-grotesk")}>
+          {promo.label}
+        </span>
+        <Toggle open={open} onOpen={onOpen} onToggle={onToggle} controls={bodyId} label={promo.label} />
+      </div>
+
+      {/* The card's content. Stacked: it unfolds under the header. Row: it sits at the open card's final width and fades in. */}
+      <div
+        id={bodyId}
+        inert={!open}
+        className={cn(
+          "grid transition-[grid-template-rows,opacity,translate] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
+          "xl:absolute xl:inset-y-0 xl:left-0 xl:block xl:w-[calc(100cqw-(var(--n)-1)*5.75rem)]",
+          open ? "grid-rows-[1fr] opacity-100 duration-500 xl:translate-x-0 xl:delay-200" : "grid-rows-[0fr] opacity-0 duration-200 xl:translate-x-4",
+        )}
+      >
+        <div className="min-h-0 overflow-hidden xl:h-full">
+          <PromoSlide promo={promo} onRecord={onRecord} onClose={onToggle} closeId={bodyId} />
+        </div>
+      </div>
+    </li>
+  );
+}
+
+/** The open card: the message, a hairline, and its picture, which leans in under the pointer. */
+function PromoSlide({ promo, onRecord, onClose, closeId }: { promo: Promo; onRecord: () => void; onClose: () => void; closeId: string }) {
+  const art = promo.art;
+  return (
+    <div className="group/card @container relative h-full">
+      {/* The open card's ×, in the row's top corner. */}
+      <div className="absolute top-5 right-5 z-10 hidden xl:block">
+        <Toggle open onOpen={() => {}} onToggle={onClose} controls={closeId} label={promo.label} />
+      </div>
+      <div className="grid h-full grid-cols-1 @2xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <div className="flex flex-col justify-center gap-3 p-6 sm:p-8 @2xl:py-8 @2xl:pr-8 @2xl:pl-10">
+          <h2 className="font-bengali text-3xl leading-[1.2] font-bold text-balance text-(--accent)">{promo.title}</h2>
+          <p className="max-w-md font-sans text-sm leading-[1.6] text-(--ink)/80">{promo.body}</p>
+          <div className="mt-2">
+            {"href" in promo.action ? (
+              <Link href={promo.action.href} className={cn(btn.gold, "font-bengali")}>
+                {promo.action.label}
+                <Icon name="arrow_forward" className="text-lg" />
+              </Link>
+            ) : (
+              <button type="button" onClick={onRecord} className={cn(btn.gold, "font-bengali")}>
+                <span aria-hidden className="size-2.5 rounded-full bg-national-crimson" />
+                {promo.action.label}
+              </button>
+            )}
+          </div>
         </div>
 
-        {art.kind === "photo" && (
-          <>
-            {/* The photograph melts into the field at the seam, as on the team cards; a pixel past the edge so no hairline shows. */}
-            <div
-              aria-hidden
-              className={cn(
-                "absolute inset-x-0 -bottom-px h-1/3 bg-linear-to-t to-transparent sm:inset-y-0 sm:-left-px sm:h-auto sm:w-1/3 sm:bg-linear-to-r",
-                field.melt,
-              )}
-            />
+        {/* The picture: under the message when stacked, beside it past a hairline in a row. */}
+        <div className="relative mx-6 mb-6 h-48 overflow-hidden rounded-2xl border-(--ink)/12 sm:mx-8 @2xl:m-0 @2xl:h-auto @2xl:rounded-none @2xl:border-l">
+          <div className="absolute inset-0 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:scale-105 motion-reduce:transition-none motion-reduce:group-hover/card:scale-100">
+            {art.kind === "photo" && (
+              <Image src={art.src} alt={art.alt} fill sizes="(min-width: 1280px) 420px, 90vw" style={{ objectPosition: art.position }} className="object-cover" />
+            )}
+            {art.kind === "screen" && (
+              // The platform's own screen, set like a window sliding in from the corner.
+              <div className="absolute top-[12%] left-[10%] h-[110%] w-[110%] overflow-hidden rounded-tl-2xl shadow-[0_30px_60px_-20px_rgb(0_0_0/0.7)] ring-1 ring-black/20">
+                <Image src={art.src} alt={art.alt} fill sizes="(min-width: 1280px) 460px, 90vw" className="object-cover object-top-left" />
+              </div>
+            )}
+            {art.kind === "record" && <RecordArt />}
+          </div>
+          {art.kind === "photo" && (
             <a
               href={art.credit.source}
               target="_blank"
               rel="noopener noreferrer"
-              className="absolute right-3 bottom-3 max-w-[70%] truncate rounded-full bg-black/55 px-2.5 py-1 text-xs text-white/80 hover:text-white"
+              className="absolute right-3 bottom-3 max-w-[80%] truncate rounded-full bg-black/55 px-2.5 py-1 text-xs text-white/80 hover:text-white"
             >
               Photo: {art.credit.author} · {art.credit.license}
             </a>
-          </>
-        )}
+          )}
+        </div>
       </div>
-    </article>
+    </div>
   );
 }
 
 /** The recorder at work: a live dot, a running clock and a waveform (decorative). */
 function RecordArt() {
-  const bars = 28;
+  const bars = 24;
   return (
     <div aria-hidden className="absolute inset-0 grid place-items-center">
-      <div className="flex flex-col items-center gap-6">
+      <div className="flex flex-col items-center gap-5">
         <div className="flex items-center gap-3 rounded-full bg-black/35 px-4 py-2 ring-1 ring-white/12">
           <span className="relative flex size-3">
             <span className="absolute inset-0 animate-ping rounded-full bg-national-crimson/70 motion-reduce:hidden" />
             <span className="relative size-3 rounded-full bg-national-crimson" />
           </span>
-          <span className="font-sans tabular-nums text-sm font-semibold text-white">REC 00:12</span>
+          <span className="font-sans text-sm font-semibold text-white tabular-nums">REC 00:12</span>
         </div>
-        <div className="flex h-24 items-center gap-1.5">
+        <div className="flex h-20 items-center gap-1.5">
           {Array.from({ length: bars }, (_, i) => (
             <span
               key={i}
@@ -285,7 +220,7 @@ function RecordArt() {
             />
           ))}
         </div>
-        <p className="font-sans tabular-nums text-xs text-white/65">voice · video · one tap</p>
+        <p className="font-sans text-xs text-white/65 tabular-nums">voice · video · one tap</p>
       </div>
     </div>
   );

@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils";
 
 /**
  * Join Kandari Profile, laid out like shikho.com's help band: one wide
- * panel carrying the invitation and its single action, a photograph
- * melting into it on the right, and beside it two stacked cards for the
+ * panel carrying the invitation and its single action, the "Join Us!"
+ * illustration framed on its own white ground on the right, and beside it two stacked cards for the
  * free ways in that need no profile decision first (the research library,
  * the community). All on solid fields: the panel gold with a navy button,
  * the cards navy and ink with gold ones. A member gets "My Profile"
@@ -47,7 +47,7 @@ export function KandariProfileSection() {
     <section id="kandari-profile" aria-labelledby="kandari-profile-title" className="section-band mx-auto max-w-7xl px-gutter-x">
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.85fr)_minmax(0,1fr)]">
         {/* The invitation. */}
-        <div className="story-reveal relative grid overflow-hidden rounded-3xl bg-cobalt text-white sm:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+        <div className="story-reveal group/join relative grid overflow-hidden rounded-3xl bg-cobalt text-white sm:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
           <div className="relative order-2 flex flex-col items-start gap-4 p-6 sm:order-1 sm:p-8 lg:p-10">
             <h2 id="kandari-profile-title" className="font-grotesk text-2xl leading-tight font-bold tracking-tight text-balance text-signal-orange sm:text-3xl">
               Join Kandari Profile for breakthrough R&amp;D
@@ -66,20 +66,18 @@ export function KandariProfileSection() {
             <p className="text-xs font-medium text-white/80">* Sign up with a phone code or email *</p>
           </div>
 
-          {/* The photograph melts into the cobalt at the seam, as on the team cards. */}
-          <div className="relative order-1 h-48 sm:order-2 sm:h-auto">
-            <Image
-              src="/hero/Hero-8.jpg"
-              alt="সরিষা ক্ষেতের ভেতর দিয়ে স্কুলে যাচ্ছে চার কিশোরী"
-              fill
-              sizes="(min-width: 1024px) 380px, (min-width: 640px) 45vw, 100vw"
-              style={{ objectPosition: "50% 40%" }}
-              className="object-cover"
-            />
-            <div
-              aria-hidden
-              className="absolute inset-x-0 -bottom-px h-1/2 bg-linear-to-t from-cobalt to-transparent sm:inset-y-0 sm:-left-px sm:h-auto sm:w-1/2 sm:bg-linear-to-r"
-            />
+          {/* The illustration in a white card cut to its own shape (1818 × 1109), so the whole picture
+              shows with no empty white around it; it sits centred on the cobalt beside the words. */}
+          <div className="order-1 flex items-center p-3 sm:order-2 sm:py-6 sm:pr-6 sm:pl-0">
+            <div className="relative aspect-1818/1109 w-full overflow-hidden rounded-2xl bg-white shadow-[0_18px_36px_-18px_rgb(0_0_0/0.6)]">
+              <Image
+                src="/about/join-us.png"
+                alt="Illustration: a group of young people gathered together under the words “Join Us! Together we can make everything better.”"
+                fill
+                sizes="(min-width: 1024px) 440px, (min-width: 640px) 50vw, 100vw"
+                className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/join:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover/join:scale-100"
+              />
+            </div>
           </div>
         </div>
 
