@@ -8,7 +8,7 @@ import { Icon } from "@/components/ui/icon";
 import { sourcePoints } from "@/data/amar-bangladesh";
 import { ROADMAP_KINDS } from "@/data/research/roadmap";
 import { useAuth } from "@/lib/auth/client";
-import { buildArticle, draftProblems, FIELDS, KINDS, LEVELS, LIMITS, SCOPES, SECTION_TEMPLATES, type Article, type Draft, type DraftProblems, type FieldId, type Level, type ResearchKind, type Scope } from "@/lib/research/core";
+import { authorNames, buildArticle, draftProblems, nextTracking, FIELDS, KINDS, LEVELS, LIMITS, SCOPES, SECTION_TEMPLATES, type Article, type Draft, type DraftProblems, type FieldId, type Level, type ResearchKind, type Scope } from "@/lib/research/core";
 import { problemCode } from "@/lib/research/tracks";
 import { updateResearch, useLibrary } from "@/lib/research/store";
 import { cn } from "@/lib/utils";
@@ -205,9 +205,11 @@ export function SubmitForm() {
       requestAnimationFrame(() => document.querySelector("[aria-invalid=true], [data-invalid=true]")?.scrollIntoView({ behavior: "smooth", block: "center" }));
       return;
     }
-    const article = buildArticle(d, { now: new Date(), taken: new Set(library.map((a) => a.slug)), owner: account.id, ownerName: account.name, file });
+    const now = new Date();
+    const tracking = nextTracking(library, authorNames(d.authors)[0] ?? account.name, now.getFullYear());
+    const article = buildArticle(d, { now, taken: new Set(library.map((a) => a.slug)), owner: account.id, ownerName: account.name, file, tracking });
     if (!updateResearch((s) => ({ ...s, mine: [article, ...s.mine] }))) return toast.error("This browser has no room left", { description: "Remove the PDF or some project images and try again." });
-    toast.success("Submitted for review", { description: "It will be published for everyone once reviewed." });
+    toast.success("Submitted for review", { description: `Tracking number ${tracking}. It will be published for everyone once reviewed.` });
     router.push(articleHref(article));
   }
 

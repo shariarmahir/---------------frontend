@@ -17,13 +17,25 @@ const BROWSE = [
   { href: "/research/images", title: "Images and figures" },
 ];
 
-const subscribeWide = (cb: () => void) => {
-  const m = window.matchMedia("(min-width: 768px)");
-  m.addEventListener("change", cb);
-  return () => m.removeEventListener("change", cb);
-};
-/** True from md up; false on the server and on phones, whose short placeholder is the safe default. */
-const useWide = () => useSyncExternalStore(subscribeWide, () => window.matchMedia("(min-width: 768px)").matches, () => false);
+/** Whether a media query matches; false on the server, so the shortest text is the safe default. */
+function useMedia(query: string) {
+  const subscribe = useCallback(
+    (cb: () => void) => {
+      const m = window.matchMedia(query);
+      m.addEventListener("change", cb);
+      return () => m.removeEventListener("change", cb);
+    },
+    [query],
+  );
+  return useSyncExternalStore(subscribe, () => window.matchMedia(query).matches, () => false);
+}
+
+/** The placeholder that fits the field: the full line from xl, the name on tablets and laptops, one word on phones. */
+function usePlaceholder() {
+  const md = useMedia("(min-width: 768px)");
+  const xl = useMedia("(min-width: 1280px)");
+  return xl ? "Search theses, papers, projects and ideas" : md ? "Search Genius" : "Search";
+}
 
 /**
  * The library's one search: "All Content", the field and a gold Search
@@ -33,7 +45,7 @@ const useWide = () => useSyncExternalStore(subscribeWide, () => window.matchMedi
  * only its icon.
  */
 export function SearchBar({ defaultValue = "", defaultType = "", id }: { defaultValue?: string; defaultType?: string; id: string }) {
-  const wide = useWide();
+  const placeholder = usePlaceholder();
   return (
     <form role="search" action="/research/search" className="flex h-12 w-full items-stretch rounded-2xl bg-bdnavy-900 p-1 ring-1 ring-white/15 transition-shadow focus-within:ring-2 focus-within:ring-signal-orange">
       <label htmlFor={`${id}-type`} className="sr-only">Content type</label>
@@ -56,7 +68,7 @@ export function SearchBar({ defaultValue = "", defaultType = "", id }: { default
         type="search"
         defaultValue={defaultValue}
         maxLength={200}
-        placeholder={wide ? "Search theses, papers, projects and ideas" : "Search"}
+        placeholder={placeholder}
         className="min-w-0 flex-1 bg-transparent px-3 text-base text-white placeholder:text-white/65 focus:outline-none md:px-4"
       />
       <button type="submit" aria-label="Search" className={cn(btn.gold, "min-h-0 shrink-0 px-3 py-0 md:px-5")}>

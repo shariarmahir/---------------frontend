@@ -59,6 +59,7 @@ function Page({ a, page, count, nums }: { a: Article; page: DocPage; count: numb
             <p className="mt-[1em] text-[0.88em]"><span className="font-semibold text-bdnavy-900">Keywords: </span>{a.keywords.join("; ")}</p>
           )}
           <p className="mt-[1.4em] text-[0.78em] text-bdnavy-700">{KINDS[a.kind].type} · {FIELDS[a.field].en} · {LEVELS[a.level]}{a.district ? ` · ${a.district}` : ""}</p>
+          {a.tracking && <p className="text-[0.78em] text-bdnavy-700">Tracking number: <span className="font-semibold text-bdnavy-900">{a.tracking}</span></p>}
           {a.sample && (
             <p className="mt-[1.4em] rounded-md border border-signal-orange bg-signal-orange/15 px-[1em] py-[0.7em] text-[0.8em]">
               Sample entry. The people, institution and figures are illustrative; do not cite this as a real study.

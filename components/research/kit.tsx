@@ -7,7 +7,6 @@
  * client-only code here, so both kinds of component can use it.
  */
 import Image from "next/image";
-import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { btn } from "@/components/ui/section-kit";
 import { FIELDS, initials, KINDS, type Article, type FieldId, type ResearchKind } from "@/lib/research/core";
@@ -134,6 +133,21 @@ export function GeniusLogo({ className, priority }: { className?: string; priori
   );
 }
 
+/**
+ * A concave corner in the page's black: a square minus a quarter circle,
+ * so the black ground curves into a photo where a notch cut into it meets
+ * the photo's edge. `br` keeps the black at the square's bottom-right (a
+ * notch on a photo's bottom edge), `tr` at its top-right (a notch on the
+ * top edge). Solid fill, no gradient. Size it with `size-*` to the notch's radius.
+ */
+export function Fillet({ corner, className }: { corner: "br" | "tr"; className: string }) {
+  return (
+    <svg aria-hidden viewBox="0 0 32 32" className={cn("pointer-events-none absolute fill-black", className)}>
+      <path d={corner === "br" ? "M32 0V32H0A32 32 0 0 0 32 0Z" : "M0 0H32V32A32 32 0 0 0 0 0Z"} />
+    </svg>
+  );
+}
+
 /** The type label printed above a title, with its document icon. */
 export function TypeLabel({ a, className }: { a: Pick<Article, "kind" | "preprint">; className?: string }) {
   return (
@@ -206,7 +220,7 @@ export function Cover({ a, sizes, className, priority, mini }: { a: Pick<Article
   );
 }
 
-const TONES = ["bg-cobalt text-white", "bg-signal-orange text-text-primary", "bg-text-primary text-white ring-1 ring-white/25"] as const;
+const TONES = ["bg-cobalt text-white", "bg-signal-orange text-text-primary", "bg-bdnavy-700 text-white ring-1 ring-white/25"] as const;
 
 /** A solid initials disc; the colour follows the name, so a person keeps theirs everywhere. */
 export function Avatar({ name, className }: { name: string; className?: string }) {

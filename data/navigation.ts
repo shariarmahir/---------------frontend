@@ -160,7 +160,7 @@ export const teamNavLinks: NavLink[] = [
   { href: "/team", label: "All Team", shortLabel: "Team" },
   { href: "/team#founder", label: "Founder", shortLabel: "Founder" },
   { href: "/team#members", label: "Members", shortLabel: "Members" },
-  { href: "/team#fellowship", label: "R&D Fellowship", shortLabel: "R&D" },
+  { href: "/team/fellowship", label: "R&D Fellowship", shortLabel: "R&D" },
   { href: "/products", label: "Products", shortLabel: "Products" },
   { href: "/#kandari-profile", label: "Join", shortLabel: "Join" },
 ];

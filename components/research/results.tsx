@@ -275,7 +275,7 @@ export function Results({
                   <TypeLabel a={a} />
                   <Link href={articleHref(a)} className={cn(TITLE_LINK, "mt-1.5 block text-lg leading-snug")}>{a.title}</Link>
                   <p className="mt-1.5 text-sm text-white/80">{byline(a, 4)}</p>
-                  <p className="text-sm text-white/65"><Link href={contentHref(a)} className={cn(LINK, "italic")}>{a.institution}</Link>, {a.year}</p>
+                  <p className="text-sm text-white/65"><Link href={contentHref(a)} className={cn(LINK, "italic")}>{a.institution}</Link>, {a.year}{a.tracking && <> · <span className="tabular-nums">{a.tracking}</span></>}</p>
                   <p className="mt-2.5 max-w-[75ch] text-sm leading-relaxed text-white/80">{excerpt(a.summary, 260)}</p>
                   <StatusTags a={a} className="mt-2" />
                   <div className="mt-3 flex flex-wrap gap-2">

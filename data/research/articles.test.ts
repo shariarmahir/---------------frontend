@@ -68,3 +68,12 @@ test("figures have rows and a caption; table rows match their header; waterfalls
     }
   }
 });
+
+test("every work in the library has its own tracking number", () => {
+  const ids = libraryArticles.map((a) => a.tracking);
+  assert.ok(ids.every((t) => typeof t === "string" && /^[\p{L}\p{M}\p{N}]+-KL-\d{4}-\d{2,4}$/u.test(t)), ids.join(", "));
+  assert.equal(new Set(ids).size, ids.length);
+  // Oldest first: the farm-gate paper (2 October) is his 01, the crow proposal (19 October) his 02.
+  assert.equal(libraryArticles.find((a) => a.slug === "farm-gate-to-fake-seal")!.tracking, "MahirShariarMahin-KL-2026-01");
+  assert.equal(libraryArticles.find((a) => a.slug === "save-the-crow-and-falcon")!.tracking, "MahirShariarMahin-KL-2026-02");
+});

@@ -19,7 +19,7 @@ export function toMarkdown(a: Article, url: string): string {
   if (a.titleEn) out.push(`_${a.titleEn}_`);
   out.push(
     `**${nameList(authorNamesOf(a))}** · ${a.institution} · ${a.year}`,
-    `${KINDS[a.kind].type} · ${FIELDS[a.field].en} · ${LEVELS[a.level]}`,
+    `${KINDS[a.kind].type} · ${FIELDS[a.field].en} · ${LEVELS[a.level]}${a.tracking ? ` · Tracking number ${a.tracking}` : ""}`,
     "## Abstract",
     a.summary,
   );
@@ -45,7 +45,7 @@ export function toHtml(a: Article, url: string): string {
     `<p class="type">${esc(KINDS[a.kind].type)}</p>`,
     `<h1>${esc(a.title)}</h1>`,
     a.titleEn ? `<p class="en">${esc(a.titleEn)}</p>` : "",
-    `<p class="meta"><strong>${esc(nameList(authorNamesOf(a)))}</strong> · ${esc(a.institution)} · ${a.year}<br>${esc(`${FIELDS[a.field].en} · ${LEVELS[a.level]}`)}</p>`,
+    `<p class="meta"><strong>${esc(nameList(authorNamesOf(a)))}</strong> · ${esc(a.institution)} · ${a.year}<br>${esc(`${FIELDS[a.field].en} · ${LEVELS[a.level]}${a.tracking ? ` · Tracking number ${a.tracking}` : ""}`)}</p>`,
     a.sample ? `<p class="note">${esc(SAMPLE_NOTE)}</p>` : "",
     `<h2>Abstract</h2><p>${esc(a.summary)}</p>`,
   ];

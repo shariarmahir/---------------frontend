@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  blocks, buildArticle, citation, isSafeImage, isSafePdf, KINDS, sanitizeOwn, SECTION_TEMPLATES, citeParts, contents, counts, draftProblems, engagementOf, feedIntent, featured, FIELDS, initials, nameList, paragraphs, parseReferences, pointsOf, POINTS, readMinutes, recentChanges, related, rotate, search, shareLinks, slugify, thread, topFields, topResearchers, trending, uniqueSlug, waterfall, type Article, type Draft, type TalkNote,
+  blocks, buildArticle, citation, nextTracking, TRACKING_PATTERN, trackingName, withTracking, isSafeImage, isSafePdf, KINDS, sanitizeOwn, SECTION_TEMPLATES, citeParts, contents, counts, draftProblems, engagementOf, feedIntent, featured, FIELDS, initials, nameList, paragraphs, parseReferences, pointsOf, POINTS, readMinutes, recentChanges, related, rotate, search, shareLinks, slugify, thread, topFields, topResearchers, trending, uniqueSlug, waterfall, type Article, type Draft, type TalkNote,
 } from "./core.ts";
 
 const art = (x: Partial<Article>): Article => ({
@@ -258,4 +258,28 @@ test("share links encode the link and text; the feed intent carries a relative l
 test("a working paper is cited as one, not as a finished paper", () => {
   const c = citation(art({ authors: [{ name: "Riya Das" }], title: "Kit", institution: "Kandari-Lab", preprint: true }), "https://x/research/kit");
   assert.equal(c, "Riya Das (2025). Kit. Working paper, Kandari-Lab. Genius (Kandari-Lab). https://x/research/kit");
+});
+
+test("tracking numbers read AuthorName-KL-Year-NN and count per author from 01", () => {
+  assert.equal(trackingName("Mahir Shariar Mahin"), "MahirShariarMahin");
+  assert.equal(trackingName("  rina   das-gupta "), "RinaDasGupta");
+  assert.equal(trackingName("শাপলা আক্তার"), "শাপলাআক্তার");
+  assert.equal(trackingName("..."), "Author");
+  const list = withTracking([
+    art({ slug: "c", authors: [{ name: "Mahir Shariar Mahin" }], published: "2026-03-01" }),
+    art({ slug: "a", authors: [{ name: "Mahir Shariar Mahin" }], published: "2025-01-01" }),
+    art({ slug: "b", authors: [{ name: "রিয়া", nameEn: "Ria Das" }], published: "2025-06-01" }),
+    art({ slug: "d", authors: [{ name: "Mahir Shariar Mahin" }], published: "2026-05-01", tracking: "MahirShariarMahin-KL-2026-07" }),
+  ]);
+  assert.deepEqual(list.map((x) => x.tracking), ["MahirShariarMahin-KL-2026-09", "MahirShariarMahin-KL-2025-08", "RiaDas-KL-2025-01", "MahirShariarMahin-KL-2026-07"]);
+  for (const x of list) assert.match(x.tracking!, TRACKING_PATTERN);
+  assert.equal(nextTracking(list, "Ria Das", 2026), "RiaDas-KL-2026-02");
+  assert.equal(nextTracking(list, "New Person", 2026), "NewPerson-KL-2026-01");
+});
+
+test("a stored tracking number survives only in its own format", () => {
+  const good = buildArticle(draft(), { now: new Date("2026-10-02T10:00:00Z"), taken: new Set(), owner: "acc-1", ownerName: "রিয়া", tracking: "রিয়াদাস-KL-2026-01" });
+  assert.equal(good.tracking, "রিয়াদাস-KL-2026-01");
+  assert.equal(sanitizeOwn([good])[0].tracking, "রিয়াদাস-KL-2026-01");
+  assert.ok(!("tracking" in sanitizeOwn([{ ...good, tracking: "<img src=x>" }])[0]));
 });

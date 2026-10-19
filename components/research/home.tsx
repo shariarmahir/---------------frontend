@@ -9,7 +9,7 @@ import { trending } from "@/lib/research/core";
 import { useLibrary, useScores } from "@/lib/research/store";
 import { findTrack } from "@/lib/research/tracks";
 import { cn } from "@/lib/utils";
-import { ARROW, articleHref, collectionHref, contentHref, Cover, LABEL, LIFT, LINK, TITLE_LINK, typeOf } from "./kit";
+import { ARROW, articleHref, collectionHref, contentHref, Cover, Fillet, LABEL, LIFT, LINK, TITLE_LINK, typeOf } from "./kit";
 
 const SLIDE_MS = 6000;
 
@@ -20,19 +20,6 @@ const subscribeMotion = (cb: () => void) => {
 };
 /** True when the reader asked for less motion; false while rendering on the server. */
 const useReducedMotion = () => useSyncExternalStore(subscribeMotion, () => window.matchMedia("(prefers-reduced-motion: reduce)").matches, () => false);
-
-/**
- * A concave corner in the page's black: the square minus a quarter circle
- * centred on its top-left, so the black ground curves into the photo where
- * the title's notch meets the photo's edge. Solid fill, no gradient.
- */
-function Fillet({ className }: { className: string }) {
-  return (
-    <svg aria-hidden viewBox="0 0 32 32" className={cn("pointer-events-none absolute size-8 fill-black", className)}>
-      <path d="M32 0V32H0A32 32 0 0 0 32 0Z" />
-    </svg>
-  );
-}
 
 /**
  * The research home's hero: one photograph at a time, edge to edge right
@@ -57,12 +44,14 @@ export function HeroSlider({ slides, children }: { slides: ShowcasePhoto[]; chil
     <section
       aria-roledescription="carousel"
       aria-label="Scenes from the research"
+      className="relative"
       onMouseEnter={() => setHold(true)}
       onMouseLeave={() => setHold(false)}
       onFocus={() => setHold(true)}
       onBlur={(e) => !e.currentTarget.contains(e.relatedTarget as Node | null) && setHold(false)}
     >
-      <div className="relative aspect-4/5 w-full overflow-hidden bg-bdnavy-900 sm:aspect-4/3 md:aspect-video lg:aspect-16/6">
+      {/* The landing page hero's band heights (hero-band in globals.css): 32rem, 30rem from sm, 29rem from lg. */}
+      <div className="relative h-128 w-full overflow-hidden bg-bdnavy-900 sm:h-120 lg:h-116">
         {slides.map((p, n) => (
           <Image
             key={p.src}
@@ -78,26 +67,40 @@ export function HeroSlider({ slides, children }: { slides: ShowcasePhoto[]; chil
           />
         ))}
         <div className="absolute right-0 bottom-0 z-10 w-[min(40rem,calc(100%-1.5rem))] rounded-tl-4xl bg-black pt-5 pr-gutter-x pl-5 sm:pt-7 sm:pl-8 lg:w-auto lg:max-w-[min(44rem,55%)] lg:pt-9 lg:pl-11">
-          <Fillet className="right-0 -top-8" />
-          <Fillet className="bottom-0 -left-8" />
+          <Fillet corner="br" className="-top-8 right-0 size-8" />
+          <Fillet corner="br" className="bottom-0 -left-8 size-8" />
           {children}
         </div>
       </div>
-      <div className="mx-auto flex max-w-7xl flex-col gap-4 px-gutter-x py-5 sm:flex-row sm:items-start sm:justify-between sm:gap-10">
-        {/* Announced only when the reader moves the slider, never on every automatic turn. */}
-        <p className="max-w-[46rem] text-sm leading-relaxed text-white/80" aria-live={running ? "off" : "polite"}>
-          {s.caption}.{" "}
-          {s.credit && (
-            <>
-              {s.credit.author},{" "}
-              <a href={s.credit.licenseUrl} target="_blank" rel="noopener noreferrer" className={LINK}>{s.credit.license}</a>, via{" "}
-              <a href={s.credit.sourceUrl} target="_blank" rel="noopener noreferrer" className={LINK}>Wikimedia Commons</a>.{" "}
-            </>
-          )}
-          {track && <>Part of <Link href={collectionHref(track.id)} className={LINK}>{track.title}</Link>.</>}
-        </p>
-        <div className="flex shrink-0 items-center gap-3">
-          <span className="text-sm font-semibold whitespace-nowrap text-white tabular-nums">Image {i + 1} of {slides.length}</span>
+      {/*
+        The caption: below the photo on narrow screens (where the title's notch
+        fills the photo's foot), a black card on the photo's bottom-left from
+        lg, clear of the notch. Announced only when the reader moves the
+        slider, never on every automatic turn.
+      */}
+      <div
+        aria-live={running ? "off" : "polite"}
+        className="mx-auto max-w-7xl px-gutter-x pt-5 lg:absolute lg:top-[27.75rem] lg:left-0 lg:z-10 lg:mx-0 lg:ml-gutter-x lg:max-w-[min(30rem,calc(45%-4rem))] lg:-translate-y-full lg:rounded-2xl lg:bg-black lg:px-4 lg:py-3"
+      >
+        <span className="block text-sm leading-snug font-semibold text-white">{s.caption}</span>
+        {s.credit && (
+          <span className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-white/65">
+            <Icon name="photo_camera" className="text-sm text-signal-orange" />
+            <span>{s.credit.author}</span>
+            <span aria-hidden>·</span>
+            <a href={s.credit.licenseUrl} target="_blank" rel="noopener noreferrer" className={LINK}>{s.credit.license}</a>
+            <span aria-hidden>·</span>
+            <a href={s.credit.sourceUrl} target="_blank" rel="noopener noreferrer" className={LINK}>Wikimedia Commons</a>
+          </span>
+        )}
+        {track && (
+          <span className="mt-1 block text-xs text-white/65">
+            In <Link href={collectionHref(track.id)} className={cn(LINK, "font-semibold")}>{track.title}</Link>
+          </span>
+        )}
+      </div>
+      <div className="flex justify-end px-gutter-x py-3 lg:py-4">
+        <div className="flex items-center">
           <div role="group" aria-label="Choose an image" className="flex items-center">
             {slides.map((p, n) => {
               const on = n === i;

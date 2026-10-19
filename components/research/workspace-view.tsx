@@ -37,17 +37,10 @@ function StartCard() {
   return (
     <section aria-labelledby="start-title" className="hero-rise relative mt-8 grid overflow-hidden rounded-[2rem] bg-cobalt ring-1 ring-white/12 lg:grid-cols-[minmax(0,1fr)_22rem]">
       <div className="p-6 sm:p-10">
-        <div className="flex items-start gap-5">
-          <span aria-hidden className="hidden size-16 shrink-0 place-items-center rounded-2xl bg-signal-orange text-text-primary sm:grid">
-            <Icon name="rocket_launch" className="text-4xl" />
-          </span>
-          <div className="min-w-0">
-            <h2 id="start-title" className={cn(TITLE, "text-2xl leading-tight sm:text-3xl")}>Start a research, thesis, project or idea</h2>
-            <p className="mt-3 max-w-2xl text-base leading-relaxed text-white/80">
-              A guided route to the standard international journals and examiners accept: the question, the literature, the design, ethics, data, analysis, the write-up and integrity, then exactly what the Genius upload form asks for, and peer review.
-            </p>
-          </div>
-        </div>
+        <h2 id="start-title" className={cn(TITLE, "text-2xl leading-tight sm:text-3xl")}>Start a research, thesis, project or idea</h2>
+        <p className="mt-3 max-w-2xl text-base leading-relaxed text-white/80">
+          A guided route to the standard international journals and examiners accept: the question, the literature, the design, ethics, data, analysis, the write-up and integrity, then exactly what the Genius upload form asks for, and peer review.
+        </p>
 
         <fieldset className="mt-7">
           <legend className="text-sm font-semibold text-white">What are you writing?</legend>
@@ -128,7 +121,7 @@ export function WorkspaceView() {
 
   const items: Record<Tab, Article[]> = {
     saved: list.filter((a) => saved[a.slug]),
-    uploads: mine,
+    uploads: list.filter((a) => mine.some((m) => m.slug === a.slug)),
     cited: list.filter((a) => cited[a.slug]),
   };
   const shown = items[tab];
@@ -212,6 +205,7 @@ export function WorkspaceView() {
                     <Link href={articleHref(a)} className={cn(TITLE_LINK, "mt-1.5 block text-lg leading-snug")}>{a.title}</Link>
                     <p className="mt-1 text-sm text-white/80">{byline(a, 4)}</p>
                     <p className="text-sm text-white/65"><Link href={contentHref(a)} className={cn(LINK, "italic")}>{a.institution}</Link>, {a.year}{tab === "uploads" ? ` · submitted ${fmtDate(a.published)}` : ""}</p>
+                    {a.tracking && <p className="text-sm text-white/65">Tracking number: <span className="font-semibold text-white tabular-nums">{a.tracking}</span></p>}
                     <StatusTags a={a} className="mt-2" />
                     <div className="mt-3 flex flex-wrap gap-2">
                       <DownloadButton a={a} look="row" />

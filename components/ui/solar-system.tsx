@@ -51,6 +51,11 @@ export interface SolarSystemProps {
   orbits: OrbitConfig[];
   /** Travelling signal pulses on the beams (on by default). */
   signals?: boolean;
+  /**
+   * The landing page's flat dress (the team page): no glow halos on comets,
+   * planets or pulses, waves in gold and navy, sentence-case name chips.
+   */
+  calm?: boolean;
   className?: string;
 }
 
@@ -64,7 +69,7 @@ const RADIUS: Record<OrbitRadius, string> = {
 
 const mix = (c: string, pct: number) => `color-mix(in oklab, ${c} ${pct}%, transparent)`;
 
-export function SolarSystem({ core, orbits, signals = true, className }: SolarSystemProps) {
+export function SolarSystem({ core, orbits, signals = true, calm = false, className }: SolarSystemProps) {
   let node = 0;
 
   return (
@@ -74,7 +79,7 @@ export function SolarSystem({ core, orbits, signals = true, className }: SolarSy
         {signals &&
           [
             { delay: "0s", c: "border-signal-orange" },
-            { delay: "-1.8s", c: "border-bdgreen-500" },
+            { delay: "-1.8s", c: calm ? "border-bdnavy-300" : "border-bdgreen-500" },
             { delay: "-3.6s", c: "border-signal-orange" },
           ].map(({ delay, c }) => (
             <span
@@ -102,7 +107,7 @@ export function SolarSystem({ core, orbits, signals = true, className }: SolarSy
                     height: size,
                     borderTopColor: orbit.color,
                     borderRightColor: mix(orbit.color, 35),
-                    filter: `drop-shadow(0 0 6px ${orbit.color})`,
+                    filter: calm ? undefined : `drop-shadow(0 0 6px ${orbit.color})`,
                     "--spin": `${orbit.speed / 3}s`,
                     animationDelay: `${-i * 1.7}s`,
                   } as Vars
@@ -132,12 +137,17 @@ export function SolarSystem({ core, orbits, signals = true, className }: SolarSy
               "orbit-card group/planet absolute top-1/2 left-1/2 flex flex-col items-center rounded-full outline-none [-webkit-tap-highlight-color:transparent]";
             const face = (
               <>
-                <span className="block rounded-full bg-(--c) p-[3px] shadow-[0_0_18px_-2px_var(--c)] transition-[scale,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/planet:scale-125 group-hover/planet:shadow-[0_0_28px_2px_var(--c)] group-focus-visible/planet:scale-125 group-focus-visible/planet:ring-2 group-focus-visible/planet:ring-white motion-reduce:transition-none">
+                <span
+                  className={cn(
+                    "block rounded-full bg-(--c) p-[3px] transition-[scale,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/planet:scale-125 group-focus-visible/planet:scale-125 group-focus-visible/planet:ring-2 group-focus-visible/planet:ring-white motion-reduce:transition-none",
+                    !calm && "shadow-[0_0_18px_-2px_var(--c)] group-hover/planet:shadow-[0_0_28px_2px_var(--c)]",
+                  )}
+                >
                   {item.avatar}
                 </span>
                 <span className="pointer-events-none absolute top-full mt-2 flex scale-90 flex-col items-center rounded-lg bg-text-primary px-2.5 py-1 leading-tight opacity-0 shadow-[0_10px_24px_-10px_var(--c)] ring-1 ring-white/15 transition-[opacity,scale] duration-200 group-hover/planet:scale-100 group-hover/planet:opacity-100 group-focus-visible/planet:scale-100 group-focus-visible/planet:opacity-100">
                   <span className="font-grotesk text-[11px] font-bold whitespace-nowrap text-white">{item.label}</span>
-                  {item.sublabel && <span className="font-mono text-[9px] whitespace-nowrap text-signal-orange uppercase">{item.sublabel}</span>}
+                  {item.sublabel && <span className={cn("whitespace-nowrap text-signal-orange", calm ? "font-sans text-xs" : "font-mono text-[9px] uppercase")}>{item.sublabel}</span>}
                 </span>
               </>
             );
@@ -153,7 +163,7 @@ export function SolarSystem({ core, orbits, signals = true, className }: SolarSy
                   {signals && (
                     <span
                       className="orbit-pulse absolute top-1/2 left-0 -mt-[3px] size-1.5 rounded-[2px]"
-                      style={{ background: item.color, boxShadow: `0 0 10px 2px ${item.color}` }}
+                      style={{ background: item.color, boxShadow: calm ? undefined : `0 0 10px 2px ${item.color}` }}
                     />
                   )}
                 </span>

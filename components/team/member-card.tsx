@@ -1,48 +1,33 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
-import { departments, toneOf, type DeptId, type TeamMember } from "@/data/team";
-import { glowStyle } from "@/components/ui/surfaces";
+import { glowStyle, LIFT } from "@/components/ui/surfaces";
+import { departments, toneOf, type TeamMember } from "@/data/team";
 import { cn } from "@/lib/utils";
 
-/** The fade at the portrait's foot runs into the card's own colour. */
-const FADE: Record<DeptId, string> = {
-  leadership: "to-signal-orange",
-  creative: "to-bdnavy-900",
-  client: "to-text-primary",
-  iot: "to-bd-green",
-  dev: "to-bdgreen-500",
-};
-
-/** Lift and glow on hover and on touch press — the home poster cards' motion. */
-const POSTER_LIFT =
-  "[-webkit-tap-highlight-color:transparent] touch-manipulation transition-[translate,scale,rotate,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:shadow-[0_28px_48px_-22px_var(--glow)] active:-translate-y-2 active:shadow-[0_28px_48px_-22px_var(--glow)] active:scale-[0.98] active:duration-150 motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:translate-y-0 motion-reduce:active:scale-100";
-
 /**
- * One poster card per team member, in the home page's leadership language:
- * a solid colour field, the portrait bleeding off the top and fading into
- * the colour, the role on a solid pill, then name, a short about and the
- * skills. The whole card opens the profile. Members without a portrait get
- * a monogram plate on the contrasting colour, labelled "photo coming".
+ * One card per team member, in the landing page's language: a cobalt, navy
+ * or ink field by department, the portrait in its own frame with the role
+ * on a gold pill over its foot, then name, Bangla role, a short about and
+ * the skills. The whole card opens the profile. Members without a portrait
+ * get a gold monogram on the contrasting field, labelled as such.
  * Reused on /team and on each profile's "same team" row.
  */
 export function MemberCard({ member, priority }: { member: TeamMember; priority?: boolean }) {
   const tone = toneOf(member);
-  const toneId = member.tone ?? member.depts[0];
 
   return (
     <Link
       href={`/team/${member.slug}`}
-      aria-label={`${member.name}, ${member.role} — view profile`}
+      aria-label={`${member.name}, ${member.role}: view profile`}
       style={glowStyle(tone.color)}
       className={cn(
-        "group flex h-full w-full flex-col overflow-hidden rounded-2xl shadow-sm focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black focus-visible:outline-none sm:rounded-3xl",
-        POSTER_LIFT,
+        "group flex h-full w-full flex-col overflow-hidden rounded-2xl p-1.5 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:ring-offset-2 focus-visible:ring-offset-black focus-visible:outline-none sm:rounded-3xl sm:p-2",
+        LIFT,
         tone.surface,
       )}
     >
-      {/* Portrait, fading into the card colour at its foot. */}
-      <div className="relative aspect-square w-full overflow-hidden">
+      <div className="relative aspect-square w-full overflow-hidden rounded-xl sm:rounded-2xl">
         {member.photo ? (
           <Image
             src={member.photo}
@@ -54,41 +39,37 @@ export function MemberCard({ member, priority }: { member: TeamMember; priority?
             className="object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 motion-reduce:transition-none"
           />
         ) : (
-          <div className={cn("absolute inset-0 flex flex-col items-center justify-center gap-3", tone.plate)}>
-            <span className="font-grotesk text-6xl leading-none font-bold transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 motion-reduce:transition-none sm:text-8xl">
+          <div className={cn("absolute inset-0 grid place-items-center", tone.plate)}>
+            <span className="font-grotesk text-5xl leading-none font-bold transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 motion-reduce:transition-none sm:text-7xl">
               {member.initials}
             </span>
-            <span className="absolute top-2.5 right-2.5 rounded-full bg-black/35 px-2 py-0.5 font-bengali text-[10px] text-white sm:top-3 sm:right-3">ছবি শীঘ্রই</span>
+            <span className="absolute top-2 right-2 rounded-full bg-black px-2 py-0.5 font-sans text-xs text-white/80 sm:top-3 sm:right-3">Photo soon</span>
           </div>
         )}
-        <div aria-hidden className={cn("absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-b from-transparent", FADE[toneId])} />
-      </div>
-
-      <div className="relative -mt-5 flex flex-1 flex-col px-3 pb-4 sm:-mt-8 sm:px-6 sm:pb-6">
-        <span className={cn("mb-2 w-fit rounded-full px-2 py-0.5 font-mono text-[9px] leading-tight font-bold uppercase sm:mb-3 sm:px-3 sm:py-1 sm:text-[11px]", tone.tile)}>
+        <span className="absolute bottom-2 left-2 max-w-[calc(100%-1rem)] truncate rounded-full bg-signal-orange px-2.5 py-0.5 font-sans text-xs font-bold text-text-primary sm:bottom-3 sm:left-3 sm:px-3 sm:py-1">
           {member.role}
         </span>
-        <h3 className="font-grotesk text-[0.95rem] leading-tight font-bold sm:text-xl">{member.name}</h3>
-        <p className="mt-1 font-bengali text-[11px] opacity-85 sm:text-sm">{member.roleBn}</p>
+      </div>
 
-        <p className="mt-3 line-clamp-3 font-sans text-sm leading-relaxed max-sm:hidden">{member.about}</p>
+      <div className="flex flex-1 flex-col px-2 pt-3 pb-2 sm:px-4 sm:pt-5 sm:pb-4">
+        <h3 className="font-grotesk text-base leading-tight font-bold text-white transition-colors group-hover:text-signal-orange sm:text-xl">{member.name}</h3>
+        <p className="mt-1 font-bengali text-xs text-white/75 sm:text-sm">{member.roleBn}</p>
+
+        <p className="mt-3 line-clamp-3 font-sans text-sm leading-relaxed text-white/80 max-sm:hidden">{member.about}</p>
 
         <ul className="mt-4 flex flex-wrap gap-1.5 max-sm:hidden" aria-label="Skills">
           {member.skills.slice(0, 3).map((s) => (
-            <li key={s.label} className="inline-flex items-center gap-1.5 rounded-full bg-black/15 px-2.5 py-1 font-sans text-xs font-semibold">
-              <Icon name={s.icon} className="text-[14px]!" />
+            <li key={s.label} className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-sans text-xs font-semibold text-white/90 ring-1 ring-white/20 ring-inset">
+              <Icon name={s.icon} className="text-sm! text-signal-orange" />
               {s.label}
             </li>
           ))}
         </ul>
 
-        <span className="mt-auto flex items-center justify-between gap-2 pt-4 font-grotesk text-[11px] font-bold uppercase sm:pt-5 sm:text-sm">
-          <span className="flex items-center gap-1.5 truncate">
-            <Icon name={departments[member.depts[0]].icon} className="text-[16px]!" />
-            <span className="truncate">{member.depts.map((d) => departments[d].label).join(" · ")}</span>
-          </span>
-          <Icon name="arrow_forward" className="shrink-0 text-[18px]! transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" />
-        </span>
+        <p className="mt-auto flex items-center gap-1.5 pt-3 font-sans text-xs font-semibold text-white/75 sm:pt-5 sm:text-sm">
+          <Icon name={departments[member.depts[0]].icon} className="text-base! text-signal-orange" />
+          <span className="truncate">{member.depts.map((d) => departments[d].label).join(" · ")}</span>
+        </p>
       </div>
     </Link>
   );

@@ -637,6 +637,28 @@
   to { transform: translateX(400%); }
 }
 
+/* The team page's signal path (components/team/signal-path.tsx): the same
+   gold pulse running down its vertical line, and across from lg. Still and
+   hidden under reduced motion, as the seams' pulse is. */
+@keyframes signal-run-y {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(400%); }
+}
+.signal-path-run {
+  animation: signal-run-y 4.8s linear infinite;
+}
+@media (width >= 64rem) {
+  .signal-path-run {
+    animation-name: signal-run;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .signal-path-run {
+    animation: none;
+    visibility: hidden;
+  }
+}
+
 /* The header's gold seam between its two rows (site-header.tsx), one
    3.6s cycle: the logo node flares as the comet leaves it, the comet runs
    the line (easing out of the logo and into the end), and the far node
@@ -2701,4 +2723,26 @@ body:has(.media-shell) .catalogue [data-slot="form-message"] {
     drop-shadow(0 1.5px 0 var(--color-signal-orange))
     drop-shadow(0 -1.5px 0 var(--color-signal-orange))
     drop-shadow(0 6px 12px rgb(0 0 0 / 0.45));
+}
+
+/* The R&D Fellowship's cohort dial (components/team/cohort-dial.tsx): each
+   phase arc sweeps to its length once, and a gold dot goes round the ring
+   like the cohort's clock. Drawn still under reduced motion. */
+.dial-arc {
+  stroke-dasharray: var(--len) 100;
+}
+@keyframes dial-draw {
+  from { stroke-dasharray: 0 100; }
+}
+@keyframes dial-orbit {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .dial-arc {
+    animation: dial-draw 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .dial-orbit {
+    transform-origin: 160px 160px;
+    animation: dial-orbit 24s linear infinite;
+  }
 }

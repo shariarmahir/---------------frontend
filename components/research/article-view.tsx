@@ -191,9 +191,9 @@ export function ArticleView({ a }: { a: Article }) {
   const collections = TRACKS.filter((t) => t.has(a));
   const near = related(list, a, 6);
 
-  const copyStable = () => {
-    navigator.clipboard?.writeText(stable).then(
-      () => toast.success("Stable URL copied"),
+  const copy = (text: string, what: string) => {
+    navigator.clipboard?.writeText(text).then(
+      () => toast.success(`${what} copied`),
       () => toast.error("Could not copy"),
     );
   };
@@ -219,10 +219,19 @@ export function ArticleView({ a }: { a: Article }) {
             <p className="flex min-w-0 flex-wrap items-center gap-x-2 text-sm text-white/80">
               <span className="font-semibold text-white">Stable URL:</span>
               <Link href={articleHref(a)} className={cn(LINK, "min-w-0 break-all")}>{origin ? stable : `/research/${a.slug}`}</Link>
-              <button type="button" onClick={copyStable} aria-label="Copy stable URL" title="Copy stable URL" className={cn(ICON_BTN, "size-9")}>
+              <button type="button" onClick={() => copy(stable, "Stable URL")} aria-label="Copy stable URL" title="Copy stable URL" className={cn(ICON_BTN, "size-9")}>
                 <Icon name="content_copy" className="text-lg" />
               </button>
             </p>
+            {a.tracking && (
+              <p className="flex min-w-0 flex-wrap items-center gap-x-2 text-sm text-white/80">
+                <span className="font-semibold text-white">Tracking number:</span>
+                <span className="font-semibold break-all text-signal-orange tabular-nums">{a.tracking}</span>
+                <button type="button" onClick={() => copy(a.tracking!, "Tracking number")} aria-label="Copy tracking number" title="Copy tracking number" className={cn(ICON_BTN, "size-9")}>
+                  <Icon name="content_copy" className="text-lg" />
+                </button>
+              </p>
+            )}
             <div className="flex flex-wrap items-center gap-2">
               <OpenAccess />
               <StatusTags a={a} />
@@ -258,6 +267,7 @@ export function ArticleView({ a }: { a: Article }) {
             )}
             <dl className="mt-4 divide-y divide-white/12">
               <Row label={a.authors.length > 1 ? "Authors" : "Author"}>{a.authors.map((x) => `${x.nameEn ?? x.name}${x.affiliation ? ` (${x.affiliation})` : ""}`).join("; ")}</Row>
+              {a.tracking && <Row label="Tracking no.">{a.tracking}</Row>}
               <Row label="Institution">{a.institution}</Row>
               {a.supervisor && <Row label="Supervisor">{a.supervisor}</Row>}
               <Row label="Published">{fmtDate(a.published)}</Row>
@@ -341,7 +351,8 @@ export function ArticleView({ a }: { a: Article }) {
         </div>
       </div>
 
-      <div className={cn(PANEL_INK, "story-reveal mt-14 max-w-4xl p-5 sm:p-8")}>
+      {/* The discussion sits on the page's black, centred under the work. */}
+      <div className="story-reveal mx-auto mt-16 w-full max-w-4xl">
         <Discussion a={a} />
       </div>
     </div>

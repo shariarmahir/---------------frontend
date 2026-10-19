@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { useAuth } from "@/lib/auth/client";
 import type { Article } from "@/lib/research/core";
-import { useResearch } from "@/lib/research/store";
+import { useLibrary, useResearch } from "@/lib/research/store";
 import { cn } from "@/lib/utils";
 import { ArticleView } from "./article-view";
 import { ContentView } from "./content-view";
@@ -28,7 +28,10 @@ function Missing({ slug }: { slug: string }) {
 /** A work that is not in the shipped library: the viewer's own submission, read from this browser. */
 function Own({ slug, render }: { slug: string; render: (a: Article) => React.ReactNode }) {
   const { ready } = useAuth();
-  const article = useResearch((s) => s.mine.find((a) => a.slug === slug));
+  // Through the library list, so the work comes with its tracking number.
+  const mine = useResearch((s) => s.mine);
+  const list = useLibrary();
+  const article = mine.some((a) => a.slug === slug) ? list.find((a) => a.slug === slug) : undefined;
   if (article) return render(article);
   if (!ready) return <div className={cn(COLUMN, "py-10")}><div className="h-96 animate-pulse rounded-3xl bg-bdnavy-900 motion-reduce:animate-none" aria-label="Loading" /></div>;
   return <Missing slug={slug} />;

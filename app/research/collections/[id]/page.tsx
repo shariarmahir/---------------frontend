@@ -11,7 +11,7 @@ import {
   contentHref,
   Cover,
   COLUMN,
-  FIELD,
+  Fillet,
   GeniusLogo,
   H1,
   H2,
@@ -329,8 +329,8 @@ function SubjectCards({ id }: { id: TrackId }) {
 }
 
 /**
- * One collection, after JSTOR's collection site pages: "Part of", the
- * gold name, "About this Collection" with Show more, search within, the
+ * One collection, after JSTOR's collection site pages: "Genius Verified", the
+ * gold name, "About this Collection" with Show more, the
  * cover; then "Explore this collection" and every item, refinable.
  */
 export default async function CollectionPage({
@@ -341,7 +341,6 @@ export default async function CollectionPage({
   const t = findTrack((await params).id);
   if (!t) notFound();
   const c = COLLECTIONS[t.id];
-  const count = inTopic(libraryArticles, t.id).length;
   const [first, ...rest] = c.about;
 
   return (
@@ -354,11 +353,9 @@ export default async function CollectionPage({
           )}
         >
           <div className="hero-rise min-w-0">
-            <p className="text-sm text-white/65">
-              Part of{" "}
-              <Link href="/research/collections" className={LINK}>
-                Genius
-              </Link>
+            <p className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold text-white ring-1 ring-signal-orange/60 ring-inset">
+              <Icon name="verified" filled className="text-lg text-signal-orange" />
+              Genius Verified
             </p>
             <h1
               className={cn(
@@ -372,7 +369,7 @@ export default async function CollectionPage({
             <p className="mt-2 max-w-[62ch] text-lg leading-relaxed text-white/80">
               {first}
             </p>
-            {rest.length > 0 && (
+            {(rest.length > 0 || c.cover.credit) && (
               <details className="group mt-3 max-w-[62ch]">
                 <summary className={cn(BTN, "list-none [&::-webkit-details-marker]:hidden")}>
                   <Icon
@@ -390,40 +387,25 @@ export default async function CollectionPage({
                     {p}
                   </p>
                 ))}
+                {/* The cover's licence (CC BY-SA) asks for this credit wherever the photo is shown. */}
+                {c.cover.credit && (
+                  <p className="live-in mt-4 text-sm text-white/65">
+                    Cover photo: {c.cover.credit.author},{" "}
+                    <a href={c.cover.credit.licenseUrl} target="_blank" rel="noopener noreferrer" className={LINK}>
+                      {c.cover.credit.license}
+                    </a>
+                    , via{" "}
+                    <a href={c.cover.credit.sourceUrl} target="_blank" rel="noopener noreferrer" className={LINK}>
+                      Wikimedia Commons
+                    </a>
+                    .
+                  </p>
+                )}
               </details>
             )}
-            <form
-              action="/research/search"
-              role="search"
-              className="mt-10 max-w-md"
-            >
-              <input type="hidden" name="collection" value={t.id} />
-              <label
-                htmlFor="within-q"
-                className="block font-grotesk text-sm font-bold text-signal-orange"
-              >
-                Search within collection
-              </label>
-              <span className="relative mt-2 block">
-                <input
-                  id="within-q"
-                  name="q"
-                  type="search"
-                  placeholder={`Search ${plural(count, "item")}`}
-                  className={cn(FIELD, "h-12 pr-12")}
-                />
-                <button
-                  type="submit"
-                  aria-label="Search"
-                  className="absolute inset-y-0 right-0 grid w-12 place-items-center rounded-xl text-signal-orange transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none motion-reduce:transition-none"
-                >
-                  <Icon name="search" className="text-2xl" />
-                </button>
-              </span>
-            </form>
           </div>
           <figure className="hero-rise self-start" style={{ "--d": "160ms" } as React.CSSProperties}>
-            <span className="relative block aspect-3/4 w-full max-w-80 overflow-hidden rounded-3xl bg-bdnavy-900 shadow-[0_30px_60px_-30px_var(--color-bdnavy-400)] ring-1 ring-white/12">
+            <span className="relative block aspect-3/4 w-full max-w-80 overflow-hidden rounded-3xl bg-bdnavy-900 shadow-[0_30px_60px_-30px_var(--color-bdnavy-400)]">
               <Image
                 src={c.cover.src}
                 alt={c.cover.alt}
@@ -432,23 +414,15 @@ export default async function CollectionPage({
                 sizes="320px"
                 className="object-cover"
               />
+              {/* The Genius mark in a black notch cut into the photo's top-right corner, like the home hero's. */}
+              <span className="absolute top-0 right-0 z-10 rounded-bl-3xl bg-black pt-2 pr-2 pb-3 pl-3.5">
+                <Fillet corner="tr" className="top-0 -left-6 size-6" />
+                <Fillet corner="tr" className="right-0 -bottom-6 size-6" />
+                <Link href="/research" aria-label="Genius home" className="block rounded-lg focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none">
+                  <GeniusLogo className="h-9" />
+                </Link>
+              </span>
             </span>
-            {c.cover.credit && (
-              <figcaption className="mt-3 max-w-80 text-xs text-white/65">
-                {c.cover.credit.author},{" "}
-                <a
-                  href={c.cover.credit.licenseUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={LINK}
-                >
-                  {c.cover.credit.license}
-                </a>
-              </figcaption>
-            )}
-            <Link href="/research" aria-label="Genius home" className="mt-8 inline-block rounded-lg focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none">
-              <GeniusLogo className="h-14" />
-            </Link>
           </figure>
         </div>
       </section>

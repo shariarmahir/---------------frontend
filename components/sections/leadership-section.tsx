@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { CSSProperties } from "react";
 import { CardDetails, TapCard } from "@/components/ui/card-details";
 import { Icon } from "@/components/ui/icon";
@@ -225,15 +226,15 @@ export function LeadershipSection() {
           <div>
             <span className="block font-grotesk text-lg font-bold text-signal-orange sm:text-xl">R&amp;D Fellowship Cohort</span>
             <p className="font-sans text-xs text-white/80 sm:text-sm">
-              4–5 Research Fellows &amp; Paid Innovation Interns engaged in
-              active cleanroom silicon trials.
+              2.5-month cohorts on the lab&apos;s early-stage research. High
+              performers are converted to paid roles.
             </p>
           </div>
         </div>
 
-        <a href="/signup?role=researcher" className={cn(btn.gold, "shrink-0")}>
-          Apply for Fellowship
-        </a>
+        <Link href="/team/fellowship" className={cn(btn.gold, "shrink-0")}>
+          Explore the Fellowship
+        </Link>
       </div>
     </section>
   );

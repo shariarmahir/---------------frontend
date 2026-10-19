@@ -44,9 +44,9 @@ export interface TeamMember {
   /** Portrait under /public/team. Members without one get a monogram. */
   photo?: string;
   /**
-   * Card colour when it differs from the first department's — the three
-   * executives match the home page's poster cards: CEO gold, COO green,
-   * CMO orange.
+   * Card colour when it differs from the first department's: the three
+   * executives match the home page's poster cards (CEO cobalt, COO ink,
+   * CMO navy).
    */
   tone?: DeptId;
 }
@@ -67,9 +67,11 @@ export interface Dept {
 }
 
 /**
- * Department colours, from the home page's Pixel-Map palette only: gold,
- * orange, ink, bottle green and bright green. Ink text on gold, orange and
- * bright green; white on ink and bottle green.
+ * Department colours, in the landing page's three card fields only (Mahir,
+ * 2026-10-19): cobalt, navy and ink, each with a faint ring to hold its
+ * edge on the black ground, white text, and gold for the pills, icons and
+ * monograms. `color` is the planet colour in the hero's orbit, a tint that
+ * reads on black.
  */
 export const departments: Record<DeptId, Dept> = {
   leadership: {
@@ -77,49 +79,49 @@ export const departments: Record<DeptId, Dept> = {
     label: "Leadership",
     labelBn: "নেতৃত্ব",
     color: "var(--color-signal-orange)",
-    surface: "bg-signal-orange text-text-primary",
-    tile: "bg-text-primary text-signal-orange",
-    plate: "bg-bd-green text-signal-orange",
+    surface: "bg-cobalt text-white ring-1 ring-white/12",
+    tile: "bg-signal-orange text-text-primary",
+    plate: "bg-bdnavy-900 text-signal-orange",
     icon: "workspace_premium",
   },
   creative: {
     id: "creative",
     label: "Idea & Creative",
     labelBn: "আইডিয়া ও ক্রিয়েটিভ",
-    color: "var(--color-bdnavy-400)",
-    surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
+    color: "var(--color-bdnavy-300)",
+    surface: "bg-cobalt text-white ring-1 ring-white/12",
     tile: "bg-signal-orange text-text-primary",
-    plate: "bg-signal-orange text-text-primary",
+    plate: "bg-bdnavy-900 text-signal-orange",
     icon: "lightbulb",
   },
   client: {
     id: "client",
     label: "Client Relations",
     labelBn: "ক্লায়েন্ট",
-    color: "white",
-    surface: "bg-text-primary text-white ring-1 ring-white/12",
+    color: "var(--color-link-blue)",
+    surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
     tile: "bg-signal-orange text-text-primary",
-    plate: "bg-signal-orange text-text-primary",
+    plate: "bg-cobalt text-signal-orange",
     icon: "handshake",
   },
   iot: {
     id: "iot",
     label: "IoT & Hardware",
     labelBn: "আইওটি ও হার্ডওয়্যার",
-    color: "var(--color-bd-green)",
-    surface: "bg-bd-green text-white",
+    color: "var(--color-bdnavy-400)",
+    surface: "bg-text-primary text-white ring-1 ring-white/12",
     tile: "bg-signal-orange text-text-primary",
-    plate: "bg-signal-orange text-text-primary",
+    plate: "bg-bdnavy-900 text-signal-orange",
     icon: "sensors",
   },
   dev: {
     id: "dev",
     label: "AI & Software",
     labelBn: "এআই ও সফটওয়্যার",
-    color: "var(--color-bdgreen-500)",
-    surface: "bg-bdgreen-500 text-text-primary",
-    tile: "bg-text-primary text-bdgreen-500",
-    plate: "bg-bd-green text-white",
+    color: "var(--color-link-blue)",
+    surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
+    tile: "bg-signal-orange text-text-primary",
+    plate: "bg-cobalt text-signal-orange",
     icon: "neurology",
   },
 };
@@ -177,7 +179,7 @@ export const team: TeamMember[] = [
   },
   {
     slug: "nabeel-shadad",
-    tone: "creative",
+    tone: "dev",
     photo: "/team/nabeel-shadad.jpg",
     name: "Nabeel Shadad",
     initials: "NS",

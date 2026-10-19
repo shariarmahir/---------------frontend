@@ -130,12 +130,40 @@ export interface TalkNote {
   text: string;
   /** The comment this one answers (one level of replies). */
   parent?: string;
-  /** Likes from other readers (sample data); the viewer's own like is added on top. */
+  /** Likes from other readers (sample data); the viewer's own reaction is added on top. */
   likes?: number;
+  /** When the writer last edited it. */
+  edited?: string;
+}
+
+/** The three reactions a reader can leave on a comment, one at a time. */
+export type NoteReaction = "like" | "insight" | "same";
+
+export const NOTE_REACTIONS: Record<NoteReaction, { label: string; icon: string }> = {
+  like: { label: "Like", icon: "thumb_up" },
+  insight: { label: "Insightful", icon: "lightbulb" },
+  same: { label: "Same question", icon: "front_hand" },
+};
+
+export const NOTE_REACTION_KINDS = Object.keys(NOTE_REACTIONS) as NoteReaction[];
+
+/** "just now", "5 min ago", "3 h ago", "2 d ago", then the date: for comments. `now` 0 means unknown (the server), so the date. */
+export function timeAgo(iso: string, now: number, date: (iso: string) => string): string {
+  const ms = now - Date.parse(iso);
+  if (!now || !Number.isFinite(ms) || ms < 0) return date(iso);
+  const min = Math.floor(ms / 60_000);
+  if (min < 1) return "just now";
+  if (min < 60) return `${min} min ago`;
+  const h = Math.floor(min / 60);
+  if (h < 24) return `${h} h ago`;
+  const d = Math.floor(h / 24);
+  return d < 7 ? `${d} d ago` : date(iso);
 }
 
 export interface Article {
   slug: string;
+  /** The work's tracking number, "AuthorName-KL-2026-01": see trackingId. */
+  tracking?: string;
   title: string;
   /** An alternative title, e.g. the Bangla original of an English title. */
   titleEn?: string;
@@ -278,7 +306,7 @@ export function search(list: Article[], query: string): Article[] {
   const scored = list
     .map((a) => {
       const fields: [string, number][] = [
-        [norm(`${a.title} ${a.titleEn ?? ""}`), 6],
+        [norm(`${a.title} ${a.titleEn ?? ""} ${a.tracking ?? ""}`), 6],
         [norm(a.keywords.join(" ")), 4],
         [norm(`${a.authors.map((x) => x.name).join(" ")} ${a.institution} ${a.supervisor ?? ""} ${a.district ?? ""}`), 3],
         [norm(`${FIELDS[a.field].en} ${KINDS[a.kind].en} ${KINDS[a.kind].type}`), 2],
@@ -464,13 +492,14 @@ export function draftProblems(d: Draft, thisYear: number): DraftProblems {
 }
 
 /** A ready draft becomes an article waiting for review. */
-export function buildArticle(d: Draft, opts: { now: Date; taken: Set<string>; owner: string; ownerName: string; file?: Article["file"] }): Article {
+export function buildArticle(d: Draft, opts: { now: Date; taken: Set<string>; owner: string; ownerName: string; file?: Article["file"]; tracking?: string }): Article {
   const at = opts.now.toISOString();
   const sections = d.sections
     .filter((s) => s.heading.trim() || s.body.trim())
     .map((s, i) => ({ id: `${slugify(s.heading)}-${i + 1}`, heading: s.heading.trim(), body: s.body.trim() }));
   return {
     slug: uniqueSlug(slugify(d.title), opts.taken),
+    ...(opts.tracking ? { tracking: opts.tracking } : {}),
     title: d.title.trim(),
     ...(d.titleEn.trim() ? { titleEn: d.titleEn.trim() } : {}),
     kind: d.kind as ResearchKind,
@@ -497,6 +526,51 @@ export function buildArticle(d: Draft, opts: { now: Date; taken: Set<string>; ow
   };
 }
 
+/* ---------- Tracking numbers ---------- */
+
+/**
+ * Mahir, 2026-10-19: every work carries a tracking number,
+ * "AuthorName-KL-Year-NN": the author's name run together ("Mahir Shariar
+ * Mahin" is "MahirShariarMahin"; Bangla names keep their letters), KL for
+ * Kandari-Lab, the year it entered Genius, and that author's own running
+ * count (01, 02, 03 …), so each person's works number from 01.
+ */
+export function trackingName(name: string): string {
+  const words = name.normalize("NFC").split(/[^\p{L}\p{M}\p{N}]+/u).filter(Boolean);
+  return words.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join("") || "Author";
+}
+
+export const TRACKING_PATTERN = /^[\p{L}\p{M}\p{N}]+-KL-\d{4}-\d{2,4}$/u;
+
+export const trackingId = (name: string, year: number, n: number) => `${trackingName(name)}-KL-${year}-${String(n).padStart(2, "0")}`;
+
+/** The name a work is numbered under: its first author's (the Latin spelling when there is one). */
+export const trackingAuthor = (a: Pick<Article, "authors">) => a.authors[0]?.nameEn ?? a.authors[0]?.name ?? "";
+
+/** A person's next tracking number: one more than the highest they already hold, whatever the year. */
+export function nextTracking(list: Pick<Article, "tracking">[], name: string, year: number): string {
+  const prefix = `${trackingName(name)}-KL-`;
+  const held = list
+    .map((a) => a.tracking)
+    .filter((t): t is string => Boolean(t?.startsWith(prefix)))
+    .map((t) => Number(t.slice(t.lastIndexOf("-") + 1)) || 0);
+  return trackingId(name, year, Math.max(0, ...held) + 1);
+}
+
+/** Give every work without a tracking number its own, oldest first, counting per author. Works that have one keep it. */
+export function withTracking<T extends Article>(list: T[]): T[] {
+  const numbered: Pick<Article, "tracking">[] = list.filter((a) => a.tracking);
+  const given = new Map<T, string>();
+  const order = [...list].sort((x, y) => x.published.localeCompare(y.published) || x.slug.localeCompare(y.slug));
+  for (const a of order) {
+    if (a.tracking) continue;
+    const id = nextTracking(numbered, trackingAuthor(a), Number(a.published.slice(0, 4)) || a.year);
+    given.set(a, id);
+    numbered.push({ tracking: id });
+  }
+  return list.map((a) => (given.has(a) ? { ...a, tracking: given.get(a)! } : a));
+}
+
 const isStr = (x: unknown): x is string => typeof x === "string";
 
 /**
@@ -520,6 +594,7 @@ export function sanitizeOwn(raw: unknown): Article[] {
     const gallery = Array.isArray(x.gallery) ? x.gallery.filter((g) => g && isSafeImage(g.src) && isStr(g.caption)).slice(0, LIMITS.gallery).map((g) => ({ src: g.src, caption: g.caption })) : [];
     out.push({
       slug: x.slug,
+      ...(isStr(x.tracking) && TRACKING_PATTERN.test(x.tracking) ? { tracking: x.tracking } : {}),
       title: x.title,
       ...(isStr(x.titleEn) && x.titleEn ? { titleEn: x.titleEn } : {}),
       kind: x.kind,
