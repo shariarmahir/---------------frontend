@@ -46,9 +46,6 @@ export default function FellowshipPage() {
         <section aria-labelledby="fellowship-title" className="relative w-full">
           <div className="mx-auto grid w-full max-w-7xl items-center gap-12 px-gutter-x py-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:py-20">
             <div className="flex flex-col items-start gap-6">
-              <Link href="/team" className="hero-rise inline-flex min-h-10 items-center gap-1.5 rounded-lg font-sans text-sm font-semibold text-white/75 transition-colors hover:text-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none">
-                <Icon name="arrow_back" className="text-lg!" /> The team
-              </Link>
               <h1 id="fellowship-title" className="hero-rise max-w-[15ch] font-grotesk text-4xl leading-[1.06] font-bold tracking-tight text-balance text-white sm:text-5xl xl:text-6xl" style={{ "--d": "80ms" } as CSSProperties}>
                 R&amp;D Fellowship: <span className="text-signal-orange">build what Bangladesh needs.</span>
               </h1>

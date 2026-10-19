@@ -80,32 +80,10 @@ export default async function MemberProfilePage({ params }: { params: Promise<{ 
           <div className="hero-band relative isolate flex w-full items-center overflow-hidden bg-black">
             <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-gutter-x py-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
               <div className="flex min-w-0 flex-col items-start gap-4">
-                <Link
-                  href="/team"
-                  className="inline-flex min-h-10 items-center gap-1.5 rounded-lg font-sans text-sm font-semibold text-white/75 transition-colors hover:text-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
-                >
-                  <Icon name="arrow_back" className="text-[16px]!" />
-                  The team
-                </Link>
                 <span className="w-fit rounded-full bg-signal-orange px-3 py-1 font-sans text-xs font-bold text-text-primary">{m.role}</span>
                 <h1 id="member-title" className="hero-rise font-grotesk text-4xl leading-[1.05] font-bold tracking-tight text-balance text-white sm:text-5xl lg:text-6xl">
                   {m.name}
                 </h1>
-                <p className="font-bengali text-lg font-semibold text-signal-orange">{m.roleBn}</p>
-                <div className="flex flex-wrap gap-2">
-                  {m.depts.map((id) => (
-                    <span key={id} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-sans text-xs font-semibold text-white ring-1 ring-white/25 ring-inset">
-                      <Icon name={departments[id].icon} className="text-sm! text-signal-orange" />
-                      {departments[id].label}
-                    </span>
-                  ))}
-                  {!isFounder && (
-                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-sans text-xs font-semibold text-signal-orange ring-1 ring-signal-orange/60 ring-inset">
-                      <Icon name="neurology" className="text-sm!" />
-                      Signal from {founder.name.split(" ")[0]}
-                    </span>
-                  )}
-                </div>
               </div>
 
               {/* The member at the centre of their own small orbit. */}

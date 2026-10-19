@@ -20,7 +20,7 @@ const STARTS = ARCS.map((_, i) =>
  * A cohort as a dial: ten week marks round a ring, the four phases drawn on
  * it in solid colour (they sweep in when the page opens), a gold dot going
  * round like the cohort's own clock, and "2.5 months" at the centre. The
- * legend under it names the phases. Under reduced motion it is drawn still.
+ * phases are named for screen readers only. Under reduced motion it is drawn still.
  */
 export function CohortDial() {
   return (
@@ -96,26 +96,9 @@ export function CohortDial() {
           </div>
         </div>
       </div>
-      <figcaption className="mt-6 grid grid-cols-2 gap-x-6 gap-y-3">
-        <span className="sr-only">
-          A {fellowship.cycle} cohort in four phases:
-        </span>
-        {PHASES.map((p, i) => (
-          <span
-            key={p.title}
-            className="flex items-start gap-2.5 font-sans text-sm"
-          >
-            <span
-              aria-hidden
-              className="mt-1 size-3 shrink-0 rounded-full"
-              style={{ background: ARCS[i].color }}
-            />
-            <span>
-              <span className="block font-semibold text-white">{p.title}</span>
-              <span className="block text-white/65">{p.weeks}</span>
-            </span>
-          </span>
-        ))}
+      <figcaption className="sr-only">
+        A {fellowship.cycle} cohort in four phases:{" "}
+        {PHASES.map((p) => `${p.title}, ${p.weeks}`).join("; ")}.
       </figcaption>
     </figure>
   );
