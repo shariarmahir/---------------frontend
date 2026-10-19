@@ -393,6 +393,31 @@ function SectionNav({
 const isBangla = (s: string) => /[ঀ-৿]/.test(s);
 
 /**
+ * The National TV Wall: the country's live dashboard (/tv-wall). Gold on the
+ * navy bar beside প্রতিবাদ; red stays for harm, so no live dot here.
+ */
+function TvWallLink({ className }: { className?: string }) {
+  const pathname = usePathname();
+  const current = pathname?.startsWith("/tv-wall");
+  return (
+    <Link
+      href="/tv-wall"
+      aria-current={current ? "page" : undefined}
+      className={cn(
+        "group inline-flex h-10 shrink-0 items-center gap-2 rounded-lg px-3 font-bengali text-sm font-bold ring-2 ring-signal-orange ring-inset transition-colors duration-200 focus-visible:ring-white focus-visible:outline-none",
+        current ? "bg-signal-orange text-text-primary" : "text-signal-orange hover:bg-signal-orange hover:text-text-primary",
+        className,
+      )}
+    >
+      <Icon name="connected_tv" className="text-xl!" />
+      <span className="whitespace-nowrap">
+        <span className="max-xl:hidden">জাতীয় </span>টিভি ওয়াল
+      </span>
+    </Link>
+  );
+}
+
+/**
  * প্রতিবাদ, in the alert red (CLAUDE.md §4.1), as a small menu: raise a
  * protest on its page, or start recording evidence right away.
  */
@@ -477,6 +502,7 @@ export function SiteHeader() {
                   protest, or start recording. Desktop only; below lg it
                   lives in the pop-up menu. The civic pages moved into the
                   National Desk tab (Mahir, 2026-10-18). */}
+              <TvWallLink className="hidden lg:inline-flex" />
               <div className="hidden lg:flex">
                 <ProtestMenu onRecord={() => setRecordOpen(true)} />
               </div>
@@ -534,6 +560,17 @@ export function SiteHeader() {
                         <X className="size-5" aria-hidden />
                       </Dialog.Close>
                     </div>
+
+                    <Dialog.Close asChild>
+                      <Link
+                        href="/tv-wall"
+                        style={{ "--i": 1 } as CSSProperties}
+                        className="menu-item flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-signal-orange px-3 font-bengali text-base font-bold text-text-primary transition-[scale] duration-200 active:scale-95"
+                      >
+                        <Icon name="connected_tv" className="text-xl!" />
+                        জাতীয় টিভি ওয়াল
+                      </Link>
+                    </Dialog.Close>
 
                     {/* The feed and the recorder, moved off the phone bar. */}
                     <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">

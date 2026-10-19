@@ -88,6 +88,10 @@
   --color-cobalt: #035397;
   /* Link blue: outbound citations on the black ground (≈7:1). */
   --color-link-blue: #5aaeff;
+  /* National TV Wall red-zone steps, solid, from "reported" to the flag's red
+     (zone 3 is --color-national-crimson). Quiet districts are bdnavy-700. */
+  --color-zone-1: #6b1d24;
+  --color-zone-2: #a8231b;
 
   /* Landing-page system (code.html / DESIGN.md "Clinical Cleanroom").
      Scoped to the page body; the navbar keeps its own palette above. */
@@ -2745,4 +2749,52 @@ body:has(.media-shell) .catalogue [data-slot="form-message"] {
     transform-origin: 160px 160px;
     animation: dial-orbit 24s linear infinite;
   }
+}
+
+/* ── National TV Wall (/tv-wall) ─────────────────────────────────────────
+   The wall powers on monitor by monitor (a CRT line opening to the full
+   picture), red zones ping on the map, the ticker crawls, and the program
+   bar fills while TV mode holds a monitor on air. All of it stops under
+   reduced motion; nothing is hidden by default. */
+@keyframes monitor-on {
+  0% { clip-path: inset(49.5% 0 49.5% 0); opacity: 0.4; }
+  55% { clip-path: inset(49.5% 0 49.5% 0); opacity: 1; }
+  100% { clip-path: inset(0 0 0 0); opacity: 1; }
+}
+@keyframes zone-ping {
+  0% { transform: scale(1); opacity: 0.9; }
+  100% { transform: scale(3.2); opacity: 0; }
+}
+@keyframes tally-blink {
+  0%, 60% { opacity: 1; }
+  80% { opacity: 0.35; }
+}
+@keyframes wire-in {
+  from { background-color: rgb(228 176 39 / 0.22); }
+  to { background-color: transparent; }
+}
+@keyframes ticker-run {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes program-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.zone-ping { transform-box: fill-box; transform-origin: center; }
+.program-fill { transform-origin: left; }
+@media (prefers-reduced-motion: no-preference) {
+  .monitor-on { animation: monitor-on 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms) both; }
+  .zone-ping { animation: zone-ping 2.4s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms) infinite; }
+  .tally-blink { animation: tally-blink 1.6s steps(1) infinite; }
+  .wire-in { animation: wire-in 2.6s ease-out both; }
+  .ticker-run { animation: ticker-run var(--ticker-dur, 120s) linear infinite; }
+  .ticker:hover .ticker-run, .ticker:focus-within .ticker-run { animation-play-state: paused; }
+  .program-fill { animation: program-fill var(--cycle, 12s) linear both; }
+  .program-paused .program-fill { animation-play-state: paused; }
+  .wall-zoom { transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zone-ping { display: none; }
+  .program-fill { transform: scaleX(1); }
 }
