@@ -69,6 +69,8 @@ export interface NewsItem {
   at: string;
   image?: string;
   lang: "bn" | "en";
+  /** The feed's own section names and the story URL's first path parts, lowercased: what the paper's sections match on (news-sections.ts). */
+  tags?: string[];
 }
 
 /* ---------- Editions ---------- */
@@ -213,6 +215,7 @@ export function parseFeed(xml: string, source: NewsSource): NewsItem[] {
       at,
       ...(image?.startsWith("https:") ? { image } : {}),
       lang: source.lang,
+      tags: [...sections, ...path].map((t) => t.toLowerCase()).filter(Boolean),
     });
   }
   return out;

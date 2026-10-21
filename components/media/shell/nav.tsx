@@ -168,6 +168,8 @@ function NavGroups({ pathname, me, unread, size }: { pathname: string; me: strin
 export function LeftRail({ unreadSeed, me }: { unreadSeed: UnreadSeed; me: string }) {
   const pathname = usePathname();
   const unread = useUnread(unreadSeed);
+  // নাগরিক জীবন is a full-width newspaper with its own section menu.
+  if (pathname.startsWith("/media/news")) return null;
   return (
     <nav aria-label="প্রধান মেনু" className="sticky top-16 hidden h-[calc(100dvh-4rem)] w-60 shrink-0 flex-col overflow-y-auto py-5 pr-2 scrollbar-none lg:flex print:hidden">
       <Link href="/media/post/new" className={mediaButton({ variant: "primary", size: "lg", className: "mb-5 w-full" })}>

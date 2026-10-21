@@ -2905,3 +2905,52 @@ article:hover .app-stage { rotate: 0deg; }
   .zone-ping { display: none; }
   .program-fill { transform: scaleX(1); }
 }
+
+/*
+ * নাগরিক জীবন (app/media/news, Mahir 2026-10-21): the newspaper wears the
+ * landing page's own palette, whatever the media theme: a pitch-black
+ * ground, gold for titles and actions, navy, cobalt and ink fields, red
+ * only for urgency, white type. The media chrome around it (top bar, phone
+ * tabs) turns dark on these pages so the screen reads as one. Placed last
+ * and one step more specific than the media themes, so it wins over both.
+ */
+html:has(.np) {
+  background-color: #000;
+}
+body:has(.media-shell):has(main .np) {
+  --color-m-canvas: #000;
+  --color-m-ground: #000;
+  --color-m-mist: #111318;
+  --color-m-ink: #f2f1ee;
+  --color-m-card: #0b0c10;
+  --color-m-amber-soft: #3a2c0c;
+  --color-m-gold: #e4b027;
+  --color-m-yellow: #e4b027;
+  --color-m-blue: #8fa1e3;
+  --color-m-blue-deep: #0b1849;
+  --color-m-blue-night: #0b1849;
+  --color-m-blue-soft: #111a3a;
+  --color-m-red: #da291c;
+  --color-m-red-soft: #3a1714;
+  --color-m-green: #1f9d6f;
+  --color-m-green-soft: #10291f;
+  --shadow-m-tile: 0 1px 0 rgb(0 0 0 / 0.35), 0 10px 24px -18px rgb(0 0 0 / 0.8);
+  --shadow-m-lift: 0 1px 0 rgb(0 0 0 / 0.4), 0 22px 40px -22px rgb(0 0 0 / 0.85);
+  background-color: #000;
+}
+body:has(.media-shell):has(main .np) .media-shell {
+  color-scheme: dark;
+  background-color: #000;
+}
+.np {
+  --color-signal-orange: #e4b027;
+  --color-national-crimson: #da291c;
+  --color-bdnavy-900: #0b1849;
+  --color-bdnavy-400: #6379d1;
+  --color-bdnavy-300: #8fa1e3;
+  --color-cobalt: #035397;
+  --color-text-primary: #032017;
+  color-scheme: dark;
+  background-color: #000;
+  color: #fff;
+}
