@@ -56,10 +56,11 @@ export function AiWidget() {
   return (
     // z-30: below the header (z-40) and the Sheet overlay (z-50). The
     // launcher sits bottom-right and the header top, so they do not overlap
-    // today, but an explicit rung keeps the stack unambiguous.
+    // today, but an explicit rung keeps the stack unambiguous. Below lg it
+    // keeps clear of the phone's home indicator and rounded corners.
     <div
       ref={panelRef}
-      className="fixed right-4 bottom-4 z-30 lg:right-6 lg:bottom-6"
+      className="fixed right-[calc(1rem+env(safe-area-inset-right))] bottom-[calc(1rem+env(safe-area-inset-bottom))] z-30 lg:right-6 lg:bottom-6"
     >
       {/* Panel. */}
       <div
@@ -83,7 +84,7 @@ export function AiWidget() {
             type="button"
             onClick={() => setOpen(false)}
             aria-label="Close AI Ask"
-            className="flex size-7 items-center justify-center rounded-full text-white/65 transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
+            className="-mr-2 flex size-11 items-center justify-center rounded-full text-white/65 lg:mr-0 lg:size-7 transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
           >
             <Icon name="close" className="text-base" />
           </button>
@@ -106,7 +107,8 @@ export function AiWidget() {
               onChange={(e) => setQuery(e.target.value)}
               placeholder="জাতীয় তথ্য জিজ্ঞাসা করুন…"
               className={cn(
-                "h-10 w-full rounded-lg bg-white/[0.06] pr-10 pl-space-sm ring-1 ring-white/15",
+                // Below lg: 48px field, 44px submit and suggestion rows, for thumbs.
+                "h-12 w-full rounded-lg bg-white/[0.06] pr-13 pl-space-sm ring-1 ring-white/15 lg:h-10 lg:pr-10",
                 "font-sans text-body-sm text-white transition-all outline-none",
                 "placeholder:text-white/65",
                 "focus:ring-2 focus:ring-signal-orange",
@@ -115,7 +117,7 @@ export function AiWidget() {
             <button
               type="submit"
               aria-label="Ask"
-              className="absolute right-1 flex size-8 items-center justify-center rounded-lg bg-signal-orange text-text-primary transition-colors hover:bg-signal-orange/85 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+              className="absolute right-0.5 flex size-11 items-center lg:right-1 lg:size-8 justify-center rounded-lg bg-signal-orange text-text-primary transition-colors hover:bg-signal-orange/85 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
             >
               <Icon name="search" className="text-base" />
             </button>
@@ -131,7 +133,7 @@ export function AiWidget() {
                 type="button"
                 onClick={() => setQuery(s)}
                 className={cn(
-                  "rounded-lg px-space-sm py-1.5 text-left ring-1 ring-white/15",
+                  "min-h-11 rounded-lg px-space-sm py-1.5 text-left ring-1 ring-white/15 lg:min-h-0",
                   "font-sans text-body-sm text-white/80 transition-colors",
                   "hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none",
                 )}
@@ -151,13 +153,19 @@ export function AiWidget() {
         aria-controls="ai-widget-panel"
         aria-label={open ? "Close AI Ask" : "Open AI Ask"}
         // The page's gold primary button; the ink ring keeps its edge when it floats over the gold footer.
-        className={cn(btn.gold, "group ml-auto flex ring-2 ring-text-primary focus-visible:ring-white focus-visible:ring-offset-black")}
+        // Until the page column leaves a margin for it (from 115rem, ~1840px) a compact 52px round icon button, so it does not cover the content under it.
+        className={cn(
+          btn.gold,
+          "group ml-auto flex ring-2 ring-text-primary focus-visible:ring-white focus-visible:ring-offset-black",
+          "max-[115rem]:size-13 max-[115rem]:min-h-0 max-[115rem]:rounded-full max-[115rem]:p-0",
+        )}
       >
         <Icon
           name={open ? "close" : "search"}
           className="text-lg transition-transform duration-300 group-hover:scale-110"
         />
-        <span className="hidden sm:inline">AI Ask</span>
+        {/* Read by screen readers only below 115rem; the button's aria-label names it either way. */}
+        <span className="sr-only min-[115rem]:not-sr-only">AI Ask</span>
       </button>
     </div>
   );

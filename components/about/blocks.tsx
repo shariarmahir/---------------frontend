@@ -20,7 +20,9 @@ import { PixelResolve } from "./pixel-resolve";
  * sharpness once in view. On /about it is a full-width navy band cut like
  * the catalogue pages' hero (after banglalink.net's offer pages); `card`
  * sets it as a navy card in the content column instead, the size of the
- * Kandari Profile section (the home page).
+ * Kandari Profile section (the home page). The card stacks the photograph
+ * over the text up to lg (as on a phone, a little larger), then sets them
+ * side by side, the photograph growing with the card on wide screens.
  */
 export function RepairBand({
   id = "who-we-are",
@@ -41,35 +43,57 @@ export function RepairBand({
       aria-labelledby={`${id}-title`}
       className={cn(
         "relative scroll-mt-header lg:scroll-mt-header-lg",
-        card ? "section-band mx-auto max-w-7xl px-gutter-x" : "overflow-hidden bg-bdnavy-900",
+        card ? "section-band mx-auto max-w-384 px-gutter-x" : "overflow-hidden bg-bdnavy-900",
       )}
     >
       <div
         className={cn(
           "grid min-h-72 items-center gap-10 md:grid-cols-[minmax(0,1fr)_auto] lg:min-h-80 lg:gap-16",
           card
-            ? "story-reveal overflow-hidden rounded-3xl bg-bdnavy-900 p-6 ring-1 ring-white/12 sm:p-10"
+            ? // On a phone the card leads with a smaller photograph and keeps its paragraph to a few lines.
+              cn(
+                "story-reveal overflow-hidden rounded-3xl bg-bdnavy-900 p-6 ring-1 ring-white/12 max-md:min-h-0 max-md:gap-6 sm:p-10",
+                "md:max-lg:min-h-0 md:max-lg:grid-cols-1! md:max-lg:gap-6 2xl:px-14",
+              )
             : "mx-auto max-w-7xl px-gutter-x py-10",
         )}
       >
         <div className={cn("flex flex-col items-start gap-4", !card && "hero-rise")}>
-          <h2 id={`${id}-title`} className="font-grotesk text-4xl leading-[1.1] font-bold tracking-tight text-balance text-white sm:text-5xl">
+          <h2
+            id={`${id}-title`}
+            className={cn(
+              "font-grotesk text-4xl leading-[1.1] font-bold tracking-tight text-balance text-white sm:text-5xl",
+              card && "max-sm:text-[1.75rem] max-sm:leading-[1.15]",
+            )}
+          >
             {title}
           </h2>
-          <p className="max-w-2xl font-sans text-base leading-relaxed text-white/80 sm:text-lg">{lead}</p>
-          <div className="mt-2 flex flex-wrap gap-3">{children}</div>
+          {/* Never clamped: it ends on the Golden Two Hours, the brand's lead hook (CLAUDE.md). */}
+          <p className={cn("max-w-2xl font-sans text-base leading-relaxed text-white/80 sm:text-lg", card && "2xl:max-w-3xl 2xl:text-xl")}>{lead}</p>
+          <div className={cn("mt-2 flex flex-wrap gap-3", card && "max-sm:w-full max-sm:flex-col max-sm:*:w-full")}>{children}</div>
         </div>
 
-        <div className="flex items-center justify-center md:justify-end">
-          <div className="catalog-fade relative pr-12">
-            <span aria-hidden className="absolute top-1/2 right-0 size-52 -translate-y-1/2 rounded-full bg-cobalt sm:size-60 xl:size-72" />
+        <div
+          className={cn(
+            "flex items-center justify-center md:justify-end",
+            card && "max-md:order-first max-md:justify-start md:max-lg:order-first md:max-lg:justify-start!",
+          )}
+        >
+          <div className={cn("catalog-fade relative pr-12", card && "max-md:pr-9 md:max-lg:pr-10")}>
+            <span
+              aria-hidden
+              className={cn(
+                "absolute top-1/2 right-0 size-52 -translate-y-1/2 rounded-full bg-cobalt sm:size-60 xl:size-72",
+                card && "max-md:size-28! md:max-lg:size-36! xl:size-80 2xl:size-88",
+              )}
+            />
             {/* Framed on the tree and the farmer walking past it. */}
             <PixelResolve
               src="/about/silk-cotton-field.jpg"
               alt="A flowering silk-cotton tree beside green paddy fields in a golden morning haze, a farmer walking the path with a basket"
-              sizes="(min-width: 1280px) 320px, (min-width: 640px) 256px, 224px"
+              sizes={card ? "(min-width: 1536px) 384px, (min-width: 1280px) 352px, (min-width: 640px) 256px, 224px" : "(min-width: 1280px) 320px, (min-width: 640px) 256px, 224px"}
               position={[0.38, 0.5]}
-              className="size-56 rounded-full ring-4 ring-bdnavy-900 sm:size-64 xl:size-80"
+              className={cn("size-56 rounded-full ring-4 ring-bdnavy-900 sm:size-64 xl:size-80", card && "max-md:size-32! md:max-lg:size-40! xl:size-88 2xl:size-96")}
             />
           </div>
         </div>

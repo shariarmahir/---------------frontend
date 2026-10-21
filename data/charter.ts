@@ -33,7 +33,13 @@ export interface CharterSlide {
   title: [lead: string, accent: string];
   /** The accent line struck through (the vision slide: "in Vision"). */
   strike?: boolean;
+  /** The whole text, for the About page. */
   body: string[];
+  /**
+   * The home card's text: the body in short sentences, its meaning kept
+   * (Mahir, 2026-10-21; the impact line written to match the others).
+   */
+  summary: string;
   stats?: CharterStat[];
   /** A short list of pillars under the copy (the mission's smart · safe · secure). */
   pillars?: { icon: string; label: string }[];
@@ -56,6 +62,8 @@ export const charterSlides: CharterSlide[] = [
   {
     id: "problem",
     title: ["Bangladesh", "Problem Statement"],
+    summary:
+      "Bangladesh is a high-resolution image with corrupted pixels. We map 32 of them, from healthcare and bribery to river pollution and women’s safety. Each failure drags the others down.",
     body: [
       "Bangladesh is a high-resolution image with corrupted pixels. Our dossier maps 32 of them, BD-001 to BD-032: from healthcare access, fake markets and bribery to river pollution, energy load and women’s safety. Each failure drags the others down.",
     ],
@@ -71,6 +79,8 @@ export const charterSlides: CharterSlide[] = [
   {
     id: "challenge",
     title: ["The Challenge", "We Accepted"],
+    summary:
+      "Education, security and livability come first. Keeping development going here is hard, and strong forces push back. We accept the challenge and keep building solutions. It is now or never.",
     body: [
       "The challenge is to prioritize education, security, and livability for Bangladesh. In Bangladesh, it is too difficult to hold the continuous development process and work against the dynamic forces imposed upon it. Kandari Lab accepts this challenge and will continue to develop solutions since we understand that it is now or never!",
     ],
@@ -87,6 +97,8 @@ export const charterSlides: CharterSlide[] = [
     id: "vision",
     title: ["We Don’t Believe", "in Vision"],
     strike: true,
+    summary:
+      "A vision has a timeline; our responsibility has none. Our problems are still killing us, so we act now. We build goods, launch services and choose R&D themes. In one word: development.",
     body: [
       "We don’t believe in vision since it has a timeline. We promise to hold our responsibility without any time limitation because all of our problems are still killing us. We assume responsibility for limitation because first identify timeline problems. We are already developing certain goods, launching services, and choosing R&D themes.",
     ],
@@ -98,6 +110,8 @@ export const charterSlides: CharterSlide[] = [
   {
     id: "mission",
     title: ["A New, Smart,", "Safe & Secure Bangladesh"],
+    summary:
+      "We use commercial innovation and technology to solve real problems. We are building a new, smart, safe and secure Bangladesh. We exist for its people, and for their problems.",
     body: [
       "Our goal is to use commercial innovations and technology to solve all actual problems and create a new, smart, safe, and secure Bangladesh for the people of Bangladesh. It was established for the people of Bangladesh to address their problems.",
     ],
@@ -113,6 +127,8 @@ export const charterSlides: CharterSlide[] = [
   {
     id: "goal",
     title: ["No One Goal.", "An Unending War."],
+    summary:
+      "Kandari Lab works for Bangladesh and never tires of solving its problems. It is a continuous process, so there is no one goal. Our war never ends: a kinetic process that solves problem after problem. We will keep going till doomsday, solving the human problems of this era.",
     body: [
       "Kandari Lab does everything for Bangladesh. Kandari Lab never tires of solving problems for the country. It is a continuous process; hence, there is no one goal. We begin the war with an unending procedure. That is why its duty can be remarked as a kinetic process that solves infinite problems. Therefore, Kandari Lab will exist till doomsday and continue to solve all the human problems of this human era.",
     ],
@@ -123,6 +139,8 @@ export const charterSlides: CharterSlide[] = [
   {
     id: "impact",
     title: ["The Impact", `for ${population} Million`],
+    summary:
+      "Impact is the gap we close between how hard a problem hits and how far our solutions reach. We track it across our products, services, platform and R&D, for every person in Bangladesh, one pixel at a time.",
     body: [
       "Impact is not a slogan — it is the delta between problem intensity and solution coverage across products, services, social media, and R&D, mapped against our mission-vision covenant.",
     ],

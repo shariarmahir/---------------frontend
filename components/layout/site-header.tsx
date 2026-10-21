@@ -289,7 +289,7 @@ function TabBar({ active, slide }: { active: boolean; slide: Transition }) {
 }
 
 const TAB =
-  "group relative flex items-center px-3 text-sm leading-none font-bold whitespace-nowrap text-signal-orange xl:px-3.5 focus-visible:outline-none focus-visible:after:absolute focus-visible:after:inset-x-1 focus-visible:after:inset-y-2 focus-visible:after:rounded-md focus-visible:after:ring-2 focus-visible:after:ring-signal-orange";
+  "group relative flex items-center px-2 text-sm leading-none font-bold whitespace-nowrap text-signal-orange xl:px-3.5 focus-visible:outline-none focus-visible:after:absolute focus-visible:after:inset-x-1 focus-visible:after:inset-y-2 focus-visible:after:rounded-md focus-visible:after:ring-2 focus-visible:after:ring-signal-orange";
 
 /**
  * A tab's face, the icon and its label as one piece: it zooms straight up
@@ -688,7 +688,7 @@ export function SiteHeader() {
             </span>
             <span aria-hidden className="nav-seam-node absolute top-0 -left-10 size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-signal-orange xl:-left-14" />
             <span aria-hidden className="nav-seam-end absolute top-0 right-0 size-1.5 translate-x-1/2 -translate-y-1/2 rounded-full bg-signal-orange" />
-            <nav aria-label="Sections" className="no-scrollbar -ml-3 min-w-0 overflow-x-auto xl:-ml-3.5">
+            <nav aria-label="Sections" className="no-scrollbar -ml-2 min-w-0 overflow-x-auto xl:-ml-3.5">
               <SectionNav links={navLinks} activeHref={activeHref} onPick={setActiveHref} />
             </nav>
           </div>

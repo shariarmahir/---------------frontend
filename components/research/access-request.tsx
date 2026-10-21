@@ -24,9 +24,20 @@ import { cn } from "@/lib/utils";
 /**
  * An R&D project's access button, in three states: "Request to view"
  * opens a short form; once sent it reads "Awaiting approval" (and opens
- * the request); approved, it links straight to the research.
+ * the request); approved, it links straight to the research. `className`
+ * adds to the button's look (the home page's phone cards make it compact).
  */
-export function AccessRequestButton({ project, title, href }: { project: string; title: string; href: string }) {
+export function AccessRequestButton({
+  project,
+  title,
+  href,
+  className,
+}: {
+  project: string;
+  title: string;
+  href: string;
+  className?: string;
+}) {
   const request = useAccessRequest(project);
   const [now, setNow] = useState(0);
   const [open, setOpen] = useState(false);
@@ -39,8 +50,8 @@ export function AccessRequestButton({ project, title, href }: { project: string;
     return () => window.clearTimeout(t);
   }, [request]);
 
-  const solid = btn.gold;
-  const outline = btn.goldOutline;
+  const solid = cn(btn.gold, className);
+  const outline = cn(btn.goldOutline, className);
 
   if (status === "approved") {
     return (

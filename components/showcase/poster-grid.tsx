@@ -13,9 +13,9 @@ import { PosterScene, type PosterSceneKind } from "./poster-scenes";
  * The home page's product and service cards: four across the full width
  * of the screen, laid out and lifted like the Pixel-Map cards, cut like
  * the team portraits (the picture melting into a solid field, the name and
- * one line on the colour below). On hover, focus or tap a panel rises in a
- * blackened shade of the card's own colour with the full name, the promise
- * and "Explore".
+ * one line on the colour below). On hover, focus or tap the face fades and
+ * a panel in the card's own solid colour fades up in its place with the full
+ * name, the promise and "Explore" — one text at a time, never both.
  */
 
 /** The three fields of the palette (Mahir, 2026-10-18): navy, cobalt, ink; gold only for titles on cobalt and actions. */
@@ -52,7 +52,9 @@ export interface PosterItem {
 
 export function PosterGrid({ items, label }: { items: PosterItem[]; label: string }) {
   return (
-    <ul aria-label={label} className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+    // Two by two on a tablet held upright; four across from lg, and already from md on a
+    // landscape screen (a turned tablet or phone), where two rows would not fit the height.
+    <ul aria-label={label} className="grid grid-cols-2 gap-3 sm:gap-5 md:max-lg:landscape:grid-cols-4 md:max-lg:landscape:gap-4 lg:grid-cols-4">
       {items.map((item, i) => (
         // The scroll reveal sits on the <li> so its transform never fights the card's hover lift.
         <li key={item.id} id={item.anchorId} className="story-reveal flex scroll-mt-header lg:scroll-mt-header-lg">
@@ -105,7 +107,8 @@ function PosterCard({ item, priority }: { item: PosterItem; priority: boolean })
       )}
     >
       {/* The picture, melting into the field at its foot like the team portraits. */}
-      <div className={cn("relative aspect-[1/0.92] shrink-0 overflow-hidden", (film || item.film3d) && "bg-text-primary")}>
+      {/* Two-up on upright tablets (640–1023) the picture runs landscape, so two rows still fit about one screen. */}
+      <div className={cn("relative aspect-[1/0.92] shrink-0 overflow-hidden sm:max-lg:aspect-[4/3] md:max-lg:landscape:aspect-[1/0.92]", (film || item.film3d) && "bg-text-primary")}>
         {item.film3d ? <FilmFrame film={item.film3d} className="absolute inset-0" /> : null}
         {item.image && (
           <Image
@@ -128,16 +131,19 @@ function PosterCard({ item, priority }: { item: PosterItem; priority: boolean })
           </div>
         )}
         {scene && <PosterScene kind={scene} />}
-        <div aria-hidden className="absolute inset-x-0 bottom-0 h-2/5 bg-linear-to-b from-transparent to-(--field)" />
+        {/* Solid well before the picture's foot, so no seam shows behind the name that overlaps it. */}
+        <div aria-hidden className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-b from-transparent via-(--field) via-80% to-(--field)" />
       </div>
 
-      <div className="@container relative -mt-4 flex flex-1 flex-col px-3 pb-4 sm:px-6 sm:pb-6">
+      <div className="@container relative -mt-4 flex flex-1 flex-col px-3 pb-4 transition-opacity duration-200 group-focus-within:opacity-0 group-hover:opacity-0 group-data-[open=true]:opacity-0 sm:px-6 sm:pb-6 motion-reduce:transition-none">
         <p
           // The line height comes after the size: tailwind-merge drops a leading-* that precedes a text-* size.
           className={cn(
             "font-extrabold tracking-tight",
             face.title,
-            typeof item.title === "string" && "font-grotesk text-lg sm:text-3xl",
+            // From sm the name scales with the card (13% of its text column, at most 30px), so a long
+            // word like DEVELOPMENT never clips in a narrow four-up card.
+            typeof item.title === "string" && "font-grotesk text-lg sm:text-[min(1.875rem,13cqi)]",
             "leading-[0.95]",
           )}
         >
@@ -146,18 +152,31 @@ function PosterCard({ item, priority }: { item: PosterItem; priority: boolean })
         <p className={cn("mt-1.5 font-grotesk text-xs leading-snug font-semibold sm:mt-2 sm:text-sm", face.sub)}>{item.tagline}</p>
       </div>
 
-      {/* The panel, rising on hover, focus or tap: the card's own colour, blackened. */}
+      {/* The panel, on hover, focus or tap: the card's own solid colour over the whole card.
+          Hidden it only ignores the pointer, so its link can still take keyboard focus. */}
       <div
         className={cn(
-          "absolute inset-0 flex translate-y-full flex-col p-4 text-white opacity-0 transition-[translate,opacity] duration-400 ease-out sm:p-6",
-          "bg-[color-mix(in_oklab,var(--field)_26%,#0a0a0a)]",
+          "pointer-events-none absolute inset-0 flex translate-y-3 flex-col justify-center bg-(--field) p-4 text-white opacity-0 transition-[translate,opacity] duration-300 ease-out sm:p-6 md:max-lg:landscape:p-4",
+          "group-focus-within:pointer-events-auto group-hover:pointer-events-auto group-hover:delay-100 group-data-[open=true]:pointer-events-auto",
+          // From sm the panel is a size container: the name scales with its width, and on a
+          // short card the promise drops whole lines (and the foot note goes) instead of
+          // being cut mid-line under the button.
+          "sm:[container-type:size]",
           "group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:translate-y-0 group-hover:opacity-100 group-data-[open=true]:translate-y-0 group-data-[open=true]:opacity-100",
           "motion-reduce:transition-none",
         )}
       >
-        <span aria-hidden className="h-1 w-10 shrink-0 rounded-full bg-signal-orange" />
-        <h3 className="mt-4 line-clamp-3 font-grotesk text-lg leading-tight font-bold wrap-break-word sm:mt-5 sm:text-2xl">{item.name}</h3>
-        <p className="mt-2 line-clamp-5 text-xs leading-relaxed text-white/80 sm:mt-3 sm:text-sm">{item.pitch}</p>
+        {/* From sm the name scales with the panel (13% of its width, at most 24px), so the
+            wordmark, which never wraps, fits a narrow four-up card. */}
+        <h3 className="line-clamp-3 font-grotesk text-lg leading-tight font-bold wrap-break-word sm:shrink-0 sm:text-[min(1.5rem,13cqi)] md:max-lg:landscape:line-clamp-2">{item.name}</h3>
+        <p
+          className={cn(
+            "mt-2 line-clamp-5 text-xs leading-relaxed text-white/80 sm:mt-3 sm:text-sm",
+            "sm:[@container(15.75rem<=height<17.25rem)]:line-clamp-4 sm:[@container(14.25rem<=height<15.75rem)]:line-clamp-3 sm:[@container(height<14.25rem)]:line-clamp-2",
+          )}
+        >
+          {item.pitch}
+        </p>
         <Link
           href={item.href}
           className={cn(btn.gold, "mt-4 w-fit sm:mt-5")}
@@ -165,7 +184,7 @@ function PosterCard({ item, priority }: { item: PosterItem; priority: boolean })
           Explore<span className="sr-only"> {item.nameText}</span>
           <span aria-hidden>→</span>
         </Link>
-        {item.note ? <p className="mt-auto hidden text-xs leading-snug text-white/65 sm:block">{item.note}</p> : null}
+        {item.note ? <p className="mt-4 hidden text-xs leading-snug text-white/65 sm:block sm:[@container(height<19.5rem)]:hidden">{item.note}</p> : null}
       </div>
     </article>
   );

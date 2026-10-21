@@ -1,6 +1,6 @@
 /**
- * Home spotlight band — the announcement slider between the header and the
- * hero (modelled on banglalink.net's headline slider).
+ * Home spotlight band — the narrow announcement slider under the hero
+ * (modelled on banglalink.net's headline slider).
  *
  * The band is English only: every string a slide shows is written here,
  * so the Bangla announcement copy in `announcements` (still used on the
@@ -37,8 +37,9 @@ export interface SpotlightSlide {
   tail: string;
   /** Arrow before the tail (indicator movement). */
   tailArrow?: "up" | "down";
-  /** The grey line under the headline. */
+  /** Not shown on the band since 2026-10-21: read to screen readers and set as the slide's tooltip (an indicator's source lives here). */
   sub: string;
+  /** Where the slide links; the label is read to screen readers. */
   cta: { label: string; href: string };
   media: {
     /** Omit for a pure motion-graphic pill. */

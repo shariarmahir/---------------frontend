@@ -1,5 +1,7 @@
 "use client";
 
+// Drops fiber's THREE.Clock deprecation warning (see the file).
+import "@/lib/three-console";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { createContext, useContext, useMemo, useRef, type ReactNode, type RefObject } from "react";
 import * as THREE from "three";

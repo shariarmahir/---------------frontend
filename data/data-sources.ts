@@ -4,8 +4,13 @@
  * index, charter, products, the Bangladesh pages, photo credits); keep this
  * list to sources that are, and add a new one here when a page starts
  * citing it. They are sources, not partners: none of them endorses
- * Kandari-Lab, so the cards never say otherwise. Icons are Material Symbols
- * standing in for each organisation; their own logos are not used.
+ * Kandari-Lab, so the section never says otherwise.
+ *
+ * Logos (public/sources/, Mahir's request 2026-10-21): each organisation's
+ * own mark, shown only to credit where a figure comes from, each linking to
+ * its data. Files from Wikimedia Commons (BBS, Bangladesh Bank, DGHS, WHO,
+ * UNICEF, IMF, World Bank, Transparency International, Wikimedia) and the
+ * English Wikipedia (IQAir).
  */
 
 export interface DataSource {
@@ -14,10 +19,21 @@ export interface DataSource {
   name: string;
   /** The full name, when `name` is an abbreviation. */
   fullName?: string;
-  icon: string;
+  /** The organisation's logo under public/, and its width ÷ height. */
+  logo: string;
+  ratio: number;
+  /** A seal or symbol with no name in it: the name is set beside it. */
+  mark?: boolean;
+  /**
+   * The tile's field, one of the site's own, matched to the logo's colour:
+   * navy and blue for the blue marks, green (ink) for the green seals, gold
+   * for the rest. Neighbours never share one, round the loop too.
+   */
+  tile: "navy" | "cobalt" | "ink" | "gold";
+  /** Draw the logo in white (a wordmark on a dark field); otherwise in its own colours (the seals, which are white discs). */
+  white?: boolean;
   /** What the site takes from it. */
   use: string;
-  tag: string;
   url: string;
 }
 
@@ -25,85 +41,104 @@ export const dataSources: DataSource[] = [
   {
     id: "world-bank",
     name: "World Bank",
-    icon: "public",
+    logo: "/sources/world-bank.svg",
+    ratio: 312 / 63,
+    tile: "navy",
+    white: true,
     use: "Growth, poverty, electricity and literacy since 1971.",
-    tag: "Economy",
     url: "https://data.worldbank.org/country/bangladesh",
   },
   {
     id: "bbs",
     name: "BBS",
     fullName: "Bangladesh Bureau of Statistics",
-    icon: "query_stats",
+    logo: "/sources/bbs.svg",
+    ratio: 1,
+    mark: true,
+    tile: "ink",
     use: "Labour Force and Time-Use surveys.",
-    tag: "Statistics",
     url: "https://bbs.gov.bd",
   },
   {
     id: "who",
     name: "WHO",
     fullName: "World Health Organization",
-    icon: "health_and_safety",
+    logo: "/sources/who.svg",
+    ratio: 588 / 180,
+    tile: "cobalt",
+    white: true,
     use: "Health system and disease benchmarks.",
-    tag: "Health",
     url: "https://www.who.int/countries/bgd",
   },
   {
     id: "dghs",
     name: "DGHS",
     fullName: "Directorate General of Health Services",
-    icon: "local_hospital",
+    logo: "/sources/dghs.svg",
+    ratio: 1,
+    mark: true,
+    tile: "ink",
     use: "Community clinics and public health services.",
-    tag: "Health",
     url: "https://dghs.gov.bd",
   },
   {
     id: "unicef",
     name: "UNICEF",
-    icon: "child_care",
+    logo: "/sources/unicef.svg",
+    ratio: 130.9 / 31.5,
+    tile: "cobalt",
+    white: true,
     use: "Children’s learning, health and nutrition.",
-    tag: "Children",
     url: "https://www.unicef.org/bangladesh",
   },
   {
     id: "iqair",
     name: "IQAir",
-    icon: "air",
+    logo: "/sources/iqair.svg",
+    ratio: 77 / 29,
+    tile: "navy",
+    white: true,
     use: "World Air Quality Report rankings.",
-    tag: "Environment",
     url: "https://www.iqair.com/world-air-quality-report",
   },
   {
     id: "imf",
     name: "IMF",
     fullName: "International Monetary Fund",
-    icon: "account_balance",
+    logo: "/sources/imf.jpg",
+    ratio: 1,
+    tile: "gold",
     use: "Macroeconomic outlook and forecasts.",
-    tag: "Economy",
     url: "https://www.imf.org/en/Countries/BGD",
   },
   {
     id: "bangladesh-bank",
     name: "Bangladesh Bank",
-    icon: "currency_exchange",
+    logo: "/sources/bangladesh-bank.svg",
+    ratio: 1,
+    mark: true,
+    tile: "ink",
     use: "Monetary, reserve and remittance data.",
-    tag: "Finance",
     url: "https://www.bb.org.bd",
   },
   {
     id: "transparency",
     name: "Transparency International",
-    icon: "gavel",
+    logo: "/sources/transparency.svg",
+    ratio: 170.59 / 42.48,
+    tile: "cobalt",
+    white: true,
     use: "Corruption Perceptions Index.",
-    tag: "Governance",
     url: "https://www.transparency.org/en/countries/bangladesh",
   },
   {
     id: "wikimedia",
     name: "Wikimedia Commons",
-    icon: "photo_library",
+    logo: "/sources/wikimedia.svg",
+    ratio: 610 / 820,
+    mark: true,
+    tile: "gold",
     use: "Openly licensed photographs, credited on each image.",
-    tag: "Media",
     url: "https://commons.wikimedia.org",
   },
 ];

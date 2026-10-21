@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
+import { ClampText } from "@/components/ui/card-details";
 import { Icon } from "@/components/ui/icon";
 import { SectionHeading, btn } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
@@ -195,22 +196,41 @@ export function PixelThesisSection() {
       id="pixel-map"
       className="section-band-tinted relative"
     >
-      <div className="mx-auto max-w-7xl px-gutter-x">
+      <div className="mx-auto max-w-384 px-gutter-x">
         <SectionHeading
           tone="dark"
+          // From lg the lead keeps the same reading measure as the Products lead below it.
+          className="lg:[&>p]:max-w-5xl lg:[&>p]:text-pretty"
           title="The Pixel-Map: Repairing Bangladesh Pixel by Pixel"
-          lead="Picture Bangladesh as a high-resolution image with corrupted pixels. Each one is a real failure: a patient who reaches care too late, a village without a clinic, a citizen the system leaves behind. We take them one at a time, with hardware, software and AI built here for the people who live here. When one pixel is clear, we move to the next."
+          lead={
+            // A phone shows three lines and "Read more"; from sm up the whole lead.
+            <ClampText>
+              Picture Bangladesh as a high-resolution image with corrupted pixels. Each one is a real failure: a patient who reaches care too late, a village without a clinic, a citizen the system leaves behind. We take them one at a time, with hardware, software and AI built here for the people who live here. When one pixel is clear, we move to the next.
+            </ClampText>
+          }
         />
 
-        <ul className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+        {/*
+          * A phone swipes through the four cards (the next one peeking at the
+          * edge, the row bleeding to the screen's sides); from sm up they sit
+          * two by two, and four across only from 1180px, where each card still
+          * has about 16rem (a 4-up row at 1024 squeezed them). The scroll reveal lives on the
+          * list, not the cards, so its transform never fights the hover lift
+          * and a card waiting off to the side is never left hidden.
+          */}
+        <ul
+          aria-label="Four pixels we are repairing"
+          className={cn(
+            "story-reveal no-scrollbar -mx-gutter-x -my-3 flex snap-x snap-mandatory scroll-px-gutter-x gap-3 overflow-x-auto px-gutter-x py-3",
+            "sm:mx-0 sm:my-0 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 sm:py-0 min-[73.75rem]:grid-cols-4",
+          )}
+        >
           {PILLARS.map((pillar) => (
-            // The scroll reveal lives on the <li> so its transform never
-            // fights the card's own hover lift.
-            <li key={pillar.title} className="story-reveal flex">
+            <li key={pillar.title} className="flex w-[82%] max-w-80 shrink-0 snap-start sm:w-auto sm:max-w-none">
               <article
                 style={{ "--glow": pillar.glow } as CSSProperties}
                 className={cn(
-                  "group relative flex w-full flex-col overflow-hidden rounded-2xl p-4 shadow-sm sm:rounded-3xl sm:p-6",
+                  "group relative flex w-full flex-col overflow-hidden rounded-2xl p-5 shadow-sm sm:rounded-3xl sm:p-6",
                   "[-webkit-tap-highlight-color:transparent] touch-manipulation transition-[translate,scale,rotate,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
                   "hover:-translate-y-2 hover:shadow-[0_28px_48px_-22px_var(--glow)] active:-translate-y-2 active:shadow-[0_28px_48px_-22px_var(--glow)] active:scale-[0.98] active:duration-150",
                   "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
@@ -218,24 +238,24 @@ export function PixelThesisSection() {
                 )}
               >
                 {/* Motion-graphic header. */}
-                <div className="relative -mx-4 -mt-4 mb-2 h-24 sm:-mx-6 sm:-mt-6 sm:mb-4 sm:h-36">
-                  <div className={cn("absolute inset-x-4 top-4 bottom-1 sm:inset-x-6 sm:top-6 sm:bottom-2", pillar.artClass)}>
+                <div className="relative -mx-5 -mt-5 mb-3 h-28 sm:-mx-6 sm:-mt-6 sm:mb-4 sm:h-36 lg:mb-3 lg:h-24 min-[73.75rem]:mb-4 min-[73.75rem]:h-36">
+                  <div className={cn("absolute inset-x-5 top-5 bottom-1.5 sm:inset-x-6 sm:top-6 sm:bottom-2", pillar.artClass)}>
                     <PillarArt kind={pillar.art} />
                   </div>
                 </div>
 
-                <h3 className={cn("mb-1.5 font-grotesk text-xs leading-tight font-bold sm:mb-2 sm:text-lg", pillar.heading)}>
+                <h3 className={cn("mb-2 font-grotesk text-lg leading-tight font-bold", pillar.heading)}>
                   {pillar.title}
                 </h3>
 
-                <p className="mb-4 font-sans text-xs leading-relaxed opacity-90 sm:mb-5 sm:text-sm">
+                <p className="mb-5 line-clamp-4 font-sans text-sm leading-relaxed opacity-90 sm:line-clamp-none">
                   {pillar.description}
                 </p>
 
-                {/* Pinned to the foot, so the four buttons line up. */}
+                {/* Pinned to the foot, so the four buttons line up; compact on a phone. */}
                 <Link
                   href={pillar.href}
-                  className={cn(btn.gold, "mt-auto self-start")}
+                  className={cn(btn.gold, "mt-auto min-h-11 self-start px-5 py-2.5 whitespace-nowrap sm:min-h-12 sm:px-6 sm:py-3")}
                 >
                   Learn more
                   <span className="sr-only">: {pillar.title}</span>

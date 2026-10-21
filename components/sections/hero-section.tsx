@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
-import { heroPhotos } from "@/data/hero-gallery";
+import { heroPhotos, type HeroPhoto } from "@/data/hero-gallery";
 import { btn } from "@/components/ui/section-kit";
 import { sampleHeroTone } from "@/components/sections/hero-tone";
 import { DEFAULT_LOOK, type HeroLook, type TextTone } from "@/lib/backdrop-tone";
@@ -30,6 +30,62 @@ const TONE_CLASSES: Record<TextTone, { title: string; sub: string }> = {
 
 /** Skip a re-render when the scrim moves by less than this. */
 const SCRIM_STEP = 0.03;
+
+/** Where the wide (desktop) crop and file take over from the phone's. */
+const WIDE = "(min-width: 1024px)";
+
+/**
+ * One photograph of the hero. Phones crop it on its own focal point
+ * (`mobileFocus`); when sharper art-directed files exist (`wide`, `tall`)
+ * the browser picks the right one through <picture>, otherwise it is the
+ * single `src`. The photograph showing pushes in slowly over its dwell; one
+ * leaving fades out and settles back.
+ */
+function HeroImage({
+  photo,
+  imgRef,
+  showing,
+  first,
+}: {
+  photo: HeroPhoto;
+  imgRef: (el: HTMLImageElement | null) => void;
+  showing: boolean;
+  first: boolean;
+}) {
+  const focus = photo.focus ?? "50% 50%";
+  const style = { "--f": focus, "--fm": photo.mobileFocus ?? focus } as CSSProperties;
+  const className = cn(
+    "absolute inset-0 size-full object-cover [object-position:var(--fm)] lg:[object-position:var(--f)]",
+    "[transition:opacity_1.2s_ease-in-out,scale_7s_linear] motion-reduce:scale-100 motion-reduce:transition-none",
+    showing ? "scale-[1.06] opacity-100" : "scale-100 opacity-0",
+  );
+  const common = {
+    alt: showing ? photo.alt : "",
+    "aria-hidden": !showing,
+    fill: true,
+    sizes: "100vw",
+    quality: 90,
+    // All ten stack above the fold and any one can be the visible slide, so
+    // each loads eagerly — but only the first gets a preload, to avoid ten
+    // competing preloads.
+    priority: first,
+    loading: "eager" as const,
+  };
+
+  if (!photo.wide && !photo.tall) {
+    return <Image ref={imgRef} src={photo.src} {...common} alt={common.alt} style={style} className={className} />;
+  }
+
+  const { props: wide } = getImageProps({ ...common, src: photo.wide ?? photo.src });
+  const { props: tall } = getImageProps({ ...common, src: photo.tall ?? photo.src });
+  return (
+    <picture>
+      <source media={WIDE} srcSet={wide.srcSet} sizes={wide.sizes} />
+      {/* Art direction needs <picture>; the props come from getImageProps. */}
+      <img {...tall} ref={imgRef} alt={common.alt} style={{ ...tall.style, ...style }} className={className} />
+    </picture>
+  );
+}
 
 /**
  * Hero.
@@ -75,9 +131,11 @@ export function HeroSection() {
     const band = bandRef.current;
     const img = imgRefs.current[index];
     if (!band || !img) return;
-    const focus = heroPhotos[index]?.focus;
+    const photo = heroPhotos[index];
 
     const judge = () => {
+      // The crop in use: phones frame the photograph on their own point.
+      const focus = window.matchMedia(WIDE).matches ? photo?.focus : (photo?.mobileFocus ?? photo?.focus);
       const bb = band.getBoundingClientRect();
       let x0 = Infinity;
       let y0 = Infinity;
@@ -137,32 +195,20 @@ export function HeroSection() {
     >
       {/* The band — same height as the /products hero. The claim sits at the
           bottom, centred, so the photograph keeps the upper two thirds. */}
-      <div ref={bandRef} className="hero-band relative flex w-full items-end overflow-hidden bg-text-primary">
+      {/* On a phone the band fills the screen under the header, so the photograph shows clear above the claim. */}
+      <div
+        ref={bandRef}
+        className="hero-band relative flex w-full items-end overflow-hidden bg-text-primary max-sm:min-h-[max(32rem,calc(100svh_-_var(--header-offset)_-_1.5rem))]"
+      >
         {heroPhotos.map((photo, i) => (
-          <Image
+          <HeroImage
             key={photo.src}
-            ref={(el) => {
+            photo={photo}
+            imgRef={(el) => {
               imgRefs.current[i] = el;
             }}
-            src={photo.src}
-            alt={i === index ? photo.alt : ""}
-            aria-hidden={i !== index}
-            fill
-            // All ten stack above the fold and any one can be the visible
-            // slide, so each loads eagerly — but only the first gets a
-            // preload link, to avoid ten competing preloads.
-            priority={i === 0}
-            loading="eager"
-            sizes="100vw"
-            quality={90}
-            // Per-photo focal point: `cover` still trims to fill the band,
-            // but this steers the crop away from faces and subjects.
-            style={{ objectPosition: photo.focus ?? "50% 50%" }}
-            // The photograph showing pushes in slowly over its dwell; one leaving fades out and settles back.
-            className={cn(
-              "object-cover [transition:opacity_1.2s_ease-in-out,scale_7s_linear] motion-reduce:scale-100 motion-reduce:transition-none",
-              i === index ? "scale-[1.06] opacity-100" : "scale-100 opacity-0",
-            )}
+            showing={i === index}
+            first={i === 0}
           />
         ))}
 
@@ -210,7 +256,7 @@ export function HeroSection() {
                 Kandari Lab uses technology and commercial innovation to build a smart, safe, and secure Bangladesh.
               </p>
 
-              {/* Actions: gold for the apps, solid navy for joining; both read on any photograph. */}
+              {/* Actions: solid gold for the apps, the gold outline on a navy fill for joining; both read on any photograph. */}
               <div
                 ref={actionsRef}
                 style={{ "--d": "240ms" } as CSSProperties}
@@ -220,8 +266,8 @@ export function HeroSection() {
                   <Icon name="download" className="text-lg" />
                   Download the App
                 </Link>
-                <Link href="#kandari-profile" className={cn(btn.navy, "ring-1 ring-white/15")}>
-                  <Icon name="group_add" className="text-lg text-signal-orange" />
+                <Link href="#kandari-profile" className={cn(btn.goldOutline, "bg-bdnavy-900")}>
+                  <Icon name="group_add" className="text-lg" />
                   Join with Us
                 </Link>
               </div>

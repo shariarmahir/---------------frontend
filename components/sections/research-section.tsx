@@ -1,5 +1,7 @@
+import Link from "next/link";
 import type { CSSProperties } from "react";
 import { AccessRequestButton } from "@/components/research/access-request";
+import { TrackLink } from "@/components/showcase/showcase";
 import { Icon } from "@/components/ui/icon";
 import { SectionHeading } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
@@ -52,20 +54,37 @@ const LABS = [
 
 export function ResearchSection() {
   return (
-    <section id="rd-labs" className="section-band mx-auto max-w-7xl px-gutter-x">
-      <SectionHeading
-        tone="dark"
-        title={<>Advanced R&amp;D Cleanroom Initiatives</>}
-        lead="Engineering deep-tech intellectual property at the intersection of microchip silicon, sensory edge robotics, and circular biochemical automation."
-      />
+    <section id="rd-labs" className="section-band mx-auto max-w-384 px-gutter-x">
+      {/* From sm the way to the whole library sits level with the title (under the lead on a tablet). */}
+      <div className="sm:mb-10 sm:grid sm:gap-x-12 sm:gap-y-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+        <SectionHeading
+          tone="dark"
+          className="sm:mb-0"
+          title={<>Advanced R&amp;D Cleanroom Initiatives</>}
+          lead="Engineering deep-tech intellectual property at the intersection of microchip silicon, sensory edge robotics, and circular biochemical automation."
+        />
+        <div className="story-reveal max-sm:hidden">
+          <TrackLink href="/research">Research library</TrackLink>
+        </div>
+      </div>
 
-      <ol className="flex flex-col gap-4">
+      {/* On a phone the three projects are a swipeable row bled to the screen
+          edges, the next card peeking; from sm, stacked spec-sheet rows: the
+          button under the text on a tablet, at the row's end from lg, and from
+          an 80rem row the title and paragraph in columns of their own. */}
+      <ol
+        aria-label="R&D projects"
+        className="flex flex-col gap-4 max-sm:-mx-gutter-x max-sm:snap-x max-sm:snap-mandatory max-sm:scroll-px-gutter-x max-sm:flex-row max-sm:gap-3 max-sm:overflow-x-auto max-sm:px-gutter-x max-sm:pt-2 max-sm:pb-6 max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden sm:@container"
+      >
         {LABS.map((lab) => (
-          <li key={lab.id} className="story-reveal">
+          <li key={lab.id} className="story-reveal max-sm:flex max-sm:w-[82%] max-sm:max-w-88 max-sm:shrink-0 max-sm:snap-start">
             <article
               style={{ "--glow": lab.glow } as CSSProperties}
               className={cn(
-                "group grid grid-cols-[auto_1fr] items-start gap-5 md:grid-cols-[auto_1fr_auto] rounded-3xl p-5 shadow-sm sm:p-6 md:items-center md:gap-8",
+                // A compact card in the phone swipe; a spec-sheet row from sm.
+                "group flex w-full flex-col items-start gap-4 rounded-3xl p-5 shadow-sm",
+                "sm:grid sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-x-6 sm:p-6 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:gap-8",
+                "@min-[80rem]:grid-cols-[auto_minmax(13rem,22rem)_minmax(0,1fr)_auto] @min-[80rem]:gap-x-10",
                 "[-webkit-tap-highlight-color:transparent] touch-manipulation transition-[translate,scale,rotate,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-[0_28px_48px_-22px_var(--glow)] active:-translate-y-1.5 active:shadow-[0_28px_48px_-22px_var(--glow)] active:scale-[0.98] active:duration-150 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
                 lab.surface,
               )}
@@ -73,7 +92,7 @@ export function ResearchSection() {
               {/* The project's pixel: a solid block with a slow orbit. */}
               <span
                 className={cn(
-                  "relative grid size-16 shrink-0 place-items-center rounded-2xl sm:size-20",
+                  "relative grid size-12 shrink-0 place-items-center rounded-xl sm:size-16 sm:rounded-2xl lg:size-20",
                   "transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-rotate-6 motion-reduce:transition-none motion-reduce:group-hover:rotate-0",
                   lab.block,
                 )}
@@ -82,21 +101,37 @@ export function ResearchSection() {
                   aria-hidden
                   className="absolute inset-2 animate-[spin_14s_linear_infinite] rounded-full border border-dashed border-current opacity-40 motion-reduce:animate-none"
                 />
-                <Icon name={lab.icon} className="text-3xl sm:text-4xl" />
+                <Icon name={lab.icon} className="text-3xl sm:text-4xl max-lg:text-2xl!" />
               </span>
 
-              <div className="min-w-0">
-                <h3 className={cn("mb-2 font-grotesk text-lg font-bold", "heading" in lab && lab.heading)}>{lab.title}</h3>
-                <p className="max-w-[68ch] font-sans text-sm leading-relaxed">{lab.description}</p>
+              <div className="min-w-0 @min-[80rem]:contents">
+                <h3 className={cn("mb-2 font-grotesk text-lg font-bold @min-[80rem]:mb-0 @min-[80rem]:text-xl @min-[80rem]:text-balance", "heading" in lab && lab.heading)}>
+                  {lab.title}
+                </h3>
+                <p className="max-w-[68ch] font-sans text-sm leading-relaxed max-sm:line-clamp-4">{lab.description}</p>
               </div>
 
-              <div className="col-start-2 md:col-start-auto">
-                <AccessRequestButton project={lab.id} title={lab.title} href={lab.href} />
+              <div className="mt-auto sm:col-start-2 sm:mt-0 lg:col-start-auto">
+                <AccessRequestButton
+                  project={lab.id}
+                  title={lab.title}
+                  href={lab.href}
+                  className="max-lg:min-h-11 max-lg:px-4 max-lg:whitespace-nowrap"
+                />
               </div>
             </article>
           </li>
         ))}
       </ol>
+
+      {/* The way onward on a phone, where the rows have become a swipe (from sm it sits by the title). */}
+      <Link
+        href="/research"
+        className="mt-2 inline-flex min-h-11 items-center gap-1.5 rounded-md font-grotesk text-sm font-bold text-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none sm:hidden"
+      >
+        Explore the research library
+        <Icon name="arrow_forward" className="text-lg!" />
+      </Link>
     </section>
   );
 }

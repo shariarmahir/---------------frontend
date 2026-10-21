@@ -2,28 +2,28 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState, type PointerEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/ui/icon";
-import { SignalSeam, btn } from "@/components/ui/section-kit";
+import { SignalSeam } from "@/components/ui/section-kit";
 import { spotlightSlides, type SpotlightSlide } from "@/data/home-spotlight";
 import { cn } from "@/lib/utils";
 
 /**
- * Home spotlight band — the narrow headline slider between the header and
- * the hero, after banglalink.net's: a centred line, then a grey word, a
- * photo pill and a coloured word, a grey sub line and one button. Slides
+ * Home spotlight band — the narrow headline slider under the hero, after
+ * banglalink.net's: a centred line, then a word, a
+ * photo pill and a word on one row. The whole slide is the link. Slides
  * travel upward on a 4.2s hold with a 0.5s move, like the original.
  *
  * Re-coloured for the pitch-black home in the UI's own colours: a gold
- * headline, the figure or lead word in the navy tint, the tail in gold, and
- * a gold button with ink text. Each pill is a navy field: its photograph
+ * headline, the figure or lead word in the navy tint, the tail in white.
+ * Each pill is a navy field: its photograph
  * toned navy-to-gold (a duotone, so every picture belongs to the band),
  * with a motion graphic on top that says what the slide is about (a
  * heartbeat, a scanner, an equaliser, radar rings, or a line chart that
  * draws itself for an indicator) — see `SpotlightMotif`.
  *
- * English only, and no label above the headline: the slide is the headline,
- * the pill, the sub line and the button. Rotation holds while the pointer is
+ * English only, and no label above the headline: the slide is the headline
+ * and the pill row (no sub line or button since 2026-10-21). Rotation holds while the pointer is
  * over the band, while anything in it has focus and while the tab is
  * hidden. Inactive slides are `inert`.
  */
@@ -89,7 +89,7 @@ function Motif({ slide }: { slide: SpotlightSlide }) {
         <span aria-hidden className="absolute inset-[18%_8%]">
           {["top-0 left-0 border-t-2 border-l-2", "top-0 right-0 border-t-2 border-r-2", "bottom-0 left-0 border-b-2 border-l-2", "right-0 bottom-0 border-r-2 border-b-2"].map(
             (corner) => (
-              <span key={corner} className={cn("absolute size-2.5 border-white/85 lg:size-4", corner)} />
+              <span key={corner} className={cn("absolute size-2 border-white/85 lg:size-3", corner)} />
             ),
           )}
           <span className="spot-scan absolute inset-y-0 w-0.5 rounded-full bg-signal-orange" />
@@ -149,7 +149,7 @@ function Pill({ slide, eager }: { slide: SpotlightSlide; eager: boolean }) {
     <span
       role="img"
       aria-label={media.alt}
-      className="spot-pill relative block h-10 w-34 shrink-0 overflow-hidden rounded-full bg-bdnavy-900 ring-1 ring-white/15 lg:h-24 lg:w-80"
+      className="spot-pill relative block h-8 w-24 shrink-0 overflow-hidden rounded-full bg-bdnavy-900 ring-1 ring-white/15 transition-[box-shadow] duration-300 group-hover/slide:ring-signal-orange/70 sm:h-10 sm:w-32 md:h-12 md:w-40 lg:h-14 lg:w-48"
     >
       {media.src ? (
         <>
@@ -158,7 +158,7 @@ function Pill({ slide, eager }: { slide: SpotlightSlide; eager: boolean }) {
             src={media.src}
             alt=""
             fill
-            sizes="(min-width: 1024px) 320px, 136px"
+            sizes="(min-width: 1024px) 192px, (min-width: 768px) 160px, 128px"
             loading={eager ? "eager" : "lazy"}
             style={{ objectPosition: media.position ?? "50% 50%" }}
             className="spot-kenburns object-cover grayscale"
@@ -174,83 +174,36 @@ function Pill({ slide, eager }: { slide: SpotlightSlide; eager: boolean }) {
   );
 }
 
-/** Gold button with a light that follows the cursor (banglalink's --x/--y effect). */
-function SpotlightButton({ label, href }: { label: string; href: string }) {
-  const follow = (e: PointerEvent<HTMLAnchorElement>) => {
-    const box = e.currentTarget.getBoundingClientRect();
-    e.currentTarget.style.setProperty("--x", `${e.clientX - box.left}px`);
-    e.currentTarget.style.setProperty("--y", `${e.clientY - box.top}px`);
-  };
-  return (
-    <Link
-      href={href}
-      onPointerMove={follow}
-      className={cn(btn.gold, "group/btn relative mx-auto flex w-fit overflow-hidden focus-visible:ring-white focus-visible:ring-offset-black")}
-    >
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover/btn:opacity-100"
-        style={{
-          background:
-            "radial-gradient(120px circle at var(--x, 50%) var(--y, 50%), rgb(255 255 255 / 0.5), transparent 70%)",
-        }}
-      />
-      <span className="relative z-10 flex items-center gap-1">
-        {label}
-        <Icon name="chevron_right" className="text-lg" />
-      </span>
-    </Link>
-  );
-}
-
+/**
+ * A slide: the headline, then the lead word, the pill and the tail on one
+ * row. The whole slide is the link (no sub line, no button: Mahir,
+ * 2026-10-21); the sub line still reaches screen readers and shows as the
+ * slide's tooltip, so an indicator keeps its source.
+ */
 function Slide({ slide, eager }: { slide: SpotlightSlide; eager: boolean }) {
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center px-4 py-5 text-center">
-      <p
-        className={cn(
-          "mb-2 text-3xl sm:text-4xl font-semibold text-balance text-signal-orange md:mb-4 lg:text-7xl",
-          BIG,
-        )}
-      >
-        {slide.headline}
-      </p>
+    <Link
+      href={slide.cta.href}
+      title={slide.sub}
+      className="group/slide flex h-full w-full flex-col items-center justify-center gap-1.5 px-4 text-center focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none focus-visible:ring-inset md:gap-2.5"
+    >
+      <span className={cn("text-2xl font-semibold text-balance text-signal-orange sm:text-3xl md:text-4xl lg:text-5xl", BIG)}>{slide.headline}</span>
 
-      <div className="flex flex-col items-center justify-center gap-2 md:flex-row md:gap-4">
-        <div className="flex flex-row items-center justify-center gap-3 md:gap-4">
-          <span
-            className={cn(
-              "text-3xl sm:text-4xl font-semibold whitespace-nowrap text-bdnavy-300 lg:text-7xl",
-              BIG,
-            )}
-          >
-            {slide.lead}
-          </span>
-          <Pill slide={slide} eager={eager} />
-        </div>
-        <span
-          className={cn(
-            "inline-flex items-center gap-1 text-3xl sm:text-4xl font-semibold whitespace-nowrap text-white lg:text-7xl",
-            BIG,
-          )}
-        >
+      <span className="flex flex-row items-center justify-center gap-2.5 md:gap-4">
+        <span className={cn("text-xl font-semibold whitespace-nowrap text-bdnavy-300 sm:text-2xl md:text-4xl lg:text-5xl", BIG)}>{slide.lead}</span>
+        <Pill slide={slide} eager={eager} />
+        <span className={cn("inline-flex items-center gap-1 text-xl font-semibold whitespace-nowrap text-white sm:text-2xl md:text-4xl lg:text-5xl", BIG)}>
           {slide.tailArrow ? (
-            <Icon
-              name={slide.tailArrow === "up" ? "arrow_upward" : "arrow_downward"}
-              className="text-2xl! sm:text-3xl! lg:text-5xl!"
-            />
+            <Icon name={slide.tailArrow === "up" ? "arrow_upward" : "arrow_downward"} className="text-lg! sm:text-xl! md:text-3xl! lg:text-4xl!" />
           ) : null}
           {slide.tail}
         </span>
-      </div>
+      </span>
 
-      <p className="mt-3 line-clamp-2 max-w-2xl font-sans text-sm leading-6 text-white/65 md:mt-5 md:text-base">
-        {slide.sub}
-      </p>
-
-      <div className="mt-4 md:mt-8">
-        <SpotlightButton label={slide.cta.label} href={slide.cta.href} />
-      </div>
-    </div>
+      <span className="sr-only">
+        {slide.sub}. {slide.cta.label}
+      </span>
+    </Link>
   );
 }
 
@@ -291,7 +244,7 @@ export function SpotlightBand() {
         onMouseLeave={release}
         onFocus={hold}
         onBlur={release}
-        className="relative mx-auto h-[20rem] w-full max-w-[1360px] md:h-[19rem] lg:h-[24rem]"
+        className="relative mx-auto h-30 w-full max-w-[1360px] sm:h-34 sm:max-w-384 sm:px-gutter-x md:h-38 lg:h-42"
       >
         {slides.map((slide, i) => {
           const isActive = i === active;

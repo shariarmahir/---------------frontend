@@ -16,17 +16,11 @@ import { cn } from "@/lib/utils";
 import { PosterGrid, type PosterFace, type PosterItem } from "./poster-grid";
 import { ShowcaseCard, type CardTone } from "./showcase-card";
 
-/** The outlined pill that leads from a section to its full page. */
+/** The button that leads from a section to its full page. */
 export function TrackLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link
-      href={href}
-      className={cn(
-        "group inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full px-5 font-grotesk text-sm font-bold text-signal-orange ring-1 ring-signal-orange/45",
-        "transition-colors duration-200 hover:bg-signal-orange hover:text-text-primary",
-        "focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none",
-      )}
-    >
+    // The kit's gold outline on a solid navy fill (it stands on the black ground), filling gold when pointed at.
+    <Link href={href} className={cn(btn.goldOutline, "group shrink-0 bg-bdnavy-900")}>
       {children} <Icon name="arrow_forward" className="text-lg transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
     </Link>
   );
@@ -91,8 +85,9 @@ function productPosters(): PosterItem[] {
   items.push({
     id: "media",
     face: "navy",
-    // The wordmark never wraps, so it scales with the card's width (the card body is a size container).
-    title: <LabelText text={LABEL_TEXT.media} className="text-2xl leading-none" />,
+    // The wordmark never wraps, so it scales with the card's width (the card body is a size
+    // container): 24px wherever the card is wide enough, as on desktop, smaller on a phone's half-width card.
+    title: <LabelText text={LABEL_TEXT.media} className="text-[min(1.5rem,13.5cqi)] leading-none" />,
     tagline: "Post a skill. Get verified. Get hired.",
     name: <LabelText text={LABEL_TEXT.media} className="leading-none" />,
     nameText: "শিক্ষিতদের মিডিয়া",

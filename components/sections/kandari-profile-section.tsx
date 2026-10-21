@@ -44,11 +44,12 @@ export function KandariProfileSection() {
   const { account } = useAuth();
 
   return (
-    <section id="kandari-profile" aria-labelledby="kandari-profile-title" className="section-band mx-auto max-w-7xl px-gutter-x">
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.85fr)_minmax(0,1fr)]">
+    <section id="kandari-profile" aria-labelledby="kandari-profile-title" className="section-band mx-auto max-w-384 px-gutter-x">
+      {/* From xl the invitation and the two cards stand side by side; on a small laptop (lg) the cards pair up under it. */}
+      <div className="grid gap-3 sm:gap-4 xl:grid-cols-[minmax(0,1.85fr)_minmax(0,1fr)]">
         {/* The invitation. */}
         <div className="story-reveal group/join relative grid overflow-hidden rounded-3xl bg-cobalt text-white sm:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
-          <div className="relative order-2 flex flex-col items-start gap-4 p-6 sm:order-1 sm:p-8 lg:p-10">
+          <div className="relative order-2 flex flex-col items-start gap-3 p-5 pt-3 sm:order-1 sm:gap-4 sm:p-8 xl:p-10">
             <h2 id="kandari-profile-title" className="font-grotesk text-2xl leading-tight font-bold tracking-tight text-balance text-signal-orange sm:text-3xl">
               Join Kandari Profile for breakthrough R&amp;D
             </h2>
@@ -59,7 +60,8 @@ export function KandariProfileSection() {
             <p className="font-grotesk text-xl font-bold text-signal-orange">
               Free to join, always
             </p>
-            <Link href={account ? "/account" : "/signup"} className={cn(btn.gold, "mt-2")}>
+            {/* The section's one primary action: full width on phones. */}
+            <Link href={account ? "/account" : "/signup"} className={cn(btn.gold, "mt-1 w-full sm:mt-2 sm:w-auto")}>
               <Icon name={account ? "account_circle" : "person_add"} className="text-2xl" />
               {account ? "My Profile" : "Join Kandari Profile"}
             </Link>
@@ -69,34 +71,34 @@ export function KandariProfileSection() {
           {/* The illustration in a white card cut to its own shape (1818 × 1109), so the whole picture
               shows with no empty white around it; it sits centred on the cobalt beside the words. */}
           <div className="order-1 flex items-center p-3 sm:order-2 sm:py-6 sm:pr-6 sm:pl-0">
-            <div className="relative aspect-1818/1109 w-full overflow-hidden rounded-2xl bg-white shadow-[0_18px_36px_-18px_rgb(0_0_0/0.6)]">
+            <div className="relative aspect-1818/1109 w-full max-sm:aspect-[2/1] overflow-hidden rounded-2xl bg-white shadow-[0_18px_36px_-18px_rgb(0_0_0/0.6)]">
               <Image
                 src="/about/join-us.png"
                 alt="Illustration: a group of young people gathered together under the words “Join Us! Together we can make everything better.”"
                 fill
                 sizes="(min-width: 1024px) 440px, (min-width: 640px) 50vw, 100vw"
-                className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/join:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover/join:scale-100"
+                className="object-cover max-sm:object-[50%_15%] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/join:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover/join:scale-100"
               />
             </div>
           </div>
         </div>
 
         {/* The free ways in. */}
-        <ul className="flex flex-col gap-4">
+        <ul className="flex flex-col gap-3 sm:gap-4 lg:flex-row xl:flex-col">
           {WAYS_IN.map((way) => (
             <li key={way.href} className="story-reveal flex flex-1">
               <Link
                 href={way.href}
                 style={{ "--glow": way.glow } as CSSProperties}
                 className={cn(
-                  "group flex w-full items-center justify-between gap-4 rounded-3xl p-6 sm:p-7",
+                  "group flex w-full items-center justify-between gap-4 rounded-3xl p-5 sm:p-7",
                   "transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-[0_24px_40px_-22px_var(--glow)]",
                   "focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:ring-offset-2 focus-visible:ring-offset-black focus-visible:outline-none",
                   "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
                   way.card,
                 )}
               >
-                <span className="flex min-w-0 flex-col items-start gap-3">
+                <span className="flex min-w-0 flex-col items-start gap-2 sm:gap-3">
                   <span className={cn("font-grotesk text-xl leading-tight font-bold", /[ঀ-৿]/.test(way.title) && "font-bengali")}>{way.title}</span>
                   <span className={cn("text-sm leading-snug", way.muted)}>{way.body}</span>
                   {/* Styled as a button; the whole card is the link. */}
@@ -105,10 +107,10 @@ export function KandariProfileSection() {
                 {/* A tilted gold tile on a solid offset shadow, straightening under the pointer. */}
                 <span
                   aria-hidden
-                  className="grid size-20 shrink-0 -rotate-8 place-items-center rounded-2xl bg-signal-orange text-bdnavy-900 shadow-[6px_6px_0_rgb(0_0_0/0.35)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:rotate-0 motion-reduce:transition-none sm:size-24"
+                  className="grid size-16 shrink-0 -rotate-8 place-items-center rounded-2xl bg-signal-orange text-bdnavy-900 shadow-[6px_6px_0_rgb(0_0_0/0.35)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:rotate-0 motion-reduce:transition-none sm:size-24"
                 >
                   {/* `!`: Google's icon stylesheet pins every symbol at 24px and outranks the utilities. */}
-                  <Icon name={way.icon} className="text-5xl! sm:text-5xl!" />
+                  <Icon name={way.icon} className="text-4xl! sm:text-5xl!" />
                 </span>
               </Link>
             </li>

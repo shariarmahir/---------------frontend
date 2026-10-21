@@ -77,11 +77,3 @@ export const CHARTER_TOPIC: Record<string, { name: string; icon: string }> = {
   impact: { name: "Impact", icon: "diversity_3" },
 };
 
-/** The heading over each topic's figures, so they read as that topic's evidence. */
-export const CHARTER_DATA_LABEL: Record<string, string> = {
-  problem: "The problem in numbers",
-  challenge: "Where Bangladesh stands",
-  vision: "What we hold to",
-  mission: "What we are building",
-  impact: "What we are working with",
-};

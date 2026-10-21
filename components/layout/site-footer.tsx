@@ -63,6 +63,8 @@ const RESEARCH_COLUMNS = [
 
 const LINK =
   "rounded-md text-white/80 transition-colors duration-200 hover:text-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none";
+/** Column links: full-height 44px rows below lg, so each is an easy tap; plain inline text from lg. */
+const ROW_LINK = cn(LINK, "flex min-h-11 items-center lg:inline lg:min-h-0");
 const HEADING = "font-grotesk text-sm font-bold text-signal-orange";
 
 /**
@@ -78,7 +80,7 @@ const HEADING = "font-grotesk text-sm font-bold text-signal-orange";
 export function SiteFooter({ research = false }: { research?: boolean }) {
   const columns = research ? [...RESEARCH_COLUMNS, ...COLUMNS] : COLUMNS;
   const subscribe = (
-    <div className="flex flex-col gap-4">
+    <div className={cn("flex flex-col gap-4", !research && "col-span-2 md:col-span-1 md:col-start-1 xl:col-start-auto")}>
       <h2 className={HEADING}>Stay in the loop</h2>
       <p className="text-sm leading-relaxed text-white/80">New research and product releases, by email.</p>
       {/* Subscribing is a Kandari Profile: the email carries over to sign-up. */}
@@ -103,8 +105,8 @@ export function SiteFooter({ research = false }: { research?: boolean }) {
   return (
     <footer className="relative isolate z-20 overflow-hidden bg-bdnavy-900 text-white">
       <SignalSeam className="top-0" />
-      <div className="mx-auto max-w-7xl px-gutter-x pt-14">
-        <div className="mb-14 flex flex-col gap-6 rounded-3xl bg-cobalt p-6 text-signal-orange shadow-[0_30px_60px_-30px_rgb(0_0_0/0.8)] ring-1 ring-white/12 sm:p-8 md:flex-row md:items-center md:justify-between lg:px-10">
+      <div className="mx-auto max-w-384 px-gutter-x pt-10 lg:pt-14">
+        <div className="mb-10 flex flex-col gap-4 rounded-3xl bg-cobalt p-5 text-signal-orange shadow-[0_30px_60px_-30px_rgb(0_0_0/0.8)] ring-1 ring-white/12 sm:mb-14 sm:gap-6 sm:p-8 md:flex-row md:items-center md:justify-between lg:px-10">
           <p lang="bn" className="font-bengali text-xl leading-snug font-bold sm:text-2xl">
             {NAZRUL_MOTTO}
           </p>
@@ -116,13 +118,18 @@ export function SiteFooter({ research = false }: { research?: boolean }) {
 
         <div
           className={cn(
-            "grid gap-10",
+            // Two columns from the phone up: the brand (and, off /research, the
+            // email bar) spans both, the link groups sit side by side. Off
+            // /research, tablets and small laptops (md) take three columns: the
+            // brand with the email bar under it, then the two link groups; from
+            // xl the email bar takes a fourth column of its own.
+            "grid grid-cols-2 gap-x-6 gap-y-8 sm:gap-10",
             research
               ? "sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[minmax(0,2fr)_repeat(5,minmax(0,1fr))] lg:gap-10"
-              : "sm:grid-cols-2 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.3fr)] lg:gap-12",
+              : "sm:grid-cols-2 md:grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_minmax(0,1fr)] xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.5fr)] xl:gap-12",
           )}
         >
-          <div className={cn("flex flex-col gap-5", research && "sm:col-span-2 md:col-span-3 lg:col-span-1")}>
+          <div className={cn("col-span-2 flex flex-col gap-4 sm:gap-5", research ? "md:col-span-3 lg:col-span-1" : "md:col-span-1")}>
             <Link
               href="/"
               className="w-fit rounded-lg focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
@@ -152,12 +159,12 @@ export function SiteFooter({ research = false }: { research?: boolean }) {
           </div>
 
           {columns.map((col) => (
-            <nav key={col.title} aria-label={col.title} className="flex flex-col gap-4">
+            <nav key={col.title} aria-label={col.title} className={cn("flex min-w-0 flex-col gap-1 lg:gap-4", !research && "md:row-span-2 xl:row-span-1")}>
               <h2 className={HEADING}>{col.title}</h2>
-              <ul className="flex flex-col gap-2.5 text-sm">
+              <ul className="flex flex-col text-sm lg:gap-2.5">
                 {col.links.map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href} className={LINK}>
+                    <Link href={link.href} className={ROW_LINK}>
                       {link.label}
                     </Link>
                   </li>
@@ -169,19 +176,19 @@ export function SiteFooter({ research = false }: { research?: boolean }) {
           {!research && subscribe}
         </div>
 
-        {/* `sm:pr-32`: the floating AI button sits over this row's right end. */}
-        <div className="mt-14 flex flex-col items-center justify-between gap-3 border-t border-white/12 py-5 text-xs text-white/65 sm:flex-row sm:pr-32">
+        {/* `sm:pr-32`: the floating AI button sits over this row's right end, until the window is wide enough to leave it in the margin. */}
+        <div className="mt-10 flex flex-col items-center justify-between gap-1 border-t border-white/12 py-4 text-xs text-white/65 sm:flex-row sm:gap-3 sm:py-5 sm:pr-20 lg:mt-14 min-[115rem]:pr-0">
           <p>© {new Date().getFullYear()} Kandari-Lab (কাণ্ডারী-ল্যাব). All rights reserved.</p>
-          <a href="#top" className={cn(LINK, "inline-flex items-center gap-1 font-semibold")}>
+          <a href="#top" className={cn(LINK, "inline-flex min-h-11 items-center gap-1 px-2 font-semibold lg:min-h-0 lg:px-0")}>
             Back to top
             <Icon name="arrow_upward" className="text-base" />
           </a>
         </div>
       </div>
 
-      {/* The name, drawn in a fine gold line and cut by the page's edge. Set at
-          72 units and scaled by the viewBox, so it stays on the type scale. */}
-      <svg aria-hidden viewBox="0 0 390 52" className="pointer-events-none mx-auto -mt-1 block w-full max-w-7xl px-gutter-x select-none">
+      {/* The name, drawn whole in a fine gold line under the footer. Set at 72
+          units and scaled by the viewBox, so it stays on the type scale. */}
+      <svg aria-hidden viewBox="0 0 390 92" className="pointer-events-none mx-auto mt-2 mb-6 block w-full max-w-384 px-gutter-x select-none lg:mb-10">
         <text
           x="195"
           y="70"

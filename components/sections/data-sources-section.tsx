@@ -1,72 +1,68 @@
-import type { CSSProperties } from "react";
-import { Icon } from "@/components/ui/icon";
+"use client";
+
+import Image from "next/image";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { SectionHeading } from "@/components/ui/section-kit";
 import { dataSources, type DataSource } from "@/data/data-sources";
 import { cn } from "@/lib/utils";
 
 /**
- * The public sources behind the site's figures, one solid card each: the
- * source's mark (a symbol, not its logo) and name set large, what the site
- * takes from it, and a link out. One full-width row that drifts left on
- * its own, the list running twice so the loop has no seam; it holds under
- * the pointer or keyboard focus. Reduced motion: no drift, the row scrolls
- * by hand. Fields run navy, cobalt, ink, so no card touches its own colour,
- * round the loop too (see `fieldOf`).
+ * Credit for the public sources behind the site's figures: the title and a
+ * row of their own logos (Mahir, 2026-10-21), each on a tile in one of the
+ * site's own fields matched to the logo's colour (navy, blue, green, gold):
+ * wordmarks drawn in white, the round seals in their own colours. A tile
+ * lifts and takes a gold edge (white on gold) when pointed at; each links to
+ * the data the site takes from it. A seal or symbol with no name in it gets
+ * the name set beside it. The row runs the
+ * screen's width and drifts left on its own, the list running twice so the
+ * loop has no seam; it holds under the pointer or keyboard focus. Reduced
+ * motion: no drift, the row scrolls by hand.
+ *
+ * A touch screen has no hover, so a finger on the row holds it too, and it
+ * stays held a few seconds after the finger lifts.
  */
-const FIELDS = [
-  {
-    card: "bg-bdnavy-900 text-white ring-1 ring-white/12 ring-inset",
-    accent: "text-signal-orange",
-    muted: "text-white/65",
-    chip: "bg-white/8 ring-white/15",
-    glow: "var(--color-bdnavy-400)",
-  },
-  {
-    card: "bg-cobalt text-white ring-1 ring-white/12 ring-inset",
-    accent: "text-signal-orange",
-    muted: "text-white/80",
-    chip: "bg-white/8 ring-white/15",
-    glow: "var(--color-cobalt)",
-  },
-  {
-    card: "bg-text-primary text-white ring-1 ring-white/12 ring-inset",
-    accent: "text-signal-orange",
-    muted: "text-white/65",
-    chip: "bg-white/8 ring-white/15",
-    glow: "var(--color-signal-orange)",
-  },
-];
 
-type Field = (typeof FIELDS)[number];
-
-/**
- * navy, cobalt, ink in turn. When the count leaves one over (n mod 3 = 1) the
- * last card would be navy beside the first navy across the loop's seam, so
- * it takes cobalt instead (its other neighbour is ink).
- */
-const fieldOf = (i: number, n: number) => FIELDS[i === n - 1 && n % 3 === 1 ? 1 : i % 3];
+/** How long the row stays still after a finger leaves it. */
+const TOUCH_HOLD_MS = 4000;
 
 export function DataSourcesSection() {
   const n = dataSources.length;
+  const [held, setHeld] = useState(false);
+  const resume = useRef(0);
+  useEffect(() => () => window.clearTimeout(resume.current), []);
+
+  const hold = (e: ReactPointerEvent) => {
+    if (e.pointerType === "mouse") return;
+    window.clearTimeout(resume.current);
+    setHeld(true);
+  };
+  const release = (e: ReactPointerEvent) => {
+    if (e.pointerType === "mouse") return;
+    window.clearTimeout(resume.current);
+    resume.current = window.setTimeout(() => setHeld(false), TOUCH_HOLD_MS);
+  };
+
   return (
     <section id="data-sources" className="section-band">
-      <div className="mx-auto max-w-7xl px-gutter-x">
-        <SectionHeading
-          tone="dark"
-          title="Our Data Sources"
-          lead="Every figure on this site comes from a public source we cite. These are the ones we rely on."
-        />
+      <div className="mx-auto max-w-384 px-gutter-x">
+        <SectionHeading tone="dark" title="Our Data Sources" />
       </div>
 
-      {/* py: room for the hover lift and its glow inside the clipped row. */}
-      <div className="story-reveal overflow-hidden py-4 motion-reduce:overflow-x-auto">
-        <ul className="ds-drift flex w-max">
+      {/* The row runs the screen's width; py: room for the tiles' lift. */}
+      <div className="story-reveal overflow-hidden py-3 motion-reduce:overflow-x-auto">
+        <ul
+          onPointerDown={hold}
+          onPointerUp={release}
+          onPointerCancel={release}
+          style={held ? { animationPlayState: "paused" } : undefined}
+          className="ds-drift flex w-max items-stretch"
+        >
           {[...dataSources, ...dataSources].map((source, i) => {
             const copy = i >= n;
             return (
               // Spacing is padding, not gap, so the doubled row is exactly twice one set.
-              <li key={`${source.id}${copy ? "-copy" : ""}`} aria-hidden={copy || undefined} className="flex w-64 shrink-0 pl-4 sm:w-72">
-                <SourceCard source={source} field={fieldOf(i % n, n)} copy={copy} />
+              <li key={`${source.id}${copy ? "-copy" : ""}`} aria-hidden={copy || undefined} className="flex shrink-0 pl-3 sm:pl-4">
+                <SourceLogo source={source} copy={copy} />
               </li>
             );
           })}
@@ -76,52 +72,43 @@ export function DataSourcesSection() {
   );
 }
 
-/** One source. `copy`: the loop's second run, kept out of the tab order. */
-function SourceCard({ source, field, copy }: { source: DataSource; field: Field; copy: boolean }) {
+/** The tile fields: the site's navy, cobalt and ink, and gold; text and the hover edge to suit each. */
+const TILES = {
+  navy: { field: "bg-bdnavy-900 ring-white/12", name: "text-white", hover: "hover:ring-signal-orange focus-visible:ring-signal-orange" },
+  cobalt: { field: "bg-cobalt ring-white/12", name: "text-white", hover: "hover:ring-signal-orange focus-visible:ring-signal-orange" },
+  ink: { field: "bg-text-primary ring-white/12", name: "text-white", hover: "hover:ring-signal-orange focus-visible:ring-signal-orange" },
+  gold: { field: "bg-signal-orange ring-black/10", name: "text-text-primary", hover: "hover:ring-white focus-visible:ring-white" },
+} as const;
+
+/** Wordmarks sit lower than seals and the square IMF mark, so every logo reads at about the same weight. */
+const heightOf = (source: DataSource) => (source.ratio >= 2 ? "h-9 sm:h-11" : "h-11 sm:h-14");
+
+/** One source's logo, a link to its data. `copy`: the loop's second run, kept out of the tab order. */
+function SourceLogo({ source, copy }: { source: DataSource; copy: boolean }) {
+  const name = source.fullName ?? source.name;
+  const tile = TILES[source.tile];
   return (
     <a
       href={source.url}
       target="_blank"
       rel="noopener noreferrer"
       tabIndex={copy ? -1 : undefined}
-      style={{ "--glow": field.glow } as CSSProperties}
+      title={`${name}: ${source.use}`}
+      aria-label={`${name}: ${source.use} (opens in a new tab)`}
       className={cn(
-        "group flex w-full flex-col rounded-3xl p-5 sm:p-6",
-        "transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-[0_28px_48px_-22px_var(--glow)]",
-        "focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:ring-offset-2 focus-visible:ring-offset-black focus-visible:outline-none",
-        "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
-        field.card,
+        "flex h-20 items-center gap-3 rounded-2xl px-6 ring-2 ring-inset sm:h-24 sm:px-8",
+        "transition-[translate,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+        "focus-visible:outline-none",
+        tile.field,
+        tile.hover,
       )}
     >
-      <span className="flex items-start justify-between gap-3">
-        {/* `!`: Google's icon stylesheet pins every symbol at 24px and outranks the utilities. */}
-        <Icon
-          name={source.icon}
-          className={cn(
-            "text-5xl! transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-rotate-6 motion-reduce:transition-none sm:text-5xl!",
-            field.accent,
-          )}
-        />
-        <Icon
-          name="arrow_outward"
-          className={cn(
-            "text-xl transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none",
-            field.muted,
-          )}
-        />
+      <span className={cn("relative block shrink-0", heightOf(source))} style={{ aspectRatio: source.ratio }}>
+        <Image src={source.logo} alt="" fill unoptimized sizes="240px" className={cn("object-contain", source.white && "brightness-0 invert")} />
       </span>
-
-      <span className="mt-6 font-grotesk text-xl leading-tight font-bold text-balance sm:text-2xl">{source.name}</span>
-      {source.fullName && <span className={cn("mt-1 text-xs leading-snug", field.muted)}>{source.fullName}</span>}
-      <span className="mt-3 text-sm leading-snug">{source.use}</span>
-
-      {/* The tag sits on the card's foot, so the row of cards lines up. */}
-      <span className="mt-auto pt-5">
-        <span className={cn("inline-block rounded-full px-2.5 py-1 font-sans tabular-nums text-xs font-semibold ring-1", field.chip)}>
-          {source.tag}
-        </span>
-      </span>
-      <span className="sr-only">(opens in a new tab)</span>
+      {source.mark ? (
+        <span className={cn("max-w-40 font-grotesk text-sm leading-tight font-bold text-balance sm:max-w-44 sm:text-base", tile.name)}>{name}</span>
+      ) : null}
     </a>
   );
 }

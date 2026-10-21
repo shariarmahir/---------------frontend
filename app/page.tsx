@@ -25,12 +25,12 @@ import { SpotlightBand } from "@/components/sections/spotlight-band";
  * panels carry a faint white ring so they hold an edge on the black); every
  * surface a solid colour, no textures; white tiles for anything green or red; a gold pulse running
  * the seam of each dark band.
- * STORY: the photographs and the claim → the spotlight band (news, protocol
- * status, national indicators) → the four pixels → products → the
+ * STORY: the photographs and the claim → the narrow spotlight band (news,
+ * protocol status, national indicators) → the four pixels → products → the
  * apps to download → services → the banner gallery (record, protest, rights, the 32 problems, the media, research) →
  * the labs → the open drive → who we are and our values → the people → what partners say → where the data comes from → join.
- * FIRST VIEWPORT: the gold header over the photo hero, claim left, gold
- * primary action, then the spotlight band closing it.
+ * FIRST VIEWPORT: the header over the photo hero, its claim and gold
+ * primary action, then the narrow spotlight band closing it.
  * FORM: extension of the established header world (no seed roll); pacing
  * alternates black ground, ink, gold and green so no two neighbours match.
  */
@@ -42,7 +42,7 @@ export default function Home() {
       <main className="relative w-full bg-black pt-header lg:pt-header-lg">
         <HeroSection />
         {/* Announcements, the Golden 2-Hours status and the national
-            indicators, moved here from the header (banglalink-style slider). */}
+            indicators: a narrow banglalink-style slider under the hero. */}
         <SpotlightBand />
         {/* Pitch-black ground, solid colours only (Mahir, 2026-09-30). */}
         <div className="relative">
