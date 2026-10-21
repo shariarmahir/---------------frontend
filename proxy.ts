@@ -14,6 +14,19 @@ export function proxy(request: NextRequest) {
   // public/media/*.webp shares the /media prefix; the image optimizer fetches
   // those without cookies, so files are never gated (pages have no extension).
   if (/\.[a-z0-9]+$/i.test(pathname)) return NextResponse.next();
+
+  // কাণ্ডারী HQ has its own sign-in (username, password and face); its
+  // server layout verifies the signed cookie, this only spares a round trip.
+  if (pathname === "/hq" || pathname.startsWith("/hq/")) {
+    const open = pathname === "/hq/login" || pathname === "/hq/apply";
+    if (!open && !request.cookies.has("hq_session")) {
+      const url = new URL("/hq/login", request.url);
+      if (pathname !== "/hq") url.searchParams.set("next", pathname + search);
+      return NextResponse.redirect(url);
+    }
+    return NextResponse.next();
+  }
+
   const signedIn = request.cookies.get(SESSION_COOKIE)?.value === "1";
 
   if (!signedIn && isProtected(pathname)) {
@@ -30,5 +43,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/login", "/signup", "/account/:path*", "/media/:path*"],
+  matcher: ["/login", "/signup", "/account/:path*", "/media/:path*", "/hq", "/hq/:path*"],
 };
