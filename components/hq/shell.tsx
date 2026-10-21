@@ -288,6 +288,8 @@ function QuickAdd() {
 export function HqShell({ children }: { children: ReactNode }) {
   const [menu, setMenu] = useState(false);
   const [palette, setPalette] = useState(false);
+  // The chat fills the screen, so the footer steps aside there.
+  const fullBleed = usePathname().startsWith("/hq/chat");
   const notices = useHq((v) => v.notices);
   const me = useHq((v) => v.me);
   const checkedIn = useHq((v) => v.checkins.some((c) => c.personId === v.me.person.id && c.day === dhakaDay(Date.parse(v.now)) && !c.out));
@@ -366,7 +368,7 @@ export function HqShell({ children }: { children: ReactNode }) {
         <main id="hq-main" className="mx-auto w-full max-w-[120rem] min-w-0 flex-1 px-3 py-6 sm:px-5 lg:px-8 lg:py-8">
           {children}
         </main>
-        <footer className="border-t border-white/8 px-5 py-4 text-xs text-white/45 lg:px-8">
+        <footer className={cn("border-t border-white/8 px-5 py-4 text-xs text-white/45 lg:px-8", fullBleed && "hidden")}>
           Kandari Lab · We turn problems into economy · Signed in as {LEVEL_LABEL[me.person.level]}
         </footer>
       </div>

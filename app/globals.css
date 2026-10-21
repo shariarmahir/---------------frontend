@@ -3001,3 +3001,41 @@ html:has(.hq) {
     animation: none;
   }
 }
+/* Quick Silver: gold sparks fly out once. */
+@keyframes qs-spark {
+  from {
+    transform: translate(-50%, -50%) rotate(var(--a)) translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(var(--a)) translateY(-160px);
+    opacity: 0;
+  }
+}
+.qs-spark {
+  animation: qs-spark 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .qs-spark {
+    display: none;
+  }
+}
+/* The leaderboard podium grows up from the floor. */
+@keyframes podium-rise {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: none;
+  }
+}
+.podium-rise {
+  transform-origin: bottom;
+  animation: podium-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 120ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .podium-rise {
+    animation: none;
+  }
+}

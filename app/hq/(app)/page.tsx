@@ -1,10 +1,8 @@
-"use client";
+import type { Metadata } from "next";
+import { CommandCenter } from "@/components/hq/home/command-center";
 
-import { PageHead } from "@/components/hq/kit";
-import { useHq } from "@/components/hq/provider";
+export const metadata: Metadata = { title: "Command Center" };
 
-/** Placeholder: the control agent builds the command centre here. */
 export default function HqHomePage() {
-  const me = useHq((v) => v.me.person);
-  return <PageHead title="Command Center" lead={`Welcome, ${me.name}.`} />;
+  return <CommandCenter />;
 }
