@@ -12,13 +12,16 @@
  * ./demo.ts).
  */
 import { promises as fs } from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { PRIME_ID } from "@/data/hq/people";
 import { emptyDb, seedDb } from "@/lib/hq/seed";
 import type { HqDb } from "@/lib/hq/types";
 import { syncDemo } from "./demo";
 
-export const DATA_DIR = process.env.HQ_DATA_DIR || path.join(process.cwd(), ".hq-data");
+// Vercel's functions can only write to /tmp: HQ runs there for testing, but
+// each instance keeps its own copy and loses it on a cold start.
+export const DATA_DIR = process.env.HQ_DATA_DIR || (process.env.VERCEL ? path.join(os.tmpdir(), "hq-data") : path.join(process.cwd(), ".hq-data"));
 const FILE = path.join(DATA_DIR, "db.json");
 
 interface Cache {
