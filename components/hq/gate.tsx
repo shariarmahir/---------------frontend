@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { ArrowRight, Eye, EyeOff, FlaskConical, KeyRound, LoaderCircle, LockKeyhole, ScanFace, UserRound } from "lucide-react";
 import { type ReactNode, useCallback, useState } from "react";
 import type { DemoOffer } from "@/lib/hq/server/demo";
@@ -46,12 +46,20 @@ export function GateFrame({ faceLock, children }: { faceLock: boolean; children:
 type Step = "id" | "face" | "enroll";
 
 /**
+ * A full page load, not a router push: the browser may have cached "/hq
+ * redirects to the sign-in page" from before (a prefetched link), and a soft
+ * navigation would replay it and land back here after a good sign-in.
+ */
+function enter(target: string) {
+  window.location.assign(target);
+}
+
+/**
  * Username and password, then (while the prime admin's face lock is on) the
  * face check. With demo sign-ins on, a panel under the form signs in as any
  * level in one click.
  */
 export function LoginForm({ faceLock, demo }: { faceLock: boolean; demo: DemoOffer | null }) {
-  const router = useRouter();
   const params = useSearchParams();
   const next = params.get("next");
   const target = next && next.startsWith("/hq") && !next.startsWith("//") ? next : "/hq";
@@ -72,7 +80,7 @@ export function LoginForm({ faceLock, demo }: { faceLock: boolean; demo: DemoOff
     const data = (await res.json().catch(() => ({}))) as { next?: string; error?: string; name?: string };
     if (res.ok && data.next === "in") {
       // Stay busy while the dashboard loads.
-      router.replace(target);
+      enter(target);
       return;
     }
     setBusy(false);
@@ -80,7 +88,7 @@ export function LoginForm({ faceLock, demo }: { faceLock: boolean; demo: DemoOff
     if (!res.ok) return setError(data.error ?? "Sign-in failed.");
     setName(data.name ?? "");
     setStep(data.next === "enroll" ? "enroll" : "face");
-  }, [router, target]);
+  }, [target]);
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     void signIn(id, password);
@@ -101,13 +109,13 @@ export function LoginForm({ faceLock, demo }: { faceLock: boolean; demo: DemoOff
       const res = await fetch("/api/hq/auth/face", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
       const data = (await res.json().catch(() => ({}))) as { next?: string; error?: string };
       setBusy(false);
-      if (res.ok && data.next === "in") return router.replace(target);
+      if (res.ok && data.next === "in") return enter(target);
       setError(data.error ?? "The face check failed.");
       if (res.status === 401 && data.error?.includes("expired")) return setStep("id");
       if (res.status === 429) return setStep("id");
       setAttempt((a) => a + 1);
     },
-    [step, router, target],
+    [step, target],
   );
 
   return (

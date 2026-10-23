@@ -179,6 +179,11 @@ export function SiteFooter({ research = false }: { research?: boolean }) {
         {/* `sm:pr-32`: the floating AI button sits over this row's right end, until the window is wide enough to leave it in the margin. */}
         <div className="mt-10 flex flex-col items-center justify-between gap-1 border-t border-white/12 py-4 text-xs text-white/65 sm:flex-row sm:gap-3 sm:py-5 sm:pr-20 lg:mt-14 min-[115rem]:pr-0">
           <p>© {new Date().getFullYear()} Kandari-Lab (কাণ্ডারী-ল্যাব). All rights reserved.</p>
+          {/* Temporary, for testing: opens Kandari HQ (members sign in there). Remove before launch. */}
+          <Link href="/hq" prefetch={false} className={cn(btn.goldOutline, "shrink-0 bg-bdnavy-900")}>
+            <Icon name="dashboard" className="text-base" />
+            Dashboard
+          </Link>
           <a href="#top" className={cn(LINK, "inline-flex min-h-11 items-center gap-1 px-2 font-semibold lg:min-h-0 lg:px-0")}>
             Back to top
             <Icon name="arrow_upward" className="text-base" />
