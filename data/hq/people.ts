@@ -193,8 +193,8 @@ export const PRIME_ID = "p-mahir";
 /**
  * One demo sign-in per level below the super prime admin (that seat is the
  * founder's alone), for trying HQ as each role before the real team has
- * accounts. They exist only while HQ_DEMO_PASSWORD is set
- * (lib/hq/server/demo.ts), share that password, and are marked `demo` so
+ * accounts. They exist until HQ_DEMO_PASSWORD is set to "off"
+ * (lib/hq/server/demo.ts), share one password, and are marked `demo` so
  * ranks leave them out.
  */
 const DEMO: { level: Level; key: string; dept: Dept; skills: string[] }[] = [

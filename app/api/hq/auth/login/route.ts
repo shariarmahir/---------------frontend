@@ -3,7 +3,6 @@ import { z } from "zod";
 import { LOCK_AFTER, LOCK_MS, logAudit } from "@/lib/hq/server/audit";
 import { verifyPassword } from "@/lib/hq/server/crypto";
 import { devFaceBypass, fail, requestMeta, setPending, setSession } from "@/lib/hq/server/session";
-import { missingSetup } from "@/lib/hq/server/setup";
 import { mutate, readDb } from "@/lib/hq/server/store";
 
 const body = z.object({ id: z.string().trim().min(3).max(120), password: z.string().min(1).max(200) });
@@ -15,7 +14,6 @@ const body = z.object({ id: z.string().trim().min(3).max(120), password: z.strin
  * (the default), the password is enough.
  */
 export async function POST(req: Request) {
-  if (missingSetup().length) return fail("HQ isn't set up on this server yet.", 503);
   const parsed = body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return fail("Enter your username and password.");
   const ident = parsed.data.id.toLowerCase();

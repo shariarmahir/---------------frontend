@@ -108,7 +108,7 @@ export interface Account {
   lastLoginAt: Iso | null;
   /** Bumped by "sign out everywhere"; sessions carry the epoch they were made in. */
   epoch: number;
-  /** Shares HQ_DEMO_PASSWORD; removed when that is unset. */
+  /** Shares the demo password; removed when HQ_DEMO_PASSWORD is "off". */
   demo?: true;
 }
 

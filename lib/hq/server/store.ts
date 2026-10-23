@@ -7,9 +7,9 @@
  * no lasting disk, so deploy HQ only with the real backend or a VPS.
  *
  * The prime admin's account comes from the environment (HQ_PRIME_EMAIL,
- * HQ_PRIME_PASSWORD_HASH, see scripts/hq-hash.mjs): the password never sits
- * in the code or the bundle. So do the demo sign-ins (HQ_DEMO_PASSWORD,
- * ./demo.ts).
+ * HQ_PRIME_PASSWORD_HASH, see scripts/hq-hash.mjs). So do the demo sign-ins
+ * (HQ_DEMO_PASSWORD, ./demo.ts). A host without them uses the public test
+ * sign-ins in ./test-access.ts.
  */
 import { promises as fs } from "node:fs";
 import os from "node:os";
@@ -18,6 +18,7 @@ import { PRIME_ID } from "@/data/hq/people";
 import { emptyDb, seedDb } from "@/lib/hq/seed";
 import type { HqDb } from "@/lib/hq/types";
 import { syncDemo } from "./demo";
+import { TEST_PRIME_EMAIL, TEST_PRIME_HASH } from "./test-access";
 
 // Vercel's functions can only write to /tmp: HQ runs there for testing, but
 // each instance keeps its own copy and loses it on a cold start.
@@ -44,10 +45,14 @@ function upgrade(raw: Partial<HqDb>): HqDb {
   return db;
 }
 
-/** "scrypt:<salt>:<hash>" from scripts/hq-hash.mjs (no "$": Next expands it in .env files). */
+/**
+ * "scrypt:<salt>:<hash>" from scripts/hq-hash.mjs (no "$": Next expands it
+ * in .env files); the built-in test sign-in when neither variable is set.
+ */
 function primeSecret(): { email: string; salt: string; hash: string } | null {
-  const email = process.env.HQ_PRIME_EMAIL?.trim().toLowerCase();
-  const packed = process.env.HQ_PRIME_PASSWORD_HASH?.trim();
+  const unset = !process.env.HQ_PRIME_EMAIL?.trim() && !process.env.HQ_PRIME_PASSWORD_HASH?.trim();
+  const email = (unset ? TEST_PRIME_EMAIL : process.env.HQ_PRIME_EMAIL)?.trim().toLowerCase();
+  const packed = (unset ? TEST_PRIME_HASH : process.env.HQ_PRIME_PASSWORD_HASH)?.trim();
   if (!email || !packed) return null;
   const [scheme, salt, hash] = packed.split(":");
   if (scheme !== "scrypt" || !salt || !hash) return null;

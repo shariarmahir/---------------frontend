@@ -6,14 +6,18 @@ import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { DATA_DIR } from "./store";
+import { TEST_SESSION_SECRET } from "./test-access";
 
 export { hashPassword, verifyPassword } from "./password";
 
-/** HQ_SESSION_SECRET; in development one is made once and kept beside the data. */
+/**
+ * HQ_SESSION_SECRET; in development one is made once and kept beside the
+ * data, and a production host without it uses the shared test secret.
+ */
 function secret(): Buffer {
   const env = process.env.HQ_SESSION_SECRET;
   if (env && env.length >= 32) return Buffer.from(env);
-  if (process.env.NODE_ENV === "production") throw new Error("HQ_SESSION_SECRET (32+ characters) must be set in production.");
+  if (process.env.NODE_ENV === "production") return Buffer.from(TEST_SESSION_SECRET);
   const file = path.join(DATA_DIR, "session-secret");
   if (!existsSync(file)) {
     mkdirSync(DATA_DIR, { recursive: true });

@@ -43,25 +43,6 @@ export function GateFrame({ faceLock, children }: { faceLock: boolean; children:
   );
 }
 
-/** Shown instead of the form when the server lacks HQ's settings (names only, never values). */
-export function SetupNotice({ missing }: { missing: string[] }) {
-  return (
-    <GateFrame faceLock={false}>
-      <div role="alert" className="rounded-2xl bg-bdnavy-900 p-6 ring-1 ring-white/12 sm:p-8">
-        <h1 className="font-grotesk text-2xl font-bold text-signal-orange">HQ isn&apos;t set up on this server yet</h1>
-        <p className="mt-2 text-sm leading-relaxed text-white/75">The host is missing these settings. On Vercel, add them under Settings → Environment Variables with the same values as your .env.local, then redeploy.</p>
-        <ul className="mt-4 flex flex-col gap-2">
-          {missing.map((name) => (
-            <li key={name} className="rounded-xl bg-black/40 px-3 py-2 font-mono text-sm text-signal-orange ring-1 ring-white/10">
-              {name}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </GateFrame>
-  );
-}
-
 type Step = "id" | "face" | "enroll";
 
 /**

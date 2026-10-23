@@ -282,7 +282,7 @@ export function Settings() {
           {v.me.isPrime && demos > 0 ? (
             <Panel title="Demo sign-ins are on" icon={FlaskConical} field="cobalt">
               <p className="text-sm leading-relaxed text-white/80">
-                {demos} demo accounts, one per level below yours, share the password in <code className="font-mono text-signal-orange">HQ_DEMO_PASSWORD</code>, and the sign-in page shows it. Remove that line from <code className="font-mono text-signal-orange">.env.local</code> before the real team signs in.
+                {demos} demo accounts, one per level below yours, share one open password, and the sign-in page shows it. Set <code className="font-mono text-signal-orange">HQ_DEMO_PASSWORD=off</code> on the server before the real team signs in.
               </p>
             </Panel>
           ) : null}

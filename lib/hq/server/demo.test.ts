@@ -4,6 +4,7 @@ import { ASSIGNABLE_LEVELS } from "../rules.ts";
 import { seedDb } from "../seed.ts";
 import { demoOffer, syncDemo } from "./demo.ts";
 import { verifyPassword } from "./password.ts";
+import { TEST_PASSWORD } from "./test-access.ts";
 
 const NOW = Date.parse("2026-10-21T06:00:00.000Z");
 
@@ -36,10 +37,20 @@ test("demo sign-ins: one per level below prime, all on the demo password, and st
   });
 });
 
-test("demo sign-ins go when the password is unset and come back when it returns", () => {
+test("without HQ_DEMO_PASSWORD the demo sign-ins use the built-in test password", () => {
+  const db = seedDb(NOW, { samples: false });
+  withPassword(undefined, () => {
+    assert.equal(demoOffer()!.password, TEST_PASSWORD);
+    syncDemo(db);
+  });
+  const acc = db.accounts.find((a) => a.demo)!;
+  assert.ok(verifyPassword(TEST_PASSWORD, acc.salt, acc.passHash));
+});
+
+test("demo sign-ins go when the password is off and come back when it returns", () => {
   const db = seedDb(NOW, { samples: false });
   withPassword("demo-pass-26", () => syncDemo(db));
-  withPassword(undefined, () => {
+  withPassword("off", () => {
     assert.equal(demoOffer(), null);
     assert.equal(syncDemo(db), true);
   });

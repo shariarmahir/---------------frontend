@@ -1,18 +1,21 @@
 /**
  * Demo sign-ins, one per level below the super prime admin
- * (data/hq/people.ts), for trying HQ as each role. They exist while HQ_DEMO_PASSWORD is set in .env.local and all share
- * it; unset it and their accounts go and the demo people are marked "left".
- * Turn it off before the real team signs in: the sign-in page shows the
+ * (data/hq/people.ts), for trying HQ as each role. They all share
+ * HQ_DEMO_PASSWORD, or the built-in test password while it is unset; set it
+ * to "off" and their accounts go and the demo people are marked "left".
+ * Turn them off before the real team signs in: the sign-in page shows the
  * demo password to anyone who opens it.
  */
 import { demoPeople, DEMO_LOGINS } from "../../../data/hq/people.ts";
 import { LEVEL_LABEL } from "../rules.ts";
 import type { HqDb, Level } from "../types.ts";
 import { hashPassword, verifyPassword } from "./password.ts";
+import { TEST_PASSWORD } from "./test-access.ts";
 
 export function demoPassword(): string | null {
   const pw = process.env.HQ_DEMO_PASSWORD?.trim();
-  return pw && pw.length >= 8 ? pw : null;
+  if (!pw) return TEST_PASSWORD;
+  return pw.toLowerCase() !== "off" && pw.length >= 8 ? pw : null;
 }
 
 /** What the sign-in page offers while demo sign-ins are on. */
