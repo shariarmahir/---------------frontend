@@ -49,6 +49,7 @@ export function emptyDb(now: number): HqDb {
   return {
     version: 1,
     seededAt: at,
+    faceLock: false,
     seq: {},
     people: [],
     accounts: [],

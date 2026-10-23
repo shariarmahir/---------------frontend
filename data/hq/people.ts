@@ -1,4 +1,4 @@
-import { LEVEL_PRESET } from "../../lib/hq/rules.ts";
+import { LEVEL_LABEL, LEVEL_PRESET } from "../../lib/hq/rules.ts";
 import type { Dept, Level, Person } from "../../lib/hq/types.ts";
 
 /**
@@ -189,6 +189,54 @@ export function seedPeople(): Person[] {
 }
 
 export const PRIME_ID = "p-mahir";
+
+/**
+ * One demo sign-in per level below the super prime admin (that seat is the
+ * founder's alone), for trying HQ as each role before the real team has
+ * accounts. They exist only while HQ_DEMO_PASSWORD is set
+ * (lib/hq/server/demo.ts), share that password, and are marked `demo` so
+ * ranks leave them out.
+ */
+const DEMO: { level: Level; key: string; dept: Dept; skills: string[] }[] = [
+  { level: "chief", key: "chief", dept: "leadership", skills: ["leadership", "operations"] },
+  { level: "hr", key: "hr", dept: "hr", skills: ["hr", "documentation"] },
+  { level: "lead", key: "lead", dept: "creative", skills: ["design", "planning"] },
+  { level: "client-manager", key: "client", dept: "client", skills: ["client", "communication"] },
+  { level: "member", key: "member", dept: "dev", skills: ["web", "design"] },
+  { level: "intern", key: "intern", dept: "rnd", skills: ["research"] },
+];
+
+export const DEMO_LOGINS = DEMO.map((d) => ({ level: d.level, handle: `kandari@demo-${d.key}`, email: `demo-${d.key}@kandari-lab.test` }));
+
+export function demoPeople(): Person[] {
+  const ids = [...SEATS.map((s) => s.id), ...DEMO.map((d) => `p-demo-${d.key}`)];
+  return DEMO.map((d, i) => {
+    const id = `p-demo-${d.key}`;
+    const name = `Demo ${LEVEL_LABEL[d.level]}`;
+    return {
+      id,
+      name,
+      nameBn: name,
+      memberId: `kandari-demo-${String(91 + i).padStart(3, "0")}-26`,
+      handle: `kandari@demo-${d.key}`,
+      designation: `${LEVEL_LABEL[d.level]} (demo)`,
+      level: d.level,
+      dept: d.dept,
+      skills: d.skills,
+      learning: [],
+      photo: null,
+      email: `demo-${d.key}@kandari-lab.test`,
+      perms: LEVEL_PRESET[d.level],
+      status: "active" as const,
+      joinedAt: JOINED,
+      connections: ids.filter((x) => x !== id),
+      asked: [],
+      history: [],
+      hasAccount: true,
+      demo: true as const,
+    };
+  });
+}
 
 /** Everyone's skill words, for the skill pickers (tasks, help requests, applications). */
 export const SKILLS = [

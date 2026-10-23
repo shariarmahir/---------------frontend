@@ -8,9 +8,10 @@ import { mutate, readDb } from "@/lib/hq/server/store";
 const body = z.object({ id: z.string().trim().min(3).max(120), password: z.string().min(1).max(200) });
 
 /**
- * Step one of signing in: username (or email) and password. A right
- * password never signs in by itself: it leads to the face check, or to the
- * first face enrolment.
+ * Step one of signing in: username (or email) and password. While the prime
+ * admin's face lock is on, a right password never signs in by itself: it
+ * leads to the face check, or to the first face enrolment. While it is off
+ * (the default), the password is enough.
  */
 export async function POST(req: Request) {
   const parsed = body.safeParse(await req.json().catch(() => null));
@@ -46,19 +47,20 @@ export async function POST(req: Request) {
   if (!person || person.status !== "active") return fail("This account is currently disabled. Please talk to HR or the prime admin.", 403);
 
   const bypass = await devFaceBypass();
+  const direct = bypass || !db.faceLock;
   const { db: next } = await mutate((d) => {
     const a = d.accounts.find((x) => x.id === acc.id)!;
     a.failures = 0;
     a.lockedUntil = null;
-    if (bypass) {
+    if (direct) {
       a.lastLoginAt = new Date().toISOString();
-      logAudit(d, { kind: "login", actor: a.personId, ...meta, detail: "face check skipped (development)" });
+      logAudit(d, { kind: "login", actor: a.personId, ...meta, detail: !d.faceLock ? "password (face lock off)" : "face check skipped (development)" });
     }
     return null;
   });
   const fresh = next.accounts.find((a) => a.id === acc.id)!;
 
-  if (bypass) {
+  if (direct) {
     const res = NextResponse.json({ next: "in" });
     setSession(res, fresh, true);
     return res;

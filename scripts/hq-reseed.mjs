@@ -1,6 +1,7 @@
 // Development: rebuilds Kandari HQ's data from the seed (lib/hq/seed.ts and
-// data/hq/sample-*.ts) while keeping every sign-in account and face
-// enrolment. The running server notices the new file on its next request.
+// data/hq/sample-*.ts) while keeping every sign-in account, face enrolment
+// and the face-lock switch. The running server notices the new file on its
+// next request.
 //   node scripts/hq-reseed.mjs            → with sample data
 //   node scripts/hq-reseed.mjs --empty    → people and channels only
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
@@ -13,6 +14,8 @@ const old = existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : null;
 const db = seedDb(Date.now(), { samples: !process.argv.includes("--empty") });
 if (old) {
   db.accounts = old.accounts ?? [];
+  db.faceLock = old.faceLock ?? false;
+  // The demo people come back on the server's next read (lib/hq/server/demo.ts).
   db.version = (old.version ?? 1) + 1;
   for (const p of db.people) p.hasAccount = db.accounts.some((a) => a.personId === p.id);
   for (const a of db.accounts) {

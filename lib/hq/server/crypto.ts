@@ -2,27 +2,12 @@
  * Passwords (scrypt), signed session tokens (HMAC-SHA256) and face
  * signature matching for কাণ্ডারী HQ. Server-only.
  */
-import { createHmac, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
+import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { DATA_DIR } from "./store";
 
-const SCRYPT = { N: 16384, r: 8, p: 1, maxmem: 64 * 1024 * 1024 } as const;
-
-export function hashPassword(password: string, salt = randomBytes(16).toString("hex")): { salt: string; hash: string } {
-  return { salt, hash: scryptSync(password.normalize("NFKC"), salt, 64, SCRYPT).toString("hex") };
-}
-
-export function verifyPassword(password: string, salt: string, hash: string): boolean {
-  if (!salt || !hash) {
-    // Same work either way, so a wrong username takes as long as a wrong password.
-    hashPassword(password, "0".repeat(32));
-    return false;
-  }
-  const got = Buffer.from(hashPassword(password, salt).hash, "hex");
-  const want = Buffer.from(hash, "hex");
-  return got.length === want.length && timingSafeEqual(got, want);
-}
+export { hashPassword, verifyPassword } from "./password";
 
 /** HQ_SESSION_SECRET; in development one is made once and kept beside the data. */
 function secret(): Buffer {

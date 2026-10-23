@@ -281,6 +281,15 @@ export const inputCls =
 export const textareaCls = cn(inputCls, "min-h-24 py-3 leading-relaxed");
 export const selectCls = cn(inputCls, "pr-2 [color-scheme:dark]");
 
+/** An on/off switch (role="switch"); gold when on. */
+export function Toggle({ on, disabled, label, onChange }: { on: boolean; disabled?: boolean; label: string; onChange: () => void }) {
+  return (
+    <button type="button" role="switch" aria-checked={on} aria-label={label} disabled={disabled} onClick={onChange} className={cn("relative inline-flex h-6 w-11 shrink-0 items-center rounded-full ring-1 transition-colors focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none disabled:cursor-not-allowed", on ? "bg-signal-orange ring-signal-orange" : "bg-white/10 ring-white/20", disabled && "opacity-70")}>
+      <span className={cn("inline-block size-4.5 rounded-full shadow transition-transform motion-reduce:transition-none", on ? "translate-x-5.5 bg-text-primary" : "translate-x-1 bg-white/80")} />
+    </button>
+  );
+}
+
 export function FormField({ label, hint, error, children, className }: { label: string; hint?: ReactNode; error?: string | null; children: ReactNode; className?: string }) {
   return (
     <label className={cn("flex flex-col gap-1.5", className)}>

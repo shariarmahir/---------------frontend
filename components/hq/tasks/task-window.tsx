@@ -27,7 +27,7 @@ import {
 import { useMemo, useRef, useState } from "react";
 import { HqDialog } from "@/components/hq/dialog";
 import { nameOf, usePeople } from "@/components/hq/hooks";
-import { Avatar, AvatarStack, Countdown, Empty, FormField, hb, inputCls, Panel, Pill, selectCls, textareaCls } from "@/components/hq/kit";
+import { Avatar, AvatarStack, Empty, FormField, hb, inputCls, Panel, Pill, selectCls, textareaCls } from "@/components/hq/kit";
 import { fileUrl, uploadFile, useAct, useHq, useNow } from "@/components/hq/provider";
 import { bytes, clockLabel, dateLabel, dateTimeLabel, duration } from "@/lib/hq/format";
 import { can, KIND_LABEL, PRIORITY_LABEL, RISK_LABEL, STATUS_LABEL } from "@/lib/hq/rules";
@@ -39,7 +39,7 @@ import { fromLocalInput, localInput, MILESTONE_LABEL, PRIORITY_TONE, Ring, STATU
 export function TaskWindow({ id }: { id: string }) {
   const t = useHq((v) => v.tasks.find((x) => x.id === id));
   if (!t) {
-    return <Empty title="Task not found" action={<Link href="/hq/tasks" className={hb.gold}>Back to the board</Link>}>It may have been removed, or it isn't visible to you.</Empty>;
+    return <Empty title="Task not found" action={<Link href="/hq/tasks" className={hb.gold}>Back to the board</Link>}>It may have been removed, or it isn&apos;t visible to you.</Empty>;
   }
   return <Window t={t} />;
 }
@@ -156,7 +156,7 @@ function Window({ t }: { t: Task }) {
 function Timeline({ t, now, canEdit }: { t: Task; now: number; canEdit: boolean }) {
   const act = useAct();
   const [adding, setAdding] = useState(false);
-  const [m, setM] = useState({ kind: "meeting" as MilestoneKind, title: "", at: localInput(Date.now() + 3 * 3600_000) });
+  const [m, setM] = useState(() => ({ kind: "meeting" as MilestoneKind, title: "", at: localInput(Date.now() + 3 * 3600_000) }));
   const start = Date.parse(t.takenAt ?? t.createdAt);
   const end = Date.parse(t.due);
   const span = Math.max(1, end - start);
@@ -190,8 +190,11 @@ function Timeline({ t, now, canEdit }: { t: Task; now: number; canEdit: boolean 
         </div>
         {pins.map((p, i) => {
           const over = !p.done && Date.parse(p.at) < now;
+          const x = pos(Date.parse(p.at));
+          // Pins near the right end hang their label to the left, so it never leaves the panel.
+          const right = x > 70;
           return (
-            <div key={p.id} className={cn("absolute -ml-3 flex w-40 flex-col items-start", i % 2 ? "top-[4.6rem]" : "top-0")} style={{ left: `${pos(Date.parse(p.at))}%` }}>
+            <div key={p.id} className={cn("absolute flex w-40 flex-col", right ? "items-end text-right" : "items-start", i % 2 ? "top-[4.6rem]" : "top-0")} style={{ left: `${x}%`, marginLeft: right ? "-9.25rem" : "-0.75rem" }}>
               {i % 2 ? null : <PinLabel p={p} over={over} />}
               <button
                 type="button"
@@ -566,7 +569,7 @@ function SubmitPanel({ t, now, onQuickSilver }: { t: Task; now: number; onQuickS
   const [summary, setSummary] = useState("");
   const [link, setLink] = useState("");
   const early = Date.parse(t.due) - now >= 3600_000;
-  if (t.approval === "pending") return <Panel title="Submit" icon={Send}><p className="text-sm text-white/70">This TaskBook task is waiting for a lead's approval.</p></Panel>;
+  if (t.approval === "pending") return <Panel title="Submit" icon={Send}><p className="text-sm text-white/70">This TaskBook task is waiting for a lead&apos;s approval.</p></Panel>;
   return (
     <Panel title={early ? "Submit early" : "Submit"} icon={early ? Zap : Send}>
       <div className="flex flex-col gap-3">
@@ -743,7 +746,7 @@ function QuickSilver({ onDone }: { onDone: () => void }) {
         ))}
         <Zap aria-hidden className="size-16 text-signal-orange" />
         <p className="font-grotesk text-3xl font-bold text-signal-orange">Quick Silver!</p>
-        <p className="text-white/85">Three tasks submitted early in a row — a hat-trick. +25 points and today's badge are yours.</p>
+        <p className="text-white/85">Three tasks submitted early in a row — a hat-trick. +25 points and today&apos;s badge are yours.</p>
         <button type="button" onClick={onDone} className={hb.gold}>
           <X aria-hidden className="size-4" /> Close
         </button>

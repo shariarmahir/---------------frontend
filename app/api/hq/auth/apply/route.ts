@@ -4,7 +4,7 @@ import { can } from "@/lib/hq/rules";
 import { logAudit } from "@/lib/hq/server/audit";
 import { enrolFace, hashPassword } from "@/lib/hq/server/crypto";
 import { fail, requestMeta } from "@/lib/hq/server/session";
-import { mutate } from "@/lib/hq/server/store";
+import { mutate, readDb } from "@/lib/hq/server/store";
 
 const body = z.object({
   name: z.string().trim().min(2).max(80),
@@ -16,14 +16,14 @@ const body = z.object({
   skills: z.array(z.string().min(1).max(40)).max(20),
   note: z.string().max(1500).default(""),
   password: z.string().min(10).max(200),
-  captures: z.array(z.array(z.number())).min(3).max(5),
+  captures: z.array(z.array(z.number())).max(5).default([]),
 });
 
 /**
  * A team member asks for their member ID and password (Mahir: the prime
  * admin sets designations, every member applies). The password is hashed
- * and the face enrolled now; the account only exists once someone with
- * `people.manage` approves it.
+ * and, while the face lock is on, the face enrolled now; the account only
+ * exists once someone with `people.manage` approves it.
  */
 export async function POST(req: Request) {
   const parsed = body.safeParse(await req.json().catch(() => null));
@@ -39,8 +39,13 @@ export async function POST(req: Request) {
     return fail(msg[String(f)] ?? "Please fill in every field correctly.");
   }
   const v = { ...parsed.data, nameBn: parsed.data.nameBn || parsed.data.name };
-  const face = enrolFace(v.captures);
-  if (!face) return fail("The face captures didn't match each other. Face the light, look straight ahead and try again.");
+  const { faceLock } = await readDb();
+  let face: number[] | null = null;
+  if (faceLock) {
+    if (v.captures.length < 3) return fail("Three face captures are needed.");
+    face = enrolFace(v.captures);
+    if (!face) return fail("The face captures didn't match each other. Face the light, look straight ahead and try again.");
+  }
   const { salt, hash } = hashPassword(v.password);
   const meta = await requestMeta();
 

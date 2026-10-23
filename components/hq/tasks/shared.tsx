@@ -100,7 +100,7 @@ export function TakeDialog({ task, onClose }: { task: Task | null; onClose: () =
     >
       <div className="flex flex-col gap-4 text-sm text-white/80">
         <p>
-          Due <Countdown to={task.due} />. Worth about <strong className="text-signal-orange">{basePoints(task)} points</strong> if it's on time and accurate — more if you submit early.
+          Due <Countdown to={task.due} />. Worth about <strong className="text-signal-orange">{basePoints(task)} points</strong> if it&apos;s on time and accurate — more if you submit early.
         </p>
         {team ? (
           mine.length ? (
@@ -116,7 +116,7 @@ export function TakeDialog({ task, onClose }: { task: Task | null; onClose: () =
             </FormField>
           ) : (
             <p className="rounded-xl bg-black/30 p-3 ring-1 ring-white/10">
-              {task.mode === "team" ? "This ticket needs a team. " : ""}You don't lead an active team yet.{" "}
+              {task.mode === "team" ? "This ticket needs a team. " : ""}You don&apos;t lead an active team yet.{" "}
               <Link href="/hq/teams" className="font-semibold text-signal-orange underline">
                 Propose a team
               </Link>

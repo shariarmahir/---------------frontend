@@ -378,7 +378,7 @@ function Composer({ c, members, threadOf }: { c: Channel; members: string[]; thr
   const input = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const announce = c.id === "c-announce" && !["prime", "chief", "hr"].includes(me.level);
-  const tag = /@([a-z0-9._-]*)$/i.exec(text.slice(0, input.current?.selectionStart ?? text.length))?.[1];
+  const tag = /@([a-z0-9._-]*)$/i.exec(text)?.[1];
   const suggestions = tag !== undefined ? members.map((id) => people.get(id)).filter((p): p is Person => Boolean(p) && p!.id !== me.id && `${p!.name} ${p!.handle}`.toLowerCase().includes(tag.toLowerCase())).slice(0, 6) : [];
 
   const send = async () => {
@@ -453,7 +453,7 @@ function Composer({ c, members, threadOf }: { c: Channel; members: string[]; thr
               send();
             }
           }}
-          placeholder={threadOf ? "Reply…" : `Message ${c.kind === "dm" ? nameOf(people, c.memberIds.find((m) => m !== me.id)) : `#${c.name}`} — @ to mention`}
+          placeholder={threadOf ? "Reply…" : `Message ${c.kind === "dm" ? nameOf(people, c.memberIds.find((m) => m !== me.id)) : `#${c.name}`}`}
           aria-label="Message"
           className="max-h-40 min-h-9 flex-1 resize-none bg-transparent px-1 py-2 text-sm text-white placeholder:text-white/40 focus:outline-none"
           style={{ height: `${Math.min(10, text.split("\n").length) * 1.4 + 1}rem` }}

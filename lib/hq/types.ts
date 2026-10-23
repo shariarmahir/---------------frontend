@@ -86,6 +86,8 @@ export interface Person {
   /** Has a sign-in account (applied and was approved, or the prime admin). */
   hasAccount: boolean;
   sample?: true;
+  /** A demo sign-in for trying one level (lib/hq/server/demo.ts); left out of ranks. */
+  demo?: true;
 }
 
 /** Server-only: never leaves lib/hq/server. */
@@ -106,6 +108,8 @@ export interface Account {
   lastLoginAt: Iso | null;
   /** Bumped by "sign out everywhere"; sessions carry the epoch they were made in. */
   epoch: number;
+  /** Shares HQ_DEMO_PASSWORD; removed when that is unset. */
+  demo?: true;
 }
 
 /** A request for a member ID and password (CLAUDE: only the prime admin sets designations). */
@@ -147,7 +151,8 @@ export type AuditKind =
   | "approve"
   | "reject"
   | "export"
-  | "delete";
+  | "delete"
+  | "security";
 
 export interface AuditEntry {
   id: string;
@@ -701,6 +706,8 @@ export interface FileMeta {
 export interface HqDb {
   version: number;
   seededAt: Iso;
+  /** The face check at sign-in; off until the prime admin turns it on (Settings). */
+  faceLock: boolean;
   /** Next serial per prefix ("KT", "INV", "member"). */
   seq: Record<string, number>;
   people: Person[];

@@ -37,7 +37,7 @@ export function DataTable<T>({
   /** Placeholder for the search box; omit to hide it. */
   search?: string;
   /** File name and row → flat record for the CSV button; omit to hide it. */
-  csv?: { name: string; row: (r: T) => Record<string, string | number> };
+  csv?: { name: string; row: (r: T) => Record<string, string | number>; onExport?: () => void };
   pageSize?: number;
   empty?: ReactNode;
   onRow?: (row: T) => void;
@@ -67,6 +67,7 @@ export function DataTable<T>({
     if (!csv) return;
     const records = table.getFilteredRowModel().rows.map((r) => csv.row(r.original));
     downloadCsv(csv.name, records);
+    csv.onExport?.();
   };
 
   return (

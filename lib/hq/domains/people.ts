@@ -1,15 +1,16 @@
 /**
  * People: designations, promotion and demotion, single permissions, wages,
  * suspension, and turning an approved ID application into a member with a
- * sign-in account. Only the super prime admin grants permissions or makes
- * someone prime; `people.manage` covers the rest.
+ * sign-in account. There is one super prime admin, the founder: nobody is
+ * made prime and the prime admin's level never changes. Only they grant
+ * permissions; `people.manage` covers the rest.
  */
 import { z } from "zod";
-import { LEVEL_LABEL, LEVEL_ORDER, LEVEL_PRESET } from "../rules.ts";
+import { ASSIGNABLE_LEVELS, LEVEL_LABEL, LEVEL_ORDER, LEVEL_PRESET } from "../rules.ts";
 import type { Level, Perm, Person } from "../types.ts";
 import { find, HqError, parse, type Domain } from "./ctx.ts";
 
-const LEVELS = LEVEL_ORDER as [Level, ...Level[]];
+const LEVELS = ASSIGNABLE_LEVELS as [Level, ...Level[]];
 const PERMS = z.enum([
   "people.manage",
   "tasks.publish",
@@ -39,10 +40,9 @@ export const people: Domain = {
     /** Designation text and level: promote, demote, retitle. */
     designation: (ctx, p) => {
       ctx.need("people.manage");
-      const v = parse(z.object({ personId: z.string(), designation: z.string().trim().min(2).max(80), level: z.enum(LEVELS), note: z.string().max(400).optional() }), p);
+      const v = parse(z.object({ personId: z.string(), designation: z.string().trim().min(2).max(80), level: z.enum(LEVEL_ORDER as [Level, ...Level[]]), note: z.string().max(400).optional() }), p);
       const who = ctx.person(v.personId);
-      const prime = ctx.me.level === "prime";
-      if ((v.level === "prime" || who.level === "prime") && !prime) throw new HqError("Only the prime admin can change the prime admin's level.", 403);
+      if ((who.level === "prime") !== (v.level === "prime")) throw new HqError("There is one super prime admin, and that never changes.", 403);
       if (who.id === ctx.me.id && v.level !== who.level) throw new HqError("You can't change your own level.", 403);
       const up = LEVEL_ORDER.indexOf(v.level) < LEVEL_ORDER.indexOf(who.level);
       const down = LEVEL_ORDER.indexOf(v.level) > LEVEL_ORDER.indexOf(who.level);
@@ -103,7 +103,6 @@ export const people: Domain = {
         }),
         p,
       );
-      if (v.level === "prime" && ctx.me.level !== "prime") throw new HqError("Only the prime admin can make someone prime.", 403);
       if (ctx.db.people.some((x) => x.handle === v.handle)) throw new HqError("That username is already taken.");
       const serial = Math.max(10, ...ctx.db.people.map((x) => Number(x.memberId.split("-")[2]) || 0)) + 1;
       const first = v.handle.slice(8).split("-")[0];

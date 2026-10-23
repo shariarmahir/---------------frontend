@@ -116,7 +116,7 @@ function HelpCard({ h, i }: { h: HelpRequest; i: number }) {
       <div className="mt-auto flex flex-wrap gap-2 pt-1">
         {h.status === "open" && h.by !== me.id ? (
           <button type="button" onClick={() => act("tasks", "help.offer", { id: h.id }, { ok: "Thank you — they've been told" })} className={hb.goldSm}>
-            <HandHeart aria-hidden className="size-3.5" /> I'll help
+            <HandHeart aria-hidden className="size-3.5" /> I&apos;ll help
           </button>
         ) : null}
         {h.status === "helping" && (h.by === me.id || h.helperId === me.id) ? (

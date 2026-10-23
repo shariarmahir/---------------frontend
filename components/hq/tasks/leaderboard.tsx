@@ -25,7 +25,7 @@ export function Leaderboard() {
   const [pick, setPick] = useState("");
   const season = seasonOf(today);
   const range = span === "week" ? { from: weekStart(today), to: today } : span === "month" ? { from: `${today.slice(0, 7)}-01`, to: today } : { from: season.start, to: season.end };
-  const active = v.people.filter((p) => p.status === "active");
+  const active = v.people.filter((p) => p.status === "active" && !p.demo);
   const rows = useMemo(() => leaderboard(v.points, active.map((p) => p.id), range.from, range.to), [v.points, active, range.from, range.to]);
   const seasonRows = useMemo(() => new Map(leaderboard(v.points, active.map((p) => p.id), season.start, season.end).map((r) => [r.personId, r.points])), [v.points, active, season.start, season.end]);
   const top = rows.slice(0, 3);
@@ -173,7 +173,7 @@ export function Leaderboard() {
         })}
         <Panel title="Season reset" icon={Crown} field="ink">
           <p className="text-sm leading-relaxed text-white/75">
-            The season ends on {dateLabel(season.end, { year: true })}. Your next rank is the one your season's points reach — up, or down by at most one step. {Math.max(0, Math.round((Date.parse(`${season.end}T18:00:00Z`) - Date.parse(`${addDays(today, 0)}T00:00:00Z`)) / 86400_000))} days to go.
+            The season ends on {dateLabel(season.end, { year: true })}. Your next rank is the one your season&apos;s points reach — up, or down by at most one step. {Math.max(0, Math.round((Date.parse(`${season.end}T18:00:00Z`) - Date.parse(`${addDays(today, 0)}T00:00:00Z`)) / 86400_000))} days to go.
           </p>
         </Panel>
       </div>

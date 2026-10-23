@@ -2963,6 +2963,44 @@ html:has(.hq) {
 .hq {
   color-scheme: dark;
 }
+/* Scrollbars (Mahir, 2026-10-22): one thin gold bar for the page, the sidebar
+   and pop-ups; inside the page's content nothing shows a bar, so no card ever
+   carries one (areas still scroll by wheel, touch and keyboard). Chrome, Edge
+   and Safari take the pseudo-elements; Firefox only the standard properties,
+   scoped to it because Chrome would let those override the pseudo-elements. */
+html:has(.hq)::-webkit-scrollbar,
+.hq ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+html:has(.hq)::-webkit-scrollbar-track,
+html:has(.hq)::-webkit-scrollbar-corner,
+.hq ::-webkit-scrollbar-track,
+.hq ::-webkit-scrollbar-corner {
+  background: transparent;
+}
+html:has(.hq)::-webkit-scrollbar-thumb,
+.hq ::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: var(--color-signal-orange);
+}
+html:has(.hq)::-webkit-scrollbar-button,
+.hq ::-webkit-scrollbar-button {
+  display: none;
+}
+@supports (-moz-appearance: none) {
+  html:has(.hq),
+  .hq * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-signal-orange) transparent;
+  }
+}
+#hq-main * {
+  scrollbar-width: none;
+}
+#hq-main ::-webkit-scrollbar {
+  display: none;
+}
 /* Panels rise in once, one after another (the page sets --i on children if it wants a stagger). */
 @keyframes hq-rise {
   from {

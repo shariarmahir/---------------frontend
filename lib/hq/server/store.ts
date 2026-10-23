@@ -8,13 +8,15 @@
  *
  * The prime admin's account comes from the environment (HQ_PRIME_EMAIL,
  * HQ_PRIME_PASSWORD_HASH, see scripts/hq-hash.mjs): the password never sits
- * in the code or the bundle.
+ * in the code or the bundle. So do the demo sign-ins (HQ_DEMO_PASSWORD,
+ * ./demo.ts).
  */
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { PRIME_ID } from "@/data/hq/people";
 import { emptyDb, seedDb } from "@/lib/hq/seed";
 import type { HqDb } from "@/lib/hq/types";
+import { syncDemo } from "./demo";
 
 export const DATA_DIR = process.env.HQ_DATA_DIR || path.join(process.cwd(), ".hq-data");
 const FILE = path.join(DATA_DIR, "db.json");
@@ -97,17 +99,20 @@ async function load(): Promise<HqDb> {
     if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
   }
   // The environment can change under a running server (a new password hash).
-  const envKey = `${process.env.HQ_PRIME_EMAIL ?? ""}|${process.env.HQ_PRIME_PASSWORD_HASH ?? ""}`;
+  const envKey = `${process.env.HQ_PRIME_EMAIL ?? ""}|${process.env.HQ_PRIME_PASSWORD_HASH ?? ""}|${process.env.HQ_DEMO_PASSWORD ?? ""}`;
   // Re-read when someone else changed the file (another process, or a reset).
   if (cache.db && stat && stat.mtimeMs === cache.mtime && cache.envKey === envKey) return cache.db;
   let db: HqDb;
   if (stat) {
     db = cache.db && stat.mtimeMs === cache.mtime ? cache.db : upgrade(JSON.parse(await fs.readFile(FILE, "utf8")) as Partial<HqDb>);
     cache.mtime = stat.mtimeMs;
-    if (bootstrapPrime(db)) await save(db);
+    const prime = bootstrapPrime(db);
+    const demo = syncDemo(db);
+    if (prime || demo) await save(db);
   } else {
     db = seedDb(Date.now());
     bootstrapPrime(db);
+    syncDemo(db);
     await save(db);
   }
   cache.db = db;
@@ -144,8 +149,10 @@ export function mutate<T>(fn: (db: HqDb) => T | Promise<T>): Promise<{ db: HqDb;
 export function resetDb(samples: boolean): Promise<{ db: HqDb; result: null }> {
   return mutate((db) => {
     const fresh = seedDb(Date.now(), { samples });
-    // Accounts and face enrolments survive a reset.
+    // Accounts, face enrolments, the demo people and the face-lock switch survive a reset.
     fresh.accounts = db.accounts;
+    fresh.people.push(...db.people.filter((p) => p.demo));
+    fresh.faceLock = db.faceLock;
     for (const p of fresh.people) p.hasAccount = db.accounts.some((a) => a.personId === p.id);
     Object.assign(db, fresh, { version: db.version });
     return null;

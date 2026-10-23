@@ -301,6 +301,7 @@ function EventDetail({ e, onClose, onEdit }: { e: CalEvent | null; onClose: () =
   const act = useAct();
   const people = usePeople();
   const me = useHq((v) => v.me.person);
+  const now = useNow(60_000);
   if (!e) return null;
   const mine = e.by === me.id || can(me, "attendance.manage");
   return (
@@ -328,7 +329,7 @@ function EventDetail({ e, onClose, onEdit }: { e: CalEvent | null; onClose: () =
           <Clock aria-hidden className="size-4 text-signal-orange" />
           {e.allDay ? `${dateLabel(e.start, { weekday: true })} — all day` : `${dateLabel(e.start, { weekday: true })}, ${clockLabel(e.start)} – ${clockLabel(e.end)}`}
         </p>
-        {Date.parse(e.start) > Date.now() ? <Countdown to={e.start} suffix="to go" className="text-sm" /> : null}
+        {Date.parse(e.start) > now ? <Countdown to={e.start} suffix="to go" className="text-sm" /> : null}
         {e.location ? (
           <p className="flex items-center gap-2 text-white/85">
             <MapPin aria-hidden className="size-4 text-signal-orange" /> {e.location}
@@ -365,8 +366,9 @@ function EventDialog({ event, day, onClose }: { event: CalEvent | "new" | null; 
   const teams = useHq((v) => v.teams);
   const me = useHq((v) => v.me.person);
   const existing = event && event !== "new" ? event : null;
-  const startMs = existing ? Date.parse(existing.start) : Math.max(Date.now() + 3600_000, atClock(day, "11:00"));
-  const [f, setF] = useState(() => ({
+  const [f, setF] = useState(() => {
+    const startMs = existing ? Date.parse(existing.start) : Math.max(Date.now() + 3600_000, atClock(day, "11:00"));
+    return {
     title: existing?.title ?? "",
     kind: existing?.kind ?? ("meeting" as EventKind),
     allDay: existing?.allDay ?? false,
@@ -376,7 +378,8 @@ function EventDialog({ event, day, onClose }: { event: CalEvent | "new" | null; 
     link: existing?.link ?? "",
     note: existing?.note ?? "",
     teamId: existing?.teamId ?? "",
-  }));
+    };
+  });
   const [attendees, setAttendees] = useState<string[]>(existing?.attendees ?? [me.id]);
   const [alerts, setAlerts] = useState<number[]>(existing?.alerts ?? [15]);
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => setF((x) => ({ ...x, [k]: e.target.type === "checkbox" ? (e.target as HTMLInputElement).checked : e.target.value }));

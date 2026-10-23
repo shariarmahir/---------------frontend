@@ -19,6 +19,19 @@ export const system: Domain = {
       ctx.audit({ kind: "delete", detail: `samples cleared (${removed})` });
       return removed;
     },
+    /**
+     * The face check at sign-in. Off at first; once on, everyone signs in
+     * with password + face, and members without a face on record add it at
+     * their next sign-in.
+     */
+    "faceLock.set": (ctx, p) => {
+      if (ctx.me.level !== "prime") throw new HqError("Only the super prime admin can change the face lock.", 403);
+      const { on } = parse(z.object({ on: z.boolean() }), p);
+      if (ctx.db.faceLock === on) return on;
+      ctx.db.faceLock = on;
+      ctx.audit({ kind: "security", detail: `face lock ${on ? "on" : "off"}` });
+      return on;
+    },
     /** Office-wide settings live in the time domain; this one is the audit export marker. */
     "audit.export": (ctx) => {
       ctx.need("audit.view");

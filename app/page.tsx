@@ -7,7 +7,7 @@ import { AppsSection } from "@/components/sections/apps-section";
 import { CharterSection } from "@/components/sections/charter-section";
 import { ProductsSection, ServicesSection } from "@/components/sections/flagships-section";
 import { DataSourcesSection } from "@/components/sections/data-sources-section";
-import { HeroSection } from "@/components/sections/hero-section";
+import { HeroSection } from "@/components/hero/HeroSection";
 import { KandariProfileSection } from "@/components/sections/kandari-profile-section";
 import { LeadershipSection } from "@/components/sections/leadership-section";
 import { NodeTerminalSection } from "@/components/sections/node-terminal-section";

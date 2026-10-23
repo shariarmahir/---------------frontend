@@ -68,6 +68,9 @@ export const LEVEL_LABEL: Record<Level, string> = {
 /** Higher ranks first: promotion moves left in this list. */
 export const LEVEL_ORDER: Level[] = ["prime", "chief", "hr", "lead", "client-manager", "member", "intern"];
 
+/** The levels anyone can be given. "prime" is the founder's alone (Mahir), never assigned. */
+export const ASSIGNABLE_LEVELS: Level[] = LEVEL_ORDER.filter((l) => l !== "prime");
+
 export const DEPT_LABEL: Record<Dept, string> = {
   leadership: "Leadership",
   creative: "Ideas & Creative",

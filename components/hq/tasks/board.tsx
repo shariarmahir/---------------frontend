@@ -12,6 +12,13 @@ import { NewTicketDialog, PRIORITY_TONE, TakeDialog, TicketCard } from "./shared
 
 type Show = "open" | "active" | "all";
 
+const BANDS: { label: string; hint: string; lanes: Priority[] }[] = [
+  { label: "Now", hint: "Immediate, urgent and today", lanes: ["immediate", "urgent", "today"] },
+  { label: "Soon", hint: "Tomorrow and this week", lanes: ["tomorrow", "this-week"] },
+  { label: "Later", hint: "Next week and beyond", lanes: ["next-week", "later"] },
+];
+const LANE_CAP = 4;
+
 /** The ticket board: lanes by priority; members take what fits their skills and timeline. */
 export function TaskBoard() {
   const tasks = useHq((v) => v.tasks);
@@ -95,43 +102,78 @@ export function TaskBoard() {
         </label>
       </div>
 
-      {/* Phones and tablets: one lane at a time. */}
-      <div className="lg:hidden">
+      {/* Phones: one lane at a time. */}
+      <div className="md:hidden">
         <Seg label="Lane" value={lane} onChange={setLane} className="mb-4 w-full" options={PRIORITY_ORDER.map((p) => ({ value: p, label: PRIORITY_LABEL[p], count: byLane.get(p)!.length }))} />
-        <div className="grid gap-3 sm:grid-cols-2">
-          {byLane.get(lane)!.map((t, i) => (
-            <TicketCard key={t.id} t={t} onTake={setTaking} i={i} />
-          ))}
-        </div>
-        {byLane.get(lane)!.length === 0 ? <Empty icon={LayoutGrid} title="Nothing in this lane" /> : null}
+        <Lane key={lane} priority={lane} items={byLane.get(lane)!} onTake={setTaking} bare />
       </div>
 
-      {/* Desktop: every lane side by side; the board scrolls, never the page. */}
-      <div className="hidden overflow-x-auto pb-3 lg:block">
-        <div className="grid min-w-max auto-cols-[19rem] grid-flow-col gap-4">
-          {PRIORITY_ORDER.map((p) => {
-            const items = byLane.get(p)!;
-            return (
-              <section key={p} aria-label={PRIORITY_LABEL[p]} className="flex min-h-[60vh] flex-col rounded-2xl bg-white/[0.03] p-3 ring-1 ring-white/8">
-                <header className="mb-3 flex items-center gap-2 px-1">
-                  <span className={cn("size-2.5 rounded-full", PRIORITY_TONE[p] === "red" ? "bg-national-crimson" : PRIORITY_TONE[p] === "gold" ? "bg-signal-orange" : "bg-bdnavy-300")} />
-                  <h2 className="font-grotesk text-sm font-bold text-white">{PRIORITY_LABEL[p]}</h2>
-                  <span className="ml-auto rounded-full bg-white/10 px-2 text-xs font-bold text-white/75">{items.length}</span>
-                </header>
-                <div className="flex flex-col gap-3">
-                  {items.map((t, i) => (
-                    <TicketCard key={t.id} t={t} onTake={setTaking} i={i} />
-                  ))}
-                  {items.length === 0 ? <p className="px-2 py-6 text-center text-xs text-white/40">Empty</p> : null}
-                </div>
-              </section>
-            );
-          })}
-        </div>
+      {/* Tablets and up: every lane on the page, grouped by how soon it's due; nothing scrolls sideways. */}
+      <div className="hidden flex-col gap-6 md:flex">
+        {BANDS.map((b) => {
+          const total = b.lanes.reduce((n, p) => n + byLane.get(p)!.length, 0);
+          return (
+            <section key={b.label} aria-labelledby={`band-${b.label}`}>
+              <header className="mb-3 flex items-baseline gap-3">
+                <h2 id={`band-${b.label}`} className="font-grotesk text-xl font-bold text-signal-orange">
+                  {b.label}
+                </h2>
+                <p className="text-sm text-white/60">
+                  {b.hint} · {total} {total === 1 ? "ticket" : "tickets"}
+                </p>
+              </header>
+              <div className={cn("grid items-start gap-4 md:grid-cols-2", b.lanes.length === 3 && "xl:grid-cols-3")}>
+                {b.lanes.map((p) => (
+                  <Lane key={p} priority={p} items={byLane.get(p)!} onTake={setTaking} />
+                ))}
+              </div>
+            </section>
+          );
+        })}
       </div>
 
       <NewTicketDialog open={creating} onOpenChange={setCreating} />
       <TakeDialog key={taking?.id ?? "none"} task={taking} onClose={() => setTaking(null)} />
     </>
+  );
+}
+
+/** One priority lane: its tickets, nearest due first, the first few shown until "Show all". */
+function Lane({ priority, items, onTake, bare }: { priority: Priority; items: Task[]; onTake: (t: Task) => void; bare?: boolean }) {
+  const [all, setAll] = useState(false);
+  const shown = all ? items : items.slice(0, LANE_CAP);
+  const tone = PRIORITY_TONE[priority];
+  const cards = (
+    <>
+      {items.length === 0 ? (
+        bare ? (
+          <Empty icon={LayoutGrid} title="Nothing in this lane" />
+        ) : (
+          <p className="rounded-xl px-3 py-6 text-center text-sm text-white/45 ring-1 ring-white/8 ring-inset">No tickets</p>
+        )
+      ) : (
+        <div className={cn("grid gap-3", bare && "sm:grid-cols-2")}>
+          {shown.map((t, i) => (
+            <TicketCard key={t.id} t={t} onTake={onTake} i={i} />
+          ))}
+        </div>
+      )}
+      {items.length > LANE_CAP ? (
+        <button type="button" onClick={() => setAll((x) => !x)} className={cn(hb.quietSm, "mt-3 w-full")}>
+          {all ? "Show less" : `Show all ${items.length}`}
+        </button>
+      ) : null}
+    </>
+  );
+  if (bare) return cards;
+  return (
+    <section aria-label={PRIORITY_LABEL[priority]} className="flex min-w-0 flex-col rounded-2xl bg-white/[0.03] p-3 ring-1 ring-white/8">
+      <header className="mb-3 flex items-center gap-2 px-1">
+        <span aria-hidden className={cn("size-2.5 rounded-full", tone === "red" ? "bg-national-crimson" : tone === "gold" ? "bg-signal-orange" : "bg-bdnavy-300")} />
+        <h3 className="font-grotesk text-sm font-bold text-white">{PRIORITY_LABEL[priority]}</h3>
+        <span className="ml-auto rounded-full bg-white/10 px-2 text-xs font-bold text-white/75 tabular-nums">{items.length}</span>
+      </header>
+      {cards}
+    </section>
   );
 }

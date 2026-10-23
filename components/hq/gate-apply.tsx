@@ -16,10 +16,10 @@ const DEPT_WORD: Record<Dept, string> = { leadership: "lead", creative: "creativ
 
 /**
  * Applying for a member ID (Mahir: every member applies; only the prime
- * admin sets designations). Details and skills, a password, three face
- * captures; it then waits in the approvals inbox.
+ * admin sets designations). Details and skills, a password and, while the
+ * face lock is on, three face captures; it then waits in the approvals inbox.
  */
-export function ApplyForm() {
+export function ApplyForm({ faceLock }: { faceLock: boolean }) {
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [f, setF] = useState({ name: "", nameBn: "", email: "", phone: "", dept: "dev" as Dept, handle: "", note: "", password: "", again: "" });
   const [skills, setSkills] = useState<string[]>([]);
@@ -36,13 +36,6 @@ export function ApplyForm() {
     setError(null);
     setStep(2);
   };
-  const next2 = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (f.password.length < 10) return setError("The password must be at least 10 characters.");
-    if (f.password !== f.again) return setError("The two passwords don't match.");
-    setError(null);
-    setStep(3);
-  };
 
   const send = useCallback(
     async (captures: number[][]) => {
@@ -58,22 +51,31 @@ export function ApplyForm() {
       if (res.ok) return setStep(4);
       setError(data.error ?? "The application couldn't be sent.");
       if (res.status === 409) setStep(1);
-      else setAttempt((a) => a + 1);
+      else if (faceLock) setAttempt((a) => a + 1);
     },
-    [f, handle, skills],
+    [f, handle, skills, faceLock],
   );
 
+  const next2 = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (f.password.length < 10) return setError("The password must be at least 10 characters.");
+    if (f.password !== f.again) return setError("The two passwords don't match.");
+    setError(null);
+    if (faceLock) setStep(3);
+    else void send([]);
+  };
+
   return (
-    <GateFrame>
+    <GateFrame faceLock={faceLock}>
       <Link href="/hq/login" className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-white/70 hover:text-signal-orange">
         <ArrowLeft aria-hidden className="size-4" /> Back to sign in
       </Link>
       <div className="rounded-2xl bg-bdnavy-900 p-6 ring-1 ring-white/12 sm:p-8">
         <h1 className="font-grotesk text-2xl font-bold text-signal-orange">Apply for a member ID</h1>
-        <p className="mt-1 text-sm text-white/65">Once approved, you sign in with this username, password and your face.</p>
+        <p className="mt-1 text-sm text-white/65">Once approved, you sign in with this username{faceLock ? ", password and your face" : " and password"}.</p>
         {step < 4 ? (
           <ol aria-label="Steps" className="mt-5 flex gap-1.5">
-            {[1, 2, 3].map((n) => (
+            {(faceLock ? [1, 2, 3] : [1, 2]).map((n) => (
               <li key={n} aria-current={n === step ? "step" : undefined} className={cn("h-1.5 flex-1 rounded-full", n <= step ? "bg-signal-orange" : "bg-white/15")} />
             ))}
           </ol>
@@ -153,8 +155,8 @@ export function ApplyForm() {
               <button type="button" onClick={() => setStep(1)} className={hb.quiet}>
                 Back
               </button>
-              <button type="submit" className={cn(hb.gold, "flex-1")}>
-                Next: your face
+              <button type="submit" disabled={busy} className={cn(hb.gold, "flex-1")}>
+                {faceLock ? "Next: your face" : busy ? "Sending…" : "Send application"}
               </button>
             </div>
           </form>

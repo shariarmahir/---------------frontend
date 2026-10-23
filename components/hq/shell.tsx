@@ -3,13 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Bell, CalendarPlus, ClipboardPlus, LifeBuoy, LogOut, Menu, NotebookPen, Plus, Search, X } from "lucide-react";
-import { Dialog as D, DropdownMenu as DM } from "radix-ui";
-import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { Bell, CalendarPlus, ClipboardPlus, LifeBuoy, LogOut, Maximize, Menu, Minimize, NotebookPen, PanelLeftClose, PanelLeftOpen, Plus, Search, X } from "lucide-react";
+import { Dialog as D, DropdownMenu as DM, Tooltip as T } from "radix-ui";
+import { type ReactNode, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { toast } from "sonner";
 import { HQ_NAV, NAV_ALL, type NavItem } from "@/data/hq/nav";
 import { ago } from "@/lib/hq/format";
-import { can, dhakaDay, LEVEL_LABEL } from "@/lib/hq/rules";
+import { can, dhakaDay } from "@/lib/hq/rules";
 import type { HqView, Notice } from "@/lib/hq/types";
 import { channelVisible } from "@/lib/hq/view";
 import { cn } from "@/lib/utils";
@@ -20,9 +20,79 @@ import { CheckinPill } from "./time/checkin-pill";
 
 /**
  * The HQ frame: a sidebar of everything the member may open (filtered by
- * their access), a top bar with search (Ctrl+K), office check-in, alerts and
- * quick add, and the page. On phones the sidebar slides in from the left.
+ * their access), a top bar with search (Ctrl+K), office check-in, alerts,
+ * quick add and full screen, and the page. From lg the sidebar folds into a
+ * slim icon rail (Ctrl+B, remembered in this browser); on phones it slides
+ * in from the left.
  */
+
+/* ───────────── sidebar rail and full screen ───────────── */
+
+const RAIL_KEY = "hq-rail";
+// Used when the browser refuses storage (private windows), so the toggle still works.
+let railFallback = false;
+
+function readRail(): boolean {
+  try {
+    const stored = localStorage.getItem(RAIL_KEY);
+    return stored === null ? railFallback : stored === "1";
+  } catch {
+    return railFallback;
+  }
+}
+
+function subscribeRail(cb: () => void) {
+  window.addEventListener("storage", cb);
+  window.addEventListener(RAIL_KEY, cb);
+  return () => {
+    window.removeEventListener("storage", cb);
+    window.removeEventListener(RAIL_KEY, cb);
+  };
+}
+
+function setRail(on: boolean) {
+  railFallback = on;
+  try {
+    localStorage.setItem(RAIL_KEY, on ? "1" : "0");
+  } catch {
+    // Storage blocked: the in-memory fallback carries the choice.
+  }
+  window.dispatchEvent(new Event(RAIL_KEY));
+}
+
+function subscribeFullscreen(cb: () => void) {
+  document.addEventListener("fullscreenchange", cb);
+  return () => document.removeEventListener("fullscreenchange", cb);
+}
+
+function FullscreenButton() {
+  const on = useSyncExternalStore(subscribeFullscreen, () => Boolean(document.fullscreenElement), () => false);
+  const supported = useSyncExternalStore(subscribeFullscreen, () => Boolean(document.fullscreenEnabled), () => false);
+  if (!supported) return null;
+  const toggle = () => {
+    const done = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+    done.catch(() => toast.error("Full screen isn't available in this browser."));
+  };
+  return (
+    <button type="button" onClick={toggle} aria-label={on ? "Leave full screen" : "Full screen"} title={on ? "Leave full screen" : "Full screen"} className={cn(hb.icon, "hidden md:inline-flex")}>
+      {on ? <Minimize aria-hidden className="size-5" /> : <Maximize aria-hidden className="size-5" />}
+    </button>
+  );
+}
+
+/** A label to the right of a rail icon. */
+function Tip({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <T.Root>
+      <T.Trigger asChild>{children}</T.Trigger>
+      <T.Portal>
+        <T.Content side="right" sideOffset={10} className="hq z-[80] rounded-lg bg-bdnavy-900 px-2.5 py-1.5 text-xs font-semibold text-white shadow-xl ring-1 ring-white/15">
+          {label}
+        </T.Content>
+      </T.Portal>
+    </T.Root>
+  );
+}
 
 function visible(item: NavItem, v: HqView): boolean {
   if (!item.perm) return true;
@@ -53,51 +123,58 @@ function isActive(path: string, href: string) {
   return href === "/hq" ? path === "/hq" : path === href || path.startsWith(`${href}/`);
 }
 
-function Brand() {
+function Brand({ compact }: { compact?: boolean }) {
   return (
-    <Link href="/hq" className="flex items-center gap-3 rounded-xl px-2 py-1 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none">
-      <Image src="/logo/kandari-logo.png" alt="" width={84} height={51} className="logo-on-navy h-9 w-auto" priority />
-      <span className="font-grotesk text-lg leading-tight font-bold text-signal-orange">Kandari HQ</span>
+    <Link href="/hq" aria-label="HQ home" className="flex min-w-0 items-center gap-3 rounded-xl px-2 py-1 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none">
+      <Image src="/logo/kandari-logo.png" alt="" width={84} height={51} className="logo-on-navy h-9 w-auto shrink-0" priority />
+      {compact ? null : <span className="font-grotesk text-xl leading-none font-bold text-signal-orange">HQ</span>}
     </Link>
   );
 }
 
-function SideNav({ onNavigate }: { onNavigate?: () => void }) {
+function SideNav({ rail, onNavigate }: { rail?: boolean; onNavigate?: () => void }) {
   const path = usePathname();
   const v = useHq();
   const counts = useCounts();
   return (
-    <nav aria-label="HQ" className="flex flex-col gap-6">
-      {HQ_NAV.map((g) => {
+    <nav aria-label="HQ" className={cn("flex flex-col", rail ? "gap-3" : "gap-6")}>
+      {HQ_NAV.map((g, gi) => {
         const items = g.items.filter((i) => visible(i, v));
         if (items.length === 0) return null;
+        const heading = rail ? (gi > 0 ? <hr aria-hidden className="mx-auto mb-3 w-8 border-white/12" /> : null) : <p className="mb-1.5 px-3 text-xs font-semibold text-white/45">{g.label}</p>;
         return (
           <div key={g.label}>
-            <p className="mb-1.5 px-3 text-xs font-semibold text-white/45">{g.label}</p>
-            <ul className="flex flex-col gap-0.5">
+            {heading}
+            <ul className={cn("flex flex-col gap-0.5", rail && "items-center")}>
               {items.map((i) => {
                 const active = isActive(path, i.href);
                 const n = i.count ? counts[i.count] : 0;
-                return (
-                  <li key={i.href}>
-                    <Link
-                      href={i.href}
-                      onClick={onNavigate}
-                      aria-current={active ? "page" : undefined}
-                      className={cn(
-                        "relative flex min-h-10 items-center gap-3 rounded-xl px-3 text-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none",
-                        active ? "bg-bdnavy-900 text-signal-orange ring-1 ring-white/12" : "text-white/75 hover:bg-white/6 hover:text-white",
-                      )}
-                    >
-                      {active ? <span aria-hidden className="absolute top-2 bottom-2 left-0 w-1 rounded-r-full bg-signal-orange" /> : null}
-                      <i.icon aria-hidden className="size-4.5 shrink-0" />
-                      <span className="min-w-0 flex-1 truncate">{i.label}</span>
-                      {n > 0 ? (
-                        <span className={cn("rounded-full px-2 py-0.5 text-xs font-bold tabular-nums", i.count === "help" ? "bg-national-crimson text-white" : "bg-signal-orange text-text-primary")}>{n > 99 ? "99+" : n}</span>
-                      ) : null}
-                    </Link>
-                  </li>
+                const badge = i.count === "help" ? "bg-national-crimson text-white" : "bg-signal-orange text-text-primary";
+                const link = (
+                  <Link
+                    href={i.href}
+                    onClick={onNavigate}
+                    aria-current={active ? "page" : undefined}
+                    aria-label={rail ? (n > 0 ? `${i.label}, ${n} new` : i.label) : undefined}
+                    className={cn(
+                      "relative flex min-h-10 items-center rounded-xl text-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none",
+                      rail ? "size-11 justify-center" : "gap-3 px-3",
+                      active ? "bg-bdnavy-900 text-signal-orange ring-1 ring-white/12" : "text-white/75 hover:bg-white/6 hover:text-white",
+                    )}
+                  >
+                    {active && !rail ? <span aria-hidden className="absolute top-2 bottom-2 left-0 w-1 rounded-r-full bg-signal-orange" /> : null}
+                    <i.icon aria-hidden className="size-4.5 shrink-0" />
+                    {rail ? (
+                      n > 0 ? <span aria-hidden className={cn("absolute -top-1 -right-1 grid h-4.5 min-w-4.5 place-items-center rounded-full px-1 text-xs font-bold tabular-nums", badge)}>{n > 9 ? "9+" : n}</span> : null
+                    ) : (
+                      <>
+                        <span className="min-w-0 flex-1 truncate">{i.label}</span>
+                        {n > 0 ? <span className={cn("rounded-full px-2 py-0.5 text-xs font-bold tabular-nums", badge)}>{n > 99 ? "99+" : n}</span> : null}
+                      </>
+                    )}
+                  </Link>
                 );
+                return <li key={i.href}>{rail ? <Tip label={i.label}>{link}</Tip> : link}</li>;
               })}
             </ul>
           </div>
@@ -107,13 +184,29 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-function MeCard() {
+function MeCard({ rail }: { rail?: boolean }) {
   const me = useHq((v) => v.me.person);
   const router = useRouter();
   const out = async () => {
     await fetch("/api/hq/auth/logout", { method: "POST", body: "{}" });
     router.replace("/hq/login");
   };
+  if (rail) {
+    return (
+      <div className="flex flex-col items-center gap-2">
+        <Tip label={`${me.name} · ${me.designation}`}>
+          <Link href={`/hq/people/${me.id}`} aria-label="My profile" className="rounded-full focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none">
+            <Avatar person={me} size="md" />
+          </Link>
+        </Tip>
+        <Tip label="Sign out">
+          <button type="button" onClick={out} aria-label="Sign out" className={hb.iconSm}>
+            <LogOut aria-hidden className="size-4" />
+          </button>
+        </Tip>
+      </div>
+    );
+  }
   return (
     <div className="flex items-center gap-3 rounded-2xl bg-bdnavy-900 p-3 ring-1 ring-white/12">
       <Link href={`/hq/people/${me.id}`} className="flex min-w-0 flex-1 items-center gap-3 rounded-lg focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none">
@@ -286,19 +379,31 @@ function QuickAdd() {
 }
 
 export function HqShell({ children }: { children: ReactNode }) {
+  return (
+    <T.Provider delayDuration={150}>
+      <Frame>{children}</Frame>
+    </T.Provider>
+  );
+}
+
+function Frame({ children }: { children: ReactNode }) {
   const [menu, setMenu] = useState(false);
   const [palette, setPalette] = useState(false);
-  // The chat fills the screen, so the footer steps aside there.
-  const fullBleed = usePathname().startsWith("/hq/chat");
+  const rail = useSyncExternalStore(subscribeRail, readRail, () => false);
   const notices = useHq((v) => v.notices);
   const me = useHq((v) => v.me);
   const checkedIn = useHq((v) => v.checkins.some((c) => c.personId === v.me.person.id && c.day === dhakaDay(Date.parse(v.now)) && !c.out));
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      const key = e.key.toLowerCase();
+      if (key === "k") {
         e.preventDefault();
         setPalette(true);
+      } else if (key === "b") {
+        e.preventDefault();
+        setRail(!readRail());
       }
     };
     window.addEventListener("keydown", onKey);
@@ -311,12 +416,24 @@ export function HqShell({ children }: { children: ReactNode }) {
         Skip to content
       </a>
 
-      {/* Sidebar, from lg. */}
-      <aside className="sticky top-0 hidden h-dvh w-68 shrink-0 flex-col gap-6 overflow-y-auto border-r border-white/10 bg-black px-3 py-5 lg:flex">
-        <Brand />
-        <SideNav />
+      {/* Sidebar, from lg: full, or folded into an icon rail. */}
+      <aside
+        className={cn(
+          "sticky top-0 hidden h-dvh shrink-0 flex-col gap-6 overflow-y-auto border-r border-white/10 bg-black py-5 transition-[width] duration-200 ease-out motion-reduce:transition-none lg:flex",
+          rail ? "w-19 items-center px-2" : "w-68 px-3",
+        )}
+      >
+        <div className={cn("flex items-center", rail ? "flex-col gap-3" : "justify-between gap-2")}>
+          <Brand compact={rail} />
+          <Tip label={rail ? "Show the sidebar (Ctrl B)" : "Hide the sidebar (Ctrl B)"}>
+            <button type="button" onClick={() => setRail(!rail)} aria-label={rail ? "Show the sidebar" : "Hide the sidebar"} aria-expanded={!rail} className={hb.iconSm}>
+              {rail ? <PanelLeftOpen aria-hidden className="size-4" /> : <PanelLeftClose aria-hidden className="size-4" />}
+            </button>
+          </Tip>
+        </div>
+        <SideNav rail={rail} />
         <div className="mt-auto">
-          <MeCard />
+          <MeCard rail={rail} />
         </div>
       </aside>
 
@@ -326,7 +443,7 @@ export function HqShell({ children }: { children: ReactNode }) {
           <D.Overlay className="fixed inset-0 z-[60] bg-black/70 lg:hidden" />
           <D.Content className="hq fixed inset-y-0 left-0 z-[61] flex w-[min(20rem,86vw)] flex-col gap-6 overflow-y-auto bg-black px-3 py-5 text-white ring-1 ring-white/12 focus:outline-none lg:hidden">
             <D.Title className="sr-only">Menu</D.Title>
-            <D.Description className="sr-only">Every page in Kandari HQ</D.Description>
+            <D.Description className="sr-only">Every page in HQ</D.Description>
             <div className="flex items-center justify-between">
               <Brand />
               <D.Close aria-label="Close menu" className={hb.iconSm}>
@@ -357,6 +474,7 @@ export function HqShell({ children }: { children: ReactNode }) {
           </button>
           <div className="ml-auto flex items-center gap-2">
             <CheckinPill />
+            <FullscreenButton />
             <QuickAdd />
             <Bell_ notices={notices} />
             <Link href="/hq/settings" aria-label="Settings and profile" className="hidden rounded-full focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none sm:block">
@@ -368,9 +486,6 @@ export function HqShell({ children }: { children: ReactNode }) {
         <main id="hq-main" className="mx-auto w-full max-w-[120rem] min-w-0 flex-1 px-3 py-6 sm:px-5 lg:px-8 lg:py-8">
           {children}
         </main>
-        <footer className={cn("border-t border-white/8 px-5 py-4 text-xs text-white/45 lg:px-8", fullBleed && "hidden")}>
-          Kandari Lab · We turn problems into economy · Signed in as {LEVEL_LABEL[me.person.level]}
-        </footer>
       </div>
 
       <Palette open={palette} onOpenChange={setPalette} />

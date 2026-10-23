@@ -14,7 +14,7 @@ export function usePeople(): Map<string, Person> {
 /** A name for an id, even for ids that aren't people (e.g. "system"). */
 export function nameOf(people: Map<string, Person>, id: string | undefined): string {
   if (!id) return "—";
-  return people.get(id)?.name ?? (id === "system" ? "Kandari HQ" : "Former member");
+  return people.get(id)?.name ?? (id === "system" ? "HQ" : "Former member");
 }
 
 export function useMe(): Person {
