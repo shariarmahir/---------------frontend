@@ -36,14 +36,23 @@ import { CHARTER_LOOKS, CHARTER_TOPIC } from "./charter-looks";
 
 const story = (id: string) => ruralStories.find((s) => s.id === id)!.photo;
 
-/** Each topic's photograph (Wikimedia Commons, credited with the others on /bangladesh) and where its subject sits. */
-const PHOTOS: Record<string, { photo: Photo; focus: string }> = {
-  problem: { photo: story("teesta-erosion"), focus: "38% 40%" },
-  challenge: { photo: story("rickshaw-rain"), focus: "42% 30%" },
-  vision: { photo: story("sowing-paddy"), focus: "62% 22%" },
-  mission: { photo: story("garment-machine"), focus: "74% 30%" },
-  goal: { photo: ruralBackdrops.floodBoat, focus: "56% 45%" },
-  impact: { photo: story("paddy-bales"), focus: "72% 40%" },
+/**
+ * Each topic's photograph (Wikimedia Commons, credited with the others on
+ * /bangladesh) and how it is framed so its subject stays clear of the panes
+ * at the card's foot: `focus` slides the picture sideways, `lift` (a
+ * fraction of the card's height) sets it taller than the card and anchors it
+ * at the bottom, which crops the empty top and raises the subject above the
+ * panes (a point at height y lands at y(1 + lift) - lift). Deep where the
+ * subject sits low (the bank, the boat), gentle where heads are high. A
+ * closed tile keeps the plain framing (its photograph has no panes to clear).
+ */
+const PHOTOS: Record<string, { photo: Photo; focus: string; lift: number }> = {
+  problem: { photo: story("teesta-erosion"), focus: "40% 50%", lift: 0.5 },
+  challenge: { photo: story("rickshaw-rain"), focus: "42% 50%", lift: 0.26 },
+  vision: { photo: story("sowing-paddy"), focus: "62% 50%", lift: 0.1 },
+  mission: { photo: story("garment-machine"), focus: "74% 50%", lift: 0.14 },
+  goal: { photo: ruralBackdrops.floodBoat, focus: "56% 50%", lift: 0.45 },
+  impact: { photo: story("paddy-bales"), focus: "72% 50%", lift: 0.2 },
 };
 
 /** What each topic's evidence shows, named so it reads as proof for that topic. */
@@ -229,7 +238,7 @@ const GLASS = "reel-glass ring-1 ring-white/15 ring-inset";
 function ReelCard({ slide, open, row, onOpen }: { slide: CharterSlide; open: boolean; row: boolean; onOpen: () => void }) {
   const look = CHARTER_LOOKS[slide.id];
   const topic = CHARTER_TOPIC[slide.id];
-  const { photo, focus } = PHOTOS[slide.id];
+  const { photo, focus, lift } = PHOTOS[slide.id];
   const slideId = useId();
   const slideRef = useRef<HTMLDivElement>(null);
   const [ref, { active }] = useInView<HTMLLIElement>();
@@ -248,17 +257,25 @@ function ReelCard({ slide, open, row, onOpen }: { slide: CharterSlide; open: boo
       )}
     >
       {/* The photograph: in full on an open card, under a light wash of the field on a closed tile. */}
-      <Image
-        src={photo.src}
-        alt={photo.alt}
-        fill
-        sizes="(min-width: 90rem) 60vw, (min-width: 64rem) 44rem, (min-width: 40rem) 30rem, 86vw"
+      <div
         className={cn(
-          "-z-20 object-cover transition-[scale] duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
-          open ? "reel-settle" : "min-[90rem]:group-hover/card:scale-105",
+          "absolute inset-x-0 bottom-0 -z-20 h-(--lifted) transition-[height] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
+          !open && "min-[90rem]:h-full",
         )}
-        style={{ objectPosition: focus }}
-      />
+        style={{ "--lifted": `${(1 + lift) * 100}%` } as CSSProperties}
+      >
+        <Image
+          src={photo.src}
+          alt={photo.alt}
+          fill
+          sizes="(min-width: 90rem) 70vw, (min-width: 64rem) 52rem, (min-width: 40rem) 36rem, 100vw"
+          className={cn(
+            "object-cover transition-[scale] duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
+            open ? "reel-settle" : "min-[90rem]:group-hover/card:scale-105",
+          )}
+          style={{ objectPosition: focus }}
+        />
+      </div>
       <div
         aria-hidden
         className={cn(
@@ -331,11 +348,11 @@ function Slide({ slide, rise, active }: { slide: CharterSlide; rise: boolean; ac
           <Icon name={topic.icon} className="text-xl! text-signal-orange" />
           {topic.name}
         </p>
-        <h3 className="font-grotesk text-[clamp(1.375rem,1.05rem+1.2cqi,1.75rem)] leading-[1.12] font-bold tracking-tight text-balance">
+        <h3 className="font-grotesk text-[clamp(1.375rem,1.05rem+1.1cqi,1.625rem)] leading-[1.12] font-bold tracking-tight text-balance">
           {slide.title[0]}{" "}
           <span className={cn("text-signal-orange", slide.strike && "line-through decoration-[3px]")}>{slide.title[1]}</span>
         </h3>
-        <p className="max-w-[60ch] text-[0.9375rem] leading-relaxed text-pretty text-white/90">{slide.summary}</p>
+        <p className="max-w-[60ch] text-sm leading-relaxed text-pretty text-white/90">{slide.summary}</p>
         <div className="flex flex-wrap items-center gap-3 pt-1">
           <Link href={slide.primary.href} className={cn(btn.gold, "min-h-10 px-4 py-2")}>
             {slide.primary.label}

@@ -2720,13 +2720,13 @@ body:has(.media-shell) .catalogue [data-slot="form-message"] {
 }
 /* Stacked (a narrow card): the photograph keeps at least 7rem above the panes. */
 .reel-slide::before { content: ""; flex: 1 0 7rem; }
-.reel-caption { padding: 1.25rem; }
-.reel-stat { padding: 1.125rem 1.25rem; }
+.reel-caption { padding: 1.125rem 1.25rem; }
+.reel-stat { padding: 1rem 1.125rem; }
 @container slide (width >= 40rem) {
   .reel-slide { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 1rem; }
   .reel-slide::before { display: none; }
-  .reel-caption { flex: 0 1 34rem; padding: 1.5rem; }
-  .reel-stat { flex: 0 0 15rem; }
+  .reel-caption { flex: 0 1 32rem; padding: 1.25rem 1.5rem; }
+  .reel-stat { flex: 0 0 14.5rem; }
 }
 /* A table row of figures: the number in its own column, wide enough for
    "24/100", so it never meets its label; the label and its note beside it. */
