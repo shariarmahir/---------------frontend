@@ -688,35 +688,6 @@
   }
 }
 
-/* The header's gold seam between its two rows (site-header.tsx), one
-   3.6s cycle: the logo node flares as the comet leaves it, the comet runs
-   the line (easing out of the logo and into the end), and the far node
-   flares as it lands. Under reduced motion only the still line and its
-   two nodes remain. */
-@keyframes nav-comet {
-  0% { left: 0%; opacity: 0; }
-  6% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { left: 100%; opacity: 0; }
-}
-@keyframes nav-seam-node {
-  0% { scale: 2; opacity: 1; }
-  25%, 100% { scale: 1; opacity: 0.7; }
-}
-@keyframes nav-seam-end {
-  0%, 82% { scale: 1; opacity: 0.6; }
-  94% { scale: 2.2; opacity: 1; }
-  100% { scale: 1; opacity: 0.6; }
-}
-@media (prefers-reduced-motion: no-preference) {
-  .nav-comet { animation: nav-comet 3.6s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
-  .nav-seam-node { animation: nav-seam-node 3.6s ease-out infinite; }
-  .nav-seam-end { animation: nav-seam-end 3.6s ease-in-out infinite; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .nav-comet { display: none; }
-}
-
 /* Section tabs (site-header.tsx): the icon and its label zoom as one,
    straight up, under the pointer or keyboard focus, and pop once when the
    tab becomes the current one, as the gold bar springs over. Still under
@@ -895,6 +866,65 @@
 }
 @media (prefers-reduced-motion: no-preference) {
   .hero-rise { animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms) both; }
+}
+
+/* The home hero (hero-section.tsx): the wordmark and the claim as one
+   lockup in the bottom-right corner of a film shown at full strength
+   (Mahir, 2026-10-24). The claim is navy with a thin gold outline, drawn
+   as four hard 1.5px gold shadows on the whole line (as .logo-on-navy
+   does). */
+.hero-outline {
+  filter:
+    drop-shadow(1.5px 0 0 var(--color-signal-orange))
+    drop-shadow(-1.5px 0 0 var(--color-signal-orange))
+    drop-shadow(0 1.5px 0 var(--color-signal-orange))
+    drop-shadow(0 -1.5px 0 var(--color-signal-orange));
+}
+/* The film (hero-film.tsx), lightly graded. */
+.hero-film { filter: contrast(1.06) saturate(1.12); }
+/* From lg the home band is narrower than the shared hero-band floor: 4 : 1,
+   never under 25rem (Mahir, 2026-10-24: "remove upper space"). */
+@media (width >= 64rem) {
+  .hero-home { min-height: max(25rem, calc(100vw / 4)); }
+}
+
+/* The lockup's width, in the band's container units: nearly a phone's
+   width, under two fifths of a desktop band's. The claim fills it; the
+   wordmark sits over its left end at 82% of it, both flush left (Mahir,
+   2026-10-24: the logo a little smaller, the claim larger, no blur behind
+   either). */
+.hero-lockup {
+  width: 92cqw;
+  @media (width >= 40rem) {
+    width: 58cqw;
+  }
+  @media (width >= 64rem) {
+    width: min(38cqw, 44rem);
+  }
+}
+.hero-mark { width: 82%; }
+/* The claim set to the lockup's width: its line is 21.48em in Sora
+   extrabold at this tracking, 21.7 with the outline. A phone's lockup is
+   too narrow for one line at a readable size, so there it wraps in two. */
+.hero-claim {
+  font-size: calc(100cqw / 12.4);
+  text-align: left;
+  text-wrap: balance;
+  @media (width >= 40rem) {
+    font-size: calc(100cqw / 21.7);
+    white-space: nowrap;
+  }
+}
+
+/* The claim, word by word: each word rises and fades in (no clip, so the
+   halo isn't cut off), just after the wordmark has formed. */
+.hero-word { display: inline-block; }
+.hero-word > span { display: inline-block; }
+@keyframes hero-word {
+  from { opacity: 0; translate: 0 0.45em; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-word > span { animation: hero-word 0.9s cubic-bezier(0.22, 1, 0.36, 1) calc(1050ms + var(--i, 0) * 70ms) both; }
 }
 
 /* Console caret. */
@@ -2668,99 +2698,59 @@ body:has(.media-shell) .catalogue [data-slot="form-message"] {
 #academy-main:has(.classroom-room) { scrollbar-width: none; }
 #academy-main:has(.classroom-room)::-webkit-scrollbar { display: none; width: 0; height: 0; }
 
-/* Charter card motion graphics (components/sections/charter-viz.tsx): the
-   loops pause while their card is off screen and stand still under reduced
-   motion; the bars and counters are drawn by transitions instead. */
-.ch-viz * { transform-box: fill-box; }
-.ch-viz .ch-spin, .ch-viz .ch-spin-slow { transform-box: view-box; transform-origin: 50% 50%; }
-.ch-viz .ch-breathe, .ch-viz .ch-ping { transform-origin: 50% 50%; }
-.ch-viz .ch-ping { opacity: 0; }
-@keyframes ch-turn { to { transform: rotate(360deg); } }
-@keyframes ch-ping { from { transform: scale(0.6); opacity: 0.9; } to { transform: scale(2); opacity: 0; } }
-@keyframes ch-breathe { 0%, 100% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.35); opacity: 1; } }
-@keyframes ch-flow { to { stroke-dashoffset: -28; } }
-@keyframes ch-run { to { stroke-dashoffset: -100; } }
-@keyframes ch-travel { to { offset-distance: 100%; } }
-/* A signal leaves its division, fades in, runs to Dhaka and fades out. */
-@keyframes ch-send { 0% { offset-distance: 0%; opacity: 0; } 18%, 80% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }
-/* A pixel of the problem image: dim and out of line, snapped into place by
-   the repair sweep, held, then dimmed again for the next pass. */
-@keyframes ch-pixel {
-  0%, 4% { opacity: 0.22; translate: 2px -2px; }
-  7% { opacity: 0.5; translate: -2px 1px; }
-  12%, 80% { opacity: 1; translate: 0 0; }
-  92%, 100% { opacity: 0.22; translate: 0 0; }
+/* Charter reel (components/sections/charter-reel.tsx). The open slide: the
+   photograph clear, a frosted caption pane at the foot (bottom-left) and a
+   narrower pane for the evidence apart from it (bottom-right); stacked, the
+   caption over the evidence, on a narrow card. */
+.reel-list { --spine: 7.5rem; }
+/* The frosted pane: the topic's field, translucent (--glass, set per card),
+   over the photograph blurred. */
+.reel-glass {
+  background: color-mix(in oklab, var(--field) var(--glass, 72%), transparent);
+  -webkit-backdrop-filter: blur(22px) saturate(1.15);
+  backdrop-filter: blur(22px) saturate(1.15);
 }
-@keyframes ch-shimmer { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+.reel-slide {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  height: 100%;
+}
+/* Stacked (a narrow card): the photograph keeps at least 7rem above the panes. */
+.reel-slide::before { content: ""; flex: 1 0 7rem; }
+.reel-caption { padding: 1.25rem; }
+.reel-stat { padding: 1.125rem 1.25rem; }
+@container slide (width >= 40rem) {
+  .reel-slide { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 1rem; }
+  .reel-slide::before { display: none; }
+  .reel-caption { flex: 0 1 34rem; padding: 1.5rem; }
+  .reel-stat { flex: 0 0 15rem; }
+}
+/* A table row of figures: the number in its own column, wide enough for
+   "24/100", so it never meets its label; the label and its note beside it. */
+.reel-row {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  grid-template-areas: "fig label" "fig note";
+  column-gap: 0.875rem;
+}
+.reel-figure { grid-area: fig; align-self: center; }
+.reel-label { grid-area: label; align-self: end; }
+.reel-note { grid-area: note; align-self: start; margin-top: 0.125rem; }
+/* Opening in the row: the photograph settles from a slight push-in, the
+   slide's parts rise in one after another (--i). Vision's caret blinks. */
+@keyframes reel-settle { from { scale: 1.08; } }
+@keyframes reel-rise { from { opacity: 0; translate: 0 16px; } }
 @keyframes ch-caret { 50% { opacity: 0; } }
-/* The open card (charter-section.tsx): its name slides in from where the
-   spine held it, then its panels and their rows rise one after another (--i). */
-@keyframes ch-rise { from { opacity: 0; translate: 0 14px; } }
-@keyframes ch-unfold { from { opacity: 0; translate: 0 -8px; } }
-/* The open slide's cards slide in from either side and the pillar chips
-   pop. */
-@keyframes ch-card-in { from { opacity: 0; translate: var(--from, -28px) 0; scale: 0.985; } }
-@keyframes ch-pop { from { scale: 0.6; opacity: 0; } }
-/* Each topic's symbol has its own short loop, mostly at rest so a row of
-   six never reads as busy: the problem glitches, the flag waves, the eye
-   blinks, the rocket lifts, the target pulses, the people bob. */
-.topic-icon { transform-origin: 50% 50%; }
-.topic-icon[data-topic="challenge"] { transform-origin: 20% 90%; }
-@keyframes topic-glitch {
-  0%, 86%, 100% { translate: 0 0; opacity: 1; }
-  88% { translate: -2px 1px; opacity: 0.6; }
-  90% { translate: 2px -1px; opacity: 1; }
-  92% { translate: -1px 0; opacity: 0.7; }
-  94% { translate: 0 0; opacity: 1; }
-}
-@keyframes topic-wave { 0%, 100% { rotate: 0deg; } 25% { rotate: -9deg; } 60% { rotate: 6deg; } }
-@keyframes topic-blink { 0%, 90%, 100% { scale: 1 1; } 94% { scale: 1 0.1; } }
-@keyframes topic-lift { 0%, 100% { translate: 0 0; } 45% { translate: 3px -4px; } 55% { translate: 3px -4px; } }
-@keyframes topic-pulse { 0%, 100% { scale: 1; } 50% { scale: 1.18; } }
-@keyframes topic-bob { 0%, 100% { translate: 0 0; } 30% { translate: 0 -3px; } 60% { translate: 0 1px; } }
-.ch-viz .ch-travel, .ch-viz .ch-send { offset-rotate: 0deg; offset-distance: 0%; }
-.ch-bar { position: relative; overflow: hidden; }
 @media (prefers-reduced-motion: no-preference) {
-  .ch-viz .ch-spin-slow { animation: ch-turn 24s linear infinite; }
-  .ch-viz .ch-spin { animation: ch-turn 6s linear infinite; }
-  .ch-viz .ch-ping { animation: ch-ping 2.8s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 0.9s) infinite; }
-  .ch-viz .ch-breathe { animation: ch-breathe 3.2s ease-in-out calc(var(--i) * -0.4s) infinite; }
-  .ch-viz .ch-flow { animation: ch-flow 1.4s linear calc(var(--i) * -0.23s) infinite; }
-  .ch-viz .ch-run { animation: ch-run 3.6s linear infinite; }
-  .ch-viz .ch-travel { animation: ch-travel 7s linear calc(var(--i) * -3.5s) infinite; }
-  .ch-viz .ch-send { animation: ch-send 2.4s cubic-bezier(0.55, 0, 0.45, 1) calc(var(--i) * 0.3s) infinite both; }
-  .ch-viz .ch-pixel { animation: ch-pixel 6.5s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i) * 0.16s) infinite both; }
-  .ch-bar::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    width: 40%;
-    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.45), transparent);
-    animation: ch-shimmer 2.6s ease-in-out infinite;
-  }
   .ch-caret { animation: ch-caret 1s steps(2) infinite; }
-  .ch-rise { animation: ch-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) calc(0.22s + var(--i, 0) * 0.1s) both; }
-  .ch-unfold { animation: ch-unfold 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both; }
-  .ch-card-in { animation: ch-card-in 0.75s cubic-bezier(0.22, 1, 0.36, 1) calc(0.12s + var(--d, 0s)) both; }
-  .ch-card-in-right { --from: 28px; }
-  .ch-pop { animation: ch-pop 0.6s cubic-bezier(0.16, 1, 0.3, 1) calc(0.22s + var(--i, 0) * 0.1s) both; }
-  .topic-icon[data-topic="problem"] { animation: topic-glitch 3.6s steps(1, end) infinite; }
-  .topic-icon[data-topic="challenge"] { animation: topic-wave 2.4s ease-in-out infinite; }
-  .topic-icon[data-topic="vision"] { animation: topic-blink 4s ease-in-out infinite; }
-  .topic-icon[data-topic="mission"] { animation: topic-lift 2.8s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
-  .topic-icon[data-topic="goal"] { animation: topic-pulse 2.2s ease-in-out infinite; }
-  .topic-icon[data-topic="impact"] { animation: topic-bob 2.6s ease-in-out infinite; }
-  /* Important: the shorthands above reset play-state, so the pause for an
-     off-screen card has to win over them. */
-  .ch-viz[data-paused="true"] *, .ch-viz[data-paused="true"] *::after { animation-play-state: paused !important; }
 }
-
-/* Charter spines (components/sections/charter-section.tsx): each closed
-   card's gold name breathes slowly, offset per card by --i, so the row
-   reads alive; pointing at one zooms it (a transition, not this loop). */
-@keyframes ch-name-breathe { 0%, 100% { scale: 1; } 50% { scale: 1.07; } }
-@media (prefers-reduced-motion: no-preference) {
-  .ch-name-breathe { animation: ch-name-breathe 3.4s ease-in-out calc(var(--i, 0) * -0.55s) infinite; }
+/* Only the row (90rem up) opens cards; below it every card simply stands. */
+@media (width >= 90rem) and (prefers-reduced-motion: no-preference) {
+  .reel-settle { animation: reel-settle 1.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .reel-rise { animation: reel-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) calc(0.3s + var(--i, 0) * 0.09s) both; }
 }
 
 /* Download banners (components/sections/apps-section.tsx): the phone floats

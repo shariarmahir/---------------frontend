@@ -2,13 +2,13 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
-import { SectionHeading } from "@/components/ui/section-kit";
 import { dataSources, type DataSource } from "@/data/data-sources";
 import { cn } from "@/lib/utils";
 
 /**
- * Credit for the public sources behind the site's figures: the title and a
- * row of their own logos (Mahir, 2026-10-21), each on a tile in one of the
+ * Credit for the public sources behind the site's figures: a row of their
+ * own logos (Mahir, 2026-10-21; the "Our Data Sources" title was removed on
+ * 2026-10-24, the section keeps it as its accessible name), each on a tile in one of the
  * site's own fields matched to the logo's colour (navy, blue, green, gold):
  * wordmarks drawn in white, the round seals in their own colours. A tile
  * lifts and takes a gold edge (white on gold) when pointed at; each links to
@@ -43,11 +43,7 @@ export function DataSourcesSection() {
   };
 
   return (
-    <section id="data-sources" className="section-band">
-      <div className="mx-auto max-w-384 px-gutter-x">
-        <SectionHeading tone="dark" title="Our Data Sources" />
-      </div>
-
+    <section id="data-sources" aria-label="Our data sources" className="section-band">
       {/* The row runs the screen's width; py: room for the tiles' lift. */}
       <div className="story-reveal overflow-hidden py-3 motion-reduce:overflow-x-auto">
         <ul

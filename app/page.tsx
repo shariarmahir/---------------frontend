@@ -4,10 +4,10 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { AiWidget } from "@/components/ui/ai-widget";
 import { AboutSection } from "@/components/sections/about-section";
 import { AppsSection } from "@/components/sections/apps-section";
-import { CharterSection } from "@/components/sections/charter-section";
+import { CharterReel } from "@/components/sections/charter-reel";
 import { ProductsSection, ServicesSection } from "@/components/sections/flagships-section";
 import { DataSourcesSection } from "@/components/sections/data-sources-section";
-import { HeroSection } from "@/components/hero/HeroSection";
+import { HeroSection } from "@/components/sections/hero-section";
 import { KandariProfileSection } from "@/components/sections/kandari-profile-section";
 import { LeadershipSection } from "@/components/sections/leadership-section";
 import { NodeTerminalSection } from "@/components/sections/node-terminal-section";
@@ -48,7 +48,7 @@ export default function Home() {
         <div className="relative">
           {/* Problem, challenge, vision, mission, goal and impact: a
               carousel of cards that glides on its own. */}
-          <CharterSection />
+          <CharterReel />
           <PixelThesisSection />
           <ProductsSection />
           <AppsSection />

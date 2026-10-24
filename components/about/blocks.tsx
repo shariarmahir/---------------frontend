@@ -29,12 +29,15 @@ export function RepairBand({
   card = false,
   title,
   lead,
+  art,
   children,
 }: {
   id?: string;
   card?: boolean;
   title: ReactNode;
   lead: string;
+  /** A picture in place of the round photograph (the home page's map). */
+  art?: ReactNode;
   children: ReactNode;
 }) {
   return (
@@ -79,23 +82,25 @@ export function RepairBand({
             card && "max-md:order-first max-md:justify-start md:max-lg:order-first md:max-lg:justify-start!",
           )}
         >
-          <div className={cn("catalog-fade relative pr-12", card && "max-md:pr-9 md:max-lg:pr-10")}>
-            <span
-              aria-hidden
-              className={cn(
-                "absolute top-1/2 right-0 size-52 -translate-y-1/2 rounded-full bg-cobalt sm:size-60 xl:size-72",
-                card && "max-md:size-28! md:max-lg:size-36! xl:size-80 2xl:size-88",
-              )}
-            />
-            {/* Framed on the tree and the farmer walking past it. */}
-            <PixelResolve
-              src="/about/silk-cotton-field.jpg"
-              alt="A flowering silk-cotton tree beside green paddy fields in a golden morning haze, a farmer walking the path with a basket"
-              sizes={card ? "(min-width: 1536px) 384px, (min-width: 1280px) 352px, (min-width: 640px) 256px, 224px" : "(min-width: 1280px) 320px, (min-width: 640px) 256px, 224px"}
-              position={[0.38, 0.5]}
-              className={cn("size-56 rounded-full ring-4 ring-bdnavy-900 sm:size-64 xl:size-80", card && "max-md:size-32! md:max-lg:size-40! xl:size-88 2xl:size-96")}
-            />
-          </div>
+          {art ?? (
+            <div className={cn("catalog-fade relative pr-12", card && "max-md:pr-9 md:max-lg:pr-10")}>
+              <span
+                aria-hidden
+                className={cn(
+                  "absolute top-1/2 right-0 size-52 -translate-y-1/2 rounded-full bg-cobalt sm:size-60 xl:size-72",
+                  card && "max-md:size-28! md:max-lg:size-36! xl:size-80 2xl:size-88",
+                )}
+              />
+              {/* Framed on the tree and the farmer walking past it. */}
+              <PixelResolve
+                src="/about/silk-cotton-field.jpg"
+                alt="A flowering silk-cotton tree beside green paddy fields in a golden morning haze, a farmer walking the path with a basket"
+                sizes={card ? "(min-width: 1536px) 384px, (min-width: 1280px) 352px, (min-width: 640px) 256px, 224px" : "(min-width: 1280px) 320px, (min-width: 640px) 256px, 224px"}
+                position={[0.38, 0.5]}
+                className={cn("size-56 rounded-full ring-4 ring-bdnavy-900 sm:size-64 xl:size-80", card && "max-md:size-32! md:max-lg:size-40! xl:size-88 2xl:size-96")}
+              />
+            </div>
+          )}
         </div>
       </div>
     </section>

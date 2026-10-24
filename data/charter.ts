@@ -1,21 +1,18 @@
 /**
- * The home page's charter carousel: problem, challenge, vision, mission, goal
- * and impact, one card each, gliding above the Pixel-Map.
+ * The charter: problem, challenge, vision, mission, goal and impact, one
+ * card each on the home page's reel (components/sections/charter-reel.tsx)
+ * and one chapter each on the About page.
  *
  * The challenge, vision, mission, goal and impact copy is Mahir's own
  * (2026-10-15). Every figure comes from the national dossier
  * (data/amar-bangladesh.ts) or the product and service lists, and is counted
- * from them here rather than typed in, so it cannot drift. The impact charts
- * are the dossier's scenarios, not results Kandari-Lab has measured, and the
- * slide says so.
+ * from them here rather than typed in, so it cannot drift.
  */
 
 import { baselineStats, priorityBreaks, sourcePoints } from "./amar-bangladesh";
 import { modules } from "./gori/modules";
 import { products } from "./products";
 import { services } from "./services";
-
-export type CharterViz = "orbit" | "forces" | "loop" | "network" | "kinetic" | "impact";
 
 export interface CharterStat {
   value: number;
@@ -47,7 +44,6 @@ export interface CharterSlide {
   oneWord?: string;
   primary: { label: string; href: string };
   secondary: { label: string; href: string };
-  viz: CharterViz;
 }
 
 const veryHigh = sourcePoints.filter((p) => p.urgency === "very-high").length;
@@ -74,7 +70,6 @@ export const charterSlides: CharterSlide[] = [
     ],
     primary: { label: "Learn more", href: "/bangladesh" },
     secondary: { label: "Play the 32", href: "/cholo-bangladesh-gori" },
-    viz: "orbit",
   },
   {
     id: "challenge",
@@ -91,7 +86,6 @@ export const charterSlides: CharterSlide[] = [
     ],
     primary: { label: "Learn more", href: "/cholo-bangladesh-gori" },
     secondary: { label: "Rights & duties", href: "/nagorik" },
-    viz: "forces",
   },
   {
     id: "vision",
@@ -105,7 +99,6 @@ export const charterSlides: CharterSlide[] = [
     oneWord: "Development",
     primary: { label: "Learn more", href: "/research" },
     secondary: { label: "Our services", href: "/services" },
-    viz: "loop",
   },
   {
     id: "mission",
@@ -122,7 +115,6 @@ export const charterSlides: CharterSlide[] = [
     ],
     primary: { label: "Learn more", href: "/products" },
     secondary: { label: "Join Kandari Profile", href: "/#kandari-profile" },
-    viz: "network",
   },
   {
     id: "goal",
@@ -134,7 +126,6 @@ export const charterSlides: CharterSlide[] = [
     ],
     primary: { label: "Learn more", href: "/team" },
     secondary: { label: "Report a problem", href: "/protibad" },
-    viz: "kinetic",
   },
   {
     id: "impact",
@@ -152,7 +143,6 @@ export const charterSlides: CharterSlide[] = [
     ],
     primary: { label: "Learn more", href: "/bangladesh" },
     secondary: { label: "See the products", href: "/products" },
-    viz: "impact",
   },
 ];
 
@@ -164,15 +154,3 @@ export const missionReach = [
   { value: "495", label: "upazilas" },
 ];
 
-/** The impact slide's charts: the dossier's scenarios, not measured results. */
-export const impactCharts = {
-  /** Gross pollution burden avoided, % of GDP, at three reduction scenarios (World Bank CEA via the dossier). */
-  pollution: [
-    { cut: "5%", avoided: 0.88 },
-    { cut: "10%", avoided: 1.76 },
-    { cut: "20%", avoided: 3.52 },
-  ],
-  /** Reading proficiency at age 10 (UNICEF), and the dossier's +10-point programme scenario. */
-  reading: { now: Number(learning.headline), scenario: Number(learning.headline) + 10 },
-  source: "Scenarios from the national dossier (World Bank, UNICEF), not Kandari-Lab results.",
-};

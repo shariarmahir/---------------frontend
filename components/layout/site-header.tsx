@@ -671,23 +671,12 @@ export function SiteHeader() {
           </div>
 
           {/* ── Row 2 (lg and up) — the section tabs and their gold pointer
-              on the bar's bottom edge; over it, the running hairline that
-              parts the rows. ───────────────────────────────────────────── */}
+              on the bar's bottom edge; over it, the still hairline that
+              parts the rows (Mahir, 2026-10-25: the running light is gone). ── */}
           <div className="relative col-start-2 hidden h-full items-stretch gap-6 lg:flex">
-            {/* The gold seam: it starts at the logo (reaching back across the
-                column gap) and ends at the bar's far edge, a node at each
-                end. A comet, a gold head with a fading tail, leaves the logo
-                node, runs the length of the line and lands on the far node,
-                which flares as it arrives. */}
-            <span aria-hidden className="pointer-events-none absolute top-0 right-0 -left-10 h-px bg-signal-orange/30 xl:-left-14" />
-            <span aria-hidden className="pointer-events-none absolute -top-1 right-0 -left-10 h-2 overflow-hidden xl:-left-14">
-              <span className="nav-comet absolute top-1/2 flex -translate-x-full -translate-y-1/2 items-center">
-                <span className="h-0.5 w-24 rounded-full bg-linear-to-r from-transparent to-signal-orange" />
-                <span className="size-1.5 shrink-0 rounded-full bg-signal-orange" />
-              </span>
-            </span>
-            <span aria-hidden className="nav-seam-node absolute top-0 -left-10 size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-signal-orange xl:-left-14" />
-            <span aria-hidden className="nav-seam-end absolute top-0 right-0 size-1.5 translate-x-1/2 -translate-y-1/2 rounded-full bg-signal-orange" />
+            {/* The seam: one quiet hairline from the logo (reaching back across
+                the column gap) to the bar's far edge. */}
+            <span aria-hidden className="pointer-events-none absolute top-0 right-0 -left-10 h-px bg-white/12 xl:-left-14" />
             <nav aria-label="Sections" className="no-scrollbar -ml-2 min-w-0 overflow-x-auto xl:-ml-3.5">
               <SectionNav links={navLinks} activeHref={activeHref} onPick={setActiveHref} />
             </nav>

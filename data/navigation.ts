@@ -62,7 +62,7 @@ export const navLinks: NavLink[] = [
   },
   {
     // The charter's Mission card on the home page; arriving with this hash
-    // opens that card (see charter-section.tsx).
+    // brings that card forward (see charter-reel.tsx).
     href: "/#mission",
     label: "Mission",
     shortLabel: "Mission",

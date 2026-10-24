@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { CountUp, useInView } from "@/components/sections/charter-section";
+import { CountUp, useInView } from "@/components/sections/charter-kit";
 import { CHARTER_LOOKS, CHARTER_TOPIC } from "@/components/sections/charter-looks";
 import { Icon } from "@/components/ui/icon";
 import { btn } from "@/components/ui/section-kit";

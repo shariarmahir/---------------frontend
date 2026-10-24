@@ -9,11 +9,11 @@ import { btn } from "@/components/ui/section-kit";
 import { promos, type Promo } from "@/data/promos";
 import { cn } from "@/lib/utils";
 import { FIELD_LOOKS } from "./charter-looks";
-import { HOVER_INTENT_MS, Toggle } from "./charter-section";
+import { HOVER_INTENT_MS, Toggle } from "./charter-kit";
 
 /*
  * The things Kandari-Lab asks a citizen to do, as a row built like the
- * charter's (charter-section.tsx): from lg one card stands open and the
+ * charter's former accordion (charter-kit.tsx keeps its toggle): from lg one card stands open and the
  * rest are narrow spines (4rem, 5rem from xl), symbol and name set upright;
  * pointing at a spine, once the pointer settles, opens it. Below lg the
  * cards stack and open in place. Each card is one solid field (navy, ink
