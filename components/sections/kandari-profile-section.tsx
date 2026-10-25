@@ -71,7 +71,7 @@ export function KandariProfileSection() {
           {/* The illustration in a white card cut to its own shape (1818 × 1109), so the whole picture
               shows with no empty white around it; it sits centred on the cobalt beside the words. */}
           <div className="order-1 flex items-center p-3 sm:order-2 sm:py-6 sm:pr-6 sm:pl-0">
-            <div className="relative aspect-1818/1109 w-full max-sm:aspect-[2/1] overflow-hidden rounded-2xl bg-white shadow-[0_18px_36px_-18px_rgb(0_0_0/0.6)]">
+            <div className="relative aspect-1818/1109 w-full max-sm:aspect-2/1 overflow-hidden rounded-2xl bg-white shadow-[0_18px_36px_-18px_rgb(0_0_0/0.6)]">
               <Image
                 src="/about/join-us.png"
                 alt="Illustration: a group of young people gathered together under the words “Join Us! Together we can make everything better.”"

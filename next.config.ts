@@ -15,20 +15,30 @@ const nextConfig: NextConfig = {
     qualities: [75, 80, 90],
     formats: ["image/avif", "image/webp"],
   },
-  // Genius keeps readers' uploads (photos, PDFs) and lets them download
-  // files, so its pages refuse to be framed by other sites, never sniff a
-  // file's type, embed no plugins, and send only the origin to other sites.
-  // Scripts are left to Next's defaults: no script policy is set here.
+  // Every page refuses to be framed by other sites (clickjacking of the
+  // sign-in, /media and /hq), never sniffs a file's type, embeds no plugins
+  // and sends only the origin to other sites. The one exception is the TV
+  // Wall's screen, /tv-wall/tv, which its share menu offers as an embed code
+  // for any site: it keeps the rest but may be framed. Scripts are left to
+  // Next's defaults: no script policy is set here.
   async headers() {
-    const security = [
-      { key: "Content-Security-Policy", value: "frame-ancestors 'self'; object-src 'none'; base-uri 'self'" },
-      { key: "X-Frame-Options", value: "SAMEORIGIN" },
+    const shared = [
       { key: "X-Content-Type-Options", value: "nosniff" },
       { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
     ];
     return [
-      { source: "/research", headers: security },
-      { source: "/research/:path*", headers: security },
+      {
+        source: "/((?!tv-wall/tv$|tv-wall/tv/).*)",
+        headers: [
+          { key: "Content-Security-Policy", value: "frame-ancestors 'self'; object-src 'none'; base-uri 'self'" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          ...shared,
+        ],
+      },
+      {
+        source: "/tv-wall/tv/:path*",
+        headers: [{ key: "Content-Security-Policy", value: "object-src 'none'; base-uri 'self'" }, ...shared],
+      },
     ];
   },
   // The social pages moved into শিক্ষিতদের মিডিয়া at /media. Temporary

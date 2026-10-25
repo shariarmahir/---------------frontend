@@ -10,14 +10,15 @@ const STEPS = [
 ];
 
 /**
- * The console's entries. On the navy console: gold for the lead line and
+ * The console's entries: samples of what the stream will carry (no feed is
+ * connected yet), and the console says so. On the navy console: gold for the lead line and
  * the figure that matters, the navy tint for a second voice, white for the
  * rest.
  */
 const FEED = [
   {
     tag: "Proposal",
-    head: "DRUG_TRACE_RANGPUR",
+    head: "Drug trace · Rangpur",
     time: "2 mins ago",
     body: "New smart-packaging barcode RFID firmware uploaded to counter spurious medicine distribution in Rangpur division.",
     meta: [
@@ -28,7 +29,7 @@ const FEED = [
   },
   {
     tag: "Dataset",
-    head: "VISUAL_CONSCIOUSNESS",
+    head: "Visual consciousness · Dhaka",
     time: "18 mins ago",
     body: "Urban Dhaka sidewalk telemetry dataset uploaded: 120,000 labeled obstacle points for visually impaired sensory belt.",
     meta: [
@@ -39,7 +40,7 @@ const FEED = [
   },
   {
     tag: "Pilot",
-    head: "BIO_ALARM · SYLHET TEA GARDENS",
+    head: "Bio-alarm · Sylhet tea gardens",
     time: "42 mins ago",
     body: "Aponjon Band deployed on 250 tea plantation workers; detected 4 asymptomatic heat-stroke pre-cursors within 2 hours.",
     meta: [
@@ -50,7 +51,7 @@ const FEED = [
   },
 ];
 
-/** The innovation drive: a full-bleed ink band, how it works on the left, the live console on the right. */
+/** The innovation drive: a full-bleed ink band, how it works on the left, the stream console on the right. */
 export function NodeTerminalSection() {
   return (
     <section id="innovation" className="section-band-tinted relative isolate overflow-hidden bg-text-primary text-white">
@@ -90,21 +91,20 @@ export function NodeTerminalSection() {
             </div>
           </div>
 
-          {/* The live console: one solid navy field. */}
+          {/* The stream console: one solid navy field. */}
           <div className="story-reveal overflow-hidden rounded-3xl bg-bdnavy-900 shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_30px_60px_-36px_rgb(0_0_0/0.9)] ring-1 ring-white/12 lg:col-span-7 xl:col-span-6">
             <div className="flex items-center gap-3 border-b border-white/10 px-5 py-4 sm:px-7">
-              <span aria-hidden className="relative flex size-2">
-                <span className="absolute inset-0 animate-ping rounded-full bg-signal-orange/70 motion-reduce:hidden" />
-                <span className="relative size-2 rounded-full bg-signal-orange" />
-              </span>
-              <span className="font-sans tabular-nums text-xs font-semibold text-signal-orange">Live innovation stream</span>
+              <span aria-hidden className="size-2 rounded-full bg-signal-orange" />
+              <span className="font-sans tabular-nums text-xs font-semibold text-signal-orange">Innovation stream</span>
+              {/* Not live yet: the entries are samples, and the console says so (like the apps' "Sample screen"). */}
+              <span className="ml-auto font-sans text-xs text-white/65">Sample entries</span>
             </div>
 
             {/* On a phone the entries are a swipe row inside the console, the
                 next one peeking, so it stays one compact block; from sm they stack. */}
             <ul
               tabIndex={0}
-              aria-label="Live innovation stream"
+              aria-label="Innovation stream, sample entries"
               className="px-2 py-2 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-signal-orange sm:px-3 max-sm:flex max-sm:snap-x max-sm:snap-mandatory max-sm:scroll-px-4 max-sm:gap-3 max-sm:overflow-x-auto max-sm:px-4 max-sm:py-4 max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden"
             >
               {FEED.map((item) => (

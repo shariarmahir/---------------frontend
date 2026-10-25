@@ -55,10 +55,10 @@ export function PosterGrid({ items, label }: { items: PosterItem[]; label: strin
     // Two by two on a tablet held upright; four across from lg, and already from md on a
     // landscape screen (a turned tablet or phone), where two rows would not fit the height.
     <ul aria-label={label} className="grid grid-cols-2 gap-3 sm:gap-5 md:max-lg:landscape:grid-cols-4 md:max-lg:landscape:gap-4 lg:grid-cols-4">
-      {items.map((item, i) => (
+      {items.map((item) => (
         // The scroll reveal sits on the <li> so its transform never fights the card's hover lift.
         <li key={item.id} id={item.anchorId} className="story-reveal flex scroll-mt-header lg:scroll-mt-header-lg">
-          <PosterCard item={item} priority={i < 2} />
+          <PosterCard item={item} />
         </li>
       ))}
     </ul>
@@ -79,7 +79,8 @@ function useOnScreen<T extends Element>() {
   return [ref, on] as const;
 }
 
-function PosterCard({ item, priority }: { item: PosterItem; priority: boolean }) {
+// No `priority`: the grids sit far below the fold, and preloading them would compete with the hero's poster.
+function PosterCard({ item }: { item: PosterItem }) {
   const face = FACES[item.face];
   const [ref, onScreen] = useOnScreen<HTMLElement>();
   // A touch screen has no hover: a tap on the card opens the panel instead.
@@ -108,14 +109,13 @@ function PosterCard({ item, priority }: { item: PosterItem; priority: boolean })
     >
       {/* The picture, melting into the field at its foot like the team portraits. */}
       {/* Two-up on upright tablets (640–1023) the picture runs landscape, so two rows still fit about one screen. */}
-      <div className={cn("relative aspect-[1/0.92] shrink-0 overflow-hidden sm:max-lg:aspect-[4/3] md:max-lg:landscape:aspect-[1/0.92]", (film || item.film3d) && "bg-text-primary")}>
+      <div className={cn("relative aspect-[1/0.92] shrink-0 overflow-hidden sm:max-lg:aspect-4/3 md:max-lg:landscape:aspect-[1/0.92]", (film || item.film3d) && "bg-text-primary")}>
         {item.film3d ? <FilmFrame film={item.film3d} className="absolute inset-0" /> : null}
         {item.image && (
           <Image
             src={item.image.src}
             alt={item.image.alt}
             fill
-            priority={priority}
             sizes="(min-width: 1024px) 25vw, 50vw"
             style={{ objectPosition: item.image.position }}
             className={cn(

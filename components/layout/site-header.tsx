@@ -1,20 +1,33 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type CSSProperties } from "react";
-import { motion, useReducedMotion, type Transition } from "framer-motion";
+import { MotionConfig, motion, type Transition } from "framer-motion";
 import { ShieldCheck, X } from "lucide-react";
 import { Dialog, DropdownMenu } from "radix-ui";
 import { AccountMenu, AccountSheetLinks, loginHref } from "@/components/auth/account-menu";
-import { RecordDialog } from "@/components/record/record-dialog";
+import { OPEN_RECORDER_EVENT } from "@/components/record/open-recorder";
 import { Icon } from "@/components/ui/icon";
 import { useAuth } from "@/lib/auth/client";
 import { LabelText } from "@/components/brand/kandari-wordmark";
 import { LABEL_TEXT } from "@/data/logo-text";
 import { NAZRUL_MOTTO, navLinksFor, type NavLink } from "@/data/navigation";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { cn } from "@/lib/utils";
+
+/**
+ * A header link: a route goes through next/link (prefetched, no full reload, the
+ * header and hero film stay mounted); a #section link stays a plain anchor for
+ * the smooth scroller (smooth-scroll.tsx), which handles those clicks itself.
+ */
+function NavAnchor({ href, ...props }: React.ComponentProps<"a"> & { href: string }) {
+  return href.includes("#") ? <a href={href} {...props} /> : <Link href={href} {...props} />;
+}
+
+const RecordDialog = dynamic(() => import("@/components/record/record-dialog").then((m) => m.RecordDialog), { ssr: false });
 
 /*
  * A full-width navy bar, flush with the top of the window, its contents held
@@ -22,8 +35,7 @@ import { cn } from "@/lib/utils";
  * gold plate, spanning both rows from lg. Row one: the civic actions, the
  * feed and the account, right-aligned. Row two (lg and up): the section
  * tabs on the left, log in / sign up (or the profile) on the right, so both
- * rows run edge to edge. Between them a hairline with a gold light running
- * along it. Below lg the second row folds into the pop-up menu.
+ * rows run edge to edge. Between them a plain hairline. Below lg the second row folds into the pop-up menu.
  */
 
 /**
@@ -330,7 +342,10 @@ function SectionNav({
     : { type: "spring", stiffness: 420, damping: 34, mass: 0.8 };
 
   return (
-    <ul className="flex h-full items-stretch gap-1 xl:gap-3">
+    // The bar already honours reduced motion itself (`slide` above), so Framer's own handling is off:
+    // same result, without its development warning on every load for those visitors.
+    <MotionConfig reducedMotion="never">
+      <ul className="flex h-full items-stretch gap-1 xl:gap-3">
       {links.map((link) => {
         if (link.children) {
           const isActive = link.children.some((child) => child.href === activeHref);
@@ -355,7 +370,7 @@ function SectionNav({
                   >
                     {link.children.map((child) => (
                       <DropdownMenu.Item key={child.href} asChild>
-                        <a
+                        <NavAnchor
                           href={child.href}
                           onClick={() => onPick(child.href)}
                           className={cn(
@@ -366,7 +381,7 @@ function SectionNav({
                         >
                           <Icon name={tabIcon(child.href) ?? "arrow_forward"} className="text-xl text-signal-orange" />
                           {child.label}
-                        </a>
+                        </NavAnchor>
                       </DropdownMenu.Item>
                     ))}
                   </DropdownMenu.Content>
@@ -379,14 +394,15 @@ function SectionNav({
         const isActive = activeHref === link.href;
         return (
           <li key={link.href} className="flex">
-            <a href={link.href} onClick={() => onPick(link.href)} aria-current={isActive ? "true" : undefined} className={TAB}>
+            <NavAnchor href={link.href} onClick={() => onPick(link.href)} aria-current={isActive ? "true" : undefined} className={TAB}>
               <TabFace link={link} active={isActive} />
               <TabBar active={isActive} slide={slide} />
-            </a>
+            </NavAnchor>
           </li>
         );
       })}
-    </ul>
+      </ul>
+    </MotionConfig>
   );
 }
 
@@ -481,6 +497,14 @@ export function SiteHeader() {
   const activeHref = clickedHref ?? spyHref ?? pathHref ?? navLinks[0].href;
   const setActiveHref = (href: string) => setClicked({ href, path: pathname });
   const [recordOpen, setRecordOpen] = useState(false);
+  // The recorder's code loads on first use and then stays mounted, so its saved files survive closing it.
+  const [recorderUsed, setRecorderUsed] = useState(false);
+  if (recordOpen && !recorderUsed) setRecorderUsed(true);
+  useEffect(() => {
+    const open = () => setRecordOpen(true);
+    window.addEventListener(OPEN_RECORDER_EVENT, open);
+    return () => window.removeEventListener(OPEN_RECORDER_EVENT, open);
+  }, []);
 
   return (
     // Full width and flush with the top, in the cards' navy. Inside, one grid:
@@ -604,7 +628,7 @@ export function SiteHeader() {
                       {/* A menu tab shows its first page here; the civic pages have their own buttons below. */}
                       {navLinks.flatMap((link) => link.children?.slice(0, 1) ?? [link]).map((link, i) => (
                         <Dialog.Close asChild key={link.href}>
-                          <a
+                          <NavAnchor
                             href={link.href}
                             onClick={() => setActiveHref(link.href)}
                             style={{ "--i": i + 3 } as CSSProperties}
@@ -612,11 +636,11 @@ export function SiteHeader() {
                               "menu-item flex min-h-11 items-center justify-center rounded-xl px-3 py-2 text-center text-sm transition-[background-color,scale] duration-200 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none active:scale-95",
                               activeHref === link.href
                                 ? "bg-signal-orange font-bold text-text-primary shadow-ink"
-                                : "bg-white/[0.07] font-medium text-white ring-1 ring-white/20 hover:bg-white/12",
+                                : "bg-white/7 font-medium text-white ring-1 ring-white/20 hover:bg-white/12",
                             )}
                           >
                             <NavLabel link={link} />
-                          </a>
+                          </NavAnchor>
                         </Dialog.Close>
                       ))}
                     </nav>
@@ -656,7 +680,7 @@ export function SiteHeader() {
                     </div>
 
                     <div className="menu-item" style={{ "--i": navLinks.length + 6 } as CSSProperties}>
-                      <AccountSheetLinks onGold wrap={(node) => <Dialog.Close asChild>{node}</Dialog.Close>} />
+                      <AccountSheetLinks onNavy wrap={(node) => <Dialog.Close asChild>{node}</Dialog.Close>} />
                     </div>
 
                     <p
@@ -684,7 +708,7 @@ export function SiteHeader() {
         </div>
       </header>
 
-      <RecordDialog open={recordOpen} onOpenChange={setRecordOpen} />
+      {recorderUsed && <RecordDialog open={recordOpen} onOpenChange={setRecordOpen} />}
     </div>
   );
 }

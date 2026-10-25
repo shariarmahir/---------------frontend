@@ -105,7 +105,7 @@ export function ResearchSection() {
               </span>
 
               <div className="min-w-0 @min-[80rem]:contents">
-                <h3 className={cn("mb-2 font-grotesk text-lg font-bold @min-[80rem]:mb-0 @min-[80rem]:text-xl @min-[80rem]:text-balance", "heading" in lab && lab.heading)}>
+                <h3 className={cn("mb-2 font-grotesk text-xl font-bold @min-[80rem]:mb-0 @min-[80rem]:text-balance", "heading" in lab && lab.heading)}>
                   {lab.title}
                 </h3>
                 <p className="max-w-[68ch] font-sans text-sm leading-relaxed max-sm:line-clamp-4">{lab.description}</p>

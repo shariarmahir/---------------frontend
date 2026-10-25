@@ -79,7 +79,8 @@ const LEAD_LOOKS = {
     chip: "bg-white/8 ring-white/15",
     rule: "border-white/12",
     glow: "var(--color-cobalt)",
-    heading: "text-signal-orange",
+    // White, not gold: these titles are 16–18px, and gold on cobalt (3.9:1) holds only for large text.
+    heading: "",
   },
   ink: {
     surface: "bg-text-primary text-white ring-1 ring-white/12",
@@ -184,7 +185,7 @@ export function LeadershipSection() {
                 <span className={cn("mb-3 w-fit rounded-full px-3 py-1 font-sans tabular-nums text-xs leading-tight font-bold", exec.pill)}>
                   {exec.title}
                 </span>
-                <h3 className={cn("font-grotesk text-xl leading-tight font-bold sm:text-lg lg:text-xl", "heading" in exec && exec.heading)}>{exec.name}</h3>
+                <h3 className={cn("font-grotesk text-xl leading-tight font-bold", "heading" in exec && exec.heading)}>{exec.name}</h3>
                 <CardDetails>
                   <p className="mt-1 font-sans tabular-nums text-xs leading-tight font-semibold opacity-80">{exec.role}</p>
                   <p className="mt-3 pb-4 font-sans text-sm leading-relaxed sm:pb-0">{exec.blurb}</p>
@@ -243,7 +244,7 @@ export function LeadershipSection() {
             <Icon name="school" className="text-2xl" />
           </span>
           <div>
-            <span className="block font-grotesk text-lg font-bold text-signal-orange sm:text-xl">R&amp;D Fellowship Cohort</span>
+            <span className="block font-grotesk text-xl font-bold text-signal-orange">R&amp;D Fellowship Cohort</span>
             <p className="font-sans text-xs text-white/80 sm:text-sm">
               2.5-month cohorts on the lab&apos;s early-stage research. High
               performers are converted to paid roles.

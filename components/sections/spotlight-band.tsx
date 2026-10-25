@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import { SignalSeam } from "@/components/ui/section-kit";
 import { spotlightSlides, type SpotlightSlide } from "@/data/home-spotlight";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { cn } from "@/lib/utils";
 
 /**
@@ -215,16 +216,20 @@ export function SpotlightBand() {
   // instead of sliding up into an empty band.
   const [moved, setMoved] = useState(false);
   const held = useRef(false);
+  // The rotation can be paused (WCAG 2.2.2); with reduced motion it starts paused.
+  const reduce = useReducedMotion();
+  const [choice, setChoice] = useState<"play" | "pause" | null>(null);
+  const playing = choice ? choice === "play" : !reduce;
 
   useEffect(() => {
-    if (count <= 1) return;
+    if (count <= 1 || !playing) return;
     const id = window.setInterval(() => {
       if (held.current || document.hidden) return;
       setActive((i) => (i + 1) % count);
       setMoved(true);
     }, HOLD_MS);
     return () => window.clearInterval(id);
-  }, [count]);
+  }, [count, playing]);
 
   const hold = () => {
     held.current = true;
@@ -240,9 +245,11 @@ export function SpotlightBand() {
       className="relative w-full overflow-hidden bg-black"
     >
       <div
-        onMouseEnter={hold}
-        onMouseLeave={release}
-        onFocus={hold}
+        // A mouse over the band or keyboard focus in it holds the slide; a tap
+        // on a touch screen does not (its emulated hover would stick).
+        onPointerEnter={(e) => e.pointerType === "mouse" && hold()}
+        onPointerLeave={release}
+        onFocus={(e) => e.target.matches(":focus-visible") && hold()}
         onBlur={release}
         className="relative mx-auto h-30 w-full max-w-[1360px] sm:h-34 sm:max-w-384 sm:px-gutter-x md:h-38 lg:h-42"
       >
@@ -268,6 +275,16 @@ export function SpotlightBand() {
         })}
       </div>
 
+      {count > 1 && (
+        <button
+          type="button"
+          onClick={() => setChoice(playing ? "pause" : "play")}
+          aria-label={playing ? "Pause announcements" : "Play announcements"}
+          className="absolute right-1 bottom-1 z-10 grid size-11 place-items-center rounded-full text-white/65 transition-colors hover:text-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none sm:right-3"
+        >
+          <Icon name={playing ? "pause" : "play_arrow"} className="text-xl" />
+        </button>
+      )}
       <SignalSeam className="bottom-0" />
     </section>
   );

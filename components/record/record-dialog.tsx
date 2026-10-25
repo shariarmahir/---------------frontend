@@ -1,7 +1,7 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Dialog } from "radix-ui";
 import { X } from "lucide-react";
 import { Icon } from "@/components/ui/icon";
@@ -25,16 +25,19 @@ import { cn } from "@/lib/utils";
 export function RecordDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const { state, mode, elapsed, error, recordings, level, start, stop, discard, attachPreview, isRecording } = useRecorder();
   const [stealth, setStealth] = useState(false);
+  // Opened from anywhere (open-recorder.ts), so there is no Radix trigger to hand focus back to: remember the opener.
+  const opener = useRef<HTMLElement | null>(null);
 
   // Leaving the panel while live would keep the microphone on with no way
-  // to stop it, so closing always stops first.
+  // to stop it, so closing always stops first (and cancels a start still
+  // waiting on the permission prompt).
   const handleOpenChange = useCallback(
     (next: boolean) => {
-      if (!next && isRecording) stop();
+      if (!next && (isRecording || state === "requesting")) stop();
       if (!next) setStealth(false);
       onOpenChange(next);
     },
-    [isRecording, onOpenChange, stop],
+    [isRecording, onOpenChange, state, stop],
   );
 
   // Warn if the tab is closed mid-recording — the file is only assembled on
@@ -54,9 +57,19 @@ export function RecordDialog({ open, onOpenChange }: { open: boolean; onOpenChan
         <Dialog.Overlay className="record-veil fixed inset-0 z-[60] bg-black/60" />
         <Dialog.Content
           onOpenAutoFocus={(e) => {
+            opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
             // Focus the panel itself so no focus ring flashes on open.
             e.preventDefault();
             (e.currentTarget as HTMLElement).focus();
+          }}
+          onCloseAutoFocus={(e) => {
+            // Back to the button that opened it, if it is still on the page (a closed menu's is not).
+            const back = opener.current;
+            opener.current = null;
+            if (back?.isConnected) {
+              e.preventDefault();
+              back.focus();
+            }
           }}
           className={cn(
             "record-panel fixed inset-y-2 right-2 z-[60] flex w-[min(28rem,calc(100vw-1rem))] flex-col overflow-hidden rounded-3xl shadow-[0_30px_80px_-20px_rgb(0_0_0/0.8)] focus:outline-none sm:inset-y-3 sm:right-3",
@@ -339,13 +352,15 @@ function LivePanel({
  * glance or a fumbled tap does not reveal the recorder.
  */
 function StealthScreen({ elapsed, onExit, onStop }: { elapsed: number; onExit: () => void; onStop: () => void }) {
-  const [held, setHeld] = useState(0);
-
+  // The hold timer lives in a ref: the panel re-renders with every change of
+  // the microphone level, which must not restart the 800 ms hold.
+  const hold = useRef(0);
+  const exit = useRef(onExit);
   useEffect(() => {
-    if (held === 0) return;
-    const t = window.setTimeout(onExit, 800);
-    return () => window.clearTimeout(t);
-  }, [held, onExit]);
+    exit.current = onExit;
+  });
+  const release = () => window.clearTimeout(hold.current);
+  useEffect(() => release, []);
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-6 bg-black p-6 text-white/25">
@@ -356,9 +371,14 @@ function StealthScreen({ elapsed, onExit, onStop }: { elapsed: number; onExit: (
       <div className="flex flex-col items-center gap-2">
         <button
           type="button"
-          onPointerDown={() => setHeld((h) => h + 1)}
-          onPointerUp={() => setHeld(0)}
-          onPointerLeave={() => setHeld(0)}
+          onPointerDown={() => {
+            release();
+            hold.current = window.setTimeout(() => exit.current(), 800);
+          }}
+          onPointerUp={release}
+          onPointerLeave={release}
+          onPointerCancel={release}
+          onContextMenu={(e) => e.preventDefault()}
           className="rounded-lg px-6 py-2 font-sans text-xs transition-colors hover:text-white/50"
         >
           hold to exit

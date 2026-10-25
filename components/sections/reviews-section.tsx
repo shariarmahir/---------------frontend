@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils";
  * tall, not five.
  */
 
-const LOOKS: Record<ReviewField, { card: string; muted: string; button: string; accent: string; quote?: string }> = {
+const LOOKS: Record<ReviewField, { card: string; muted: string; button: string; accent: string; quote?: string; name?: string }> = {
   navy: {
     card: "bg-bdnavy-900 text-white ring-1 ring-white/12 ring-inset",
     muted: "text-white/65",
@@ -34,12 +34,13 @@ const LOOKS: Record<ReviewField, { card: string; muted: string; button: string; 
     accent: "text-signal-orange",
   },
   /* Cobalt replaced the gold field across the landing page (Mahir, 2026-10-18). Gold
-     on cobalt is ≈3.9:1, enough only for large text, so gold carries the bold
-     quote, the mark and the button, and the name and role stay white. */
+     on cobalt is ≈3.9:1, enough only for large text (24px, or 19px bold), so on
+     cobalt gold carries only the mark and the button; quote, name and role are white. */
   cobalt: {
     card: "bg-cobalt text-white ring-1 ring-white/12 ring-inset",
     muted: "text-white/80",
-    quote: "text-signal-orange font-bold",
+    quote: "text-white font-bold",
+    name: "text-white",
     button: "bg-signal-orange text-text-primary",
     accent: "text-signal-orange",
   },
@@ -237,7 +238,7 @@ function ReviewCard({ review, index, open, onOpen, onToggle }: { review: Review;
         <div className="mt-auto flex items-center gap-3 pt-5 xl:items-end xl:pt-4">
           <Portrait review={review} accent={look.accent} className="size-11 rounded-xl sm:size-11 xl:hidden" />
           <div className="min-w-0 grow xl:text-right">
-            <p className="truncate font-grotesk text-base font-bold text-signal-orange xl:whitespace-normal">{review.name}</p>
+            <p className={cn("truncate font-grotesk text-base font-bold xl:whitespace-normal", look.name ?? "text-signal-orange")}>{review.name}</p>
             <p className={cn("truncate text-sm xl:whitespace-normal", look.muted)}>{review.role}</p>
           </div>
         </div>

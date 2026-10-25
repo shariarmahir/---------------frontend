@@ -75,7 +75,8 @@ export function AppsSection() {
           data-paused={paused}
           onPointerEnter={(e) => e.pointerType === "mouse" && setHover(true)}
           onPointerLeave={() => setHover(false)}
-          onFocus={() => setFocus(true)}
+          // Only keyboard focus holds the carousel: a mouse click on a dot also focuses it, and must not pause it for good.
+          onFocus={(e) => e.target.matches(":focus-visible") && setFocus(true)}
           onBlur={(e) => !e.currentTarget.contains(e.relatedTarget) && setFocus(false)}
           className="story-reveal"
         >
@@ -129,7 +130,7 @@ function Banner({ app, active }: { app: KandariApp; active: boolean }) {
       inert={!active}
       className={cn(
         // Taller as the column widens, so the banner keeps its proportion on a desktop or TV.
-        "relative col-start-1 row-start-1 rounded-[2rem] text-white lg:h-76 xl:h-80 2xl:h-88",
+        "relative col-start-1 row-start-1 rounded-4xl text-white lg:h-76 xl:h-80 2xl:h-88",
         "transition-[opacity,translate,visibility] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
         active ? "z-10 opacity-100" : "invisible translate-y-3 opacity-0",
         FIELD[app.id],
@@ -147,7 +148,7 @@ function Banner({ app, active }: { app: KandariApp; active: boolean }) {
             className={cn(
               "mt-1 font-extrabold tracking-tight text-white",
               isBangla(app.name)
-                ? "font-bengali text-4xl leading-[1.25] sm:text-[2.75rem] 2xl:text-[3.25rem]"
+                ? "font-bengali text-4xl leading-tight sm:text-[2.75rem] 2xl:text-[3.25rem]"
                 : "font-grotesk text-4xl leading-none sm:text-5xl 2xl:text-6xl",
             )}
           >
@@ -166,7 +167,7 @@ function Banner({ app, active }: { app: KandariApp; active: boolean }) {
         </ul>
 
         {/* Narrow screens show the phone too small to tap, so its arrow's action is spelled out here. */}
-        <Link href={app.action.href} className="-my-2 inline-flex min-h-11 items-center gap-1.5 self-start rounded-md font-grotesk text-sm font-bold text-signal-orange underline-offset-4 hover:underline focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none lg:hidden">
+        <Link href={app.action.href} className="-my-2 inline-flex min-h-11 items-center gap-1.5 self-start rounded-md font-grotesk text-sm font-bold text-white underline decoration-signal-orange decoration-2 underline-offset-4 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none lg:hidden">
           {app.action.label}
           <Icon name="arrow_forward" className="text-lg" />
         </Link>
@@ -175,7 +176,7 @@ function Banner({ app, active }: { app: KandariApp; active: boolean }) {
       {/* The app's photograph, standing on the banner's floor; from lg it ends at
           least 2.5rem short of the phone (5% + 12.5rem from the right), so the two
           never crowd each other on a small laptop. */}
-      <div className="relative mx-5 mb-5 aspect-[12/5] overflow-hidden rounded-2xl sm:mx-10 sm:mb-7 lg:absolute lg:inset-y-auto lg:right-[max(27%,5%_+_15rem)] lg:-bottom-6 lg:left-[40%] lg:m-0 lg:aspect-auto lg:h-[88%]">
+      <div className="relative mx-5 mb-5 aspect-12/5 overflow-hidden rounded-2xl sm:mx-10 sm:mb-7 lg:absolute lg:inset-y-auto lg:right-[max(27%,5%+15rem)] lg:-bottom-6 lg:left-[40%] lg:m-0 lg:aspect-auto lg:h-[88%]">
         <div className="app-stage relative size-full overflow-hidden rounded-2xl shadow-[0_24px_40px_-18px_rgb(0_0_0/0.7)] ring-4 ring-white/15">
           <Image src={stage.src} alt={stage.alt} fill sizes="(min-width: 1024px) 34vw, 90vw" className="object-cover" style={{ objectPosition: stage.position }} />
         </div>
@@ -197,7 +198,7 @@ function Phone({ app }: { app: KandariApp }) {
   return (
     <div className="relative h-100 w-50 rounded-[2.5rem] bg-black p-2.5 shadow-[0_40px_60px_-24px_rgb(0_0_0/0.85)] ring-1 ring-white/25">
       <span aria-hidden className="absolute top-4.5 left-1/2 z-20 h-5 w-18 -translate-x-1/2 rounded-full bg-black" />
-      <div className="relative flex size-full flex-col overflow-hidden rounded-[2rem] bg-bdnavy-900 px-3.5 pt-11 pb-3">
+      <div className="relative flex size-full flex-col overflow-hidden rounded-4xl bg-bdnavy-900 px-3.5 pt-11 pb-3">
         {app.id === "swasti" ? <SwastiScreen /> : <MediaScreen />}
 
         <div className="mt-auto flex items-center justify-between pt-2">
@@ -284,7 +285,7 @@ function MediaScreen() {
     <>
       <ScreenHead hello="স্বাগতম," name={<span className="font-bengali">শিক্ষিতদের মিডিয়া</span>} icon="person" />
 
-      <div className="relative mt-3 h-30 overflow-hidden rounded-2xl">
+      <div className="relative mt-3 h-28 overflow-hidden rounded-2xl">
         <Image src="/media/kantha-closeup.webp" alt="" fill sizes="200px" className="object-cover" />
         <span className="absolute bottom-2 left-2 flex items-center gap-1 rounded-full bg-signal-orange px-2 py-0.5 font-grotesk text-xs font-bold text-text-primary">
           <Icon name="verified" className="text-sm!" />

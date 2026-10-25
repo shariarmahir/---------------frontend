@@ -75,10 +75,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* Material Symbols has no next/font/google export; the App Router
             root layout applies this to every route, so the page-font rule
             does not apply. */}
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* display=block: an icon font shows nothing (not its ligature word) while it loads;
+            "swap" is right for text, not for icons. */}
+        {/* eslint-disable-next-line @next/next/no-page-custom-font, @next/next/google-font-display */}
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=block"
         />
       </head>
       <body

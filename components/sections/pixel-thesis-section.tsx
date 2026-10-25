@@ -244,7 +244,7 @@ export function PixelThesisSection() {
                   </div>
                 </div>
 
-                <h3 className={cn("mb-2 font-grotesk text-lg leading-tight font-bold", pillar.heading)}>
+                <h3 className={cn("mb-2 font-grotesk text-xl leading-tight font-bold", pillar.heading)}>
                   {pillar.title}
                 </h3>
 

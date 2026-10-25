@@ -44,7 +44,7 @@ const FADE_S = 1.2;
  * and another brings it back (Mahir, 2026-10-25); M does the same from the
  * keyboard. It fades out and the film pauses while the hero is scrolled
  * away or the tab is hidden, and both come back with it. Reduced motion,
- * Data Saver or a 2G link: the film is never fetched, the poster shows.
+ * Data Saver or a 2G/3G link: the film is never fetched, the poster shows.
  */
 export function HeroFilm() {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -99,9 +99,10 @@ export function HeroFilm() {
     const band = wrapRef.current?.parentElement;
     if (!video || !band) return;
     // The film is only fetched from here: never under reduced motion, nor on
-    // Data Saver or a 2G link, where the poster stays (CLAUDE.md §6).
+    // Data Saver or a 2G/3G link, where the poster stays (CLAUDE.md §6): even
+    // the phone copy is 17 MB.
     const net = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || net?.saveData || /(^|-)2g$/.test(net?.effectiveType ?? "")) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || net?.saveData || /(^|-)[23]g$/.test(net?.effectiveType ?? "")) return;
 
     video.muted = true;
     video.preload = "auto";

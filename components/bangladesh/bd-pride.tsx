@@ -1,5 +1,6 @@
 import { P, facts, type Credit, type Photo } from "@/data/bangladesh";
 import { commonsPhotos } from "@/data/bangladesh-photos";
+import { promoCredits } from "@/data/promos";
 import { ruralCredits } from "@/data/rural-life";
 import { StoryPhoto } from "./story-photo";
 
@@ -38,8 +39,15 @@ export function BdPride() {
 
 /** Full attribution list: every Commons photo, plus the data sources. */
 export function BdCredits() {
-  const photos = [...Object.values(commonsPhotos), ...ruralCredits].filter(
-    (p): p is Photo & { credit: Credit } => Boolean(p?.credit),
+  // One line per source file: a photograph used in two places is credited once.
+  const seen = new Set<string>();
+  const photos = [...Object.values(commonsPhotos), ...ruralCredits, ...promoCredits].filter(
+    (p): p is Photo & { credit: Credit } => {
+      const url = p?.credit?.sourceUrl;
+      if (!url || seen.has(url)) return false;
+      seen.add(url);
+      return true;
+    },
   );
 
   return (

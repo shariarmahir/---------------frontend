@@ -1,17 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Icon } from "@/components/ui/icon";
 import type { CharterStat } from "@/data/charter";
-import { cn } from "@/lib/utils";
 
 /*
- * Small pieces shared by the charter's rows: the home page's charter reel,
- * its promo row and the About page's chapters.
+ * Small pieces shared by the charter's cards: the home page's photograph
+ * reel (photo-reel.tsx) and the About page's chapters.
  */
-
-/** Pointing at a closed card opens it only once the pointer settles, so sweeping across a row does not flicker. */
-export const HOVER_INTENT_MS = 120;
 
 /** `on`: any of the element is in view (its loops run). `active`: a third or more is (its figures count up). */
 export function useInView<T extends Element>() {
@@ -34,26 +29,6 @@ export function useInView<T extends Element>() {
   return [ref, state] as const;
 }
 
-/** The + that turns to ×: focus opens, a press toggles. */
-export function Toggle({ open, onOpen, onToggle, controls, label }: { open: boolean; onOpen: () => void; onToggle: () => void; controls: string; label: string }) {
-  return (
-    <button
-      type="button"
-      onFocus={onOpen}
-      onClick={onToggle}
-      aria-expanded={open}
-      aria-controls={controls}
-      aria-label={`${open ? "Close" : "Open"} ${label}`}
-      className="grid size-10 shrink-0 place-items-center rounded-xl bg-(--accent) text-(--accent-on) transition-transform duration-300 hover:scale-105 focus-visible:ring-2 focus-visible:ring-(--ink) focus-visible:ring-offset-2 focus-visible:ring-offset-(--field) focus-visible:outline-none motion-reduce:transition-none"
-    >
-      <Icon
-        name="add"
-        className={cn("text-2xl transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none", open && "rotate-45")}
-      />
-    </button>
-  );
-}
-
 /** Counts up whenever `active` turns on; screen readers get the final value only. `suffixClassName` sets the unit apart (e.g. smaller). */
 export function CountUp({ stat, active, suffixClassName }: { stat: CharterStat; active: boolean; suffixClassName?: string }) {
   const [shown, setShown] = useState(stat.value);
@@ -67,7 +42,11 @@ export function CountUp({ stat, active, suffixClassName }: { stat: CharterStat; 
       if (p < 1) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    // Interrupted (scrolled away mid-count): settle on the true figure, never a half-counted one.
+    return () => {
+      cancelAnimationFrame(raf);
+      setShown(stat.value);
+    };
   }, [active, stat.value]);
   const fmt = (v: number) => v.toFixed(stat.decimals ?? 0);
   return (

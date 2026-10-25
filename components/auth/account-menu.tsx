@@ -173,8 +173,8 @@ export function AccountMenu({ variant = "site", className }: { variant?: "site" 
   );
 }
 
-/** Account links for a mobile menu sheet. `wrap` lets the sheet close on tap. */
-export function AccountSheetLinks({ wrap = (n) => n, onGold = false }: { wrap?: (node: React.ReactElement) => React.ReactNode; onGold?: boolean }) {
+/** Account links for a mobile menu sheet. `wrap` lets the sheet close on tap; `onNavy` styles the outline links for the header's navy sheet. */
+export function AccountSheetLinks({ wrap = (n) => n, onNavy = false }: { wrap?: (node: React.ReactElement) => React.ReactNode; onNavy?: boolean }) {
   const { ready, account } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -189,7 +189,7 @@ export function AccountSheetLinks({ wrap = (n) => n, onGold = false }: { wrap?: 
           </Link>,
         )}
         {wrap(
-          <Link href="/signup" className={cn(base, onGold ? "text-text-primary ring-1 ring-text-primary/45 hover:bg-text-primary/10" : "border border-bd-green/30 text-bd-green hover:bg-mint-subtle")}>
+          <Link href="/signup" className={cn(base, onNavy ? "text-white ring-1 ring-white/40 hover:bg-white/10" : "border border-bd-green/30 text-bd-green hover:bg-mint-subtle")}>
             <UserPlus className="size-4" aria-hidden /> অ্যাকাউন্ট খুলুন
           </Link>,
         )}
@@ -213,7 +213,7 @@ export function AccountSheetLinks({ wrap = (n) => n, onGold = false }: { wrap?: 
             signOut();
             router.push("/");
           }}
-          className={cn(base, onGold ? "text-text-primary ring-1 ring-text-primary/45 hover:bg-text-primary/10" : "border border-red-200 text-national-crimson hover:bg-red-50")}
+          className={cn(base, onNavy ? "text-white ring-1 ring-white/40 hover:bg-white/10" : "border border-red-200 text-national-crimson hover:bg-red-50")}
         >
           <LogOut className="size-4" aria-hidden /> সাইন আউট
         </button>,

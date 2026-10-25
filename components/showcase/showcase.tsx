@@ -68,7 +68,7 @@ function productPosters(): PosterItem[] {
         id: p.slug,
         anchorId: p.slug === "swasti" ? "swasti-section" : undefined,
         face: look.face,
-        title: p.name.toUpperCase(),
+        title: p.name,
         tagline: look.tagline,
         name: `${p.name} · ${p.nameBn}`,
         nameText: p.name,

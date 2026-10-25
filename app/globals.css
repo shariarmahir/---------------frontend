@@ -2033,11 +2033,16 @@
   }
 }
 
+/* An icon is a ligature: until its font arrives it is a word ("arrow_forward").
+   One em square, clipped, so that word can never widen a button or shift the
+   layout; the font loads with display=block (app/layout.tsx), so it shows blank. */
 .material-symbols-outlined {
   font-family: "Material Symbols Outlined", sans-serif;
   font-weight: normal;
   font-style: normal;
   display: inline-block;
+  width: 1em;
+  overflow: hidden;
   white-space: nowrap;
   direction: ltr;
   letter-spacing: normal;

@@ -22,7 +22,7 @@ const TONE: Record<CardTone, { card: string; sub: string; item: string; icon: st
   ink: {
     card: "bg-text-primary text-white ring-1 ring-white/12",
     sub: "text-white/65",
-    item: "bg-white/[0.06] ring-1 ring-white/10",
+    item: "bg-white/6 ring-1 ring-white/10",
     icon: "bg-signal-orange",
     link: "text-signal-orange",
     glow: "var(--color-signal-orange)",

@@ -9,6 +9,8 @@
  * screenshots are Kandari-Lab's own platforms.
  */
 
+import type { Photo } from "./bangladesh";
+
 export type PromoField = "navy" | "cobalt" | "ink";
 
 export interface PhotoCredit {
@@ -120,3 +122,26 @@ export const promos: Promo[] = [
     art: { kind: "screen", src: "/promos/research.webp", alt: "গবেষণাকোষের প্রধান পাতা: দেশের প্রশ্ন, দেশের গবেষণা" },
   },
 ];
+
+/** The promo photographs with their credits, for the credits list on /bangladesh (the cards themselves carry none). */
+export const promoCredits: Photo[] = promosPhotos();
+
+function promosPhotos(): Photo[] {
+  const out: Photo[] = [];
+  for (const p of promos) {
+    if (p.art.kind !== "photo") continue;
+    const { author, license, source } = p.art.credit;
+    const cc = /^CC (BY(?:-SA)?) (\d\.\d)$/.exec(license);
+    out.push({
+      src: p.art.src,
+      alt: p.art.alt,
+      credit: {
+        author,
+        license,
+        sourceUrl: source,
+        ...(cc ? { licenseUrl: `https://creativecommons.org/licenses/${cc[1].toLowerCase()}/${cc[2]}` } : {}),
+      },
+    });
+  }
+  return out;
+}

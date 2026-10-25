@@ -19,7 +19,7 @@ const SUGGESTIONS = [
  * "আজকের বাংলাদেশ" as a destination, and asking a question happens here, in
  * a panel with room for suggestions and answers rather than a 200px input.
  *
- * No backend yet — submitting is inert.
+ * No backend yet: submitting says so in the panel (and to screen readers).
  * TODO(backend): POST /api/v1/ask once FastAPI lands.
  */
 export function AiWidget() {
@@ -27,6 +27,15 @@ export function AiWidget() {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const launcherRef = useRef<HTMLButtonElement>(null);
+  const [asked, setAsked] = useState(false);
+
+  /** Close; from the keyboard or the × button focus goes back to the launcher, so nobody loses their place. */
+  const close = (refocus: boolean) => {
+    setOpen(false);
+    setAsked(false);
+    if (refocus) launcherRef.current?.focus();
+  };
 
   // Focus the field when the panel opens, and restore Escape-to-close.
   useEffect(() => {
@@ -34,10 +43,18 @@ export function AiWidget() {
     inputRef.current?.focus();
 
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      // Only while focus is in the widget: Escape in another dialog is that dialog's.
+      if (e.key === "Escape" && panelRef.current?.contains(document.activeElement)) {
+        setOpen(false);
+        setAsked(false);
+        launcherRef.current?.focus();
+      }
     };
     const onClick = (e: MouseEvent) => {
-      if (!panelRef.current?.contains(e.target as Node)) setOpen(false);
+      if (!panelRef.current?.contains(e.target as Node)) {
+        setOpen(false);
+        setAsked(false);
+      }
     };
 
     document.addEventListener("keydown", onKey);
@@ -82,7 +99,7 @@ export function AiWidget() {
           </span>
           <button
             type="button"
-            onClick={() => setOpen(false)}
+            onClick={() => close(true)}
             aria-label="Close AI Ask"
             className="-mr-2 flex size-11 items-center justify-center rounded-full text-white/65 lg:mr-0 lg:size-7 transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
           >
@@ -92,7 +109,10 @@ export function AiWidget() {
 
         <form
           role="search"
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (query.trim()) setAsked(true);
+          }}
           className="flex flex-col gap-space-sm p-space-md"
         >
           <label htmlFor="ai-widget-input" className="sr-only">
@@ -104,11 +124,14 @@ export function AiWidget() {
               ref={inputRef}
               type="search"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setAsked(false);
+              }}
               placeholder="জাতীয় তথ্য জিজ্ঞাসা করুন…"
               className={cn(
                 // Below lg: 48px field, 44px submit and suggestion rows, for thumbs.
-                "h-12 w-full rounded-lg bg-white/[0.06] pr-13 pl-space-sm ring-1 ring-white/15 lg:h-10 lg:pr-10",
+                "h-12 w-full rounded-lg bg-white/6 pr-13 pl-space-sm ring-1 ring-white/15 lg:h-10 lg:pr-10",
                 "font-sans text-body-sm text-white transition-all outline-none",
                 "placeholder:text-white/65",
                 "focus:ring-2 focus:ring-signal-orange",
@@ -123,6 +146,10 @@ export function AiWidget() {
             </button>
           </div>
 
+          {/* No answering service yet (see above): say so rather than do nothing. */}
+          <p role="status" className="font-bengali text-body-sm text-white/80 empty:hidden">
+            {asked ? "উত্তর দেওয়ার ব্যবস্থা শিগগিরই চালু হচ্ছে। আপাতত প্রশ্নটি এখানে থাকল।" : ""}
+          </p>
           <span className="font-label-sm text-label-sm text-white/65">
             জিজ্ঞাসার উদাহরণ
           </span>
@@ -131,7 +158,10 @@ export function AiWidget() {
               <button
                 key={s}
                 type="button"
-                onClick={() => setQuery(s)}
+                onClick={() => {
+                  setQuery(s);
+                  setAsked(false);
+                }}
                 className={cn(
                   "min-h-11 rounded-lg px-space-sm py-1.5 text-left ring-1 ring-white/15 lg:min-h-0",
                   "font-sans text-body-sm text-white/80 transition-colors",
@@ -147,8 +177,9 @@ export function AiWidget() {
 
       {/* Launcher. */}
       <button
+        ref={launcherRef}
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => (open ? close(false) : setOpen(true))}
         aria-expanded={open}
         aria-controls="ai-widget-panel"
         aria-label={open ? "Close AI Ask" : "Open AI Ask"}

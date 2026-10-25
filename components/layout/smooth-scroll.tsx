@@ -7,8 +7,8 @@ import { useEffect } from "react";
 
 /** How closely the glide follows the wheel: lower is silkier, higher is snappier (the academy's own value). */
 const GLIDE = 0.12;
-/** The fixed header's height, so a jump to an #anchor lands below it. */
-const HEADER_OFFSET = -96;
+/** The fixed header's height (64px, 120px from lg: --header-offset), so a jump to an #anchor lands below it. */
+const headerOffset = () => (matchMedia("(min-width: 64rem)").matches ? -120 : -64);
 
 /**
  * Glides the page under the wheel and the touch, and eases #anchor jumps,
@@ -24,7 +24,7 @@ export function SmoothScroll({ except }: { except?: string }) {
     if (off || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const glide = new Lenis({
       lerp: GLIDE,
-      anchors: { offset: HEADER_OFFSET },
+      anchors: { offset: headerOffset() },
       allowNestedScroll: true,
       autoRaf: true,
       prevent: (node) => Boolean(node.closest?.('[role="dialog"], [role="menu"], [data-radix-popper-content-wrapper]')),

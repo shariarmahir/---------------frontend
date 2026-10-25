@@ -64,7 +64,7 @@ export const charterSlides: CharterSlide[] = [
       "Bangladesh is a high-resolution image with corrupted pixels. Our dossier maps 32 of them, BD-001 to BD-032: from healthcare access, fake markets and bribery to river pollution, energy load and women’s safety. Each failure drags the others down.",
     ],
     stats: [
-      { value: sourcePoints.length, label: "Mapped", note: "problems, BD-001 to BD-032" },
+      { value: sourcePoints.length, label: "Mapped", note: "problems, BD‑001 to BD‑032" /* non-breaking hyphens: a code never splits across lines */ },
       { value: veryHigh, label: "Urgent", note: "rated very-high urgency" },
       { value: verified, label: "Verified", note: "backed by measured evidence" },
     ],

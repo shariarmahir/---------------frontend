@@ -86,7 +86,7 @@ export function ComplaintMasthead() {
               Report extortion, bribery, land grabbing and service denial. Each category names the authority that actually handles it — and
               the complaint stays on public record here.
             </p>
-            <div className="flex flex-wrap items-center gap-3 pt-space-xs">
+            <div className="flex flex-wrap items-center gap-3 pt-space-xs lg:grid lg:grid-cols-[auto_auto] lg:justify-start lg:justify-items-stretch">
               <Link href="#file-complaint" className={btn.gold}>
                 <Icon name="edit_document" className="text-[18px]" />
                 অভিযোগ দাখিল করুন
@@ -101,6 +101,10 @@ export function ComplaintMasthead() {
               <Link href="#community" className={btn.ghost}>
                 <Icon name="forum" className="text-[18px] text-bdgreen-500" />
                 Community
+              </Link>
+              <Link href="/protibad/command" className={cn(btn.goldOutline, "bg-bdnavy-900")}>
+                <Icon name="monitoring" className="text-[18px]" />
+                Crime &amp; complaint dashboard
               </Link>
             </div>
           </div>
