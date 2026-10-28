@@ -10,7 +10,6 @@
  */
 
 import { baselineStats, priorityBreaks, sourcePoints } from "./amar-bangladesh";
-import { modules } from "./gori/modules";
 import { products } from "./products";
 import { services } from "./services";
 
@@ -69,7 +68,7 @@ export const charterSlides: CharterSlide[] = [
       { value: verified, label: "Verified", note: "backed by measured evidence" },
     ],
     primary: { label: "Learn more", href: "/bangladesh" },
-    secondary: { label: "Play the 32", href: "/cholo-bangladesh-gori" },
+    secondary: { label: "The 32 problems", href: "/bangladesh/problems" },
   },
   {
     id: "challenge",
@@ -84,7 +83,7 @@ export const charterSlides: CharterSlide[] = [
       { value: Number(corruption.headline), suffix: "/100", label: "Security", note: "corruption perception score" },
       { value: Number(sanitation.value), suffix: "%", label: "Livability", note: "have safe sanitation" },
     ],
-    primary: { label: "Learn more", href: "/cholo-bangladesh-gori" },
+    primary: { label: "Learn more", href: "/bangladesh/solutions" },
     secondary: { label: "Rights & duties", href: "/nagorik" },
   },
   {
@@ -136,7 +135,6 @@ export const charterSlides: CharterSlide[] = [
       "Impact is not a slogan — it is the delta between problem intensity and solution coverage across products, services, social media, and R&D, mapped against our mission-vision covenant.",
     ],
     stats: [
-      { value: modules.length, label: "Problems", note: "targeted, of 32 mapped" },
       { value: products.length, label: "Products", note: "in build, healthcare first" },
       { value: services.length, label: "Services", note: "open to clients" },
       { value: themes, label: "Sectors", note: "the 32 cut across" },

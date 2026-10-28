@@ -81,7 +81,7 @@ function ChapterHero({ chapter }: { chapter: Chapter }) {
 }
 
 /** A Commons photo's credit: author, licence and source, as the licence asks. */
-function PhotoCredit({ photo, className }: { photo: Photo; className?: string }) {
+export function PhotoCredit({ photo, className }: { photo: Photo; className?: string }) {
   if (!photo.credit) return null;
   const { author, license, licenseUrl, sourceUrl } = photo.credit;
   return (

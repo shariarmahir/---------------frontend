@@ -102,8 +102,8 @@ Brief specifies 16:6 (~2.67:1), an ultra-wide letterbox. At that ratio on a phon
 /team                Leadership + department rosters
 /bangladesh          "বাংলাদেশ সমস্যা ও সমাধান" (merged 2026-09-27 from the country story page and the
                       32-issue dossier; /amar-bangladesh and /ajker-bangladesh redirect here). Four acts:
-                      story → crisis & citizen shield → the 32 problems pixel by pixel (ideas from the game's
-                      puzzles) → realistic solutions → full-research placeholder. Copy: data/desh.ts; rural photos
+                      story → crisis & citizen shield → the 32 problems pixel by pixel (what to do, what to
+                      avoid) → realistic solutions → full-research placeholder. Copy: data/desh.ts; rural photos
                       (Wikimedia Commons, credited): data/rural-life.ts; components/desh.
 /nagorik             "নাগরিক অধিকার ও দায়িত্ব" — BBS Time-Use Survey 2021 charts (real), a division table
                       (SAMPLE data, labelled as such), constitutional rights, helplines, responsibilities by
@@ -115,15 +115,6 @@ Brief specifies 16:6 (~2.67:1), an ultra-wide letterbox. At that ratio on a phon
 /account             Kandari Profile — auth-gated subscriber dashboard (was /profile, which now
                       redirects to /media/me)
 /contact
-/cholo-bangladesh-gori  "চলো বাংলাদেশ গড়ি" V3 — systems-simulation game over the dossier's 32 problems
-                      (BD-001…BD-032). Headline mode: mission — a 2–4 player co-operative crisis game
-                      (pass-and-play + AI bot teammates, 3D board with 2D fallback). Sub-routes: mission,
-                      play, lab, evidence, compare, forge, community, progress, profile, module/[code]. Spec + ADR:
-                      docs/superpowers/specs/2026-09-26-cholo-bangladesh-gori-design.md.
-                      APIs: /api/gori/ai (7 agents; Claude when ANTHROPIC_API_KEY is set, else offline),
-                      /api/gori/runs (server replay/score), /api/gori/mission (mission replay/score).
-                      Keep it self-contained in app/cholo-bangladesh-gori,
-                      components/gori, data/gori, lib/gori.
 ```
 
 Each product/solution card component must be reusable across `/`, `/products`, and future sector pages — Kandari-Lab is explicitly a multi-sector company, so the component shouldn't be hardcoded to healthcare content.

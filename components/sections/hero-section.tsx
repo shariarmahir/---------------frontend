@@ -30,9 +30,9 @@ export function HeroSection() {
 
         {/* One block, flush left, placed by HeroFilm (--pin-x / --pin-y) just
             under the film's label; the fallbacks fit a 4 : 1 band and a phone
-            before it runs, so nothing jumps. Not selectable, so a double-click
-            (the sound toggle) does not pick a word. The claim fills the lockup's width in one line (globals.css,
-            .hero-claim) and the wordmark starts at its first letter. */}
+            before it runs, so nothing jumps. The claim fills the lockup's width
+            in one line (globals.css, .hero-claim) and the wordmark starts at its
+            first letter. */}
         <div
           data-hero-lockup
           className="hero-lockup @container absolute top-(--pin-y,60%) left-(--pin-x,15.6%) flex select-none max-sm:top-(--pin-y,calc(49.5%+12px)) max-sm:left-(--pin-x,1rem) flex-col items-start gap-[1.2cqw]"

@@ -140,10 +140,6 @@ export function SolutionClose() {
             <Icon name="how_to_reg" className="text-xl" />
             Citizen rights and duties
           </Link>
-          <Link href="/cholo-bangladesh-gori/mission" className={cn(btn.goldOutline, "bg-bdnavy-900")}>
-            <Icon name="extension" className="text-xl" />
-            Build Bangladesh, the game
-          </Link>
           <Link href="/protibad" className={cn(btn.goldOutline, "bg-bdnavy-900")}>
             <Icon name="campaign" className="text-xl" />
             Protest wrongdoing

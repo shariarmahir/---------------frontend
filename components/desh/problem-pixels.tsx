@@ -1,30 +1,17 @@
 import { Section } from "@/components/bangladesh-landing/kit";
 import { sourcePoints } from "@/data/amar-bangladesh";
 import { PROBLEM_IDEAS } from "@/data/bangladesh-problems";
-import { ideasFor } from "@/data/desh";
-import { modules } from "@/data/gori/modules";
 import { ProblemPixelsView, type PixelProblem } from "./problem-pixels-view";
 
 /**
  * The 32 problems, pixel by pixel. Built on the server from the dossier
- * (topic, evidence, urgency, theme), the ideas in English and the game
- * modules, so the client view gets plain rows. A translation that no longer
- * matches its Bangla original (data/desh.ts → ideasFor) stops the build.
+ * (topic, evidence, urgency, theme) and the ideas in English, so the client
+ * view gets plain rows. A problem without ideas stops the build.
  */
 export function ProblemPixels() {
   const items: PixelProblem[] = sourcePoints.map((p) => {
     const ideas = PROBLEM_IDEAS[p.n];
-    const original = ideasFor(p.n);
-    if (
-      !ideas ||
-      !original ||
-      ideas.doThis.length !== original.doThis.length ||
-      ideas.avoid.length !== original.avoid.length ||
-      !ideas.fact !== !original.fact
-    ) {
-      throw new Error(`Problem ${p.n}: the English ideas do not match the original`);
-    }
-    const game = modules.find((m) => m.n === p.n);
+    if (!ideas) throw new Error(`Problem ${p.n}: no ideas`);
     return {
       n: p.n,
       title: p.topic,
@@ -34,7 +21,6 @@ export function ProblemPixels() {
       status: p.status,
       statusNote: p.statusNote,
       ...ideas,
-      game: game && { href: `/cholo-bangladesh-gori/module/${game.code}`, code: game.code, playable: game.simulation === "full" },
     };
   });
   return (

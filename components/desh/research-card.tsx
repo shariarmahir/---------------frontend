@@ -15,8 +15,7 @@ const STATUS: Record<EvidenceStatus, { label: string; pixel: string }> = {
 /**
  * The full research behind the 32 problems. The complete paper is not
  * published yet, so the card says so and opens what is live: the evidence
- * base as 32 pixels by status, the claims it refuses, Genius (/research)
- * and the evidence explorer.
+ * base as 32 pixels by status, the claims it refuses and Genius (/research).
  */
 export function ResearchCard() {
   const statuses = Object.keys(STATUS) as EvidenceStatus[];
@@ -35,10 +34,6 @@ export function ResearchCard() {
             <Link href="/research" className={btn.gold}>
               <Icon name="menu_book" className="text-xl" />
               Open Genius
-            </Link>
-            <Link href="/cholo-bangladesh-gori/evidence" className={cn(btn.goldOutline, "bg-bdnavy-900")}>
-              <Icon name="manage_search" className="text-xl" />
-              Explore the evidence
             </Link>
           </div>
           <p className="mt-auto pt-8 text-xs text-white/65">

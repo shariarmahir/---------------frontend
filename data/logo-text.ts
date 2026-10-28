@@ -35,17 +35,6 @@ export const LOGO_TEXT = {
 } satisfies Record<string, LogoString>;
 
 export const LABEL_TEXT = {
-  // "বাংলাদেশ সমস্যা ও সমাধান" pill — split so "সমস্যা" can be red.
-  bangladesh: { bijoy: "evsjv‡`k", bn: "বাংলাদেশ" },
-  issue: { bijoy: "mgm¨v", bn: "সমস্যা" },
-  solution: { bijoy: "I mgvavb", bn: "ও সমাধান" },
-
   media: { bijoy: "wkw¶Z‡`i wgwWqv", bn: "শিক্ষিতদের মিডিয়া" },
   protibad: { bijoy: "cÖwZev`", bn: "প্রতিবাদ" },
-
-  // Civic rights and responsibilities (/nagorik).
-  nagorik: { bijoy: "bvMwiK `vwqZ¡", bn: "নাগরিক দায়িত্ব" },
-
-  // The 32-problem puzzle game (/cholo-bangladesh-gori).
-  gori: { bijoy: "P‡jv evsjv‡`k Mwo", bn: "চলো বাংলাদেশ গড়ি" },
 } satisfies Record<string, LogoString>;

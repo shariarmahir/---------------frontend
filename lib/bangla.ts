@@ -1,4 +1,4 @@
-/** Bangla ↔ ASCII digits, for the site-wide pages (media and gori keep their own). */
+/** Bangla ↔ ASCII digits, for the site-wide pages (media keeps its own). */
 
 const BN_DIGITS = "০১২৩৪৫৬৭৮৯";
 

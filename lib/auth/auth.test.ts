@@ -70,7 +70,6 @@ test("protected routes", () => {
   assert.ok(isProtected("/media/u/shapla"));
   assert.ok(!isProtected("/mediator"));
   assert.ok(!isProtected("/"));
-  assert.ok(!isProtected("/cholo-bangladesh-gori"));
   assert.ok(!isProtected("/accountant"));
 });
 

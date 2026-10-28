@@ -28,7 +28,7 @@ import { SpotlightBand } from "@/components/sections/spotlight-band";
  * STORY: the photographs and the claim → the narrow spotlight band (news,
  * protocol status, national indicators) → the four pixels → products → the
  * apps to download → services → the banner gallery (record, protest, rights, the 32 problems, the media, research) →
- * the labs → the open drive → who we are and our values → the people → what partners say → where the data comes from → join.
+ * the labs → the open drive → the people → who we are and our values → what partners say → where the data comes from → join.
  * FIRST VIEWPORT: the header over the photo hero, its claim and gold
  * primary action, then the narrow spotlight band closing it.
  * FORM: extension of the established header world (no seed roll); pacing
@@ -55,8 +55,8 @@ export default function Home() {
           <ServicesSection />
           <ResearchSection />
           <NodeTerminalSection />
-          <AboutSection />
           <LeadershipSection />
+          <AboutSection />
           <PromoGallery />
           <ReviewsSection />
           <DataSourcesSection />

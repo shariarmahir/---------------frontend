@@ -8,8 +8,6 @@
  * data/bangladesh-history.ts; everything else here is guidance, written as such.
  */
 
-import { puzzleOf, type Decision } from "./gori/puzzles.ts";
-
 /* ── Chapter 2 · the attacks, chapter 3 · the citizen shield ────────── */
 
 export interface CrisisAttack {
@@ -283,31 +281,3 @@ export const BRAVERY = {
   accent: "no wrongdoer",
   body: "We have the resources, the people, and the soil to grow our food: we have enough. Drop the habits of blame, illegal work and greed, correct a few basic mistakes, and stand together against the few who do wrong, and we can solve these problems together.",
 };
-
-/* ── The 32 problems → the 32 ideas ─────────────────────────────────── */
-
-export interface ProblemIdeas {
-  title: string;
-  brief: string;
-  fact?: { text: string; source: string };
-  /** Proposals the dossier's evidence supports — the way forward. */
-  doThis: Decision[];
-  /** Tempting moves the evidence rules out. */
-  avoid: Decision[];
-}
-
-/** Bangla title, brief and the idea checklist for dossier point `n`. */
-export function ideasFor(n: number): ProblemIdeas | undefined {
-  const p = puzzleOf(n);
-  if (!p) return undefined;
-  return {
-    title: p.title,
-    brief: p.brief,
-    fact: p.fact,
-    doThis: p.decisions.filter((d) => d.answer === "yes"),
-    avoid: p.decisions.filter((d) => d.answer === "no"),
-  };
-}
-
-/** A decision is phrased as a question in the game; as advice it is a statement. */
-export const asStatement = (q: string) => q.replace(/\s*\?$/, "").replace(/\s*—\s*/g, " — ");

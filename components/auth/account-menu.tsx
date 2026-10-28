@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { DropdownMenu } from "radix-ui";
-import { CircleUserRound, Gamepad2, LogIn, LogOut, PencilLine, UserPlus, UsersRound } from "lucide-react";
+import { CircleUserRound, LogIn, LogOut, PencilLine, UserPlus, UsersRound } from "lucide-react";
 import { ROLES } from "@/data/auth";
 import { signOut, useAuth } from "@/lib/auth/client";
 import { formatPhone, initialsOf } from "@/lib/auth/validate";
@@ -150,11 +150,6 @@ export function AccountMenu({ variant = "site", className }: { variant?: "site" 
           <DropdownMenu.Item asChild className={itemClass}>
             <Link href="/media/me">
               <UsersRound className="size-4" aria-hidden /> শিক্ষিতদের মিডিয়া প্রোফাইল
-            </Link>
-          </DropdownMenu.Item>
-          <DropdownMenu.Item asChild className={itemClass}>
-            <Link href="/cholo-bangladesh-gori/profile">
-              <Gamepad2 className="size-4" aria-hidden /> চলো বাংলাদেশ গড়ি — অগ্রগতি
             </Link>
           </DropdownMenu.Item>
           <DropdownMenu.Separator className="my-1.5 h-px bg-text-primary/15" />

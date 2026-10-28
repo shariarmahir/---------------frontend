@@ -119,16 +119,6 @@
 
   /* চলো বাংলাদেশ গড়ি — command-centre palette (Prompt V3 §12). Series
      colours are the dataviz-validated order for the cream surface. */
-  --color-gori-deep: var(--gori-deep);
-  --color-gori-panel: var(--gori-panel);
-  --color-gori-line: var(--gori-line);
-  --color-gori-cream: var(--gori-cream);
-  --color-gori-ink: var(--gori-ink);
-  --color-gori-ink-soft: var(--gori-ink-soft);
-  --color-gori-mute: var(--gori-mute);
-  --color-gori-series-1: var(--gori-series-1);
-  --color-gori-series-2: var(--gori-series-2);
-  --color-gori-series-3: var(--gori-series-3);
 
   --shadow-glow-orange: 0 4px 20px -2px rgb(228 176 39 / 0.35);
   --shadow-glow-green: 0 4px 20px -2px rgb(0 103 71 / 0.25);
@@ -306,18 +296,6 @@
   --radius-2xl: 0.75rem;
 }
 
-/* চলো বাংলাদেশ গড়ি: native checkboxes, radios and sliders sized for touch
-   (WCAG 2.5.8 target size). Scoped to the game's provider wrapper. */
-[data-gori-contrast] input:is([type="checkbox"], [type="radio"]):not(.sr-only) {
-  width: 1.25rem;
-  height: 1.25rem;
-  flex-shrink: 0;
-}
-[data-gori-contrast] input[type="range"] {
-  height: 2rem;
-  cursor: pointer;
-}
-
 /* Header offset below lg (see --spacing-header): the full-width bar is one
    64px row there (the tabs fold into the menu); from lg it is 64 + 56px. */
 :root {
@@ -373,30 +351,6 @@
   --tertiary: #8b0001;
   --secondary-fixed: #dde3f7;
   --on-secondary-fixed: #0b1849;
-}
-
-:root {
-  --gori-deep: #000000;
-  --gori-panel: #032017;
-  --gori-line: rgb(255 255 255 / 0.14);
-  --gori-cream: #f7f8f3;
-  --gori-ink: #17211d;
-  --gori-ink-soft: #3e4c46;
-  --gori-mute: #5c6b64;
-  --gori-series-1: #00875a;
-  --gori-series-2: #3651c9;
-  --gori-series-3: #b7791f;
-}
-
-/* High-contrast setting for the game (toggled on its root). */
-[data-gori-contrast="high"] {
-  --gori-cream: #ffffff;
-  --gori-ink: #000000;
-  --gori-ink-soft: #111a16;
-  --gori-mute: #26332d;
-  --gori-deep: #000000;
-  --gori-panel: #032017;
-  --gori-line: #7fbfa8;
 }
 
 @layer base {

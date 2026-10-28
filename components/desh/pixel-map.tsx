@@ -1,4 +1,4 @@
-import { PIXEL_MASK } from "@/data/gori/pixel-mask";
+import { PIXEL_MASK } from "@/data/pixel-mask";
 import { cn } from "@/lib/utils";
 
 /** Land cells of the 64 × 64 Bangladesh mask, row-major. */

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type CSSProperties } from "react";
 import { MotionConfig, motion, type Transition } from "framer-motion";
-import { ShieldCheck, X } from "lucide-react";
+import { X } from "lucide-react";
 import { Dialog, DropdownMenu } from "radix-ui";
 import { AccountMenu, AccountSheetLinks, loginHref } from "@/components/auth/account-menu";
 import { OPEN_RECORDER_EVENT } from "@/components/record/open-recorder";
@@ -50,7 +50,7 @@ function NavLabel({ link, compact }: { link: NavLink; compact?: boolean }) {
   if (compact && link.shortLabel !== link.label && !link.accentWord) {
     return (
       <span>
-        <span className="max-[1439px]:hidden">{link.label}</span>
+        <span className="max-[1440px]:hidden">{link.label}</span>
         <span className="min-[1440px]:hidden">{link.shortLabel}</span>
       </span>
     );
@@ -68,17 +68,6 @@ function NavLabel({ link, compact }: { link: NavLink; compact?: boolean }) {
   );
 }
 
-/** "বাংলাদেশ সমস্যা ও সমাধান" in the label face. */
-function DeshLabel({ className }: { className?: string }) {
-  return (
-    <span className={cn("flex items-center gap-[0.3em]", className)}>
-      <LabelText text={LABEL_TEXT.bangladesh} />
-      <LabelText text={LABEL_TEXT.issue} />
-      <LabelText text={LABEL_TEXT.solution} />
-    </span>
-  );
-}
-
 /**
  * A Material Symbol for each tab, matched on the link's path or anchor so
  * every page's nav set gets one without the data carrying it. Most specific
@@ -86,8 +75,7 @@ function DeshLabel({ className }: { className?: string }) {
  */
 const TAB_ICONS: [pattern: RegExp, icon: string][] = [
   [/^\/#top$/, "home"],
-  [/#national-desk$/, "account_balance"],
-  [/^\/nagorik/, "verified_user"],
+  [/^\/nagorik$/, "verified_user"],
   [/#mission$/, "flag"],
   [/^\/about/, "info"],
   [/kandari-profile$/, "badge"],
@@ -122,23 +110,14 @@ const TAB_ICONS: [pattern: RegExp, icon: string][] = [
   [/\/bangladesh\/problems/, "grid_view"],
   [/\/bangladesh\/solutions/, "lightbulb"],
   [/\/bangladesh/, "map"],
-  [/\/cholo-bangladesh-gori\/mission/, "flag"],
-  [/\/cholo-bangladesh-gori\/play/, "sports_esports"],
-  [/\/cholo-bangladesh-gori\/lab/, "science"],
-  [/\/cholo-bangladesh-gori\/evidence/, "fact_check"],
-  [/\/cholo-bangladesh-gori\/progress/, "trending_up"],
-  [/\/cholo-bangladesh-gori/, "sports_esports"],
   [/#day$/, "schedule"],
-  [/#divisions$/, "map"],
+  [/#justice$/, "balance"],
   [/#rights$/, "gavel"],
   [/#responsibility$/, "handshake"],
-  [/#self-check$/, "self_improvement"],
+  [/#pledge$/, "self_improvement"],
 ];
 
 const tabIcon = (href: string) => TAB_ICONS.find(([pattern]) => pattern.test(href))?.[1];
-
-/** The civic pages that have buttons of their own in the mobile menu, under its nav grid. */
-const CIVIC_PAGES = new Set(["/bangladesh", "/nagorik"]);
 
 /** Loudspeaker glyph for the protest link. */
 function ProtestGlyph({ className }: { className?: string }) {
@@ -304,7 +283,7 @@ function TabBar({ active, slide }: { active: boolean; slide: Transition }) {
 }
 
 const TAB =
-  "group relative flex items-center px-2 text-sm leading-none font-bold whitespace-nowrap text-signal-orange xl:px-3.5 focus-visible:outline-none focus-visible:after:absolute focus-visible:after:inset-x-1 focus-visible:after:inset-y-2 focus-visible:after:rounded-md focus-visible:after:ring-2 focus-visible:after:ring-signal-orange";
+  "group relative flex items-center px-1 min-[1100px]:px-2 text-sm leading-none font-bold whitespace-nowrap text-signal-orange xl:px-3.5 focus-visible:outline-none focus-visible:after:absolute focus-visible:after:inset-x-1 focus-visible:after:inset-y-2 focus-visible:after:rounded-md focus-visible:after:ring-2 focus-visible:after:ring-signal-orange";
 
 /**
  * A tab's face, the icon and its label as one piece: it zooms straight up
@@ -328,7 +307,7 @@ function TabFace({ link, active, children }: { link: NavLink; active: boolean; c
  * bottom edge; it springs from tab to tab and a light runs along it. On
  * hover or focus a faint bar grows from the centre of the tab under the
  * pointer, previewing where the gold one would go. A tab with `children`
- * opens a small navy menu of them instead (National Desk).
+ * opens a small navy menu of them instead (Services, on the product pages).
  */
 function SectionNav({
   links,
@@ -527,8 +506,7 @@ export function SiteHeader() {
           <div className="flex h-16 min-w-0 items-center justify-end gap-2 sm:gap-3">
               {/* The protest menu, in the alert red (CLAUDE.md §4.1): raise a
                   protest, or start recording. Desktop only; below lg it
-                  lives in the pop-up menu. The civic pages moved into the
-                  National Desk tab (Mahir, 2026-10-18). */}
+                  lives in the pop-up menu. */}
               <TvWallLink className="hidden lg:inline-flex" />
               <div className="hidden lg:flex">
                 <ProtestMenu onRecord={() => setRecordOpen(true)} />
@@ -628,8 +606,8 @@ export function SiteHeader() {
                     </div>
 
                     <nav className="grid grid-cols-2 gap-2">
-                      {/* A menu tab shows its first page here, unless that is a civic page with its own button below. */}
-                      {navLinks.flatMap((link) => link.children?.filter((c) => !CIVIC_PAGES.has(c.href)).slice(0, 1) ?? [link]).map((link, i) => (
+                      {/* A menu tab shows its first page here. */}
+                      {navLinks.flatMap((link) => link.children?.slice(0, 1) ?? [link]).map((link, i) => (
                         <Dialog.Close asChild key={link.href}>
                           <NavAnchor
                             href={link.href}
@@ -648,47 +626,26 @@ export function SiteHeader() {
                       ))}
                     </nav>
 
-                    <Dialog.Close asChild>
-                      <Link
-                        href="/bangladesh"
-                        prefetch={false}
-                        style={{ "--i": navLinks.length + 3 } as CSSProperties}
-                        className="menu-item flex items-center justify-center gap-2 rounded-full bg-signal-orange px-3.5 py-2.5 font-bengali text-sm font-bold text-bdnavy-900 transition-[scale] duration-200 active:scale-95"
-                      >
-                        <DeshLabel className="text-base leading-none" />
-                      </Link>
-                    </Dialog.Close>
-
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid gap-2">
                       <Dialog.Close asChild>
                         <Link
                           href="/protibad"
-                          style={{ "--i": navLinks.length + 4 } as CSSProperties}
+                          style={{ "--i": navLinks.length + 3 } as CSSProperties}
                           className="menu-item flex min-h-11 items-center justify-center gap-1.5 rounded-xl bg-national-crimson px-3 py-2 font-bengali text-sm font-bold text-white transition-[scale] duration-200 active:scale-95"
                         >
                           <ProtestGlyph className="size-3.5" />
                           <LabelText text={LABEL_TEXT.protibad} className="text-base leading-none" />
                         </Link>
                       </Dialog.Close>
-                      <Dialog.Close asChild>
-                        <Link
-                          href="/nagorik"
-                          style={{ "--i": navLinks.length + 5 } as CSSProperties}
-                          className="menu-item flex min-h-11 items-center justify-center gap-1.5 rounded-xl px-3 py-2 ring-1 ring-white/35 transition-[background-color,scale] duration-200 hover:bg-white/10 active:scale-95"
-                        >
-                          <ShieldCheck className="size-4 shrink-0" aria-hidden />
-                          <LabelText text={LABEL_TEXT.nagorik} className="text-base leading-none" />
-                        </Link>
-                      </Dialog.Close>
                     </div>
 
-                    <div className="menu-item" style={{ "--i": navLinks.length + 6 } as CSSProperties}>
+                    <div className="menu-item" style={{ "--i": navLinks.length + 4 } as CSSProperties}>
                       <AccountSheetLinks onNavy wrap={(node) => <Dialog.Close asChild>{node}</Dialog.Close>} />
                     </div>
 
                     <p
                       className="menu-item px-1 font-bengali text-xs font-semibold text-white/80"
-                      style={{ "--i": navLinks.length + 7 } as CSSProperties}
+                      style={{ "--i": navLinks.length + 5 } as CSSProperties}
                     >
                       {NAZRUL_MOTTO}
                     </p>

@@ -1,105 +1,81 @@
 /*
- * THESIS: a nation changes in its people's 24 hours. The page opens with
- * the measured day (real BBS data), then asks each reader to own their
- * part — rights known, duties done, one brave act — instead of a civics
- * lecture of bullet lists.
- * OWN-WORLD: the home page's — pitch-black ground, solid gold / ink / bottle
- * green / orange fields, gold headings, the gold pulse on the
- * ink bands' seams; charts use bright green and gold on ink, red only for
- * waste and for bravery.
- * STORY: see how the day is really spent → how divisions compare (sample,
- * labelled) → the rights you hold → the duty for your role → tonight's
- * private self-check.
- * FIRST VIEWPORT: title and one real headline figure over a farmer at
- * work; section jumps beneath.
- * FORM: research report turned into a personal pledge; structure pinned by
- * the founder's brief (2026-09-27).
+ * Citizen Rights and Duties, in English and in the /bangladesh dress:
+ * the measured day (BBS Time-Use Survey 2021) → the rights the
+ * Constitution guarantees → what to do when one is denied → the duty for
+ * each role → a private pledge and nightly check. Real, sourced data only.
  */
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SiteFooter } from "@/components/layout/site-footer";
-import { SiteHeader } from "@/components/layout/site-header";
-import { DailyCheck } from "@/components/nagorik/daily-check";
+import { BangladeshShell } from "@/components/bangladesh-landing/chapter-shell";
+import { COLUMN, Section, TITLE } from "@/components/bangladesh-landing/kit";
 import { DayChart } from "@/components/nagorik/day-chart";
-import { DivisionTable } from "@/components/nagorik/division-table";
+import { Justice } from "@/components/nagorik/justice";
 import { NagorikHero } from "@/components/nagorik/nagorik-hero";
+import { Pledge } from "@/components/nagorik/pledge";
 import { Responsibilities } from "@/components/nagorik/responsibilities";
 import { Rights } from "@/components/nagorik/rights";
 import { TusFindings } from "@/components/nagorik/tus-findings";
-import { StoryHeading } from "@/components/bangladesh/story-heading";
-import { Icon } from "@/components/ui/icon";
-import { SignalSeam, btn } from "@/components/ui/section-kit";
+import { btn } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "নাগরিক অধিকার ও দায়িত্ব | কাণ্ডারী-ল্যাব",
+  title: "Citizen Rights and Duties | Kandari-Lab",
   description:
-    "বাংলাদেশের মানুষ দিনের সময় কীভাবে কাটান (বিবিএস টাইম-ইউজ সার্ভে ২০২১), সংবিধানের মৌলিক অধিকার, ন্যায়বিচারের পথ আর শিশু থেকে প্রবীণ — প্রত্যেকের দায়িত্ব, মানসিকতা ও সাহস।",
+    "How Bangladesh spends its day (BBS Time-Use Survey 2021), the fundamental rights in the Constitution, the path to justice when one is denied, and the duties of every citizen, from child to elder.",
 };
 
 export default function NagorikPage() {
   return (
-    <>
-      <SiteHeader />
-      <main className="w-full bg-black pt-header lg:pt-header-lg">
-        <NagorikHero />
+    <BangladeshShell>
+      <NagorikHero />
 
-        <section id="day" aria-labelledby="day-title" className="section-band scroll-mt-40 bg-black">
-          <div className="mx-auto max-w-7xl px-gutter-x">
-            <StoryHeading
-              id="day-title"
-              title="আমাদের দিন আসলে কোথায় যায়"
-              accent="কোথায়"
-              lede="দেশের প্রথম টাইম-ইউজ সার্ভে। ঘরের কাজ কার কাঁধে, আয়ের কাজ কার — সংখ্যাগুলো দেখায় দায়িত্ব কতটা অসমভাবে ভাগ হয়ে আছে।"
-            />
-            <div className="space-y-5">
-              <DayChart />
-              <TusFindings />
-            </div>
-          </div>
-        </section>
+      <Section
+        id="day"
+        title="The measured day"
+        lede="Bangladesh's first national time-use survey shows who carries the paid work and who carries the home. The figures show how unevenly the load is shared."
+      >
+        <DayChart />
+        <TusFindings />
+      </Section>
 
-        <section id="divisions" aria-labelledby="div-title" className="section-band-tinted relative isolate scroll-mt-40 overflow-hidden bg-text-primary text-white">
-          <SignalSeam className="top-0" />
-          <div className="mx-auto max-w-7xl px-gutter-x">
-            <StoryHeading
-              id="div-title"
-              title="বিভাগে বিভাগে দিনের হিসাব"
-              accent="বিভাগে"
-              lede="উৎপাদনশীল সময়, ঘরের কাজ, সমাজের জন্য সময়, শেখা আর অপচয় — প্রতিটি কলামে ক্লিক করে সাজান, নারী-পুরুষ বদলে দেখুন।"
-            />
-            <DivisionTable />
-          </div>
-        </section>
-
+      <Section
+        id="rights"
+        title="Your rights"
+        lede="The fundamental rights in Part III of the Constitution of Bangladesh, in plain English. Every one can be enforced in the High Court Division."
+      >
         <Rights />
-        <Responsibilities />
-        <DailyCheck />
+      </Section>
 
-        <section aria-labelledby="nagorik-close" className="relative isolate overflow-hidden bg-bd-green text-white">
-          <SignalSeam className="top-0" />
-          <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(50%_60%_at_50%_0%,rgb(228_176_39/0.28),transparent_70%)]" />
-          <div className="mx-auto max-w-4xl px-gutter-x py-20 text-center sm:py-28">
-            <div className="story-reveal">
-              <h2 id="nagorik-close" className="font-bengali text-3xl leading-tight font-bold text-balance text-signal-orange sm:text-5xl">
-                আগামী প্রজন্মের বাংলাদেশ <span className="text-white">আজকের</span> আমাদের হাতে
-              </h2>
-              <p className="mx-auto mt-5 max-w-2xl font-bengali text-lg leading-relaxed text-white/90">
-                অধিকার জানুন, দায়িত্ব পালন করুন, আর অন্যায়ের সামনে সাহস নিয়ে দাঁড়ান। একজন বদলালে একটি ঘর বদলায়; একটি পাড়া বদলালে দেশ।
-              </p>
-              <div className="mt-10 flex flex-wrap justify-center gap-3">
-                <Link href="/cholo-bangladesh-gori/mission" className={cn(btn.gold, "font-bengali text-base normal-case")}>
-                  <Icon name="extension" className="text-[20px]" /> চলো বাংলাদেশ গড়ি
-                </Link>
-                <Link href="/bangladesh/solutions" className={cn(btn.ink, "font-bengali text-base normal-case")}>
-                  <Icon name="lightbulb" className="text-[20px] text-signal-orange" /> বাংলাদেশ সমস্যা ও সমাধান
-                </Link>
-              </div>
-            </div>
+      <Section id="justice" title="When a right is denied" lede="Five steps, in order. Start with the first: each one makes the next stronger.">
+        <Justice />
+      </Section>
+
+      <Section id="responsibility" title="Your duties by role" lede="Changing a country is no one's job alone. Choose your place: the duties it carries, the mindset behind them, and one brave act.">
+        <Responsibilities />
+      </Section>
+
+      <Section id="pledge" title="Pledge and nightly check" lede="Choose what you will keep each day, then check yourself honestly before you sleep. Nothing is sent anywhere.">
+        <Pledge />
+      </Section>
+
+      <section aria-labelledby="nagorik-close" className={cn(COLUMN, "section-band")}>
+        <div className="rounded-3xl bg-bdnavy-900 px-6 py-12 text-center ring-1 ring-white/12 sm:px-12 sm:py-16">
+          <h2 id="nagorik-close" className={cn(TITLE, "mx-auto max-w-3xl")}>
+            The Bangladesh of the next generation is in our hands today
+          </h2>
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-white/80">
+            Know your rights, do your duty, and stand up to wrong. When one person changes, a home changes; when a neighbourhood changes, the country does.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link href="/protibad" className={btn.gold}>
+              Report a problem
+            </Link>
+            <Link href="/bangladesh" className={cn(btn.goldOutline, "bg-bdnavy-900")}>
+              Bangladesh: problems and solutions
+            </Link>
           </div>
-        </section>
-      </main>
-      <SiteFooter />
-    </>
+        </div>
+      </section>
+    </BangladeshShell>
   );
 }

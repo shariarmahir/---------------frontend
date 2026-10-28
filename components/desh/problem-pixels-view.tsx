@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { Card } from "@/components/bangladesh-landing/kit";
 import { Icon } from "@/components/ui/icon";
@@ -21,7 +20,6 @@ export interface PixelProblem {
   fact?: { text: string; source: string };
   doThis: Advice[];
   avoid: Advice[];
-  game?: { href: string; code: string; playable: boolean };
 }
 
 const URGENCIES: Urgency[] = ["very-high", "high", "medium-high", "medium"];
@@ -261,10 +259,10 @@ function Readings({ problem, className }: { problem: PixelProblem; className?: s
 
 /**
  * One problem in the grid. The whole card opens its sheet (the button
- * stretches over it); the game link sits above that layer.
+ * stretches over it).
  */
 function ProblemCard({ problem, onOpen }: { problem: PixelProblem; onOpen: () => void }) {
-  const { n, title, interpretation, theme, game } = problem;
+  const { n, title, interpretation, theme } = problem;
   return (
     <Card className="group relative flex h-full flex-col p-6 has-[button:focus-visible]:ring-2 has-[button:focus-visible]:ring-signal-orange sm:p-6">
       <div className="flex items-center gap-3">
@@ -286,22 +284,12 @@ function ProblemCard({ problem, onOpen }: { problem: PixelProblem; onOpen: () =>
           Evidence and path<span className="sr-only">: {title}</span>
           <Icon name="arrow_forward" className="text-lg! transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
         </button>
-        {game ? (
-          <Link
-            href={game.href}
-            className="relative z-10 flex min-h-11 items-center gap-1.5 rounded-full px-2 text-sm font-semibold text-white/80 transition-colors hover:text-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none motion-reduce:transition-none"
-          >
-            <Icon name="sports_esports" className="text-lg!" />
-            {game.code}
-            <span className="sr-only">: play this problem in the game</span>
-          </Link>
-        ) : null}
       </div>
     </Card>
   );
 }
 
-/** The side sheet: one problem's evidence, its brief, what to do and avoid, and a way into the game; steps through `ring`. */
+/** The side sheet: one problem's evidence, its brief, what to do and avoid; steps through `ring`. */
 function ProblemSheet({
   problem,
   total,
@@ -316,7 +304,7 @@ function ProblemSheet({
   onClose: () => void;
 }) {
   const body = useRef<HTMLDivElement>(null);
-  const { n, title, interpretation, theme, status, statusNote, brief, fact, doThis, avoid, game } = problem;
+  const { n, title, interpretation, theme, status, statusNote, brief, fact, doThis, avoid } = problem;
   const i = ring.findIndex((x) => x.n === n);
   const prev = ring[(i - 1 + ring.length) % ring.length];
   const next = ring[(i + 1) % ring.length];
@@ -377,19 +365,6 @@ function ProblemSheet({
           <AdviceList title="Do this" icon="task_alt" tone="text-signal-orange" items={doThis} />
           <AdviceList title="Avoid" icon="block" tone="text-crimson-bright" items={avoid} />
         </div>
-
-
-        {game ? (
-          <div className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-3">
-            <Link href={game.href} className={btn.gold}>
-              <Icon name="sports_esports" className="text-xl!" />
-              Solve it in the game
-            </Link>
-            <p className="text-sm text-white/65">
-              Module {game.code} · {game.playable ? "a playable scenario" : "an evidence check"}
-            </p>
-          </div>
-        ) : null}
       </div>
 
       {ring.length > 1 ? (

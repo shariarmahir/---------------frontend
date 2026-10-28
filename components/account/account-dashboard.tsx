@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useId, useState } from "react";
 import { Dialog } from "radix-ui";
-import { ArrowRight, BadgeCheck, Bell, Camera, Check, Gamepad2, ImagePlus, KeyRound, LogOut, Mail, MapPin, PartyPopper, PencilLine, Phone, RotateCcw, Save, Sparkles, Trash2, UsersRound, X } from "lucide-react";
+import { ArrowRight, BadgeCheck, Bell, Camera, Check, ImagePlus, KeyRound, LogOut, Mail, MapPin, PartyPopper, PencilLine, Phone, RotateCcw, Save, Sparkles, Trash2, UsersRound, X } from "lucide-react";
 import { AccountAvatar } from "@/components/auth/account-menu";
 import { FieldError, PasswordField } from "@/components/auth/fields";
 import { Icon } from "@/components/ui/icon";
@@ -538,7 +538,6 @@ function Places({ account }: { account: Account }) {
   const followed = FOLLOWABLE_PRODUCTS.filter((p) => account.products.includes(p.slug));
   const places = [
     { href: "/media/me", icon: <UsersRound className="size-5" aria-hidden />, title: "শিক্ষিতদের মিডিয়া", sub: account.mediaHandle ? `@${account.mediaHandle} — দক্ষতা, রেটিং, কাজ` : "দক্ষতা-প্রোফাইল খুলুন, কাজ পান" },
-    { href: "/cholo-bangladesh-gori/profile", icon: <Gamepad2 className="size-5" aria-hidden />, title: "চলো বাংলাদেশ গড়ি", sub: "খেলার স্তর, অর্জন ও মিশনের ফল" },
     ...followed.map((p) => ({ href: `/products/${p.slug}`, icon: <Icon name="deployed_code" className="text-[20px]" />, title: p.bn, sub: `${p.en} — অনুসরণ করছেন` })),
   ];
   return (

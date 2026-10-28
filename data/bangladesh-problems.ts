@@ -1,12 +1,7 @@
 /**
- * The problems chapter (/bangladesh/problems) in English: the 32 ideas and
- * the rural photo captions.
- *
- * The game keeps its Bangla originals (data/gori/puzzles.ts, read through
- * ideasFor in data/desh.ts; data/rural-life.ts). These are translations of
- * them, figure for figure: `doThis` and `avoid` follow the original order,
- * and components/desh/problem-pixels.tsx refuses to build if a row stops
- * matching its original.
+ * The problems chapter (/bangladesh/problems) in English: the ideas for each
+ * of the 32 problems (what to do, what to avoid) and the rural photo captions.
+ * components/desh/problem-pixels.tsx refuses to build if a problem has none.
  */
 
 import type { EvidenceStatus, Urgency } from "./amar-bangladesh";

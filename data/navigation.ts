@@ -5,6 +5,8 @@ export interface NavLink {
   label: string;
   /** Condensed label for mid-width screens where the full one would wrap. */
   shortLabel: string;
+  /** A tab that opens a menu of these links instead of going anywhere itself. */
+  children?: NavLink[];
   /**
    * A substring of `label` to render in the alert colour. Used on the news
    * index, where the three categories share the word "অপরাধ" and that word
@@ -12,15 +14,12 @@ export interface NavLink {
    * adjacent nav items read as one red block.
    */
   accentWord?: string;
-  /** A tab that opens a menu of these links instead of going anywhere itself. */
-  children?: NavLink[];
 }
 
 /**
- * Primary navigation (Mahir, 2026-10-18): Home, National Desk, Products,
- * Research, Mission, About us, Team, Join. National Desk is a menu of the
- * two civic pages that used to sit in the header's top row: Bangladesh
- * (whose landing page holds the National Index) and নাগরিক দায়িত্ব.
+ * Primary navigation (Mahir, 2026-10-28): Home, Bangladesh, Products,
+ * Research, Mission, নাগরিক দায়িত্ব, About us, Team, Join. Bangladesh's
+ * landing page holds the National Index.
  *
  * Every `href` here must match a real page, or a real `id` on the page it
  * points at. Anchors are full root paths ("/#mission"), so the same set
@@ -37,14 +36,10 @@ export const navLinks: NavLink[] = [
     shortLabel: "Home",
   },
   {
-    // A menu, not a page: the key below only names it (icon, active state).
-    href: "#national-desk",
-    label: "National Desk",
-    shortLabel: "Desk",
-    children: [
-      { href: "/bangladesh", label: "Bangladesh", shortLabel: "Bangladesh" },
-      { href: "/nagorik", label: "নাগরিক দায়িত্ব", shortLabel: "দায়িত্ব" },
-    ],
+    // The national landing page: the country, its National Index, the 32 problems and their solutions.
+    href: "/bangladesh",
+    label: "Bangladesh",
+    shortLabel: "Bangladesh",
   },
   {
     // The product overview page; each product has its own detail route.
@@ -64,6 +59,12 @@ export const navLinks: NavLink[] = [
     href: "/#mission",
     label: "Mission",
     shortLabel: "Mission",
+  },
+  {
+    // Citizen rights and duties.
+    href: "/nagorik",
+    label: "নাগরিক দায়িত্ব",
+    shortLabel: "দায়িত্ব",
   },
   {
     // Who we are and what we hold to: the About Us page.
@@ -98,17 +99,16 @@ export const bangladeshNavLinks: NavLink[] = [
   { href: "/bangladesh/shield", label: "Citizen shield", shortLabel: "Shield" },
   { href: "/bangladesh/problems", label: "32 problems", shortLabel: "Problems" },
   { href: "/bangladesh/solutions", label: "Solutions", shortLabel: "Solutions" },
-  { href: "/cholo-bangladesh-gori", label: "Game", shortLabel: "Game" },
 ];
 
-/** Navigation for "নাগরিক অধিকার ও দায়িত্ব" (/nagorik). */
+/** Navigation for "Citizen Rights and Duties" (/nagorik). */
 export const nagorikNavLinks: NavLink[] = [
-  { href: "/nagorik#day", label: "দিনের হিসাব", shortLabel: "দিন" },
-  { href: "/nagorik#divisions", label: "বিভাগ", shortLabel: "বিভাগ" },
-  { href: "/nagorik#rights", label: "অধিকার", shortLabel: "অধিকার" },
-  { href: "/nagorik#responsibility", label: "দায়িত্ব", shortLabel: "দায়িত্ব" },
-  { href: "/nagorik#self-check", label: "আজ রাতের আয়না", shortLabel: "আয়না" },
-  { href: "/bangladesh", label: "বাংলাদেশ", shortLabel: "বাংলাদেশ" },
+  { href: "/nagorik#day", label: "The day", shortLabel: "Day" },
+  { href: "/nagorik#rights", label: "Rights", shortLabel: "Rights" },
+  { href: "/nagorik#justice", label: "Justice", shortLabel: "Justice" },
+  { href: "/nagorik#responsibility", label: "Duties", shortLabel: "Duties" },
+  { href: "/nagorik#pledge", label: "Pledge", shortLabel: "Pledge" },
+  { href: "/bangladesh", label: "Bangladesh", shortLabel: "Bangladesh" },
 ];
 
 /**
@@ -164,20 +164,6 @@ export const teamNavLinks: NavLink[] = [
 ];
 
 /**
- * Navigation for the "চলো বাংলাদেশ গড়ি" game — its routes under
- * /cholo-bangladesh-gori, plus the dossier it is built on.
- */
-export const goriNavLinks: NavLink[] = [
-  { href: "/cholo-bangladesh-gori", label: "কমান্ড সেন্টার", shortLabel: "কমান্ড" },
-  { href: "/cholo-bangladesh-gori/mission", label: "জাতীয় মিশন", shortLabel: "মিশন" },
-  { href: "/cholo-bangladesh-gori/play", label: "অভিযান", shortLabel: "অভিযান" },
-  { href: "/cholo-bangladesh-gori/lab", label: "বিজ্ঞানাগার", shortLabel: "ল্যাব" },
-  { href: "/cholo-bangladesh-gori/evidence", label: "প্রমাণ", shortLabel: "প্রমাণ" },
-  { href: "/cholo-bangladesh-gori/progress", label: "অগ্রগতি", shortLabel: "অগ্রগতি" },
-  { href: "/bangladesh/problems", label: "৩২টি সমস্যা", shortLabel: "সমস্যা" },
-];
-
-/**
  * The nav set for a given pathname. Home's set is the default.
  *
  */
@@ -196,9 +182,6 @@ export function navLinksFor(pathname: string): NavLink[] {
   }
   if (pathname === "/team" || pathname.startsWith("/team/")) {
     return teamNavLinks;
-  }
-  if (pathname === "/cholo-bangladesh-gori" || pathname.startsWith("/cholo-bangladesh-gori/")) {
-    return goriNavLinks;
   }
   return navLinks;
 }
