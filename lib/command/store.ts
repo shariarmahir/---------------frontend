@@ -3,8 +3,26 @@
 import { useEffect, useSyncExternalStore } from "react";
 import { STALE_AFTER_MS, parseSaved, seedWorld } from "@/lib/command/generate";
 import { resume, tick } from "@/lib/command/engine";
-import { bdDate, isOpen, kpis, type Kpis } from "@/lib/command/selectors";
-import type { ActionResult, Case, World } from "@/lib/command/types";
+import { countPruned, emptyPruned, prunedOn, readCounter, resolvedInWorld, type PrunedToday } from "@/lib/command/pruned";
+import {
+  bdDate,
+  bdDay,
+  kpis,
+  openInDivision,
+  pendingAlerts,
+  sosQueue,
+  stationRows,
+  unitsInDivision,
+  womenCases,
+  womenDeskLoad,
+  type DivisionScope,
+  type Kpis,
+} from "@/lib/command/selectors";
+import { divisionThreat, earlyWarnings, hotspots, hourPattern, networks, recommendations, responseCertainty } from "@/lib/command/intel";
+import { observedPrices, type PriceObservation } from "@/lib/command/prices";
+import { recallRows, type RecallRow } from "@/lib/command/recalls";
+import { WOMEN_CATEGORIES } from "@/lib/command/routing";
+import type { ActionResult, Case, Dept, DivisionId, Unit, World } from "@/lib/command/types";
 
 /**
  * The live demo world in the browser. Held in memory, mirrored to localStorage
@@ -33,21 +51,20 @@ import type { ActionResult, Case, World } from "@/lib/command/types";
  *   // with arguments: one memo per argument set
  *   const sel = useMemo(() => perWorld((w) => filterCases(w, { dept, homeId })), [dept, homeId]);
  *   const cases = useCommand(sel);
+ *
+ *   // per division: the factories below cache one selector per division
+ *   const open = useCommand(selectOpenIn(div));
  */
 
-const KEY = "kandari-command-v1";
+/** v2 (2026-10-28): new categories, case fields and recalls; a v1 save is dropped and the demo reseeds. */
+const KEY = "kandari-command-v2";
+const OLD_KEYS = ["kandari-command-v1"];
 const TICK_MS = 1000;
 const SAVE_EVERY_MS = 5000;
 
-/** Cases that left the world (pruned) after being resolved today, so "resolved today" doesn't level off. */
-interface PrunedToday {
-  /** Calendar day in Bangladesh, "YYYY-MM-DD". */
-  day: string;
-  count: number;
-}
-
 let world: World | null = null;
-let prunedToday: PrunedToday = { day: "", count: 0 };
+/** Cases that left the world (pruned) after being resolved today, per department (lib/command/pruned). */
+let prunedToday: PrunedToday = emptyPruned("");
 let loaded = false;
 const listeners = new Set<() => void>();
 
@@ -78,18 +95,6 @@ function scheduleSave(): void {
   else saveTimer = setTimeout(saveNow, wait);
 }
 
-function readCounter(raw: string, day: string): PrunedToday {
-  try {
-    const p = (JSON.parse(raw) as { prunedToday?: unknown }).prunedToday as Partial<PrunedToday> | undefined;
-    if (p && p.day === day && typeof p.count === "number" && Number.isInteger(p.count) && p.count >= 0) {
-      return { day, count: p.count };
-    }
-  } catch {
-    // Fall through to a fresh counter.
-  }
-  return { day, count: 0 };
-}
-
 const freshSeed = (): number => Date.now() & 0x7fffffff;
 
 function load(): void {
@@ -99,6 +104,7 @@ function load(): void {
   let raw: string | null = null;
   try {
     raw = window.localStorage.getItem(KEY);
+    for (const k of OLD_KEYS) window.localStorage.removeItem(k);
   } catch {
     // Blocked storage: start a fresh demo.
   }
@@ -106,7 +112,7 @@ function load(): void {
   // The demo was frozen while the page was closed: a live saved world picks up
   // where it stopped (resume) instead of catching up. A user-paused one stays paused.
   world = saved ? (saved.paused ? saved : resume(saved, now)) : seedWorld(freshSeed(), now);
-  prunedToday = saved && raw ? readCounter(raw, bdDate(now)) : { day: bdDate(now), count: 0 };
+  prunedToday = saved && raw ? readCounter(raw, bdDate(now)) : emptyPruned(bdDate(now));
   if (!saved) saveNow();
   window.addEventListener("pagehide", saveNow);
   document.addEventListener("visibilitychange", onVisibility);
@@ -132,25 +138,11 @@ function subscribe(listener: () => void): () => void {
 let clockUsers = 0;
 let timer: ReturnType<typeof setInterval> | null = null;
 
-/** Count closed/resolved cases resolved today that the tick dropped from the world. */
-function countPruned(prev: World, next: World, now: number): void {
-  const day = bdDate(now);
-  if (prunedToday.day !== day) prunedToday = { day, count: 0 };
-  if (prev.cases === next.cases) return;
-  const kept = new Set<string>();
-  for (const c of next.cases) kept.add(c.id);
-  let n = 0;
-  for (const c of prev.cases) {
-    if (!kept.has(c.id) && !isOpen(c) && c.resolvedAt !== undefined && bdDate(c.resolvedAt) === day) n++;
-  }
-  if (n) prunedToday = { day, count: prunedToday.count + n };
-}
-
 function step(): void {
   if (!world || world.paused || document.visibilityState !== "visible") return;
   const now = Date.now();
   const next = tick(world, now);
-  countPruned(world, next, now);
+  prunedToday = countPruned(prunedToday, world, next, now);
   if (next === world) return;
   world = next;
   emit();
@@ -172,7 +164,7 @@ function syncTimer(): void {
 /** A brand-new demo world and an empty pruned-today counter. */
 function reseed(now: number): void {
   world = seedWorld(freshSeed(), now);
-  prunedToday = { day: bdDate(now), count: 0 };
+  prunedToday = emptyPruned(bdDate(now));
 }
 
 /**
@@ -240,14 +232,14 @@ export function useCommand<T>(select: (w: World) => T): T | null {
   );
 }
 
-/** False during server render and hydration; true once the world is in. */
-export function useCommandReady(): boolean {
-  return useSyncExternalStore(
-    subscribe,
-    () => loaded && world !== null,
-    () => false,
-  );
-}
+/** The world's clock. */
+export const selectNow = (w: World): number => w.now;
+
+/** Every unit (patrols, teams, stations, offices). */
+export const selectUnits = (w: World): Unit[] => w.units;
+
+/** The consumer offices (ভোক্তা অধিদপ্তর), memoised per world. */
+export const selectOffices: (w: World) => Unit[] = perWorld((w) => w.units.filter((u) => u.kind === "office"));
 
 /** The headline numbers at the world's clock, memoised per world. */
 export const selectKpis: (w: World) => Kpis = perWorld((w) => kpis(w, w.now));
@@ -264,9 +256,83 @@ export function useCase(id: string | null): Case | null | undefined {
   return c === GONE ? undefined : c;
 }
 
-/** Cases resolved today, including those already pruned from the world; null before hydration. */
-export function useResolvedToday(): number | null {
-  return useCommand((w) => selectKpis(w).resolvedToday + (prunedToday.day === bdDate(w.now) ? prunedToday.count : 0));
+/** Cases still in the world resolved today, per department (undefined = all), memoised per world. */
+const inWorldToday: Record<Dept | "all", (w: World) => number> = {
+  all: perWorld((w) => resolvedInWorld(w)),
+  police: perWorld((w) => resolvedInWorld(w, "police")),
+  consumer: perWorld((w) => resolvedInWorld(w, "consumer")),
+  other: perWorld((w) => resolvedInWorld(w, "other")),
+};
+
+/**
+ * Cases resolved today for one department (or all three), counting those already
+ * pruned from the world, so the overview and the department pages agree and the
+ * figure doesn't level off at the case cap. Null before hydration.
+ */
+export function useResolvedToday(dept?: Dept): number | null {
+  return useCommand((w) => inWorldToday[dept ?? "all"](w) + prunedOn(prunedToday, w.now, dept));
+}
+
+/* ------------------------------------------------------ division scoped */
+
+/**
+ * A selector factory over a division: `factory(div)` returns ONE memoised
+ * selector per division (and one for the whole country: undefined or "all"),
+ * so it can go straight into useCommand without useMemo.
+ */
+export function perDivision<T>(fn: (w: World, div: DivisionId | undefined) => T): (div?: DivisionScope) => (w: World) => T {
+  const cache = new Map<string, (w: World) => T>();
+  return (div) => {
+    const key = div === undefined || div === "all" ? "all" : div;
+    let sel = cache.get(key);
+    if (!sel) {
+      const d = key === "all" ? undefined : (key as DivisionId);
+      sel = perWorld((w) => fn(w, d));
+      cache.set(key, sel);
+    }
+    return sel;
+  };
+}
+
+/** Open cases (all departments) in the division, critical first. */
+export const selectOpenIn = perDivision((w, d) => openInDivision(w, d));
+/** Open police cases in the division. */
+export const selectPoliceOpenIn = perDivision((w, d) => openInDivision(w, d, "police"));
+/** Units in the division (police stations and patrols by their division; consumer offices and teams by the nearest place). */
+export const selectUnitsIn = perDivision((w, d) => unitsInDivision(w, d));
+/** Police stations in the division with their numbers (selectors' stationRows). */
+export const selectStationRows = perDivision((w, d) => stationRows(w, d));
+/** The headline numbers for the division's cases. */
+export const selectKpisIn = perDivision((w, d) => kpis(w, w.now, d));
+/** Pending police alerts in the division, soonest to escalate first. */
+export const selectPolicePendingIn = perDivision((w, d) => pendingAlerts(w, "police", d));
+/** SOS cases waiting for a unit, with the three nearest free units. */
+export const selectSosQueue = perDivision((w, d) => sosQueue(w, w.now, d));
+/** Women and child cases (open and closed), and each station's open load. */
+export const selectWomenCases = perDivision((w, d) => womenCases(w, d));
+export const selectWomenDesks = perDivision((w, d) => womenDeskLoad(w, d));
+/** Intelligence (lib/command/intel) at the world's clock. */
+export const selectHotspots = perDivision((w, d) => hotspots(w, w.now, { division: d }));
+export const selectWomenHotspots = perDivision((w, d) => hotspots(w, w.now, { division: d, categories: WOMEN_CATEGORIES }));
+export const selectEarlyWarnings = perDivision((w, d) => earlyWarnings(w, w.now, d));
+export const selectNetworks = perDivision((w, d) => networks(w, d));
+export const selectRecommendations = perDivision((w, d) => recommendations(w, w.now, d));
+export const selectResponseCertainty = perDivision((w, d) => responseCertainty(w, w.now, d));
+/** The 30-day hour × category pattern (all police categories, or the women categories); stable per seed. */
+export const selectHourPattern = perDivision((w, d) => hourPattern(w.seed, d));
+export const selectWomenHourPattern = perDivision((w, d) => hourPattern(w.seed, d, WOMEN_CATEGORIES));
+/** Situation in all 8 divisions. */
+export const selectDivisionThreat: (w: World) => ReturnType<typeof divisionThreat> = perWorld((w) => divisionThreat(w, w.now));
+
+/** Today's price observations (Dhaka when no division); the same array all day. Null before hydration. */
+export function usePrices(div?: DivisionScope): PriceObservation[] | null {
+  const d = div === "all" ? undefined : div;
+  return useCommand((w) => observedPrices(w.seed, bdDay(w.now), d));
+}
+
+/** Every recall with its hazard, regulator and state; a stable array until a recall changes. Null before hydration. */
+export function useRecalls(): RecallRow[] | null {
+  return useCommand(recallRows);
 }
 
 /* ---------------------------------------------------------------- writing */

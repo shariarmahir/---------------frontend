@@ -10,8 +10,6 @@ export function generateStaticParams() {
   return STATIONS.map((s) => ({ id: s.id }));
 }
 
-export const dynamicParams = false;
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const station = STATIONS.find((s) => s.id === id);

@@ -12,6 +12,14 @@ import { OFFICES, TEAMS } from "../../data/command/consumer.ts";
 /** How long an alerted unit has to acknowledge before the case escalates. */
 export const ACK_WINDOW_MS: Record<Severity, number> = { critical: 45_000, high: 90_000, normal: 180_000 };
 
+/** An SOS press gets the shortest window of all. */
+export const SOS_ACK_WINDOW_MS = 30_000;
+
+/** The acknowledgement window for this case: SOS_ACK_WINDOW_MS for an SOS, else by severity. */
+export function ackWindowMs(c: Pick<Case, "category" | "severity">): number {
+  return c.category === "sos" ? SOS_ACK_WINDOW_MS : ACK_WINDOW_MS[c.severity];
+}
+
 /** Missed alerts after which a case is flagged overdue. */
 export const OVERDUE_AFTER_TIMEOUTS = 3;
 

@@ -1,42 +1,46 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useState } from "react";
 import { Icon } from "@/components/ui/icon";
-import { filterCases, isOpen, pendingAlerts } from "@/lib/command/selectors";
-import { perWorld, useCommand } from "@/lib/command/store";
-import type { World } from "@/lib/command/types";
+import { DIVISION_BY_ID } from "@/data/command/divisions";
+import type { DivisionThreat } from "@/lib/command/intel";
+import { pendingAlerts, unitsInDivision } from "@/lib/command/selectors";
+import { perDivision, selectDivisionThreat, selectOpenIn, selectUnitsIn, useCommand } from "@/lib/command/store";
 import { cn } from "@/lib/utils";
 import { AlertFeed } from "./alert-feed";
-import { Breakdowns } from "./breakdowns";
+import { Breakdowns, selectOpenCounts } from "./breakdowns";
 import { CaseDrawer, useSelectedCase } from "./case-drawer";
 import { CaseTable } from "./case-table";
-import { Bn, Panel, Skeleton, cb, focusRing, num } from "./kit";
+import { DivisionPicker, divisionFocus, useDivision, type DivisionScope } from "./division-picker";
+import { Bn, Eased, Panel, Skeleton, ThreatPill, cb, focusRing, num } from "./kit";
+import { ScrollCue } from "./scroll-cue";
 import { KpiRow } from "./kpi-row";
+import { LiveTicker } from "./live-ticker";
 import { MapView } from "./map-view";
 import { CommandPage } from "./shell";
+import { useWide } from "./use-wide";
 
 /**
- * /protibad/command: both departments at once. KPI strip; the live map
- * beside the alert feed; open cases by category and division; every open
- * case in a table (the map is supplementary). Any case opens the drawer,
- * kept in ?case= so it can be shared. Uses useSearchParams: render it
- * inside <Suspense>.
+ * /protibad/command: both departments at once. The division picker (?div=,
+ * All Bangladesh by default) scopes everything under it; then the KPI strip,
+ * the live event strip, the live map beside the alert feed, each division's
+ * situation (a tile per division that also sets the scope), open cases by
+ * category and by division (by area inside one), and every open case in a
+ * table (the map is supplementary). Any case opens the drawer, kept in ?case=
+ * so it can be shared. Uses useSearchParams: render it inside <Suspense>.
  */
 
-const selectOpen = perWorld((w: World) => w.cases.filter(isOpen));
-const selectOpenSorted = perWorld((w: World) => filterCases(w, { status: "open" }));
-const selectUnits = (w: World) => w.units;
-const selectSummary = perWorld((w: World) => {
+const selectSummaryIn = perDivision((w, d) => {
   let patrols = 0;
   let teams = 0;
-  for (const u of w.units) {
+  for (const u of unitsInDivision(w, d)) {
     if (u.status === "off-duty") continue;
     if (u.kind === "patrol") patrols++;
     if (u.kind === "team") teams++;
   }
   return { patrols, teams };
 });
-const selectPendingCount = perWorld((w: World) => pendingAlerts(w, "police").length + pendingAlerts(w, "consumer").length);
+const selectPendingCountIn = perDivision((w, d) => pendingAlerts(w, "police", d).length + pendingAlerts(w, "consumer", d).length);
 
 const LEGEND: { label: string; swatch: string }[] = [
   { label: "Police case", swatch: "size-3 rounded-full bg-signal-orange ring-2 ring-black outline outline-1 outline-white/30" },
@@ -48,28 +52,24 @@ const LEGEND: { label: string; swatch: string }[] = [
   { label: "District office", swatch: "size-3 rounded-sm bg-cobalt ring-2 ring-white" },
 ];
 
-const WIDE = "(min-width: 64rem)";
-function subscribeWide(cb: () => void) {
-  const mq = window.matchMedia(WIDE);
-  mq.addEventListener("change", cb);
-  return () => mq.removeEventListener("change", cb);
-}
-/** lg and up (the feed sits beside the map there); false on the server. */
-const useWide = () => useSyncExternalStore(subscribeWide, () => window.matchMedia(WIDE).matches, () => false);
-
 const DESK_FEED = 14;
 const PHONE_FEED = 5;
 
 export function Overview() {
   const [selected, setSelected] = useSelectedCase();
+  const [div, setDiv] = useDivision();
   const wide = useWide();
   const [allAlerts, setAllAlerts] = useState(false);
   const feedLimit = wide ? DESK_FEED : allAlerts ? 500 : PHONE_FEED;
-  const open = useCommand(selectOpen);
-  const openSorted = useCommand(selectOpenSorted);
-  const units = useCommand(selectUnits);
-  const summary = useCommand(selectSummary);
-  const pending = useCommand(selectPendingCount);
+  // Open cases in the scope, critical first then newest: the map, the table and the feed footer share it.
+  const open = useCommand(selectOpenIn(div));
+  const units = useCommand(selectUnitsIn(div));
+  const summary = useCommand(selectSummaryIn(div));
+  const pending = useCommand(selectPendingCountIn(div));
+  const counts = useCommand(selectOpenCounts.all);
+  // A case outside the scope, or closed, is not on the map: frame the division rather than an absent case.
+  const onMap = selected !== null && (open?.some((c) => c.id === selected) ?? false);
+  const where = div === "all" ? null : DIVISION_BY_ID[div];
 
   return (
     <CommandPage
@@ -80,11 +80,15 @@ export function Overview() {
         </>
       }
     >
-      <KpiRow />
+      <DivisionPicker counts={counts ?? undefined} countLabel="open cases" />
+
+      <KpiRow div={div} />
+
+      <LiveTicker div={div} onOpen={setSelected} />
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem] xl:grid-cols-[minmax(0,1fr)_26rem]">
         <Panel
-          title="Live map"
+          title={where ? <>Live map · <Bn>{where.nameBn}</Bn></> : "Live map"}
           icon="public"
           sub={
             open && summary ? (
@@ -101,9 +105,10 @@ export function Overview() {
             className="h-80 border-y border-white/10 sm:h-[26rem] lg:h-auto lg:min-h-[32rem] lg:flex-1"
             cases={open ?? []}
             units={units ?? []}
-            selectedId={selected ?? undefined}
+            selectedId={onMap ? (selected ?? undefined) : undefined}
             onSelect={setSelected}
-            focus={selected ? "selection" : "country"}
+            focus={onMap ? "selection" : divisionFocus(div)}
+            sos
           />
           <ul aria-label="Map legend" className="flex flex-wrap gap-x-4 gap-y-2 px-4 py-3 sm:px-5">
             {LEGEND.map((l) => (
@@ -129,9 +134,11 @@ export function Overview() {
           className="lg:h-0 lg:min-h-full"
           bodyClassName="flex min-h-0 flex-col px-2 sm:px-2.5"
         >
-          <AlertFeed onOpen={setSelected} limit={feedLimit} className="flex-1 overflow-y-auto overscroll-contain" />
+          <ScrollCue className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain">
+            <AlertFeed div={div} onOpen={setSelected} limit={feedLimit} />
+          </ScrollCue>
           {open ? (
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-white/10 px-1.5 pt-3 text-xs text-white/60 tabular-nums">
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-white/10 px-1.5 pt-3 text-xs text-white/65 tabular-nums">
               <span>
                 Showing {num(Math.min(feedLimit, open.length))} of {num(open.length)} open
               </span>
@@ -149,13 +156,26 @@ export function Overview() {
         </Panel>
       </div>
 
-      <Breakdowns />
+      <DivisionSituation div={div} onChoose={setDiv} />
 
-      <Panel id="open-cases" title="Open cases" icon="list_alt" sub="Critical first, then newest. Select a case to work it.">
-        <CaseTable cases={openSorted} onOpen={setSelected} caption="Open cases" empty="No open cases. New complaints will appear here." />
+      <Breakdowns div={div} />
+
+      <Panel
+        id="open-cases"
+        title={where ? <>Open cases · <Bn>{where.nameBn}</Bn></> : "Open cases"}
+        icon="list_alt"
+        sub="Critical first, then newest. Select a case to work it."
+      >
+        <CaseTable
+          key={div}
+          cases={open}
+          onOpen={setSelected}
+          caption={where ? `Open cases, ${where.name} division` : "Open cases"}
+          empty={where ? "No open cases in this division. New complaints will appear here." : "No open cases. New complaints will appear here."}
+        />
       </Panel>
 
-      <p className="flex items-center gap-2 text-xs text-white/50">
+      <p className="flex items-center gap-2 text-xs text-white/65">
         <Icon name="map" className="text-[16px]" />
         Police stations are real thanas at approximate positions. Map data © OpenStreetMap contributors.
       </p>
@@ -165,10 +185,90 @@ export function Overview() {
   );
 }
 
+/* ───────────── division situation ───────────── */
+
+/**
+ * One tile per division from intel's divisionThreat: the level (red only for
+ * critical), open police cases, critical ones and SOS presses still waiting.
+ * A tile is a toggle for the page's scope: choosing the current one again
+ * goes back to All Bangladesh.
+ */
+function DivisionSituation({ div, onChoose }: { div: DivisionScope; onChoose(div: DivisionScope): void }) {
+  const threat = useCommand(selectDivisionThreat);
+  return (
+    <Panel
+      id="division-situation"
+      title="Division situation"
+      icon="radar"
+      sub="Open police cases, critical ones and SOS presses waiting, scored against each division's usual load at this hour. Choose a division to scope the board."
+    >
+      {threat === null ? (
+        <div aria-hidden="true" className="grid grid-cols-2 gap-2 sm:grid-cols-4 2xl:grid-cols-8">
+          {Array.from({ length: 8 }, (_, i) => (
+            <Skeleton key={i} className="h-28 rounded-xl" />
+          ))}
+        </div>
+      ) : (
+        <ul aria-label="Divisions" className="grid grid-cols-2 gap-2 sm:grid-cols-4 2xl:grid-cols-8">
+          {threat.map((t) => (
+            <li key={t.division} className="min-w-0">
+              <ThreatTile t={t} on={div === t.division} onChoose={() => onChoose(div === t.division ? "all" : t.division)} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </Panel>
+  );
+}
+
+function ThreatTile({ t, on, onChoose }: { t: DivisionThreat; on: boolean; onChoose(): void }) {
+  const d = DIVISION_BY_ID[t.division];
+  const figures: { label: string; value: number; urgent?: boolean }[] = [
+    { label: "police", value: t.open },
+    { label: "critical", value: t.critical },
+    { label: "SOS", value: t.sosWaiting, urgent: t.sosWaiting > 0 },
+  ];
+  return (
+    <button
+      type="button"
+      aria-pressed={on}
+      onClick={onChoose}
+      className={cn(
+        "flex h-full w-full flex-col gap-2.5 rounded-xl px-3 py-3 text-left transition-[background-color,box-shadow,translate] duration-200 ease-out hover:-translate-y-px motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+        focusRing,
+        on ? "bg-bdnavy-700 ring-2 ring-signal-orange" : "bg-black/30 ring-1 ring-white/10 hover:bg-white/6",
+      )}
+    >
+      {/* The pill wraps under the name in a narrow tile rather than cutting the name short. */}
+      <span className="flex min-w-0 flex-wrap items-start justify-between gap-x-2 gap-y-1.5">
+        <span className="flex flex-col">
+          <Bn className={cn("text-base leading-tight font-bold", on ? "text-signal-orange" : "text-white")}>{d.nameBn}</Bn>
+          <span className="text-xs text-white/65">{d.name}</span>
+        </span>
+        <ThreatPill level={t.level} />
+      </span>
+      <span className="grid grid-cols-3 gap-1.5">
+        {figures.map((f) => (
+          <span key={f.label} className="flex min-w-0 flex-col">
+            <span className={cn("font-grotesk text-lg leading-none font-bold tabular-nums", f.urgent ? "text-crimson-bright" : "text-white")}>
+              <Eased value={num(f.value)} />
+            </span>
+            <span className="truncate text-xs text-white/65">
+              {f.label}
+              {f.label === "police" ? <span className="sr-only"> cases open</span> : f.label === "SOS" ? <span className="sr-only"> waiting</span> : null}
+            </span>
+          </span>
+        ))}
+      </span>
+    </button>
+  );
+}
+
 /** What the server and the first paint show before the world is read. */
 export function OverviewFallback() {
   return (
     <CommandPage title="Overview" subtitle="Loading the live board…">
+      <Skeleton className="h-12 w-full rounded-2xl" />
       <Skeleton className="h-32 w-full rounded-2xl" />
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem] xl:grid-cols-[minmax(0,1fr)_26rem]">
         <Skeleton className="h-96 rounded-2xl lg:h-[40rem]" />

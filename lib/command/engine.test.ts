@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { STALE_AFTER_MS, newCase, parseSaved, seedWorld, type SimRng } from "./generate.ts";
-import { ACK_WINDOW_MS, ARRIVE_KM, CLOSE_AFTER_MS, DEMO_SPEED, MAX_CASES, OPERATOR_HOLD_MS, alertNext, kmPerTick, resume, tick, touchedByOperator } from "./engine.ts";
+import { ACK_WINDOW_MS, ARRIVE_KM, CLOSE_AFTER_MS, DEMO_SPEED, MAX_CASES, OPERATOR_HOLD_MS, alertNext, kmPerTick, prune, resume, tick, touchedByOperator } from "./engine.ts";
 import { addNote, dispatch, escalate } from "./actions.ts";
 import { SPEED_KMH, haversineKm, rankUnits } from "./geo.ts";
 import { mulberry32 } from "./rng.ts";
@@ -297,7 +297,9 @@ test("a fresh other-agency case waits a minute before the desk forwards it", () 
 test("the world keeps at most MAX_CASES cases by dropping the oldest closed ones", () => {
   assert.equal(MAX_CASES, 250);
   const w0 = seedWorld(7, T);
-  const closed = w0.cases.find((c) => c.status === "closed");
+  // A plain closed case (no notes, no business): CRM history outlives these (next test).
+  const plainClosed = (c: Case) => c.status === "closed" && c.notes.length === 0 && c.businessId === undefined;
+  const closed = w0.cases.find(plainClosed);
   assert.ok(closed);
   const filler: Case[] = Array.from({ length: 260 }, (_, i) => ({
     ...closed,
@@ -309,9 +311,10 @@ test("the world keeps at most MAX_CASES cases by dropping the oldest closed ones
   assert.equal(w.cases.length, MAX_CASES);
   const kept = new Set(w.cases.map((c) => c.id));
   for (const c of big.cases) if (c.status !== "closed") assert.ok(kept.has(c.id), `${c.id} kept`);
-  // The ones dropped are the oldest closed cases.
+  // The ones dropped are the oldest plain closed cases.
   const droppedClosed = big.cases.filter((c) => !kept.has(c.id));
-  const keptClosed = w.cases.filter((c) => c.status === "closed");
+  assert.ok(droppedClosed.every(plainClosed));
+  const keptClosed = w.cases.filter(plainClosed);
   assert.ok(Math.max(...droppedClosed.map((c) => c.reportedAt)) <= Math.min(...keptClosed.map((c) => c.reportedAt)));
 
   // Open cases are never dropped, even past the cap.
@@ -320,6 +323,40 @@ test("the world keeps at most MAX_CASES cases by dropping the oldest closed ones
   const open: Case[] = Array.from({ length: 300 }, (_, i) => ({ ...waiting, id: `PB-8${String(i).padStart(5, "0")}` }));
   const crowded = tick({ ...w0, cases: open }, T + 1000, { responders: false });
   assert.ok(crowded.cases.length >= 300);
+});
+
+test("pruning keeps CRM history: a closed case with a business or a note outlives older plain closed cases", () => {
+  const w0 = seedWorld(7, T);
+  const template = w0.cases.find((c) => c.status === "closed");
+  assert.ok(template);
+  const plain = (id: string, at: number): Case => ({ ...template, id, reportedAt: at, businessId: undefined, notes: [] });
+  const oldest = T - 6 * 3600_000;
+  const fined: Case = { ...plain("PB-700000", oldest), notes: [{ at: oldest, text: "Fine imposed.", kind: "fine", amountTk: 5000 }] };
+  const linked: Case = { ...plain("PB-700001", oldest + 1000), businessId: w0.businesses[0].id };
+  const filler = Array.from({ length: 260 }, (_, i) => plain(`PB-7${String(i + 10).padStart(5, "0")}`, oldest + 60_000 + i * 1000));
+  const keepers = [fined, linked];
+  const rest = w0.cases.filter((c) => c.status !== "closed");
+  const big: World = { ...w0, cases: [...keepers, ...filler, ...rest] };
+  const w = tick(big, T + 1000, { responders: false });
+  assert.equal(w.cases.length, MAX_CASES);
+  const kept = new Set(w.cases.map((c) => c.id));
+  assert.ok(kept.has(fined.id), "fined case kept");
+  assert.ok(kept.has(linked.id), "business case kept");
+  // The plain ones dropped are the oldest plain ones.
+  assert.ok(!kept.has(filler[0].id));
+  assert.ok(kept.has(filler[filler.length - 1].id));
+  for (const c of rest) assert.ok(kept.has(c.id), `${c.id} kept`);
+
+  // Past the plain ones, business cases go before annotated ones, each oldest first.
+  const linkedMany = Array.from({ length: 300 }, (_, i) => ({
+    ...plain(`PB-600${String(i).padStart(3, "0")}`, oldest + 10_000 + i * 1000),
+    businessId: w0.businesses[0].id,
+  }));
+  const pruned = prune([fined, ...linkedMany]);
+  assert.equal(pruned.length, MAX_CASES);
+  assert.ok(pruned.some((c) => c.id === fined.id), "an annotated case outlives business-only cases");
+  assert.ok(!pruned.some((c) => c.id === linkedMany[0].id));
+  assert.ok(pruned.some((c) => c.id === linkedMany[299].id));
 });
 
 test("other-agency desk: new cases get forwarded to their agency, only when responders run", () => {
@@ -447,9 +484,10 @@ test("parseSaved: a saved world (bare or wrapped with its counter) round-trips a
 
 test("parseSaved: wrong version → null", () => {
   const w = seedWorld(11, T);
-  assert.equal(parseSaved(JSON.stringify({ ...w, version: 2 }), T), null);
+  assert.equal(parseSaved(JSON.stringify({ ...w, version: 1 }), T), null, "a v1 world reseeds");
+  assert.equal(parseSaved(JSON.stringify({ ...w, version: 3 }), T), null);
   assert.equal(parseSaved(JSON.stringify({ ...w, version: undefined }), T), null);
-  assert.equal(parseSaved(JSON.stringify({ world: { ...w, version: "1" } }), T), null);
+  assert.equal(parseSaved(JSON.stringify({ world: { ...w, version: "2" } }), T), null);
 });
 
 test("parseSaved: stale (older than 30 minutes) → null; just inside → world", () => {
@@ -487,6 +525,42 @@ test("parseSaved: garbage and broken shapes → null", () => {
     { ...w, units: [] },
   ];
   for (const b of broken) assert.equal(parseSaved(JSON.stringify(b), T), null, JSON.stringify(b).slice(0, 80));
+});
+
+test("seedWorld: some consumer cases carry inspection outcomes, in order and valid", () => {
+  const w = seedWorld(7, T);
+  const noted = w.cases.filter((c) => c.notes.length > 0);
+  assert.ok(noted.length >= 3, String(noted.length));
+  for (const c of noted) {
+    assert.equal(c.dept, "consumer", c.id);
+    for (const n of c.notes) {
+      assert.ok(n.kind, c.id);
+      assert.ok(n.at >= c.reportedAt && n.at <= T, c.id);
+      if (n.kind === "fine") assert.ok(Number.isInteger(n.amountTk) && n.amountTk! > 0, c.id);
+      else assert.equal(n.amountTk, undefined, c.id);
+    }
+  }
+  assert.ok(noted.some((c) => c.notes.some((n) => n.kind === "fine")));
+  assert.ok(parseSaved(JSON.stringify(w), T));
+});
+
+test("parseSaved: notes with a bad kind, amount or text → null; good ones round-trip", () => {
+  const w = seedWorld(11, T);
+  const withNote = (note: unknown): unknown => ({ ...w, cases: w.cases.map((c, i) => (i === 0 ? { ...c, notes: [note] } : c)) });
+  const good = { at: T - 1000, text: "ok", kind: "fine", amountTk: 500, followUpAt: T };
+  assert.ok(parseSaved(JSON.stringify(withNote(good)), T));
+  assert.ok(parseSaved(JSON.stringify(withNote({ at: T - 1000, text: "plain" })), T));
+  for (const bad of [
+    { ...good, kind: "raid" },
+    { ...good, kind: 5 },
+    { ...good, amountTk: "500" },
+    { ...good, amountTk: 1.5 },
+    { ...good, amountTk: -1 },
+    { ...good, text: 7 },
+    { ...good, followUpAt: "soon" },
+  ]) {
+    assert.equal(parseSaved(JSON.stringify(withNote(bad)), T), null, JSON.stringify(bad));
+  }
 });
 
 test("pause freezes time: resume after 5 min → no alert times out, windows left as they were", () => {

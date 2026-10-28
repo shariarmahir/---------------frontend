@@ -73,7 +73,7 @@ type BizRow = [nameBn: string, name: string, kind: string, district: string, div
 const BIZ_ROWS: BizRow[] = [
   ["নতুন স্বাদ রেস্তোরাঁ", "Notun Shad Restaurant", "restaurant", "Dhaka", "dhaka", 23.8072, 90.3691],
   ["সবুজ বাজার মুদি", "Shobuj Bazar Mudi", "grocery", "Dhaka", "dhaka", 23.7568, 90.3751],
-  ["নীলকমল ফার্মেসি", "Nilkamal Pharmacy", "pharmacy", "Dhaka", "dhaka", 23.7667, 90.3595],
+  ["বকুলতলা ফার্মেসি", "Bokultola Pharmacy", "pharmacy", "Dhaka", "dhaka", 23.7667, 90.3595],
   ["মিষ্টিমুখ মিষ্টান্ন ভাণ্ডার", "Mishtimukh Mishtanno Bhandar", "sweetshop", "Dhaka", "dhaka", 23.7392, 90.3964],
   ["ভোরের আলো বেকারি", "Bhorer Alo Bakery", "bakery", "Dhaka", "dhaka", 23.7336, 90.4165],
   ["উত্তর তারা ফিলিং স্টেশন", "Uttor Tara Filling Station", "fuel", "Dhaka", "dhaka", 23.8695, 90.3985],
@@ -90,7 +90,7 @@ const BIZ_ROWS: BizRow[] = [
   ["সৈকত ভোজনালয়", "Shoikot Bhojonaloy", "restaurant", "Cox's Bazar", "chattogram", 21.4278, 91.9781],
   ["কুমিল্লা মিষ্টি কুটির", "Cumilla Mishti Kutir", "sweetshop", "Cumilla", "chattogram", 23.4612, 91.1815],
   ["রূপসা নদী মুদি", "Rupsha Nodi Mudi", "grocery", "Khulna", "khulna", 22.8105, 89.5507],
-  ["সুন্দরবন ফার্মেসি", "Sundarban Pharmacy", "pharmacy", "Khulna", "khulna", 22.8206, 89.5304],
+  ["হিজলপাতা ফার্মেসি", "Hijolpata Pharmacy", "pharmacy", "Khulna", "khulna", 22.8206, 89.5304],
   ["খেজুর রস ভোজনালয়", "Khejur Rosh Bhojonaloy", "restaurant", "Jashore", "khulna", 23.1668, 89.2092],
   ["পদ্মাপাড় বেকারি", "Padmapar Bakery", "bakery", "Rajshahi", "rajshahi", 24.3684, 88.6006],
   ["বরেন্দ্র সুলভ বাজার", "Borendro Sulov Bazar", "market", "Bogura", "rajshahi", 24.8469, 89.3706],

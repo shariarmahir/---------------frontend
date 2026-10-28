@@ -3,10 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 import { Icon } from "@/components/ui/icon";
-import { isOpen } from "@/lib/command/selectors";
-import { perWorld, resetDemo, setPaused, useCommand, useCommandClock } from "@/lib/command/store";
+import { isOpen, isWomenCase } from "@/lib/command/selectors";
+import { perWorld, resetDemo, selectNow, setPaused, useCommand, useCommandClock } from "@/lib/command/store";
 import type { Dept } from "@/lib/command/types";
 import { cn } from "@/lib/utils";
 import { Bn, DEMO_NOTICE, DemoBadge, Skeleton, dhakaTime, focusRing, num } from "./kit";
@@ -19,14 +19,21 @@ import { Bn, DEMO_NOTICE, DemoBadge, Skeleton, dhakaTime, focusRing, num } from 
  * clock (useCommandClock) once for every page under /protibad/command.
  */
 
+/** What a badge beside a link counts: open cases (all or one department), SOS waiting, open women and child cases. */
+type CountKey = Dept | "all" | "sos" | "women";
+
 interface NavItem {
   href: string;
   label: ReactNode;
   /** Plain label for aria and the breadcrumb. */
   text: string;
   icon: string;
-  /** Open cases shown beside the link. */
-  count?: Dept | "all";
+  /** The number shown beside the link. */
+  count?: CountKey;
+  /** What the number is, for screen readers ("3 open"). */
+  countText?: string;
+  /** The badge turns red while the number is above 0 (urgency only). */
+  urgent?: boolean;
   /** Drawn indented under the item above it. */
   sub?: boolean;
 }
@@ -34,16 +41,37 @@ interface NavItem {
 const BASE = "/protibad/command";
 
 const NAV: NavItem[][] = [
-  [{ href: BASE, label: "Overview", text: "Overview", icon: "dashboard", count: "all" }],
+  [
+    { href: BASE, label: "Overview", text: "Overview", icon: "dashboard", count: "all" },
+    { href: `${BASE}/intel`, label: "Intelligence", text: "Intelligence", icon: "radar" },
+    { href: `${BASE}/roadmap`, label: "Roadmap", text: "Roadmap", icon: "route" },
+  ],
+  [
+    { href: `${BASE}/emergency`, label: "Emergency", text: "Emergency", icon: "sos", count: "sos", countText: "SOS waiting", urgent: true },
+    { href: `${BASE}/women`, label: "Women safety", text: "Women safety", icon: "woman", count: "women" },
+  ],
   [
     { href: `${BASE}/police`, label: "Police", text: "Police", icon: "local_police", count: "police" },
     { href: `${BASE}/police/stations`, label: "Stations", text: "Stations", icon: "location_city", sub: true },
+  ],
+  [
     { href: `${BASE}/consumer`, label: <Bn>ভোক্তা অধিদপ্তর</Bn>, text: "ভোক্তা অধিদপ্তর", icon: "storefront", count: "consumer" },
     { href: `${BASE}/consumer/businesses`, label: "Businesses", text: "Businesses", icon: "store", sub: true },
+    { href: `${BASE}/consumer/prices`, label: "Price watch", text: "Price watch", icon: "price_check", sub: true },
+    { href: `${BASE}/consumer/recalls`, label: "Remove from sale", text: "Remove from sale", icon: "remove_shopping_cart", sub: true },
   ],
   [{ href: `${BASE}/other`, label: "Other agencies", text: "Other agencies", icon: "forward_to_inbox", count: "other" }],
 ];
 const ALL = NAV.flat();
+/** A sub item's parent: the last full item above it in its group (for the breadcrumb). */
+const PARENT = new Map<string, NavItem>();
+for (const group of NAV) {
+  let top: NavItem | undefined;
+  for (const i of group) {
+    if (!i.sub) top = i;
+    else if (top) PARENT.set(i.href, top);
+  }
+}
 
 /** The nav item for this path: the longest href the path equals or sits under. */
 function current(path: string): NavItem | undefined {
@@ -54,15 +82,44 @@ function current(path: string): NavItem | undefined {
   return best;
 }
 
-const selectOpenCounts = perWorld((w) => {
-  const c: Record<Dept | "all", number> = { all: 0, police: 0, consumer: 0, other: 0 };
+const selectCounts = perWorld((w) => {
+  const c: Record<CountKey, number> = { all: 0, police: 0, consumer: 0, other: 0, sos: 0, women: 0 };
   for (const x of w.cases) {
     if (!isOpen(x)) continue;
     c.all++;
     c[x.dept]++;
+    // SOS waiting: nobody has acknowledged it yet (selectors' sosQueue).
+    if (x.category === "sos" && (x.status === "new" || x.status === "alerted")) c.sos++;
+    if (isWomenCase(x)) c.women++;
   }
   return c;
 });
+
+/** "3 open", "1 SOS waiting": the link's count for screen readers. */
+const countSr = (i: NavItem, n: number): string => `${i.text}, ${num(n)} ${i.countText ?? "open"}`;
+
+/**
+ * Keeps the current link in view inside its own scroller (scrollLeft or
+ * scrollTop only, so the page never moves): the tab strip below lg, the
+ * sidebar at short heights.
+ */
+function useCurrentInView<T extends HTMLElement>(axis: "x" | "y", href: string | undefined) {
+  const ref = useRef<T>(null);
+  useEffect(() => {
+    const box = ref.current;
+    const link = href ? box?.querySelector<HTMLElement>(`a[href="${href}"]`) : null;
+    if (!box || !link) return;
+    const pad = 24;
+    const b = box.getBoundingClientRect();
+    const l = link.getBoundingClientRect();
+    if (axis === "x") {
+      if (l.left < b.left + pad) box.scrollLeft -= b.left + pad - l.left;
+      else if (l.right > b.right - pad) box.scrollLeft += l.right - (b.right - pad);
+    } else if (l.top < b.top + pad) box.scrollTop -= b.top + pad - l.top;
+    else if (l.bottom > b.bottom - pad) box.scrollTop += l.bottom - (b.bottom - pad);
+  }, [axis, href]);
+  return ref;
+}
 
 function Brand({ compact }: { compact?: boolean }) {
   return (
@@ -76,10 +133,17 @@ function Brand({ compact }: { compact?: boolean }) {
   );
 }
 
-function CountBadge({ n, active }: { n: number | undefined; active: boolean }) {
+function CountBadge({ n, active, urgent }: { n: number | undefined; active: boolean; urgent?: boolean }) {
   if (n === undefined) return null;
+  const red = urgent && n > 0;
   return (
-    <span aria-hidden="true" className={cn("ml-auto rounded-full px-2 py-0.5 text-xs font-bold tabular-nums", active ? "bg-signal-orange text-text-primary" : "bg-white/8 text-white/75")}>
+    <span
+      aria-hidden="true"
+      className={cn(
+        "ml-auto rounded-full px-2 py-0.5 text-xs font-bold tabular-nums",
+        red ? "bg-national-crimson text-white" : active ? "bg-signal-orange text-text-primary" : "bg-white/8 text-white/75",
+      )}
+    >
       {n > 999 ? "999+" : num(n)}
     </span>
   );
@@ -88,11 +152,11 @@ function CountBadge({ n, active }: { n: number | undefined; active: boolean }) {
 function SideNav() {
   const path = usePathname();
   const here = current(path);
-  const counts = useCommand(selectOpenCounts);
+  const counts = useCommand(selectCounts);
   return (
-    <nav aria-label="Dashboard" className="flex flex-col gap-3">
+    <nav aria-label="Dashboard" className="flex flex-col gap-2.5">
       {NAV.map((group, gi) => (
-        <ul key={gi} className={cn("flex flex-col gap-0.5", gi > 0 && "border-t border-white/10 pt-3")}>
+        <ul key={gi} className={cn("flex flex-col gap-0.5", gi > 0 && "border-t border-white/10 pt-2.5")}>
           {group.map((i) => {
             const active = here?.href === i.href;
             const n = i.count && counts ? counts[i.count] : undefined;
@@ -101,7 +165,7 @@ function SideNav() {
                 <Link
                   href={i.href}
                   aria-current={active ? "page" : undefined}
-                  aria-label={n !== undefined ? `${i.text}, ${n} open` : undefined}
+                  aria-label={n !== undefined ? countSr(i, n) : undefined}
                   className={cn(
                     "relative flex min-h-10 items-center gap-3 rounded-xl pr-2.5 text-sm font-semibold transition-colors",
                     focusRing,
@@ -111,9 +175,11 @@ function SideNav() {
                 >
                   {active ? <span aria-hidden="true" className="absolute top-2 bottom-2 left-0 w-1 rounded-r-full bg-signal-orange" /> : null}
                   {i.sub ? <span aria-hidden="true" className="absolute top-0 bottom-1/2 left-5 w-3 rounded-bl-md border-b border-l border-white/15" /> : null}
-                  <Icon name={i.icon} className={cn("shrink-0", i.sub ? "text-[18px]" : "text-[20px]")} />
+                  <span className="inline-flex shrink-0">
+                    <Icon name={i.icon} className={i.sub ? "text-[18px]" : "text-[20px]"} />
+                  </span>
                   <span className="min-w-0 truncate">{i.label}</span>
-                  <CountBadge n={n} active={active} />
+                  <CountBadge n={n} active={active} urgent={i.urgent} />
                 </Link>
               </li>
             );
@@ -124,20 +190,27 @@ function SideNav() {
   );
 }
 
-/** Below lg: the same links as a scrolling strip; the current one carries a gold underline. */
+/**
+ * Below lg: the same links as a scrolling strip, the current one scrolled
+ * into view with a gold underline. Only urgent numbers (SOS waiting) show here.
+ */
 function TabStrip() {
   const path = usePathname();
   const here = current(path);
+  const counts = useCommand(selectCounts);
+  const strip = useCurrentInView<HTMLUListElement>("x", here?.href);
   return (
     <nav aria-label="Dashboard" className="border-b border-white/10 lg:hidden">
-      <ul className="flex gap-1 overflow-x-auto px-3 [scrollbar-width:none] sm:px-5 [&::-webkit-scrollbar]:hidden">
+      <ul ref={strip} className="flex gap-1 overflow-x-auto px-3 [scrollbar-width:none] sm:px-5 [&::-webkit-scrollbar]:hidden">
         {ALL.map((i) => {
           const active = here?.href === i.href;
+          const n = i.urgent && i.count && counts ? counts[i.count] : 0;
           return (
             <li key={i.href} className="shrink-0">
               <Link
                 href={i.href}
                 aria-current={active ? "page" : undefined}
+                aria-label={n > 0 ? countSr(i, n) : undefined}
                 className={cn(
                   "relative flex min-h-11 items-center gap-1.5 rounded-lg px-3 text-sm font-semibold whitespace-nowrap",
                   focusRing,
@@ -146,6 +219,11 @@ function TabStrip() {
               >
                 <Icon name={i.icon} className="text-[18px]" />
                 {i.label}
+                {n > 0 ? (
+                  <span aria-hidden="true" className="rounded-full bg-national-crimson px-1.5 text-xs font-bold text-white tabular-nums">
+                    {n > 99 ? "99+" : num(n)}
+                  </span>
+                ) : null}
                 {active ? <span aria-hidden="true" className="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-signal-orange" /> : null}
               </Link>
             </li>
@@ -162,7 +240,6 @@ function TabStrip() {
   );
 }
 
-const selectNow = (w: { now: number }) => w.now;
 const selectPaused = (w: { paused: boolean }) => w.paused;
 
 /** The simulation's clock in Dhaka time; it stops when the demo is paused. */
@@ -183,7 +260,7 @@ function LiveClock() {
             {dhakaTime(now)}
           </time>
         )}
-        <span className="mt-1 hidden text-xs text-white/55 sm:block">{paused ? "Paused · Dhaka" : "Live · Dhaka"}</span>
+        <span className="mt-1 hidden text-xs text-white/65 sm:block">{paused ? "Paused · Dhaka" : "Live · Dhaka"}</span>
       </span>
       <span className="sr-only">{paused ? "Simulation paused" : "Simulation running"}</span>
     </div>
@@ -204,7 +281,7 @@ function Controls() {
         aria-pressed={paused === true}
         onClick={() => setPaused(!paused)}
         className={cn(
-          "inline-flex size-11 items-center justify-center gap-2 rounded-xl font-grotesk text-sm font-bold ring-1 transition-colors disabled:opacity-50 sm:w-auto sm:px-3.5 lg:h-9 lg:min-h-0 lg:text-xs",
+          "inline-flex size-11 items-center justify-center gap-2 rounded-xl font-grotesk text-sm font-bold whitespace-nowrap ring-1 transition-colors disabled:opacity-50 sm:w-auto sm:px-3.5 lg:h-9 lg:min-h-0 lg:px-3 lg:text-xs",
           focusRing,
           paused ? "bg-signal-orange text-text-primary ring-signal-orange" : "bg-white/8 text-white ring-white/15 hover:bg-white/14",
         )}
@@ -217,7 +294,7 @@ function Controls() {
         disabled={!ready}
         onClick={reset}
         className={cn(
-          "inline-flex size-11 items-center justify-center gap-2 rounded-xl bg-white/8 font-grotesk text-sm font-bold text-white ring-1 ring-white/15 transition-colors hover:bg-white/14 disabled:opacity-50 sm:w-auto sm:px-3.5 lg:h-9 lg:text-xs",
+          "inline-flex size-11 items-center justify-center gap-2 rounded-xl bg-white/8 font-grotesk text-sm font-bold whitespace-nowrap text-white ring-1 ring-white/15 transition-colors hover:bg-white/14 disabled:opacity-50 sm:w-auto sm:px-3.5 lg:h-9 lg:px-3 lg:text-xs",
           focusRing,
         )}
       >
@@ -230,10 +307,19 @@ function Controls() {
 
 function Breadcrumb() {
   const here = current(usePathname());
+  const parent = here ? PARENT.get(here.href) : undefined;
   return (
-    <p className="hidden min-w-0 items-center gap-2 text-sm text-white/55 lg:flex">
+    <p className="hidden min-w-0 items-center gap-2 text-sm text-white/65 lg:flex">
       <span>Command</span>
       <Icon name="chevron_right" className="text-[16px] text-white/35" />
+      {parent ? (
+        <>
+          <Link href={parent.href} className={cn("shrink-0 rounded-md hover:text-white", focusRing)}>
+            {parent.label}
+          </Link>
+          <Icon name="chevron_right" className="text-[16px] text-white/35" />
+        </>
+      ) : null}
       <span className="truncate font-semibold text-white">{here?.label ?? "Dashboard"}</span>
     </p>
   );
@@ -241,13 +327,15 @@ function Breadcrumb() {
 
 export function CommandShell({ children }: { children: ReactNode }) {
   useCommandClock();
+  // At short heights the sidebar scrolls: keep the current link in it.
+  const sidebar = useCurrentInView<HTMLElement>("y", current(usePathname())?.href);
   return (
     <div lang="en" className="flex min-h-dvh bg-black text-white [color-scheme:dark]">
       <a href="#command-main" className="sr-only z-[100] rounded-xl bg-signal-orange px-4 py-2 font-bold text-text-primary focus:not-sr-only focus:fixed focus:top-3 focus:left-3">
         Skip to content
       </a>
 
-      <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col gap-7 overflow-y-auto border-r border-white/10 bg-black px-3 py-5 lg:flex">
+      <aside ref={sidebar} className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col gap-7 overflow-y-auto border-r border-white/10 bg-black px-3 py-5 lg:flex">
         <div className="px-2">
           <Brand />
         </div>
@@ -259,7 +347,7 @@ export function CommandShell({ children }: { children: ReactNode }) {
               Back to <Bn>প্রতিবাদ</Bn>
             </span>
           </Link>
-          <p className="px-3 text-xs leading-relaxed text-white/50">Every person, business and case here is fictional. Your actions are kept in this browser only.</p>
+          <p className="px-3 text-xs leading-relaxed text-white/65">Every person, business and case here is fictional. Your actions are kept in this browser only.</p>
         </div>
       </aside>
 
@@ -270,7 +358,7 @@ export function CommandShell({ children }: { children: ReactNode }) {
               <Brand compact />
             </div>
             <Breadcrumb />
-            <div className="ml-auto flex items-center gap-3 sm:gap-4">
+            <div className="ml-auto flex items-center gap-3 sm:gap-4 lg:gap-3 xl:gap-4">
               <LiveClock />
               <DemoBadge className="hidden sm:inline-flex" />
               <span aria-hidden="true" className="hidden h-6 w-px bg-white/12 sm:block" />
@@ -295,7 +383,18 @@ export function CommandShell({ children }: { children: ReactNode }) {
 }
 
 /** A dashboard page: gold title, optional subtitle and actions, then the content. */
-export function CommandPage({ title, subtitle, actions, children }: { title: string; subtitle?: ReactNode; actions?: ReactNode; children: ReactNode }) {
+export function CommandPage({
+  title,
+  subtitle,
+  actions,
+  children,
+}: {
+  /** A string, or markup when the heading needs a language tag (Bangla in `font-bengali` with `lang="bn"`). */
+  title: ReactNode;
+  subtitle?: ReactNode;
+  actions?: ReactNode;
+  children: ReactNode;
+}) {
   return (
     <div className="flex flex-col gap-5 lg:gap-6">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">

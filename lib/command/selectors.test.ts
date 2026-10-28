@@ -1,6 +1,30 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { bdDate, bdDay, businessHistory, byCategory, byDivision, filterCases, followUpsDue, kpis, pendingAlerts, stationStats } from "./selectors.ts";
+import {
+  DIVISION_IDS,
+  bdDate,
+  bdDay,
+  businessHistory,
+  byCategory,
+  byDivision,
+  filterCases,
+  followUpsDue,
+  inDivision,
+  isWomenCase,
+  kpis,
+  openInDivision,
+  pendingAlerts,
+  scopeWorld,
+  sosQueue,
+  stationRows,
+  stationStats,
+  unitDivision,
+  unitsInDivision,
+  womenCases,
+  womenDeskLoad,
+} from "./selectors.ts";
+import { seedWorld } from "./generate.ts";
+import { OFFICES, TEAMS } from "../../data/command/consumer.ts";
 import type { Case, Unit, World } from "./types.ts";
 
 /** 12:00 in Bangladesh on 25 Oct 2026. */
@@ -29,7 +53,7 @@ const unit = (id: string, kind: Unit["kind"], homeId: string): Unit => ({
 });
 
 const world: World = {
-  version: 1,
+  version: 2,
   seed: 1,
   now: T,
   rngState: 1,
@@ -148,4 +172,103 @@ test("followUpsDue: open until a later note or the end of the case; soonest firs
   };
   const due = followUpsDue(w, "st-a", T);
   assert.deepEqual(due.map((d) => [d.case.id, d.text, d.overdue]), [["PB-000101", "call back", true], ["PB-000102", "second", false]]);
+});
+
+/* ------------------------------------------------------------ v2: divisions */
+
+test("divisions: units carry theirs (offices and teams by the nearest place); inDivision and scopeWorld agree", () => {
+  assert.equal(DIVISION_IDS.length, 8);
+  const office = (slug: string) => OFFICES.find((o) => o.id === `of-${slug}`) as Unit;
+  assert.equal(unitDivision(office("dhaka-hq")), "dhaka");
+  assert.equal(unitDivision(office("ctg")), "chattogram");
+  assert.equal(unitDivision(office("cumilla")), "chattogram");
+  assert.equal(unitDivision(office("sherpur")), "mymensingh");
+  assert.equal(unitDivision(office("dinajpur")), "rangpur");
+  for (const t of TEAMS) assert.equal(unitDivision(t), unitDivision(OFFICES.find((o) => o.id === t.homeId) as Unit), t.id);
+  const w = seedWorld(7, T);
+  const ctg = scopeWorld(w, "chattogram");
+  assert.ok(ctg.cases.every((c) => c.place.division === "chattogram"));
+  assert.ok(ctg.units.length > 0 && ctg.units.every((u) => inDivision(u, "chattogram")));
+  assert.ok(ctg.businesses.every((b) => b.division === "chattogram"));
+  assert.equal(scopeWorld(w, "all"), w);
+  assert.equal(scopeWorld(w, undefined), w);
+  // Every division has police units, and the parts add up to the whole.
+  for (const d of DIVISION_IDS) assert.ok(unitsInDivision(w, d, "police").some((u) => u.kind === "station"), d);
+  assert.equal(DIVISION_IDS.reduce((s, d) => s + unitsInDivision(w, d).length, 0), w.units.length);
+  assert.equal(DIVISION_IDS.reduce((s, d) => s + openInDivision(w, d).length, 0), openInDivision(w, "all").length);
+});
+
+test("division-scoped kpis, filters, pending alerts and categories", () => {
+  assert.equal(kpis(world, T, "chattogram").open, 1);
+  assert.equal(kpis(world, T, "dhaka").open, 2);
+  assert.deepEqual(kpis(world, T, "all"), kpis(world, T));
+  assert.deepEqual(filterCases(world, { division: "chattogram" }).map((c) => c.id), ["PB-000002"]);
+  assert.equal(pendingAlerts(world, "police", "chattogram").length, 0);
+  assert.equal(pendingAlerts(world, "police", "dhaka").length, 1);
+  assert.deepEqual(byCategory(world, undefined, "chattogram"), [{ key: "adulteration", count: 1 }]);
+  assert.deepEqual(openInDivision(world, "dhaka").map((c) => c.id), ["PB-000001", "PB-000003"]);
+  assert.deepEqual(openInDivision(world, "dhaka", "consumer"), []);
+});
+
+test("stationRows: one pass of station numbers, scoped by division, busiest first", () => {
+  const w = seedWorld(7, T);
+  const all = stationRows(w);
+  assert.equal(all.length, w.units.filter((u) => u.kind === "station").length);
+  for (const r of all.slice(0, 5)) {
+    const s = stationStats(w, r.station.id);
+    assert.equal(r.open, s.open);
+    assert.equal(r.closed, s.closed);
+    assert.equal(r.medianFirstResponseMin, s.medianFirstResponseMin);
+    assert.deepEqual(r.patrols.map((u) => u.id), s.patrols.map((u) => u.id));
+    assert.equal(r.patrolsAvailable, r.patrols.filter((u) => u.status === "available").length);
+  }
+  for (let i = 1; i < all.length; i++) assert.ok(all[i - 1].open >= all[i].open);
+  const sylhet = stationRows(w, "sylhet");
+  assert.deepEqual(sylhet.map((r) => r.station.id).sort(), ["st-sunamganj-sadar", "st-sylhet-kotwali"]);
+  assert.ok(sylhet.every((r) => r.division === "sylhet"));
+});
+
+test("women safety: women categories or a woman/child victim; desk load per station", () => {
+  const women = (id: string, c: Partial<Case>) => mk(id, { homeId: "st-a", status: "acknowledged", ...c });
+  const w: World = {
+    ...world,
+    cases: [
+      women("PB-000201", { category: "sexual-harassment", severity: "critical", victim: "woman" }),
+      women("PB-000202", { category: "theft", victim: "woman", status: "alerted" }),
+      women("PB-000203", { category: "domestic-violence", victim: "child", status: "closed" }),
+      women("PB-000204", { category: "theft", victim: "general" }),
+      women("PB-000205", { category: "kidnapping", victim: "child", homeId: "st-b" }),
+      { ...women("PB-000206", { category: "adulteration", victim: "woman" }), dept: "consumer" },
+    ],
+  };
+  assert.deepEqual(w.cases.map(isWomenCase), [true, true, true, false, true, false]);
+  // Critical first, then newest (same time here, so by id, highest first).
+  assert.deepEqual(womenCases(w).map((c) => c.id), ["PB-000201", "PB-000205", "PB-000203", "PB-000202"]);
+  assert.equal(womenCases(w, "chattogram").length, 0);
+  const desks = womenDeskLoad(w);
+  assert.deepEqual(desks.map((d) => [d.station.id, d.open, d.critical, d.awaiting]), [["st-a", 2, 1, 1], ["st-b", 1, 0, 0]]);
+});
+
+test("sosQueue: waiting SOS cases with their three nearest free units, closest to escalating first", () => {
+  const base = seedWorld(7, T);
+  const at = (ago: number) => T - ago;
+  const sos = (id: string, ago: number, status: Case["status"]): Case =>
+    mk(id, {
+      category: "sos",
+      severity: "critical",
+      status,
+      reportedAt: at(ago),
+      alerts: status === "alerted" ? [{ at: at(ago), unitId: "pt-ramna-1", outcome: "pending" }] : [],
+    });
+  const w: World = { ...base, cases: [sos("PB-000301", 5_000, "alerted"), sos("PB-000302", 20_000, "alerted"), sos("PB-000303", 60_000, "new"), sos("PB-000304", 1000, "on-scene")] };
+  const q = sosQueue(w, T);
+  assert.deepEqual(q.map((e) => e.case.id), ["PB-000303", "PB-000302", "PB-000301"]);
+  assert.deepEqual(q.map((e) => e.msLeft), [0, 10_000, 25_000]);
+  assert.equal(q[0].waitedMs, 60_000);
+  for (const e of q) {
+    assert.equal(e.nearest.length, 3);
+    assert.ok(e.nearest.every((n) => n.unit.dept === "police" && n.unit.status === "available"));
+    for (let i = 1; i < 3; i++) assert.ok(e.nearest[i - 1].eta <= e.nearest[i].eta);
+  }
+  assert.equal(sosQueue(w, T, "khulna").length, 0);
 });

@@ -164,6 +164,26 @@ test("addNote: any status; needs text; keeps the follow-up time", () => {
   fails(addNote(W, of("alerted").id, NOW, ""), /note/);
 });
 
+test("addNote: kind and fine amount are stored; a fine needs a whole amount in range", () => {
+  const c = of("on-scene", "consumer");
+  const fine = get(ok(addNote(W, c.id, NOW, "Short weight", undefined, { kind: "fine", amountTk: 25_000 })), c.id);
+  assert.deepEqual(fine.notes[fine.notes.length - 1], { at: NOW, text: "Short weight", kind: "fine", amountTk: 25_000 });
+  assert.match(fine.timeline[fine.timeline.length - 1].text, /^Fine ৳ 25,000: Short weight$/);
+  const warn = get(ok(addNote(W, c.id, NOW, "Warned", NOW + 60_000, { kind: "warning" })), c.id);
+  assert.deepEqual(warn.notes[warn.notes.length - 1], { at: NOW, text: "Warned", followUpAt: NOW + 60_000, kind: "warning" });
+  assert.match(warn.timeline[warn.timeline.length - 1].text, /^Warning: Warned$/);
+  // A plain note stays exactly as before.
+  const plain = get(ok(addNote(W, c.id, NOW, "Just a note", undefined, {})), c.id);
+  assert.deepEqual(plain.notes[plain.notes.length - 1], { at: NOW, text: "Just a note" });
+  assert.ok(ok(addNote(W, c.id, NOW, "Max", undefined, { kind: "fine", amountTk: 10_000_000 })));
+  for (const bad of [undefined, 0, -5, 12.5, Number.NaN, 10_000_001]) {
+    fails(addNote(W, c.id, NOW, "Fine", undefined, { kind: "fine", amountTk: bad }), /fine needs an amount/);
+  }
+  fails(addNote(W, c.id, NOW, "Visit", undefined, { kind: "inspection", amountTk: 100 }), /Only a fine/);
+  fails(addNote(W, c.id, NOW, "Visit", undefined, { kind: "raid" as never }), /kind/);
+  fails(addNote(W, c.id, NOW, "  ", undefined, { kind: "call" }), /note/);
+});
+
 test("forward: new other-agency cases only", () => {
   const c = of("new", "other");
   const w = ok(forward(W, c.id, NOW, "Department of Environment"));

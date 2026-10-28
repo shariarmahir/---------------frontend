@@ -6,20 +6,52 @@ import { OFFICES } from "@/data/command/consumer";
 import { PLACES } from "@/data/command/places";
 import { STATIONS } from "@/data/command/stations";
 import { etaMin, haversineKm, nearestHome } from "@/lib/command/geo";
+import { boardPoint, isWomenCase, safeTitleBn } from "@/lib/command/privacy";
 import { isOpen } from "@/lib/command/selectors";
 import type { Case, LatLng, Unit, UnitKind } from "@/lib/command/types";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
+
+/** A frame for the map: [[south, west], [north, east]] (a division's `bounds` from data/command/divisions). */
+export type MapBounds = [[number, number], [number, number]];
+
+/** One hotspot of the heat layer: an area, how hot it is relative to the others, and its warning level. */
+export interface HeatSpot {
+  id: string;
+  lat: number;
+  lng: number;
+  /** Any positive scale (case count, rate); radius and opacity follow weight / the largest weight. */
+  weight: number;
+  /** Hover text, plain (never HTML). */
+  label: string;
+  /** Gold for watch/alert (and when unset); red only for critical. */
+  level?: "watch" | "alert" | "critical";
+}
 
 export interface MapViewProps {
   cases: Case[];
   units: Unit[];
   selectedId?: string;
   onSelect?(id: string): void;
-  /** What to frame: the whole country (default), the selected case with its units, or a point. Applied when it changes. */
-  focus?: "country" | "selection" | (LatLng & { zoom: number });
+  /**
+   * What to frame: the whole country (default), the selected case with its units, a point, or a box (a division).
+   * Applied when it changes by value, so a fresh but equal object each render does not refit over the user's panning.
+   */
+  focus?: "country" | "selection" | (LatLng & { zoom: number }) | { bounds: MapBounds };
   className?: string;
   /** Unit kinds to draw (default: all). */
   showUnits?: UnitKind[];
+  /** Fixed places to mark (a business): a cobalt square with a shop glyph, tooltip = label. Pass a stable array. */
+  pins?: { id: string; lat: number; lng: number; label: string }[];
+  /** Hotspots drawn under every marker as translucent circles (hover = label; not keyboard-reachable, so list them as text too). Pass a stable array. */
+  heat?: HeatSpot[];
+  /** Emphasise open SOS cases (category "sos") with a red pulsing ring; the pulse is off under reduced motion. */
+  sos?: boolean;
+  /**
+   * Survivor privacy (Women safety): every case marker sits up to ~300 m from its true point (fixed per case id) and its
+   * hover label names only the case number and area. Lines and framing use the shifted point too. Without it, women and
+   * child cases (isWomenCase) are still shifted and labelled by category and area only (lib/command/privacy).
+   */
+  privacy?: boolean;
 }
 
 /*
@@ -36,6 +68,8 @@ interface TooltipOptions {
   className?: string;
   offset?: [number, number];
   opacity?: number;
+  /** Follow the pointer (for areas, where no single point is "the" spot). */
+  sticky?: boolean;
 }
 
 interface LLayer {
@@ -57,6 +91,23 @@ interface LMarker extends LLayer {
 
 interface LPolyline extends LLayer {
   setLatLngs(lls: LL[]): this;
+}
+
+interface PathStyle {
+  color: string;
+  weight: number;
+  opacity: number;
+  fillColor: string;
+  fillOpacity: number;
+}
+
+/** A circle with a radius in pixels (same size at every zoom), drawn in the SVG overlay pane under the markers. */
+interface LCircleMarker extends LLayer {
+  setLatLng(ll: LL): this;
+  setRadius(radius: number): this;
+  setStyle(style: Partial<PathStyle>): this;
+  /** Below the other paths of the pane (the selection's dashed lines). */
+  bringToBack(): this;
 }
 
 interface LLayerGroup {
@@ -114,6 +165,7 @@ interface Leaflet {
     lls: LL[],
     options: { color: string; weight: number; opacity: number; dashArray: string; interactive: boolean },
   ): LPolyline;
+  circleMarker(ll: LL, options: PathStyle & { radius: number; interactive: boolean; className: string }): LCircleMarker;
   layerGroup(): LLayerGroup;
 }
 
@@ -204,9 +256,10 @@ const TILES = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 const ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 /** The OSM tiles turned neutral grey and dark (no orange roads): only the markers carry colour. */
 const TILE_FILTER = "grayscale(1) invert(1) brightness(0.8) contrast(1.05)";
-/** Site tokens: --color-signal-orange (gold) and white at 60%, for the SVG lines (presentation attributes take no var()). */
+/** Site tokens: --color-signal-orange (gold), white and --color-national-crimson, for the SVG paths (presentation attributes take no var()). */
 const GOLD = "#E4B027";
 const WHITE = "#FFFFFF";
+const RED = "#DA291C";
 const ALL_UNITS: readonly UnitKind[] = ["patrol", "station", "office", "team"];
 
 const ll = (p: LatLng): LL => [p.lat, p.lng];
@@ -215,14 +268,36 @@ const ll = (p: LatLng): LL => [p.lat, p.lng];
 const SHIELD =
   '<svg viewBox="0 0 24 24" class="size-3 fill-bdnavy-900" aria-hidden="true"><path d="M12 2 4 5v6c0 5.2 3.4 9.9 8 11 4.6-1.1 8-5.8 8-11V5l-8-3z"/></svg>';
 
+/** Shop glyph for a pinned business, white on cobalt. */
+const SHOP =
+  '<svg viewBox="0 0 24 24" class="size-3.5 fill-white" aria-hidden="true"><path d="M20 4H4v2h16V4zm1 10v-2l-1-5H4l-1 5v2h1v6h10v-6h4v6h2v-6h1zm-9 4H6v-4h6v4z"/></svg>';
+
 interface Pin {
   key: string;
   html: string;
   size: number;
 }
 
+/** An open SOS press (category "sos"; compared as a string so this works before and after the category exists). */
+const isSos = (c: Case): boolean => isOpen(c) && String(c.category) === "sos";
+
+/** An SOS press: a bigger red dot with a white core inside a red ring, and a second ring pulsing out (still under reduced motion). */
+function sosPin(selected: boolean, reduced: boolean): Pin {
+  const size = selected ? 24 : 18;
+  const pulse = !reduced;
+  const html =
+    '<span class="relative block size-full">' +
+    (pulse ? '<span class="absolute -inset-2 rounded-full border-2 border-national-crimson animate-ping motion-reduce:hidden"></span>' : "") +
+    '<span class="absolute -inset-1.5 rounded-full border-2 border-national-crimson"></span>' +
+    (selected ? '<span class="absolute -inset-3 rounded-full border-2 border-white"></span>' : "") +
+    '<span class="absolute inset-0 rounded-full bg-national-crimson ring-2 ring-white"></span>' +
+    '<span class="absolute inset-[32%] rounded-full bg-white"></span></span>';
+  return { key: `sos|${pulse}|${selected}`, html, size };
+}
+
 /** An incident dot: gold police, cobalt consumer, navy-tint other; red with a ring when critical or overdue. */
-function incidentPin(c: Case, selected: boolean, reduced: boolean): Pin {
+function incidentPin(c: Case, selected: boolean, reduced: boolean, sos: boolean): Pin {
+  if (sos && isSos(c)) return sosPin(selected, reduced);
   const open = isOpen(c);
   const urgent = open && (c.severity === "critical" || c.overdue === true);
   const fill = urgent
@@ -276,7 +351,7 @@ function iconFor(L: Leaflet, pin: Pin): LIcon {
   return icon;
 }
 
-/** Hover label for an incident, built node by node (case text is never HTML). */
+/** Hover label for an incident, built node by node (case text is never HTML); a women or child case names its category and area only. */
 function caseLabel(c: Case): HTMLElement {
   const box = document.createElement("span");
   const id = document.createElement("span");
@@ -284,10 +359,56 @@ function caseLabel(c: Case): HTMLElement {
   const title = document.createElement("span");
   title.lang = "bn";
   title.className = "font-bengali";
-  title.textContent = c.titleBn;
+  title.textContent = safeTitleBn(c);
   box.append(id, title);
   return box;
 }
+
+/** The privacy label: the case number and its area, nothing that pins the point or the person. */
+function areaLabel(c: Case): HTMLElement {
+  const box = document.createElement("span");
+  const id = document.createElement("span");
+  id.textContent = `${c.id} · `;
+  const area = document.createElement("span");
+  area.lang = "bn";
+  area.className = "font-bengali";
+  area.textContent = c.place.areaBn;
+  box.append(id, area);
+  return box;
+}
+
+/** A plain-text label (heat spots): textContent, never HTML. */
+function textLabel(text: string): HTMLElement {
+  const box = document.createElement("span");
+  box.textContent = text;
+  return box;
+}
+
+/* --------------------------------------------------------------- privacy */
+
+/** Where a case's dot (and its lines) go: shifted in privacy mode, and always for a women or child case (boardPoint). */
+const scene = (c: Case, privacy: boolean): LL => ll(boardPoint(c, privacy));
+
+/* ------------------------------------------------------------------ heat */
+
+interface HeatLook {
+  key: string;
+  radius: number;
+  color: string;
+  fillOpacity: number;
+}
+
+/** Radius 10–32 px and fill 14–46% by weight against the hottest spot; gold, red only when critical. */
+function heatLook(h: HeatSpot, max: number): HeatLook {
+  const t = max > 0 ? Math.min(1, Math.max(0, h.weight / max)) : 0;
+  const radius = Math.round(10 + 22 * Math.sqrt(t));
+  const fillOpacity = Math.round((0.14 + 0.32 * t) * 100) / 100;
+  const color = h.level === "critical" ? RED : GOLD;
+  return { key: `${radius}|${color}|${fillOpacity}`, radius, color, fillOpacity };
+}
+
+/** Hover-only: the map's own grab cursor, not a pointer that promises a click. */
+const HEAT_CLASS = "cursor-[inherit]!";
 
 const lineLabel = (from: LatLng, unit: Unit, onScene: boolean): string => {
   if (onScene) return "On scene";
@@ -312,14 +433,25 @@ interface Line {
   label: string;
 }
 
+interface HeatPlaced {
+  circle: LCircleMarker;
+  key: string;
+  at: LL;
+  label: string;
+}
+
 interface Live {
   L: Leaflet;
   map: LMap;
+  heatLayer: LLayerGroup;
+  heatSpots: Map<string, HeatPlaced>;
   incidents: LLayerGroup;
   unitLayer: LLayerGroup;
+  pinLayer: LLayerGroup;
   lineLayer: LLayerGroup;
   caseMarkers: Map<string, Placed>;
   unitMarkers: Map<string, Placed>;
+  pinMarkers: Map<string, Placed>;
   lines: { unit?: Line; home?: Line };
 }
 
@@ -386,7 +518,7 @@ function setLine(live: Live, which: "unit" | "home", path: LL[] | null, label: s
  * it off the server). Supplementary: everything here is also in the lists, so
  * the map is hidden from assistive tech and a one-line summary stands in.
  */
-export default function MapCanvas({ cases, units, selectedId, onSelect, focus = "country", showUnits }: MapViewProps) {
+export default function MapCanvas({ cases, units, selectedId, onSelect, focus = "country", showUnits, pins, heat, sos = false, privacy = false }: MapViewProps) {
   const [status, setStatus] = useState<Status>("loading");
   // Client-only component (MapView loads it with ssr: false), so reading the media query here is safe.
   const [touch] = useState(coarsePointer);
@@ -395,9 +527,9 @@ export default function MapCanvas({ cases, units, selectedId, onSelect, focus = 
   const reduced = useReducedMotion();
   const el = useRef<HTMLDivElement>(null);
   const live = useRef<Live | null>(null);
-  const latest = useRef({ cases, units, selectedId, onSelect, focus, reduced });
+  const latest = useRef({ cases, units, selectedId, onSelect, focus, reduced, privacy });
   useEffect(() => {
-    latest.current = { cases, units, selectedId, onSelect, focus, reduced };
+    latest.current = { cases, units, selectedId, onSelect, focus, reduced, privacy };
   });
 
   // Load Leaflet; after a failure, try again when the connection comes back.
@@ -467,11 +599,16 @@ export default function MapCanvas({ cases, units, selectedId, onSelect, focus = 
     live.current = {
       L,
       map,
+      // Paths sit in the overlay pane, under every marker; heat goes in first so it stays below the dashed lines too.
+      heatLayer: L.layerGroup().addTo(map),
+      heatSpots: new Map(),
       incidents: L.layerGroup().addTo(map),
       unitLayer: L.layerGroup().addTo(map),
+      pinLayer: L.layerGroup().addTo(map),
       lineLayer: L.layerGroup().addTo(map),
       caseMarkers: new Map(),
       unitMarkers: new Map(),
+      pinMarkers: new Map(),
       lines: {},
     };
     const resize = new ResizeObserver(() => map.invalidateSize());
@@ -503,13 +640,15 @@ export default function MapCanvas({ cases, units, selectedId, onSelect, focus = 
     for (const c of cases) {
       seenCases.add(c.id);
       const selected = c.id === selectedId;
-      const p = place(m, m.caseMarkers, m.incidents, c.id, ll(c.place), incidentPin(c, selected, reduced), selected ? 2000 : 1000, true, () =>
+      const z = selected ? 2000 : sos && isSos(c) ? 1800 : 1000;
+      const p = place(m, m.caseMarkers, m.incidents, c.id, scene(c, privacy), incidentPin(c, selected, reduced, sos), z, true, () =>
         latest.current.onSelect?.(c.id),
       );
-      const label = `${c.id}|${c.titleBn}`;
+      const label = privacy ? `area|${c.id}|${c.place.areaBn}` : `${c.id}|${safeTitleBn(c)}`;
       if (p.label !== label) {
-        if (p.label === undefined) p.marker.bindTooltip(caseLabel(c), { direction: "top", offset: [0, -8] });
-        else p.marker.setTooltipContent(caseLabel(c));
+        const content = privacy ? areaLabel(c) : caseLabel(c);
+        if (p.label === undefined) p.marker.bindTooltip(content, { direction: "top", offset: [0, -8] });
+        else p.marker.setTooltipContent(content);
         p.label = label;
       }
     }
@@ -539,6 +678,37 @@ export default function MapCanvas({ cases, units, selectedId, onSelect, focus = 
       }
     }
 
+    const seenPins = new Set<string>();
+    for (const b of pins ?? []) {
+      seenPins.add(b.id);
+      const p = place(
+        m,
+        m.pinMarkers,
+        m.pinLayer,
+        b.id,
+        [b.lat, b.lng],
+        {
+          key: "shop",
+          size: 24,
+          // A flag above the spot with a short stem, so the cases that sit exactly here stay visible beneath it.
+          html: `<span class="relative block size-full" style="translate:0 -17px"><span class="grid size-full place-items-center rounded-sm bg-cobalt ring-2 ring-white">${SHOP}</span><span class="absolute top-full left-1/2 h-2.5 w-0.5 -translate-x-1/2 bg-white"></span></span>`,
+        },
+        1500,
+        true,
+      );
+      if (p.label !== b.label) {
+        if (p.label === undefined) p.marker.bindTooltip(b.label, { direction: "top", offset: [0, -30] });
+        else p.marker.setTooltipContent(b.label);
+        p.label = b.label;
+      }
+    }
+    for (const [id, p] of m.pinMarkers) {
+      if (!seenPins.has(id)) {
+        m.pinLayer.removeLayer(p.marker);
+        m.pinMarkers.delete(id);
+      }
+    }
+
     // Selected case: dashed lines to the assigned unit (gold) and to its station/office (white).
     const sel = selectedId ? cases.find((c) => c.id === selectedId) : undefined;
     const assigned = sel?.assignedUnitId ? units.find((u) => u.id === sel.assignedUnitId) : undefined;
@@ -547,10 +717,11 @@ export default function MapCanvas({ cases, units, selectedId, onSelect, focus = 
         ? ((sel.homeId ? units.find((u) => u.id === sel.homeId) : undefined) ?? nearestHome(sel.place, units, sel.dept))
         : undefined;
     const live1 = sel !== undefined && isOpen(sel);
+    // Lines start at the drawn dot (shifted in privacy mode); km and ETA stay the real ones.
     setLine(
       m,
       "unit",
-      live1 && assigned ? [ll(sel.place), ll(assigned)] : null,
+      live1 && assigned ? [scene(sel, privacy), ll(assigned)] : null,
       sel && assigned ? lineLabel(sel.place, assigned, sel.status === "on-scene") : "",
       GOLD,
       1,
@@ -558,30 +729,88 @@ export default function MapCanvas({ cases, units, selectedId, onSelect, focus = 
     setLine(
       m,
       "home",
-      live1 && home && home.id !== assigned?.id ? [ll(sel.place), ll(home)] : null,
+      live1 && home && home.id !== assigned?.id ? [scene(sel, privacy), ll(home)] : null,
       sel && home ? lineLabel(sel.place, home, false) : "",
       WHITE,
       0.6,
     );
-  }, [ready, cases, units, selectedId, reduced, showKey]);
+  }, [ready, cases, units, pins, selectedId, reduced, showKey, sos, privacy]);
 
-  // Frame the view when `focus` (or, for "selection", the selected case) changes.
-  const focusKey =
-    typeof focus === "string" ? (focus === "selection" ? `selection:${selectedId ?? ""}` : focus) : `${focus.lat},${focus.lng},${focus.zoom}`;
+  // Heat spots, under everything, updated in place.
   useEffect(() => {
     const m = live.current;
     if (!ready || !m) return;
-    const { focus: f, cases: cs, units: us, selectedId: id, reduced: still } = latest.current;
+    const spots = heat ?? [];
+    const max = spots.reduce((n, h) => Math.max(n, h.weight), 0);
+    const seen = new Set<string>();
+    for (const h of spots) {
+      seen.add(h.id);
+      const look = heatLook(h, max);
+      const at: LL = [h.lat, h.lng];
+      const s = m.heatSpots.get(h.id);
+      if (!s) {
+        const circle = m.L.circleMarker(at, {
+          radius: look.radius,
+          color: look.color,
+          weight: 1,
+          opacity: 0.55,
+          fillColor: look.color,
+          fillOpacity: look.fillOpacity,
+          // Interactive only for the hover label; nothing in the map takes focus (the page lists the spots as text).
+          interactive: true,
+          className: HEAT_CLASS,
+        })
+          .bindTooltip(textLabel(h.label), { direction: "top", sticky: true })
+          .addTo(m.heatLayer);
+        circle.bringToBack();
+        m.heatSpots.set(h.id, { circle, key: look.key, at, label: h.label });
+        continue;
+      }
+      if (s.at[0] !== at[0] || s.at[1] !== at[1]) {
+        s.circle.setLatLng(at);
+        s.at = at;
+      }
+      if (s.key !== look.key) {
+        s.circle.setRadius(look.radius).setStyle({ color: look.color, fillColor: look.color, fillOpacity: look.fillOpacity });
+        s.key = look.key;
+      }
+      if (s.label !== h.label) {
+        s.circle.setTooltipContent(textLabel(h.label));
+        s.label = h.label;
+      }
+    }
+    for (const [id, s] of m.heatSpots) {
+      if (!seen.has(id)) {
+        m.heatLayer.removeLayer(s.circle);
+        m.heatSpots.delete(id);
+      }
+    }
+  }, [ready, heat]);
+
+  // Frame the view when `focus` (or, for "selection", the selected case) changes, compared by value.
+  const focusKey =
+    typeof focus === "string"
+      ? focus === "selection"
+        ? `selection:${selectedId ?? ""}`
+        : focus
+      : "bounds" in focus
+        ? `bounds:${focus.bounds.flat().join(",")}`
+        : `${focus.lat},${focus.lng},${focus.zoom}`;
+  useEffect(() => {
+    const m = live.current;
+    if (!ready || !m) return;
+    const { focus: f, cases: cs, units: us, selectedId: id, reduced: still, privacy: hide } = latest.current;
     const animate = !still;
     if (f === "country") {
       m.map.fitBounds(BD_BOUNDS, { padding: [12, 12], animate });
     } else if (f === "selection") {
       const c = id ? cs.find((x) => x.id === id) : undefined;
       if (!c) return;
-      const points = [c.place, ...us.filter((u) => u.id === c.assignedUnitId || u.id === c.homeId)];
+      const [lat, lng] = scene(c, hide);
+      const points = [{ lat, lng }, ...us.filter((u) => u.id === c.assignedUnitId || u.id === c.homeId)];
       const lats = points.map((p) => p.lat);
       const lngs = points.map((p) => p.lng);
-      if (points.length === 1) m.map.setView(ll(c.place), 14, { animate });
+      if (points.length === 1) m.map.setView([lat, lng], 14, { animate });
       else
         m.map.fitBounds(
           [
@@ -590,12 +819,19 @@ export default function MapCanvas({ cases, units, selectedId, onSelect, focus = 
           ],
           { padding: [48, 48], maxZoom: 15, animate },
         );
+    } else if ("bounds" in f) {
+      m.map.fitBounds(f.bounds, { padding: [24, 24], animate });
     } else {
       m.map.setView([f.lat, f.lng], f.zoom, { animate });
     }
   }, [ready, focusKey]);
 
   const open = cases.reduce((n, c) => n + (isOpen(c) ? 1 : 0), 0);
+  const shiftNote = privacy
+    ? " Positions are shifted for privacy."
+    : cases.some(isWomenCase)
+      ? " Women and child case positions are shifted for privacy."
+      : "";
 
   return (
     <div className="absolute inset-0">
@@ -603,7 +839,7 @@ export default function MapCanvas({ cases, units, selectedId, onSelect, focus = 
       <p className="sr-only">
         {status === "failed"
           ? `Map unavailable. ${open} open ${open === 1 ? "incident is" : "incidents are"} listed beside it.`
-          : `${open} open ${open === 1 ? "incident" : "incidents"} on the map`}
+          : `${open} open ${open === 1 ? "incident" : "incidents"} on the map.${shiftNote}`}
       </p>
       {ready && touch && (
         <button

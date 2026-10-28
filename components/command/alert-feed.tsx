@@ -2,9 +2,10 @@
 
 import { type ReactNode, useEffect, useMemo, useRef } from "react";
 import { Icon } from "@/components/ui/icon";
+import { safeTitleBn } from "@/lib/command/privacy";
 import { CATEGORY_META } from "@/lib/command/routing";
-import { isOpen, pendingAlerts, type PendingAlert } from "@/lib/command/selectors";
-import { perWorld, useCommand } from "@/lib/command/store";
+import { inDivision, isOpen, pendingAlerts, type DivisionScope, type PendingAlert } from "@/lib/command/selectors";
+import { perWorld, selectNow, useCommand } from "@/lib/command/store";
 import type { Case, Dept, Unit, World } from "@/lib/command/types";
 import { cn } from "@/lib/utils";
 import { Bn, EmptyState, OverduePill, SeverityPill, Skeleton, StatusPill, focusRing, mmss, timeAgo } from "./kit";
@@ -15,6 +16,9 @@ import { Bn, EmptyState, OverduePill, SeverityPill, Skeleton, StatusPill, focusR
  * Critical cases carry a red edge. A polite live region announces new
  * critical cases, at most once every 10 s. Each row opens the case;
  * `renderActions` adds buttons to pending rows, outside the open-button.
+ * `div` keeps it to one division's cases. Countdowns come from pendingAlerts,
+ * so each case runs on its own window (ackWindowMs: 30 s for an SOS). Rows
+ * name the area only, never anyone involved (women and child cases included).
  */
 
 interface FeedItem {
@@ -27,47 +31,49 @@ interface FeedItem {
 }
 
 const ANNOUNCE_EVERY_MS = 10_000;
-const selectNow = (w: World) => w.now;
 const selectIndex = perWorld((w) => new Map(w.cases.map((c) => [c.id, c])));
 
-function buildFeed(w: World, dept: Dept | undefined, limit: number): FeedItem[] {
+function buildFeed(w: World, dept: Dept | undefined, limit: number, div: DivisionScope): FeedItem[] {
   const depts: Dept[] = dept ? [dept] : ["police", "consumer"];
   const pending = depts
-    .flatMap((d) => pendingAlerts(w, d))
+    .flatMap((d) => pendingAlerts(w, d, div))
     .sort((a, b) => a.msLeft - b.msLeft)
     .map((p) => ({ case: p.case, msLeft: p.msLeft, unit: p.unit, pending: p }));
   const seen = new Set(pending.map((p) => p.case.id));
   const rest = w.cases
-    .filter((c) => isOpen(c) && !seen.has(c.id) && (!dept || c.dept === dept))
+    .filter((c) => isOpen(c) && !seen.has(c.id) && (!dept || c.dept === dept) && inDivision(c, div))
     .sort((a, b) => b.reportedAt - a.reportedAt || b.id.localeCompare(a.id))
     .map((c) => ({ case: c }));
   return [...pending, ...rest].slice(0, limit);
 }
 
-/** Ids of open critical cases (dept-filtered), joined, for the announcer. */
-function criticalKey(w: World, dept: Dept | undefined): string {
+/** Ids of open critical cases (dept- and division-filtered), joined, for the announcer. */
+function criticalKey(w: World, dept: Dept | undefined, div: DivisionScope): string {
   return w.cases
-    .filter((c) => c.severity === "critical" && isOpen(c) && (!dept || c.dept === dept))
+    .filter((c) => c.severity === "critical" && isOpen(c) && (!dept || c.dept === dept) && inDivision(c, div))
     .map((c) => c.id)
     .join(",");
 }
 
 export function AlertFeed({
   dept,
+  div,
   onOpen,
   limit = 12,
   renderActions,
   className,
 }: {
   dept?: Dept;
+  /** One division (undefined or "all" for the country). */
+  div?: DivisionScope;
   onOpen(id: string): void;
   limit?: number;
   /** Buttons for a pending alert (e.g. Acknowledge / Dispatch / Escalate), drawn under the row, outside its open-button. */
   renderActions?: (p: PendingAlert) => ReactNode;
   className?: string;
 }) {
-  const selectFeed = useMemo(() => perWorld((w) => buildFeed(w, dept, limit)), [dept, limit]);
-  const selectCritical = useMemo(() => perWorld((w) => criticalKey(w, dept)), [dept]);
+  const selectFeed = useMemo(() => perWorld((w) => buildFeed(w, dept, limit, div)), [dept, limit, div]);
+  const selectCritical = useMemo(() => perWorld((w) => criticalKey(w, dept, div)), [dept, div]);
   const items = useCommand(selectFeed);
   const critical = useCommand(selectCritical);
   const now = useCommand(selectNow);
@@ -78,6 +84,11 @@ export function AlertFeed({
   const known = useRef<Set<string> | null>(null);
   const queued = useRef<string[]>([]);
   const lastAt = useRef(0);
+  // A new scope (another division or desk) starts a new baseline: its critical cases are not "new".
+  useEffect(() => {
+    known.current = null;
+    queued.current = [];
+  }, [dept, div]);
   useEffect(() => {
     if (critical === null) return;
     const ids = critical ? critical.split(",") : [];
@@ -158,7 +169,7 @@ function FeedRow({ item, now, onOpen, actions }: { item: FeedItem; now: number; 
         <span className="flex min-w-0 flex-1 flex-col gap-1">
           <span className="flex min-w-0 items-start gap-3">
             <span lang="bn" className="min-w-0 flex-1 truncate font-bengali text-sm leading-snug font-semibold text-white group-hover:text-signal-orange">
-              {c.titleBn}
+              {safeTitleBn(c)}
             </span>
             {pending ? (
               <span className={cn("inline-flex shrink-0 items-center gap-1 font-grotesk text-sm font-bold tabular-nums", critical ? "text-crimson-bright" : "text-white")}>
@@ -168,7 +179,7 @@ function FeedRow({ item, now, onOpen, actions }: { item: FeedItem; now: number; 
               </span>
             ) : null}
           </span>
-          <span className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-white/60">
+          <span className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-white/65">
             <span className="font-mono text-white/70">{c.id}</span>
             <span aria-hidden="true">·</span>
             <Bn>{c.place.areaBn}</Bn>
@@ -177,7 +188,7 @@ function FeedRow({ item, now, onOpen, actions }: { item: FeedItem; now: number; 
           </span>
           <span className="flex min-w-0 items-center gap-2">
             {pending ? (
-              <span className="min-w-0 flex-1 truncate text-xs text-white/60">
+              <span className="min-w-0 flex-1 text-xs text-white/65">
                 Waiting for <span className="font-semibold text-white/85">{item.unit?.name ?? "the alerted unit"}</span>
               </span>
             ) : (

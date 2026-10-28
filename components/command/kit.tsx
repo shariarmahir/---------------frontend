@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Icon } from "@/components/ui/icon";
+import type { ThreatLevel } from "@/lib/command/intel";
 import { CATEGORY_META } from "@/lib/command/routing";
 import type { Category, DivisionId, Severity, Status, UnitKind } from "@/lib/command/types";
 import { cn } from "@/lib/utils";
@@ -58,6 +59,8 @@ export function mmss(ms: number): string {
 }
 
 export const num = (n: number): string => n.toLocaleString("en-US");
+/** Whole taka as plain digits: "৳ 25,000". */
+export const taka = (n: number): string => `৳ ${n.toLocaleString("en-US")}`;
 
 /* ───────────── labels ───────────── */
 
@@ -83,6 +86,18 @@ export const DIVISIONS: Record<DivisionId, { label: string; labelBn: string }> =
   rangpur: { label: "Rangpur", labelBn: "রংপুর" },
   mymensingh: { label: "Mymensingh", labelBn: "ময়মনসিংহ" },
 };
+
+/** What a business is, as the directorate files it (the data holds the short key). */
+export const BUSINESS_KIND_LABEL: Record<string, { label: string; icon: string }> = {
+  restaurant: { label: "Restaurant", icon: "restaurant" },
+  grocery: { label: "Grocery", icon: "shopping_basket" },
+  pharmacy: { label: "Pharmacy", icon: "medication" },
+  sweetshop: { label: "Sweet shop", icon: "cake" },
+  bakery: { label: "Bakery", icon: "bakery_dining" },
+  fuel: { label: "Filling station", icon: "local_gas_station" },
+  market: { label: "Market", icon: "storefront" },
+};
+export const businessKind = (kind: string): { label: string; icon: string } => BUSINESS_KIND_LABEL[kind] ?? { label: kind, icon: "store" };
 
 export const UNIT_KIND_LABEL: Record<UnitKind, string> = { station: "Police station", patrol: "Patrol", office: "District office", team: "Inspection team" };
 
@@ -150,7 +165,7 @@ export function Panel({
             {icon ? <Icon name={icon} className="text-[20px]" /> : null}
             <span className="truncate">{title}</span>
           </h2>
-          {sub ? <p className="mt-0.5 text-xs leading-snug text-white/60">{sub}</p> : null}
+          {sub ? <p className="mt-0.5 text-xs leading-snug text-white/65">{sub}</p> : null}
         </div>
         {action}
       </header>
@@ -168,8 +183,25 @@ export function Kpi({ label, value, sub, icon, className }: { label: string; val
         <span className="text-pretty">{label}</span>
       </dt>
       <dd className="font-grotesk text-[1.75rem] leading-none font-bold tracking-tight text-white tabular-nums lg:text-3xl">{value}</dd>
-      <dd className="min-h-4 truncate text-xs text-white/55 tabular-nums">{sub}</dd>
+      <dd className="min-h-4 text-xs leading-4 text-pretty text-white/65 tabular-nums">{sub}</dd>
     </div>
+  );
+}
+
+/**
+ * A figure that eases in when it changes: the new value rises a few pixels and
+ * fades from gold to the text colour. Only transform, opacity and colour move,
+ * so nothing reflows; instant under reduced motion. Keyed on `value`, so a
+ * re-render with the same value leaves it still.
+ */
+export function Eased({ value, children }: { value: string | number; children?: ReactNode }) {
+  return (
+    <span
+      key={value}
+      className="inline-block transition-[translate,opacity,color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] starting:translate-y-1.5 starting:text-signal-orange starting:opacity-0 motion-reduce:transition-none"
+    >
+      {children ?? value}
+    </span>
   );
 }
 
@@ -198,7 +230,7 @@ const STATUS_TONE: Record<Status, string> = {
   "en-route": "bg-cobalt text-white",
   "on-scene": "bg-signal-orange text-text-primary",
   resolved: "bg-white/6 text-white/75 ring-1 ring-white/12",
-  closed: "bg-transparent text-white/55 ring-1 ring-white/12",
+  closed: "bg-transparent text-white/65 ring-1 ring-white/12",
 };
 
 export function StatusPill({ status, className }: { status: Status; className?: string }) {
@@ -216,7 +248,7 @@ export function SeverityPill({ severity, className }: { severity: Severity; clas
     <span
       className={cn(
         PILL,
-        severity === "critical" ? "bg-national-crimson text-white" : severity === "high" ? "text-white ring-1 ring-white/30" : "text-white/60 ring-1 ring-white/12",
+        severity === "critical" ? "bg-national-crimson text-white" : severity === "high" ? "text-white ring-1 ring-white/30" : "text-white/65 ring-1 ring-white/12",
         className,
       )}
     >
@@ -235,16 +267,61 @@ export function OverduePill({ className }: { className?: string }) {
   );
 }
 
+/**
+ * A business with several complaints against it: red only from three cases
+ * (open and closed together), a navy tint at two, nothing below.
+ */
+export function RepeatPill({ cases, className }: { cases: number; className?: string }) {
+  if (cases < 2) return null;
+  const severe = cases >= 3;
+  return (
+    <span className={cn(PILL, severe ? "bg-national-crimson/20 text-crimson-bright ring-1 ring-national-crimson/70" : "bg-bdnavy-700 text-white ring-1 ring-bdnavy-400/50", className)}>
+      <Icon name="replay" className="text-[14px]" />
+      Repeat
+      <span className="sr-only"> offender</span>
+      <span aria-hidden="true"> · {cases}</span>
+      <span className="sr-only">, {cases} cases</span>
+    </span>
+  );
+}
+
+export const THREAT_META: Record<ThreatLevel, { label: string; icon: string }> = {
+  calm: { label: "Calm", icon: "check_circle" },
+  watch: { label: "Watch", icon: "visibility" },
+  alert: { label: "Alert", icon: "warning" },
+  critical: { label: "Critical", icon: "emergency_home" },
+};
+
+const THREAT_TONE: Record<ThreatLevel, string> = {
+  calm: "text-white/70 ring-1 ring-white/15",
+  watch: "bg-bdnavy-700 text-white ring-1 ring-bdnavy-400/50",
+  alert: "bg-signal-orange text-text-primary",
+  critical: "bg-national-crimson text-white",
+};
+
+/** A division's situation (lib/command/intel divisionThreat): red only for critical, gold for alert, a navy tint for watch, quiet when calm. */
+export function ThreatPill({ level, className }: { level: ThreatLevel; className?: string }) {
+  const m = THREAT_META[level];
+  return (
+    <span className={cn(PILL, THREAT_TONE[level], className)}>
+      <Icon name={m.icon} className="text-[14px]" />
+      {m.label}
+    </span>
+  );
+}
+
 /** The category's icon and its Bangla name (English on hover and for screen readers via `title`). */
 export function CategoryChip({ category, english, className }: { category: Category; english?: boolean; className?: string }) {
   const m = CATEGORY_META[category];
   return (
     <span className={cn("inline-flex min-w-0 items-center gap-1.5", className)} title={m.label}>
-      <Icon name={m.icon} className="shrink-0 text-[16px] text-bdnavy-300" />
+      <span aria-hidden="true" className="inline-flex shrink-0">
+        <Icon name={m.icon} className="text-[16px] text-bdnavy-300" />
+      </span>
       <span lang="bn" className="truncate font-bengali text-sm font-semibold text-white">
         {m.labelBn}
       </span>
-      {english ? <span className="truncate text-xs text-white/55">{m.label}</span> : null}
+      {english ? <span className="truncate text-xs text-white/65">{m.label}</span> : null}
     </span>
   );
 }
@@ -272,9 +349,22 @@ export function Bn({ children, className }: { children: ReactNode; className?: s
 
 /* ───────────── form controls ───────────── */
 
+/** The follow-up choices of every note form; the value is minutes ("" = none). */
+export const FOLLOW_UPS = [
+  { value: "", label: "No follow-up" },
+  { value: "15", label: "In 15 minutes" },
+  { value: "60", label: "In 1 hour" },
+  { value: "240", label: "In 4 hours" },
+  { value: "1440", label: "Tomorrow, same time" },
+  { value: "10080", label: "In 7 days" },
+];
+
+/** The follow-up time for a FOLLOW_UPS choice, counted from `t`; undefined for "no follow-up". */
+export const followUpAt = (t: number, choice: string): number | undefined => (choice ? t + Number(choice) * 60_000 : undefined);
+
 /** Native controls in the dashboard dress: black field, hairline ring, gold focus ring, 44px below lg. */
 export const CONTROL =
-  "min-h-11 w-full rounded-xl bg-black px-3 text-sm text-white ring-1 ring-white/15 [color-scheme:dark] placeholder:text-white/40 focus:ring-2 focus:ring-signal-orange focus:outline-none lg:min-h-10";
+  "min-h-11 w-full rounded-xl bg-black px-3 text-sm text-white ring-1 ring-white/15 [color-scheme:dark] placeholder:text-white/65 focus:ring-2 focus:ring-signal-orange focus:outline-none lg:min-h-10";
 
 /** A native <select> with a visible label above it. */
 export function SelectField({

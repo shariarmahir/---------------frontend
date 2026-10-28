@@ -2,12 +2,27 @@
  * Sample complaint texts, in Bangla. Every one is invented for the
  * demonstration; none describes a real event or person.
  * Slots: {area} is the place's area name; {business} is the business name
- * (consumer categories only). The generator replaces both.
+ * (consumer categories only); {product} is a price-watch item or a recalled
+ * product (only in templates with `product`). The generator replaces them.
  */
-import type { Category, ConsumerCategory } from "../../lib/command/types.ts";
+import type { Category, ConsumerCategory, InvolvedKind, Victim } from "../../lib/command/types.ts";
 
-/** `kinds`: business kinds the text fits (consumer categories); omitted means any kind. */
-export interface Template { titleBn: string; summaryBn: string; kinds?: readonly string[] }
+/**
+ * `kinds`: business kinds the text fits (consumer categories); omitted means any kind.
+ * `product`: the text names a product: a government-fixed price item ("fixed"),
+ * a reference-price item ("price") or a recalled product ("recall"); such a
+ * template is used only when the case has that kind of product.
+ * `victim` and `involved`: what the text itself says (a schoolgirl, "a ring"),
+ * so the case's fields agree with it.
+ */
+export interface Template {
+  titleBn: string;
+  summaryBn: string;
+  kinds?: readonly string[];
+  product?: "fixed" | "price" | "recall";
+  victim?: Victim;
+  involved?: InvolvedKind;
+}
 
 const FOOD: readonly string[] = ["restaurant", "grocery", "bakery", "sweetshop", "market"];
 const KITCHEN: readonly string[] = ["restaurant", "bakery", "sweetshop"];
@@ -36,6 +51,11 @@ export const TEMPLATES: Record<Category, readonly Template[]> = {
       titleBn: "{area} এলাকায় চালকদের কাছ থেকে টাকা আদায়",
       summaryBn: "{area} এলাকায় রিকশা ও ছোট গাড়ির চালকদের কাছ থেকে প্রতিদিন জোর করে টাকা তোলা হচ্ছে। চালকরা ভয়ে মুখ খুলছেন না।",
     },
+    {
+      titleBn: "{area} এলাকায় ফুটপাতের দোকান থেকে চাঁদা আদায়",
+      summaryBn: "{area} এলাকায় একটি চক্র ফুটপাতের হকারদের কাছ থেকে প্রতিদিন নির্দিষ্ট হারে টাকা তুলছে। কেউ আপত্তি করলে দোকান তুলে দেওয়ার হুমকি দেওয়া হয়।",
+      involved: "ring",
+    },
   ],
   harassment: [
     {
@@ -49,6 +69,7 @@ export const TEMPLATES: Record<Category, readonly Template[]> = {
     {
       titleBn: "{area} এলাকার এক তরুণীকে অনলাইনে ব্ল্যাকমেইল",
       summaryBn: "ব্যক্তিগত ছবি ছড়িয়ে দেওয়ার ভয় দেখিয়ে {area} এলাকার এক তরুণীর কাছে টাকা দাবি করা হচ্ছে। তিনি দ্রুত সহায়তা চান।",
+      victim: "woman",
     },
   ],
   "police-misconduct": [
@@ -77,6 +98,7 @@ export const TEMPLATES: Record<Category, readonly Template[]> = {
     {
       titleBn: "{area} এলাকায় ব্যাগ ছিনতাই",
       summaryBn: "{area} এলাকায় বাসে ওঠার সময় এক নারীর ব্যাগ ছিনতাই হয়েছে। ব্যাগে জরুরি কাগজপত্র ছিল।",
+      victim: "woman",
     },
   ],
   assault: [
@@ -91,6 +113,7 @@ export const TEMPLATES: Record<Category, readonly Template[]> = {
     {
       titleBn: "{area} এলাকায় নারীকে মারধর",
       summaryBn: "{area} এলাকায় পারিবারিক বিরোধের জের ধরে এক নারীকে মারধর করা হয়েছে। প্রতিবেশীরা সাহায্য চাইছেন।",
+      victim: "woman",
     },
   ],
   protest: [
@@ -105,6 +128,111 @@ export const TEMPLATES: Record<Category, readonly Template[]> = {
     {
       titleBn: "{area} এলাকায় বাসিন্দাদের সড়ক অবরোধ",
       summaryBn: "{area} এলাকায় পানি ও বিদ্যুৎ সংকটের প্রতিবাদে বাসিন্দারা সড়ক অবরোধ করেছেন।",
+    },
+  ],
+  "sexual-harassment": [
+    {
+      titleBn: "{area} বাসস্ট্যান্ডে তরুণীকে উত্ত্যক্ত",
+      summaryBn: "সন্ধ্যায় {area} বাসস্ট্যান্ডে বাসের অপেক্ষায় থাকা এক তরুণীকে কয়েকজন যুবক অশালীন মন্তব্য করে উত্ত্যক্ত করছে। তিনি দ্রুত সহায়তা চান।",
+      victim: "woman",
+    },
+    {
+      titleBn: "{area} হয়ে চলা বাসে যৌন হয়রানি",
+      summaryBn: "{area} হয়ে যাওয়া একটি বাসে ভিড়ের মধ্যে এক নারী যাত্রী যৌন হয়রানির শিকার হয়েছেন বলে জানিয়েছেন। বাসটি এখনো রুটে চলছে।",
+      victim: "woman",
+    },
+    {
+      titleBn: "{area} এলাকায় স্কুলছাত্রীকে ইভটিজিং",
+      summaryBn: "{area} এলাকায় স্কুল ছুটির পর এক ছাত্রীকে প্রতিদিন পিছু নিয়ে উত্ত্যক্ত করা হচ্ছে। পরিবার ভয়ে মেয়েকে স্কুলে পাঠাতে পারছে না।",
+      victim: "child",
+      involved: "repeat",
+    },
+    {
+      titleBn: "{area} এলাকায় কাজ শেষে ফেরার পথে হয়রানি",
+      summaryBn: "রাতে কাজ শেষে ফেরার পথে {area} এলাকায় এক কর্মজীবী নারীর পথ আটকে হয়রানি করা হয়েছে বলে অভিযোগ।",
+      victim: "woman",
+    },
+    {
+      titleBn: "{area} এলাকার মার্কেটে নারী ক্রেতাকে হয়রানি",
+      summaryBn: "{area} এলাকার একটি মার্কেটের ভিড়ে এক নারী ক্রেতা হয়রানির শিকার হয়েছেন। আশপাশের দোকানিরা ঘটনাটি দেখেছেন।",
+      victim: "woman",
+    },
+  ],
+  "domestic-violence": [
+    {
+      titleBn: "{area} এলাকায় যৌতুকের জন্য গৃহবধূ নির্যাতন",
+      summaryBn: "{area} এলাকায় যৌতুকের দাবিতে এক গৃহবধূকে মারধর করা হচ্ছে বলে প্রতিবেশীরা জানিয়েছেন। তিনি বাড়ি থেকে বের হতে পারছেন না।",
+      victim: "woman",
+      involved: "individual",
+    },
+    {
+      titleBn: "{area} এলাকায় রাতে পারিবারিক সহিংসতা",
+      summaryBn: "{area} এলাকার একটি বাসা থেকে রাতে চিৎকার শোনা যাচ্ছে। এক নারী ফোনে জানিয়েছেন, তাঁকে মারধর করা হচ্ছে।",
+      victim: "woman",
+      involved: "individual",
+    },
+    {
+      titleBn: "{area} এলাকায় কিশোরী গৃহকর্মী নির্যাতন",
+      summaryBn: "{area} এলাকার একটি বাসায় এক কিশোরী গৃহকর্মীকে নির্যাতন করা হচ্ছে বলে পাশের বাসার এক বাসিন্দা অভিযোগ করেছেন।",
+      victim: "child",
+    },
+    {
+      titleBn: "{area} এলাকায় বাল্যবিয়ের চেষ্টা",
+      summaryBn: "{area} এলাকায় এক স্কুলছাত্রীকে জোর করে বিয়ে দেওয়ার চেষ্টা চলছে বলে তার এক শিক্ষক জানিয়েছেন। মেয়েটি সাহায্য চেয়েছে।",
+      victim: "child",
+    },
+  ],
+  kidnapping: [
+    {
+      titleBn: "{area} এলাকা থেকে শিশু নিখোঁজ, মুক্তিপণ দাবি",
+      summaryBn: "{area} এলাকায় বিকেলে খেলতে গিয়ে একটি শিশু আর ফেরেনি। পরিবার মুক্তিপণ চেয়ে ফোন পেয়েছে বলে জানিয়েছে।",
+      victim: "child",
+    },
+    {
+      titleBn: "{area} এলাকায় ব্যবসায়ীকে তুলে নেওয়ার অভিযোগ",
+      summaryBn: "{area} এলাকায় এক ব্যবসায়ীকে একটি মাইক্রোবাসে তুলে নেওয়া হয়েছে বলে প্রত্যক্ষদর্শীরা জানিয়েছেন। পরিবার তাঁর খোঁজ পাচ্ছে না।",
+      victim: "general",
+    },
+    {
+      titleBn: "{area} এলাকায় কিশোরী অপহরণের অভিযোগ",
+      summaryBn: "{area} এলাকায় কলেজে যাওয়ার পথে এক কিশোরীকে অপহরণ করা হয়েছে বলে পরিবারের অভিযোগ।",
+      victim: "child",
+    },
+  ],
+  drugs: [
+    {
+      titleBn: "{area} এলাকায় প্রকাশ্যে মাদক বিক্রি",
+      summaryBn: "{area} এলাকার একটি গলিতে রাতে প্রকাশ্যে মাদক বিক্রি হচ্ছে বলে বাসিন্দারা জানিয়েছেন। এলাকার কিশোররা আসক্ত হয়ে পড়ছে।",
+    },
+    {
+      titleBn: "{area} এলাকায় বাসায় বাসায় ইয়াবা সরবরাহ",
+      summaryBn: "{area} এলাকায় একটি চক্র বাসায় বাসায় ইয়াবা পৌঁছে দিচ্ছে বলে এক অভিভাবক অভিযোগ করেছেন।",
+      involved: "ring",
+    },
+    {
+      titleBn: "{area} এলাকায় মাদকসেবীদের আড্ডা",
+      summaryBn: "{area} এলাকার একটি পরিত্যক্ত ভবনে রাতে মাদকসেবীরা জড়ো হয়। পথচারীরা ছিনতাইয়ের ভয়ে আছেন।",
+    },
+  ],
+  sos: [
+    {
+      titleBn: "{area} এলাকা থেকে জরুরি SOS",
+      summaryBn: "{area} এলাকা থেকে একজন জরুরি SOS বোতাম চেপেছেন, কথা বলার সুযোগ পাননি। অবস্থান ধরে নিকটতম ইউনিট পাঠানো দরকার।",
+    },
+    {
+      titleBn: "{area} এলাকায় রাতে বিপদে নারী, SOS",
+      summaryBn: "রাতে {area} এলাকা থেকে এক নারী SOS পাঠিয়েছেন। তিনি জানিয়েছেন, কেউ তাঁকে অনুসরণ করছে।",
+      victim: "woman",
+    },
+    {
+      titleBn: "{area} এলাকায় হামলার মুখে SOS",
+      summaryBn: "{area} এলাকায় এক দোকানদার হামলার মুখে SOS চেপেছেন। ফোনে চিৎকার শোনা গেছে, এরপর লাইন কেটে যায়।",
+      victim: "general",
+    },
+    {
+      titleBn: "{area} এলাকায় বয়স্ক ব্যক্তির SOS",
+      summaryBn: "{area} এলাকায় একা থাকা এক বয়স্ক ব্যক্তি SOS পাঠিয়েছেন; বাসায় অপরিচিত লোক ঢুকেছে বলে জানিয়েছেন।",
+      victim: "elderly",
     },
   ],
   adulteration: [
@@ -133,6 +261,11 @@ export const TEMPLATES: Record<Category, readonly Template[]> = {
       summaryBn: "{area} এলাকার {business} থেকে তেল নেওয়ার পর কয়েকটি গাড়ি বন্ধ হয়ে গেছে। চালকদের সন্দেহ, জ্বালানিতে ভেজাল মেশানো হয়েছে।",
       kinds: ["fuel"],
     },
+    {
+      titleBn: "{business}-এ তালিকাভুক্ত ক্ষতিকর পণ্য: {product}",
+      summaryBn: "{area} এলাকার {business}-এ {product} বিক্রি হচ্ছে বলে এক ক্রেতা জানিয়েছেন। পণ্যটি বাজার থেকে তুলে নেওয়ার তালিকায় আছে।",
+      product: "recall",
+    },
   ],
   overpricing: [
     {
@@ -158,6 +291,18 @@ export const TEMPLATES: Record<Category, readonly Template[]> = {
       summaryBn: "{area} এলাকার {business} সরকার নির্ধারিত দামের চেয়ে প্রতি লিটারে বেশি টাকা নিচ্ছে বলে চালকরা জানিয়েছেন।",
       kinds: ["fuel"],
     },
+    {
+      titleBn: "{business}-এ {product} নির্ধারিত দামের বেশিতে",
+      summaryBn: "{area} এলাকার {business} {product} সরকার নির্ধারিত দামের চেয়ে বেশি দামে বিক্রি করছে বলে ক্রেতারা অভিযোগ করেছেন।",
+      kinds: ["grocery", "market"],
+      product: "fixed",
+    },
+    {
+      titleBn: "{business}-এ {product}-এর দাম হঠাৎ বেশি",
+      summaryBn: "{area} এলাকার {business}-এ {product}-এর দাম বাজারদরের চেয়ে অনেক বেশি নেওয়া হচ্ছে বলে এক ক্রেতা জানিয়েছেন।",
+      kinds: ["grocery", "market"],
+      product: "price",
+    },
   ],
   "fake-product": [
     {
@@ -178,6 +323,11 @@ export const TEMPLATES: Record<Category, readonly Template[]> = {
       titleBn: "{business}-এ নকল ওষুধ বিক্রির অভিযোগ",
       summaryBn: "{area} এলাকার {business}-এ নামী কোম্পানির নামে নকল ওষুধ বিক্রি হচ্ছে বলে এক ক্রেতা সন্দেহ করছেন।",
       kinds: ["pharmacy"],
+    },
+    {
+      titleBn: "{business}-এ নিষিদ্ধ পণ্য বিক্রি: {product}",
+      summaryBn: "বাজার থেকে তুলে নেওয়ার নির্দেশ থাকা {product} এখনো {area} এলাকার {business}-এ বিক্রি হচ্ছে বলে এক ক্রেতা অভিযোগ করেছেন।",
+      product: "recall",
     },
   ],
   "unsafe-business": [

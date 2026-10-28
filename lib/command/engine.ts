@@ -7,8 +7,8 @@ import { SPEED_KMH, haversineKm, lerp } from "./geo.ts";
 import { expGap, mulberry32, type Rng } from "./rng.ts";
 import { begin, editCase, editUnit, finish, getUnit, type Draft } from "./draft.ts";
 import {
-  ACK_WINDOW_MS,
   OVERDUE_AFTER_TIMEOUTS,
+  ackWindowMs,
   acknowledgeIn,
   alertNextIn,
   hasCandidate,
@@ -20,7 +20,7 @@ import {
 import { newCase } from "./generate.ts";
 import type { Case, Unit, World } from "./types.ts";
 
-export { ACK_WINDOW_MS, alertNext } from "./alerting.ts";
+export { ACK_WINDOW_MS, SOS_ACK_WINDOW_MS, ackWindowMs, alertNext } from "./alerting.ts";
 
 /** Mean gap between simulated arrivals. */
 export const ARRIVAL_MEAN_MS = 8000;
@@ -61,7 +61,7 @@ function expireAlerts(d: Draft, now: number): void {
     const current = d.cases[i];
     if (current.status !== "alerted") continue;
     const p = pendingAlert(current);
-    const window = ACK_WINDOW_MS[current.severity];
+    const window = ackWindowMs(current);
     if (!p || now - p.at <= window) continue;
     const c = editCase(d, current.id);
     const a = pendingAlert(c);
@@ -206,14 +206,21 @@ export function tick(world: World, now: number, opts: { responders?: boolean } =
   return finish(d, { now, rngState: r.state(), nextArrivalAt: next, cases: prune(d.cases) });
 }
 
-/** Keeps at most MAX_CASES cases by dropping the oldest closed ones; open and resolved cases always stay. */
+/**
+ * Keeps at most MAX_CASES cases by dropping closed ones, oldest first; open and
+ * resolved cases always stay. Closed cases that carry CRM history go last, so a
+ * long session keeps the businesses' and stations' records: first the plain ones
+ * (no business, no notes), then those tied to a business, and only then those
+ * with an operator note (fines, inspections, follow-ups).
+ */
 export function prune(cases: Case[]): Case[] {
   const extra = cases.length - MAX_CASES;
   if (extra <= 0) return cases;
+  const keepRank = (c: Case) => (c.notes.length > 0 ? 2 : c.businessId !== undefined ? 1 : 0);
   const drop = new Set(
     cases
       .filter((c) => c.status === "closed")
-      .sort((a, b) => a.reportedAt - b.reportedAt || a.id.localeCompare(b.id))
+      .sort((a, b) => keepRank(a) - keepRank(b) || a.reportedAt - b.reportedAt || a.id.localeCompare(b.id))
       .slice(0, extra)
       .map((c) => c.id),
   );
@@ -226,7 +233,8 @@ export function prune(cases: Case[]): Case[] {
  * (report, alerts, timeline, notes, acknowledgement, resolution) and the next
  * arrival keeps every window the engine measures against `now` — alert
  * timeouts, operator hold, the ack minimum, the desk clerk's wait, auto-close —
- * exactly where it was at pause time. Operator-chosen follow-up dates
+ * exactly where it was at pause time. Recall logs move with them, so "ordered
+ * 3 days ago" stays true of the frozen demo. Operator-chosen follow-up dates
  * (`notes[].followUpAt`) are wall-clock appointments and stay put.
  */
 export function resume(world: World, now: number): World {
@@ -242,5 +250,10 @@ export function resume(world: World, now: number): World {
     timeline: c.timeline.map(at),
     notes: c.notes.map(at),
   }));
-  return { ...world, paused: false, now, nextArrivalAt: world.nextArrivalAt + dt, cases };
+  const recalls = world.recalls
+    ? Object.fromEntries(
+        Object.entries(world.recalls).map(([id, s]) => [id, { ...s, updatedAt: s.updatedAt + dt, log: s.log.map(at) }]),
+      )
+    : undefined;
+  return { ...world, paused: false, now, nextArrivalAt: world.nextArrivalAt + dt, cases, ...(recalls ? { recalls } : {}) };
 }

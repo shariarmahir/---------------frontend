@@ -1,24 +1,30 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Dialog } from "radix-ui";
 import { type FormEvent, type ReactNode, useCallback, useMemo, useRef, useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import { acknowledge, addNote, arrive, close, dispatch, escalate, forward, reopen, resolve } from "@/lib/command/actions";
-import { ACK_WINDOW_MS } from "@/lib/command/engine";
+import { ackWindowMs } from "@/lib/command/engine";
 import { haversineKm, rankUnits } from "@/lib/command/geo";
 import { CATEGORY_META } from "@/lib/command/routing";
-import { bdDay } from "@/lib/command/selectors";
-import { commandAct, useCase, useCommand } from "@/lib/command/store";
-import type { ActionResult, AlertOutcome, Case, TimelineKind, Unit, World } from "@/lib/command/types";
+import { priceItem } from "@/lib/command/prices";
+import { RECALLS } from "@/lib/command/recalls";
+import { safeTitleBn } from "@/lib/command/privacy";
+import { bdDay, isWomenCase } from "@/lib/command/selectors";
+import { commandAct, selectNow, selectUnits, useCase, useCommand } from "@/lib/command/store";
+import type { ActionResult, AlertOutcome, Case, InvolvedKind, TimelineKind, Unit, World } from "@/lib/command/types";
 import { cn } from "@/lib/utils";
 import {
   Bn,
   CategoryChip,
   DIVISIONS,
   EmptyState,
+  FOLLOW_UPS,
   OverduePill,
   SeverityPill,
+  STATUS_META,
   Skeleton,
   StatusPill,
   UNIT_KIND_LABEL,
@@ -27,10 +33,13 @@ import {
   dhakaHm,
   dhakaTime,
   focusRing,
+  followUpAt,
   formatMin,
   mmss,
+  taka,
   timeAgo,
 } from "./kit";
+import { HelplineList, OccNote } from "./emergency-helplines";
 import { MapView } from "./map-view";
 
 /* ───────────── selection in the URL ───────────── */
@@ -104,8 +113,6 @@ export function CaseDrawer({ caseId, onClose }: { caseId: string | null; onClose
   );
 }
 
-const selectNow = (w: World) => w.now;
-const selectUnits = (w: World) => w.units;
 
 function CloseButton() {
   return (
@@ -164,6 +171,8 @@ function CaseSheet({ c }: { c: Case }) {
   const alerted = !unit && pendingUnitId ? byId.get(pendingUnitId) : undefined;
   const meta = CATEGORY_META[c.category];
   const div = DIVISIONS[c.place.division];
+  // Women and child cases: no title or summary that describes the survivor, no exact point (lib/command/privacy).
+  const women = isWomenCase(c);
 
   return (
     <>
@@ -174,13 +183,19 @@ function CaseSheet({ c }: { c: Case }) {
             <SeverityPill severity={c.severity} />
             <StatusPill status={c.status} />
             {c.overdue && c.status !== "resolved" && c.status !== "closed" ? <OverduePill /> : null}
+            {c.anonymous ? (
+              <span className="inline-flex min-h-6 items-center gap-1 rounded-full bg-white/8 px-2 py-0.5 text-xs font-semibold text-white ring-1 ring-white/15">
+                <Icon name="visibility_off" className="text-[14px]" />
+                Reported anonymously
+              </span>
+            ) : null}
           </div>
           <Dialog.Title asChild>
             <h2 lang="bn" tabIndex={-1} data-case-title="" className="mt-3 font-bengali focus:outline-none text-xl leading-snug font-bold text-balance text-signal-orange sm:text-2xl">
-              {c.titleBn}
+              {safeTitleBn(c)}
             </h2>
           </Dialog.Title>
-          <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-white/60">
+          <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-white/65">
             <CategoryChip category={c.category} english />
             <span className="tabular-nums">
               Reported {timeAgo(c.reportedAt, now)} · {dhakaDateTime(c.reportedAt)}
@@ -201,17 +216,29 @@ function CaseSheet({ c }: { c: Case }) {
               · {c.place.district} · {div.label} division
             </span>
           </p>
-          <p lang="bn" className="mt-2 font-bengali text-sm leading-relaxed text-white/80">
-            {c.summaryBn}
-          </p>
-          <MiniMap c={c} units={units} />
+          {women ? (
+            <p className="mt-2 flex items-start gap-2 text-sm leading-relaxed text-white/80">
+              <span aria-hidden="true" className="mt-0.5 inline-flex shrink-0">
+                <Icon name="visibility_off" className="text-[16px] text-bdnavy-300" />
+              </span>
+              Survivor details stay with the women help desk; this board shows the area only, and the map position is shifted.
+            </p>
+          ) : (
+            <p lang="bn" className="mt-2 font-bengali text-sm leading-relaxed text-white/80">
+              {c.summaryBn}
+            </p>
+          )}
+          {c.anonymous ? <p className="mt-2 text-xs text-white/65">The complainant asked not to be named. Their identity is never on this board.</p> : null}
+          <MiniMap c={c} units={units} privacy={women} />
         </Section>
 
-        <Section title={c.dept === "other" ? "Receiving body" : "Assigned unit"} icon={c.dept === "other" ? "account_balance" : "local_police"}>
+        {women ? <SurvivorSupport station={home} /> : null}
+
+        <Section title={c.dept === "other" ? "Receiving body" : "Assigned unit"} icon={c.dept === "other" ? "account_balance" : c.dept === "consumer" ? "storefront" : "local_police"}>
           {c.dept === "other" ? (
             <p className="text-sm text-white">
               {c.agency ?? meta.agency ?? "Not chosen yet"}
-              <span className="block pt-1 text-xs text-white/60">Other-agency cases are forwarded to the body that handles them, then closed when it confirms action.</span>
+              <span className="block pt-1 text-xs text-white/65">Other-agency cases are forwarded to the body that handles them, then closed when it confirms action.</span>
             </p>
           ) : (
             <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm sm:grid-cols-4">
@@ -219,17 +246,17 @@ function CaseSheet({ c }: { c: Case }) {
                 {unit ? (
                   <>
                     {unit.name}
-                    <span className="block text-xs text-white/55">
+                    <span className="block text-xs text-white/65">
                       {UNIT_KIND_LABEL[unit.kind]} · {unit.status === "busy" ? "busy" : unit.status === "off-duty" ? "off duty" : "available"}
                     </span>
                   </>
                 ) : alerted ? (
                   <>
                     {alerted.name}
-                    <span className="block text-xs text-white/55">Alerted, waiting for an answer</span>
+                    <span className="block text-xs text-white/65">Alerted, waiting for an answer</span>
                   </>
                 ) : (
-                  <span className="text-white/60">Not assigned yet</span>
+                  <span className="text-white/65">Not assigned yet</span>
                 )}
               </Fact>
               <Fact label="Distance">{c.distanceKm !== undefined ? `${c.distanceKm.toFixed(1)} km` : "—"}</Fact>
@@ -238,34 +265,37 @@ function CaseSheet({ c }: { c: Case }) {
                 {home ? (
                   <>
                     {home.name}
-                    <span className="block text-xs text-white/55 tabular-nums">{haversineKm(c.place, home).toFixed(1)} km from the place</span>
+                    <span className="block text-xs text-white/65 tabular-nums">{haversineKm(c.place, home).toFixed(1)} km from the place</span>
                   </>
                 ) : (
                   "—"
                 )}
               </Fact>
               <Fact label="First response" wide>
-                {c.firstAckAt !== undefined ? formatMin((c.firstAckAt - c.reportedAt) / 60_000) : <span className="text-white/60">Waiting</span>}
+                {c.firstAckAt !== undefined ? formatMin((c.firstAckAt - c.reportedAt) / 60_000) : <span className="text-white/65">Waiting</span>}
               </Fact>
             </dl>
           )}
         </Section>
 
+        {c.involved ? <Involvement c={c} /> : null}
+        {c.productId ? <Product id={c.productId} /> : null}
+
         {c.dept !== "other" ? (
           <Section title="Alert log" icon="notifications" count={c.alerts.length}>
             {c.alerts.length === 0 ? (
-              <p className="text-sm text-white/60">No unit has been alerted yet.</p>
+              <p className="text-sm text-white/65">No unit has been alerted yet.</p>
             ) : (
               <ol className="flex flex-col divide-y divide-white/8">
                 {c.alerts.map((a, i) => {
                   const u = byId.get(a.unitId);
-                  const left = a.at + ACK_WINDOW_MS[c.severity] - now;
+                  const left = a.at + ackWindowMs(c) - now;
                   return (
                     <li key={`${a.unitId}-${a.at}-${i}`} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
-                      <span className="w-6 shrink-0 text-xs font-semibold text-white/45 tabular-nums">{i + 1}</span>
+                      <span className="w-6 shrink-0 text-xs font-semibold text-white/65 tabular-nums">{i + 1}</span>
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-sm text-white">{u?.name ?? a.unitId}</span>
-                        <span className="text-xs text-white/55 tabular-nums">Alerted {dhakaTime(a.at)}</span>
+                        <span className="text-xs text-white/65 tabular-nums">Alerted {dhakaTime(a.at)}</span>
                       </span>
                       <AlertOutcomeTag outcome={a.outcome} left={left} />
                     </li>
@@ -288,7 +318,7 @@ function CaseSheet({ c }: { c: Case }) {
                   </span>
                   <span className="min-w-0 flex-1 pt-0.5">
                     <span className="block text-sm leading-snug text-white">{e.text}</span>
-                    <span className="mt-0.5 block text-xs text-white/55 tabular-nums">
+                    <span className="mt-0.5 block text-xs text-white/65 tabular-nums">
                       {dhakaTime(e.at)} · {timeAgo(e.at, now)}
                       {e.by === "operator" ? " · by you" : ""}
                     </span>
@@ -329,7 +359,7 @@ function AlertOutcomeTag({ outcome, left }: { outcome: AlertOutcome; left: numbe
   }
   const m = { acknowledged: ["Answered", "check"], "timed-out": ["No answer", "timer_off"], declined: ["Passed on", "redo"] }[outcome];
   return (
-    <span className={cn("inline-flex items-center gap-1 text-xs font-semibold", outcome === "acknowledged" ? "text-white" : "text-white/60")}>
+    <span className={cn("inline-flex items-center gap-1 text-xs font-semibold", outcome === "acknowledged" ? "text-white" : "text-white/65")}>
       <Icon name={m[1]} className="text-[14px]" />
       {m[0]}
     </span>
@@ -352,13 +382,13 @@ function Section({ title, icon, count, children }: { title: string; icon: string
 function Fact({ label, wide, children }: { label: string; wide?: boolean; children: ReactNode }) {
   return (
     <div className={cn("min-w-0", wide && "col-span-2")}>
-      <dt className="text-xs text-white/55">{label}</dt>
+      <dt className="text-xs text-white/65">{label}</dt>
       <dd className="mt-0.5 font-semibold text-white tabular-nums">{children}</dd>
     </div>
   );
 }
 
-function MiniMap({ c, units }: { c: Case; units: Unit[] | null }) {
+function MiniMap({ c, units, privacy }: { c: Case; units: Unit[] | null; privacy?: boolean }) {
   const cases = useMemo(() => [c], [c]);
   const deptUnits = useMemo(() => (units ?? []).filter((u) => u.dept === c.dept), [units, c.dept]);
   if (c.dept === "other") return null;
@@ -370,7 +400,95 @@ function MiniMap({ c, units }: { c: Case; units: Unit[] | null }) {
       selectedId={c.id}
       focus="selection"
       showUnits={c.dept === "police" ? ["station", "patrol"] : ["office", "team"]}
+      sos
+      privacy={privacy}
     />
+  );
+}
+
+/* ───────────── privacy, involvement, product ───────────── */
+
+/** Beside every women and child case: where it was routed, and the helplines and crisis centre for the survivor. */
+function SurvivorSupport({ station }: { station: Unit | undefined }) {
+  return (
+    <Section title="Survivor support" icon="health_and_safety">
+      <p className="mb-3 flex items-start gap-2 text-sm leading-snug text-white">
+        <span aria-hidden="true" className="mt-px inline-flex shrink-0">
+          <Icon name="support_agent" className="text-[18px] text-bdnavy-300" />
+        </span>
+        <span>
+          Routed to the women help desk at <span className="font-semibold">{station?.name ?? "the nearest station"}</span>.
+        </span>
+      </p>
+      <div className="flex flex-col gap-2">
+        <HelplineList compact />
+        <OccNote />
+      </div>
+    </Section>
+  );
+}
+
+/** The kind of actor in plain English. Only the kind, a fictional code and a head count are ever recorded. */
+const INVOLVED_LABEL: Record<InvolvedKind, string> = {
+  ring: "Organised ring",
+  gang: "Gang",
+  repeat: "Repeat offender",
+  individual: "Individual",
+  unknown: "Unknown",
+};
+
+function Involvement({ c }: { c: Case }) {
+  const inv = c.involved;
+  if (!inv) return null;
+  return (
+    <Section title="Who is involved" icon="hub">
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm sm:grid-cols-3">
+        <Fact label="Kind">{INVOLVED_LABEL[inv.kind]}</Fact>
+        <Fact label="Group code">{inv.groupId ? <Bn>{inv.groupId}</Bn> : <span className="text-white/65">None</span>}</Fact>
+        <Fact label="People">{inv.people !== undefined ? inv.people : <span className="text-white/65">Not known</span>}</Fact>
+      </dl>
+      {inv.groupId ? (
+        <Link href={`/protibad/command/intel?group=${encodeURIComponent(inv.groupId)}`} className={cn(cb.outlineSm, "mt-3")}>
+          <Icon name="hub" className="text-[16px]" />
+          See network
+          <span className="sr-only"> for group {inv.groupId}</span>
+        </Link>
+      ) : null}
+      <p className="mt-3 text-xs text-white/65">Group codes are fictional. No religion, ethnicity, party or appearance is recorded for anyone.</p>
+    </Section>
+  );
+}
+
+/** A consumer case about one product: a recall (remove from sale) or a price-watch item. */
+function Product({ id }: { id: string }) {
+  const recall = RECALLS.find((r) => r.id === id);
+  const price = recall ? undefined : priceItem(id);
+  if (!recall && !price) return null;
+  const href = recall ? `/protibad/command/consumer/recalls?item=${encodeURIComponent(id)}` : `/protibad/command/consumer/prices?item=${encodeURIComponent(id)}`;
+  return (
+    <Section title="Product" icon={recall ? "remove_shopping_cart" : "price_change"}>
+      <p className="text-sm leading-snug text-white">
+        {recall ? (
+          <>
+            <Bn className="font-semibold">
+              {recall.brandBn} {recall.productBn}
+            </Bn>
+            <span className="block text-xs text-white/65">
+              {recall.brand} {recall.product} · fictional brand on the remove-from-sale list
+            </span>
+          </>
+        ) : price ? (
+          <>
+            <Bn className="font-semibold">{price.nameBn}</Bn>
+            <span className="block text-xs text-white/65">{price.name} · on the daily price watch</span>
+          </>
+        ) : null}
+      </p>
+      <Link href={href} className={cn(cb.outlineSm, "mt-3")}>
+        <Icon name={recall ? "remove_shopping_cart" : "price_change"} className="text-[16px]" />
+        {recall ? "See the recall" : "See today's price"}
+      </Link>
+    </Section>
   );
 }
 
@@ -398,10 +516,15 @@ function Actions({ c, units, now }: { c: Case; units: Unit[]; now: number }) {
   const error = failed && failed.status === c.status ? failed.message : null;
   const [resolving, setResolving] = useState(false);
   const [note, setNote] = useState("");
+  // Set after the first action taken here, so the live region speaks the new status and stays quiet on open.
+  const [acted, setActed] = useState(false);
   const run: Run = (fn) => {
     const e = commandAct(fn);
     setFailed(e ? { status: c.status, message: e } : null);
-    if (!e) focusActions();
+    if (!e) {
+      setActed(true);
+      focusActions();
+    }
     return e;
   };
   const id = c.id;
@@ -411,7 +534,7 @@ function Actions({ c, units, now }: { c: Case; units: Unit[]; now: number }) {
   const canResolve = c.status === "acknowledged" || c.status === "en-route" || c.status === "on-scene";
   const agency = c.agency ?? CATEGORY_META[c.category].agency ?? "District Commissioner's Office";
   const pending = c.alerts.find((a) => a.outcome === "pending");
-  const left = pending ? pending.at + ACK_WINDOW_MS[c.severity] - now : 0;
+  const left = pending ? pending.at + ackWindowMs(c) - now : 0;
 
   const buttons: ReactNode[] = [];
   const add = (key: string, primary: boolean, icon: string, label: string, onClick: () => void) =>
@@ -441,15 +564,20 @@ function Actions({ c, units, now }: { c: Case; units: Unit[]; now: number }) {
 
   return (
     <section aria-label="Actions" data-case-actions="" className="border-b border-white/10 bg-black/25 px-5 py-4">
+      <p role="status" className="sr-only">
+        {acted ? `${id} is now ${STATUS_META[c.status].label}.` : ""}
+      </p>
       {c.status === "alerted" && pending ? (
         <p className={cn("mb-3 flex items-center gap-2 text-sm tabular-nums", c.severity === "critical" ? "text-crimson-bright" : "text-white/80")}>
-          <Icon name="hourglass_top" className="shrink-0 text-[18px]" />
+          <span className="inline-flex shrink-0">
+            <Icon name="hourglass_top" className="text-[18px]" />
+          </span>
           <span>
             Escalates to the next unit in <strong className="font-grotesk">{mmss(left)}</strong> unless acknowledged.
           </span>
         </p>
       ) : null}
-      {buttons.length ? <div className="flex flex-wrap gap-2">{buttons}</div> : <p className="text-sm text-white/60">No action needed from this status.</p>}
+      {buttons.length ? <div className="flex flex-wrap gap-2">{buttons}</div> : <p className="text-sm text-white/65">No action needed from this status.</p>}
 
       {/* The note survives status changes from the simulation; the form hides only while resolving is not allowed. */}
       {resolving && canResolve ? (
@@ -464,7 +592,7 @@ function Actions({ c, units, now }: { c: Case; units: Unit[]; now: number }) {
             onChange={(e) => setNote(e.target.value)}
             rows={2}
             placeholder="What was done, for example: complainant safe, two suspects detained"
-            className="min-h-20 w-full rounded-xl bg-black px-3.5 py-2.5 text-sm leading-relaxed text-white ring-1 ring-white/15 placeholder:text-white/40 focus:ring-2 focus:ring-signal-orange focus:outline-none"
+            className="min-h-20 w-full rounded-xl bg-black px-3.5 py-2.5 text-sm leading-relaxed text-white ring-1 ring-white/15 placeholder:text-white/65 focus:ring-2 focus:ring-signal-orange focus:outline-none"
           />
           <div className="flex flex-wrap gap-2">
             <button type="submit" className={cb.gold}>
@@ -487,21 +615,23 @@ function Actions({ c, units, now }: { c: Case; units: Unit[]; now: number }) {
 
       {error ? (
         <p role="alert" className="mt-3 flex items-start gap-2 text-sm font-semibold text-white/85">
-          <Icon name="error" className="mt-px shrink-0 text-[18px] text-crimson-bright" />
+          <span className="mt-px inline-flex shrink-0">
+            <Icon name="error" className="text-[18px] text-crimson-bright" />
+          </span>
           {error}
         </p>
       ) : null}
 
       {canDispatch && ranked.length > 0 ? (
         <div className="mt-4">
-          <p className="mb-2 text-xs font-semibold text-white/60">Nearest free units</p>
+          <p className="mb-2 text-xs font-semibold text-white/65">Nearest free units</p>
           <ul className="flex flex-col divide-y divide-white/8 rounded-xl bg-bdnavy-900 ring-1 ring-white/10">
             {ranked.map((r, i) => (
               <li key={r.unit.id} className="flex items-center gap-3 px-3 py-2">
-                <span className="w-4 shrink-0 text-xs font-semibold text-white/45 tabular-nums">{i + 1}</span>
+                <span className="w-4 shrink-0 text-xs font-semibold text-white/65 tabular-nums">{i + 1}</span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-semibold text-white">{r.unit.name}</span>
-                  <span className="text-xs text-white/55 tabular-nums">
+                  <span className="text-xs text-white/65 tabular-nums">
                     {UNIT_KIND_LABEL[r.unit.kind]} · {r.km.toFixed(1)} km · about {r.eta} min
                   </span>
                 </span>
@@ -524,22 +654,13 @@ function Actions({ c, units, now }: { c: Case; units: Unit[]; now: number }) {
 
 /* ───────────── notes ───────────── */
 
-const FOLLOW_UPS = [
-  { value: "", label: "No follow-up" },
-  { value: "15", label: "In 15 minutes" },
-  { value: "60", label: "In 1 hour" },
-  { value: "240", label: "In 4 hours" },
-  { value: "1440", label: "Tomorrow, same time" },
-];
-
 function Notes({ c, now }: { c: Case; now: number }) {
   const [text, setText] = useState("");
   const [follow, setFollow] = useState("");
   const [error, setError] = useState<string | null>(null);
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    const mins = follow ? Number(follow) : undefined;
-    const err = commandAct((w, t) => addNote(w, c.id, t, text, mins === undefined ? undefined : t + mins * 60_000));
+    const err = commandAct((w, t) => addNote(w, c.id, t, text, followUpAt(t, follow)));
     setError(err);
     if (!err) {
       setText("");
@@ -557,8 +678,14 @@ function Notes({ c, now }: { c: Case; now: number }) {
               const late = n.followUpAt !== undefined && n.followUpAt < now;
               return (
                 <li key={`${n.at}-${i}`} className="rounded-xl bg-black/30 px-3.5 py-3 ring-1 ring-white/10">
+                  {n.kind ? (
+                    <p className="mb-1.5 flex flex-wrap items-center gap-2">
+                      <span className="inline-flex min-h-6 items-center rounded-full bg-white/8 px-2 py-0.5 text-xs font-semibold text-white ring-1 ring-white/15">{n.kind.charAt(0).toUpperCase() + n.kind.slice(1)}</span>
+                      {n.amountTk !== undefined ? <span className="font-grotesk text-sm font-bold text-white tabular-nums">{taka(n.amountTk)}</span> : null}
+                    </p>
+                  ) : null}
                   <p className="text-sm leading-relaxed text-white">{n.text}</p>
-                  <p className="mt-1 flex flex-wrap gap-x-3 text-xs text-white/55 tabular-nums">
+                  <p className="mt-1 flex flex-wrap gap-x-3 text-xs text-white/65 tabular-nums">
                     <span>{dhakaDateTime(n.at)}</span>
                     {n.followUpAt !== undefined ? (
                       <span className={cn("inline-flex items-center gap-1 font-semibold", late ? "text-crimson-bright" : "text-white/80")}>
@@ -582,7 +709,7 @@ function Notes({ c, now }: { c: Case; now: number }) {
           onChange={(e) => setText(e.target.value)}
           rows={2}
           placeholder="Call made, person spoken to, what was agreed"
-          className="min-h-20 w-full rounded-xl bg-black px-3.5 py-2.5 text-sm leading-relaxed text-white ring-1 ring-white/15 placeholder:text-white/40 focus:ring-2 focus:ring-signal-orange focus:outline-none"
+          className="min-h-20 w-full rounded-xl bg-black px-3.5 py-2.5 text-sm leading-relaxed text-white ring-1 ring-white/15 placeholder:text-white/65 focus:ring-2 focus:ring-signal-orange focus:outline-none"
         />
         <div className="flex flex-wrap items-end gap-2">
           <label className="flex min-w-0 flex-1 flex-col gap-1.5">
@@ -606,7 +733,9 @@ function Notes({ c, now }: { c: Case; now: number }) {
         </div>
         {error ? (
           <p role="alert" className="flex items-center gap-2 text-sm font-semibold text-white/85">
-            <Icon name="error" className="shrink-0 text-[18px] text-crimson-bright" />
+            <span className="inline-flex shrink-0">
+              <Icon name="error" className="text-[18px] text-crimson-bright" />
+            </span>
             {error}
           </p>
         ) : null}

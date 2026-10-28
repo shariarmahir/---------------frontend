@@ -7,7 +7,7 @@
 import { etaMin, haversineKm, rankUnits } from "./geo.ts";
 import { begin, editCase, editUnit, finish, getCase, getUnit, type Draft } from "./draft.ts";
 import { acknowledgeIn, alertNextIn, isMobile, occupy, pendingAlert, release, round1 } from "./alerting.ts";
-import type { ActionResult, Case, Status, TimelineEntry, Unit, World } from "./types.ts";
+import type { ActionResult, Case, CaseNote, NoteKind, Status, TimelineEntry, Unit, World } from "./types.ts";
 
 const fail = (error: string): ActionResult => ({ ok: false, error });
 const op = (at: number, kind: TimelineEntry["kind"], text: string): TimelineEntry => ({ at, kind, text, by: "operator" });
@@ -147,11 +147,46 @@ export function reopen(world: World, caseId: string, now: number): ActionResult 
   });
 }
 
-export function addNote(world: World, caseId: string, now: number, text: string, followUpAt?: number): ActionResult {
+export const NOTE_KINDS: readonly NoteKind[] = ["call", "inspection", "warning", "fine", "sealed"];
+export const MAX_FINE_TK = 10_000_000;
+const NOTE_LABEL: Record<NoteKind, string> = { call: "Call", inspection: "Inspection", warning: "Warning", fine: "Fine", sealed: "Sealed" };
+
+/**
+ * Adds a note (with an optional follow-up time) to a case. `meta.kind` tags it
+ * (a call, or an inspection outcome); a "fine" needs `meta.amountTk`, a whole
+ * number of taka from 1 to 10,000,000, and no other kind may carry an amount.
+ */
+export function addNote(
+  world: World,
+  caseId: string,
+  now: number,
+  text: string,
+  followUpAt?: number,
+  meta?: { kind?: NoteKind; amountTk?: number },
+): ActionResult {
   const t = text.trim();
-  return act(world, caseId, () => (t ? undefined : "Write a note first."), (_d, c) => {
-    c.notes.push(followUpAt === undefined ? { at: now, text: t } : { at: now, text: t, followUpAt });
-    c.timeline.push(op(now, "note", `Note: ${t}`));
+  const kind = meta?.kind;
+  const amountTk = meta?.amountTk;
+  const guard = () => {
+    if (!t) return "Write a note first.";
+    if (kind !== undefined && !NOTE_KINDS.includes(kind)) return "Choose what kind of note this is.";
+    if (kind === "fine") {
+      if (!Number.isInteger(amountTk) || (amountTk as number) < 1 || (amountTk as number) > MAX_FINE_TK) {
+        return `A fine needs an amount between ৳ 1 and ৳ ${MAX_FINE_TK.toLocaleString("en-US")}.`;
+      }
+    } else if (amountTk !== undefined) {
+      return "Only a fine carries an amount.";
+    }
+    return undefined;
+  };
+  return act(world, caseId, guard, (_d, c) => {
+    const note: CaseNote = { at: now, text: t };
+    if (followUpAt !== undefined) note.followUpAt = followUpAt;
+    if (kind !== undefined) note.kind = kind;
+    if (kind === "fine") note.amountTk = amountTk;
+    c.notes.push(note);
+    const label = kind === undefined ? "Note" : kind === "fine" ? `Fine ৳ ${(amountTk as number).toLocaleString("en-US")}` : NOTE_LABEL[kind];
+    c.timeline.push(op(now, "note", `${label}: ${t}`));
     return undefined;
   });
 }

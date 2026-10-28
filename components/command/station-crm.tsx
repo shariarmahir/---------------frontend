@@ -5,14 +5,33 @@ import { type FormEvent, useMemo, useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import { STATIONS } from "@/data/command/stations";
 import { addNote } from "@/lib/command/actions";
+import { safeTitleBn } from "@/lib/command/privacy";
 import { CATEGORY_META } from "@/lib/command/routing";
 import { filterCases, followUpsDue, isOpen, stationStats, type FollowUpDue } from "@/lib/command/selectors";
-import { commandAct, perWorld, useCommand } from "@/lib/command/store";
+import { commandAct, perWorld, selectNow, useCommand } from "@/lib/command/store";
 import type { Case, World } from "@/lib/command/types";
 import { cn } from "@/lib/utils";
 import { CaseDrawer, useSelectedCase } from "./case-drawer";
 import { CaseTable } from "./case-table";
-import { Bn, CONTROL, EmptyState, Kpi, OverduePill, Panel, STATUS_META, SelectField, Skeleton, cb, dhakaDateTime, focusRing, formatMin, num } from "./kit";
+import {
+  Bn,
+  CONTROL,
+  EmptyState,
+  FOLLOW_UPS,
+  Kpi,
+  OverduePill,
+  Panel,
+  STATUS_META,
+  SelectField,
+  Skeleton,
+  cb,
+  dhakaDateTime,
+  focusRing,
+  followUpAt,
+  formatMin,
+  num,
+} from "./kit";
+import { ScrollCue } from "./scroll-cue";
 import { MapView } from "./map-view";
 import { CommandPage } from "./shell";
 import { UnitRoster } from "./unit-roster";
@@ -24,17 +43,17 @@ import { UnitRoster } from "./unit-roster";
  * useSearchParams (the case drawer): render it inside <Suspense>.
  */
 
-const selectNow = (w: World) => w.now;
 
 /* ───────────── follow-ups due ───────────── */
 
-function FollowUps({ items, onOpen }: { items: FollowUpDue[] | null; onOpen(id: string): void }) {
+function FollowUps({ items, onOpen, className }: { items: FollowUpDue[] | null; onOpen(id: string): void; className?: string }) {
   const late = items ? items.filter((f) => f.overdue).length : 0;
   return (
     <Panel
       title="Follow-ups due"
       icon="event_upcoming"
       sub="Open follow-ups from case notes, soonest first"
+      className={className}
       action={
         items && late > 0 ? (
           <span className="inline-flex items-center gap-1 rounded-full bg-national-crimson/20 px-2.5 py-1 text-xs font-semibold text-crimson-bright ring-1 ring-national-crimson/70 tabular-nums">
@@ -55,14 +74,17 @@ function FollowUps({ items, onOpen }: { items: FollowUpDue[] | null; onOpen(id: 
           When a note carries a follow-up time, it is listed here.
         </EmptyState>
       ) : (
-        <ul aria-label="Follow-ups due" className="flex max-h-[28rem] flex-col gap-2 overflow-y-auto overscroll-contain">
+        <ScrollCue as="ul" aria-label="Follow-ups due" className="flex max-h-[28rem] flex-col gap-2 overflow-y-auto overscroll-contain">
           {items.map((f, i) => {
             const overdue = f.overdue;
             return (
-              <li key={`${f.case.id}-${f.at}-${i}`} className={cn("relative flex flex-col gap-1.5 rounded-xl bg-black/30 px-3.5 py-3 ring-1", overdue ? "ring-national-crimson/50" : "ring-white/10")}>
+              <li
+                key={`${f.case.id}-${f.at}-${i}`}
+                className={cn("relative flex flex-col gap-1.5 rounded-xl bg-black/30 px-3.5 py-3 ring-1", overdue ? "ring-national-crimson/50" : "ring-white/10")}
+              >
                 {overdue ? <span aria-hidden="true" className="absolute top-2.5 bottom-2.5 left-0 w-[3px] rounded-r-full bg-national-crimson" /> : null}
                 <p className="text-sm leading-relaxed text-white">{f.text}</p>
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-white/60">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-white/65">
                   <span className={cn("inline-flex items-center gap-1 font-semibold tabular-nums", overdue ? "text-crimson-bright" : "text-white/85")}>
                     <Icon name={overdue ? "alarm" : "event"} className="text-[14px]" />
                     {overdue ? "Was due " : "Due "}
@@ -78,12 +100,12 @@ function FollowUps({ items, onOpen }: { items: FollowUpDue[] | null; onOpen(id: 
                     <span className="sr-only">Open case </span>
                     {f.case.id}
                   </button>
-                  <Bn className="min-w-0 truncate text-white/60">{f.case.titleBn}</Bn>
+                  <Bn className="min-w-0 truncate text-white/65">{safeTitleBn(f.case)}</Bn>
                 </div>
               </li>
             );
           })}
-        </ul>
+        </ScrollCue>
       )}
     </Panel>
   );
@@ -91,31 +113,25 @@ function FollowUps({ items, onOpen }: { items: FollowUpDue[] | null; onOpen(id: 
 
 /* ───────────── contact log ───────────── */
 
-const FOLLOW_UPS = [
-  { value: "", label: "No follow-up" },
-  { value: "15", label: "In 15 minutes" },
-  { value: "60", label: "In 1 hour" },
-  { value: "240", label: "In 4 hours" },
-  { value: "1440", label: "Tomorrow, same time" },
-];
-
 interface LogEntry {
   at: number;
   text: string;
   followUpAt?: number;
   /** "note" for a note someone wrote; "step" for a step the operator took on the case. */
   kind: "note" | "step";
+  /** The follow-up is still waiting: the case's newest note, on a case that is still open (same rule as followUpsDue). */
+  live?: boolean;
 }
 
 /** A case's contact log: its notes plus the steps the operator took, newest first. */
 function contactLog(c: Case): LogEntry[] {
-  const out: LogEntry[] = c.notes.map((n) => ({ at: n.at, text: n.text, followUpAt: n.followUpAt, kind: "note" }));
+  const out: LogEntry[] = c.notes.map((n, i) => ({ at: n.at, text: n.text, followUpAt: n.followUpAt, kind: "note", live: i === c.notes.length - 1 && isOpen(c) }));
   // A note also writes a "note" timeline line: skip it, the note itself is listed above.
   for (const t of c.timeline) if (t.by === "operator" && t.kind !== "note") out.push({ at: t.at, text: t.text, kind: "step" });
   return out.sort((a, b) => b.at - a.at);
 }
 
-function ContactLog({ cases, now, onOpen }: { cases: Case[] | null; now: number | null; onOpen(id: string): void }) {
+function ContactLog({ cases, now, onOpen, className }: { cases: Case[] | null; now: number | null; onOpen(id: string): void; className?: string }) {
   const [pick, setPick] = useState("");
   const [text, setText] = useState("");
   const [follow, setFollow] = useState("");
@@ -128,8 +144,7 @@ function ContactLog({ cases, now, onOpen }: { cases: Case[] | null; now: number 
   const submit = (e: FormEvent) => {
     e.preventDefault();
     if (!current) return;
-    const mins = follow ? Number(follow) : undefined;
-    const err = commandAct((w, t) => addNote(w, current.id, t, text, mins === undefined ? undefined : t + mins * 60_000));
+    const err = commandAct((w, t) => addNote(w, current.id, t, text, followUpAt(t, follow)));
     setError(err);
     setSaved(!err);
     if (!err) {
@@ -139,7 +154,7 @@ function ContactLog({ cases, now, onOpen }: { cases: Case[] | null; now: number 
   };
 
   return (
-    <Panel title="Contact log" icon="contact_phone" sub="Calls made, people spoken to and follow-ups, case by case">
+    <Panel title="Contact log" icon="contact_phone" sub="Calls made, people spoken to and follow-ups, case by case" className={className}>
       {cases === null || now === null ? (
         <div aria-hidden="true" className="flex flex-col gap-2">
           <Skeleton className="h-11 w-full rounded-xl" />
@@ -150,8 +165,9 @@ function ContactLog({ cases, now, onOpen }: { cases: Case[] | null; now: number 
           A contact log opens for each case once one is assigned here.
         </EmptyState>
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 xl:grid xl:grid-cols-2 xl:grid-rows-[auto_auto_1fr] xl:gap-x-8">
           <SelectField
+            className="xl:col-start-1"
             label="Case"
             value={current.id}
             onChange={(v) => {
@@ -162,19 +178,19 @@ function ContactLog({ cases, now, onOpen }: { cases: Case[] | null; now: number 
             options={cases.map((c) => ({ value: c.id, label: `${c.id} · ${CATEGORY_META[c.category].label} · ${STATUS_META[c.status].label}` }))}
           />
 
-          <div className="flex items-center justify-between gap-3 rounded-xl bg-black/30 px-3.5 py-2.5 ring-1 ring-white/10">
-            <Bn className="min-w-0 truncate text-sm font-semibold text-white">{current.titleBn}</Bn>
+          <div className="flex items-center justify-between gap-3 rounded-xl bg-black/30 px-3.5 py-2.5 ring-1 ring-white/10 xl:col-start-1">
+            <Bn className="min-w-0 truncate text-sm font-semibold text-white">{safeTitleBn(current)}</Bn>
             <button type="button" data-case-open={current.id} onClick={() => onOpen(current.id)} className={cn(cb.quietSm, "shrink-0")}>
               Open case
             </button>
           </div>
 
           {log.length === 0 ? (
-            <p className="rounded-xl px-4 py-5 text-center text-sm text-white/60 ring-1 ring-white/10 ring-inset">No contact logged on this case yet.</p>
+            <p className="rounded-xl px-4 py-5 text-center text-sm text-white/65 ring-1 ring-white/10 ring-inset xl:col-start-1">No contact logged on this case yet.</p>
           ) : (
-            <ol aria-label={`Contact log for ${current.id}`} className="flex max-h-72 flex-col gap-2 overflow-y-auto overscroll-contain">
+            <ScrollCue as="ol" aria-label={`Contact log for ${current.id}`} className="flex max-h-72 flex-col gap-2 overflow-y-auto overscroll-contain xl:col-start-1">
               {log.map((e, i) => {
-                const late = e.followUpAt !== undefined && e.followUpAt < now;
+                const late = e.live === true && e.followUpAt !== undefined && e.followUpAt < now;
                 return (
                   <li key={`${e.at}-${i}`} className="flex gap-3 rounded-xl bg-black/30 px-3.5 py-3 ring-1 ring-white/10">
                     <span aria-hidden="true" className="mt-0.5 inline-flex shrink-0 text-bdnavy-300">
@@ -182,15 +198,16 @@ function ContactLog({ cases, now, onOpen }: { cases: Case[] | null; now: number 
                     </span>
                     <div className="min-w-0">
                       <p className="text-sm leading-relaxed text-white">{e.text}</p>
-                      <p className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-white/55 tabular-nums">
+                      <p className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-white/65 tabular-nums">
                         <span>
                           {dhakaDateTime(e.at)} · {e.kind === "note" ? "Note" : "By you"}
                         </span>
                         {e.followUpAt !== undefined ? (
-                          <span className={cn("inline-flex items-center gap-1 font-semibold", late ? "text-crimson-bright" : "text-white/80")}>
-                            <Icon name={late ? "alarm" : "event"} className="text-[14px]" />
-                            {late ? "Follow-up was due " : "Follow up "}
+                          <span className={cn("inline-flex items-center gap-1 font-semibold", late ? "text-crimson-bright" : e.live ? "text-white/80" : "font-normal text-white/65")}>
+                            <Icon name={late ? "alarm" : e.live ? "event" : "event_available"} className="text-[14px]" />
+                            {late ? "Follow-up was due " : e.live ? "Follow up " : "Follow-up was set for "}
                             {dhakaDateTime(e.followUpAt)}
+                            {e.live ? "" : " (done)"}
                           </span>
                         ) : null}
                       </p>
@@ -198,10 +215,14 @@ function ContactLog({ cases, now, onOpen }: { cases: Case[] | null; now: number 
                   </li>
                 );
               })}
-            </ol>
+            </ScrollCue>
           )}
 
-          <form onSubmit={submit} className="flex flex-col gap-2.5 border-t border-white/10 pt-4" aria-label="Log a call or follow-up">
+          <form
+            onSubmit={submit}
+            className="flex min-w-0 flex-col gap-2.5 border-t border-white/10 pt-4 xl:col-start-2 xl:row-span-3 xl:row-start-1 xl:border-t-0 xl:border-l xl:pt-0 xl:pl-8"
+            aria-label="Log a call or follow-up"
+          >
             <label htmlFor="crm-log-text" className="text-sm font-semibold text-white/90">
               Log a call / follow-up
             </label>
@@ -225,7 +246,9 @@ function ContactLog({ cases, now, onOpen }: { cases: Case[] | null; now: number 
             </div>
             {error ? (
               <p role="alert" className="flex items-start gap-2 text-sm font-semibold text-white/85">
-                <Icon name="error" className="shrink-0 text-[18px] text-crimson-bright" />
+                <span aria-hidden="true" className="inline-flex shrink-0">
+                  <Icon name="error" className="text-[18px] text-crimson-bright" />
+                </span>
                 {error}
               </p>
             ) : null}
@@ -257,6 +280,8 @@ export function StationCrm({ stationId }: { stationId: string }) {
 
   const open = useMemo(() => all?.filter(isOpen) ?? null, [all]);
   const closed = useMemo(() => (all ? all.filter((c) => !isOpen(c)).sort((a, b) => (b.resolvedAt ?? b.reportedAt) - (a.resolvedAt ?? a.reportedAt)) : null), [all]);
+  // The drawer's case is shown on the map only when it belongs to this station.
+  const here = selected !== null && (all?.some((c) => c.id === selected) ?? false);
   const overdue = followUps ? followUps.filter((f) => f.overdue).length : null;
   // Open cases first for the contact log's case picker.
   const logCases = useMemo(() => (open && closed ? [...open, ...closed] : null), [open, closed]);
@@ -281,7 +306,7 @@ export function StationCrm({ stationId }: { stationId: string }) {
       }
     >
       <section aria-label="Station figures" className="overflow-hidden rounded-2xl bg-bdnavy-900 ring-1 ring-white/12">
-        <dl className="grid grid-cols-2 divide-white/10 sm:grid-cols-3 xl:grid-cols-5 [&>div]:border-white/10 max-sm:[&>div:nth-child(-n+4)]:border-b max-sm:[&>div:nth-child(odd)]:border-r max-sm:[&>div:last-child]:col-span-2 max-sm:[&>div:last-child]:border-r-0 sm:max-xl:[&>div:nth-child(-n+3)]:border-b sm:max-xl:[&>div:not(:nth-child(3n))]:border-r xl:[&>div:not(:last-child)]:border-r">
+        <dl className="grid grid-cols-2 divide-white/10 xl:grid-cols-5 [&>div]:border-white/10 max-sm:[&>div:nth-child(-n+4)]:border-b max-sm:[&>div:nth-child(odd)]:border-r max-sm:[&>div:last-child]:col-span-2 max-sm:[&>div:last-child]:border-r-0 sm:grid-cols-6 sm:max-xl:[&>div:nth-child(-n+3)]:col-span-2 sm:max-xl:[&>div:nth-child(n+4)]:col-span-3 sm:max-xl:[&>div:nth-child(-n+3)]:border-b sm:max-xl:[&>div:not(:nth-child(3)):not(:last-child)]:border-r xl:[&>div:not(:last-child)]:border-r">
           <Kpi label="Open cases" icon="folder_open" value={v(stats?.open)} sub={stats ? "Each a task until closed" : null} />
           <Kpi label="Closed cases" icon="inventory" value={v(stats?.closed)} sub={stats ? "Resolved and filed" : null} />
           <Kpi label="Median first response" icon="timer" value={stats ? formatMin(stats.medianFirstResponseMin) : v(null)} sub={stats ? "Report to first answer" : null} />
@@ -306,33 +331,38 @@ export function StationCrm({ stationId }: { stationId: string }) {
         </dl>
       </section>
 
-      <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_24rem]">
+      {/*
+        Two columns from xl (map and log; patrols and follow-ups). The map stretches to the height of
+        patrols and follow-ups, so the two columns end level with no blank block; the contact log runs
+        full width beneath. One column below xl, in the order 1-4.
+      */}
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_24rem]">
         <Panel
           title="Area map"
           icon="public"
           sub={
             <>
-              <strong className="font-semibold text-white/85">Approximate location</strong> · {station.lat.toFixed(3)}°N, {station.lng.toFixed(3)}°E · open cases around the station
+              <strong className="font-semibold text-white/85">Approximate location</strong> · {station.lat.toFixed(3)}°N, {station.lng.toFixed(3)}°E · cases around the station
             </>
           }
+          className="max-xl:order-1 xl:flex-1"
           bodyClassName="flex flex-col p-0 sm:p-0 sm:pb-0"
         >
           <MapView
-            className="h-72 border-t border-white/10 sm:h-96 lg:h-auto lg:min-h-[26rem] lg:flex-1"
-            cases={open ?? []}
+            className="h-72 border-t border-white/10 sm:h-96 xl:h-auto xl:min-h-[26rem] xl:flex-1"
+            cases={all ?? []}
             units={units ?? []}
-            selectedId={selected ?? undefined}
+            selectedId={here ? (selected ?? undefined) : undefined}
             onSelect={setSelected}
-            focus={selected ? "selection" : { lat: station.lat, lng: station.lng, zoom: 13 }}
+            focus={here ? "selection" : { lat: station.lat, lng: station.lng, zoom: 13 }}
             showUnits={["station", "patrol"]}
           />
         </Panel>
-        <UnitRoster homeId={stationId} onOpen={setSelected} />
-      </div>
-
-      <div className="grid items-start gap-4 lg:grid-cols-2">
-        <FollowUps items={followUps} onOpen={setSelected} />
-        <ContactLog cases={logCases} now={now} onOpen={setSelected} />
+        <div className="flex min-w-0 flex-col gap-4 max-xl:contents">
+          <UnitRoster homeId={stationId} onOpen={setSelected} className="max-xl:order-2" />
+          <FollowUps items={followUps} onOpen={setSelected} className="flex-1 max-xl:order-3" />
+        </div>
+        <ContactLog cases={logCases} now={now} onOpen={setSelected} className="max-xl:order-4 xl:col-span-2" />
       </div>
 
       <Panel title="Open cases" icon="folder_open" sub="Critical first, then newest. Select a case to work it.">
@@ -343,7 +373,7 @@ export function StationCrm({ stationId }: { stationId: string }) {
         <CaseTable cases={closed} onOpen={setSelected} caption={`Closed cases at ${station.name}`} empty="No closed cases yet." />
       </Panel>
 
-      <p className="flex items-center gap-2 text-xs text-white/50">
+      <p className="flex items-center gap-2 text-xs text-white/65">
         <Icon name="map" className="text-[16px]" />
         Police stations are real thanas at approximate positions. Map data © OpenStreetMap contributors.
       </p>
@@ -357,7 +387,7 @@ export function StationCrmFallback() {
   return (
     <CommandPage title="Station" subtitle="Loading the station file…">
       <Skeleton className="h-28 w-full rounded-2xl" />
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_24rem]">
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_24rem]">
         <Skeleton className="h-96 rounded-2xl" />
         <Skeleton className="h-96 rounded-2xl" />
       </div>
