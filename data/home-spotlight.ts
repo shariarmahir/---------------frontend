@@ -163,7 +163,7 @@ const indicatorSlides: SpotlightSlide[] = Object.keys(INDICATOR_MEDIA)
     tail: s.delta ?? "",
     tailArrow: s.deltaDirection,
     sub: `${s.caption}. Source: ${s.source}`,
-    cta: { label: "View National Index", href: "/bangladesh/problems#national-index" },
+    cta: { label: "View National Index", href: "/bangladesh#national-index" },
     media: { ...INDICATOR_MEDIA[s.id], motif: "meter" as const, progress: s.progress, tone: s.tone },
   }));
 

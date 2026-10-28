@@ -1,97 +1,121 @@
-import { P, facts, type Credit, type Photo } from "@/data/bangladesh";
+import Link from "next/link";
+import { Card, LINK, Section } from "@/components/bangladesh-landing/kit";
+import { Icon } from "@/components/ui/icon";
+import { btn } from "@/components/ui/section-kit";
+import type { Credit, Photo } from "@/data/bangladesh";
+import { P, facts } from "@/data/bangladesh-history";
 import { commonsPhotos } from "@/data/bangladesh-photos";
+import { WB_SOURCE_URL } from "@/data/bangladesh-growth";
 import { promoCredits } from "@/data/promos";
 import { ruralCredits } from "@/data/rural-life";
+import { cn } from "@/lib/utils";
 import { StoryPhoto } from "./story-photo";
 
 /**
- * The emotional turn between the numbers and the reader's own memory:
- * a full-bleed photograph, a line of Nazrul, and the invitation.
+ * The turn from the story to the reader: a crowd holding the flag high, a
+ * line of Nazrul, and an invitation to find their own part.
  */
 export function BdPride() {
   return (
-    <section className="relative isolate overflow-hidden bg-slate-950">
-      <StoryPhoto photo={P.smritisoudho} sizes="100vw" className="absolute inset-0 -z-10" drift imgClassName="opacity-60" />
-      <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-b from-slate-950/80 via-bd-green-dark/60 to-slate-950/90" />
-
-      <div className="story-reveal mx-auto flex max-w-4xl flex-col items-center px-gutter-x py-28 text-center lg:py-40">
-        <span className="font-bengali text-sm font-bold tracking-wide text-signal-orange">আমরা বীরের জাতি</span>
-        <blockquote className="mt-6 font-bengali text-4xl leading-tight font-bold text-white sm:text-6xl">
-          “বল বীর—<br />
-          বল <span className="text-national-crimson">উন্নত</span> মম শির!”
-        </blockquote>
-        <p className="mt-3 font-bengali text-base text-white/70">— কাজী নজরুল ইসলাম, ‘বিদ্রোহী’</p>
-        <p className="mt-8 max-w-2xl font-bengali text-lg leading-relaxed text-white/85">
-          যে জাতি ভাষার জন্য বুক পেতে দিয়েছে, নয় মাস যুদ্ধ করে স্বাধীনতা এনেছে,
-          আর শূন্য থেকে উঠে দাঁড়িয়েছে — সেই জাতির সন্তান আমরা। এই সবুজ দেশটা
-          আমাদের আশীর্বাদ, আর একে আরও সুন্দর করার দায়ও আমাদের।
-        </p>
-        <a
-          href="#memories"
-          className="mt-10 inline-flex items-center gap-2 rounded-full bg-signal-orange px-7 py-4 font-bengali text-base font-bold text-text-primary shadow-glow-orange transition-all hover:-translate-y-0.5 hover:brightness-95 focus-visible:ring-4 focus-visible:ring-white/40 focus-visible:outline-none motion-reduce:hover:translate-y-0"
-        >
-          আপনার বাংলাদেশের গল্প বলুন
-        </a>
+    <Section id="people" title="People who lit the way">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <StoryPhoto
+          photo={P.crowd}
+          sizes="(min-width: 1024px) 40vw, 100vw"
+          className="story-reveal aspect-3/2 rounded-3xl ring-1 ring-white/12 lg:col-span-5 lg:aspect-auto lg:min-h-96"
+        />
+        <Card className="story-reveal flex flex-col justify-center lg:col-span-7 lg:p-12">
+          <figure>
+            <blockquote className="font-grotesk text-3xl leading-tight font-bold text-white sm:text-4xl lg:text-5xl">
+              “Proclaim, O hero:
+              <br />
+              <span className="text-signal-orange">my head is held high!</span>”
+            </blockquote>
+            <figcaption className="mt-3 text-sm text-white/80">Kazi Nazrul Islam, from Bidrohi (The Rebel)</figcaption>
+          </figure>
+          <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/80 sm:text-lg">
+            We are a nation of heroes: the children of a people who bared their chests for their language, won their
+            independence in nine months of war and rose from nothing. This green country is our blessing, and making it
+            more beautiful is our duty too.
+          </p>
+          <Link href="/bangladesh/shield" className={cn(btn.gold, "mt-8 self-start")}>
+            Find your part
+            <Icon name="arrow_forward" className="text-lg!" />
+          </Link>
+        </Card>
       </div>
-    </section>
+    </Section>
   );
 }
 
-/** Full attribution list: every Commons photo, plus the data sources. */
+/** "File:Lalbagh_Kella_(Lalbagh_Fort).JPG" → "Lalbagh Kella (Lalbagh Fort)": a Commons file's own English title. */
+function fileTitle(p: Photo & { credit: Credit }) {
+  const file = p.credit.sourceUrl.split("/File:")[1];
+  return file ? decodeURIComponent(file).replace(/_/g, " ").replace(/\.\w+$/, "") : p.alt;
+}
+
+/** Every source behind this chapter's figures, and every Commons photograph shown on these pages, credited once each. */
 export function BdCredits() {
-  // One line per source file: a photograph used in two places is credited once.
   const seen = new Set<string>();
-  const photos = [...Object.values(commonsPhotos), ...ruralCredits, ...promoCredits].filter(
-    (p): p is Photo & { credit: Credit } => {
-      const url = p?.credit?.sourceUrl;
-      if (!url || seen.has(url)) return false;
-      seen.add(url);
-      return true;
-    },
-  );
+  const photos = [...Object.values(commonsPhotos), ...ruralCredits, ...promoCredits].filter((p): p is Photo & { credit: Credit } => {
+    const url = p?.credit?.sourceUrl;
+    if (!url || seen.has(url)) return false;
+    seen.add(url);
+    return true;
+  });
+  const sources = [{ label: "Growth charts", source: "World Bank, World Development Indicators", url: WB_SOURCE_URL }, ...facts];
 
   return (
-    <section className="border-t border-white/12 bg-text-primary">
-      <div className="mx-auto max-w-7xl px-gutter-x py-10">
-        <details className="group rounded-2xl border border-white/12 bg-text-primary ring-1 ring-white/12 p-5">
-          <summary className="flex cursor-pointer list-none items-center justify-between font-bengali text-sm font-bold text-white">
-            ছবি ও তথ্যের উৎস ({photos.length + facts.length})
-            <span aria-hidden className="material-symbols-outlined transition-transform group-open:rotate-180 motion-reduce:transition-none">expand_more</span>
-          </summary>
-          <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div>
-              <h3 className="mb-2 font-bengali text-sm font-bold text-white/80">তথ্য</h3>
-              <ul className="space-y-1.5 font-sans text-xs text-white/80">
-                <li>
-                  গ্রাফ: <a className="text-signal-orange hover:underline" href="https://data.worldbank.org/country/bangladesh" target="_blank" rel="noopener noreferrer">World Bank WDI</a>
+    <Section
+      id="credits"
+      title="Sources and photo credits"
+      lede="Every figure in this chapter names its source, and every Wikimedia Commons photograph is credited with its author and licence."
+    >
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
+        <Card surface="ink" className="lg:col-span-5">
+          <h3 className="font-grotesk text-xl font-bold text-white">Figures</h3>
+          <ul className="mt-4 space-y-3 text-sm leading-relaxed text-white/80">
+            {sources.map((f) => (
+              <li key={f.label}>
+                {f.label}:{" "}
+                <a href={f.url} target="_blank" rel="noopener noreferrer" className={LINK}>
+                  {f.source}
+                  <span className="sr-only"> (opens in a new tab)</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </Card>
+
+        <Card className="lg:col-span-7">
+          <details className="group">
+            <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 rounded-xl focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none [&::-webkit-details-marker]:hidden">
+              <span>
+                <span className="block font-grotesk text-xl font-bold text-white">Photographs ({photos.length})</span>
+                <span className="mt-1 block text-sm text-white/80">Each one&rsquo;s Commons page, author and licence</span>
+              </span>
+              <Icon name="expand_more" className="text-2xl! text-signal-orange transition-transform group-open:rotate-180 motion-reduce:transition-none" />
+            </summary>
+            <ul className="mt-4 space-y-2 text-sm leading-relaxed text-white/80">
+              {photos.map((p) => (
+                <li key={p.credit.sourceUrl}>
+                  <a href={p.credit.sourceUrl} target="_blank" rel="noopener noreferrer" className={LINK}>
+                    {fileTitle(p)}
+                  </a>
+                  , {p.credit.author},{" "}
+                  {p.credit.licenseUrl ? (
+                    <a href={p.credit.licenseUrl} target="_blank" rel="noopener noreferrer" className={LINK}>
+                      {p.credit.license}
+                    </a>
+                  ) : (
+                    p.credit.license
+                  )}
                 </li>
-                {facts.map((f) => (
-                  <li key={f.label}>
-                    <span className="font-bengali">{f.label}</span>:{" "}
-                    <a className="text-signal-orange hover:underline" href={f.url} target="_blank" rel="noopener noreferrer">{f.source}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h3 className="mb-2 font-bengali text-sm font-bold text-white/80">ছবি (Wikimedia Commons)</h3>
-              <ul className="space-y-1.5 font-sans text-xs text-white/80">
-                {photos.map((p) => (
-                  <li key={p.src}>
-                    <a className="font-bengali text-signal-orange hover:underline" href={p.credit.sourceUrl} target="_blank" rel="noopener noreferrer">{p.alt}</a>
-                    {" — "}{p.credit.author},{" "}
-                    {p.credit.licenseUrl ? (
-                      <a className="hover:underline" href={p.credit.licenseUrl} target="_blank" rel="noopener noreferrer">{p.credit.license}</a>
-                    ) : (
-                      p.credit.license
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </details>
+              ))}
+            </ul>
+          </details>
+        </Card>
       </div>
-    </section>
+    </Section>
   );
 }

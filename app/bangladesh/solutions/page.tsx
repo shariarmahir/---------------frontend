@@ -1,28 +1,24 @@
 import type { Metadata } from "next";
 import { AmarRoadmap } from "@/components/amar/amar-roadmap";
-import { ActOpener } from "@/components/desh/act-opener";
-import { DeshShell } from "@/components/desh/desh-shell";
+import { ChapterShell } from "@/components/bangladesh-landing/chapter-shell";
 import { ResearchCard } from "@/components/desh/research-card";
 import { SolutionClose, SolutionDuties, SolutionLetGo, SolutionResources } from "@/components/desh/solutions";
-import { ruralBackdrops } from "@/data/rural-life";
 
 export const metadata: Metadata = {
-  title: "সমাধান — বাংলাদেশ সমস্যা ও সমাধান | কাণ্ডারী-ল্যাব",
-  description: "যা আমাদের আছে, যা ছাড়তে হবে, আর কে কী করবে — দয়া, দায়িত্ব ও সাহসের বাস্তব সমাধান।",
+  title: "Solutions — Bangladesh | Kandari-Lab",
+  description:
+    "Chapter 5 of Bangladesh: what we already have, what to let go, who does what, and a realistic roadmap.",
 };
 
 export default function BangladeshSolutionsPage() {
   return (
-    <DeshShell current="/bangladesh/solutions">
-      <ActOpener act="solutions" photo={ruralBackdrops.farmerCattle} />
+    <ChapterShell chapter="solutions">
       <SolutionResources />
       <SolutionLetGo />
       <SolutionDuties />
-      <div className="amar-dark">
-        <AmarRoadmap />
-      </div>
+      <AmarRoadmap />
       <SolutionClose />
       <ResearchCard />
-    </DeshShell>
+    </ChapterShell>
   );
 }

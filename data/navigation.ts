@@ -18,9 +18,9 @@ export interface NavLink {
 
 /**
  * Primary navigation (Mahir, 2026-10-18): Home, National Desk, Products,
- * Research, Mission, About us, Team, Join. National Desk is a menu: the
- * National Index and the two civic pages that used to sit in the header's
- * top row (নাগরিক দায়িত্ব, বাংলাদেশ সমস্যা ও সমাধান).
+ * Research, Mission, About us, Team, Join. National Desk is a menu of the
+ * two civic pages that used to sit in the header's top row: Bangladesh
+ * (whose landing page holds the National Index) and নাগরিক দায়িত্ব.
  *
  * Every `href` here must match a real page, or a real `id` on the page it
  * points at. Anchors are full root paths ("/#mission"), so the same set
@@ -42,10 +42,8 @@ export const navLinks: NavLink[] = [
     label: "National Desk",
     shortLabel: "Desk",
     children: [
-      // A full path: the section lives on the country page.
-      { href: "/bangladesh/problems#national-index", label: "National Index", shortLabel: "Index" },
+      { href: "/bangladesh", label: "Bangladesh", shortLabel: "Bangladesh" },
       { href: "/nagorik", label: "নাগরিক দায়িত্ব", shortLabel: "দায়িত্ব" },
-      { href: "/bangladesh", label: "বাংলাদেশ সমস্যা ও সমাধান", shortLabel: "বাংলাদেশ" },
     ],
   },
   {
@@ -88,19 +86,19 @@ export const navLinks: NavLink[] = [
 ];
 
 /**
- * Navigation for "বাংলাদেশ সমস্যা ও সমাধান" — one page per item
- * (/bangladesh and /bangladesh/{crisis,shield,problems,solutions}) plus the
- * game (চলো বাংলাদেশ গড়ি), kept to six so the bar fits at 1024px; the
- * civic-duty page has its own header button. Full paths, so the set also
- * works from /nagorik.
+ * The chapter bar for Bangladesh: the landing page, its five chapters
+ * (data/bangladesh.ts, CHAPTERS) and the game, in English. The header marks
+ * the current page by the longest matching path, so /bangladesh/history
+ * lights History and /bangladesh alone lights Overview.
  */
 export const bangladeshNavLinks: NavLink[] = [
-  { href: "/bangladesh", label: "ইতিহাস", shortLabel: "ইতিহাস" },
-  { href: "/bangladesh/crisis", label: "সংকট", shortLabel: "সংকট" },
-  { href: "/bangladesh/shield", label: "নাগরিক ঢাল", shortLabel: "ঢাল" },
-  { href: "/bangladesh/problems", label: "৩২টি সমস্যা", shortLabel: "সমস্যা" },
-  { href: "/bangladesh/solutions", label: "সমাধান", shortLabel: "সমাধান" },
-  { href: "/cholo-bangladesh-gori", label: "চলো বাংলাদেশ গড়ি", shortLabel: "গড়ি" },
+  { href: "/bangladesh", label: "Overview", shortLabel: "Overview" },
+  { href: "/bangladesh/history", label: "History", shortLabel: "History" },
+  { href: "/bangladesh/crisis", label: "Crisis", shortLabel: "Crisis" },
+  { href: "/bangladesh/shield", label: "Citizen shield", shortLabel: "Shield" },
+  { href: "/bangladesh/problems", label: "32 problems", shortLabel: "Problems" },
+  { href: "/bangladesh/solutions", label: "Solutions", shortLabel: "Solutions" },
+  { href: "/cholo-bangladesh-gori", label: "Game", shortLabel: "Game" },
 ];
 
 /** Navigation for "নাগরিক অধিকার ও দায়িত্ব" (/nagorik). */
@@ -110,7 +108,7 @@ export const nagorikNavLinks: NavLink[] = [
   { href: "/nagorik#rights", label: "অধিকার", shortLabel: "অধিকার" },
   { href: "/nagorik#responsibility", label: "দায়িত্ব", shortLabel: "দায়িত্ব" },
   { href: "/nagorik#self-check", label: "আজ রাতের আয়না", shortLabel: "আয়না" },
-  { href: "/bangladesh", label: "বাংলাদেশ সমস্যা ও সমাধান", shortLabel: "বাংলাদেশ" },
+  { href: "/bangladesh", label: "বাংলাদেশ", shortLabel: "বাংলাদেশ" },
 ];
 
 /**

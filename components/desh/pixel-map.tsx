@@ -18,40 +18,58 @@ const BAD = new Map(
   }),
 );
 
+/** A fixed scatter of cells that catch the gold, so the land reads as lit rather than flat. */
+const lit = (x: number, y: number) => (x * 7 + y * 13) % 17 === 0;
+
 /**
- * Bangladesh as a low-resolution image (CLAUDE.md §2): healthy land glows
- * green-gold, the 32 problems flicker red. `healed` draws every pixel
+ * Bangladesh as a low-resolution image (CLAUDE.md §2): healthy land in
+ * navy with a scatter of gold, the 32 problems glowing red on top and
+ * flickering (still under reduced motion). `healed` draws every pixel
  * healthy — the end state the page argues for.
  */
 export function PixelMap({ className, healed = false, label }: { className?: string; healed?: boolean; label: string }) {
+  const bad = (x: number, y: number) => !healed && BAD.has(`${x},${y}`);
   return (
     <svg viewBox="8 0 50 64" role="img" aria-label={label} className={cn("desh-map", className)}>
-      <defs>
-        <filter id={healed ? "px-glow-h" : "px-glow"} x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="0.9" result="b" />
-          <feMerge>
-            <feMergeNode in="b" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
-      <g filter={`url(#${healed ? "px-glow-h" : "px-glow"})`}>
-        {LAND.map(([x, y]) => {
-          const bad = !healed && BAD.get(`${x},${y}`);
-          return (
-            <rect
-              key={`${x},${y}`}
-              x={x + 0.08}
-              y={y + 0.08}
-              width={0.84}
-              height={0.84}
-              rx={0.12}
-              className={bad ? "desh-px-bad" : "desh-px"}
-              style={bad ? { animationDelay: `${(bad * 0.37) % 3}s` } : { opacity: 0.55 + ((x * 7 + y * 13) % 10) / 22 }}
-            />
-          );
-        })}
-      </g>
+      {LAND.map(([x, y]) =>
+        bad(x, y) ? null : (
+          <rect
+            key={`${x},${y}`}
+            x={x + 0.1}
+            y={y + 0.1}
+            width={0.8}
+            height={0.8}
+            rx={0.1}
+            className={lit(x, y) ? "desh-px-lit" : "desh-px"}
+            style={{ opacity: 0.6 + ((x * 7 + y * 13) % 10) / 25 }}
+          />
+        ),
+      )}
+      {!healed && (
+        <>
+          <filter id="desh-px-glow" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="0.7" result="b" />
+            <feMerge>
+              <feMergeNode in="b" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <g filter="url(#desh-px-glow)">
+            {LAND.filter(([x, y]) => bad(x, y)).map(([x, y]) => (
+              <rect
+                key={`${x},${y}`}
+                x={x + 0.1}
+                y={y + 0.1}
+                width={0.8}
+                height={0.8}
+                rx={0.1}
+                className="desh-px-bad"
+                style={{ animationDelay: `${(BAD.get(`${x},${y}`)! * 0.37) % 3}s` }}
+              />
+            ))}
+          </g>
+        </>
+      )}
     </svg>
   );
 }

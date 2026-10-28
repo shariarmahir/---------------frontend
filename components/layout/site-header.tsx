@@ -90,7 +90,6 @@ const TAB_ICONS: [pattern: RegExp, icon: string][] = [
   [/^\/nagorik/, "verified_user"],
   [/#mission$/, "flag"],
   [/^\/about/, "info"],
-  [/#national-index$/, "monitoring"],
   [/kandari-profile$/, "badge"],
   [/\/products\/aponjon/, "watch"],
   [/\/products\/swasti/, "smartphone"],
@@ -117,11 +116,12 @@ const TAB_ICONS: [pattern: RegExp, icon: string][] = [
   [/\/team#members/, "diversity_3"],
   [/\/team\/fellowship/, "school"],
   [/\/team/, "groups"],
+  [/\/bangladesh\/history/, "history_edu"],
   [/\/bangladesh\/crisis/, "crisis_alert"],
   [/\/bangladesh\/shield/, "shield"],
   [/\/bangladesh\/problems/, "grid_view"],
   [/\/bangladesh\/solutions/, "lightbulb"],
-  [/\/bangladesh/, "history_edu"],
+  [/\/bangladesh/, "map"],
   [/\/cholo-bangladesh-gori\/mission/, "flag"],
   [/\/cholo-bangladesh-gori\/play/, "sports_esports"],
   [/\/cholo-bangladesh-gori\/lab/, "science"],
@@ -136,6 +136,9 @@ const TAB_ICONS: [pattern: RegExp, icon: string][] = [
 ];
 
 const tabIcon = (href: string) => TAB_ICONS.find(([pattern]) => pattern.test(href))?.[1];
+
+/** The civic pages that have buttons of their own in the mobile menu, under its nav grid. */
+const CIVIC_PAGES = new Set(["/bangladesh", "/nagorik"]);
 
 /** Loudspeaker glyph for the protest link. */
 function ProtestGlyph({ className }: { className?: string }) {
@@ -625,15 +628,15 @@ export function SiteHeader() {
                     </div>
 
                     <nav className="grid grid-cols-2 gap-2">
-                      {/* A menu tab shows its first page here; the civic pages have their own buttons below. */}
-                      {navLinks.flatMap((link) => link.children?.slice(0, 1) ?? [link]).map((link, i) => (
+                      {/* A menu tab shows its first page here, unless that is a civic page with its own button below. */}
+                      {navLinks.flatMap((link) => link.children?.filter((c) => !CIVIC_PAGES.has(c.href)).slice(0, 1) ?? [link]).map((link, i) => (
                         <Dialog.Close asChild key={link.href}>
                           <NavAnchor
                             href={link.href}
                             onClick={() => setActiveHref(link.href)}
                             style={{ "--i": i + 3 } as CSSProperties}
                             className={cn(
-                              "menu-item flex min-h-11 items-center justify-center rounded-xl px-3 py-2 text-center text-sm transition-[background-color,scale] duration-200 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none active:scale-95",
+                              "menu-item flex min-h-11 items-center justify-center rounded-xl px-3 py-2 text-center text-sm transition-[background-color,scale] duration-200 odd:last:col-span-2 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none active:scale-95",
                               activeHref === link.href
                                 ? "bg-signal-orange font-bold text-text-primary shadow-ink"
                                 : "bg-white/7 font-medium text-white ring-1 ring-white/20 hover:bg-white/12",
