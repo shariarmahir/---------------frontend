@@ -1,12 +1,13 @@
 import { Icon } from "@/components/ui/icon";
 import { SignalSeam, btn } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
+import { CardIcon } from "@/components/ui/card-icon";
 
 /** How the drive works, in the order a problem travels. */
 const STEPS = [
-  { icon: "location_on", title: "Citizens register a problem", body: "A district’s pain-point, logged in the open." },
-  { icon: "terminal", title: "Engineers build the fix", body: "University teams submit open-source firmware and data." },
-  { icon: "precision_manufacturing", title: "Kandari-Lab backs it", body: "Hardware grants and cleanroom manufacturing access." },
+  { icon: "location_on", lordicon: "bangladesh", title: "Citizens register a problem", body: "A district’s pain-point, logged in the open." },
+  { icon: "terminal", lordicon: "browser-terminal", title: "Engineers build the fix", body: "University teams submit open-source firmware and data." },
+  { icon: "precision_manufacturing", lordicon: "wrench", title: "Kandari-Lab backs it", body: "Hardware grants and cleanroom manufacturing access." },
 ];
 
 /**
@@ -61,18 +62,15 @@ export function NodeTerminalSection() {
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-14">
           <div className="story-reveal flex flex-col gap-5 lg:col-span-5 lg:gap-6 xl:col-span-6">
             <h2 className="font-grotesk text-2xl font-bold tracking-tight text-balance text-signal-orange max-sm:text-[1.75rem] max-sm:leading-[1.15] sm:text-3xl lg:text-4xl">
-              The Bangladesh Innovation Drive
+              Innovation Drive
             </h2>
-            <p className="max-w-md font-sans text-base leading-relaxed text-white/80">
-              GitHub meets open democracy: the country’s problems, solved in the open, from the district that
-              names them to the cleanroom that builds the answer.
-            </p>
+            <p className="max-w-md font-sans text-base leading-relaxed text-white/80">Problems named in the open, solved in the lab.</p>
 
             <ol className="flex flex-col">
               {STEPS.map((s) => (
                 <li key={s.title} className="group/step grid grid-cols-[auto_1fr] items-start gap-3 border-t border-white/10 py-3 last:border-b lg:gap-4 lg:py-4">
-                  <span className="grid size-9 place-items-center rounded-xl bg-signal-orange lg:size-10 text-text-primary transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/step:-rotate-6 motion-reduce:transition-none motion-reduce:group-hover/step:rotate-0">
-                    <Icon name={s.icon} className="text-xl" />
+                  <span className="grid size-11 place-items-center rounded-xl bg-black/25 text-signal-orange ring-1 ring-white/12 ring-inset lg:size-12 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/step:-rotate-6 motion-reduce:transition-none motion-reduce:group-hover/step:rotate-0">
+                    <CardIcon name={s.lordicon} fallback={s.icon} size={32} />
                   </span>
                   <div className="min-w-0">
                     <p className="font-grotesk text-sm font-bold">{s.title}</p>

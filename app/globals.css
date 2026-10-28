@@ -371,22 +371,29 @@
   html {
     @apply font-sans scroll-smooth;
     overflow-x: clip;
-    /* The page's own scrollbar: a thin gold thumb on a clear track (Mahir,
-       2026-10-29). Chrome, Edge and Firefox read these two; Safari takes
-       the ::-webkit-scrollbar rules below. */
+    /* The page's own scrollbar (Mahir, 2026-10-29): a slim cobalt thumb on a
+       pitch-black track. Chrome, Edge and Firefox read these two; Safari
+       takes the ::-webkit-scrollbar rules below, where the thumb brightens
+       under the pointer. */
     scrollbar-width: thin;
-    scrollbar-color: color-mix(in oklab, var(--color-signal-orange) 65%, transparent) transparent;
+    scrollbar-color: var(--color-cobalt) #000;
   }
   html::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
   }
   html::-webkit-scrollbar-track {
-    background: transparent;
+    background: #000;
   }
   html::-webkit-scrollbar-thumb {
+    border: 2px solid #000;
     border-radius: 9999px;
-    background: color-mix(in oklab, var(--color-signal-orange) 65%, transparent);
+    background: var(--color-cobalt);
+    background-clip: padding-box;
+    transition: background-color 0.3s ease;
+  }
+  html::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-bdnavy-400);
   }
   section[id] {
     @apply scroll-mt-header lg:scroll-mt-header-lg;
@@ -2654,13 +2661,15 @@ body:has(.media-shell) .catalogue [data-slot="form-message"] {
    narrower pane for the evidence apart from it (bottom-right); stacked, the
    caption over the evidence, on a narrow card. */
 .reel-list { --spine: 7.5rem; }
-/* The frosted pane: the topic's field, translucent (--glass, set per card),
-   over the photograph blurred. */
-.reel-glass {
-  background: color-mix(in oklab, var(--field) var(--glass, 72%), transparent);
-  -webkit-backdrop-filter: blur(22px) saturate(1.15);
-  backdrop-filter: blur(22px) saturate(1.15);
+/* Words straight on the photograph (Mahir, 2026-10-29: no pane behind
+   them): a close dark edge and a wide soft shadow keep white and gold
+   legible over a bright sky or a pale wall. */
+.reel-bare {
+  text-shadow:
+    0 1px 2px rgb(0 0 0 / 0.85),
+    0 2px 18px rgb(0 0 0 / 0.6);
 }
+.reel-bare :is(a, button) { text-shadow: none; }
 .reel-slide {
   display: flex;
   flex: 1;
@@ -2670,7 +2679,7 @@ body:has(.media-shell) .catalogue [data-slot="form-message"] {
   height: 100%;
 }
 /* Stacked (a narrow card): the photograph keeps at least 7rem above the panes. */
-.reel-slide::before { content: ""; flex: 1 0 7rem; }
+.reel-slide::before { content: ""; flex: 1 0 4rem; }
 .reel-caption { padding: 1.125rem 1.25rem; }
 .reel-stat { padding: 1rem 1.125rem; }
 @container slide (width >= 40rem) {
@@ -2716,16 +2725,6 @@ article:hover .app-stage { rotate: 0deg; }
 @media (prefers-reduced-motion: reduce) {
   .app-stage { rotate: 0deg; transition: none; }
 }
-/* The live dot's fill: one dwell long, and its end turns the banner. Under
-   reduced motion the bar stands full and the same timer runs unseen. */
-@keyframes app-dot-fill { from { scale: 0 1; } to { scale: 1 1; } }
-@keyframes app-dot-hold { from { opacity: 1; } to { opacity: 1; } }
-.app-dot-fill { transform-origin: left; animation: app-dot-fill 8s linear both; }
-[data-paused="true"] .app-dot-fill { animation-play-state: paused; }
-@media (prefers-reduced-motion: reduce) {
-  .app-dot-fill { animation-name: app-dot-hold; }
-}
-
 /* Review thoughts (components/sections/reviews-section.tsx): the bubble at
    a closed reviewer's shoulder floats; its three dots type in turn; its two
    trailing circles pop up toward it, small one first. --d offsets each card. */
@@ -3048,52 +3047,203 @@ html:has(.hq)::-webkit-scrollbar-button,
   }
 }
 
-/* The home page's first beat: lifts with a fade once the page has loaded
-   (the script sets [data-leaving]); without the script, after 4s anyway. */
+/* The home page's first beat (components/ui/preloader.tsx): Bangladesh as
+   broken pixels, a few flickering red, repaired to gold from the middle out
+   (--d per pixel) under a passing scan line; the mission ticks through its
+   four lines and the count climbs to 100. Lifts with a fade ([data-leaving]);
+   without a script, after 4s anyway; skipped before paint on a return in
+   the same session (html.kl-intro-seen, set in app/layout.tsx). */
+html.kl-intro-seen .preloader { display: none; }
 @keyframes preloader-lift { to { opacity: 0; visibility: hidden; } }
 @keyframes preloader-fill { from { scale: 0 1; } }
+@keyframes pl-fix { from { fill: var(--color-bdnavy-700); scale: 0.4; } 60% { scale: 1.25; } to { fill: var(--color-signal-orange); scale: 1; } }
+@keyframes pl-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+@keyframes pl-scan { from { translate: 0 -2px; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } to { translate: 0 33px; opacity: 0; } }
+@keyframes pl-line { 0% { translate: 0 100%; opacity: 0; } 8%, 92% { translate: 0 0; opacity: 1; } 100% { translate: 0 -100%; opacity: 0; } }
+@keyframes pl-mark { from { opacity: 0; translate: 0 8px; } }
+@keyframes pl-line-last { from { translate: 0 100%; opacity: 0; } }
+@property --pl-pct {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+@keyframes pl-count { to { --pl-pct: 100; } }
 .preloader {
-  transition: opacity 0.6s ease, visibility 0.6s;
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.7s;
   animation: preloader-lift 0.6s 4s forwards;
 }
 .preloader[data-leaving] { opacity: 0; visibility: hidden; }
-.preloader-bar {
-  scale: 0.9 1;
-  animation: preloader-fill 2.2s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+.pl-px {
+  fill: var(--color-signal-orange);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.pl-px-broken { fill: var(--color-national-crimson); }
+.pl-scan { fill: var(--color-signal-orange); opacity: 0; }
+.pl-line { opacity: 0; }
+.pl-line:first-child { opacity: 1; }
+.pl-count {
+  --pl-pct: 100;
+  counter-reset: pl var(--pl-pct);
+}
+.pl-count::after { content: counter(pl) "%"; }
+.preloader-bar { scale: 1 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .pl-px { animation: pl-fix 0.5s cubic-bezier(0.22, 1, 0.36, 1) var(--d) both; }
+  .pl-px-broken { animation: pl-flicker 0.24s steps(2) 3, pl-fix 0.5s cubic-bezier(0.22, 1, 0.36, 1) var(--d) both; }
+  .pl-scan { animation: pl-scan 1.1s cubic-bezier(0.45, 0, 0.55, 1) 0.1s both; }
+  .pl-line { animation: pl-line 0.42s ease calc(var(--i) * 0.36s) both; }
+  .pl-line:last-child { opacity: 1; animation: pl-line-last 0.36s ease calc(var(--i) * 0.36s) backwards; }
+  .pl-mark { animation: pl-mark 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.9s backwards; }
+  .pl-count { --pl-pct: 0; animation: pl-count 1.3s cubic-bezier(0.33, 1, 0.68, 1) forwards; }
+  .preloader-bar { animation: preloader-fill 1.3s cubic-bezier(0.33, 1, 0.68, 1) backwards; }
 }
 
-/* The pointer's gold ring (components/ui/cursor.tsx): it opens and takes a
-   faint gold fill over anything clickable, and presses in on a click. */
-.cursor-ring {
+/* The home page's pointer (components/ui/cursor.tsx): a square pixel on
+   the pointer inside four corner brackets that glide after it, coloured by
+   what lies beneath (--cc) and shaped by what it is over ([data-mode]).
+   Corners, pixel and caret move by transform only. The system cursor is
+   hidden only while it runs (html.has-cursor); fields keep theirs. */
+html.has-cursor,
+html.has-cursor * {
+  cursor: none;
+}
+html.has-cursor :is(input, textarea, select, [contenteditable="true"]) {
+  cursor: auto;
+}
+.cursor {
+  --cc: var(--color-signal-orange);
+  --s: 26px;
+  position: fixed;
+  inset: 0 auto auto 0;
+  z-index: 90;
+  pointer-events: none;
   opacity: 0;
-  transition: opacity 0.3s ease;
-  will-change: translate;
+  transition: opacity 0.25s ease;
 }
-.cursor-ring[data-on] { opacity: 1; }
-.cursor-ring-shape {
-  width: 2.25rem;
-  height: 2.25rem;
-  margin: -1.125rem 0 0 -1.125rem;
-  border-radius: 9999px;
-  border: 1.5px solid color-mix(in oklab, var(--color-signal-orange) 70%, transparent);
+.cursor[data-on] { opacity: 1; }
+.cursor[data-mode="field"] { opacity: 0; }
+.cursor[data-mode="link"] { --s: 34px; }
+.cursor[data-mode="card"] { --s: 76px; }
+.cursor[data-mode="data"] { --s: 30px; }
+.cursor-frame,
+.cursor-pixel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
+.cursor-frame { transition: rotate 0.35s cubic-bezier(0.22, 1, 0.36, 1), scale 0.2s ease, opacity 0.2s ease; }
+.cursor[data-mode="data"] .cursor-frame { rotate: 45deg; }
+.cursor[data-mode="text"] .cursor-frame { opacity: 0; scale: 0.5; }
+.cursor[data-down] .cursor-frame { scale: 0.8; }
+.cursor-corner {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 8px;
+  height: 8px;
+  border: 0 solid var(--cc);
   transition:
-    scale 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 0.3s ease,
-    border-color 0.3s ease;
+    translate 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.25s ease;
 }
-.cursor-ring[data-over] .cursor-ring-shape {
-  scale: 1.6;
-  border-color: var(--color-signal-orange);
-  background-color: color-mix(in oklab, var(--color-signal-orange) 14%, transparent);
+.cursor-corner[data-c="tl"] { border-width: 2px 0 0 2px; translate: calc(var(--s) / -2) calc(var(--s) / -2); }
+.cursor-corner[data-c="tr"] { border-width: 2px 2px 0 0; translate: calc(var(--s) / 2) calc(var(--s) / -2); }
+.cursor-corner[data-c="bl"] { border-width: 0 0 2px 2px; translate: calc(var(--s) / -2) calc(var(--s) / 2); }
+.cursor-corner[data-c="br"] { border-width: 0 2px 2px 0; translate: calc(var(--s) / 2) calc(var(--s) / 2); }
+.cursor-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  translate: -50% -50%;
+  font-family: var(--font-sora), sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--cc);
+  white-space: nowrap;
+  opacity: 0;
+  scale: 0.6;
+  transition: opacity 0.2s ease, scale 0.3s cubic-bezier(0.22, 1, 0.36, 1), color 0.25s ease;
 }
-.cursor-ring[data-down] .cursor-ring-shape { scale: 0.8; }
+.cursor[data-mode="card"] .cursor-label { opacity: 1; scale: 1; }
+.cursor-pixel-dot,
+.cursor-caret {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--cc);
+  transition: scale 0.25s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease, background-color 0.25s ease;
+}
+.cursor-pixel-dot { width: 6px; height: 6px; translate: -50% -50%; }
+.cursor[data-mode="link"] .cursor-pixel-dot { scale: 1.7; }
+.cursor:is([data-mode="card"], [data-mode="text"]) .cursor-pixel-dot { scale: 0; }
+/* The caret: 2px wide, 1px tall, stretched to the text's line height. */
+.cursor-caret {
+  width: 2px;
+  height: 1px;
+  translate: -50% -50%;
+  opacity: 0;
+  scale: 1 0;
+}
+.cursor[data-mode="text"] .cursor-caret { opacity: 1; scale: 1 var(--caret, 20); }
 @media not ((hover: hover) and (pointer: fine)) {
-  .cursor-ring { display: none; }
+  .cursor { display: none; }
 }
 
 /* Words lit by the scroll (components/ui/scroll-lit.tsx): `--lit` runs 0 → 1
-   across the paragraph's passage; word `--i` of `--n` lights in its turn. */
+   across the paragraph's passage, and word `--i` of `--n` lights in its
+   turn (`--t` its own progress): it rises into place lit gold, then cools
+   to the paragraph's own colour as the reading moves on, so a warm wave
+   travels through the line. Paint and composite only. */
 [data-lit] .scroll-lit-word {
-  opacity: clamp(0.22, calc(var(--lit, 0) * (var(--n) + 3) - var(--i)), 1);
-  transition: opacity 0.2s linear;
+  --t: calc(var(--lit, 0) * (var(--n) + 4) - var(--i));
+  display: inline-block;
+  white-space: pre;
+  opacity: clamp(0.18, var(--t), 1);
+  translate: 0 calc((1 - clamp(0, var(--t), 1)) * 0.35em);
+  color: color-mix(in oklab, var(--color-signal-orange) calc(clamp(0, 2.6 - var(--t), 1) * 100%), currentColor);
+  transition: opacity 0.25s linear, translate 0.35s cubic-bezier(0.22, 1, 0.36, 1), color 0.4s linear;
+}
+
+/* The charter's accent words breathe between gold, light blue and white
+   (each card from its own point in the cycle, --accent-at). */
+@keyframes reel-accent {
+  0%, 100% { color: var(--color-signal-orange); }
+  50% { color: var(--color-bdnavy-300); }
+}
+.reel-accent { color: var(--color-signal-orange); }
+@media (prefers-reduced-motion: no-preference) {
+  .reel-accent { animation: reel-accent 6s ease-in-out var(--accent-at, 0s) infinite; }
+}
+
+/* The footer film's music note (components/layout/footer-film.tsx): still
+   when muted; with the sound on it floats and two small notes rise and fade
+   from its shoulder in turn. */
+@keyframes sound-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -6px; } }
+@keyframes sound-note { from { opacity: 0; translate: 0 0; } 25% { opacity: 1; } to { opacity: 0; translate: 10px -28px; rotate: 18deg; } }
+.footer-sound-note { opacity: 0; font-size: 1.125rem; }
+@media (prefers-reduced-motion: no-preference) {
+  .footer-sound[data-on] { animation: sound-float 3.2s ease-in-out infinite; }
+  .footer-sound[data-on] .footer-sound-note { animation: sound-note 1.8s ease-out calc(var(--i) * 0.9s) infinite; }
+}
+
+/* The service cards' icon scenes (components/showcase/poster-grid.tsx):
+   dashed rings turning against each other, pixels on their orbits, and a
+   glossy clay tile floating in the middle. Composited properties only;
+   paused with the card off screen; still under reduced motion. */
+@keyframes svc-turn { from { rotate: var(--from, 0deg); } to { rotate: calc(var(--from, 0deg) + 360deg); } }
+@keyframes svc-bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -8px; } }
+.svc-tile {
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.22),
+    inset 0 -10px 18px rgb(0 0 0 / 0.35),
+    0 26px 40px -18px rgb(0 0 0 / 0.85);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .svc-ring { animation: svc-turn 28s linear infinite; }
+  .svc-ring-back { animation-duration: 18s; animation-direction: reverse; }
+  .svc-orbit { animation: svc-turn var(--dur, 8s) linear infinite; }
+  .svc-tile { animation: svc-bob 4.5s ease-in-out infinite; }
+  .ms-root[data-paused="true"] .svc-scene * { animation-play-state: paused; }
 }

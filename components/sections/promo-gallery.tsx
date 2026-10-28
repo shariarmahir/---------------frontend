@@ -39,7 +39,7 @@ const FRAMING: Record<string, { focus: string; lift: number }> = {
 export function PromoGallery() {
   const items = useMemo(() => promos.map((p) => toItem(p, openRecorder)), []);
   // The header's recorder (open-recorder.ts): one list of saved files per page.
-  return <PhotoReel sectionId="gallery" title="Six Ways to Act for Bangladesh, Today" noun="way to act" items={items} wide />;
+  return <PhotoReel sectionId="gallery" title="Six Ways to Act for Bangladesh, Today" items={items} wide />;
 }
 
 function toItem(promo: Promo, onRecord: () => void): ReelItem {

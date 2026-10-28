@@ -19,7 +19,7 @@ function HeadingRow({ children, href, link }: { children: ReactNode; href: strin
   return (
     // The kit heading's own bottom margin is dropped (mb-0 sm:mb-0) so this row alone sets the gap
     // to the cards, the kit's 40px from sm; the lead keeps to two even lines on wide screens.
-    <div className="mb-8 grid gap-x-12 gap-y-4 sm:mb-10 sm:[&_p]:text-pretty lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start lg:[&_p]:max-w-5xl">
+    <div className="mb-8 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-4 sm:mb-10 sm:gap-x-12 sm:[&_p]:text-pretty lg:[&_p]:max-w-5xl">
       {children}
       <div className="lg:pt-0.5">
         <TrackLink href={href}>{link}</TrackLink>
@@ -35,8 +35,8 @@ export function ProductsSection() {
         <SectionHeading
           tone="dark"
           className="mb-0 sm:mb-0"
-          title="Our Products, Built in Bangladesh"
-          lead="Healthcare first, where every hour of delay costs lives, then a platform where skills are proven and paid fairly. Every product is designed, built and run by our own team."
+          title="Our Products"
+          lead="Healthcare first, designed and built in Bangladesh."
         />
       </HeadingRow>
       <ProductsShowcase poster />
@@ -51,8 +51,8 @@ export function ServicesSection() {
         <SectionHeading
           tone="dark"
           className="mb-0 sm:mb-0"
-          title="Our Services: Engineering for Hire"
-          lead="The team that builds our products builds for you too: AI, automation, IoT and software for your factory, office, farm or app."
+          title="Engineering for Hire"
+          lead="AI, automation, IoT and software, built by our own team."
         />
       </HeadingRow>
       <ServicesShowcase poster />

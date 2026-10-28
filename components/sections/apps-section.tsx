@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Icon } from "@/components/ui/icon";
 import { apps, type AppId, type KandariApp } from "@/data/apps";
 import { cn } from "@/lib/utils";
@@ -15,12 +15,14 @@ import { cn } from "@/lib/utils";
  * the right that rises out of the top edge with a screen of the app.
  * No section title or lead: the banners say it.
  *
- * The banners share one place and take turns every 8 s (Mahir, 2026-10-21),
- * under a row of coloured dots with no words. The live dot stretches into a
- * bar that fills over the dwell, and that fill's own animationend turns the
- * page, so pausing it (pointer over, focus inside, scrolled away) pauses the
- * turn too. Under reduced motion the fill stands still but still times out,
- * and the banners swap without a fade.
+ * The two banners stand as a deck (Mahir, 2026-10-29: no dots): the live
+ * one in front, the other a step behind and below it, its edge showing.
+ * Every TURN_MS they trade places, the front one sinking back as the other
+ * rises to the front, unless a pointer or keyboard focus is on them or they
+ * are scrolled away; a sideways swipe (or drag) turns them at once, and the
+ * wait starts over after every turn. A keyboard user can turn them with a
+ * button that shows only on focus. Under reduced motion they swap without
+ * moving.
  *
  * The phone screens are drawn in code from the site's own colours, and
  * their readings are samples, so the screen says "Sample screen". The round
@@ -41,11 +43,10 @@ const STAGE: Record<AppId, { src: string; alt: string; position: string }> = {
 
 const isBangla = (s: string) => /[ঀ-৿]/.test(s);
 
-/** Each banner's dot, in a colour that holds on the black ground. */
-const DOT: Record<AppId, string> = {
-  swasti: "var(--color-signal-orange)",
-  media: "var(--color-bdnavy-300)",
-};
+/** How long each banner stays in front. */
+const TURN_MS = 4500;
+/** How far a finger or a mouse must travel sideways to turn the deck. */
+const SWIPE_PX = 40;
 
 export function AppsSection() {
   const [index, setIndex] = useState(0);
@@ -64,7 +65,27 @@ export function AppsSection() {
     return () => io.disconnect();
   }, []);
 
-  const next = () => setIndex((i) => (i + 1) % apps.length);
+  const turn = (by: 1 | -1) => setIndex((i) => (i + by + apps.length) % apps.length);
+  const next = () => turn(1);
+
+  // The next turn, timed afresh after every turn (automatic, swiped or by keyboard).
+  useEffect(() => {
+    if (paused || apps.length < 2) return;
+    const id = window.setTimeout(() => setIndex((i) => (i + 1) % apps.length), TURN_MS);
+    return () => window.clearTimeout(id);
+  }, [paused, index]);
+
+  // A sideways swipe or drag turns the deck; vertical moves stay the page's scroll (touch-action: pan-y).
+  // A swipe that ends on a link must not also follow it.
+  const swipeFrom = useRef<number | null>(null);
+  const swiped = useRef(false);
+  const onSwipeEnd = (x: number) => {
+    if (swipeFrom.current === null) return;
+    const dx = x - swipeFrom.current;
+    swipeFrom.current = null;
+    swiped.current = Math.abs(dx) >= SWIPE_PX;
+    if (swiped.current) turn(dx < 0 ? 1 : -1);
+  };
 
   return (
     <section id="apps" aria-label="Download our apps" aria-roledescription="carousel" className="section-band">
@@ -80,40 +101,33 @@ export function AppsSection() {
           onBlur={(e) => !e.currentTarget.contains(e.relatedTarget) && setFocus(false)}
           className="story-reveal"
         >
-          {/* Both banners stand in the same cell, so the place keeps the taller one's height. */}
-          <div className="grid">
+          {/* Both banners stand in the same cell, so the place keeps the taller one's height; the
+              padding below is the room the banner behind shows its edge in. */}
+          <div
+            onPointerDown={(e) => (swipeFrom.current = e.clientX)}
+            onPointerUp={(e) => onSwipeEnd(e.clientX)}
+            onPointerCancel={() => (swipeFrom.current = null)}
+            onDragStart={(e) => e.preventDefault()}
+            onClickCapture={(e) => {
+              if (!swiped.current) return;
+              swiped.current = false;
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+            className="relative grid touch-pan-y pb-5 select-none lg:pb-7"
+          >
             {apps.map((app, i) => (
               <Banner key={app.id} app={app} active={i === index} />
             ))}
-          </div>
-
-          <div className="mt-4 flex items-center justify-center gap-1 lg:mt-8">
-            {apps.map((app, i) => {
-              const active = i === index;
-              return (
-                <button
-                  key={app.id}
-                  type="button"
-                  aria-label={`Show ${app.altName}`}
-                  aria-current={active}
-                  onClick={() => setIndex(i)}
-                  style={{ "--dot": DOT[app.id] } as CSSProperties}
-                  className="group/dot grid h-11 min-w-11 place-items-center rounded-full focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
-                >
-                  <span
-                    className={cn(
-                      "relative block h-2.5 overflow-hidden rounded-full transition-[width,background-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
-                      active ? "w-12 bg-(--dot)/30" : "w-2.5 bg-(--dot) group-hover/dot:scale-125",
-                    )}
-                  >
-                    {active ? (
-                      // Restarts on every turn (the key); its end turns the page.
-                      <span key={index} aria-hidden onAnimationEnd={next} className="app-dot-fill absolute inset-0 rounded-full bg-(--dot)" />
-                    ) : null}
-                  </span>
-                </button>
-              );
-            })}
+            {apps.length > 1 && (
+              <button
+                type="button"
+                onClick={next}
+                className="sr-only rounded-xl bg-bdnavy-900 px-4 py-2 font-grotesk text-sm font-bold text-signal-orange focus-visible:not-sr-only focus-visible:absolute focus-visible:right-4 focus-visible:bottom-0 focus-visible:z-20 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
+              >
+                Show the next app
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -131,8 +145,10 @@ function Banner({ app, active }: { app: KandariApp; active: boolean }) {
       className={cn(
         // Taller as the column widens, so the banner keeps its proportion on a desktop or TV.
         "relative col-start-1 row-start-1 rounded-4xl text-white lg:h-76 xl:h-80 2xl:h-88",
-        "transition-[opacity,translate,visibility] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
-        active ? "z-10 opacity-100" : "invisible translate-y-3 opacity-0",
+        "origin-bottom transition-[opacity,translate,scale] duration-600 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
+        // Its contents fade on their own, so the banner behind shows only its field's edge.
+        "*:transition-opacity *:duration-500 motion-reduce:*:transition-none",
+        active ? "z-10" : "translate-y-5 scale-[0.96] opacity-60 *:opacity-0 lg:translate-y-7",
         FIELD[app.id],
       )}
     >

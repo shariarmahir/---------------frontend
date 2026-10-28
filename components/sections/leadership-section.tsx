@@ -2,10 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { CardDetails, TapCard, TapCue } from "@/components/ui/card-details";
-import { Icon } from "@/components/ui/icon";
 import { TrackLink } from "@/components/showcase/showcase";
 import { SectionHeading, btn } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
+import { CardIcon } from "@/components/ui/card-icon";
 
 /**
  * Executives are poster cards: a solid colour field (the Pixel-Map palette),
@@ -67,7 +67,7 @@ const EXECUTIVES = [
 const LEAD_LOOKS = {
   navy: {
     surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
-    tile: "bg-signal-orange text-text-primary",
+    tile: "bg-black/25 text-signal-orange ring-1 ring-white/12 ring-inset",
     chip: "bg-white/8 ring-white/15",
     rule: "border-white/12",
     glow: "var(--color-bdnavy-400)",
@@ -75,7 +75,7 @@ const LEAD_LOOKS = {
   },
   cobalt: {
     surface: "bg-cobalt text-white ring-1 ring-white/12",
-    tile: "bg-signal-orange text-text-primary",
+    tile: "bg-black/25 text-signal-orange ring-1 ring-white/12 ring-inset",
     chip: "bg-white/8 ring-white/15",
     rule: "border-white/12",
     glow: "var(--color-cobalt)",
@@ -84,7 +84,7 @@ const LEAD_LOOKS = {
   },
   ink: {
     surface: "bg-text-primary text-white ring-1 ring-white/12",
-    tile: "bg-signal-orange text-text-primary",
+    tile: "bg-black/25 text-signal-orange ring-1 ring-white/12 ring-inset",
     chip: "bg-white/8 ring-white/15",
     rule: "border-white/12",
     glow: "var(--color-signal-orange)",
@@ -100,6 +100,7 @@ const LEADS = [
   {
     title: "Concept & Clinical User Empathy",
     icon: "psychology",
+    lordicon: "heart-beat",
     people: ["Istiake Ahmed", "Safia Mubassara Ruzba", "Jamil Hossan"],
     note: "User empathy, ergonomic medical casing, product semantics.",
     look: LEAD_LOOKS.navy,
@@ -107,6 +108,7 @@ const LEADS = [
   {
     title: "Sensors & Embedded Systems",
     icon: "memory",
+    lordicon: "antenna",
     people: ["Janassor Ahmed", "Sharul Bhuiya", "Safia Mubassara Ruzba"],
     note: "Micro-soldering, LiDAR circuits, low-power telemetry & antenna RF.",
     look: LEAD_LOOKS.cobalt,
@@ -114,6 +116,7 @@ const LEADS = [
   {
     title: "Fullstack, AI & SWASTI Mobile",
     icon: "code",
+    lordicon: "html-code",
     people: ["Luban Ahmed", "Shabbin Ahmed"],
     note: "Bengali RAG models, Flutter app core, real-time WebSockets & CNNs.",
     look: LEAD_LOOKS.ink,
@@ -124,12 +127,12 @@ export function LeadershipSection() {
   return (
     <section id="leadership" className="section-band mx-auto max-w-384 px-gutter-x">
       {/* The way to the whole crew sits top-right, as on the products section. */}
-      <div className="mb-8 grid gap-x-12 gap-y-4 sm:mb-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+      <div className="mb-8 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-4 sm:mb-10 sm:gap-x-12">
         <SectionHeading
           tone="dark"
           className="mb-0 sm:mb-0"
-          title={<>Foundership &amp; Engineering Command</>}
-          lead="Led by home-grown researchers, robotics specialists, and software architects determined to establish national hardware sovereignty."
+          title="Leadership"
+          lead="Home-grown engineers building Bangladesh’s own hardware."
         />
         <div className="story-reveal">
           <TrackLink href="/team">Meet the Crew</TrackLink>
@@ -217,7 +220,7 @@ export function LeadershipSection() {
                     look.tile,
                   )}
                 >
-                  <Icon name={lead.icon} className="text-2xl" />
+                  <CardIcon name={lead.lordicon} fallback={lead.icon} size={32} />
                 </span>
                 <h4 className={cn("flex-1 font-grotesk text-base leading-tight font-bold text-balance sm:flex-initial sm:text-base lg:text-lg", look.heading)}>{lead.title}</h4>
                 <TapCue className="opacity-80" />
@@ -240,8 +243,8 @@ export function LeadershipSection() {
       {/* Fellowship strip — cobalt, gold carrying the title and the action. */}
       <div className="story-reveal relative isolate mt-6 sm:mt-5 flex flex-col items-start justify-between gap-4 overflow-hidden rounded-3xl bg-cobalt p-5 text-white shadow-tile ring-1 ring-white/12 sm:flex-row sm:items-center sm:p-6">
         <div className="flex items-center gap-4">
-          <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-signal-orange text-text-primary">
-            <Icon name="school" className="text-2xl" />
+          <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-black/25 text-signal-orange ring-1 ring-white/12 ring-inset">
+            <CardIcon name="school" fallback="school" size={40} />
           </span>
           <div>
             <span className="block font-grotesk text-xl font-bold text-signal-orange">R&amp;D Fellowship Cohort</span>

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { FilmFrame, type FilmId } from "@/components/films/motion-film";
+import { CardIcon } from "@/components/ui/card-icon";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import { MediaReel } from "./media-reel";
@@ -14,7 +14,7 @@ import { PosterScene, type PosterSceneKind } from "./poster-scenes";
  * cards of kudos.framer.media (Mahir, 2026-10-29): the whole card is one
  * link, a tall framed picture in its own field (navy, cobalt or ink) with a
  * skeleton shimmer until the photograph arrives, and under it, on the black
- * ground, the name with its number, one line, and from lg the promise. On
+ * ground, the name and one line (Mahir, 2026-10-29: no description). On
  * hover or focus the picture eases in closer, the frame takes a gold edge
  * and a bare gold arrow rises in its corner; the name turns gold.
  */
@@ -39,17 +39,13 @@ export interface PosterItem {
   tagline: string;
   /** The name as plain text, for the link's label. */
   nameText: string;
-  /** The promise, shown from lg. */
-  pitch: string;
   href: string;
-  /** The photograph; left out when a film fills the picture instead. */
+  /** The photograph; left out when an icon scene fills the picture instead. */
   image?: { src: string; alt: string; position?: string };
-  /** A 3D film (components/films) that fills the picture in place of the photograph. */
-  film3d?: FilmId;
+  /** A motion scene around one animated icon (public/lordicon), in place of the photograph. */
+  iconScene?: { icon: string; fallback: string };
   /** A motion layer: drawn over the photograph, or the film itself. */
   scene?: PosterSceneKind | "media-reel";
-  /** The foot line: the category and stage. */
-  note?: string;
 }
 
 export function PosterGrid({ items, label }: { items: PosterItem[]; label: string }) {
@@ -57,10 +53,10 @@ export function PosterGrid({ items, label }: { items: PosterItem[]; label: strin
     // Two by two on phones and upright tablets; four across from lg, and already from md on a
     // landscape screen (a turned tablet or phone), where two rows would not fit the height.
     <ul aria-label={label} className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 sm:gap-y-10 md:max-lg:landscape:grid-cols-4 lg:grid-cols-4">
-      {items.map((item, i) => (
+      {items.map((item) => (
         // The scroll reveal sits on the <li>, so its rise never fights the card's own motion.
         <li key={item.id} id={item.anchorId} className="story-reveal flex scroll-mt-header lg:scroll-mt-header-lg">
-          <PosterCard item={item} index={i} />
+          <PosterCard item={item} />
         </li>
       ))}
     </ul>
@@ -84,7 +80,7 @@ function useOnScreen<T extends Element>() {
 const EASE = "duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none";
 
 // No `priority`: the grids sit far below the fold, and preloading them would compete with the hero's poster.
-function PosterCard({ item, index }: { item: PosterItem; index: number }) {
+function PosterCard({ item }: { item: PosterItem }) {
   const [ref, onScreen] = useOnScreen<HTMLAnchorElement>();
   // A photograph shows the skeleton until it has loaded; a film or the reel draws at once.
   const [loaded, setLoaded] = useState(!item.image);
@@ -113,7 +109,7 @@ function PosterCard({ item, index }: { item: PosterItem; index: number }) {
 
         {/* Everything drawn eases in closer together (scale, so the scenes' own transforms stay theirs). */}
         <div className={cn("absolute inset-0 transition-[scale] group-hover:scale-[1.06] group-focus-visible:scale-[1.06] motion-reduce:group-hover:scale-100", EASE)}>
-          {item.film3d ? <FilmFrame film={item.film3d} className="absolute inset-0" /> : null}
+          {item.iconScene ? <IconScene {...item.iconScene} /> : null}
           {item.image && (
             <Image
               src={item.image.src}
@@ -147,23 +143,52 @@ function PosterCard({ item, index }: { item: PosterItem; index: number }) {
 
       {/* The words, on the black ground under the picture. */}
       <div className="@container mt-4 flex flex-1 flex-col sm:mt-5">
-        <div className="flex items-baseline justify-between gap-3">
-          <h3
-            className={cn(
-              "min-w-0 font-grotesk leading-tight font-bold tracking-tight text-white transition-colors duration-300 group-hover:text-signal-orange",
-              typeof item.title === "string" && "text-lg sm:text-2xl",
-            )}
-          >
-            {item.title}
-          </h3>
-          <span aria-hidden className="shrink-0 text-xs font-semibold text-white/65 tabular-nums">
-            {String(index + 1).padStart(2, "0")}
-          </span>
-        </div>
+        <h3
+          className={cn(
+            "min-w-0 font-grotesk leading-tight font-bold tracking-tight text-white transition-colors duration-300 group-hover:text-signal-orange",
+            typeof item.title === "string" && "text-lg sm:text-2xl",
+          )}
+        >
+          {item.title}
+        </h3>
         <p className="mt-1.5 font-grotesk text-xs leading-snug font-semibold text-white/80 sm:text-sm">{item.tagline}</p>
-        <p className="mt-3 mb-4 hidden text-sm leading-relaxed text-white/65 lg:line-clamp-3">{item.pitch}</p>
-        {item.note ? <p className="hidden border-t border-white/12 pt-3 text-xs text-white/65 lg:mt-auto lg:block">{item.note}</p> : null}
       </div>
     </Link>
+  );
+}
+
+/** Pixels on their orbits: colour, radius (share of the scene), seconds per turn, starting angle. */
+const ORBITS = [
+  { color: "bg-signal-orange", r: "38%", dur: 9, from: 0 },
+  { color: "bg-bdnavy-300", r: "30%", dur: 6.5, from: 140 },
+  { color: "bg-white", r: "44%", dur: 13, from: 250 },
+  { color: "bg-signal-orange", r: "24%", dur: 5, from: 300 },
+];
+
+/**
+ * A service's picture (Mahir, 2026-10-29, after the 3D films): its animated
+ * icon in a glossy clay tile, floating in the middle of two dashed rings
+ * turning against each other, with gold, light-blue and white pixels on
+ * their orbits. Pure CSS around one Lordicon, so it costs a fraction of a
+ * 3D scene; it pauses off screen with the card (globals.css, .svc-scene).
+ */
+function IconScene({ icon, fallback }: { icon: string; fallback: string }) {
+  return (
+    <div aria-hidden className="svc-scene absolute inset-0 grid place-items-center overflow-hidden">
+      <span className="svc-ring absolute aspect-square w-[78%] rounded-full border-2 border-dashed border-signal-orange/35" />
+      <span className="svc-ring svc-ring-back absolute aspect-square w-[56%] rounded-full border-2 border-dashed border-bdnavy-300/40" />
+      {ORBITS.map((o, i) => (
+        <span
+          key={i}
+          className="svc-orbit absolute inset-0"
+          style={{ "--dur": `${o.dur}s`, "--from": `${o.from}deg` } as CSSProperties}
+        >
+          <span className={cn("absolute left-1/2 size-2.5 -translate-1/2 rounded-[3px] sm:size-3", o.color)} style={{ top: `calc(50% - ${o.r})` }} />
+        </span>
+      ))}
+      <span className="svc-tile relative grid aspect-square w-[44%] place-items-center rounded-[28%] bg-white/10 ring-1 ring-white/20 ring-inset">
+        <CardIcon name={icon} fallback={fallback} size={88} delay={1800} className="max-sm:scale-75" />
+      </span>
+    </div>
   );
 }

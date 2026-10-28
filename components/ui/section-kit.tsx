@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { ScrollLit } from "./scroll-lit";
 
 /**
  * Shared parts for the home page, in the header's language: gold, ink and
@@ -31,7 +32,10 @@ export function SectionHeading({
       >
         {title}
       </h2>
-      {lead ? (
+      {/* A plain-text lead lights up word by word as it scrolls in (scroll-lit.tsx). */}
+      {typeof lead === "string" ? (
+        <ScrollLit text={lead} className={cn("max-w-3xl font-sans text-base leading-relaxed lg:max-w-none", tone === "dark" ? "text-white/80" : "text-text-secondary")} />
+      ) : lead ? (
         <p className={cn("max-w-3xl font-sans text-base leading-relaxed lg:max-w-none", tone === "dark" ? "text-white/80" : "text-text-secondary")}>
           {lead}
         </p>

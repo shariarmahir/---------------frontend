@@ -7,6 +7,7 @@ import { Icon } from "@/components/ui/icon";
 import { btn } from "@/components/ui/section-kit";
 import { useAuth } from "@/lib/auth/client";
 import { cn } from "@/lib/utils";
+import { CardIcon } from "@/components/ui/card-icon";
 
 /**
  * Join Kandari Profile, laid out like shikho.com's help band: one wide
@@ -24,6 +25,7 @@ const WAYS_IN = [
     action: "Read Research",
     href: "/research",
     icon: "menu_book",
+    lordicon: "book-bookmark",
     card: "bg-bdnavy-900 text-white ring-1 ring-white/12 ring-inset",
     muted: "text-white/65",
     glow: "var(--color-bdnavy-400)",
@@ -34,6 +36,7 @@ const WAYS_IN = [
     action: "Join Social",
     href: "/media",
     icon: "diversity_3",
+    lordicon: "media",
     card: "bg-text-primary text-white ring-1 ring-white/12 ring-inset",
     muted: "text-white/65",
     glow: "var(--color-signal-orange)",
@@ -51,12 +54,9 @@ export function KandariProfileSection() {
         <div className="story-reveal group/join relative grid overflow-hidden rounded-3xl bg-cobalt text-white sm:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
           <div className="relative order-2 flex flex-col items-start gap-3 p-5 pt-3 sm:order-1 sm:gap-4 sm:p-8 xl:p-10">
             <h2 id="kandari-profile-title" className="font-grotesk text-2xl leading-tight font-bold tracking-tight text-balance text-signal-orange sm:text-3xl">
-              Join Kandari Profile for breakthrough R&amp;D
+              Join Kandari Profile
             </h2>
-            <p className="max-w-md text-sm leading-relaxed text-white/80 sm:text-base">
-              One free profile to hear first about new research, product releases and early access to what the lab
-              builds.
-            </p>
+            <p className="max-w-md text-sm leading-relaxed text-white/80 sm:text-base">Hear first about new research and releases.</p>
             <p className="font-grotesk text-xl font-bold text-signal-orange">
               Free to join, always
             </p>
@@ -104,13 +104,12 @@ export function KandariProfileSection() {
                   {/* Styled as a button; the whole card is the link. */}
                   <span className={cn(btn.gold, "mt-1")}>{way.action}</span>
                 </span>
-                {/* A tilted gold tile on a solid offset shadow, straightening under the pointer. */}
+                {/* A tilted icon well on a solid offset shadow, straightening under the pointer. */}
                 <span
                   aria-hidden
-                  className="grid size-16 shrink-0 -rotate-8 place-items-center rounded-2xl bg-signal-orange text-bdnavy-900 shadow-[6px_6px_0_rgb(0_0_0/0.35)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:rotate-0 motion-reduce:transition-none sm:size-24"
+                  className="grid size-16 shrink-0 -rotate-8 place-items-center rounded-2xl bg-black/25 text-signal-orange ring-1 ring-white/12 ring-inset shadow-[6px_6px_0_rgb(0_0_0/0.35)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:rotate-0 motion-reduce:transition-none sm:size-24"
                 >
-                  {/* `!`: Google's icon stylesheet pins every symbol at 24px and outranks the utilities. */}
-                  <Icon name={way.icon} className="text-4xl! sm:text-5xl!" />
+                  <CardIcon name={way.lordicon} fallback={way.icon} size={56} />
                 </span>
               </Link>
             </li>

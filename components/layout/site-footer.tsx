@@ -4,6 +4,7 @@ import { Icon } from "@/components/ui/icon";
 import { SignalSeam, btn } from "@/components/ui/section-kit";
 import { NAZRUL_MOTTO } from "@/data/navigation";
 import { cn } from "@/lib/utils";
+import { FooterFilm } from "./footer-film";
 
 /** The site's own pages, as the footer's large index (after kudos.framer.media's footer). */
 const INDEX = [
@@ -83,8 +84,8 @@ const bn = (text: string) => /[ঀ-৿]/.test(text);
  * tones (the claim in white over its quieter connective words) with the
  * motto and the two actions; beside it the site's pages as a large
  * numbered index. Under a hairline, the brand, the link columns and the
- * newsletter; then the rights line, and the Bangla name drawn large in a
- * fine gold line, cut by the page's edge.
+ * newsletter; then the rights line, and the hero's film looping across the
+ * foot with a button for its sound (footer-film.tsx).
  * The bottom row keeps clear of the floating AI button over its right end.
  * With `research`, the library's columns join the company's and the email
  * bar moves under the brand, so /research closes on this one footer.
@@ -244,23 +245,8 @@ export function SiteFooter({ research = false }: { research?: boolean }) {
         </div>
       </div>
 
-      {/* The name, drawn large in a fine gold line and cut by the page's
-          bottom edge. Set at 72 units and scaled by the viewBox, so it stays
-          on the type scale. */}
-      <svg aria-hidden viewBox="0 0 390 70" className="pointer-events-none mx-auto block w-full max-w-384 px-gutter-x select-none">
-        <text
-          x="195"
-          y="80"
-          textAnchor="middle"
-          fontSize="72"
-          fontWeight="700"
-          className="fill-none stroke-signal-orange font-bengali"
-          strokeOpacity="0.45"
-          strokeWidth="0.6"
-        >
-          কাণ্ডারী-ল্যাব
-        </text>
-      </svg>
+      {/* The page's last picture: the hero's film, looping, with its sound a tap away. */}
+      <FooterFilm />
     </footer>
   );
 }

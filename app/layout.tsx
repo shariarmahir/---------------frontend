@@ -6,6 +6,7 @@ import {
   JetBrains_Mono,
 } from "next/font/google";
 import { RevealFallback } from "@/components/ui/reveal-fallback";
+import { INTRO_SEEN_SCRIPT } from "@/lib/intro";
 import "./globals.css";
 
 // Gilroy is a commercial font with no next/font/google entry and no local
@@ -72,6 +73,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${sora.variable} ${inter.variable} ${jetbrainsMono.variable} ${hindSiliguri.variable} h-full antialiased`}
     >
       <head>
+        {/* Before the first paint: a return to the home page in the same session skips its intro. */}
+        <script dangerouslySetInnerHTML={{ __html: INTRO_SEEN_SCRIPT }} />
         {/* Material Symbols has no next/font/google export; the App Router
             root layout applies this to every route, so the page-font rule
             does not apply. */}

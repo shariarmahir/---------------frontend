@@ -5,6 +5,7 @@ import { TrackLink } from "@/components/showcase/showcase";
 import { Icon } from "@/components/ui/icon";
 import { SectionHeading } from "@/components/ui/section-kit";
 import { cn } from "@/lib/utils";
+import { CardIcon } from "@/components/ui/card-icon";
 
 /**
  * Each project is a spec-sheet row rather than another card in a grid, on the
@@ -19,8 +20,9 @@ const LABS = [
     id: "eye-agent",
     href: "/research/blind-assist-wearable",
     icon: "blind",
+    lordicon: "person-walking",
     surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
-    block: "bg-signal-orange text-text-primary",
+    block: "bg-black/25 text-signal-orange ring-1 ring-white/12 ring-inset",
     glow: "var(--color-bdnavy-400)",
     title: "Eye-Consciousness AI Agent for Visually Impaired",
     description:
@@ -30,8 +32,9 @@ const LABS = [
     id: "circular",
     href: "/research/organic-waste-to-soil",
     icon: "recycling",
+    lordicon: "recycling",
     surface: "bg-text-primary text-white ring-1 ring-white/12",
-    block: "bg-signal-orange text-text-primary",
+    block: "bg-black/25 text-signal-orange ring-1 ring-white/12 ring-inset",
     glow: "var(--color-signal-orange)",
     title: "Biochemical Circular Automation",
     description:
@@ -42,8 +45,9 @@ const LABS = [
     // No paper of its own yet: approval opens the research library.
     href: "/research",
     icon: "developer_board",
+    lordicon: "server",
     surface: "bg-cobalt text-white ring-1 ring-white/12",
-    block: "bg-signal-orange text-text-primary",
+    block: "bg-black/25 text-signal-orange ring-1 ring-white/12 ring-inset",
     heading: "text-signal-orange",
     glow: "var(--color-cobalt)",
     title: "Semiconductor Fabrication & 10-Crore Data Engine",
@@ -56,14 +60,14 @@ export function ResearchSection() {
   return (
     <section id="rd-labs" className="section-band mx-auto max-w-384 px-gutter-x">
       {/* From sm the way to the whole library sits level with the title (under the lead on a tablet). */}
-      <div className="sm:mb-10 sm:grid sm:gap-x-12 sm:gap-y-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+      <div className="mb-8 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-4 sm:mb-10 sm:gap-x-12">
         <SectionHeading
           tone="dark"
-          className="sm:mb-0"
-          title={<>Advanced R&amp;D Cleanroom Initiatives</>}
-          lead="Engineering deep-tech intellectual property at the intersection of microchip silicon, sensory edge robotics, and circular biochemical automation."
+          className="mb-0 sm:mb-0"
+          title={<>R&amp;D Cleanroom</>}
+          lead="Silicon, sensing and circular automation, in research."
         />
-        <div className="story-reveal max-sm:hidden">
+        <div className="story-reveal">
           <TrackLink href="/research">Research library</TrackLink>
         </div>
       </div>
@@ -101,7 +105,7 @@ export function ResearchSection() {
                   aria-hidden
                   className="absolute inset-2 animate-[spin_14s_linear_infinite] rounded-full border border-dashed border-current opacity-40 motion-reduce:animate-none"
                 />
-                <Icon name={lab.icon} className="text-3xl sm:text-4xl max-lg:text-2xl!" />
+                <CardIcon name={lab.lordicon} fallback={lab.icon} size={44} />
               </span>
 
               <div className="min-w-0 @min-[80rem]:contents">

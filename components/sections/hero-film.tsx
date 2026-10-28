@@ -104,9 +104,31 @@ export function HeroFilm() {
     const net = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || net?.saveData || /(^|-)[23]g$/.test(net?.effectiveType ?? "")) return;
 
-    video.muted = true;
-    video.preload = "auto";
-    video.play().catch(() => {});
+    // The film waits until the page has loaded and the browser is idle, so its
+    // stream never competes with the page's own scripts, fonts and pictures;
+    // the poster (the band's backdrop) holds the frame until then.
+    let started = false;
+    let inView = true;
+    const start = () => {
+      started = true;
+      video.muted = true;
+      video.preload = "auto";
+      if (inView && !document.hidden) video.play().catch(() => {});
+    };
+    let cancelIdle = () => {};
+    const whenIdle = () => {
+      // Safari has no requestIdleCallback: a short timeout stands in.
+      const ric = window.requestIdleCallback as typeof window.requestIdleCallback | undefined;
+      if (ric) {
+        const id = ric(start, { timeout: 1500 });
+        cancelIdle = () => window.cancelIdleCallback(id);
+      } else {
+        const id = window.setTimeout(start, 300);
+        cancelIdle = () => window.clearTimeout(id);
+      }
+    };
+    if (document.readyState === "complete") whenIdle();
+    else window.addEventListener("load", whenIdle, { once: true });
 
     const reveal = () => {
       if (video.currentTime < LABEL_HOLDS_AT) return;
@@ -115,10 +137,10 @@ export function HeroFilm() {
     };
     video.addEventListener("timeupdate", reveal);
 
-    let inView = true;
     const io = new IntersectionObserver(
       ([entry]) => {
         inView = entry.isIntersecting;
+        if (!started) return;
         if (inView) video.play().catch(() => {});
         else video.pause();
       },
@@ -129,11 +151,13 @@ export function HeroFilm() {
     // A hidden tab pauses at once and picks up where it was on return.
     const onVisibility = () => {
       if (document.hidden) video.pause();
-      else if (inView) video.play().catch(() => {});
+      else if (inView && started) video.play().catch(() => {});
     };
     document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
+      window.removeEventListener("load", whenIdle);
+      cancelIdle();
       video.removeEventListener("timeupdate", reveal);
       document.removeEventListener("visibilitychange", onVisibility);
       io.disconnect();

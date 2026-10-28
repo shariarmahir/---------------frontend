@@ -20,8 +20,9 @@ import { ShowcaseCard, type CardTone } from "./showcase-card";
 export function TrackLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
     // The kit's gold outline on a solid navy fill (it stands on the black ground), filling gold when pointed at.
-    <Link href={href} className={cn(btn.goldOutline, "group shrink-0 bg-bdnavy-900")}>
-      {children} <Icon name="arrow_forward" className="text-lg transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
+    // On a phone only the arrow shows (a 48px square level with the title); the words stay for screen readers.
+    <Link href={href} className={cn(btn.goldOutline, "group shrink-0 bg-bdnavy-900 max-sm:w-12 max-sm:px-0")}>
+      <span className="max-sm:sr-only">{children}</span> <Icon name="arrow_forward" className="text-lg transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
     </Link>
   );
 }
@@ -71,11 +72,9 @@ function productPosters(): PosterItem[] {
         title: p.name,
         tagline: look.tagline,
         nameText: p.name,
-        pitch: p.summary,
         href: `/products/${p.slug}`,
         image: { src: p.image.src, alt: p.image.alt, position: look.position },
         scene: look.scene,
-        note: `${p.category} · ${p.stage}`,
       },
     ];
   });
@@ -89,10 +88,8 @@ function productPosters(): PosterItem[] {
     title: <LabelText text={LABEL_TEXT.media} className="text-[min(1.5rem,13.5cqi)] leading-none" />,
     tagline: "Post a skill. Get verified. Get hired.",
     nameText: "শিক্ষিতদের মিডিয়া",
-    pitch: "The skill-first social platform: show what you can do, rate yourself, let the community verify it, and get hired at fair pay.",
     href: "/media",
     scene: "media-reel",
-    note: "Members only · Prioritize your joy.",
   });
   return items;
 }
@@ -146,6 +143,14 @@ const SERVICE_TONES: CardTone[] = ["green", "ink", "gold", "white"];
  * service page, its picture the service's 3D film; on /products it goes
  * to the Kandari Profile sign-up, the one way to reach the team today.
  */
+/** Each service's animated icon on the home page's cards (public/lordicon), with its still stand-in. */
+const SERVICE_ICON: Record<string, { icon: string; fallback: string }> = {
+  ai: { icon: "magic-wand", fallback: "smart_toy" },
+  automation: { icon: "three-arrows-rotate", fallback: "precision_manufacturing" },
+  iot: { icon: "internet-of-things", fallback: "sensors" },
+  development: { icon: "html-code", fallback: "code" },
+};
+
 export function ServicesShowcase({ on = "home", poster }: { on?: "home" | "products"; poster?: boolean }) {
   // The home page's poster grid, in the palette's three fields (no two neighbours alike).
   if (poster) {
@@ -160,9 +165,8 @@ export function ServicesShowcase({ on = "home", poster }: { on?: "home" | "produ
           title: s.poster.title,
           tagline: s.poster.tagline,
           nameText: s.name,
-          pitch: s.pitch,
           href: on === "home" ? `/services/${s.id}` : "/#kandari-profile",
-          film3d: s.film,
+          iconScene: SERVICE_ICON[s.id],
         }))}
       />
     );

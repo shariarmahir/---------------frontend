@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { useMemo, type CSSProperties } from "react";
 import { Icon } from "@/components/ui/icon";
 import { btn } from "@/components/ui/section-kit";
 import type { Photo } from "@/data/bangladesh";
 import { charterSlides, type CharterSlide } from "@/data/charter";
 import { ruralBackdrops, ruralStories } from "@/data/rural-life";
 import { cn } from "@/lib/utils";
+import { CardIcon } from "@/components/ui/card-icon";
 import { CountUp } from "./charter-kit";
 import { CHARTER_LOOKS, CHARTER_TOPIC } from "./charter-looks";
 import { PhotoReel, type ReelItem } from "./photo-reel";
@@ -19,6 +20,9 @@ import { PhotoReel, type ReelItem } from "./photo-reel";
  * the copy from data/charter.ts, and its evidence: a table of figures, its
  * pillars or its one word.
  */
+
+/** The pillars' animated icons (public/lordicon), in the landing page's one icon look. */
+const PILLAR_ICON: Record<string, string> = { Smart: "internet-of-things", Safe: "lifebuoy", Secure: "fingerprint-circle" };
 
 const story = (id: string) => ruralStories.find((s) => s.id === id)!.photo;
 
@@ -79,8 +83,8 @@ function Proof({ slide, active }: { slide: CharterSlide; active: boolean }) {
       <ul className="divide-y divide-white/10">
         {slide.pillars.map((p) => (
           <li key={p.label} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
-            <span className="grid size-9 place-items-center rounded-xl ring-1 ring-signal-orange/40 ring-inset">
-              <Icon name={p.icon} className="text-xl! text-signal-orange" />
+            <span className="grid size-10 place-items-center rounded-xl bg-black/25 ring-1 ring-white/12 ring-inset">
+              <CardIcon name={PILLAR_ICON[p.label] ?? "internet-of-things"} fallback={p.icon} size={28} />
             </span>
             <span className="font-grotesk text-lg font-bold tracking-tight">{p.label}</span>
           </li>
@@ -134,7 +138,13 @@ function toItem(slide: CharterSlide): ReelItem {
     art: { kind: "photo", photo, focus, lift },
     title: (
       <>
-        {slide.title[0]} <span className={cn("text-signal-orange", slide.strike && "line-through decoration-[3px]")}>{slide.title[1]}</span>
+        {slide.title[0]}{" "}
+        <span
+          className={cn("reel-accent", slide.strike && "line-through decoration-[3px]")}
+          style={{ "--accent-at": `${-charterSlides.findIndex((s) => s.id === slide.id) * 1.2}s` } as CSSProperties}
+        >
+          {slide.title[1]}
+        </span>
       </>
     ),
     titleText: slide.title.join(" "),
@@ -146,7 +156,7 @@ function toItem(slide: CharterSlide): ReelItem {
           <span className="sr-only">: {topic.name}</span>
           <Icon name="arrow_forward" className="text-lg" />
         </Link>
-        <Link href={slide.secondary.href} className={cn(btn.goldOutline, "min-h-10 px-4 py-2")}>
+        <Link href={slide.secondary.href} className={cn(btn.goldOutline, "min-h-10 bg-bdnavy-900 px-4 py-2")}>
           {slide.secondary.label}
         </Link>
       </>
@@ -157,5 +167,5 @@ function toItem(slide: CharterSlide): ReelItem {
 
 export function CharterReel() {
   const items = useMemo(() => charterSlides.map(toItem), []);
-  return <PhotoReel sectionId="charter" title="From Problem to Impact, One Pixel at a Time" noun="charter card" items={items} />;
+  return <PhotoReel sectionId="charter" title="From Problem to Impact, One Pixel at a Time" items={items} />;
 }

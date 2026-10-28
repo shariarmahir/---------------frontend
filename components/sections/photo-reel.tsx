@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { AnimatedIcon } from "@/components/ui/animated-icon";
+import { CardIcon } from "@/components/ui/card-icon";
 import { Icon } from "@/components/ui/icon";
 import type { Photo } from "@/data/bangladesh";
 import { cn } from "@/lib/utils";
@@ -53,7 +53,7 @@ export interface ReelItem {
   name: string;
   /** Material Symbols name: the tile's symbol, and the fallback while its animation loads. */
   icon: string;
-  /** An animated Lordicon in `public/lordicon/` (file name without `.json`), played when the card is pointed at. */
+  /** An animated Lordicon in `public/lordicon/` (file name without `.json`), the landing page's one icon look. */
   lordicon?: string;
   look: CharterLook;
   art: ReelArt;
@@ -68,11 +68,12 @@ export interface ReelItem {
   bangla?: boolean;
 }
 
-/** The tile icons in the site's colours: white lines, gold accents. */
-const ICON_COLORS = { primary: "#ffffff", secondary: "#e4b027" };
-
 /** The expanding row from 90rem (below it the open card is too narrow for its slide); below it, the swipe reel. */
 const ROW_MQ = "(min-width: 90rem)";
+/** How long each card stays open before the next opens on its own. */
+const AUTO_MS = 6500;
+/** How long the reel stays still after a finger leaves it. */
+const TOUCH_HOLD_MS = 5000;
 
 /** Pages the reel so card `i` stands at its gutter. */
 function scrollReelTo(list: HTMLElement, i: number) {
@@ -88,14 +89,18 @@ function scrollReelTo(list: HTMLElement, i: number) {
  * arrows stay on the page's content width, like every other section's. Otherwise the cards keep that
  * width and their full height (the charter's tables need it).
  */
-export function PhotoReel({ sectionId, title, noun, items, wide = false }: { sectionId: string; title: string; noun: string; items: ReelItem[]; wide?: boolean }) {
+export function PhotoReel({ sectionId, title, items, wide = false }: { sectionId: string; title: string; items: ReelItem[]; wide?: boolean }) {
   const headId = useId();
   const listRef = useRef<HTMLUListElement>(null);
   const [open, setOpen] = useState(0);
   const [row, setRow] = useState(false);
-  // The reel's own position, for its arrows: the card at its start and whether it can move either way.
-  const [reel, setReel] = useState({ at: 0, start: true, end: false });
+  // The reel's own position: the card standing at its start.
+  const [at, setAt] = useState(0);
   const n = items.length;
+  const sectionRef = useRef<HTMLElement>(null);
+  // Held while a pointer, keyboard focus or a finger is on the cards.
+  const held = useRef(false);
+  const release = useRef(0);
 
   useEffect(() => {
     const mq = window.matchMedia(ROW_MQ);
@@ -118,11 +123,7 @@ export function PhotoReel({ sectionId, title, noun, items, wide = false }: { sec
         const d = Math.abs(c.getBoundingClientRect().left - left);
         if (d < best) [best, at] = [d, i];
       });
-      const max = list.scrollWidth - list.clientWidth;
-      setReel((r) => {
-        const next = { at, start: list.scrollLeft < 8, end: list.scrollLeft > max - 8 };
-        return r.at === next.at && r.start === next.start && r.end === next.end ? r : next;
-      });
+      setAt(at);
     };
     read();
     list.addEventListener("scroll", read, { passive: true });
@@ -161,37 +162,60 @@ export function PhotoReel({ sectionId, title, noun, items, wide = false }: { sec
     };
   }, [items]);
 
-  const current = row ? open : reel.at;
-  const atStart = row ? open === 0 : reel.start;
-  const atEnd = row ? open === n - 1 : reel.end;
-  const step = (d: -1 | 1) => {
-    const i = Math.min(n - 1, Math.max(0, current + d));
-    if (row) setOpen(i);
-    else if (listRef.current) scrollReelTo(listRef.current, i);
+  const current = row ? open : at;
+  const currentRef = useRef(current);
+  useEffect(() => {
+    currentRef.current = current;
+  }, [current]);
+
+  // The next card opens on its own, like a slow breath (the reviews' widening): only while the
+  // reel is on screen, the tab is visible and nothing holds it. Reduced motion: it waits for a hand.
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || n < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let seen = false;
+    const io = new IntersectionObserver(([e]) => (seen = e.isIntersecting), { threshold: 0.35 });
+    io.observe(section);
+    const id = window.setInterval(() => {
+      if (!seen || held.current || document.hidden) return;
+      const i = (currentRef.current + 1) % n;
+      if (row) setOpen(i);
+      else if (listRef.current) scrollReelTo(listRef.current, i);
+    }, AUTO_MS);
+    return () => {
+      io.disconnect();
+      window.clearInterval(id);
+    };
+  }, [row, n]);
+  useEffect(() => () => window.clearTimeout(release.current), []);
+
+  const hold = () => {
+    window.clearTimeout(release.current);
+    held.current = true;
+  };
+  const letGo = (after = 0) => {
+    window.clearTimeout(release.current);
+    release.current = window.setTimeout(() => (held.current = false), after);
   };
 
   return (
-    <section id={sectionId} aria-labelledby={headId} className="section-band">
-      <div className="story-reveal mx-auto flex w-full max-w-384 items-end justify-between gap-6 px-gutter-x">
-        {/* The home page's section title: gold, bold, one line from lg (SectionHeading's style). */}
-        <h2
-          id={headId}
-          className="font-grotesk text-[1.75rem] leading-[1.15] font-bold tracking-tight text-balance text-signal-orange sm:text-3xl sm:leading-[1.2] lg:text-4xl lg:whitespace-nowrap"
-        >
-          {title}
-        </h2>
-        {/* -mr-2.5: the glyph, not its 44px target, lines up with the cards' right edge. A phone swipes instead. */}
-        <div role="group" aria-label={`${title}: cards`} className="-mr-2.5 flex shrink-0 gap-1 max-sm:hidden">
-          <Arrow dir="prev" noun={noun} disabled={atStart} onClick={() => step(-1)} />
-          <Arrow dir="next" noun={noun} disabled={atEnd} onClick={() => step(1)} />
-        </div>
-      </div>
+    <section ref={sectionRef} id={sectionId} aria-labelledby={headId} className="section-band">
+      {/* The title is for screen readers only (Mahir, 2026-10-29: the cards speak for themselves). */}
+      <h2 id={headId} className="sr-only">
+        {title}
+      </h2>
 
       <ul
         ref={listRef}
+        onPointerEnter={(e) => e.pointerType === "mouse" && hold()}
+        onPointerLeave={(e) => e.pointerType === "mouse" && letGo()}
+        onTouchStart={hold}
+        onTouchEnd={() => letGo(TOUCH_HOLD_MS)}
+        onFocus={(e) => e.target.matches(":focus-visible") && hold()}
+        onBlur={(e) => !e.currentTarget.contains(e.relatedTarget) && letGo()}
         style={{ "--n": n } as CSSProperties}
         className={cn(
-          "reel-list story-reveal @container relative mx-auto mt-8 flex w-full gap-3 px-gutter-x sm:mt-10",
+          "reel-list story-reveal @container relative mx-auto flex w-full gap-3 px-gutter-x",
           !wide && "max-w-384",
           // The reel: swiped sideways, each card snapping to the gutter.
           "snap-x snap-mandatory scroll-px-gutter-x overflow-x-auto overscroll-x-contain pb-1 scrollbar-none [&::-webkit-scrollbar]:hidden",
@@ -212,36 +236,8 @@ export function PhotoReel({ sectionId, title, noun, items, wide = false }: { sec
   );
 }
 
-/**
- * A bare gold arrow: no disc, no glass (Mahir, 2026-10-17); a 44px target with a visible focus ring.
- * At the end of the row it is aria-disabled rather than disabled, so keyboard focus stays on it.
- */
-function Arrow({ dir, noun, disabled, onClick }: { dir: "prev" | "next"; noun: string; disabled: boolean; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={() => !disabled && onClick()}
-      aria-disabled={disabled}
-      aria-label={`${dir === "prev" ? "Previous" : "Next"} ${noun}`}
-      className={cn(
-        "group/arrow grid size-11 place-items-center rounded-xl text-signal-orange transition-opacity duration-300",
-        "focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none",
-        "aria-disabled:cursor-default aria-disabled:opacity-30",
-      )}
-    >
-      <Icon
-        name={dir === "prev" ? "arrow_back" : "arrow_forward"}
-        className={cn(
-          "text-[1.75rem]! transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
-          !disabled && (dir === "prev" ? "group-hover/arrow:-translate-x-1" : "group-hover/arrow:translate-x-1"),
-        )}
-      />
-    </button>
-  );
-}
-
-/** A frosted pane of the card's field laid on the picture (globals.css, .reel-glass): the picture shows through, blurred. */
-const GLASS = "reel-glass ring-1 ring-white/15 ring-inset";
+/** Words laid straight on the picture, held legible by a soft shadow (globals.css, .reel-bare): no pane behind them (Mahir, 2026-10-29). */
+const BARE = "reel-bare";
 
 const SIZES = "(min-width: 90rem) 70vw, (min-width: 64rem) 52rem, (min-width: 40rem) 36rem, 100vw";
 
@@ -271,11 +267,10 @@ function ReelCard({ item, open, row, onOpen }: { item: ReelItem; open: boolean; 
     <li
       ref={ref}
       id={item.id}
-      // Cobalt is the lightest field, so its panes are a step more opaque to hold the white type.
-      style={{ ...look.vars, "--glass": look.vars["--field"] === "var(--color-cobalt)" ? "80%" : "72%" } as CSSProperties}
+      style={look.vars as CSSProperties}
       className={cn(
         "group/card relative isolate flex shrink-0 snap-start flex-col overflow-hidden rounded-3xl bg-(--field) text-white scroll-mt-header lg:scroll-mt-header-lg",
-        "min-h-128 w-[min(86vw,30rem)] sm:w-120 lg:w-176",
+        "min-h-100 w-[min(86vw,30rem)] sm:min-h-128 sm:w-120 lg:w-176",
         "min-[90rem]:min-h-0 min-[90rem]:w-auto min-[90rem]:basis-(--spine) min-[90rem]:transition-[flex-grow] min-[90rem]:duration-700 min-[90rem]:ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
         open ? "min-[90rem]:grow" : "min-[90rem]:grow-0",
       )}
@@ -301,6 +296,15 @@ function ReelCard({ item, open, row, onOpen }: { item: ReelItem; open: boolean; 
           !open && "min-[90rem]:opacity-35 min-[90rem]:group-hover/card:opacity-0",
         )}
       />
+      {/* One flat dim under the words wherever they stand on the picture (every card in the reel, the
+          open card in the row), so white and gold read without a pane or a gradient. */}
+      <div
+        aria-hidden
+        className={cn(
+          "absolute inset-0 -z-10 bg-black opacity-35 transition-opacity duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
+          !open && "min-[90rem]:opacity-0",
+        )}
+      />
       {/* The edge, drawn over the picture so it holds on the black. */}
       <span aria-hidden className="pointer-events-none absolute inset-0 z-10 rounded-3xl ring-1 ring-white/12 ring-inset" />
 
@@ -318,19 +322,19 @@ function ReelCard({ item, open, row, onOpen }: { item: ReelItem; open: boolean; 
         aria-label={`Open ${label}`}
         className={cn(
           // scroll-mt: tabbing to a tile scrolls it clear of the fixed header, focus ring included.
-          "absolute inset-0 z-10 hidden scroll-mt-header-lg flex-col justify-end rounded-3xl p-2 text-left transition-opacity min-[90rem]:flex",
+          "absolute inset-0 z-10 hidden scroll-mt-header-lg flex-col items-center justify-end rounded-3xl p-2 pb-5 text-center transition-opacity min-[90rem]:flex",
           "focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none focus-visible:ring-inset",
           open ? "pointer-events-none opacity-0 duration-150" : "opacity-100 delay-300 duration-500",
         )}
       >
         <span
           className={cn(
-            GLASS,
-            "flex flex-col items-start gap-2.5 rounded-2xl p-3 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:-translate-y-1 motion-reduce:transition-none",
+            BARE,
+            "flex flex-col items-center gap-2 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:-translate-y-1 motion-reduce:transition-none",
           )}
         >
           {item.lordicon ? (
-            <AnimatedIcon name={item.lordicon} fallback={item.icon} size={32} trigger="hover" target="li" colors={ICON_COLORS} />
+            <CardIcon name={item.lordicon} fallback={item.icon} size={44} />
           ) : (
             <Icon name={item.icon} className="text-[1.375rem]! text-signal-orange" />
           )}
@@ -365,7 +369,7 @@ function Slide({ item, face, rise, active }: { item: ReelItem; face: string; ris
   return (
     <div className="reel-slide">
       {/* The caption: the symbol and name, then the title, the text and the actions. */}
-      <div {...r(0)} className={cn(GLASS, "reel-caption flex flex-col gap-3 rounded-2xl", r(0).className)}>
+      <div {...r(0)} className={cn(BARE, "reel-caption flex flex-col gap-3 rounded-2xl", r(0).className)}>
         <h3 lang={lang} className={cn("text-[clamp(1.375rem,1.05rem+1.1cqi,1.625rem)] leading-[1.12] font-bold tracking-tight text-balance", face, item.bangla && "leading-tight")}>
           {item.title}
         </h3>
@@ -375,7 +379,7 @@ function Slide({ item, face, rise, active }: { item: ReelItem; face: string; ris
 
       {/* The evidence, a narrower pane of its own. */}
       {item.proof && (
-        <div {...r(1)} role="group" aria-label={item.proof.heading} className={cn(GLASS, "reel-stat rounded-2xl", r(1).className)}>
+        <div {...r(1)} role="group" aria-label={item.proof.heading} className={cn(BARE, "reel-stat rounded-2xl max-sm:hidden", r(1).className)}>
           {item.proof.render(active)}
         </div>
       )}

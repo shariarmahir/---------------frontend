@@ -60,8 +60,8 @@ export function ReviewsSection() {
       <div className="mx-auto max-w-384 px-gutter-x">
         <SectionHeading
           tone="dark"
-          title={<span id="reviews-title">What Our Partners Say</span>}
-          lead="Clinics, pharmacies, universities and programmes we build alongside, in their own words."
+          title={<span id="reviews-title">What Partners Say</span>}
+          lead="In the words of those we build with."
         />
       </div>
 
@@ -228,8 +228,9 @@ function ReviewCard({ review, index, open, onOpen, onToggle }: { review: Review;
         >
           <div className="min-h-0 overflow-hidden">
             <blockquote className="xl:w-[min(36rem,calc((100cqw-(var(--n)-1)*1rem-var(--n)*3rem)*2.6/(1.6+var(--n))))] xl:pt-4">
-              <Icon name="format_quote" className={cn("text-3xl", look.accent)} />
-              <p className={cn("mt-1 font-grotesk text-lg leading-snug font-semibold text-pretty sm:text-xl", look.quote)}>{review.quote}</p>
+              <Icon name="format_quote" className={cn("text-2xl sm:text-3xl", look.accent)} />
+              {/* A phone reads the quote as body text (16px, medium, open leading); from sm it is a display quote. */}
+              <p className={cn("mt-1 font-grotesk text-base leading-relaxed font-medium text-pretty sm:text-xl sm:leading-snug sm:font-semibold", look.quote)}>{review.quote}</p>
             </blockquote>
           </div>
         </div>
