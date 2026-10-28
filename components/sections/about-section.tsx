@@ -22,6 +22,7 @@ export function AboutSection() {
         </>
       }
       lead={ABOUT_SUMMARY}
+      litLead
       art={<MapRepair />}
     >
       <Link href="#kandari-profile" className={btn.gold}>

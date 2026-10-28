@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { Icon } from "@/components/ui/icon";
+import { ScrollLit } from "@/components/ui/scroll-lit";
 import { btn } from "@/components/ui/section-kit";
 import type { Value } from "@/data/about";
 import { cn } from "@/lib/utils";
@@ -29,6 +30,7 @@ export function RepairBand({
   card = false,
   title,
   lead,
+  litLead = false,
   art,
   children,
 }: {
@@ -36,6 +38,8 @@ export function RepairBand({
   card?: boolean;
   title: ReactNode;
   lead: string;
+  /** The lead's words light up as it scrolls into view (the home page). */
+  litLead?: boolean;
   /** A picture in place of the round photograph (the home page's map). */
   art?: ReactNode;
   children: ReactNode;
@@ -72,7 +76,11 @@ export function RepairBand({
             {title}
           </h2>
           {/* Never clamped: it ends on the Golden Two Hours, the brand's lead hook (CLAUDE.md). */}
-          <p className={cn("max-w-2xl font-sans text-base leading-relaxed text-white/80 sm:text-lg", card && "2xl:max-w-3xl 2xl:text-xl")}>{lead}</p>
+          {litLead ? (
+            <ScrollLit text={lead} className={cn("max-w-2xl font-sans text-base leading-relaxed text-white/80 sm:text-lg", card && "2xl:max-w-3xl 2xl:text-xl")} />
+          ) : (
+            <p className={cn("max-w-2xl font-sans text-base leading-relaxed text-white/80 sm:text-lg", card && "2xl:max-w-3xl 2xl:text-xl")}>{lead}</p>
+          )}
           <div className={cn("mt-2 flex flex-wrap gap-3", card && "max-sm:w-full max-sm:flex-col max-sm:*:w-full")}>{children}</div>
         </div>
 

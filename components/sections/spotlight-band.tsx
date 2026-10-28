@@ -269,18 +269,20 @@ export function SpotlightBand() {
                 isLeaving && "is-leaving",
               )}
             >
-              <Slide slide={slide} eager={i <= 1} />
+              {/* Only the slide on screen loads at once; the next is in the band's box, so it still loads lazily ahead of its turn. */}
+              <Slide slide={slide} eager={i === 0} />
             </div>
           );
         })}
       </div>
 
+      {/* Unseen until reached by keyboard (Mahir, 2026-10-29: no button on the band); a pointer holds the slide by hovering. */}
       {count > 1 && (
         <button
           type="button"
           onClick={() => setChoice(playing ? "pause" : "play")}
           aria-label={playing ? "Pause announcements" : "Play announcements"}
-          className="absolute right-1 bottom-1 z-10 grid size-11 place-items-center rounded-full text-white/65 transition-colors hover:text-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none sm:right-3"
+          className="absolute right-1 bottom-1 z-10 grid size-11 place-items-center rounded-full text-white/65 opacity-0 pointer-events-none transition-[color,opacity] hover:text-signal-orange focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none sm:right-3"
         >
           <Icon name={playing ? "pause" : "play_arrow"} className="text-xl" />
         </button>

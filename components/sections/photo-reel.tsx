@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { AnimatedIcon } from "@/components/ui/animated-icon";
 import { Icon } from "@/components/ui/icon";
 import type { Photo } from "@/data/bangladesh";
 import { cn } from "@/lib/utils";
@@ -50,7 +51,10 @@ export interface ReelItem {
   id: string;
   /** The tile's label and the caption's first line. */
   name: string;
+  /** Material Symbols name: the tile's symbol, and the fallback while its animation loads. */
   icon: string;
+  /** An animated Lordicon in `public/lordicon/` (file name without `.json`), played when the card is pointed at. */
+  lordicon?: string;
   look: CharterLook;
   art: ReelArt;
   title: ReactNode;
@@ -63,6 +67,9 @@ export interface ReelItem {
   /** Bangla name and title (Hind Siliguri) instead of Sora. */
   bangla?: boolean;
 }
+
+/** The tile icons in the site's colours: white lines, gold accents. */
+const ICON_COLORS = { primary: "#ffffff", secondary: "#e4b027" };
 
 /** The expanding row from 90rem (below it the open card is too narrow for its slide); below it, the swipe reel. */
 const ROW_MQ = "(min-width: 90rem)";
@@ -322,7 +329,11 @@ function ReelCard({ item, open, row, onOpen }: { item: ReelItem; open: boolean; 
             "flex flex-col items-start gap-2.5 rounded-2xl p-3 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:-translate-y-1 motion-reduce:transition-none",
           )}
         >
-          <Icon name={item.icon} className="text-[1.375rem]! text-signal-orange" />
+          {item.lordicon ? (
+            <AnimatedIcon name={item.lordicon} fallback={item.icon} size={32} trigger="hover" target="li" colors={ICON_COLORS} />
+          ) : (
+            <Icon name={item.icon} className="text-[1.375rem]! text-signal-orange" />
+          )}
           <span lang={lang} className={cn("text-sm leading-tight font-bold", face)}>{item.name}</span>
         </span>
       </button>
@@ -355,10 +366,6 @@ function Slide({ item, face, rise, active }: { item: ReelItem; face: string; ris
     <div className="reel-slide">
       {/* The caption: the symbol and name, then the title, the text and the actions. */}
       <div {...r(0)} className={cn(GLASS, "reel-caption flex flex-col gap-3 rounded-2xl", r(0).className)}>
-        <p lang={lang} className={cn("flex items-center gap-2 text-sm font-semibold text-white/80", face)}>
-          <Icon name={item.icon} className="text-xl! text-signal-orange" />
-          {item.name}
-        </p>
         <h3 lang={lang} className={cn("text-[clamp(1.375rem,1.05rem+1.1cqi,1.625rem)] leading-[1.12] font-bold tracking-tight text-balance", face, item.bangla && "leading-tight")}>
           {item.title}
         </h3>
@@ -368,9 +375,8 @@ function Slide({ item, face, rise, active }: { item: ReelItem; face: string; ris
 
       {/* The evidence, a narrower pane of its own. */}
       {item.proof && (
-        <div {...r(1)} className={cn(GLASS, "reel-stat rounded-2xl", r(1).className)}>
-          <p className="text-xs font-semibold text-white/75">{item.proof.heading}</p>
-          <div className="mt-3">{item.proof.render(active)}</div>
+        <div {...r(1)} role="group" aria-label={item.proof.heading} className={cn(GLASS, "reel-stat rounded-2xl", r(1).className)}>
+          {item.proof.render(active)}
         </div>
       )}
     </div>

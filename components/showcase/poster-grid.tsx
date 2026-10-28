@@ -4,40 +4,42 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { FilmFrame, type FilmId } from "@/components/films/motion-film";
-import { btn } from "@/components/ui/section-kit";
+import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import { MediaReel } from "./media-reel";
 import { PosterScene, type PosterSceneKind } from "./poster-scenes";
 
 /*
- * The home page's product and service cards: four across the full width
- * of the screen, laid out and lifted like the Pixel-Map cards, cut like
- * the team portraits (the picture melting into a solid field, the name and
- * one line on the colour below). On hover, focus or tap the face fades and
- * a panel in the card's own solid colour fades up in its place with the full
- * name, the promise and "Explore" — one text at a time, never both.
+ * The home page's product and service cards, set like the featured-project
+ * cards of kudos.framer.media (Mahir, 2026-10-29): the whole card is one
+ * link, a tall framed picture in its own field (navy, cobalt or ink) with a
+ * skeleton shimmer until the photograph arrives, and under it, on the black
+ * ground, the name with its number, one line, and from lg the promise. On
+ * hover or focus the picture eases in closer, the frame takes a gold edge
+ * and a bare gold arrow rises in its corner; the name turns gold.
  */
 
-/** The three fields of the palette (Mahir, 2026-10-18): navy, cobalt, ink; gold only for titles on cobalt and actions. */
-const FACES = {
-  navy: { card: "bg-bdnavy-900 text-white ring-1 ring-white/12 ring-inset", field: "var(--color-bdnavy-900)", glow: "var(--color-bdnavy-400)", sub: "text-white/80", title: "" },
-  cobalt: { card: "bg-cobalt text-white ring-1 ring-white/12 ring-inset", field: "var(--color-cobalt)", glow: "var(--color-cobalt)", sub: "text-white/80", title: "text-signal-orange" },
-  ink: { card: "bg-text-primary text-white ring-1 ring-white/12 ring-inset", field: "var(--color-text-primary)", glow: "var(--color-signal-orange)", sub: "text-white/80", title: "" },
+/** The three fields of the palette (Mahir, 2026-10-18): navy, cobalt, ink. */
+const FIELDS = {
+  navy: "bg-bdnavy-900",
+  cobalt: "bg-cobalt",
+  ink: "bg-text-primary",
 } as const;
 
-export type PosterFace = keyof typeof FACES;
+export type PosterFace = keyof typeof FIELDS;
 
 export interface PosterItem {
   id: string;
   /** The list item's id, an anchor other pages link to. */
   anchorId?: string;
+  /** The field behind the picture (it shows around films and while a photograph loads). */
   face: PosterFace;
-  /** The face: a big name and one short line. */
+  /** The big name and one short line under the picture. */
   title: ReactNode;
   tagline: string;
-  /** The panel: the full name (and as plain text, for the link's label), the promise, where "Explore" goes. */
-  name: ReactNode;
+  /** The name as plain text, for the link's label. */
   nameText: string;
+  /** The promise, shown from lg. */
   pitch: string;
   href: string;
   /** The photograph; left out when a film fills the picture instead. */
@@ -46,19 +48,19 @@ export interface PosterItem {
   film3d?: FilmId;
   /** A motion layer: drawn over the photograph, or the film itself. */
   scene?: PosterSceneKind | "media-reel";
-  /** The panel's foot line: a photo credit or the stage. */
+  /** The foot line: the category and stage. */
   note?: string;
 }
 
 export function PosterGrid({ items, label }: { items: PosterItem[]; label: string }) {
   return (
-    // Two by two on a tablet held upright; four across from lg, and already from md on a
+    // Two by two on phones and upright tablets; four across from lg, and already from md on a
     // landscape screen (a turned tablet or phone), where two rows would not fit the height.
-    <ul aria-label={label} className="grid grid-cols-2 gap-3 sm:gap-5 md:max-lg:landscape:grid-cols-4 md:max-lg:landscape:gap-4 lg:grid-cols-4">
-      {items.map((item) => (
-        // The scroll reveal sits on the <li> so its transform never fights the card's hover lift.
+    <ul aria-label={label} className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 sm:gap-y-10 md:max-lg:landscape:grid-cols-4 lg:grid-cols-4">
+      {items.map((item, i) => (
+        // The scroll reveal sits on the <li>, so its rise never fights the card's own motion.
         <li key={item.id} id={item.anchorId} className="story-reveal flex scroll-mt-header lg:scroll-mt-header-lg">
-          <PosterCard item={item} />
+          <PosterCard item={item} index={i} />
         </li>
       ))}
     </ul>
@@ -79,113 +81,89 @@ function useOnScreen<T extends Element>() {
   return [ref, on] as const;
 }
 
+const EASE = "duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none";
+
 // No `priority`: the grids sit far below the fold, and preloading them would compete with the hero's poster.
-function PosterCard({ item }: { item: PosterItem }) {
-  const face = FACES[item.face];
-  const [ref, onScreen] = useOnScreen<HTMLElement>();
-  // A touch screen has no hover: a tap on the card opens the panel instead.
-  const [open, setOpen] = useState(false);
-  const tap = () => {
-    if (window.matchMedia("(hover: none)").matches) setOpen((o) => !o);
-  };
+function PosterCard({ item, index }: { item: PosterItem; index: number }) {
+  const [ref, onScreen] = useOnScreen<HTMLAnchorElement>();
+  // A photograph shows the skeleton until it has loaded; a film or the reel draws at once.
+  const [loaded, setLoaded] = useState(!item.image);
   const film = item.scene === "media-reel";
   const scene = item.scene === "media-reel" ? undefined : item.scene;
 
   return (
-    <article
+    <Link
       ref={ref}
-      data-open={open}
+      href={item.href}
+      aria-label={`${item.nameText}: ${item.tagline}`}
       data-paused={!onScreen}
-      onClick={tap}
-      style={{ "--field": face.field, "--glow": face.glow } as CSSProperties}
-      className={cn(
-        "ms-root group relative flex w-full flex-col overflow-hidden rounded-2xl sm:rounded-3xl",
-        // The Pixel-Map cards' lift: up a little, a glow in the card's own colour beneath.
-        "[-webkit-tap-highlight-color:transparent] touch-manipulation shadow-sm transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
-        "hover:-translate-y-2 hover:shadow-[0_28px_48px_-22px_var(--glow)] data-[open=true]:-translate-y-2 data-[open=true]:shadow-[0_28px_48px_-22px_var(--glow)]",
-        "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
-        face.card,
-      )}
+      className="ms-root group flex w-full flex-col rounded-2xl [-webkit-tap-highlight-color:transparent] focus-visible:outline-none sm:rounded-3xl"
     >
-      {/* The picture, melting into the field at its foot like the team portraits. */}
-      {/* Two-up on upright tablets (640–1023) the picture runs landscape, so two rows still fit about one screen. */}
-      <div className={cn("relative aspect-[1/0.92] shrink-0 overflow-hidden sm:max-lg:aspect-4/3 md:max-lg:landscape:aspect-[1/0.92]", (film || item.film3d) && "bg-text-primary")}>
-        {item.film3d ? <FilmFrame film={item.film3d} className="absolute inset-0" /> : null}
-        {item.image && (
-          <Image
-            src={item.image.src}
-            alt={item.image.alt}
-            fill
-            sizes="(min-width: 1024px) 25vw, 50vw"
-            style={{ objectPosition: item.image.position }}
-            className={cn(
-              "object-cover transition-[scale] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100",
-              scene && "ms-zoom",
-            )}
-          />
-        )}
-        {/* Drawn taller than the picture, so the film's caption strip falls below the crop. */}
-        {film && (
-          <div className="absolute inset-x-0 top-0 h-[124%]">
-            <MediaReel />
-          </div>
-        )}
-        {scene && <PosterScene kind={scene} />}
-        {/* Solid well before the picture's foot, so no seam shows behind the name that overlaps it. */}
-        <div aria-hidden className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-b from-transparent via-(--field) via-80% to-(--field)" />
-      </div>
-
-      <div className="@container relative -mt-4 flex flex-1 flex-col px-3 pb-4 transition-opacity duration-200 group-focus-within:opacity-0 group-hover:opacity-0 group-data-[open=true]:opacity-0 sm:px-6 sm:pb-6 motion-reduce:transition-none">
-        <p
-          // The line height comes after the size: tailwind-merge drops a leading-* that precedes a text-* size.
-          className={cn(
-            "font-extrabold tracking-tight",
-            face.title,
-            // From sm the name scales with the card (13% of its text column, at most 30px), so a long
-            // word like DEVELOPMENT never clips in a narrow four-up card.
-            typeof item.title === "string" && "font-grotesk text-lg sm:text-[min(1.875rem,13cqi)]",
-            "leading-[0.95]",
-          )}
-        >
-          {item.title}
-        </p>
-        <p className={cn("mt-1.5 font-grotesk text-xs leading-snug font-semibold sm:mt-2 sm:text-sm", face.sub)}>{item.tagline}</p>
-      </div>
-
-      {/* The panel, on hover, focus or tap: the card's own solid colour over the whole card.
-          Hidden it only ignores the pointer, so its link can still take keyboard focus. */}
+      {/* The picture in its frame. */}
       <div
         className={cn(
-          "pointer-events-none absolute inset-0 flex translate-y-3 flex-col justify-center bg-(--field) p-4 text-white opacity-0 transition-[translate,opacity] duration-300 ease-out sm:p-6 md:max-lg:landscape:p-4",
-          "group-focus-within:pointer-events-auto group-hover:pointer-events-auto group-hover:delay-100 group-data-[open=true]:pointer-events-auto",
-          // From sm the panel is a size container: the name scales with its width, and on a
-          // short card the promise drops whole lines (and the foot note goes) instead of
-          // being cut mid-line under the button.
-          "sm:[container-type:size]",
-          "group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:translate-y-0 group-hover:opacity-100 group-data-[open=true]:translate-y-0 group-data-[open=true]:opacity-100",
-          "motion-reduce:transition-none",
+          "relative aspect-4/5 overflow-hidden rounded-2xl sm:rounded-3xl",
+          // The edge is drawn on a layer above the picture, so a film filling the frame never hides it.
+          "after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:ring-1 after:ring-white/12 after:ring-inset after:transition-shadow after:duration-700",
+          "group-hover:after:ring-signal-orange/70 group-focus-visible:after:ring-2 group-focus-visible:after:ring-signal-orange",
+          FIELDS[item.face],
         )}
       >
-        {/* From sm the name scales with the panel (13% of its width, at most 24px), so the
-            wordmark, which never wraps, fits a narrow four-up card. */}
-        <h3 className="line-clamp-3 font-grotesk text-lg leading-tight font-bold wrap-break-word sm:shrink-0 sm:text-[min(1.5rem,13cqi)] md:max-lg:landscape:line-clamp-2">{item.name}</h3>
-        <p
-          className={cn(
-            "mt-2 line-clamp-5 text-xs leading-relaxed text-white/80 sm:mt-3 sm:text-sm",
-            "sm:[@container(15.75rem<=height<17.25rem)]:line-clamp-4 sm:[@container(14.25rem<=height<15.75rem)]:line-clamp-3 sm:[@container(height<14.25rem)]:line-clamp-2",
+        {!loaded && <span aria-hidden className="skeleton-shimmer absolute inset-0" />}
+
+        {/* Everything drawn eases in closer together (scale, so the scenes' own transforms stay theirs). */}
+        <div className={cn("absolute inset-0 transition-[scale] group-hover:scale-[1.06] group-focus-visible:scale-[1.06] motion-reduce:group-hover:scale-100", EASE)}>
+          {item.film3d ? <FilmFrame film={item.film3d} className="absolute inset-0" /> : null}
+          {item.image && (
+            <Image
+              src={item.image.src}
+              alt={item.image.alt}
+              fill
+              sizes="(min-width: 1024px) 25vw, 50vw"
+              onLoad={() => setLoaded(true)}
+              style={{ objectPosition: item.image.position } as CSSProperties}
+              className={cn("object-cover transition-opacity duration-700 ease-out", loaded ? "opacity-100" : "opacity-0", scene && "ms-zoom")}
+            />
           )}
-        >
-          {item.pitch}
-        </p>
-        <Link
-          href={item.href}
-          className={cn(btn.gold, "mt-4 w-fit sm:mt-5")}
-        >
-          Explore<span className="sr-only"> {item.nameText}</span>
-          <span aria-hidden>→</span>
-        </Link>
-        {item.note ? <p className="mt-4 hidden text-xs leading-snug text-white/65 sm:block sm:[@container(height<19.5rem)]:hidden">{item.note}</p> : null}
+          {/* Drawn taller than the picture, so the film's caption strip falls below the crop. */}
+          {film && (
+            <div className="absolute inset-x-0 top-0 h-[124%]">
+              <MediaReel />
+            </div>
+          )}
+          {scene && <PosterScene kind={scene} />}
+        </div>
+
+        {/* A bare gold arrow rising into the corner on hover or focus (no disc, Mahir 2026-10-17). */}
+        <Icon
+          name="arrow_outward"
+          className={cn(
+            "absolute right-3 bottom-3 text-3xl! text-signal-orange opacity-0 drop-shadow-[0_1px_2px_rgb(0_0_0/0.6)] sm:right-5 sm:bottom-5 sm:text-4xl!",
+            "translate-y-2 transition-[opacity,translate] group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100",
+            EASE,
+          )}
+        />
       </div>
-    </article>
+
+      {/* The words, on the black ground under the picture. */}
+      <div className="@container mt-4 flex flex-1 flex-col sm:mt-5">
+        <div className="flex items-baseline justify-between gap-3">
+          <h3
+            className={cn(
+              "min-w-0 font-grotesk leading-tight font-bold tracking-tight text-white transition-colors duration-300 group-hover:text-signal-orange",
+              typeof item.title === "string" && "text-lg sm:text-2xl",
+            )}
+          >
+            {item.title}
+          </h3>
+          <span aria-hidden className="shrink-0 text-xs font-semibold text-white/65 tabular-nums">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+        </div>
+        <p className="mt-1.5 font-grotesk text-xs leading-snug font-semibold text-white/80 sm:text-sm">{item.tagline}</p>
+        <p className="mt-3 mb-4 hidden text-sm leading-relaxed text-white/65 lg:line-clamp-3">{item.pitch}</p>
+        {item.note ? <p className="hidden border-t border-white/12 pt-3 text-xs text-white/65 lg:mt-auto lg:block">{item.note}</p> : null}
+      </div>
+    </Link>
   );
 }

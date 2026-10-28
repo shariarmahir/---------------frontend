@@ -371,6 +371,22 @@
   html {
     @apply font-sans scroll-smooth;
     overflow-x: clip;
+    /* The page's own scrollbar: a thin gold thumb on a clear track (Mahir,
+       2026-10-29). Chrome, Edge and Firefox read these two; Safari takes
+       the ::-webkit-scrollbar rules below. */
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--color-signal-orange) 65%, transparent) transparent;
+  }
+  html::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  html::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  html::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: color-mix(in oklab, var(--color-signal-orange) 65%, transparent);
   }
   section[id] {
     @apply scroll-mt-header lg:scroll-mt-header-lg;
@@ -830,6 +846,15 @@
     width: min(38cqw, 44rem);
   }
 }
+/* The lockup waits for its measured place (hero-film.tsx sets
+   [data-placed] on the band), then fades in there, so it never shows at the
+   fallback spot and jumps. Without the script it shows after a beat. */
+.hero-band:not([data-placed]) .hero-lockup {
+  opacity: 0;
+  animation: hero-lockup-show 0s 1.5s forwards;
+}
+.hero-lockup { transition: opacity 0.6s ease-out; }
+@keyframes hero-lockup-show { to { opacity: 1; } }
 .hero-mark { width: 82%; }
 /* The claim set to the lockup's width: its line is 21.48em in Sora
    extrabold at this tracking, 21.7 with the outline. A phone's lockup is
@@ -1018,12 +1043,6 @@
 }
 
 @supports (animation-timeline: view()) {
-  .story-reveal {
-    animation: story-rise linear both;
-    animation-timeline: view();
-    animation-range: entry 0% entry 45%;
-  }
-
   .story-draw {
     stroke-dasharray: 1;
     animation: story-draw linear both;
@@ -1032,19 +1051,18 @@
   }
 }
 
-/* Same rise for browsers without view timelines: a small script marks the
-   root and adds .in-view on scroll (components/ui/reveal-fallback.tsx). */
-@supports not (animation-timeline: view()) {
-  .reveal-js .story-reveal {
+/* Content rises in once as it first scrolls into view: a small script marks
+   the root and adds .in-view (components/ui/reveal-fallback.tsx). Time-based,
+   not scroll-linked, so it never trembles under the smooth scroll or fades
+   back out on the way up. Without the script nothing is hidden. The rise
+   fills backwards only, so once it ends the element's own hover transforms
+   and transitions are untouched. */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-js .story-reveal:not(.in-view) {
     opacity: 0;
-    transform: translateY(28px);
-    transition:
-      opacity 0.7s ease-out,
-      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .reveal-js .story-reveal.in-view {
-    opacity: 1;
-    transform: none;
+  .reveal-js .story-reveal.rising {
+    animation: story-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) backwards;
   }
 }
 
@@ -2999,4 +3017,83 @@ html:has(.hq)::-webkit-scrollbar-button,
   .podium-rise {
     animation: none;
   }
+}
+
+/* ── Loading and pointer (Mahir, 2026-10-29) ─────────────────────────────
+   Skeletons: a faint white film with a light sweeping across it, for
+   anything still loading (components/ui/preloader.tsx, the poster cards).
+   Still under reduced motion. */
+@keyframes skeleton-sweep {
+  from { translate: -100% 0; }
+  to { translate: 100% 0; }
+}
+.skeleton-block {
+  position: relative;
+  overflow: hidden;
+  background-color: rgb(255 255 255 / 0.05);
+}
+.skeleton-block::after,
+.skeleton-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 20%, rgb(255 255 255 / 0.07) 50%, transparent 80%);
+  translate: -100% 0;
+}
+.skeleton-shimmer { overflow: hidden; }
+@media (prefers-reduced-motion: no-preference) {
+  .skeleton-block::after,
+  .skeleton-shimmer::after {
+    animation: skeleton-sweep 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+}
+
+/* The home page's first beat: lifts with a fade once the page has loaded
+   (the script sets [data-leaving]); without the script, after 4s anyway. */
+@keyframes preloader-lift { to { opacity: 0; visibility: hidden; } }
+@keyframes preloader-fill { from { scale: 0 1; } }
+.preloader {
+  transition: opacity 0.6s ease, visibility 0.6s;
+  animation: preloader-lift 0.6s 4s forwards;
+}
+.preloader[data-leaving] { opacity: 0; visibility: hidden; }
+.preloader-bar {
+  scale: 0.9 1;
+  animation: preloader-fill 2.2s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+/* The pointer's gold ring (components/ui/cursor.tsx): it opens and takes a
+   faint gold fill over anything clickable, and presses in on a click. */
+.cursor-ring {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  will-change: translate;
+}
+.cursor-ring[data-on] { opacity: 1; }
+.cursor-ring-shape {
+  width: 2.25rem;
+  height: 2.25rem;
+  margin: -1.125rem 0 0 -1.125rem;
+  border-radius: 9999px;
+  border: 1.5px solid color-mix(in oklab, var(--color-signal-orange) 70%, transparent);
+  transition:
+    scale 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+.cursor-ring[data-over] .cursor-ring-shape {
+  scale: 1.6;
+  border-color: var(--color-signal-orange);
+  background-color: color-mix(in oklab, var(--color-signal-orange) 14%, transparent);
+}
+.cursor-ring[data-down] .cursor-ring-shape { scale: 0.8; }
+@media not ((hover: hover) and (pointer: fine)) {
+  .cursor-ring { display: none; }
+}
+
+/* Words lit by the scroll (components/ui/scroll-lit.tsx): `--lit` runs 0 → 1
+   across the paragraph's passage; word `--i` of `--n` lights in its turn. */
+[data-lit] .scroll-lit-word {
+  opacity: clamp(0.22, calc(var(--lit, 0) * (var(--n) + 3) - var(--i)), 1);
+  transition: opacity 0.2s linear;
 }

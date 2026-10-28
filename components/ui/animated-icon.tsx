@@ -2,8 +2,8 @@ import { LordIcon } from "@lordicon/react";
 import { Icon } from "@/components/ui/icon";
 
 /**
- * An animated Lordicon (the "Doodle Color" set), loaded from
- * `/public/lordicon/<name>.json`.
+ * An animated Lordicon (the free "Wired Lineal" set, recoloured with
+ * `colors`), loaded from `/public/lordicon/<name>.json`.
  *
  * Adding one:
  *   1. On lordicon.com pick the icon, set its colours and stroke, and

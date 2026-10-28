@@ -56,6 +56,8 @@ function toItem(promo: Promo, onRecord: () => void): ReelItem {
     id: `promo-${promo.id}`,
     name: promo.label,
     icon: PROMO_ICON[promo.id] ?? "arrow_forward",
+    // Each way to act has its animation in public/lordicon/, named by its id.
+    lordicon: PROMO_ICON[promo.id] ? promo.id : undefined,
     look: FIELD_LOOKS[promo.field],
     art: reelArt,
     title: promo.title,

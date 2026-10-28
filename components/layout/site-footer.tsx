@@ -5,6 +5,16 @@ import { SignalSeam, btn } from "@/components/ui/section-kit";
 import { NAZRUL_MOTTO } from "@/data/navigation";
 import { cn } from "@/lib/utils";
 
+/** The site's own pages, as the footer's large index (after kudos.framer.media's footer). */
+const INDEX = [
+  { label: "Bangladesh", href: "/bangladesh" },
+  { label: "Products", href: "/products" },
+  { label: "Research", href: "/research" },
+  { label: "নাগরিক দায়িত্ব", href: "/nagorik" },
+  { label: "About us", href: "/about" },
+  { label: "Team", href: "/team" },
+];
+
 const COLUMNS = [
   {
     title: "Products",
@@ -19,11 +29,10 @@ const COLUMNS = [
   {
     title: "Company",
     links: [
-      { label: "About us", href: "/about" },
       { label: "The Pixel-Map", href: "/#pixel-map" },
       { label: "Research & Labs", href: "/#rd-labs" },
       { label: "Innovation Drive", href: "/#innovation" },
-      { label: "Team", href: "/team" },
+      { label: "R&D Fellowship", href: "/team/fellowship" },
       { label: "Data Sources", href: "/#data-sources" },
     ],
   },
@@ -61,18 +70,21 @@ const RESEARCH_COLUMNS = [
   },
 ];
 
-const LINK =
-  "rounded-md text-white/80 transition-colors duration-200 hover:text-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none";
+const FOCUS = "focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none";
+const LINK = cn("rounded-md text-white/80 transition-colors duration-200 hover:text-signal-orange", FOCUS);
 /** Column links: full-height 44px rows below lg, so each is an easy tap; plain inline text from lg. */
 const ROW_LINK = cn(LINK, "flex min-h-11 items-center lg:inline lg:min-h-0");
 const HEADING = "font-grotesk text-sm font-bold text-signal-orange";
+const bn = (text: string) => /[ঀ-৿]/.test(text);
 
 /**
- * Footer: the header's navy field closing the page, with the header's gold
- * seam (a hairline with a light running along it) on its top edge. The
- * motto rides the one cobalt card, in gold, with the gold button; below it the brand, two link columns and the
- * release list, gold headings over white links; then the rights line, and
- * the Bangla name drawn as a fine gold outline, cut by the page's edge.
+ * Footer: the header's navy field closing the page, under the header's gold
+ * seam. Laid out after kudos.framer.media's footer: a statement in two
+ * tones (the claim in white over its quieter connective words) with the
+ * motto and the two actions; beside it the site's pages as a large
+ * numbered index. Under a hairline, the brand, the link columns and the
+ * newsletter; then the rights line, and the Bangla name drawn large in a
+ * fine gold line, cut by the page's edge.
  * The bottom row keeps clear of the floating AI button over its right end.
  * With `research`, the library's columns join the company's and the email
  * bar moves under the brand, so /research closes on this one footer.
@@ -80,7 +92,7 @@ const HEADING = "font-grotesk text-sm font-bold text-signal-orange";
 export function SiteFooter({ research = false }: { research?: boolean }) {
   const columns = research ? [...RESEARCH_COLUMNS, ...COLUMNS] : COLUMNS;
   const subscribe = (
-    <div className={cn("flex flex-col gap-4", !research && "col-span-2 md:col-span-1 md:col-start-1 xl:col-start-auto")}>
+    <div className={cn("flex flex-col gap-4", !research && "col-span-2 md:col-span-1")}>
       <h2 className={HEADING}>Stay in the loop</h2>
       <p className="text-sm leading-relaxed text-white/80">New research and product releases, by email.</p>
       {/* Subscribing is a Kandari Profile: the email carries over to sign-up. */}
@@ -92,6 +104,8 @@ export function SiteFooter({ research = false }: { research?: boolean }) {
           id="bulletin-email"
           name="email"
           type="email"
+          required
+          maxLength={254}
           autoComplete="email"
           placeholder="you@example.com"
           className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm text-white placeholder:text-white/65 focus:outline-none"
@@ -102,38 +116,75 @@ export function SiteFooter({ research = false }: { research?: boolean }) {
       </form>
     </div>
   );
+
   return (
     <footer className="relative isolate z-20 overflow-hidden bg-bdnavy-900 text-white">
       <SignalSeam className="top-0" />
-      <div className="mx-auto max-w-384 px-gutter-x pt-10 lg:pt-14">
-        <div className="mb-10 flex flex-col gap-4 rounded-3xl bg-cobalt p-5 text-signal-orange shadow-[0_30px_60px_-30px_rgb(0_0_0/0.8)] ring-1 ring-white/12 sm:mb-14 sm:gap-6 sm:p-8 md:flex-row md:items-center md:justify-between lg:px-10">
-          <p lang="bn" className="font-bengali text-xl leading-snug font-bold sm:text-2xl">
-            {NAZRUL_MOTTO}
-          </p>
-          <Link href="/#kandari-profile" className={cn(btn.gold, "shrink-0 self-start md:self-auto")}>
-            Join Kandari Profile
-            <Icon name="arrow_forward" className="text-base" />
-          </Link>
+      <div className="mx-auto max-w-384 px-gutter-x pt-12 lg:pt-20">
+        {/* The statement and the index. */}
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
+          <div className="flex flex-col items-start gap-6 lg:col-span-6 lg:gap-8">
+            <p className="max-w-xl font-grotesk text-2xl leading-tight font-bold tracking-tight text-balance text-white/65 sm:text-3xl lg:text-4xl lg:leading-[1.15]">
+              We repair <span className="text-white">Bangladesh</span> one pixel at a time, with{" "}
+              <span className="text-white">hardware, software and AI</span> built here, for{" "}
+              <span className="text-white">the people who live here</span>.
+            </p>
+            <p lang="bn" className="font-bengali text-xl leading-snug font-bold text-signal-orange sm:text-2xl">
+              {NAZRUL_MOTTO}
+            </p>
+            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+              <Link href="/#kandari-profile" className={btn.gold}>
+                Join Kandari Profile
+                <Icon name="arrow_forward" className="text-base" />
+              </Link>
+              <Link href="/about" className={btn.goldOutline}>
+                Read our story
+              </Link>
+            </div>
+          </div>
+
+          <nav aria-label="Site index" className="lg:col-span-5 lg:col-start-8">
+            <ol className="border-b border-white/12">
+              {INDEX.map((page, i) => (
+                <li key={page.href} className="border-t border-white/12">
+                  <Link
+                    href={page.href}
+                    className={cn(
+                      "group/index flex min-h-16 items-center gap-5 rounded-md py-3 transition-colors duration-300 hover:text-signal-orange sm:min-h-20",
+                      FOCUS,
+                    )}
+                  >
+                    <span className="w-6 shrink-0 text-xs font-semibold text-white/65 tabular-nums">{String(i + 1).padStart(2, "0")}</span>
+                    <span
+                      className={cn(
+                        "flex-1 font-grotesk text-2xl font-bold tracking-tight transition-[translate] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/index:translate-x-2 motion-reduce:transition-none motion-reduce:group-hover/index:translate-x-0 sm:text-3xl",
+                        bn(page.label) && "font-bengali",
+                      )}
+                    >
+                      {page.label}
+                    </span>
+                    <Icon
+                      name="arrow_outward"
+                      className="text-2xl text-signal-orange opacity-0 transition-[opacity,translate] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/index:opacity-100 group-focus-visible/index:opacity-100 max-lg:opacity-100 motion-reduce:transition-none"
+                    />
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          </nav>
         </div>
 
+        {/* The brand, the link columns and the newsletter. */}
         <div
           className={cn(
-            // Two columns from the phone up: the brand (and, off /research, the
-            // email bar) spans both, the link groups sit side by side. Off
-            // /research, tablets and small laptops (md) take three columns: the
-            // brand with the email bar under it, then the two link groups; from
-            // xl the email bar takes a fourth column of its own.
-            "grid grid-cols-2 gap-x-6 gap-y-8 sm:gap-10",
+            "mt-14 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-white/12 pt-10 sm:gap-10 lg:mt-20 lg:pt-14",
             research
-              ? "sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[minmax(0,2fr)_repeat(5,minmax(0,1fr))] lg:gap-10"
-              : "sm:grid-cols-2 md:grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_minmax(0,1fr)] xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.5fr)] xl:gap-12",
+              ? "md:grid-cols-3 lg:grid-cols-[minmax(0,2fr)_repeat(5,minmax(0,1fr))] lg:gap-10"
+              : "md:grid-cols-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.5fr)] xl:gap-12",
           )}
         >
           <div className={cn("col-span-2 flex flex-col gap-4 sm:gap-5", research ? "md:col-span-3 lg:col-span-1" : "md:col-span-1")}>
-            <Link
-              href="/"
-              className="w-fit rounded-lg focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
-            >
+            <Link href="/" className={cn("w-fit rounded-lg", FOCUS)}>
               <Image
                 src="/logo/kandari-logo.png"
                 alt="কাণ্ডারী-ল্যাব (Kandari Lab)"
@@ -159,7 +210,7 @@ export function SiteFooter({ research = false }: { research?: boolean }) {
           </div>
 
           {columns.map((col) => (
-            <nav key={col.title} aria-label={col.title} className={cn("flex min-w-0 flex-col gap-1 lg:gap-4", !research && "md:row-span-2 xl:row-span-1")}>
+            <nav key={col.title} aria-label={col.title} className="flex min-w-0 flex-col gap-1 lg:gap-4">
               <h2 className={HEADING}>{col.title}</h2>
               <ul className="flex flex-col text-sm lg:gap-2.5">
                 {col.links.map((link) => (
@@ -176,14 +227,16 @@ export function SiteFooter({ research = false }: { research?: boolean }) {
           {!research && subscribe}
         </div>
 
-        {/* `sm:pr-32`: the floating AI button sits over this row's right end, until the window is wide enough to leave it in the margin. */}
+        {/* `sm:pr-20`: the floating AI button sits over this row's right end, until the window is wide enough to leave it in the margin. */}
         <div className="mt-10 flex flex-col items-center justify-between gap-1 border-t border-white/12 py-4 text-xs text-white/65 sm:flex-row sm:gap-3 sm:py-5 sm:pr-20 lg:mt-14 min-[115rem]:pr-0">
           <p>© {new Date().getFullYear()} Kandari-Lab (কাণ্ডারী-ল্যাব). All rights reserved.</p>
-          {/* Temporary, for testing: opens Kandari HQ (members sign in there). Remove before launch. */}
-          <Link href="/hq" prefetch={false} className={cn(btn.goldOutline, "shrink-0 bg-bdnavy-900")}>
-            <Icon name="dashboard" className="text-base" />
-            Dashboard
-          </Link>
+          {/* The Lordicon credit is required by its free licence, so it shows on every screen. */}
+          <p>
+            Designed and built in Bangladesh · Animated icons by{" "}
+            <a href="https://lordicon.com/" target="_blank" rel="noopener noreferrer" className={cn(LINK, "text-white/65 underline-offset-2 hover:underline")}>
+              Lordicon
+            </a>
+          </p>
           <a href="#top" className={cn(LINK, "inline-flex min-h-11 items-center gap-1 px-2 font-semibold lg:min-h-0 lg:px-0")}>
             Back to top
             <Icon name="arrow_upward" className="text-base" />
@@ -191,12 +244,13 @@ export function SiteFooter({ research = false }: { research?: boolean }) {
         </div>
       </div>
 
-      {/* The name, drawn whole in a fine gold line under the footer. Set at 72
-          units and scaled by the viewBox, so it stays on the type scale. */}
-      <svg aria-hidden viewBox="0 0 390 92" className="pointer-events-none mx-auto mt-2 mb-6 block w-full max-w-384 px-gutter-x select-none lg:mb-10">
+      {/* The name, drawn large in a fine gold line and cut by the page's
+          bottom edge. Set at 72 units and scaled by the viewBox, so it stays
+          on the type scale. */}
+      <svg aria-hidden viewBox="0 0 390 70" className="pointer-events-none mx-auto block w-full max-w-384 px-gutter-x select-none">
         <text
           x="195"
-          y="70"
+          y="80"
           textAnchor="middle"
           fontSize="72"
           fontWeight="700"

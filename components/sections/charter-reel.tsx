@@ -129,6 +129,7 @@ function toItem(slide: CharterSlide): ReelItem {
     id: slide.id,
     name: topic.name,
     icon: topic.icon,
+    lordicon: slide.id,
     look: CHARTER_LOOKS[slide.id],
     art: { kind: "photo", photo, focus, lift },
     title: (

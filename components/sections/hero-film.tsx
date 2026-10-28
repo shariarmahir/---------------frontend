@@ -13,7 +13,6 @@ import { useEffect, useRef } from "react";
  */
 const SRC_4K = "/hero/hero-4k.mp4";
 const SRC_PHONE = "/hero/hero-phone.mp4";
-export const HERO_POSTER = "/hero/hero-poster.jpg";
 /** Width over height of the served frame (both copies). */
 const FRAME = 2;
 /**
@@ -24,6 +23,12 @@ const FRAME = 2;
 const PIN = { left: 0.156, top: 0.427, bottom: 0.495 };
 /** Where the frame is anchored vertically when a wide band crops it. */
 const FOCUS_Y = 0.42;
+/**
+ * The label draws itself in over the film's first second, while the poster
+ * (the band's backdrop) shows it whole. The film fades in over the poster
+ * only once the label holds, so it never vanishes and redraws on load.
+ */
+const LABEL_HOLDS_AT = 1.2;
 
 /**
  * The hero's film, looping, silent and with no controls (Mahir, 2026-10-28:
@@ -78,6 +83,8 @@ export function HeroFilm() {
       band.style.backgroundPosition = `${ox}px ${oy}px`;
       band.style.setProperty("--pin-x", `${Math.max(margin, x)}px`);
       band.style.setProperty("--pin-y", `${y}px`);
+      // The lockup shows once it stands in its measured place (globals.css, .hero-lockup).
+      band.dataset.placed = "";
     };
 
     frame();
@@ -101,6 +108,13 @@ export function HeroFilm() {
     video.preload = "auto";
     video.play().catch(() => {});
 
+    const reveal = () => {
+      if (video.currentTime < LABEL_HOLDS_AT) return;
+      video.dataset.live = "";
+      video.removeEventListener("timeupdate", reveal);
+    };
+    video.addEventListener("timeupdate", reveal);
+
     let inView = true;
     const io = new IntersectionObserver(
       ([entry]) => {
@@ -120,6 +134,7 @@ export function HeroFilm() {
     document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
+      video.removeEventListener("timeupdate", reveal);
       document.removeEventListener("visibilitychange", onVisibility);
       io.disconnect();
     };
@@ -127,15 +142,15 @@ export function HeroFilm() {
 
   return (
     <div ref={wrapRef} aria-hidden className="absolute inset-0 motion-reduce:hidden">
-      {/* Nothing is fetched until the effect above starts it (muted, so it may autoplay). */}
+      {/* Nothing is fetched until the effect above starts it (muted, so it may autoplay).
+          No poster of its own: the band's backdrop is the poster, and the film fades in over it. */}
       <video
         ref={videoRef}
-        poster={HERO_POSTER}
         muted
         loop
         playsInline
         preload="none"
-        className="hero-film absolute inset-0 size-full object-cover object-[50%_42%] max-sm:object-[20%_42%]"
+        className="hero-film absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-1000 ease-out data-live:opacity-100 object-[50%_42%] max-sm:object-[20%_42%]"
       >
         <source src={SRC_4K} media="(min-width: 768px)" type="video/mp4" />
         <source src={SRC_PHONE} type="video/mp4" />

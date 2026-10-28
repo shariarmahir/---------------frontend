@@ -2,6 +2,8 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { SmoothScroll } from "@/components/layout/smooth-scroll";
 import { SiteHeader } from "@/components/layout/site-header";
 import { AiWidget } from "@/components/ui/ai-widget";
+import { Cursor } from "@/components/ui/cursor";
+import { Preloader } from "@/components/ui/preloader";
 import { AboutSection } from "@/components/sections/about-section";
 import { AppsSection } from "@/components/sections/apps-section";
 import { CharterReel } from "@/components/sections/charter-reel";
@@ -37,6 +39,7 @@ import { SpotlightBand } from "@/components/sections/spotlight-band";
 export default function Home() {
   return (
     <>
+      <Preloader />
       <SmoothScroll />
       <SiteHeader />
       <main className="relative w-full bg-black pt-header lg:pt-header-lg">
@@ -66,6 +69,7 @@ export default function Home() {
       <SiteFooter />
       {/* Floating AI assistant — home screen only. */}
       <AiWidget />
+      <Cursor />
     </>
   );
 }
