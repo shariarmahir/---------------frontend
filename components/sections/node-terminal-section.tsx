@@ -69,7 +69,7 @@ export function NodeTerminalSection() {
             <ol className="flex flex-col">
               {STEPS.map((s) => (
                 <li key={s.title} className="group/step grid grid-cols-[auto_1fr] items-start gap-3 border-t border-white/10 py-3 last:border-b lg:gap-4 lg:py-4">
-                  <span className="grid size-11 place-items-center rounded-xl bg-black/25 text-signal-orange ring-1 ring-white/12 ring-inset lg:size-12 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/step:-rotate-6 motion-reduce:transition-none motion-reduce:group-hover/step:rotate-0">
+                  <span className="grid size-11 place-items-center lg:size-12 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/step:-rotate-6 motion-reduce:transition-none motion-reduce:group-hover/step:rotate-0">
                     <CardIcon name={s.lordicon} fallback={s.icon} size={32} />
                   </span>
                   <div className="min-w-0">

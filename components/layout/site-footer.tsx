@@ -1,19 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { CSSProperties } from "react";
+import { CardIcon } from "@/components/ui/card-icon";
 import { Icon } from "@/components/ui/icon";
 import { SignalSeam, btn } from "@/components/ui/section-kit";
 import { NAZRUL_MOTTO } from "@/data/navigation";
 import { cn } from "@/lib/utils";
 import { FooterFilm } from "./footer-film";
 
-/** The site's own pages, as the footer's large index (after kudos.framer.media's footer). */
+/** The site's own pages, as the footer's large index (after kudos.framer.media's footer), each with its animated icon (public/lordicon) like the page's cards. */
 const INDEX = [
-  { label: "Bangladesh", href: "/bangladesh" },
-  { label: "Products", href: "/products" },
-  { label: "Research", href: "/research" },
-  { label: "নাগরিক দায়িত্ব", href: "/nagorik" },
-  { label: "About us", href: "/about" },
-  { label: "Team", href: "/team" },
+  { label: "Bangladesh", href: "/bangladesh", lordicon: "bangladesh", icon: "map" },
+  { label: "Products", href: "/products", lordicon: "internet-of-things", icon: "inventory_2" },
+  { label: "Research", href: "/research", lordicon: "research", icon: "science" },
+  { label: "নাগরিক দায়িত্ব", href: "/nagorik", lordicon: "nagorik", icon: "balance" },
+  { label: "About us", href: "/about", lordicon: "vision", icon: "info" },
+  { label: "Team", href: "/team", lordicon: "media", icon: "groups" },
 ];
 
 const COLUMNS = [
@@ -83,7 +85,7 @@ const bn = (text: string) => /[ঀ-৿]/.test(text);
  * seam. Laid out after kudos.framer.media's footer: a statement in two
  * tones (the claim in white over its quieter connective words) with the
  * motto and the two actions; beside it the site's pages as a large
- * numbered index. Under a hairline, the brand, the link columns and the
+ * index. Under a hairline, the brand, the link columns and the
  * newsletter; then the rights line, and the hero's film looping across the
  * foot with a button for its sound (footer-film.tsx).
  * The bottom row keeps clear of the floating AI button over its right end.
@@ -145,8 +147,8 @@ export function SiteFooter({ research = false }: { research?: boolean }) {
           </div>
 
           <nav aria-label="Site index" className="lg:col-span-5 lg:col-start-8">
-            <ol className="border-b border-white/12">
-              {INDEX.map((page, i) => (
+            <ul className="border-b border-white/12">
+              {INDEX.map((page) => (
                 <li key={page.href} className="border-t border-white/12">
                   <Link
                     href={page.href}
@@ -155,7 +157,6 @@ export function SiteFooter({ research = false }: { research?: boolean }) {
                       FOCUS,
                     )}
                   >
-                    <span className="w-6 shrink-0 text-xs font-semibold text-white/65 tabular-nums">{String(i + 1).padStart(2, "0")}</span>
                     <span
                       className={cn(
                         "flex-1 font-grotesk text-2xl font-bold tracking-tight transition-[translate] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/index:translate-x-2 motion-reduce:transition-none motion-reduce:group-hover/index:translate-x-0 sm:text-3xl",
@@ -164,14 +165,24 @@ export function SiteFooter({ research = false }: { research?: boolean }) {
                     >
                       {page.label}
                     </span>
-                    <Icon
-                      name="arrow_outward"
-                      className="text-2xl text-signal-orange opacity-0 transition-[opacity,translate] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/index:opacity-100 group-focus-visible/index:opacity-100 max-lg:opacity-100 motion-reduce:transition-none"
-                    />
+                    {/* Each row's animated icon stands at its right edge; pointed at (or focused), it gives way to the
+                        arrow that says the row opens a page. A touch screen has no pointing, so its icons stay. */}
+                    <span aria-hidden className="relative grid size-11 shrink-0 place-items-center">
+                      <CardIcon
+                        name={page.lordicon}
+                        fallback={page.icon}
+                        size={44}
+                        className="transition-[opacity,scale] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/index:scale-75 group-hover/index:opacity-0 group-focus-visible/index:scale-75 group-focus-visible/index:opacity-0 motion-reduce:transition-none"
+                      />
+                      <Icon
+                        name="arrow_outward"
+                        className="absolute text-4xl! text-signal-orange opacity-0 transition-[opacity,translate] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] -translate-x-2 translate-y-2 group-hover/index:translate-x-0 group-hover/index:translate-y-0 group-hover/index:opacity-100 group-focus-visible/index:translate-x-0 group-focus-visible/index:translate-y-0 group-focus-visible/index:opacity-100 motion-reduce:transition-none"
+                      />
+                    </span>
                   </Link>
                 </li>
               ))}
-            </ol>
+            </ul>
           </nav>
         </div>
 
@@ -230,13 +241,28 @@ export function SiteFooter({ research = false }: { research?: boolean }) {
 
         {/* `sm:pr-20`: the floating AI button sits over this row's right end, until the window is wide enough to leave it in the margin. */}
         <div className="mt-10 flex flex-col items-center justify-between gap-1 border-t border-white/12 py-4 text-xs text-white/65 sm:flex-row sm:gap-3 sm:py-5 sm:pr-20 lg:mt-14 min-[115rem]:pr-0">
-          <p>© {new Date().getFullYear()} Kandari-Lab (কাণ্ডারী-ল্যাব). All rights reserved.</p>
-          {/* The Lordicon credit is required by its free licence, so it shows on every screen. */}
+          {/* The Lordicon credit is required by its free licence, so it stays on every screen, beside the rights line. */}
           <p>
-            Designed and built in Bangladesh · Animated icons by{" "}
+            © {new Date().getFullYear()} Kandari-Lab (কাণ্ডারী-ল্যাব). All rights reserved. Icons by{" "}
             <a href="https://lordicon.com/" target="_blank" rel="noopener noreferrer" className={cn(LINK, "text-white/65 underline-offset-2 hover:underline")}>
               Lordicon
             </a>
+            .
+          </p>
+          {/* The maker's credit (Mahir, 2026-10-29): his name in bold gold, its letters rising in a slow wave (globals.css, .maker-name). */}
+          <p>
+            Designed and built by{" "}
+            <span className="font-grotesk text-sm font-extrabold text-signal-orange">
+              <span className="sr-only">Mahir</span>
+              <span aria-hidden className="maker-name">
+                {[..."Mahir"].map((ch, i) => (
+                  <span key={i} style={{ "--i": i } as CSSProperties}>
+                    {ch}
+                  </span>
+                ))}
+              </span>
+            </span>
+            , Founder &amp; CEO
           </p>
           <a href="#top" className={cn(LINK, "inline-flex min-h-11 items-center gap-1 px-2 font-semibold lg:min-h-0 lg:px-0")}>
             Back to top

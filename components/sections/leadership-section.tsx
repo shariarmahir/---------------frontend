@@ -67,7 +67,6 @@ const EXECUTIVES = [
 const LEAD_LOOKS = {
   navy: {
     surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
-    tile: "bg-black/25 text-signal-orange ring-1 ring-white/12 ring-inset",
     chip: "bg-white/8 ring-white/15",
     rule: "border-white/12",
     glow: "var(--color-bdnavy-400)",
@@ -75,7 +74,6 @@ const LEAD_LOOKS = {
   },
   cobalt: {
     surface: "bg-cobalt text-white ring-1 ring-white/12",
-    tile: "bg-black/25 text-signal-orange ring-1 ring-white/12 ring-inset",
     chip: "bg-white/8 ring-white/15",
     rule: "border-white/12",
     glow: "var(--color-cobalt)",
@@ -84,7 +82,6 @@ const LEAD_LOOKS = {
   },
   ink: {
     surface: "bg-text-primary text-white ring-1 ring-white/12",
-    tile: "bg-black/25 text-signal-orange ring-1 ring-white/12 ring-inset",
     chip: "bg-white/8 ring-white/15",
     rule: "border-white/12",
     glow: "var(--color-signal-orange)",
@@ -217,7 +214,6 @@ export function LeadershipSection() {
                   className={cn(
                     "grid size-10 shrink-0 place-items-center rounded-xl sm:size-11",
                     "transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-rotate-6 motion-reduce:transition-none motion-reduce:group-hover:rotate-0",
-                    look.tile,
                   )}
                 >
                   <CardIcon name={lead.lordicon} fallback={lead.icon} size={32} />
@@ -243,7 +239,7 @@ export function LeadershipSection() {
       {/* Fellowship strip — cobalt, gold carrying the title and the action. */}
       <div className="story-reveal relative isolate mt-6 sm:mt-5 flex flex-col items-start justify-between gap-4 overflow-hidden rounded-3xl bg-cobalt p-5 text-white shadow-tile ring-1 ring-white/12 sm:flex-row sm:items-center sm:p-6">
         <div className="flex items-center gap-4">
-          <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-black/25 text-signal-orange ring-1 ring-white/12 ring-inset">
+          <span className="grid size-14 shrink-0 place-items-center">
             <CardIcon name="school" fallback="school" size={40} />
           </span>
           <div>

@@ -6,18 +6,19 @@ import { cn } from "@/lib/utils";
 
 /**
  * The home page's "We repair Bangladesh" picture (Mahir, 2026-10-24): the
- * map of Bangladesh drawn in its own name, behind a panel of small red dots,
- * the country's broken pixels. The dots are a halftone of the map itself
- * (smaller and darker over the letters), so its shape shows faintly before
- * it opens. In view, they shimmer, then an uneven front spreads from the
- * middle: each dot flares, drifts outward and fades, and the map comes
- * through. The map is always underneath; the canvas only covers it. Plain
+ * map of Bangladesh drawn in its own name, behind a panel of small red
+ * cubes, the country's broken pixels (Mahir, 2026-10-29: real cubes, lit
+ * from above). They are a halftone of the map itself (smaller over the
+ * letters), so its shape shows faintly before it opens. In view, they
+ * shimmer, then an uneven front spreads from the middle: each cube flares,
+ * tumbles outward and fades, and the map comes through. Each cube is drawn
+ * from one pre-rendered sprite, so a frame costs one image copy per cube. The map is always underneath; the canvas only covers it. Plain
  * canvas, no WebGL (CLAUDE.md §6). Reduced motion: the map alone.
  */
 
 const SRC = "/about/bangladesh-map.jpg";
-/** CSS pixels from one dot's centre to the next. */
-const PITCH = 6;
+/** CSS pixels from one cube's centre to the next: large enough for its three faces to read. */
+const PITCH = 9;
 /** The shimmer before the front sets off. */
 const LEAD_MS = 450;
 /** How long the front takes to reach the farthest corner, and how long one dot takes to go. */
@@ -87,6 +88,44 @@ function inkOf(img: HTMLImageElement): (u: number, v: number) => number {
   };
 }
 
+/** Mixes a #rrggbb colour toward white (amount > 0) or black (amount < 0); any other form passes through. */
+function shade(hex: string, amount: number): string {
+  if (!/^#[\da-f]{6}$/i.test(hex)) return hex;
+  const n = parseInt(hex.slice(1), 16);
+  const target = amount > 0 ? 255 : 0;
+  const k = Math.abs(amount);
+  const ch = (c: number) => Math.round(c + (target - c) * k);
+  return `rgb(${ch((n >> 16) & 255)} ${ch((n >> 8) & 255)} ${ch(n & 255)})`;
+}
+
+/** One isometric cube in `color`, lit from above: a light top, the colour on the left, a shaded right. */
+function cubeSprite(color: string, px = 48): HTMLCanvasElement {
+  const c = document.createElement("canvas");
+  c.width = c.height = px;
+  const x = c.getContext("2d");
+  if (!x) return c;
+  const mid = px / 2;
+  const face = (points: [number, number][], fill: string) => {
+    x.beginPath();
+    points.forEach(([a, b], i) => (i ? x.lineTo(a, b) : x.moveTo(a, b)));
+    x.closePath();
+    x.fillStyle = fill;
+    x.fill();
+  };
+  face([[mid, 0], [px, px / 4], [mid, px / 2], [0, px / 4]], shade(color, 0.38));
+  face([[0, px / 4], [mid, px / 2], [mid, px], [0, (px * 3) / 4]], color);
+  face([[mid, px / 2], [px, px / 4], [px, (px * 3) / 4], [mid, px]], shade(color, -0.42));
+  // A fine highlight along the top's front edges, where the light catches.
+  x.strokeStyle = shade(color, 0.6);
+  x.lineWidth = px / 24;
+  x.beginPath();
+  x.moveTo(0, px / 4);
+  x.lineTo(mid, px / 2);
+  x.lineTo(px, px / 4);
+  x.stroke();
+  return c;
+}
+
 const easeOut = (t: number) => 1 - (1 - t) ** 3;
 
 export function MapRepair({ className }: { className?: string }) {
@@ -103,6 +142,8 @@ export function MapRepair({ className }: { className?: string }) {
     const red = root.getPropertyValue("--color-national-crimson").trim();
     const bright = root.getPropertyValue("--color-crimson-bright").trim();
     const ground = root.getPropertyValue("--color-bdnavy-900").trim();
+    const cube = cubeSprite(red);
+    const cubeBright = cubeSprite(bright);
 
     let dots: Dot[] = [];
     let ink: (u: number, v: number) => number = () => 0;
@@ -142,7 +183,8 @@ export function MapRepair({ className }: { className?: string }) {
         let x = d.x;
         let y = d.y;
         let alpha = 0.55 + 0.3 * (1 - d.ink) + 0.15 * shimmer;
-        let color = red;
+        let sprite = cube;
+        let spin = 0;
         if (t > 0) {
           // Flare, then drift out and up a little, shrinking to nothing.
           const e = easeOut(t);
@@ -151,7 +193,8 @@ export function MapRepair({ className }: { className?: string }) {
           x += d.dx * e * PITCH * 2.2;
           y += d.dy * e * PITCH * 2.2 - e * PITCH;
           alpha = Math.min(1, alpha + flare) * (1 - e);
-          if (flare > 0.35) color = bright;
+          if (flare > 0.35) sprite = cubeBright;
+          spin = e * (d.phase - Math.PI);
           if (flare > 0.2) {
             ctx.globalAlpha = flare * 0.35 * (1 - e);
             ctx.fillStyle = bright;
@@ -161,11 +204,18 @@ export function MapRepair({ className }: { className?: string }) {
           }
         }
         if (r <= 0.05) continue;
+        // The cube, a little wider than the old dot's diameter so its three faces read; tumbling as it goes.
+        const side = r * 2.3;
         ctx.globalAlpha = alpha;
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.arc(x, y, r, 0, Math.PI * 2);
-        ctx.fill();
+        if (spin) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(spin);
+          ctx.drawImage(sprite, -side / 2, -side / 2, side, side);
+          ctx.restore();
+        } else {
+          ctx.drawImage(sprite, x - side / 2, y - side / 2, side, side);
+        }
       }
       ctx.globalAlpha = 1;
       return left;

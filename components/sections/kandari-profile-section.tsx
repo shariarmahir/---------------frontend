@@ -104,12 +104,12 @@ export function KandariProfileSection() {
                   {/* Styled as a button; the whole card is the link. */}
                   <span className={cn(btn.gold, "mt-1")}>{way.action}</span>
                 </span>
-                {/* A tilted icon well on a solid offset shadow, straightening under the pointer. */}
+                {/* The icon, tilted, straightening under the pointer. */}
                 <span
                   aria-hidden
-                  className="grid size-16 shrink-0 -rotate-8 place-items-center rounded-2xl bg-black/25 text-signal-orange ring-1 ring-white/12 ring-inset shadow-[6px_6px_0_rgb(0_0_0/0.35)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:rotate-0 motion-reduce:transition-none sm:size-24"
+                  className="grid size-16 shrink-0 -rotate-8 place-items-center transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:rotate-0 motion-reduce:transition-none sm:size-24"
                 >
-                  <CardIcon name={way.lordicon} fallback={way.icon} size={56} />
+                  <CardIcon name={way.lordicon} fallback={way.icon} size={72} />
                 </span>
               </Link>
             </li>

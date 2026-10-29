@@ -123,7 +123,7 @@ export function AppsSection() {
               <button
                 type="button"
                 onClick={next}
-                className="sr-only rounded-xl bg-bdnavy-900 px-4 py-2 font-grotesk text-sm font-bold text-signal-orange focus-visible:not-sr-only focus-visible:absolute focus-visible:right-4 focus-visible:bottom-0 focus-visible:z-20 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
+                className="sr-only rounded-xl bg-bdnavy-900 font-grotesk text-sm font-bold text-signal-orange focus-visible:not-sr-only focus-visible:absolute focus-visible:px-4 focus-visible:py-2 focus-visible:right-4 focus-visible:bottom-0 focus-visible:z-20 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
               >
                 Show the next app
               </button>

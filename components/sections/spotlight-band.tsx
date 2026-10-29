@@ -242,7 +242,7 @@ export function SpotlightBand() {
     <section
       aria-roledescription="carousel"
       aria-label="Announcements and national indicators"
-      className="relative w-full overflow-hidden bg-black"
+      className="spotlight-band relative w-full overflow-hidden bg-black"
     >
       <div
         // A mouse over the band or keyboard focus in it holds the slide; a tap

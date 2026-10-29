@@ -83,8 +83,8 @@ function Proof({ slide, active }: { slide: CharterSlide; active: boolean }) {
       <ul className="divide-y divide-white/10">
         {slide.pillars.map((p) => (
           <li key={p.label} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
-            <span className="grid size-10 place-items-center rounded-xl bg-black/25 ring-1 ring-white/12 ring-inset">
-              <CardIcon name={PILLAR_ICON[p.label] ?? "internet-of-things"} fallback={p.icon} size={28} />
+            <span className="grid size-10 place-items-center">
+              <CardIcon name={PILLAR_ICON[p.label] ?? "internet-of-things"} fallback={p.icon} size={34} />
             </span>
             <span className="font-grotesk text-lg font-bold tracking-tight">{p.label}</span>
           </li>

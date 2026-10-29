@@ -116,10 +116,8 @@ export function PixelThesisSection() {
                   pillar.surface,
                 )}
               >
-                {/* The card's animated icon in its well. */}
-                <span className="mb-4 grid size-20 place-items-center rounded-2xl bg-black/25 ring-1 ring-white/12 ring-inset sm:size-24">
-                  <CardIcon name={pillar.art} fallback={FALLBACK[pillar.art]} size={64} />
-                </span>
+                {/* The card's animated icon, standing on the card itself. */}
+                <CardIcon name={pillar.art} fallback={FALLBACK[pillar.art]} size={76} className="mb-3 -ml-2" />
 
                 <h3 className={cn("mb-2 font-grotesk text-xl leading-tight font-bold", pillar.heading)}>
                   {pillar.title}

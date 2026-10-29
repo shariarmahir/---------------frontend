@@ -22,7 +22,6 @@ const LABS = [
     icon: "blind",
     lordicon: "person-walking",
     surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
-    block: "bg-black/25 text-signal-orange ring-1 ring-white/12 ring-inset",
     glow: "var(--color-bdnavy-400)",
     title: "Eye-Consciousness AI Agent for Visually Impaired",
     description:
@@ -34,7 +33,6 @@ const LABS = [
     icon: "recycling",
     lordicon: "recycling",
     surface: "bg-text-primary text-white ring-1 ring-white/12",
-    block: "bg-black/25 text-signal-orange ring-1 ring-white/12 ring-inset",
     glow: "var(--color-signal-orange)",
     title: "Biochemical Circular Automation",
     description:
@@ -47,7 +45,6 @@ const LABS = [
     icon: "developer_board",
     lordicon: "server",
     surface: "bg-cobalt text-white ring-1 ring-white/12",
-    block: "bg-black/25 text-signal-orange ring-1 ring-white/12 ring-inset",
     heading: "text-signal-orange",
     glow: "var(--color-cobalt)",
     title: "Semiconductor Fabrication & 10-Crore Data Engine",
@@ -93,19 +90,14 @@ export function ResearchSection() {
                 lab.surface,
               )}
             >
-              {/* The project's pixel: a solid block with a slow orbit. */}
+              {/* The project's animated icon. */}
               <span
                 className={cn(
                   "relative grid size-12 shrink-0 place-items-center rounded-xl sm:size-16 sm:rounded-2xl lg:size-20",
                   "transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-rotate-6 motion-reduce:transition-none motion-reduce:group-hover:rotate-0",
-                  lab.block,
                 )}
               >
-                <span
-                  aria-hidden
-                  className="absolute inset-2 animate-[spin_14s_linear_infinite] rounded-full border border-dashed border-current opacity-40 motion-reduce:animate-none"
-                />
-                <CardIcon name={lab.lordicon} fallback={lab.icon} size={44} />
+                <CardIcon name={lab.lordicon} fallback={lab.icon} size={60} />
               </span>
 
               <div className="min-w-0 @min-[80rem]:contents">

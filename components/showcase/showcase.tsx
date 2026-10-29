@@ -14,6 +14,7 @@ import { LabelText } from "@/components/brand/kandari-wordmark";
 import { LABEL_TEXT } from "@/data/logo-text";
 import { cn } from "@/lib/utils";
 import { PosterGrid, type PosterFace, type PosterItem } from "./poster-grid";
+import type { ServiceSceneKind } from "./service-scenes";
 import { ShowcaseCard, type CardTone } from "./showcase-card";
 
 /** The button that leads from a section to its full page. */
@@ -143,13 +144,8 @@ const SERVICE_TONES: CardTone[] = ["green", "ink", "gold", "white"];
  * service page, its picture the service's 3D film; on /products it goes
  * to the Kandari Profile sign-up, the one way to reach the team today.
  */
-/** Each service's animated icon on the home page's cards (public/lordicon), with its still stand-in. */
-const SERVICE_ICON: Record<string, { icon: string; fallback: string }> = {
-  ai: { icon: "magic-wand", fallback: "smart_toy" },
-  automation: { icon: "three-arrows-rotate", fallback: "precision_manufacturing" },
-  iot: { icon: "internet-of-things", fallback: "sensors" },
-  development: { icon: "html-code", fallback: "code" },
-};
+/** Each service's motion graphic on the home page's cards (service-scenes.tsx). */
+const SERVICE_GRAPHIC: Record<string, ServiceSceneKind> = { ai: "brain", automation: "factory", iot: "robot", development: "interface" };
 
 export function ServicesShowcase({ on = "home", poster }: { on?: "home" | "products"; poster?: boolean }) {
   // The home page's poster grid, in the palette's three fields (no two neighbours alike).
@@ -166,7 +162,7 @@ export function ServicesShowcase({ on = "home", poster }: { on?: "home" | "produ
           tagline: s.poster.tagline,
           nameText: s.name,
           href: on === "home" ? `/services/${s.id}` : "/#kandari-profile",
-          iconScene: SERVICE_ICON[s.id],
+          serviceScene: SERVICE_GRAPHIC[s.id],
         }))}
       />
     );

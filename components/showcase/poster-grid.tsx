@@ -3,11 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { CardIcon } from "@/components/ui/card-icon";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import { MediaReel } from "./media-reel";
 import { PosterScene, type PosterSceneKind } from "./poster-scenes";
+import { ServiceScene, type ServiceSceneKind } from "./service-scenes";
 
 /*
  * The home page's product and service cards, set like the featured-project
@@ -40,10 +40,10 @@ export interface PosterItem {
   /** The name as plain text, for the link's label. */
   nameText: string;
   href: string;
-  /** The photograph; left out when an icon scene fills the picture instead. */
+  /** The photograph; left out when a service's motion graphic fills the picture instead. */
   image?: { src: string; alt: string; position?: string };
-  /** A motion scene around one animated icon (public/lordicon), in place of the photograph. */
-  iconScene?: { icon: string; fallback: string };
+  /** A service's 3D motion graphic (service-scenes.tsx), in place of the photograph. */
+  serviceScene?: ServiceSceneKind;
   /** A motion layer: drawn over the photograph, or the film itself. */
   scene?: PosterSceneKind | "media-reel";
 }
@@ -109,7 +109,7 @@ function PosterCard({ item }: { item: PosterItem }) {
 
         {/* Everything drawn eases in closer together (scale, so the scenes' own transforms stay theirs). */}
         <div className={cn("absolute inset-0 transition-[scale] group-hover:scale-[1.06] group-focus-visible:scale-[1.06] motion-reduce:group-hover:scale-100", EASE)}>
-          {item.iconScene ? <IconScene {...item.iconScene} /> : null}
+          {item.serviceScene ? <ServiceScene kind={item.serviceScene} /> : null}
           {item.image && (
             <Image
               src={item.image.src}
@@ -154,41 +154,5 @@ function PosterCard({ item }: { item: PosterItem }) {
         <p className="mt-1.5 font-grotesk text-xs leading-snug font-semibold text-white/80 sm:text-sm">{item.tagline}</p>
       </div>
     </Link>
-  );
-}
-
-/** Pixels on their orbits: colour, radius (share of the scene), seconds per turn, starting angle. */
-const ORBITS = [
-  { color: "bg-signal-orange", r: "38%", dur: 9, from: 0 },
-  { color: "bg-bdnavy-300", r: "30%", dur: 6.5, from: 140 },
-  { color: "bg-white", r: "44%", dur: 13, from: 250 },
-  { color: "bg-signal-orange", r: "24%", dur: 5, from: 300 },
-];
-
-/**
- * A service's picture (Mahir, 2026-10-29, after the 3D films): its animated
- * icon in a glossy clay tile, floating in the middle of two dashed rings
- * turning against each other, with gold, light-blue and white pixels on
- * their orbits. Pure CSS around one Lordicon, so it costs a fraction of a
- * 3D scene; it pauses off screen with the card (globals.css, .svc-scene).
- */
-function IconScene({ icon, fallback }: { icon: string; fallback: string }) {
-  return (
-    <div aria-hidden className="svc-scene absolute inset-0 grid place-items-center overflow-hidden">
-      <span className="svc-ring absolute aspect-square w-[78%] rounded-full border-2 border-dashed border-signal-orange/35" />
-      <span className="svc-ring svc-ring-back absolute aspect-square w-[56%] rounded-full border-2 border-dashed border-bdnavy-300/40" />
-      {ORBITS.map((o, i) => (
-        <span
-          key={i}
-          className="svc-orbit absolute inset-0"
-          style={{ "--dur": `${o.dur}s`, "--from": `${o.from}deg` } as CSSProperties}
-        >
-          <span className={cn("absolute left-1/2 size-2.5 -translate-1/2 rounded-[3px] sm:size-3", o.color)} style={{ top: `calc(50% - ${o.r})` }} />
-        </span>
-      ))}
-      <span className="svc-tile relative grid aspect-square w-[44%] place-items-center rounded-[28%] bg-white/10 ring-1 ring-white/20 ring-inset">
-        <CardIcon name={icon} fallback={fallback} size={88} delay={1800} className="max-sm:scale-75" />
-      </span>
-    </div>
   );
 }

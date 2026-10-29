@@ -472,6 +472,24 @@
   padding-block: var(--spacing-seam-band);
 }
 
+/* The home page's sections below the first view (app/page.tsx), on a touch
+   screen: the browser lays out, paints and animates each one only as it
+   nears the screen, so a phone's first load and its scroll stay light. The
+   size it holds for an unseen section is a rough guess until it has been
+   seen once (`auto`). Not on a mouse screen, where Lenis plans #anchor
+   glides from the sections' real heights. */
+@media (pointer: coarse) {
+  .home-flow > section {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 720px;
+  }
+  /* The spotlight band under the hero (spotlight-band.tsx): its bars and rings rest once scrolled past. */
+  .spotlight-band {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 170px;
+  }
+}
+
 /* Shared height for the full-bleed photo heroes (home and /products), so
    the two bands always match. A floor rather than a fixed height: content
    is centred inside it and a longer headline can still grow the band. */
@@ -1363,14 +1381,6 @@
   /* The film stands still on its finished frame, one summary caption. */
   .ms-root .mr-chapter { display: none; }
   .ms-root .mr-still { display: inline; }
-}
-
-/* Banner gallery (components/sections/promo-gallery.tsx): the recorder
-   banner's waveform swells bar by bar. */
-@keyframes promo-wave { 0%, 100% { scale: 1 0.35; } 50% { scale: 1 1; } }
-.promo-wave { transform-origin: center; scale: 1 0.6; }
-@media (prefers-reduced-motion: no-preference) {
-  .promo-wave { animation: promo-wave 1.3s ease-in-out calc(var(--i) * -0.09s) infinite; }
 }
 
 /* Data-source row (components/sections/data-sources-section.tsx): the list
@@ -3099,11 +3109,13 @@ html.kl-intro-seen .preloader { display: none; }
   .preloader-bar { animation: preloader-fill 1.3s cubic-bezier(0.33, 1, 0.68, 1) backwards; }
 }
 
-/* The home page's pointer (components/ui/cursor.tsx): a square pixel on
-   the pointer inside four corner brackets that glide after it, coloured by
-   what lies beneath (--cc) and shaped by what it is over ([data-mode]).
-   Corners, pixel and caret move by transform only. The system cursor is
-   hidden only while it runs (html.has-cursor); fields keep theirs. */
+/* The home page's pointer (components/ui/cursor.tsx): a colourful arrow on
+   the exact point and a small animated brain riding just below it, which
+   lights into a glass idea bulb over anything clickable ([data-mode="idea"])
+   and turns into a glossy question over a figure or the content's words
+   ([data-mode="ask"]). Crossfades and transforms only, bar the arrow's slow
+   colour turn. The system cursor is hidden only while it runs
+   (html.has-cursor); fields keep theirs. */
 html.has-cursor,
 html.has-cursor * {
   cursor: none;
@@ -3112,81 +3124,86 @@ html.has-cursor :is(input, textarea, select, [contenteditable="true"]) {
   cursor: auto;
 }
 .cursor {
-  --cc: var(--color-signal-orange);
-  --s: 26px;
   position: fixed;
   inset: 0 auto auto 0;
   z-index: 90;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.25s ease;
+  transition: opacity 0.2s ease;
 }
 .cursor[data-on] { opacity: 1; }
 .cursor[data-mode="field"] { opacity: 0; }
-.cursor[data-mode="link"] { --s: 34px; }
-.cursor[data-mode="card"] { --s: 76px; }
-.cursor[data-mode="data"] { --s: 30px; }
-.cursor-frame,
-.cursor-pixel {
+.cursor-tip,
+.cursor-mark {
   position: absolute;
   top: 0;
   left: 0;
   will-change: transform;
 }
-.cursor-frame { transition: rotate 0.35s cubic-bezier(0.22, 1, 0.36, 1), scale 0.2s ease, opacity 0.2s ease; }
-.cursor[data-mode="data"] .cursor-frame { rotate: 45deg; }
-.cursor[data-mode="text"] .cursor-frame { opacity: 0; scale: 0.5; }
-.cursor[data-down] .cursor-frame { scale: 0.8; }
-.cursor-corner {
+/* The arrow: its point is the pointer's exact spot (the path starts at 2,1.5). */
+.cursor-arrow {
   position: absolute;
-  top: -4px;
-  left: -4px;
-  width: 8px;
-  height: 8px;
-  border: 0 solid var(--cc);
-  transition:
-    translate 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.25s ease;
+  top: -1.5px;
+  left: -2px;
+  width: 24px;
+  height: 24px;
+  overflow: visible;
+  filter: drop-shadow(0 1px 1.5px rgb(0 0 0 / 0.6));
+  transition: scale 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: 2px 1.5px;
 }
-.cursor-corner[data-c="tl"] { border-width: 2px 0 0 2px; translate: calc(var(--s) / -2) calc(var(--s) / -2); }
-.cursor-corner[data-c="tr"] { border-width: 2px 2px 0 0; translate: calc(var(--s) / 2) calc(var(--s) / -2); }
-.cursor-corner[data-c="bl"] { border-width: 0 0 2px 2px; translate: calc(var(--s) / -2) calc(var(--s) / 2); }
-.cursor-corner[data-c="br"] { border-width: 0 2px 2px 0; translate: calc(var(--s) / 2) calc(var(--s) / 2); }
-.cursor-label {
+.cursor-arrow path:first-child { fill: #e4b027; animation: cursor-hue 3.6s linear infinite; }
+.cursor[data-mode="idea"] .cursor-arrow path:first-child { animation: none; fill: #ffd34d; }
+.cursor[data-mode="idea"] .cursor-arrow { filter: drop-shadow(0 0 5px rgb(255 211 77 / 0.9)) drop-shadow(0 1px 1.5px rgb(0 0 0 / 0.6)); }
+.cursor[data-mode="ask"] .cursor-arrow path:first-child { animation: none; fill: #8fa8ff; }
+.cursor[data-down] .cursor-arrow { scale: 0.86; }
+@keyframes cursor-hue {
+  0%, 100% { fill: #e4b027; }
+  33% { fill: #f28ba8; }
+  66% { fill: #4bb3fd; }
+}
+/* The art hangs below and right of the arrow, like a cursor's own picture. */
+.cursor-art {
   position: absolute;
-  top: 0;
-  left: 0;
-  translate: -50% -50%;
-  font-family: var(--font-sora), sans-serif;
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: var(--cc);
-  white-space: nowrap;
+  top: 18px;
+  left: 14px;
+  width: 34px;
+  height: 34px;
+  filter: drop-shadow(0 1px 1.5px rgb(0 0 0 / 0.7));
+  transition: scale 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cursor[data-down] .cursor-art { scale: 0.82; }
+.cursor-art > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
   opacity: 0;
-  scale: 0.6;
-  transition: opacity 0.2s ease, scale 0.3s cubic-bezier(0.22, 1, 0.36, 1), color 0.25s ease;
+  scale: 0.5;
+  transition: opacity 0.22s ease, scale 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.cursor[data-mode="card"] .cursor-label { opacity: 1; scale: 1; }
-.cursor-pixel-dot,
-.cursor-caret {
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: var(--cc);
-  transition: scale 0.25s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease, background-color 0.25s ease;
+.cursor:not([data-mode="idea"], [data-mode="ask"]) .cursor-brain,
+.cursor[data-mode="idea"] .cursor-idea,
+.cursor[data-mode="ask"] .cursor-ask {
+  opacity: 1;
+  scale: 1;
 }
-.cursor-pixel-dot { width: 6px; height: 6px; translate: -50% -50%; }
-.cursor[data-mode="link"] .cursor-pixel-dot { scale: 1.7; }
-.cursor:is([data-mode="card"], [data-mode="text"]) .cursor-pixel-dot { scale: 0; }
-/* The caret: 2px wide, 1px tall, stretched to the text's line height. */
-.cursor-caret {
-  width: 2px;
-  height: 1px;
-  translate: -50% -50%;
-  opacity: 0;
-  scale: 1 0;
-}
-.cursor[data-mode="text"] .cursor-caret { opacity: 1; scale: 1 var(--caret, 20); }
+.cursor[data-mode="idea"] .cursor-art { filter: drop-shadow(0 0 7px rgb(255 211 77 / 0.9)) drop-shadow(0 1px 1.5px rgb(0 0 0 / 0.6)); }
+.cursor-signal { stroke-dasharray: 26 74; stroke-dashoffset: 100; }
+.cursor :is(.cursor-node, .cursor-rays) { transform-box: fill-box; transform-origin: center; }
+@keyframes cursor-signal { to { stroke-dashoffset: 0; } }
+@keyframes cursor-node { 0%, 100% { scale: 0.6; opacity: 0.6; } 50% { scale: 1.4; opacity: 1; } }
+@keyframes cursor-rays { 0%, 100% { scale: 0.9; opacity: 0.55; } 50% { scale: 1.12; opacity: 1; } }
+@keyframes cursor-ask { 0%, 100% { rotate: -8deg; } 50% { rotate: 8deg; } }
+@keyframes cursor-think { 0%, 100% { translate: 0 0; } 50% { translate: 0 -1.5px; } }
+.cursor-signal { animation: cursor-signal 1.4s linear infinite; }
+.cursor-signal-late { animation-delay: -0.7s; }
+.cursor-node { animation: cursor-node 1.2s ease-in-out infinite; }
+.cursor-node-late { animation-delay: -0.6s; }
+.cursor-rays { animation: cursor-rays 1s ease-in-out infinite; }
+.cursor:not([data-mode="idea"], [data-mode="ask"]) .cursor-brain { animation: cursor-think 2.4s ease-in-out infinite; }
+.cursor[data-mode="ask"] .cursor-ask { animation: cursor-ask 1.6s ease-in-out infinite; }
 @media not ((hover: hover) and (pointer: fine)) {
   .cursor { display: none; }
 }
@@ -3217,33 +3234,132 @@ html.has-cursor :is(input, textarea, select, [contenteditable="true"]) {
   .reel-accent { animation: reel-accent 6s ease-in-out var(--accent-at, 0s) infinite; }
 }
 
-/* The footer film's music note (components/layout/footer-film.tsx): still
-   when muted; with the sound on it floats and two small notes rise and fade
-   from its shoulder in turn. */
-@keyframes sound-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -6px; } }
-@keyframes sound-note { from { opacity: 0; translate: 0 0; } 25% { opacity: 1; } to { opacity: 0; translate: 10px -28px; rotate: 18deg; } }
-.footer-sound-note { opacity: 0; font-size: 1.125rem; }
+/* The footer film's music player (components/layout/footer-music.tsx): at
+   rest the record is still, the hub shows play and the waveform stands low
+   with a gentle beckoning pulse; while the music plays the hub shows pause,
+   the record turns, the waveform dances (scale only, from one baseline, each
+   bar at its own pace and height), a white glow lights the player, and two
+   small notes rise and fade in turn. */
+@keyframes music-spin { to { rotate: 360deg; } }
+@keyframes music-bar { 0%, 100% { scale: 1 0.22; } 50% { scale: 1 var(--peak, 1); } }
+@keyframes music-note { from { opacity: 0; translate: 0 0; } 25% { opacity: 1; } to { opacity: 0; translate: 10px -28px; rotate: 18deg; } }
+@keyframes music-beckon { 0%, 100% { scale: 1; } 50% { scale: 1.05; } }
+.footer-music-art { filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.5)); transform-origin: 16% 50%; }
+.footer-music[data-on] .footer-music-art { filter: drop-shadow(0 0 7px rgb(255 255 255 / 0.95)) drop-shadow(0 2px 3px rgb(0 0 0 / 0.5)); }
+.footer-music-disc { transform-box: fill-box; transform-origin: center; }
+.footer-music-bar { transform-box: fill-box; transform-origin: 50% 100%; scale: 1 0.34; }
+.footer-music-play, .footer-music-pause { transition: opacity 0.2s ease; }
+.footer-music-pause { opacity: 0; }
+.footer-music[data-on] .footer-music-play { opacity: 0; }
+.footer-music[data-on] .footer-music-pause { opacity: 1; }
+.footer-sound-note { opacity: 0; font-size: 1rem; }
 @media (prefers-reduced-motion: no-preference) {
-  .footer-sound[data-on] { animation: sound-float 3.2s ease-in-out infinite; }
-  .footer-sound[data-on] .footer-sound-note { animation: sound-note 1.8s ease-out calc(var(--i) * 0.9s) infinite; }
+  .footer-music:not([data-on]) .footer-music-art { animation: music-beckon 2.6s ease-in-out infinite; }
+  .footer-music[data-on] .footer-music-disc { animation: music-spin 5s linear infinite; }
+  .footer-music[data-on] .footer-music-bar { animation: music-bar calc(0.62s + var(--i) * 0.09s) ease-in-out calc(var(--i) * -0.19s) infinite; }
+  .footer-music[data-on] .footer-sound-note { animation: music-note 1.8s ease-out calc(var(--i) * 0.9s) infinite; }
 }
 
-/* The service cards' icon scenes (components/showcase/poster-grid.tsx):
-   dashed rings turning against each other, pixels on their orbits, and a
-   glossy clay tile floating in the middle. Composited properties only;
-   paused with the card off screen; still under reduced motion. */
-@keyframes svc-turn { from { rotate: var(--from, 0deg); } to { rotate: calc(var(--from, 0deg) + 360deg); } }
-@keyframes svc-bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -8px; } }
-.svc-tile {
-  box-shadow:
-    inset 0 2px 0 rgb(255 255 255 / 0.22),
-    inset 0 -10px 18px rgb(0 0 0 / 0.35),
-    0 26px 40px -18px rgb(0 0 0 / 0.85);
+/* The footer's maker credit (site-footer.tsx): the name's letters rise in
+   a slow wave, one after another, and glow as they pass. */
+.maker-name > span { display: inline-block; }
+@keyframes maker-wave {
+  0%, 60%, 100% { translate: 0 0; text-shadow: none; }
+  20% { translate: 0 -3px; text-shadow: 0 0 10px rgb(228 176 39 / 0.85); }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .svc-ring { animation: svc-turn 28s linear infinite; }
-  .svc-ring-back { animation-duration: 18s; animation-direction: reverse; }
-  .svc-orbit { animation: svc-turn var(--dur, 8s) linear infinite; }
-  .svc-tile { animation: svc-bob 4.5s ease-in-out infinite; }
-  .ms-root[data-paused="true"] .svc-scene * { animation-play-state: paused; }
+  .maker-name > span { animation: maker-wave 2.6s ease-in-out calc(var(--i) * 0.12s) infinite; }
+}
+
+/* Site guide (components/ui/guide-avatar.tsx, launched from ai-widget.tsx).
+   Asleep: head leaned, eyes shut, slow breathing, Z's drifting up. Awake
+   ([data-awake]): head upright and turned a little toward the pointer
+   (--tilt), eyes open with pupils following it (--px, --py) and a blink now
+   and then, brows lifted, a smile; greeting ([data-waving]): the arm rises
+   and waves; speaking ([data-talking]): the mouth moves. Transforms and
+   crossfades only; still under reduced motion. */
+.guide-avatar { filter: drop-shadow(0 6px 10px rgb(0 0 0 / 0.45)); }
+.guide-avatar :is(.ga-head, .ga-body, .ga-brows, .ga-arm-wave, .ga-pupil) { transform-box: view-box; }
+.guide-avatar .ga-head { transform-origin: 60px 64px; rotate: -10deg; translate: 0 2px; transition: rotate 0.6s cubic-bezier(0.22, 1, 0.36, 1), translate 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+.guide-avatar[data-awake] .ga-head { rotate: var(--tilt, 0deg); translate: 0 0; }
+.guide-avatar .ga-brows { transition: translate 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+.guide-avatar[data-awake] .ga-brows { translate: 0 -1.6px; }
+.guide-avatar .ga-pupil { translate: calc(var(--px, 0) * 1px) calc(var(--py, 0) * 1px); transition: translate 0.18s ease-out; }
+.guide-avatar .ga-arm-wave { transform-origin: 84px 84px; transition: rotate 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
+.guide-avatar[data-waving] .ga-arm-wave { rotate: -150deg; }
+.guide-avatar :is(.ga-eyes-open, .ga-eyes-closed, .ga-mouth-sleep, .ga-mouth-smile, .ga-mouth-talk, .ga-cheeks, .ga-zz) { transition: opacity 0.25s ease; }
+.guide-avatar :is(.ga-eyes-open, .ga-mouth-smile, .ga-mouth-talk, .ga-cheeks) { opacity: 0; }
+.guide-avatar[data-awake] :is(.ga-eyes-closed, .ga-mouth-sleep, .ga-zz) { opacity: 0; }
+.guide-avatar[data-awake] :is(.ga-eyes-open, .ga-mouth-smile) { opacity: 1; }
+.guide-avatar[data-awake] .ga-cheeks { opacity: 0.4; }
+.guide-avatar[data-talking] .ga-mouth-smile { opacity: 0; }
+.guide-avatar[data-talking] .ga-mouth-talk { opacity: 1; }
+.guide-avatar :is(.ga-eye, .ga-mouth-talk) { transform-box: fill-box; transform-origin: center; }
+.guide-avatar .ga-z { opacity: 0; }
+@keyframes ga-breathe { 0%, 100% { translate: 0 0; } 50% { translate: 0 1.6px; } }
+@keyframes ga-z { 0% { opacity: 0; translate: 0 5px; } 30% { opacity: 1; } 100% { opacity: 0; translate: 4px -8px; } }
+@keyframes ga-blink { 0%, 92%, 100% { scale: 1 1; } 95% { scale: 1 0.1; } }
+@keyframes ga-talk { from { scale: 1 0.35; } to { scale: 1 1; } }
+@keyframes ga-wave { 0%, 100% { rotate: -150deg; } 50% { rotate: -128deg; } }
+@media (prefers-reduced-motion: no-preference) {
+  .guide-avatar:not([data-awake]) .ga-body { animation: ga-breathe 3.4s ease-in-out infinite; }
+  .guide-avatar:not([data-awake]) .ga-z { animation: ga-z 2.7s ease-out calc(var(--i) * 0.9s) infinite; }
+  .guide-avatar[data-awake] .ga-eye { animation: ga-blink 4.2s ease-in-out 0.8s infinite; }
+  .guide-avatar[data-talking] .ga-mouth-talk { animation: ga-talk 0.16s ease-in-out infinite alternate; }
+  .guide-avatar[data-waving] .ga-arm-wave { animation: ga-wave 0.5s ease-in-out 0.5s infinite; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .guide-avatar .ga-z { opacity: 1; }
+  .guide-avatar[data-awake] .ga-z { opacity: 0; }
+}
+
+/* The service cards' motion graphics (components/showcase/service-scenes.tsx):
+   each scene sways slowly in 3D, and its parts move by transform, opacity,
+   offset and dash only. Paused with the card off screen; still under
+   reduced motion. SVG parts turn about the points given in user units. */
+.svc3d { perspective: 800px; }
+.svc3d-stage { transform: rotateX(8deg) rotateY(-10deg); }
+.svc3d-signal { stroke-dasharray: 14 86; stroke-dashoffset: 100; }
+.svc3d-belt { stroke-dasharray: 3 5; }
+.svc3d :is(.svc3d-node, .svc3d-wave, .svc3d-halo, .svc3d-press) { transform-box: fill-box; transform-origin: center; }
+.svc3d :is(.svc3d-arm, .svc3d-forearm, .svc3d-gear, .svc3d-blink) { transform-box: view-box; }
+.svc3d-arm { transform-origin: 100px 112px; }
+.svc3d-forearm { transform-origin: 100px 98px; }
+.svc3d-box { offset-path: path("M44 141 L100 167 L156 141"); offset-rotate: 0deg; }
+.svc3d-wave { opacity: 0; }
+.svc3d-cursor { translate: 96px 116px; }
+@keyframes svc3d-sway { 0%, 100% { transform: rotateX(10deg) rotateY(-14deg); } 50% { transform: rotateX(4deg) rotateY(14deg); } }
+@keyframes svc3d-run { to { stroke-dashoffset: 0; } }
+@keyframes svc3d-pulse { 0%, 100% { scale: 0.75; } 50% { scale: 1.3; } }
+@keyframes svc3d-breathe { 0%, 100% { scale: 0.94; opacity: 0.5; } 50% { scale: 1.04; opacity: 1; } }
+@keyframes svc3d-belt { to { stroke-dashoffset: -16; } }
+@keyframes svc3d-ride { from { offset-distance: 0%; opacity: 0; } 10%, 90% { opacity: 1; } to { offset-distance: 100%; opacity: 0; } }
+@keyframes svc3d-swing { from { rotate: -16deg; } to { rotate: 16deg; } }
+@keyframes svc3d-reach { from { rotate: 18deg; } to { rotate: -14deg; } }
+@keyframes svc3d-spin { to { rotate: 360deg; } }
+@keyframes svc3d-light { 0%, 45% { opacity: 0.25; } 55%, 100% { opacity: 1; } }
+@keyframes svc3d-bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -5px; } }
+@keyframes svc3d-blink { 0%, 90%, 100% { scale: 1 1; } 94% { scale: 1 0.1; } }
+@keyframes svc3d-wave { from { scale: 1; opacity: 0.9; } to { scale: 3.2; opacity: 0; } }
+@keyframes svc3d-build { 0% { opacity: 0; translate: -10px 0; } 12%, 86% { opacity: 1; translate: 0 0; } 100% { opacity: 0; translate: 0 0; } }
+@keyframes svc3d-press { 0%, 56%, 64%, 100% { scale: 1; } 60% { scale: 0.88; } }
+@keyframes svc3d-point { 0%, 100% { translate: 40px 168px; } 50%, 70% { translate: 96px 116px; } 60% { translate: 96px 116px; scale: 0.85; } }
+@media (prefers-reduced-motion: no-preference) {
+  .svc3d-stage { animation: svc3d-sway 9s ease-in-out infinite; }
+  .svc3d-signal { animation: svc3d-run 2.4s linear var(--d, 0s) infinite; }
+  .svc3d-node { animation: svc3d-pulse 1.8s ease-in-out var(--d, 0s) infinite; }
+  .svc3d-halo { animation: svc3d-breathe 3.6s ease-in-out infinite; }
+  .svc3d-belt { animation: svc3d-belt 0.8s linear infinite; }
+  .svc3d-box { animation: svc3d-ride 3.9s linear var(--d, 0s) infinite backwards; }
+  .svc3d-arm { animation: svc3d-swing 2.6s ease-in-out infinite alternate; }
+  .svc3d-forearm { animation: svc3d-reach 1.3s ease-in-out infinite alternate; }
+  .svc3d-gear { animation: svc3d-spin 6s linear infinite; }
+  .svc3d-window { animation: svc3d-light 2.4s steps(1) var(--d, 0s) infinite alternate; }
+  .svc3d-float { animation: svc3d-bob 3.2s ease-in-out infinite; }
+  .svc3d-blink { animation: svc3d-blink 4s ease-in-out infinite; }
+  .svc3d-wave { animation: svc3d-wave 2.1s ease-out var(--d, 0s) infinite; }
+  .svc3d-build { animation: svc3d-build 5s ease-out var(--d, 0s) infinite backwards; }
+  .svc3d-build.svc3d-press { animation: svc3d-build 5s ease-out var(--d, 0s) infinite backwards, svc3d-press 5s ease-in-out infinite; }
+  .svc3d-cursor { animation: svc3d-point 5s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
+  .ms-root[data-paused="true"] :is(.svc3d-stage, .svc3d *) { animation-play-state: paused; }
 }

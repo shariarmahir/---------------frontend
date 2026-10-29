@@ -5,6 +5,7 @@ import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import { Icon } from "@/components/ui/icon";
 import { SectionHeading } from "@/components/ui/section-kit";
 import { reviews, type Review, type ReviewField } from "@/data/reviews";
+import { useAutoGlide } from "@/lib/use-auto-glide";
 import { cn } from "@/lib/utils";
 
 /*
@@ -39,7 +40,7 @@ const LOOKS: Record<ReviewField, { card: string; muted: string; button: string; 
   cobalt: {
     card: "bg-cobalt text-white ring-1 ring-white/12 ring-inset",
     muted: "text-white/80",
-    quote: "text-white font-bold",
+    quote: "text-white sm:font-bold",
     name: "text-white",
     button: "bg-signal-orange text-text-primary",
     accent: "text-signal-orange",
@@ -54,6 +55,9 @@ const LOOKS: Record<ReviewField, { card: string; muted: string; button: string; 
 
 export function ReviewsSection() {
   const [open, setOpen] = useState(0);
+  const rowRef = useRef<HTMLUListElement>(null);
+  // Below xl the carousel turns on its own like the promo row; from xl the row is flat and stays put.
+  const glide = useAutoGlide(rowRef, { stepMs: 6500 });
 
   return (
     <section id="reviews" aria-labelledby="reviews-title" className="section-band">
@@ -67,6 +71,8 @@ export function ReviewsSection() {
 
       {/* --n: the card count, for the quote's width. Below xl: a snap carousel running to the window's edge. From xl: the column's row. */}
       <ul
+        ref={rowRef}
+        {...glide}
         style={{ "--n": reviews.length } as CSSProperties}
         tabIndex={0}
         aria-label="Partner reviews, scroll sideways for more"

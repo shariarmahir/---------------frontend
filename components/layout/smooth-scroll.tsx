@@ -11,9 +11,9 @@ const GLIDE = 0.12;
 const headerOffset = () => (matchMedia("(min-width: 64rem)").matches ? -120 : -64);
 
 /**
- * Glides the page under the wheel and the touch, and eases #anchor jumps,
- * like the academy pages. Nothing is added to the page; with reduced motion
- * it does nothing and the browser scrolls as usual. Pages under `except`
+ * Glides the page under the wheel, and eases #anchor jumps, like the
+ * academy pages. Nothing is added to the page; on a touch screen or with
+ * reduced motion it does nothing and the browser scrolls as usual. Pages under `except`
  * (the academy, which glides inside its own frame) are left alone, and so
  * are open dialogs and menus, which scroll by themselves.
  */
@@ -21,7 +21,8 @@ export function SmoothScroll({ except }: { except?: string }) {
   const path = usePathname();
   const off = Boolean(except && path.startsWith(except));
   useEffect(() => {
-    if (off || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // A touch screen already scrolls natively on the compositor: gliding it would only add a frame loop.
+    if (off || matchMedia("(prefers-reduced-motion: reduce), (pointer: coarse)").matches) return;
     const glide = new Lenis({
       lerp: GLIDE,
       anchors: { offset: headerOffset() },

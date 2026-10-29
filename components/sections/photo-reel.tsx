@@ -11,28 +11,23 @@ import type { CharterLook } from "./charter-looks";
 
 /*
  * The home page's photograph reel (Mahir, 2026-10-25, after getahugo.com's
- * assessment reel), shared by the charter ("From Problem to Impact") and the
- * promo row ("Six Ways to Act"): a one-line gold title with two bare gold
- * arrows, then the cards. From 90rem they stand in one row: the open card
- * wide, the others as narrow tiles; a tile opens on a click (or Enter), the
- * arrows step through. Below 90rem the cards are a swipe reel, every card
- * whole, the arrows paging it (a phone swipes).
+ * assessment reel), the charter's "From Problem to Impact". From 90rem the
+ * cards stand in one row: the open card wide, the others as narrow tiles; a
+ * tile opens on a click (or Enter), and the next opens on its own every few
+ * seconds. Below 90rem the cards are a swipe reel, every card whole.
+ * `short` is the promo row: the full width of the screen, like the data
+ * sources' strip, at the Pixel-Map cards' height; the charter keeps the
+ * content column and its full height for its tables.
  *
- * The open card shows its picture in full, untinted. Everything to read sits
- * on frosted panes of the card's field (navy, ink or cobalt): a caption pane
- * at the bottom-left (the symbol and name, the title, the text, the
- * actions) and, apart from it at the bottom-right, a narrower pane for the
- * evidence when there is some; stacked on a narrow card. The panes are
- * translucent and blurred, dense enough for the type (white at 4.5 : 1).
- * A closed tile keeps a light wash of its field and carries its symbol and
- * name on a small frosted label. No gradient.
+ * The open card shows its picture under one flat dim, the words straight on
+ * it with a soft shadow; a closed tile keeps a light wash of its field
+ * (navy, ink or cobalt) and its icon and name. No gradient, no title on
+ * screen, no arrows (Mahir, 2026-10-29).
  *
  * The CSS is `.reel-*` in globals.css.
  */
 
-/** What stands behind a card's panes. */
-export type ReelArt =
-  /**
+/**
    * A photograph. `focus` slides it sideways; `lift` (a fraction of the
    * card's height) sets it taller than the card and anchors it at the
    * bottom, which crops the empty top and raises the subject above the panes
@@ -40,11 +35,7 @@ export type ReelArt =
    * subject sits low, gentle where heads are high. A closed tile keeps the
    * plain framing.
    */
-  | { kind: "photo"; photo: Photo; focus: string; lift: number }
-  /** An app's own screen, filling the card from its top-left corner. */
-  | { kind: "screen"; src: string; alt: string }
-  /** Anything else, drawn on the card's field; told whether the card is open. */
-  | { kind: "custom"; render: (open: boolean) => ReactNode };
+export type ReelArt = { kind: "photo"; photo: Photo; focus: string; lift: number };
 
 export interface ReelItem {
   /** The card's DOM id; arriving at "#id" brings it forward. */
@@ -84,12 +75,7 @@ function scrollReelTo(list: HTMLElement, i: number) {
   list.scrollTo({ left: card.offsetLeft - pad, behavior: reduce ? "auto" : "smooth" });
 }
 
-/**
- * `wide`: the cards run the full width of the screen and stand shorter (the promo row); the title and
- * arrows stay on the page's content width, like every other section's. Otherwise the cards keep that
- * width and their full height (the charter's tables need it).
- */
-export function PhotoReel({ sectionId, title, items, wide = false }: { sectionId: string; title: string; items: ReelItem[]; wide?: boolean }) {
+export function PhotoReel({ sectionId, title, items, short = false }: { sectionId: string; title: string; items: ReelItem[]; short?: boolean }) {
   const headId = useId();
   const listRef = useRef<HTMLUListElement>(null);
   const [open, setOpen] = useState(0);
@@ -216,16 +202,16 @@ export function PhotoReel({ sectionId, title, items, wide = false }: { sectionId
         style={{ "--n": n } as CSSProperties}
         className={cn(
           "reel-list story-reveal @container relative mx-auto flex w-full gap-3 px-gutter-x",
-          !wide && "max-w-384",
+          short ? "min-[90rem]:px-3" : "max-w-384",
           // The reel: swiped sideways, each card snapping to the gutter.
           "snap-x snap-mandatory scroll-px-gutter-x overflow-x-auto overscroll-x-contain pb-1 scrollbar-none [&::-webkit-scrollbar]:hidden",
           // The row: no scrolling, a fixed height.
           "min-[90rem]:snap-none min-[90rem]:overflow-visible min-[90rem]:pb-0",
-          wide ? "min-[90rem]:h-120 2xl:h-128" : "min-[90rem]:h-144 2xl:h-150",
+          short ? "min-[90rem]:h-94" : "min-[90rem]:h-144 2xl:h-150",
         )}
       >
         {items.map((item, i) => (
-          <ReelCard key={item.id} item={item} open={open === i} row={row} onOpen={() => setOpen(i)} />
+          <ReelCard key={item.id} item={item} open={open === i} row={row} short={short} onOpen={() => setOpen(i)} />
         ))}
       </ul>
 
@@ -247,7 +233,7 @@ const SIZES = "(min-width: 90rem) 70vw, (min-width: 64rem) 52rem, (min-width: 40
  * already the finished row; `row` (known only after hydration) decides what
  * is reachable: in the reel every slide is, in the row only the open one.
  */
-function ReelCard({ item, open, row, onOpen }: { item: ReelItem; open: boolean; row: boolean; onOpen: () => void }) {
+function ReelCard({ item, open, row, short, onOpen }: { item: ReelItem; open: boolean; row: boolean; short: boolean; onOpen: () => void }) {
   const { look, art } = item;
   const slideId = useId();
   const slideRef = useRef<HTMLDivElement>(null);
@@ -255,7 +241,7 @@ function ReelCard({ item, open, row, onOpen }: { item: ReelItem; open: boolean; 
   const face = item.bangla ? "font-bengali" : "font-grotesk";
   // Bangla names and titles are marked as Bangla, so a screen reader speaks them in a Bangla voice.
   const lang = item.bangla ? "bn" : undefined;
-  const lift = art.kind === "photo" ? art.lift : 0;
+  const lift = art.lift;
   const label = `${item.name}: ${item.titleText}`;
 
   const imageClass = cn(
@@ -270,7 +256,7 @@ function ReelCard({ item, open, row, onOpen }: { item: ReelItem; open: boolean; 
       style={look.vars as CSSProperties}
       className={cn(
         "group/card relative isolate flex shrink-0 snap-start flex-col overflow-hidden rounded-3xl bg-(--field) text-white scroll-mt-header lg:scroll-mt-header-lg",
-        "min-h-100 w-[min(86vw,30rem)] sm:min-h-128 sm:w-120 lg:w-176",
+        short ? "min-h-94 w-[min(86vw,30rem)] sm:w-120 lg:w-176" : "min-h-100 w-[min(86vw,30rem)] sm:min-h-128 sm:w-120 lg:w-176",
         "min-[90rem]:min-h-0 min-[90rem]:w-auto min-[90rem]:basis-(--spine) min-[90rem]:transition-[flex-grow] min-[90rem]:duration-700 min-[90rem]:ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
         open ? "min-[90rem]:grow" : "min-[90rem]:grow-0",
       )}
@@ -283,11 +269,7 @@ function ReelCard({ item, open, row, onOpen }: { item: ReelItem; open: boolean; 
         )}
         style={{ "--lifted": `${(1 + lift) * 100}%` } as CSSProperties}
       >
-        {art.kind === "photo" && (
-          <Image src={art.photo.src} alt={art.photo.alt} fill sizes={SIZES} className={imageClass} style={{ objectPosition: art.focus }} />
-        )}
-        {art.kind === "screen" && <Image src={art.src} alt={art.alt} fill sizes={SIZES} className={cn(imageClass, "object-top-left")} />}
-        {art.kind === "custom" && art.render(open)}
+        <Image src={art.photo.src} alt={art.photo.alt} fill sizes={SIZES} className={imageClass} style={{ objectPosition: art.focus }} />
       </div>
       <div
         aria-hidden

@@ -5,14 +5,13 @@ import type { LordIconElement } from "@lordicon/element";
 import { useEffect, useRef } from "react";
 import { Icon } from "@/components/ui/icon";
 
-/** The landing page's one icon look: gold lines with light-blue accents (Mahir, 2026-10-29). */
-export const BRAND_ICON_COLORS = { primary: "#e4b027", secondary: "#8fa1e3" };
-
 /**
  * Every card icon on the landing page, in one look (Mahir, 2026-10-29:
  * "all icons must be the same"): an animated Lordicon from the free Wired
- * Lineal set in `public/lordicon/<name>.json`, bold strokes in the brand's
- * gold and light blue, playing on a slow loop so it always feels alive.
+ * Flat set in `public/lordicon/<name>.json`, solid and bright in each icon's
+ * own meaningful colours (a red heart, a green plant), with the set's dark
+ * tones lifted in the files so they hold on the dark fields, and no box
+ * behind it. It plays on a slow loop so it always feels alive.
  * It loads as it nears the screen and pauses while off it, so a page of
  * icons costs nothing out of sight. Viewers who ask for less motion get
  * the still frame (the player handles that). `fallback` is the Material
@@ -54,7 +53,6 @@ export function CardIcon({
       src={`/lordicon/${name}.json`}
       trigger={`loop(${delay})`}
       stroke="bold"
-      colors={BRAND_ICON_COLORS}
       loading="lazy"
       className={className}
       style={{ width: size, height: size, display: "inline-block" }}

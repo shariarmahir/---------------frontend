@@ -29,8 +29,8 @@ import { SpotlightBand } from "@/components/sections/spotlight-band";
  * the seam of each dark band.
  * STORY: the photographs and the claim → the narrow spotlight band (news,
  * protocol status, national indicators) → the four pixels → products → the
- * apps to download → services → the banner gallery (record, protest, rights, the 32 problems, the media, research) →
- * the labs → the open drive → the people → who we are and our values → what partners say → where the data comes from → join.
+ * apps to download → services →
+ * the labs → the open drive → the people → who we are and our values → what partners say → the six ways to act → where the data comes from → join.
  * FIRST VIEWPORT: the header over the photo hero, its claim and gold
  * primary action, then the narrow spotlight band closing it.
  * FORM: extension of the established header world (no seed roll); pacing
@@ -47,8 +47,9 @@ export default function Home() {
         {/* Announcements, the Golden 2-Hours status and the national
             indicators: a narrow banglalink-style slider under the hero. */}
         <SpotlightBand />
-        {/* Pitch-black ground, solid colours only (Mahir, 2026-09-30). */}
-        <div className="relative">
+        {/* Pitch-black ground, solid colours only (Mahir, 2026-09-30). On a touch screen the
+            sections below the first view are laid out only as they come near (globals.css, .home-flow). */}
+        <div className="home-flow relative">
           {/* Problem, challenge, vision, mission, goal and impact: a
               carousel of cards that glides on its own. */}
           <CharterReel />
@@ -60,8 +61,8 @@ export default function Home() {
           <NodeTerminalSection />
           <LeadershipSection />
           <AboutSection />
-          <PromoGallery />
           <ReviewsSection />
+          <PromoGallery />
           <DataSourcesSection />
           <KandariProfileSection />
         </div>
