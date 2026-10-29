@@ -1,5 +1,5 @@
 /*
- * The home page's platform promotion: শিক্ষিতদের মিডিয়া, গবেষণাকোষ and
+ * The home page's platform promotion: চেতনা, গবেষণাকোষ and
  * ক্লাসরুম, told as short films built from real screenshots of the pages
  * (public/platforms, captured from the demo account; nothing in them is
  * staged beyond the demo data the pages already show).
@@ -66,18 +66,18 @@ export interface Scene {
 }
 
 const screens = {
-  compose: { src: "/platforms/compose.webp", h: 800, path: "media/post/new", alt: "শিক্ষিতদের মিডিয়ায় ‘দক্ষতা পোস্ট করুন’ পাতা: পোস্টের ধরন, দক্ষতার প্রমাণ বা প্রজেক্ট ডেমো, ছবি-ভিডিও যোগ, আর ডানে প্রিভিউ" },
+  compose: { src: "/platforms/compose.webp", h: 800, path: "media/post/new", alt: "চেতনায় ‘দক্ষতা পোস্ট করুন’ পাতা: পোস্টের ধরন, দক্ষতার প্রমাণ বা প্রজেক্ট ডেমো, ছবি-ভিডিও যোগ, আর ডানে প্রিভিউ" },
   profile: { src: "/platforms/profile.webp", h: 1260, path: "media/u/mahir", alt: "একটি প্রোফাইল পাতা: প্রতিটি দক্ষতায় নিজের দাবি ও কমিউনিটির যাচাই পাশাপাশি, ‘কমিউনিটি যাচাইকৃত’ ব্যাজ, সার্টিফিকেট আর ওয়ালেট" },
   jobs: { src: "/platforms/jobs.webp", h: 1400, path: "media/jobs", alt: "‘কাজ’ পাতা: খাত অনুযায়ী চাকরি, প্রতিটিতে বেতন, ‘ন্যায্য মজুরি’ চিহ্ন আর আবেদন বোতাম; ডানে দক্ষতার সাথে মেলা কাজ" },
   bank: { src: "/platforms/bank.webp", h: 1400, path: "media/dashboard", alt: "‘মাটির ব্যাংক’ পাতা: তোলার মতো ব্যালান্স, এসক্রোতে রাখা টাকা, আয়ের হিসাব, রাজস্বের চার্ট আর ফি কীভাবে কাটে" },
-  feed: { src: "/platforms/feed.webp", h: 1900, path: "media", alt: "শিক্ষিতদের মিডিয়ার ফিড: গবেষণাকোষ থেকে শেয়ার করা একটি ওয়ার্কিং পেপারের কার্ড, প্রতিক্রিয়া আর আলোচনা" },
+  feed: { src: "/platforms/feed.webp", h: 1900, path: "media", alt: "চেতনার ফিড: গবেষণাকোষ থেকে শেয়ার করা একটি ওয়ার্কিং পেপারের কার্ড, প্রতিক্রিয়া আর আলোচনা" },
   research: { src: "/platforms/research.webp", h: 1150, path: "research", alt: "গবেষণাকোষের প্রধান পাতা: ‘দেশের প্রশ্ন, দেশের গবেষণা।’ শিরোনাম, জনপ্রিয় বিষয় আর সম্পাদকের নির্বাচিত গবেষণা" },
   article: { src: "/platforms/article.webp", h: 1000, path: "research/farm-gate-to-fake-seal", alt: "গবেষণাকোষে একটি ওয়ার্কিং পেপার: শিরোনাম, লেখক, প্রতিক্রিয়ার বোতাম, আলোচনা-শেয়ার-উদ্ধৃতি আর গবেষণা স্কোর" },
   classes: { src: "/platforms/classes.webp", h: 1240, path: "media/classroom", alt: "কাণ্ডারী-ল্যাব ক্লাসরুম: ‘পুরো ক্লাস, এক জায়গায়।’ শিরোনাম, ক্লাস কোড দিয়ে যোগ দেওয়ার ঘর, নমুনা ক্লাস আর ল্যাব রুম" },
   classone: { src: "/platforms/classone.webp", h: 1260, path: "media/classroom/c-ssc27", alt: "একটি ক্লাসের পাতা: পরীক্ষার কাউন্টডাউন, সিলেবাসের অগ্রগতি, নোটিশ বোর্ড, আজকের টপিক, পরের ক্লাস আর হোমওয়ার্ক" },
 } satisfies Record<string, Screen>;
 
-/** শিক্ষিতদের মিডিয়া: from "a degree but no proof" to "paid, safely". */
+/** চেতনা: from "a degree but no proof" to "paid, safely". */
 export const mediaFilm: Scene[] = [
   {
     id: "problem",
@@ -130,7 +130,7 @@ export const mediaFilm: Scene[] = [
       from: { x: 230, y: 40, zoom: 1.22 },
       to: { x: 230, y: 400, zoom: 1.22 },
       chips: [{ text: "ন্যায্য মজুরি নিশ্চিত", at: [760, 965], tone: "gold", icon: "check", delay: 3200 }],
-      phone: { src: "/platforms/phone-feed.webp", alt: "ফোনে শিক্ষিতদের মিডিয়ার ফিড" },
+      phone: { src: "/platforms/phone-feed.webp", alt: "ফোনে চেতনার ফিড" },
     },
   },
   {
@@ -151,7 +151,7 @@ export const mediaFilm: Scene[] = [
   },
   {
     id: "end",
-    tag: "শিক্ষিতদের মিডিয়া",
+    tag: "চেতনা",
     title: "কাজই হোক আপনার পরিচয়",
     body: "এক এনআইডি, এক অ্যাকাউন্ট — প্রতিটি রেটিং একজন সত্যিকারের মানুষের। আজই ফ্রি অ্যাকাউন্ট খুলুন।",
     stage: { kind: "art", art: "end" },
@@ -184,7 +184,7 @@ export const researchReel: Scene[] = [
     id: "share",
     tag: "ছড়িয়ে দিন",
     title: "এক চাপে ফিডে শেয়ার",
-    body: "আপনার গবেষণা পৌঁছে যায় শিক্ষিতদের মিডিয়ায়।",
+    body: "আপনার গবেষণা পৌঁছে যায় চেতনায়।",
     stage: {
       kind: "shot",
       screen: screens.feed,
@@ -234,7 +234,7 @@ export const classroomReel: Scene[] = [
   },
 ];
 
-/** Other rooms inside শিক্ষিতদের মিডিয়া, each with its page's own hero as the picture. */
+/** Other rooms inside চেতনা, each with its page's own hero as the picture. */
 export const mediaRooms = [
   { href: "/media/market", icon: "market", name: "বাজার", nameEn: "Market", line: "যা আছে বিক্রি করুন, যা দরকার চেয়ে নিন — ক্রেতা-বিক্রেতা নিজেরাই মেলে।", image: { src: "/platforms/tile-market.webp", alt: "বাজার পাতার শুরু: ‘যা আছে বিক্রি করুন, যা দরকার চেয়ে নিন।’" } },
   { href: "/media/jobs", icon: "jobs", name: "কাজ", nameEn: "Jobs", line: "খাত অনুযায়ী কাজ; পোস্ট বিনামূল্যে, বেতন লেখা বাধ্যতামূলক ও ন্যায্য।", image: { src: "/platforms/tile-jobs.webp", alt: "কাজ পাতা: খাত আর ধরন অনুযায়ী চাকরির তালিকা" } },

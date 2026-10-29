@@ -35,8 +35,8 @@ export interface ComplaintCategoryMeta {
   label: string;
   labelBn: string;
   icon: string;
+  /** The tile's flat field: navy, ink or cobalt. */
   chip: string;
-  accent: string;
   /** One line a citizen can match their situation against. */
   describes: string;
   routesTo: RoutingTarget;
@@ -47,11 +47,10 @@ export interface ComplaintCategoryMeta {
 export const complaintCategories: ComplaintCategoryMeta[] = [
   {
     id: "chadabaji",
-    label: "Chadabaji / Extortion",
+    label: "Extortion",
     labelBn: "চাঁদাবাজি",
     icon: "payments",
-    chip: "bg-national-crimson text-white",
-    accent: "bg-crimson",
+    chip: "bg-cobalt text-white",
     describes:
       "Someone is demanding regular payments from you, your shop or your transport to let you operate.",
     routesTo: {
@@ -66,8 +65,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Bribery by Officials",
     labelBn: "ঘুষ দাবি",
     icon: "gavel",
-    chip: "bg-signal-orange text-text-primary",
-    accent: "bg-signal",
+    chip: "bg-bdnavy-900 text-white ring-1 ring-white/12 ring-inset",
     describes:
       "A government officer is demanding money to do work that is supposed to be free or fee-fixed.",
     routesTo: {
@@ -81,8 +79,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Police Misconduct",
     labelBn: "পুলিশি অসদাচরণ",
     icon: "shield_person",
-    chip: "bg-text-primary text-white ring-1 ring-white/25",
-    accent: "bg-slate-600",
+    chip: "bg-cobalt text-white",
     describes:
       "Refusal to take your case, unlawful detention, abuse of authority or demand for money by police.",
     routesTo: {
@@ -97,8 +94,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Land Grabbing",
     labelBn: "ভূমি দখল",
     icon: "landscape",
-    chip: "bg-bdnavy-900 text-white",
-    accent: "bg-title",
+    chip: "bg-text-primary text-white ring-1 ring-white/12 ring-inset",
     describes:
       "Someone has occupied your land, forged records, or is blocking your lawful possession.",
     routesTo: {
@@ -113,8 +109,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Service Denial",
     labelBn: "সেবা বঞ্চনা",
     icon: "block",
-    chip: "bg-bd-green text-white",
-    accent: "bg-blue-600",
+    chip: "bg-bdnavy-900 text-white ring-1 ring-white/12 ring-inset",
     describes:
       "A public office is refusing, delaying or obstructing a service you are entitled to.",
     routesTo: {
@@ -129,8 +124,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Harassment & Safety",
     labelBn: "হয়রানি ও নিরাপত্তা",
     icon: "report",
-    chip: "bg-national-crimson text-white",
-    accent: "bg-violet-600",
+    chip: "bg-text-primary text-white ring-1 ring-white/12 ring-inset",
     describes:
       "Threats, stalking, sexual harassment, or violence against you or a family member.",
     routesTo: {
@@ -145,8 +139,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Environment",
     labelBn: "পরিবেশ",
     icon: "eco",
-    chip: "bg-bdgreen-500 text-text-primary",
-    accent: "bg-primary",
+    chip: "bg-text-primary text-white ring-1 ring-white/12 ring-inset",
     describes:
       "Illegal filling of water bodies, unlicensed emissions, tree felling or industrial dumping.",
     routesTo: {
@@ -160,8 +153,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Consumer Rights",
     labelBn: "ভোক্তা অধিকার",
     icon: "shopping_cart",
-    chip: "bg-signal-orange text-text-primary",
-    accent: "bg-cyan-600",
+    chip: "bg-cobalt text-white",
     describes:
       "Overcharging above listed price, adulterated goods, short weight or refusal to give a receipt.",
     routesTo: {
@@ -176,8 +168,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Labour & Wages",
     labelBn: "শ্রম ও মজুরি",
     icon: "engineering",
-    chip: "bg-bdnavy-900 text-white",
-    accent: "bg-teal-600",
+    chip: "bg-bdnavy-900 text-white ring-1 ring-white/12 ring-inset",
     describes:
       "Unpaid wages, unsafe workplace, unlawful dismissal or denial of legal leave.",
     routesTo: {
@@ -191,8 +182,7 @@ export const complaintCategories: ComplaintCategoryMeta[] = [
     label: "Other",
     labelBn: "অন্যান্য",
     icon: "more_horiz",
-    chip: "bg-white/15 text-white",
-    accent: "bg-slate-500",
+    chip: "bg-white/10 text-white ring-1 ring-white/20 ring-inset",
     describes: "Anything that does not fit the categories above.",
     routesTo: {
       authority: "Kandari review — routed after reading",
@@ -248,6 +238,13 @@ export const helplines: Helpline[] = [
     labelBn: "সরকারি সেবা",
     note: "District administration information and grievance routing.",
     icon: "call",
+  },
+  {
+    number: "16430",
+    label: "Free Legal Aid",
+    labelBn: "সরকারি আইনি সহায়তা",
+    note: "National Legal Aid Services Organisation. Free advice and a lawyer if you cannot pay.",
+    icon: "balance",
   },
   {
     number: "16263",
@@ -320,143 +317,6 @@ export const stationAreas: StationArea[] = [
   },
 ];
 
-/** Status a complaint moves through. */
-export type ComplaintStatus = "draft" | "filed" | "acknowledged" | "resolved";
-
-export const STATUS_META: Record<
-  ComplaintStatus,
-  { label: string; labelBn: string; chip: string; icon: string }
-> = {
-  draft: {
-    label: "Draft — not yet submitted",
-    labelBn: "খসড়া",
-    chip: "bg-white/15 text-white",
-    icon: "edit_note",
-  },
-  filed: {
-    label: "Filed with authority",
-    labelBn: "দাখিল করা হয়েছে",
-    chip: "bg-bd-green text-white",
-    icon: "send",
-  },
-  acknowledged: {
-    label: "Acknowledged",
-    labelBn: "গৃহীত",
-    chip: "bg-signal-orange text-text-primary",
-    icon: "mark_email_read",
-  },
-  resolved: {
-    label: "Resolved",
-    labelBn: "সমাধান হয়েছে",
-    chip: "bg-bdgreen-500 text-text-primary",
-    icon: "task_alt",
-  },
-};
-
-/** A complaint in the community feed. */
-export interface Complaint {
-  id: string;
-  category: ComplaintCategory;
-  title: string;
-  body: string;
-  district: string;
-  /** Fixed ISO string — see the news feed for why this is not Date.now(). */
-  at: string;
-  status: ComplaintStatus;
-  supports: number;
-  comments: number;
-  /** Author display name, or null when filed anonymously. */
-  author: string | null;
-}
-
-/** Anchor for placeholder timestamps, fixed so SSR and client agree. */
-export const COMPLAINT_ANCHOR_MS = Date.parse("2026-09-19T06:00:00.000Z");
-const H = (n: number) =>
-  new Date(COMPLAINT_ANCHOR_MS - n * 3_600_000).toISOString();
-
-/**
- * Placeholder community complaints.
- *
- * Illustrative examples written for this UI — not real citizen reports.
- */
-export const complaints: Complaint[] = [
-  {
-    id: "c01",
-    category: "chadabaji",
-    title: "Weekly payment demanded from footpath vendors",
-    body: "A group has been collecting a fixed weekly amount from vendors on our street, saying it is for 'line rent'. Several vendors have stopped trading.",
-    district: "Dhaka",
-    at: H(3),
-    status: "filed",
-    supports: 84,
-    comments: 12,
-    author: null,
-  },
-  {
-    id: "c02",
-    category: "bribery",
-    title: "Money demanded to release a routine certificate",
-    body: "The office says the certificate is ready but will not hand it over without an extra payment that appears on no fee schedule.",
-    district: "Rajshahi",
-    at: H(7),
-    status: "acknowledged",
-    supports: 61,
-    comments: 9,
-    author: "Anwar H.",
-  },
-  {
-    id: "c03",
-    category: "consumer",
-    title: "Shops charging above the posted rate for essentials",
-    body: "Several shops in the market are selling above the listed price and refusing to give receipts when asked.",
-    district: "Khulna",
-    at: H(11),
-    status: "resolved",
-    supports: 143,
-    comments: 27,
-    author: "Farhana R.",
-  },
-  {
-    id: "c04",
-    category: "service-denial",
-    title: "Application returned four times without a written reason",
-    body: "Each visit produces a new objection that was not mentioned before. No written deficiency note has been issued.",
-    district: "Sylhet",
-    at: H(16),
-    status: "filed",
-    supports: 38,
-    comments: 6,
-    author: null,
-  },
-  {
-    id: "c05",
-    category: "environment",
-    title: "Canal being filled without any visible permit",
-    body: "Filling work has continued at night for two weeks. Drainage in the area has already worsened.",
-    district: "Chattogram",
-    at: H(22),
-    status: "acknowledged",
-    supports: 97,
-    comments: 18,
-    author: "Local resident",
-  },
-  {
-    id: "c06",
-    category: "labour",
-    title: "Two months of wages unpaid at a small factory",
-    body: "Workers have been told payment will come 'next week' since the start of the quarter. No pay slips have been issued.",
-    district: "Gazipur",
-    at: H(29),
-    status: "draft",
-    supports: 52,
-    comments: 11,
-    author: null,
-  },
-];
-
 /** Shown on the page so the limits of this tool are never implied away. */
-export const COMPLAINT_POLICY =
-  "Kandari is not a government agency. This centre helps you identify the correct authority, prepare a complete complaint, and keep a public record of it. Filing here does not by itself notify the police or any ministry — use the helplines for anything urgent.";
-
 export const COMPLAINT_POLICY_BN =
-  "কাণ্ডারী কোনো সরকারি সংস্থা নয়। এই কেন্দ্র সঠিক কর্তৃপক্ষ চিনতে, অভিযোগ গুছিয়ে লিখতে এবং তার প্রকাশ্য রেকর্ড রাখতে সাহায্য করে। জরুরি প্রয়োজনে ৯৯৯ নম্বরে কল করুন।";
+  "কাণ্ডারী কোনো সরকারি সংস্থা নয়। এই পাতা সঠিক দপ্তর চিনতে, অভিযোগ গুছিয়ে লিখতে আর প্রমাণ রাখতে সাহায্য করে; এখানে লেখা অভিযোগ নিজে থেকে কোনো দপ্তরে যায় না। জরুরি প্রয়োজনে ৯৯৯ নম্বরে কল করুন।";

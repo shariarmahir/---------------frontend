@@ -50,7 +50,7 @@ function GoldenTwoHours() {
 
 /**
  * The home page's product posters: the three healthcare products, each
- * photo with its own motion layer, then শিক্ষিতদের মিডিয়া, whose picture
+ * photo with its own motion layer, then চেতনা, whose picture
  * plays a short film of its core loop. Poster copy is short on purpose: the
  * face carries a name and one line, the panel the rest.
  */
@@ -79,7 +79,7 @@ function productPosters(): PosterItem[] {
       },
     ];
   });
-  // শিক্ষিতদের মিডিয়া — the skill-first social platform (CLAUDE.md §1), a
+  // চেতনা — the skill-first social platform (CLAUDE.md §1), a
   // product of its own beside the healthcare line.
   items.push({
     id: "media",
@@ -88,7 +88,7 @@ function productPosters(): PosterItem[] {
     // container): 24px wherever the card is wide enough, as on desktop, smaller on a phone's half-width card.
     title: <LabelText text={LABEL_TEXT.media} className="text-[min(1.5rem,13.5cqi)] leading-none" />,
     tagline: "Post a skill. Get verified. Get hired.",
-    nameText: "শিক্ষিতদের মিডিয়া",
+    nameText: "চেতনা",
     href: "/media",
     scene: "media-reel",
   });

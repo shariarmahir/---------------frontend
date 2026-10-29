@@ -64,7 +64,7 @@ export function PostActions({
   async function share() {
     const url = `${window.location.origin}/media/post/${post.id}`;
     try {
-      if (navigator.share) await navigator.share({ url, title: `${authorName} — ${post.skill?.name ?? "শিক্ষিতদের মিডিয়া"}` });
+      if (navigator.share) await navigator.share({ url, title: `${authorName} — ${post.skill?.name ?? "চেতনা"}` });
       else {
         await navigator.clipboard.writeText(url);
         toast.success("লিংক কপি হয়েছে");

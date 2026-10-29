@@ -20,7 +20,7 @@ Bangladesh is treated as a corrupted, low-resolution image; every failing public
 
 ## Capabilities and Constraints
 
-- Products: SWASTI (স্বস্তি), a Bangla voice-first health super-app (RAG medical agent, CNN diagnostics), in beta; আপনজন-Aponjon, a wearable vitals/neuro device, prototype; Smart Pharmacy, pilot. শিক্ষিতদের মিডিয়া, a members-only skills-and-work platform (/media).
+- Products: SWASTI (স্বস্তি), a Bangla voice-first health super-app (RAG medical agent, CNN diagnostics), in beta; আপনজন-Aponjon, a wearable vitals/neuro device, prototype; Smart Pharmacy, pilot. চেতনা, a members-only skills-and-work platform (/media).
 - Services: AI, hardware/IoT, signal and software builds for factories, offices, farms and apps.
 - R&D (in research, not shipping): blind-assistance wearable, organic-waste-to-soil, semiconductor/data work.
 - Membership: Kandari Profile (phone OTP first; mock gateway, no backend yet).

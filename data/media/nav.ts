@@ -1,4 +1,4 @@
-/** Navigation for শিক্ষিতদের মিডিয়া. Icons are resolved in the shell. */
+/** Navigation for চেতনা. Icons are resolved in the shell. */
 export type NavIcon =
   | "feed"
   | "market"

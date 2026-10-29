@@ -206,7 +206,7 @@ export const serviceRunsIn: Record<string, { name: string; href: string }[]> = {
   ],
   development: [
     { name: "This website", href: "/" },
-    { name: "শিক্ষিতদের মিডিয়া", href: "/media" },
+    { name: "চেতনা", href: "/media" },
     { name: "গবেষণাকোষ", href: "/research" },
   ],
 };

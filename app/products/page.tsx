@@ -23,7 +23,7 @@ import { getProduct, products } from "@/data/products";
 export const metadata: Metadata = {
   title: "Products | কাণ্ডারী-ল্যাব",
   description:
-    "Aponjon, SWASTI and the Smart Pharmacy for Bangladesh's Golden Two Hours, শিক্ষিতদের মিডিয়া for skills and work, and the services behind them.",
+    "Aponjon, SWASTI and the Smart Pharmacy for Bangladesh's Golden Two Hours, চেতনা for skills and work, and the services behind them.",
 };
 
 const PROMISES = [

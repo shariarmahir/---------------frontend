@@ -26,7 +26,7 @@ const healthItems: CatalogItem[] = products.map((p) => ({
 }));
 
 /**
- * শিক্ষিতদের মিডিয়া, the skill-first social platform: a product of its own
+ * চেতনা, the skill-first social platform: a product of its own
  * beside the health line (CLAUDE.md §1), as on the home page. It has no
  * product shot, so a Nakshi Kantha stands for "show what you can make".
  */

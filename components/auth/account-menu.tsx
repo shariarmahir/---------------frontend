@@ -149,7 +149,7 @@ export function AccountMenu({ variant = "site", className }: { variant?: "site" 
           </DropdownMenu.Item>
           <DropdownMenu.Item asChild className={itemClass}>
             <Link href="/media/me">
-              <UsersRound className="size-4" aria-hidden /> শিক্ষিতদের মিডিয়া প্রোফাইল
+              <UsersRound className="size-4" aria-hidden /> চেতনা প্রোফাইল
             </Link>
           </DropdownMenu.Item>
           <DropdownMenu.Separator className="my-1.5 h-px bg-text-primary/15" />

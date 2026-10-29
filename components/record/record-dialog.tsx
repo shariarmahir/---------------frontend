@@ -73,7 +73,7 @@ export function RecordDialog({ open, onOpenChange }: { open: boolean; onOpenChan
           }}
           className={cn(
             "record-panel fixed inset-y-2 right-2 z-[60] flex w-[min(28rem,calc(100vw-1rem))] flex-col overflow-hidden rounded-3xl shadow-[0_30px_80px_-20px_rgb(0_0_0/0.8)] focus:outline-none sm:inset-y-3 sm:right-3",
-            stealth ? "bg-black text-white" : "bg-signal-orange text-text-primary",
+            stealth ? "bg-black text-white" : "bg-bdnavy-900 text-white ring-1 ring-white/12",
           )}
         >
           {stealth ? (
@@ -94,16 +94,16 @@ export function RecordDialog({ open, onOpenChange }: { open: boolean; onOpenChan
               {/* Header — pixel mark, title, the ink close button of the phone menu. */}
               <div className="record-item flex items-start justify-between gap-3" style={item(0)}>
                 <div>
-                  <Dialog.Title className="mt-2 flex items-center gap-2 font-bengali text-3xl leading-tight font-bold">
+                  <Dialog.Title className="mt-2 flex items-center gap-2 font-bengali text-3xl leading-tight font-bold text-signal-orange">
                     প্রমাণ রেকর্ড
                   </Dialog.Title>
-                  <Dialog.Description className="mt-1 font-sans text-sm leading-relaxed text-text-primary/85">
+                  <Dialog.Description className="mt-1 font-sans text-sm leading-relaxed text-white/80">
                     Record a bribe demand, extortion or harassment. Files stay on this device until you share them.
                   </Dialog.Description>
                 </div>
                 <Dialog.Close
                   aria-label="Close recorder"
-                  className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-text-primary text-signal-orange [-webkit-tap-highlight-color:transparent] transition-[background-color,scale] duration-200 hover:bg-bd-green-dark focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-90"
+                  className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-black/40 text-signal-orange ring-1 ring-white/12 [-webkit-tap-highlight-color:transparent] transition-[background-color,scale] duration-200 hover:bg-black/60 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-90"
                 >
                   <X className="size-5" aria-hidden />
                 </Dialog.Close>
@@ -156,7 +156,7 @@ export function RecordDialog({ open, onOpenChange }: { open: boolean; onOpenChan
                 )}
                 {state === "requesting" ? (
                   <p className="mt-3 flex items-center gap-2 font-sans text-[0.8125rem] font-semibold">
-                    <span className="size-2 animate-pulse rounded-full bg-text-primary" />
+                    <span className="size-2 animate-pulse rounded-full bg-signal-orange" />
                     Waiting for permission — allow microphone access to start.
                   </p>
                 ) : null}
@@ -176,7 +176,7 @@ export function RecordDialog({ open, onOpenChange }: { open: boolean; onOpenChan
 
               {recordings.length > 0 ? (
                 <div className="record-item mt-5 flex flex-col gap-3" style={item(4)}>
-                  <span className="font-mono text-[11px] font-bold tracking-widest uppercase">Saved on this device ({recordings.length})</span>
+                  <span className="font-sans text-sm font-semibold text-white/80">Saved on this device ({recordings.length})</span>
                   {recordings.map((r) => (
                     <RecordingRow key={r.id} rec={r} onDiscard={discard} />
                   ))}
@@ -185,11 +185,11 @@ export function RecordDialog({ open, onOpenChange }: { open: boolean; onOpenChan
 
               {/* Where the evidence goes next. */}
               <div className="record-item mt-5" style={item(5)}>
-                <span className="font-mono text-[11px] font-bold tracking-widest uppercase">Then report it</span>
+                <span className="font-sans text-sm font-semibold text-white/80">Then report it</span>
                 <div className="mt-2 grid grid-cols-3 gap-2">
                   {[
                     { href: "tel:999", icon: "emergency", n: "৯৯৯", label: "Emergency", cls: "bg-national-crimson text-white" },
-                    { href: "tel:106", icon: "report", n: "১০৬", label: "Anti-corruption", cls: "bg-bd-green text-white" },
+                    { href: "tel:106", icon: "report", n: "১০৬", label: "Anti-corruption", cls: "bg-cobalt text-white" },
                     { href: "/protibad#file-complaint", icon: "gavel", n: "প্রতিবাদ", label: "File complaint", cls: "bg-text-primary text-white" },
                   ].map((r) => (
                     <a
@@ -208,7 +208,7 @@ export function RecordDialog({ open, onOpenChange }: { open: boolean; onOpenChan
                 </div>
               </div>
 
-              <p className="record-item mt-auto flex items-start gap-1.5 pt-5 font-sans text-xs leading-relaxed text-text-primary/80" style={item(6)}>
+              <p className="record-item mt-auto flex items-start gap-1.5 pt-5 font-sans text-xs leading-relaxed text-white/65" style={item(6)}>
                 <Icon name="info" className="mt-px shrink-0 text-[14px]" />
                 <span>
                   Recordings are held in this browser only and are lost if you close the tab without downloading. Consent and recording law
@@ -294,7 +294,7 @@ function LivePanel({
           <span className="relative size-2.5 rounded-full bg-national-crimson" />
         </span>
         <span className="font-grotesk text-4xl leading-none font-bold text-signal-orange tabular-nums">{formatDuration(elapsed)}</span>
-        <span className="ml-auto rounded-full bg-national-crimson px-2.5 py-1 font-mono text-[10px] font-bold tracking-wider uppercase">
+        <span className="ml-auto rounded-full bg-national-crimson px-2.5 py-1 font-sans text-xs font-bold">
           {mode === "audio" ? "Rec · audio" : "Rec · video"}
         </span>
       </div>
@@ -311,7 +311,7 @@ function LivePanel({
         {BARS.map((w, i) => (
           <span
             key={i}
-            className={cn("w-full rounded-[3px] transition-[height] duration-75", i % 3 === 0 ? "bg-signal-orange" : i % 3 === 1 ? "bg-bdgreen-500" : "bg-white")}
+            className={cn("w-full rounded-[3px] transition-[height] duration-75", i % 3 === 0 ? "bg-signal-orange" : i % 3 === 1 ? "bg-bdnavy-300" : "bg-white")}
             style={{ height: `${Math.max(8, amp * w * 100)}%` }}
           />
         ))}
@@ -327,7 +327,7 @@ function LivePanel({
         <button
           type="button"
           onClick={onStop}
-          className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-signal-orange px-3 font-grotesk text-sm font-bold text-text-primary uppercase [-webkit-tap-highlight-color:transparent] transition-[scale] duration-150 active:scale-95"
+          className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-signal-orange px-3 font-grotesk text-sm font-bold text-text-primary [-webkit-tap-highlight-color:transparent] transition-[scale] duration-150 active:scale-95"
         >
           <Icon name="stop_circle" className="text-[20px]" filled />
           Stop &amp; save
@@ -335,7 +335,7 @@ function LivePanel({
         <button
           type="button"
           onClick={onStealth}
-          className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-black px-3 font-grotesk text-sm font-bold text-white uppercase ring-1 ring-white/20 [-webkit-tap-highlight-color:transparent] transition-[scale] duration-150 active:scale-95"
+          className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-black px-3 font-grotesk text-sm font-bold text-white ring-1 ring-white/20 [-webkit-tap-highlight-color:transparent] transition-[scale] duration-150 active:scale-95"
         >
           <Icon name="dark_mode" className="text-[18px]" />
           Stealth
@@ -452,7 +452,7 @@ function RecordingRow({ rec, onDiscard }: { rec: Recording; onDiscard: (id: stri
       ) : null}
 
       <div className="flex flex-wrap gap-2">
-        <button type="button" onClick={share} className={cn(action, "bg-bdgreen-500 text-text-primary")}>
+        <button type="button" onClick={share} className={cn(action, "bg-cobalt text-white")}>
           <Icon name="share" className="text-[16px]" />
           Share to WhatsApp
         </button>

@@ -13,7 +13,7 @@ export type RoleId = "citizen" | "researcher" | "provider" | "student";
 export const ROLES: { id: RoleId; bn: string; en: string; blurb: string }[] = [
   { id: "citizen", bn: "নাগরিক / রোগী", en: "Citizen / Patient", blurb: "আপনজন ব্যান্ডের ভাইটাল সিঙ্ক, টেলিমেডিসিনে অগ্রাধিকার, গ্রামের ফার্মেসির খবর।" },
   { id: "researcher", bn: "গবেষক / প্রকৌশলী", en: "Researcher / Engineer", blurb: "হার্ডওয়্যার SDK, গবেষণার আপডেট, ডেভ-কিট ও ওপেন ডেটাসেটের খবর।" },
-  { id: "student", bn: "শিক্ষার্থী / চাকরিপ্রার্থী", en: "Student / Job seeker", blurb: "শিক্ষিতদের মিডিয়ার ক্লাসরুম — ব্যাচ বানান, রুটিন, সিলেবাস, নোট, পরীক্ষার কাউন্টডাউন আর ক্লাস চ্যালেঞ্জ।" },
+  { id: "student", bn: "শিক্ষার্থী / চাকরিপ্রার্থী", en: "Student / Job seeker", blurb: "চেতনার ক্লাসরুম — ব্যাচ বানান, রুটিন, সিলেবাস, নোট, পরীক্ষার কাউন্টডাউন আর ক্লাস চ্যালেঞ্জ।" },
   { id: "provider", bn: "স্বাস্থ্যসেবা প্রদানকারী", en: "Healthcare Provider / Clinic", blurb: "ফার্মেসি নোডে যুক্ত হওয়া, যাচাইকৃত যন্ত্রের তালিকা, ডাক্তার-ট্রায়াজ।" },
 ];
 
@@ -56,7 +56,7 @@ export interface Account {
   sectors: SectorId[];
   products: string[];
   notify: NotifyPrefs;
-  /** Linked শিক্ষিতদের মিডিয়া profile, if the person has one. */
+  /** Linked চেতনা profile, if the person has one. */
   mediaHandle: string | null;
   /**
    * Profile picture: a site path (e.g. the founder's portrait in
@@ -148,7 +148,7 @@ export const AUTH_RULES = {
  */
 export const PROTECTED_PREFIXES = [
   "/account",
-  // শিক্ষিতদের মিডিয়া is members-only: feed, market, jobs, profiles — all of it
+  // চেতনা is members-only: feed, market, jobs, profiles — all of it
   // (Mahir, 2026-09-27).
   "/media",
 ] as const;

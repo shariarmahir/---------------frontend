@@ -38,7 +38,7 @@ const FIELD: Record<AppId, string> = {
 /** The photograph standing in the middle of each banner. */
 const STAGE: Record<AppId, { src: string; alt: string; position: string }> = {
   swasti: { src: "/sections/device.png", alt: "The আপনজন band on a wrist, its pulse and SpO₂ readings floating above it", position: "55% 45%" },
-  media: { src: "/media/kantha-full.webp", alt: "A finished nakshi kantha, the kind of work shared on শিক্ষিতদের মিডিয়া", position: "50% 50%" },
+  media: { src: "/media/kantha-full.webp", alt: "A finished nakshi kantha, the kind of work shared on চেতনা", position: "50% 50%" },
 };
 
 const isBangla = (s: string) => /[ঀ-৿]/.test(s);
@@ -299,7 +299,7 @@ function SwastiScreen() {
 function MediaScreen() {
   return (
     <>
-      <ScreenHead hello="স্বাগতম," name={<span className="font-bengali">শিক্ষিতদের মিডিয়া</span>} icon="person" />
+      <ScreenHead hello="স্বাগতম," name={<span className="font-bengali">চেতনা</span>} icon="person" />
 
       <div className="relative mt-3 h-28 overflow-hidden rounded-2xl">
         <Image src="/media/kantha-closeup.webp" alt="" fill sizes="200px" className="object-cover" />

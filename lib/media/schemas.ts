@@ -1,5 +1,5 @@
 /**
- * Form schemas for শিক্ষিতদের মিডিয়া (zod), shared by the forms and their
+ * Form schemas for চেতনা (zod), shared by the forms and their
  * tests. Messages are the Bangla text shown under each field.
  */
 import { z } from "zod";

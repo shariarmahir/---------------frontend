@@ -4,7 +4,7 @@ import type { Question } from "@/lib/media/classroom";
 
 /**
  * কাণ্ডারী তৈরি একাডেমি — departments, courses, workshops, teachers and the
- * public interview board. Teachers are members of শিক্ষিতদের মিডিয়া, so
+ * public interview board. Teachers are members of চেতনা, so
  * every teacher links to a real profile with community-verified skills.
  * Dates sit around DEMO_NOW (Friday 2026-09-25). Sample data for the demo.
  */

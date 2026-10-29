@@ -35,6 +35,6 @@ export const LOGO_TEXT = {
 } satisfies Record<string, LogoString>;
 
 export const LABEL_TEXT = {
-  media: { bijoy: "wkw¶Z‡`i wgwWqv", bn: "শিক্ষিতদের মিডিয়া" },
+  media: { bijoy: "‡PZbv", bn: "চেতনা" },
   protibad: { bijoy: "cÖwZev`", bn: "প্রতিবাদ" },
 } satisfies Record<string, LogoString>;

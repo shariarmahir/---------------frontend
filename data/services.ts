@@ -121,7 +121,7 @@ export const services: Service[] = [
       { title: "UI/UX design", body: "Design systems and screens tested with the people who will use them." },
       { title: "Dashboards & admin", body: "Back offices for orders, stock, staff and data." },
     ],
-    proof: "This website, শিক্ষিতদের মিডিয়া and গবেষণাকোষ were built by the same team.",
+    proof: "This website, চেতনা and গবেষণাকোষ were built by the same team.",
     icon: "code_blocks",
     motion: "code",
     image: {

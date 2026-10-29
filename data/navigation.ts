@@ -14,6 +14,8 @@ export interface NavLink {
    * adjacent nav items read as one red block.
    */
   accentWord?: string;
+  /** A tab that does something on the page instead of going anywhere: "record" opens the evidence recorder. */
+  action?: "record";
 }
 
 /**
@@ -112,6 +114,22 @@ export const nagorikNavLinks: NavLink[] = [
 ];
 
 /**
+ * The প্রতিবাদ page's tabs (Mahir, 2026-10-29): its own sections, the
+ * evidence recorder (a tab that opens it rather than a link), then the two
+ * live boards it feeds: the crime and complaint dashboard and the National
+ * TV Wall.
+ */
+export const protibadNavLinks: NavLink[] = [
+  { href: "/protibad", label: "Overview", shortLabel: "Overview" },
+  { href: "/protibad#live", label: "Live crime", shortLabel: "Live" },
+  { href: "/protibad#crime-data", label: "Crime data", shortLabel: "Data" },
+  { href: "/protibad#file-complaint", label: "File a complaint", shortLabel: "Complain" },
+  { href: "#record", label: "Record", shortLabel: "Record", action: "record" },
+  { href: "/protibad/command", label: "Crime & complaint dashboard", shortLabel: "Dashboard" },
+  { href: "/tv-wall", label: "National TV wall", shortLabel: "TV wall" },
+];
+
+/**
  * Navigation for the product pages.
  *
  * The home nav's bare anchors ("#rd-labs") resolve to nothing here, so
@@ -123,7 +141,7 @@ export const productNavLinks: NavLink[] = [
   { href: "/products/aponjon", label: "Aponjon", shortLabel: "Aponjon" },
   { href: "/products/swasti", label: "SWASTI", shortLabel: "SWASTI" },
   { href: "/products/smart-pharmacy", label: "Smart Pharmacy", shortLabel: "Pharmacy" },
-  { href: "/media", label: "শিক্ষিতদের মিডিয়া", shortLabel: "মিডিয়া" },
+  { href: "/media", label: "চেতনা", shortLabel: "চেতনা" },
   {
     href: "#services",
     label: "Services",
@@ -177,6 +195,9 @@ export function navLinksFor(pathname: string): NavLink[] {
   if (pathname === "/nagorik") {
     return nagorikNavLinks;
   }
+  if (pathname === "/protibad") {
+    return protibadNavLinks;
+  }
   if (pathname === "/research" || pathname.startsWith("/research/")) {
     return researchNavLinks;
   }
@@ -185,5 +206,8 @@ export function navLinksFor(pathname: string): NavLink[] {
   }
   return navLinks;
 }
+
+/** চেতনা's motto (Mahir, 2026-10-29), shown under its name wherever the name stands as a brand. */
+export const CHETONA_MOTTO = "চেতনা ফিরলেই পরিবর্তন সম্ভব";
 
 export const NAZRUL_MOTTO = "‘কে আছ জোয়ান? হও আগুয়ান। হাঁকিছে ভবিষ্যৎ।’";

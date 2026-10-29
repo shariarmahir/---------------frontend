@@ -31,7 +31,7 @@ const WAYS_IN = [
     glow: "var(--color-bdnavy-400)",
   },
   {
-    title: "শিক্ষিতদের মিডিয়া",
+    title: "চেতনা",
     body: "Show your skills, get verified by the community, find fair-paid work.",
     action: "Join Social",
     href: "/media",

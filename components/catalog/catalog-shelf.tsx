@@ -80,7 +80,7 @@ const APP_LOOKS: Record<AppId, { icon: string; field: string }> = {
 
 /**
  * The apps band between the products and the services: one card per app
- * (SWASTI for health, শিক্ষিতদের মিডিয়া for skills and work), each with its
+ * (SWASTI for health, চেতনা for skills and work), each with its
  * icon tile, what it does, how to use it today, and its two stores. A
  * store is a link only once its listing is live; until then it says
  * "coming soon" (data/apps.ts).

@@ -113,10 +113,10 @@ export const promos: Promo[] = [
   },
   {
     id: "media",
-    label: "শিক্ষিতদের মিডিয়া",
+    label: "চেতনা",
     title: "দক্ষতা দেখান, যাচাই পান, কাজ পান",
     body: "Post your work, rate yourself honestly, let the community verify it, and get hired at fair pay.",
-    action: { label: "মিডিয়ায় যোগ দিন", href: "/media" },
+    action: { label: "চেতনায় যোগ দিন", href: "/media" },
     field: "navy",
     photo: {
       src: "/promos/ad-media.webp",

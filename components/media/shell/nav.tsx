@@ -254,8 +254,8 @@ export function MobileMenu({ unreadSeed, me }: { unreadSeed: UnreadSeed; me: str
         onClick={(e) => (e.target as HTMLElement).closest("a") && setOpenOn(null)}
       >
         <SheetHeader>
-          <SheetTitle className="text-lg font-bold text-m-blue">শিক্ষিতদের মিডিয়া</SheetTitle>
-          <SheetDescription className="text-sm text-m-ink/65">শিখুন · বানান · আয় করুন · এলাকার জন্য কিছু করুন</SheetDescription>
+          <SheetTitle className="text-lg font-bold text-m-blue">চেতনা</SheetTitle>
+          <SheetDescription className="text-sm text-m-ink/65">চেতনা ফিরলেই পরিবর্তন সম্ভব</SheetDescription>
         </SheetHeader>
         <div className="px-2">
           <NavGroups pathname={pathname} me={me} unread={unread} size="sheet" />

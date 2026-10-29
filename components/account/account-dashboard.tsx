@@ -537,7 +537,7 @@ function Interests({ account }: { account: Account }) {
 function Places({ account }: { account: Account }) {
   const followed = FOLLOWABLE_PRODUCTS.filter((p) => account.products.includes(p.slug));
   const places = [
-    { href: "/media/me", icon: <UsersRound className="size-5" aria-hidden />, title: "শিক্ষিতদের মিডিয়া", sub: account.mediaHandle ? `@${account.mediaHandle} — দক্ষতা, রেটিং, কাজ` : "দক্ষতা-প্রোফাইল খুলুন, কাজ পান" },
+    { href: "/media/me", icon: <UsersRound className="size-5" aria-hidden />, title: "চেতনা", sub: account.mediaHandle ? `@${account.mediaHandle} — দক্ষতা, রেটিং, কাজ` : "দক্ষতা-প্রোফাইল খুলুন, কাজ পান" },
     ...followed.map((p) => ({ href: `/products/${p.slug}`, icon: <Icon name="deployed_code" className="text-[20px]" />, title: p.bn, sub: `${p.en} — অনুসরণ করছেন` })),
   ];
   return (

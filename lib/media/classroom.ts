@@ -1,6 +1,6 @@
 /**
  * ক্লাসরুম — a batch or class run by its leader (CR / captain), inside
- * শিক্ষিতদের মিডিয়া. Everyone acts as their Kandari Profile; there is no
+ * চেতনা. Everyone acts as their Kandari Profile; there is no
  * separate classroom account. Pure rules here, tested in classroom.test.ts.
  */
 

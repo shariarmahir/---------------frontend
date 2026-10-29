@@ -54,7 +54,7 @@ export function ResearchPaper({ p, onBack }: { p: ResearchProject; onBack: () =>
             </ul>
           </section>
         )}
-        <footer className="mt-10 border-t border-m-ink/15 pt-4 text-center text-xs text-m-ink/60">শিক্ষিতদের মিডিয়া · গবেষণা কর্মশালায় দল মিলে তৈরি</footer>
+        <footer className="mt-10 border-t border-m-ink/15 pt-4 text-center text-xs text-m-ink/60">চেতনা · গবেষণা কর্মশালায় দল মিলে তৈরি</footer>
       </article>
     </div>
   );

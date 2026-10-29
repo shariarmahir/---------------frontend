@@ -2,7 +2,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 /**
- * Button looks for শিক্ষিতদের মিডিয়া, for <button> and <Link> alike, on the
+ * Button looks for চেতনা, for <button> and <Link> alike, on the
  * light ground: yellow for the main action (black text — white on yellow
  * is under 2:1), solid blue for the strong second action, blue outline and
  * soft yellow for the rest, a short lift on hover and press.

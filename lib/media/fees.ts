@@ -1,5 +1,5 @@
 /**
- * Platform fees for শিক্ষিতদের মিডিয়া.
+ * Platform fees for চেতনা.
  *
  * The seller gives 5% of every sale to the platform; the buyer pays a 5%
  * service charge on top, which also covers the SSLCommerz gateway. Both

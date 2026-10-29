@@ -6,7 +6,7 @@
 
 /* The media tokens stay variables (not inline) so the dark theme can swap them. */
 @theme {
-  /* শিক্ষিতদের মিডিয়া (owner's palette, 2026-10-07, from the reference
+  /* চেতনা (owner's palette, 2026-10-07, from the reference
      card): Azure Mist ground, white cards, Amber Flame #FFB423 for buttons
      and highlights, Persian Blue #013FD0 for headings, links and the bold
      bands, near-black text, red only for risk, green only for yes. Used
@@ -1341,7 +1341,7 @@
 .ms-root:hover .ms-beam,
 .ms-root:focus-within .ms-beam { opacity: 1; }
 
-/* শিক্ষিতদের মিডিয়া's poster film (components/showcase/media-reel.tsx): one
+/* চেতনা's poster film (components/showcase/media-reel.tsx): one
    ten-second loop in four chapters. Each .mr-atN layer enters at its
    chapter (0 / 25 / 50 / 72%) and every layer leaves together at the end,
    so the loop restarts clean. Resting state = fully drawn, for reduced motion. */
@@ -2016,7 +2016,7 @@
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── শিক্ষিতদের মিডিয়া ─────────────────────────────────────────────── */
+/* ── চেতনা ─────────────────────────────────────────────── */
 
 /* Classroom meters draw in from empty (circumference of r=52 ≈ 327). */
 @keyframes meter-draw {
@@ -2032,7 +2032,7 @@
 }
 
 /*
- * শিক্ষিতদের মিডিয়া, light (owner's palette, 2026-10-07): a white ground,
+ * চেতনা, light (owner's palette, 2026-10-07): a white ground,
  * black text, yellow buttons and cards, #185ADB blue as the second colour,
  * red only for risk, green only for yes. The shared shadcn pieces are
  * re-toned here rather than forked. Unlayered, so these win over the
@@ -3258,6 +3258,28 @@ html.has-cursor :is(input, textarea, select, [contenteditable="true"]) {
   .footer-music[data-on] .footer-music-disc { animation: music-spin 5s linear infinite; }
   .footer-music[data-on] .footer-music-bar { animation: music-bar calc(0.62s + var(--i) * 0.09s) ease-in-out calc(var(--i) * -0.19s) infinite; }
   .footer-music[data-on] .footer-sound-note { animation: music-note 1.8s ease-out calc(var(--i) * 0.9s) infinite; }
+}
+
+/* প্রতিবাদ (components/protibad): the hero's two halves rise in once on
+   load; a shimmer holds the place of anything still on its way from the
+   wire; the police table's rows and the 2026 tiles step in one after
+   another when they come on screen. Still under reduced motion. */
+@keyframes pb-rise { from { opacity: 0; translate: 0 18px; } to { opacity: 1; translate: 0 0; } }
+@keyframes pb-sweep { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+/* The hero claim (protibad-hero.tsx) is shorter than the home one, so from
+   40rem it is set to fill the lockup at its own length (16.9em, 17.1 with
+   the outline) instead of .hero-claim's 21.7. */
+@media (width >= 40rem) {
+  .pb-claim { font-size: calc(100cqw / 17.1); }
+}
+.pb-shimmer {
+  background: rgb(255 255 255 / 0.06) linear-gradient(90deg, transparent 0%, rgb(255 255 255 / 0.08) 50%, transparent 100%) no-repeat;
+  background-size: 200% 100%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .pb-hero-rise { animation: pb-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .pb-shimmer { animation: pb-sweep 1.4s ease-in-out infinite; }
+  .pb-row-in { animation: pb-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; }
 }
 
 /* The footer's maker credit (site-footer.tsx): the name's letters rise in

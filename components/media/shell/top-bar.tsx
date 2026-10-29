@@ -27,7 +27,7 @@ export function TopBar({ unreadSeed }: { unreadSeed: UnreadSeed }) {
             <span className="truncate text-[13px] text-m-ink min-[360px]:text-[16px] sm:text-[21px]">
               <LabelText text={LABEL_TEXT.media} />
             </span>
-            <span className="mt-1 hidden text-[11px] font-bold text-m-blue sm:block">দক্ষতা · প্রমাণ · সুযোগ</span>
+            <span className="mt-1 hidden text-[11px] font-bold text-m-blue sm:block">চেতনা ফিরলেই পরিবর্তন সম্ভব</span>
           </span>
         </Link>
 

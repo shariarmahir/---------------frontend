@@ -285,7 +285,7 @@ export function ShareButton({ a, className }: { a: Article; className?: string }
             <div id={menuId} className={cn(MENU, "top-full right-0 w-72")}>
               <button type="button" onClick={toFeed} className={MENU_ITEM}>
                 <Icon name="dynamic_feed" className="mt-0.5 text-xl text-signal-orange" />
-                <span><span className="block font-semibold">Share to the Kandari feed</span><span className="block text-white/65">Posts it to Shikkhitoder Media</span></span>
+                <span><span className="block font-semibold">Share to the Kandari feed</span><span className="block text-white/65">Posts it to Chetona</span></span>
               </button>
               <p className="mt-1 border-t border-white/12 px-4 pt-3 pb-1 text-xs font-semibold text-bdnavy-300">Social media</p>
               {(Object.keys(SOCIAL) as SocialChannel[]).map((ch) => {

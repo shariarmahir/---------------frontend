@@ -64,7 +64,7 @@ const questionSchema = z.object({
 type Context = z.infer<typeof schema>["context"];
 
 const QUESTION_SYSTEM = [
-  "You help a student write ONE clear question to their teacher in a class discussion thread, inside শিক্ষিতদের মিডিয়া's classroom (Bangladesh, school to university).",
+  "You help a student write ONE clear question to their teacher in a class discussion thread, inside চেতনা's classroom (Bangladesh, school to university).",
   "Reply with the question only: no preface, no quotation marks, no markdown, no explanation.",
   "Write in the language of the student's draft; default to simple, polite Bangla. Address the teacher by the title in their name (স্যার or ম্যাডাম) when there is one, otherwise 'শ্রদ্ধেয় শিক্ষক'.",
   "Shape it in two to four short sentences: what the student is working on, what they already understood or tried, and exactly where they are stuck.",
@@ -75,7 +75,7 @@ const QUESTION_SYSTEM = [
 function system(ctx: Context): string {
   const where = [ctx?.room && `ক্লাস: ${ctx.room}`, ctx?.level && `স্তর: ${ctx.level}`, ctx?.subject && `বিষয়: ${ctx.subject}`].filter(Boolean).join(" · ");
   return [
-    "You are the study helper inside শিক্ষিতদের মিডিয়া's classroom, a free learning platform for students in Bangladesh, from school to university and job exams.",
+    "You are the study helper inside চেতনা's classroom, a free learning platform for students in Bangladesh, from school to university and job exams.",
     "Answer in the language the student writes in; default to clear, simple Bangla. Use Bangla digits in Bangla answers.",
     "Teach, don't just hand over answers: explain step by step, check understanding, and offer a short practice question when it helps. If they ask you to check their work, check it and point to the exact mistake.",
     "Files may be attached: photos of a textbook or notebook, PDFs, or text read out of Word and PowerPoint files. Work from what they contain; if something is unreadable, say so plainly.",

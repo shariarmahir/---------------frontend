@@ -1,6 +1,6 @@
 /**
  * The apps the home page offers to download: SWASTI for health and
- * শিক্ষিতদের মিডিয়া for skills and work. SWASTI's name, summary, stage and
+ * চেতনা for skills and work. SWASTI's name, summary, stage and
  * features come from its product entry, so they cannot drift from
  * /products/swasti.
  *
@@ -55,8 +55,8 @@ export const apps: KandariApp[] = [
   },
   {
     id: "media",
-    name: "শিক্ষিতদের মিডিয়া",
-    altName: "Shikkhitoder Media",
+    name: "চেতনা",
+    altName: "Chetona",
     kind: "Skills & work",
     tagline: "Post a skill. Get verified. Get hired.",
     summary:

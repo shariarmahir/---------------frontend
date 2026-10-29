@@ -42,7 +42,7 @@ export async function generateViewport(): Promise<Viewport> {
 }
 
 export const metadata: Metadata = {
-  title: { default: "শিক্ষিতদের মিডিয়া — দক্ষতা · প্রমাণ · সুযোগ", template: "%s · শিক্ষিতদের মিডিয়া" },
+  title: { default: "চেতনা — চেতনা ফিরলেই পরিবর্তন সম্ভব", template: "%s · চেতনা" },
   description: "দক্ষতা পোস্ট করুন, নিজেকে রেটিং দিন, কমিউনিটি যাচাই করবে — তারপর প্রোফাইল থেকেই সরাসরি কাজ পান।",
 };
 

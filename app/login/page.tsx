@@ -5,7 +5,7 @@ import { LoginForm } from "@/components/auth/login-form";
 
 export const metadata: Metadata = {
   title: "সাইন ইন | কাণ্ডারী-ল্যাব",
-  description: "মোবাইল কোড বা ইমেইলে Kandari Profile-এ সাইন ইন করুন — গবেষণা ও পণ্যের আপডেট, শিক্ষিতদের মিডিয়া আর আপনার অগ্রগতি এক অ্যাকাউন্টে।",
+  description: "মোবাইল কোড বা ইমেইলে Kandari Profile-এ সাইন ইন করুন — গবেষণা ও পণ্যের আপডেট, চেতনা আর আপনার অগ্রগতি এক অ্যাকাউন্টে।",
   robots: { index: false },
 };
 

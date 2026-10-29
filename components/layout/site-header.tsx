@@ -9,12 +9,12 @@ import { MotionConfig, motion, type Transition } from "framer-motion";
 import { X } from "lucide-react";
 import { Dialog, DropdownMenu } from "radix-ui";
 import { AccountMenu, AccountSheetLinks, loginHref } from "@/components/auth/account-menu";
-import { OPEN_RECORDER_EVENT } from "@/components/record/open-recorder";
+import { OPEN_RECORDER_EVENT, openRecorder } from "@/components/record/open-recorder";
 import { Icon } from "@/components/ui/icon";
 import { useAuth } from "@/lib/auth/client";
 import { LabelText } from "@/components/brand/kandari-wordmark";
 import { LABEL_TEXT } from "@/data/logo-text";
-import { NAZRUL_MOTTO, navLinksFor, type NavLink } from "@/data/navigation";
+import { CHETONA_MOTTO, NAZRUL_MOTTO, navLinksFor, type NavLink } from "@/data/navigation";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { cn } from "@/lib/utils";
 
@@ -75,6 +75,12 @@ function NavLabel({ link, compact }: { link: NavLink; compact?: boolean }) {
  */
 const TAB_ICONS: [pattern: RegExp, icon: string][] = [
   [/^\/#top$/, "home"],
+  [/^\/protibad$/, "campaign"],
+  [/^\/protibad#live$/, "sensors"],
+  [/^\/protibad#crime-data$/, "monitoring"],
+  [/^\/protibad#file-complaint$/, "edit_document"],
+  [/^\/protibad\/command/, "space_dashboard"],
+  [/^\/tv-wall/, "connected_tv"],
   [/^\/nagorik$/, "verified_user"],
   [/#mission$/, "flag"],
   [/^\/about/, "info"],
@@ -118,6 +124,16 @@ const TAB_ICONS: [pattern: RegExp, icon: string][] = [
 ];
 
 const tabIcon = (href: string) => TAB_ICONS.find(([pattern]) => pattern.test(href))?.[1];
+
+/** The recorder's mark: a red dot with a ping, the only red in the tab row (urgency, CLAUDE.md §4.1). */
+function RecordDot() {
+  return (
+    <span aria-hidden className="relative flex size-5 items-center justify-center">
+      <span className="absolute inline-flex size-3 animate-ping rounded-full bg-national-crimson opacity-75 motion-reduce:hidden" />
+      <span className="relative inline-flex size-3 rounded-full bg-national-crimson ring-2 ring-white/80" />
+    </span>
+  );
+}
 
 /** Loudspeaker glyph for the protest link. */
 function ProtestGlyph({ className }: { className?: string }) {
@@ -294,7 +310,7 @@ function TabFace({ link, active, children }: { link: NavLink; active: boolean; c
   const icon = tabIcon(link.href);
   return (
     <span className={cn("nav-tab-face flex items-center gap-2", active && "nav-tab-face-on")}>
-      {icon ? <Icon name={icon} filled={active} className="text-xl" /> : null}
+      {link.action === "record" ? <RecordDot /> : icon ? <Icon name={icon} filled={active} className="text-xl" /> : null}
       <NavLabel link={link} compact />
       {children}
     </span>
@@ -373,6 +389,17 @@ function SectionNav({
           );
         }
 
+        // A tab that acts on the page (the recorder) is a button and never holds the gold bar.
+        if (link.action === "record") {
+          return (
+            <li key={link.href} className="flex">
+              <button type="button" onClick={openRecorder} className={TAB}>
+                <TabFace link={link} active={false} />
+              </button>
+            </li>
+          );
+        }
+
         const isActive = activeHref === link.href;
         return (
           <li key={link.href} className="flex">
@@ -416,45 +443,20 @@ function TvWallLink({ className }: { className?: string }) {
 }
 
 /**
- * প্রতিবাদ, in the alert red (CLAUDE.md §4.1), as a small menu: raise a
- * protest on its page, or start recording evidence right away.
+ * প্রতিবাদ, in the alert red (CLAUDE.md §4.1): one link to its page. The
+ * evidence recorder lives only in that page's own tabs (Mahir, 2026-10-29).
  */
-function ProtestMenu({ onRecord }: { onRecord: () => void }) {
-  const item =
-    "flex min-h-11 cursor-pointer items-center gap-3 rounded-xl px-3 text-sm font-semibold outline-none select-none transition-colors duration-150 data-highlighted:bg-white/10";
+function ProtestLink() {
+  const current = usePathname()?.startsWith("/protibad");
   return (
-    <DropdownMenu.Root modal={false}>
-      <DropdownMenu.Trigger className="group inline-flex h-10 items-center gap-1.5 rounded-lg bg-national-crimson px-3.5 text-white transition-colors duration-200 hover:bg-red-700 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none data-[state=open]:bg-red-700">
-        <ProtestGlyph className="size-4" />
-        <LabelText text={LABEL_TEXT.protibad} className="text-base leading-none" />
-        <Icon
-          name="expand_more"
-          className="text-lg transition-transform duration-300 group-data-[state=open]:rotate-180 motion-reduce:transition-none"
-        />
-      </DropdownMenu.Trigger>
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content
-          align="start"
-          sideOffset={8}
-          collisionPadding={12}
-          className="menu-pop z-60 min-w-56 rounded-2xl bg-bdnavy-900 p-2 text-white shadow-[0_28px_60px_-18px_rgb(0_0_0/0.8)] ring-1 ring-white/12"
-        >
-          <DropdownMenu.Item asChild>
-            <Link href="/protibad" className={item}>
-              <ProtestGlyph className="size-5 text-national-crimson" />
-              <span className="font-bengali text-base">প্রতিবাদ জানান</span>
-            </Link>
-          </DropdownMenu.Item>
-          <DropdownMenu.Item className={item} onSelect={onRecord}>
-            <span className="relative flex size-5 items-center justify-center">
-              <span className="absolute inline-flex size-3 animate-ping rounded-full bg-red-400 opacity-75 motion-reduce:hidden" />
-              <span className="relative inline-flex size-3 rounded-full bg-red-500 ring-2 ring-red-100" />
-            </span>
-            Record
-          </DropdownMenu.Item>
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+    <Link
+      href="/protibad"
+      aria-current={current ? "page" : undefined}
+      className="inline-flex h-10 items-center gap-1.5 rounded-lg bg-national-crimson px-3.5 text-white transition-colors duration-200 hover:bg-red-700 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+    >
+      <ProtestGlyph className="size-4" />
+      <LabelText text={LABEL_TEXT.protibad} className="text-base leading-none" />
+    </Link>
   );
 }
 
@@ -504,12 +506,11 @@ export function SiteHeader() {
           {/* Below lg the bar keeps only the profile face and the menu
               button; the feed and the recorder live in the pop-up menu. */}
           <div className="flex h-16 min-w-0 items-center justify-end gap-2 sm:gap-3">
-              {/* The protest menu, in the alert red (CLAUDE.md §4.1): raise a
-                  protest, or start recording. Desktop only; below lg it
-                  lives in the pop-up menu. */}
+              {/* The TV wall and প্রতিবাদ, the civic pair. Desktop only; below lg
+                  they live in the pop-up menu. */}
               <TvWallLink className="hidden lg:inline-flex" />
               <div className="hidden lg:flex">
-                <ProtestMenu onRecord={() => setRecordOpen(true)} />
+                <ProtestLink />
               </div>
 
               {/* A hairline between the civic actions and the personal pair. */}
@@ -521,7 +522,7 @@ export function SiteHeader() {
                 className="hidden h-12 shrink-0 flex-col items-start justify-center rounded-lg px-3 leading-tight transition-colors duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none lg:flex"
               >
                 <LabelText text={LABEL_TEXT.media} className="text-base leading-none text-white" />
-                <span className="mt-1 font-sans text-xs font-medium whitespace-nowrap text-signal-orange">Prioritize your joy.</span>
+                <span className="mt-1 font-bengali text-xs font-semibold whitespace-nowrap text-signal-orange">{CHETONA_MOTTO}</span>
               </Link>
 
               {/* Log in and Sign up, or the signed-in face and first name (desktop). */}
@@ -577,37 +578,34 @@ export function SiteHeader() {
                       </Link>
                     </Dialog.Close>
 
-                    {/* The feed and the recorder, moved off the phone bar. */}
-                    <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
-                      <Dialog.Close asChild>
-                        <Link
-                          href="/media"
-                          style={{ "--i": 1 } as CSSProperties}
-                          className="menu-item flex min-h-14 flex-col items-center justify-center rounded-2xl bg-text-primary px-3 py-2 text-center leading-tight shadow-ink [-webkit-tap-highlight-color:transparent] transition-[background-color,scale] duration-200 hover:bg-bdnavy-700 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-95"
-                        >
-                          <LabelText text={LABEL_TEXT.media} className="text-base leading-none text-signal-orange" />
-                          <span className="mt-1 font-sans text-xs font-semibold text-white/80">Prioritize your joy.</span>
-                        </Link>
-                      </Dialog.Close>
-                      <Dialog.Close asChild>
-                        <button
-                          type="button"
-                          onClick={() => setRecordOpen(true)}
-                          style={{ "--i": 2 } as CSSProperties}
-                          className="menu-item flex min-h-14 flex-col items-center justify-center gap-1.5 rounded-2xl bg-text-primary px-4 py-2 font-sans text-xs font-bold text-white shadow-ink [-webkit-tap-highlight-color:transparent] transition-[background-color,scale] duration-200 hover:bg-bdnavy-700 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-95"
-                        >
-                          <span className="relative flex size-3">
-                            <span className="absolute inline-flex size-full animate-ping rounded-full bg-national-crimson opacity-75 motion-reduce:hidden" />
-                            <span className="relative inline-flex size-3 rounded-full bg-national-crimson ring-2 ring-white/80" />
-                          </span>
-                          Record
-                        </button>
-                      </Dialog.Close>
-                    </div>
+                    {/* The feed, moved off the phone bar. */}
+                    <Dialog.Close asChild>
+                      <Link
+                        href="/media"
+                        style={{ "--i": 1 } as CSSProperties}
+                        className="menu-item flex min-h-14 flex-col items-center justify-center rounded-2xl bg-text-primary px-3 py-2 text-center leading-tight shadow-ink [-webkit-tap-highlight-color:transparent] transition-[background-color,scale] duration-200 hover:bg-bdnavy-700 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none active:scale-95"
+                      >
+                        <LabelText text={LABEL_TEXT.media} className="text-base leading-none text-signal-orange" />
+                        <span className="mt-1 font-bengali text-xs font-semibold text-white/80">{CHETONA_MOTTO}</span>
+                      </Link>
+                    </Dialog.Close>
 
                     <nav className="grid grid-cols-2 gap-2">
                       {/* A menu tab shows its first page here. */}
-                      {navLinks.flatMap((link) => link.children?.slice(0, 1) ?? [link]).map((link, i) => (
+                      {navLinks.flatMap((link) => link.children?.slice(0, 1) ?? [link]).map((link, i) =>
+                        link.action === "record" ? (
+                          <Dialog.Close asChild key={link.href}>
+                            <button
+                              type="button"
+                              onClick={() => setRecordOpen(true)}
+                              style={{ "--i": i + 3 } as CSSProperties}
+                              className="menu-item flex min-h-11 items-center justify-center gap-2 rounded-xl bg-white/7 px-3 py-2 text-center text-sm font-medium text-white ring-1 ring-white/20 transition-[background-color,scale] duration-200 odd:last:col-span-2 hover:bg-white/12 focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none active:scale-95"
+                            >
+                              <RecordDot />
+                              {link.label}
+                            </button>
+                          </Dialog.Close>
+                        ) : (
                         <Dialog.Close asChild key={link.href}>
                           <NavAnchor
                             href={link.href}
@@ -623,7 +621,8 @@ export function SiteHeader() {
                             <NavLabel link={link} />
                           </NavAnchor>
                         </Dialog.Close>
-                      ))}
+                        ),
+                      )}
                     </nav>
 
                     <div className="grid gap-2">

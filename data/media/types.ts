@@ -5,7 +5,7 @@ import type { PriceBand } from "@/lib/media/fair-price";
 import type { PayUnit } from "@/lib/media/fair-pay";
 
 /**
- * Domain types for শিক্ষিতদের মিডিয়া — shaped like the API a backend would
+ * Domain types for চেতনা — shaped like the API a backend would
  * serve. Everything in data/media is mock content of these shapes.
  */
 

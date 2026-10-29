@@ -1,4 +1,4 @@
-/** All 64 districts of Bangladesh, by division. Shared by the account forms and শিক্ষিতদের মিডিয়া. */
+/** All 64 districts of Bangladesh, by division. Shared by the account forms and চেতনা. */
 export const divisions = [
   { name: "ঢাকা", districts: ["ঢাকা", "গাজীপুর", "নারায়ণগঞ্জ", "নরসিংদী", "মুন্সীগঞ্জ", "মানিকগঞ্জ", "টাঙ্গাইল", "কিশোরগঞ্জ", "ফরিদপুর", "গোপালগঞ্জ", "মাদারীপুর", "রাজবাড়ী", "শরীয়তপুর"] },
   { name: "চট্টগ্রাম", districts: ["চট্টগ্রাম", "কক্সবাজার", "কুমিল্লা", "ফেনী", "নোয়াখালী", "লক্ষ্মীপুর", "চাঁদপুর", "ব্রাহ্মণবাড়িয়া", "রাঙামাটি", "খাগড়াছড়ি", "বান্দরবান"] },

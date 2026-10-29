@@ -1,5 +1,5 @@
 /*
- * শিক্ষিতদের মিডিয়া's poster film: the platform's core loop (CLAUDE.md §1:
+ * চেতনা's poster film: the platform's core loop (CLAUDE.md §1:
  * post a skill → self-rate → the community verifies → hire) played as a
  * ten-second motion piece in the poster card's hill (a 416 × 395 box).
  *
@@ -57,7 +57,7 @@ export function MediaReel() {
   return (
     <svg
       role="img"
-      aria-label="শিক্ষিতদের মিডিয়া: দক্ষতা পোস্ট, নিজের রেটিং, কমিউনিটি যাচাই, তারপর কাজ"
+      aria-label="চেতনা: দক্ষতা পোস্ট, নিজের রেটিং, কমিউনিটি যাচাই, তারপর কাজ"
       viewBox="0 0 416 395"
       className="absolute inset-0 h-full w-full"
     >

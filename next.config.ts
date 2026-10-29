@@ -41,7 +41,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  // The social pages moved into শিক্ষিতদের মিডিয়া at /media. Temporary
+  // The social pages moved into চেতনা at /media. Temporary
   // redirects keep old links working without browsers caching the move.
   async redirects() {
     return [
