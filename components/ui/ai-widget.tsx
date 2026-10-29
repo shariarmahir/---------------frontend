@@ -22,6 +22,22 @@ const WORD_MS = 110;
 /** How long he stays awake after the pointer leaves, and after a tap on a touch screen. */
 const DOZE_MS = 600;
 const TOUCH_AWAKE_MS = 9000;
+/**
+ * His demo voice: the browser's own Bangla speech, pitched up and a little
+ * quick so it sounds like a cheerful boy. Only where the browser has a
+ * Bangla voice (otherwise he stays silent and the bubble speaks for him).
+ */
+const VOICE_PITCH = 1.7;
+const VOICE_RATE = 1.05;
+
+function banglaVoice(): SpeechSynthesisVoice | null {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return null;
+  const bangla = window.speechSynthesis.getVoices().filter((v) => /^bn/i.test(v.lang));
+  // A male voice first (Edge's Pradeep for Bangladesh, Bashkar for India), Bangladesh before India.
+  const male = (v: SpeechSynthesisVoice) => /pradeep|bashkar|male/i.test(v.name) && !/female/i.test(v.name);
+  const bd = (v: SpeechSynthesisVoice) => /^bn[-_]BD/i.test(v.lang);
+  return bangla.find((v) => male(v) && bd(v)) ?? bangla.find(male) ?? bangla.find(bd) ?? bangla[0] ?? null;
+}
 
 /**
  * Floating AI assistant for the home screen.
@@ -34,11 +50,13 @@ const TOUCH_AWAKE_MS = 9000;
  * length (guide-avatar.tsx) asleep in the corner, half of him below the
  * screen's edge. Pointed at or focused he stands up, waves and says hello in
  * a speech bubble, word by word with his mouth moving, then what he can help
- * with; his eyes and head follow the pointer while he is up. A click opens
+ * with, read aloud in his demo voice where the browser has a Bangla voice
+ * (once by itself after the visitor has used the page, as browsers allow;
+ * again from the bubble's listen button); his eyes and head follow the
+ * pointer while he is up. A click opens
  * the question panel. On a touch screen the first tap wakes him and the
  * bubble's button opens the panel; he sits back down a little after the
- * pointer leaves or a tap elsewhere. A speaking voice comes later; the
- * bubble is his voice for now.
+ * pointer leaves or a tap elsewhere, and stops speaking when he does.
  *
  * No backend yet: submitting says so in the panel (and to screen readers).
  * TODO(backend): POST /api/v1/ask once FastAPI lands.
@@ -56,7 +74,31 @@ export function AiWidget() {
   const doze = useRef(0);
   const lastPointer = useRef("mouse");
   const speaking = awake && !open;
-  const talking = speaking && said < HELP_WORDS.length;
+  // His voice: the Bangla voice, if the browser has one, and whether he is saying the greeting aloud.
+  const voiceRef = useRef<SpeechSynthesisVoice | null>(null);
+  const [canSpeak, setCanSpeak] = useState(false);
+  const [voicing, setVoicing] = useState(false);
+  const spokeOnce = useRef(false);
+  const talking = (speaking && said < HELP_WORDS.length) || voicing;
+
+  const say = () => {
+    const voice = voiceRef.current;
+    if (!voice) return;
+    const synth = window.speechSynthesis;
+    synth.cancel();
+    const u = new SpeechSynthesisUtterance(`${HELLO} ${HELP}`);
+    u.voice = voice;
+    u.lang = voice.lang;
+    u.pitch = VOICE_PITCH;
+    u.rate = VOICE_RATE;
+    u.onstart = () => setVoicing(true);
+    u.onend = u.onerror = () => setVoicing(false);
+    synth.speak(u);
+  };
+  const hush = () => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
+    setVoicing(false);
+  };
 
   const wake = (stayFor?: number) => {
     window.clearTimeout(doze.current);
@@ -101,6 +143,37 @@ export function AiWidget() {
     };
   }, [awake, open]);
   useEffect(() => () => window.clearTimeout(doze.current), []);
+
+  // Find his Bangla voice (the browser lists its voices a moment after load).
+  useEffect(() => {
+    if (!("speechSynthesis" in window)) return;
+    const load = () => {
+      voiceRef.current = banglaVoice();
+      setCanSpeak(Boolean(voiceRef.current));
+    };
+    const t = window.setTimeout(load, 0);
+    window.speechSynthesis.addEventListener("voiceschanged", load);
+    return () => {
+      window.clearTimeout(t);
+      window.speechSynthesis.removeEventListener("voiceschanged", load);
+      window.speechSynthesis.cancel();
+    };
+  }, []);
+
+  // He says the greeting aloud by himself once a visit, when the browser allows it (after the
+  // visitor has used the page); he stops when he sits back down or the panel opens.
+  useEffect(() => {
+    if (!speaking) {
+      // Cancelling ends the utterance, whose end/error handler clears `voicing`.
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+      return;
+    }
+    const used = (navigator as Navigator & { userActivation?: { hasBeenActive: boolean } }).userActivation?.hasBeenActive;
+    if (canSpeak && used && !spokeOnce.current && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      spokeOnce.current = true;
+      say();
+    }
+  }, [speaking, canSpeak]);
 
   // While he is up, his eyes (and a little of his head) turn toward the pointer.
   useEffect(() => {
@@ -298,15 +371,30 @@ export function AiWidget() {
             </span>
           ))}
         </p>
-        <button
-          type="button"
-          tabIndex={speaking ? 0 : -1}
-          onClick={() => setOpen(true)}
-          className={cn(btn.gold, "mt-3 min-h-10 px-4 py-2 font-bengali text-sm")}
-        >
-          <Icon name="forum" className="text-lg" />
-          প্রশ্ন করুন
-        </button>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            tabIndex={speaking ? 0 : -1}
+            onClick={() => setOpen(true)}
+            className={cn(btn.gold, "min-h-10 px-4 py-2 font-bengali text-sm")}
+          >
+            <Icon name="forum" className="text-lg" />
+            প্রশ্ন করুন
+          </button>
+          {/* His voice, heard again or stopped: only where the browser can speak Bangla. */}
+          {canSpeak && (
+            <button
+              type="button"
+              tabIndex={speaking ? 0 : -1}
+              onClick={() => (voicing ? hush() : say())}
+              aria-pressed={voicing}
+              className="inline-flex min-h-10 items-center gap-1.5 rounded-xl px-3 py-2 font-bengali text-sm font-semibold text-bdnavy-900 ring-2 ring-bdnavy-900 transition-colors ring-inset hover:bg-bdnavy-900/8 focus-visible:ring-signal-orange focus-visible:outline-none"
+            >
+              <Icon name={voicing ? "stop_circle" : "volume_up"} className="text-lg" />
+              {voicing ? "থামান" : "শুনুন"}
+            </button>
+          )}
+        </div>
         {/* The bubble's tail, pointing at him. */}
         <span aria-hidden className="absolute right-10 -bottom-1.5 size-3 rotate-45 bg-white sm:right-12" />
       </div>
