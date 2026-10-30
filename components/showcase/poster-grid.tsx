@@ -5,18 +5,19 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
+import { CardLive, type PosterLive } from "./card-live";
 import { MediaReel } from "./media-reel";
 import { PosterScene, type PosterSceneKind } from "./poster-scenes";
 import { ServiceScene, type ServiceSceneKind } from "./service-scenes";
 
 /*
  * The home page's product and service cards, set like the featured-project
- * cards of kudos.framer.media (Mahir, 2026-10-29): the whole card is one
- * link, a tall framed picture in its own field (navy, cobalt or ink) with a
- * skeleton shimmer until the photograph arrives, and under it, on the black
- * ground, the name and one line (Mahir, 2026-10-29: no description). On
- * hover or focus the picture eases in closer, the frame takes a gold edge
- * and a bare gold arrow rises in its corner; the name turns gold.
+ * cards of kudos.framer.media (Mahir, 2026-10-29): a tall framed picture in
+ * its own field (navy, cobalt or ink) with a skeleton shimmer until the
+ * picture arrives, and on the full picture only the name in gold and its
+ * arrow (Mahir, 2026-10-30: no melt, no buttons). The whole card is one link
+ * to its page. On hover the picture eases in closer, the frame takes a gold
+ * edge and the bare gold arrow beside the name rises.
  */
 
 /** The three fields of the palette (Mahir, 2026-10-18): navy, cobalt, ink. */
@@ -34,8 +35,9 @@ export interface PosterItem {
   anchorId?: string;
   /** The field behind the picture (it shows around films and while a photograph loads). */
   face: PosterFace;
-  /** The big name and one short line under the picture. */
+  /** The big name, at the picture's foot. */
   title: ReactNode;
+  /** One short line, read out with the name in the card link's label. */
   tagline: string;
   /** The name as plain text, for the link's label. */
   nameText: string;
@@ -46,16 +48,32 @@ export interface PosterItem {
   serviceScene?: ServiceSceneKind;
   /** A motion layer: drawn over the photograph, or the film itself. */
   scene?: PosterSceneKind | "media-reel";
+  /**
+   * A still brought to life as a 3D shot that fills the picture (card-live.tsx; Mahir, 2026-10-29:
+   * his Pinterest brain on the AI Agents card). The `serviceScene` drawing stands in until it is in.
+   */
+  live?: PosterLive;
 }
 
 export function PosterGrid({ items, label }: { items: PosterItem[]; label: string }) {
   return (
-    // Two by two on phones and upright tablets; four across from lg, and already from md on a
-    // landscape screen (a turned tablet or phone), where two rows would not fit the height.
-    <ul aria-label={label} className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 sm:gap-y-10 md:max-lg:landscape:grid-cols-4 lg:grid-cols-4">
+    // A phone swipes through wide cards (the next one peeking, the row bleeding to the screen's
+    // sides); two by two from sm; four across from lg, and
+    // already from md on a landscape screen, where two rows would not fit the height. The scroll
+    // reveal lives on the list, so a card waiting off to the side is never left hidden.
+    <ul
+      aria-label={label}
+      className={cn(
+        "story-reveal no-scrollbar -mx-gutter-x flex snap-x snap-mandatory scroll-px-gutter-x gap-3 overflow-x-auto px-gutter-x",
+        "sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 md:max-lg:landscape:grid-cols-4 lg:grid-cols-4",
+      )}
+    >
       {items.map((item) => (
-        // The scroll reveal sits on the <li>, so its rise never fights the card's own motion.
-        <li key={item.id} id={item.anchorId} className="story-reveal flex scroll-mt-header lg:scroll-mt-header-lg">
+        <li
+          key={item.id}
+          id={item.anchorId}
+          className="flex w-[82%] max-w-80 shrink-0 snap-start scroll-mt-header sm:w-auto sm:max-w-none lg:scroll-mt-header-lg"
+        >
           <PosterCard item={item} />
         </li>
       ))}
@@ -81,35 +99,33 @@ const EASE = "duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:tran
 
 // No `priority`: the grids sit far below the fold, and preloading them would compete with the hero's poster.
 function PosterCard({ item }: { item: PosterItem }) {
-  const [ref, onScreen] = useOnScreen<HTMLAnchorElement>();
+  const [ref, onScreen] = useOnScreen<HTMLDivElement>();
   // A photograph shows the skeleton until it has loaded; a film or the reel draws at once.
   const [loaded, setLoaded] = useState(!item.image);
   const film = item.scene === "media-reel";
   const scene = item.scene === "media-reel" ? undefined : item.scene;
+  // A living picture: the drawing under it goes once the picture is in.
+  const [liveReady, setLiveReady] = useState(false);
 
   return (
-    <Link
-      ref={ref}
-      href={item.href}
-      aria-label={`${item.nameText}: ${item.tagline}`}
-      data-paused={!onScreen}
-      className="ms-root group flex w-full flex-col rounded-2xl [-webkit-tap-highlight-color:transparent] focus-visible:outline-none sm:rounded-3xl"
-    >
+    <div ref={ref} data-paused={!onScreen} className="ms-root group w-full">
       {/* The picture in its frame. */}
       <div
         className={cn(
           "relative aspect-4/5 overflow-hidden rounded-2xl sm:rounded-3xl",
           // The edge is drawn on a layer above the picture, so a film filling the frame never hides it.
           "after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:ring-1 after:ring-white/12 after:ring-inset after:transition-shadow after:duration-700",
-          "group-hover:after:ring-signal-orange/70 group-focus-visible:after:ring-2 group-focus-visible:after:ring-signal-orange",
+          "group-hover:after:ring-signal-orange/70",
           FIELDS[item.face],
         )}
       >
-        {!loaded && <span aria-hidden className="skeleton-shimmer absolute inset-0" />}
+        {/* A film with no drawing to stand in for it shows the skeleton until it is in, as a photograph does. */}
+        {(!loaded || (item.live && !item.serviceScene && !liveReady)) && <span aria-hidden className="skeleton-shimmer absolute inset-0" />}
 
         {/* Everything drawn eases in closer together (scale, so the scenes' own transforms stay theirs). */}
-        <div className={cn("absolute inset-0 transition-[scale] group-hover:scale-[1.06] group-focus-visible:scale-[1.06] motion-reduce:group-hover:scale-100", EASE)}>
-          {item.serviceScene ? <ServiceScene kind={item.serviceScene} /> : null}
+        <div className={cn("absolute inset-0 transition-[scale] group-hover:scale-[1.06] motion-reduce:group-hover:scale-100", EASE)}>
+          {item.serviceScene && !liveReady ? <ServiceScene kind={item.serviceScene} /> : null}
+          {item.live && <CardLive live={item.live} onScreen={onScreen} onReady={() => setLiveReady(true)} />}
           {item.image && (
             <Image
               src={item.image.src}
@@ -130,29 +146,36 @@ function PosterCard({ item }: { item: PosterItem }) {
           {scene && <PosterScene kind={scene} />}
         </div>
 
-        {/* A bare gold arrow rising into the corner on hover or focus (no disc, Mahir 2026-10-17). */}
-        <Icon
-          name="arrow_outward"
-          className={cn(
-            "absolute right-3 bottom-3 text-3xl! text-signal-orange opacity-0 drop-shadow-[0_1px_2px_rgb(0_0_0/0.6)] sm:right-5 sm:bottom-5 sm:text-4xl!",
-            "translate-y-2 transition-[opacity,translate] group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100",
-            EASE,
-          )}
+        {/* The card's own link, over the whole picture. */}
+        <Link
+          href={item.href}
+          aria-label={`${item.nameText}: ${item.tagline}`}
+          className="absolute inset-0 z-1 rounded-[inherit] [-webkit-tap-highlight-color:transparent] focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none focus-visible:ring-inset"
         />
-      </div>
 
-      {/* The words, on the black ground under the picture. */}
-      <div className="@container mt-4 flex flex-1 flex-col sm:mt-5">
-        <h3
-          className={cn(
-            "min-w-0 font-grotesk leading-tight font-bold tracking-tight text-white transition-colors duration-300 group-hover:text-signal-orange",
-            typeof item.title === "string" && "text-lg sm:text-2xl",
-          )}
-        >
-          {item.title}
-        </h3>
-        <p className="mt-1.5 font-grotesk text-xs leading-snug font-semibold text-white/80 sm:text-sm">{item.tagline}</p>
+        {/* The name in gold at the picture's foot, each letter traced in near-black so it holds on any
+            frame (.card-words), and the bare gold arrow (no disc, Mahir 2026-10-17). */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-2 px-4 pb-4 sm:px-5 sm:pb-5">
+          <div className="card-words flex items-center gap-2.5">
+            <h3
+              className={cn(
+                "min-w-0 flex-1 font-grotesk leading-tight font-bold tracking-tight text-balance text-signal-orange",
+                typeof item.title === "string" && "text-xl sm:text-2xl",
+              )}
+            >
+              {item.title}
+            </h3>
+            <Icon
+              name="arrow_outward"
+              className={cn(
+                "shrink-0 text-2xl! text-signal-orange opacity-80 sm:text-3xl!",
+                "transition-[opacity,translate] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100",
+                EASE,
+              )}
+            />
+          </div>
+        </div>
       </div>
-    </Link>
+    </div>
   );
 }

@@ -25,7 +25,6 @@ const EXECUTIVES = [
     blurb:
       "Spearheading native deep-tech roadmaps, hardware prototyping, and national clinical integration protocols.",
     surface: "bg-cobalt text-white ring-1 ring-white/12",
-    fade: "to-cobalt",
     glow: "var(--color-cobalt)",
     // The title is a solid pill so it reads as a label, not body copy.
     pill: "bg-signal-orange text-text-primary",
@@ -40,7 +39,6 @@ const EXECUTIVES = [
     blurb:
       "Orchestrating 64-district smart pharmacy scaling, government telemetry compliance, and supply chain logistics.",
     surface: "bg-text-primary text-white ring-1 ring-white/12",
-    fade: "to-text-primary",
     glow: "var(--color-signal-orange)",
     pill: "bg-signal-orange text-text-primary",
   },
@@ -53,7 +51,6 @@ const EXECUTIVES = [
     blurb:
       "Leading international hardware partnerships, medical institutional adoption, and public narrative momentum.",
     surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
-    fade: "to-bdnavy-900",
     glow: "var(--color-bdnavy-400)",
     pill: "bg-signal-orange text-text-primary",
   },
@@ -168,8 +165,8 @@ export function LeadershipSection() {
                 exec.surface,
               )}
             >
-              {/* Portrait, fading into the card colour at its foot. */}
-              <div className="relative aspect-square w-full overflow-hidden sm:aspect-4/3 lg:aspect-3/2">
+              {/* Portrait, melting into the card colour at its foot (.melt). */}
+              <div className="melt relative aspect-square w-full overflow-hidden sm:aspect-4/3 lg:aspect-3/2">
                 <Image
                   src={exec.photo}
                   alt={`${exec.name}, ${exec.title}`}
@@ -178,7 +175,6 @@ export function LeadershipSection() {
                   quality={90}
                   className="object-cover object-top sm:object-[50%_20%] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 motion-reduce:transition-none"
                 />
-                <div aria-hidden className={cn("absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-b from-transparent", exec.fade)} />
               </div>
 
               <div className="relative -mt-8 flex flex-1 flex-col px-5 pb-1 sm:px-4 sm:pb-5 lg:px-6 lg:pb-6">

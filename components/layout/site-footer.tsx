@@ -124,25 +124,30 @@ export function SiteFooter({ research = false }: { research?: boolean }) {
     <footer className="relative isolate z-20 overflow-hidden bg-bdnavy-900 text-white">
       <SignalSeam className="top-0" />
       <div className="mx-auto max-w-384 px-gutter-x pt-12 lg:pt-20">
-        {/* The statement and the index. */}
+        {/* The statement and the index. From lg the statement stands between the same two hairlines
+            as the index, its claim at the top, the motto and the actions at the foot, so the two
+            halves are one height and share a top and a bottom edge. */}
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
-          <div className="flex flex-col items-start gap-6 lg:col-span-6 lg:gap-8">
-            <p className="max-w-xl font-grotesk text-2xl leading-tight font-bold tracking-tight text-balance text-white/65 sm:text-3xl lg:text-4xl lg:leading-[1.15]">
+          <div className="flex flex-col items-start gap-6 lg:col-span-6 lg:justify-between lg:gap-8 lg:border-y lg:border-white/12 lg:py-8">
+            <p className="max-w-xl font-grotesk text-2xl leading-tight font-bold tracking-tight text-balance text-white/65 sm:text-3xl lg:text-4xl lg:leading-[1.15] xl:max-w-2xl xl:text-5xl xl:leading-[1.1]">
               We repair <span className="text-white">Bangladesh</span> one pixel at a time, with{" "}
               <span className="text-white">hardware, software and AI</span> built here, for{" "}
               <span className="text-white">the people who live here</span>.
             </p>
-            <p lang="bn" className="font-bengali text-xl leading-snug font-bold text-signal-orange sm:text-2xl">
-              {NAZRUL_MOTTO}
-            </p>
-            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-              <Link href="/#kandari-profile" className={btn.gold}>
-                Join Kandari Profile
-                <Icon name="arrow_forward" className="text-base" />
-              </Link>
-              <Link href="/about" className={btn.goldOutline}>
-                Read our story
-              </Link>
+            <div className="flex w-full flex-col items-start gap-6">
+              <p lang="bn" className="font-bengali text-xl leading-snug font-bold text-signal-orange sm:text-2xl">
+                {NAZRUL_MOTTO}
+              </p>
+              <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+                <Link href="/#kandari-profile" className={btn.gold}>
+                  <Icon name="person_add" className="text-xl!" />
+                  Join Kandari Profile
+                </Link>
+                <Link href="/about" className={btn.goldOutline}>
+                  <Icon name="auto_stories" className="text-xl!" />
+                  Read our story
+                </Link>
+              </div>
             </div>
           </div>
 

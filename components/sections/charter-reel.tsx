@@ -151,12 +151,12 @@ function toItem(slide: CharterSlide): ReelItem {
     summary: slide.summary,
     actions: (
       <>
-        <Link href={slide.primary.href} className={cn(btn.gold, "min-h-10 px-4 py-2")}>
+        <Link href={slide.primary.href} className={btn.gold}>
           {slide.primary.label}
           <span className="sr-only">: {topic.name}</span>
           <Icon name="arrow_forward" className="text-lg" />
         </Link>
-        <Link href={slide.secondary.href} className={cn(btn.goldOutline, "min-h-10 bg-bdnavy-900 px-4 py-2")}>
+        <Link href={slide.secondary.href} className={cn(btn.goldOutline, "bg-bdnavy-900")}>
           {slide.secondary.label}
         </Link>
       </>

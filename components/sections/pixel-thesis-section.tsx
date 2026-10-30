@@ -19,9 +19,6 @@ interface Pillar {
   href: string;
   /** Solid card fill and the ink that reads on it. */
   surface: string;
-  /** The title's colour, when it differs from the card's text (gold on cobalt). */
-  heading?: string;
-  /** Motion-graphic stroke colour, chosen to contrast with the fill. */
   /** Hover glow, a CSS colour value. */
   glow: string;
 }
@@ -31,8 +28,10 @@ interface Pillar {
  * the product or research line that answers it, linked to its own page.
  * Facts follow data/products.ts and CLAUDE.md §2; nothing here claims more
  * than the product pages do. Fields are navy, cobalt and ink (Mahir,
- * 2026-10-18: cobalt replaced gold), no two neighbours alike; white text,
- * gold titles on cobalt, gold buttons.
+ * 2026-10-18: cobalt replaced gold), no two neighbours alike. Every card is
+ * set the same way, centred (Mahir, 2026-10-30): its icon, a gold title
+ * (large and bold, so it holds on cobalt too), the text, and the kit's gold
+ * button pinned to the foot so the four line up.
  */
 const PILLARS: Pillar[] = [
   {
@@ -51,7 +50,6 @@ const PILLARS: Pillar[] = [
       "One Village, One Medical Health Care Center. The village drug shop becomes a solar-powered Smart Pharmacy with a diagnostic kiosk, verified medicine and a doctor on video.",
     href: "/products/smart-pharmacy",
     surface: "bg-cobalt text-white ring-1 ring-white/12",
-    heading: "text-signal-orange",
     glow: "var(--color-cobalt)",
   },
   {
@@ -109,7 +107,7 @@ export function PixelThesisSection() {
               <article
                 style={{ "--glow": pillar.glow } as CSSProperties}
                 className={cn(
-                  "group relative flex w-full flex-col overflow-hidden rounded-2xl p-5 shadow-sm sm:rounded-3xl sm:p-6",
+                  "group relative flex w-full flex-col items-center overflow-hidden rounded-2xl p-6 text-center shadow-sm sm:rounded-3xl sm:p-7",
                   "[-webkit-tap-highlight-color:transparent] touch-manipulation transition-[translate,scale,rotate,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
                   "hover:-translate-y-2 hover:shadow-[0_28px_48px_-22px_var(--glow)] active:-translate-y-2 active:shadow-[0_28px_48px_-22px_var(--glow)] active:scale-[0.98] active:duration-150",
                   "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
@@ -117,24 +115,19 @@ export function PixelThesisSection() {
                 )}
               >
                 {/* The card's animated icon, standing on the card itself. */}
-                <CardIcon name={pillar.art} fallback={FALLBACK[pillar.art]} size={76} className="mb-3 -ml-2" />
+                <CardIcon name={pillar.art} fallback={FALLBACK[pillar.art]} size={76} className="mb-4" />
 
-                <h3 className={cn("mb-2 font-grotesk text-xl leading-tight font-bold", pillar.heading)}>
-                  {pillar.title}
-                </h3>
+                <h3 className="mb-3 font-grotesk text-xl leading-tight font-bold text-balance text-signal-orange">{pillar.title}</h3>
 
-                <p className="mb-5 line-clamp-4 font-sans text-sm leading-relaxed opacity-90 sm:line-clamp-none">
+                <p className="mb-6 line-clamp-4 max-w-[36ch] font-sans text-sm leading-relaxed text-pretty text-white/80 sm:line-clamp-none">
                   {pillar.description}
                 </p>
 
-                {/* Pinned to the foot, so the four buttons line up; compact on a phone. */}
-                <Link
-                  href={pillar.href}
-                  className={cn(btn.gold, "mt-auto min-h-11 self-start px-5 py-2.5 whitespace-nowrap sm:min-h-12 sm:px-6 sm:py-3")}
-                >
+                {/* Pinned to the foot, so the four buttons line up. */}
+                <Link href={pillar.href} className={cn(btn.gold, "group/btn mt-auto whitespace-nowrap")}>
                   Learn more
                   <span className="sr-only">: {pillar.title}</span>
-                  <Icon name="arrow_forward" className="text-lg" />
+                  <Icon name="arrow_forward" className="text-lg transition-transform group-hover/btn:translate-x-1 motion-reduce:transition-none" />
                 </Link>
               </article>
             </li>

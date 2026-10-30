@@ -62,12 +62,12 @@ function toItem(promo: Promo, photo: Photo): ReelItem {
     bangla: true,
     actions:
       "href" in action ? (
-        <Link href={action.href} className={cn(btn.gold, "min-h-10 px-4 py-2 font-bengali")}>
+        <Link href={action.href} className={cn(btn.gold, "font-bengali")}>
           {action.label}
           <Icon name="arrow_forward" className="text-lg" />
         </Link>
       ) : (
-        <button type="button" onClick={openRecorder} className={cn(btn.gold, "min-h-10 px-4 py-2 font-bengali")}>
+        <button type="button" onClick={openRecorder} className={cn(btn.gold, "font-bengali")}>
           <span aria-hidden className="size-2.5 rounded-full bg-national-crimson" />
           {action.label}
         </button>

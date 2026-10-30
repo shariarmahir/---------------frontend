@@ -849,6 +849,34 @@
     drop-shadow(0 1.5px 0 var(--color-signal-orange))
     drop-shadow(0 -1.5px 0 var(--color-signal-orange));
 }
+/* A picture melting into its card's own field at its foot (leadership portraits, the product and
+   service films). The picture itself fades, by an eased mask, so no colour layer has to match the
+   field (a layer over a moving picture leaves a seam) and the fade has no hard stop. --melt is how
+   tall the fade is; --melt-solid how much of the foot under it is the field alone (0: the fade
+   runs to the edge); --melt-floor how much of the picture stays where the fade ends (0: none). */
+.melt {
+  --a: var(--melt-floor, 0);
+  --end: calc(100% - var(--melt-solid, 0%));
+  mask-image: linear-gradient(
+    to bottom,
+    #000 calc(var(--end) - var(--melt, 40%)),
+    rgb(0 0 0 / calc(var(--a) + (1 - var(--a)) * 0.7)) calc(var(--end) - var(--melt, 40%) * 0.6),
+    rgb(0 0 0 / calc(var(--a) + (1 - var(--a)) * 0.34)) calc(var(--end) - var(--melt, 40%) * 0.3),
+    rgb(0 0 0 / calc(var(--a) + (1 - var(--a)) * 0.1)) calc(var(--end) - var(--melt, 40%) * 0.1),
+    rgb(0 0 0 / var(--a)) var(--end)
+  );
+}
+/* Words straight on a picture: the product and service cards' names (poster-grid.tsx) and the
+   reels' closed-tile names (photo-reel.tsx). Traced like the hero claim, but in near-black, then a
+   soft shade, so gold and pale blue hold on any frame, a white app screen included. */
+.card-words {
+  filter:
+    drop-shadow(1.5px 0 0 rgb(2 5 18))
+    drop-shadow(-1.5px 0 0 rgb(2 5 18))
+    drop-shadow(0 1.5px 0 rgb(2 5 18))
+    drop-shadow(0 -1.5px 0 rgb(2 5 18))
+    drop-shadow(0 2px 10px rgb(0 0 0 / 0.7));
+}
 /* The film (hero-film.tsx), lightly graded. */
 .hero-film { filter: contrast(1.06) saturate(1.12); }
 /* From lg the home band is narrower than the shared hero-band floor: 4 : 1,
@@ -3384,4 +3412,101 @@ html.has-cursor :is(input, textarea, select, [contenteditable="true"]) {
   .svc3d-build.svc3d-press { animation: svc3d-build 5s ease-out var(--d, 0s) infinite backwards, svc3d-press 5s ease-in-out infinite; }
   .svc3d-cursor { animation: svc3d-point 5s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
   .ms-root[data-paused="true"] :is(.svc3d-stage, .svc3d *) { animation-play-state: paused; }
+}
+
+/* A card's 3D film (components/showcase/card-live.tsx): the first frame,
+   blurred to a haze, sits 260px back (scaled so it still covers the frame),
+   the film plays at the front, and the stage sways so the two part like a
+   camera move (--lv-sw: wider for a lone subject, gentler for a whole frame).
+   A subject shot (data-fit="subject") cuts the subject out of the film and
+   floats it; its far field has the subject cut out over the haze, so no
+   second copy shows as the layers part, and two rings orbit through it (the
+   browser sorts their back halves behind it). A frame shot shows the whole
+   film on a plate whose edges fade into the haze. --lv-at / --lv-y place the
+   subject; --lv-tx / --lv-ty are the pointer tilt. Paused off screen
+   (.ms-root) and still under reduced motion. */
+.lv-root { perspective: 900px; --lv-sw: 4deg; }
+.lv-root[data-fit="subject"] { --lv-sw: 10deg; }
+.lv-tilt, .lv-stage { position: absolute; inset: 0; transform-style: preserve-3d; }
+.lv-tilt {
+  transform: rotateX(calc(var(--lv-ty, 0) * -7deg)) rotateY(calc(var(--lv-tx, 0) * 9deg));
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lv-far { position: absolute; inset: 0; transform: translateZ(-260px) scale(1.7); }
+.lv-haze { filter: blur(22px) brightness(0.7) saturate(1.3); }
+.lv-field {
+  filter: blur(0.6px) brightness(0.8) saturate(1.15);
+  mask-image: radial-gradient(ellipse 60% 36% at var(--lv-at), transparent 64%, #000 92%);
+}
+.lv-near { position: absolute; inset: 0; }
+[data-fit="subject"] .lv-near {
+  transform-origin: var(--lv-at);
+  /* Drawn a little smaller than the frame, so the field and the rings show around it. */
+  transform: scale(0.82);
+  /* Faded out before the layer's own edges, which would show as lines. */
+  mask-image: radial-gradient(ellipse 50% 36% at var(--lv-at), #000 78%, transparent 99%);
+}
+[data-fit="subject"] .lv-near :is(img, video) { filter: contrast(1.08) saturate(1.12); }
+.lv-plate {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  mask-image: linear-gradient(to bottom, transparent, #000 7%, #000 93%, transparent), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+  mask-composite: intersect;
+}
+.lv-glow {
+  background: radial-gradient(ellipse 44% 26% at var(--lv-at), rgb(176 132 255 / 0.6), transparent 70%);
+  mix-blend-mode: screen;
+  opacity: 0.3;
+}
+.lv-sweep {
+  background: linear-gradient(105deg, transparent 42%, rgb(255 255 255 / 0.28) 50%, transparent 58%) no-repeat;
+  background-size: 260% 100%;
+  background-position: 130% 0;
+  mix-blend-mode: screen;
+}
+.lv-ring {
+  position: absolute;
+  left: 50%;
+  top: var(--lv-y);
+  width: 104%;
+  aspect-ratio: 1;
+  margin: -52% 0 0 -52%;
+  border-radius: 50%;
+  border: 1.5px solid rgb(143 161 227 / 0.75);
+  --lv-rx: 76deg;
+  --lv-ry: 0deg;
+  transform: rotateX(var(--lv-rx)) rotateY(var(--lv-ry));
+}
+.lv-ring-b { width: 124%; margin: -62% 0 0 -62%; border-color: rgb(228 176 39 / 0.6); --lv-rx: 70deg; --lv-ry: -18deg; }
+/* The light riding each ring. */
+.lv-ring::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: calc(50% - 4px);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 14px 5px rgb(143 161 227 / 0.95);
+}
+.lv-ring-b::before { box-shadow: 0 0 14px 5px rgb(228 176 39 / 0.95); }
+.lv-vignette { background: radial-gradient(ellipse 85% 75% at 50% 50%, transparent 60%, rgb(0 0 0 / 0.45)); }
+@keyframes lv-sway {
+  0%, 100% { transform: rotateY(calc(var(--lv-sw) * -1)) rotateX(calc(var(--lv-sw) * 0.4)); }
+  50% { transform: rotateY(var(--lv-sw)) rotateX(calc(var(--lv-sw) * -0.3)); }
+}
+@keyframes lv-float { 0%, 100% { translate: 0 1%; scale: 1; } 50% { translate: 0 -2.5%; scale: 1.04; } }
+@keyframes lv-orbit { from { transform: rotateX(var(--lv-rx)) rotateY(var(--lv-ry)) rotateZ(0deg); } to { transform: rotateX(var(--lv-rx)) rotateY(var(--lv-ry)) rotateZ(360deg); } }
+@keyframes lv-breathe { 0%, 100% { opacity: 0.25; } 50% { opacity: 0.65; } }
+@keyframes lv-sweep { 0%, 62% { background-position: 130% 0; } 100% { background-position: -30% 0; } }
+@media (prefers-reduced-motion: no-preference) {
+  .lv-stage { animation: lv-sway 12s ease-in-out infinite; }
+  [data-fit="subject"] .lv-near { animation: lv-float 6s ease-in-out infinite; }
+  .lv-ring-a { animation: lv-orbit 11s linear infinite; }
+  .lv-ring-b { animation: lv-orbit 17s linear infinite reverse; }
+  .lv-glow { animation: lv-breathe 4.5s ease-in-out infinite; }
+  .lv-sweep { animation: lv-sweep 8s ease-in-out infinite; }
 }

@@ -20,7 +20,7 @@ export interface Service {
   nameBn: string;
   /** One line, the promise. */
   pitch: string;
-  /** The home page poster card's face: a short headline and one line under it. */
+  /** The home page poster card: a short name, and one line read out with it. */
   poster: { title: string; tagline: string };
   pitchBn: string;
   /** What we build, four items. */
@@ -45,7 +45,7 @@ export const services: Service[] = [
     nameBn: "এআই, এলএলএম ও এজেন্ট",
     pitch: "Bangla-first AI that reads your documents, talks to your customers and runs routine work.",
     pitchBn: "বাংলায় কথা বলা এআই — আপনার নথি পড়ে, গ্রাহকের প্রশ্নের উত্তর দেয়, রোজকার কাজ নিজে সারে।",
-    poster: { title: "AI Agents", tagline: "Bangla-first AI that works for you" },
+    poster: { title: "AI Engineering", tagline: "AI agents, RAG, LLM training and AI systems, built Bangla-first" },
     builds: [
       { title: "LLM apps & RAG", body: "Chat and search over your own files, with answers that cite the page." },
       { title: "AI agents", body: "Agents that file, follow up, triage and report — with a human sign-off." },
@@ -68,7 +68,7 @@ export const services: Service[] = [
     nameBn: "অটোমেশন — কারখানা, বাসা, অফিস",
     pitch: "Machines, homes and offices that run themselves, and tell you when they need you.",
     pitchBn: "কারখানার লাইন, বাসা আর অফিস — নিজে চলে, দরকার হলে আপনাকে জানায়।",
-    poster: { title: "Automation", tagline: "Factories and homes on autopilot" },
+    poster: { title: "Smart Automation", tagline: "Factories, homes and offices that run themselves" },
     builds: [
       { title: "Factory lines", body: "PLC and sensor retrofits, line monitoring and downtime alerts." },
       { title: "Predictive maintenance", body: "Vibration and heat sensing that warns before a motor fails." },
@@ -91,7 +91,7 @@ export const services: Service[] = [
     nameBn: "আইওটি সমাধান",
     pitch: "Sensors that keep working where power and signal do not — farms, rivers, clinics, cold rooms.",
     pitchBn: "যেখানে বিদ্যুৎ আর নেটওয়ার্ক দুর্বল — খেত, নদী, ক্লিনিক, কোল্ড রুম — সেখানেও চলে এমন সেন্সর।",
-    poster: { title: "Smart IoT", tagline: "Sensors for farms, rivers, clinics" },
+    poster: { title: "IoT & Robotics", tagline: "Hardware, robots, arms and prosthetics, from blueprint to wiring" },
     builds: [
       { title: "Sensor networks", body: "Water, soil, air, temperature and power, measured where it matters." },
       { title: "Rural connectivity", body: "GSM, LoRa and offline buffering for weak or no internet." },
@@ -114,7 +114,7 @@ export const services: Service[] = [
     nameBn: "ডেভেলপমেন্ট — ওয়েবসাইট, অ্যাপ, ইউআই",
     pitch: "Websites, apps and interfaces that load fast on a cheap phone and read well in Bangla.",
     pitchBn: "ওয়েবসাইট, অ্যাপ আর ইউআই — সস্তা ফোনেও দ্রুত খোলে, বাংলায় পড়তে আরাম।",
-    poster: { title: "Development", tagline: "Websites and apps, built for Bangla" },
+    poster: { title: "Digital Studio", tagline: "Websites, apps, e-commerce, UI/UX and creative work" },
     builds: [
       { title: "Websites", body: "Company sites, portals and stores, built for speed and search." },
       { title: "Mobile apps", body: "Android and iOS apps from one codebase, working offline where needed." },

@@ -228,6 +228,32 @@ const BARE = "reel-bare";
 const SIZES = "(min-width: 90rem) 70vw, (min-width: 64rem) 52rem, (min-width: 40rem) 36rem, 100vw";
 
 /**
+ * The name's colour for a closed tile, read off its own loaded picture: the patch where the name
+ * stands (the foot of the slice the tile shows, at the photo's focus), and the brand colour opposite
+ * its warmth: pale blue on a warm patch (earth, paddy, dusk), gold on a cool one (sky, water,
+ * concrete). The name's near-black trace (.card-words) keeps either legible on any picture.
+ * Undefined if the picture cannot be read (gold stays).
+ */
+function inkOn(img: HTMLImageElement, focus: string): string | undefined {
+  try {
+    const c = document.createElement("canvas");
+    c.width = 24;
+    c.height = 48;
+    const ctx = c.getContext("2d", { willReadFrequently: true });
+    if (!ctx) return;
+    const x = (parseFloat(focus) || 50) / 100;
+    const w = img.naturalWidth * 0.2;
+    ctx.drawImage(img, Math.min(Math.max(img.naturalWidth * x - w / 2, 0), img.naturalWidth - w), img.naturalHeight * 0.75, w, img.naturalHeight * 0.25, 0, 0, 24, 48);
+    const d = ctx.getImageData(0, 0, 24, 48).data;
+    let warmth = 0;
+    for (let i = 0; i < d.length; i += 4) warmth += d[i] - d[i + 2];
+    return warmth > 0 ? "var(--color-bdnavy-200)" : "var(--color-signal-orange)";
+  } catch {
+    return undefined;
+  }
+}
+
+/**
  * One card. How it looks in the row is set by CSS from `open` alone (the
  * `min-[90rem]:` classes), so the server's first paint on a wide screen is
  * already the finished row; `row` (known only after hydration) decides what
@@ -243,6 +269,7 @@ function ReelCard({ item, open, row, short, onOpen }: { item: ReelItem; open: bo
   const lang = item.bangla ? "bn" : undefined;
   const lift = art.lift;
   const label = `${item.name}: ${item.titleText}`;
+  const [ink, setInk] = useState<string>();
 
   const imageClass = cn(
     "object-cover transition-[scale] duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
@@ -269,7 +296,15 @@ function ReelCard({ item, open, row, short, onOpen }: { item: ReelItem; open: bo
         )}
         style={{ "--lifted": `${(1 + lift) * 100}%` } as CSSProperties}
       >
-        <Image src={art.photo.src} alt={art.photo.alt} fill sizes={SIZES} className={imageClass} style={{ objectPosition: art.focus }} />
+        <Image
+          src={art.photo.src}
+          alt={art.photo.alt}
+          fill
+          sizes={SIZES}
+          onLoad={(e) => setInk(inkOn(e.currentTarget, art.focus))}
+          className={imageClass}
+          style={{ objectPosition: art.focus }}
+        />
       </div>
       <div
         aria-hidden
@@ -290,8 +325,9 @@ function ReelCard({ item, open, row, short, onOpen }: { item: ReelItem; open: bo
       {/* The edge, drawn over the picture so it holds on the black. */}
       <span aria-hidden className="pointer-events-none absolute inset-0 z-10 rounded-3xl ring-1 ring-white/12 ring-inset" />
 
-      {/* A closed tile (row only; hidden in the reel): its symbol and name on a small frosted label at
-          the foot; the whole tile opens it. Opened from the keyboard, focus moves into the slide. */}
+      {/* A closed tile (row only; hidden in the reel): its symbol at the top, its name at the foot in
+          the brand colour that stands out most on the picture there (inkOn); the whole tile opens it.
+          Opened from the keyboard, focus moves into the slide. */}
       <button
         type="button"
         inert={open}
@@ -304,23 +340,25 @@ function ReelCard({ item, open, row, short, onOpen }: { item: ReelItem; open: bo
         aria-label={`Open ${label}`}
         className={cn(
           // scroll-mt: tabbing to a tile scrolls it clear of the fixed header, focus ring included.
-          "absolute inset-0 z-10 hidden scroll-mt-header-lg flex-col items-center justify-end rounded-3xl p-2 pb-5 text-center transition-opacity min-[90rem]:flex",
+          "absolute inset-0 z-10 hidden scroll-mt-header-lg flex-col items-center justify-between rounded-3xl p-2 pt-6 pb-5 text-center transition-opacity min-[90rem]:flex",
           "focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none focus-visible:ring-inset",
           open ? "pointer-events-none opacity-0 duration-150" : "opacity-100 delay-300 duration-500",
         )}
       >
+        {item.lordicon ? (
+          <CardIcon name={item.lordicon} fallback={item.icon} size={48} />
+        ) : (
+          <Icon name={item.icon} className="text-2xl! text-signal-orange" />
+        )}
         <span
+          lang={lang}
+          style={{ color: ink }}
           className={cn(
-            BARE,
-            "flex flex-col items-center gap-2 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:-translate-y-1 motion-reduce:transition-none",
+            "card-words text-base leading-tight font-bold text-signal-orange transition-[color,translate] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:-translate-y-1 motion-reduce:transition-none",
+            face,
           )}
         >
-          {item.lordicon ? (
-            <CardIcon name={item.lordicon} fallback={item.icon} size={44} />
-          ) : (
-            <Icon name={item.icon} className="text-[1.375rem]! text-signal-orange" />
-          )}
-          <span lang={lang} className={cn("text-sm leading-tight font-bold", face)}>{item.name}</span>
+          {item.name}
         </span>
       </button>
 
