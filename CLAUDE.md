@@ -10,7 +10,10 @@ A single deliverable: the **Kandari-Lab mother-company marketing/portfolio websi
 
 **Out of scope for this repo** (do not build here — separate future repos):
 - The **Shukh** super-app itself (mobile, React Native/Expo — see `Shukh-frontend`/`Shukh-backend`).
-- The planned **Kandari-Lab social platform** ("GitHub for Bangladeshi problem-solving" — idea/discussion/complaint network). The brief describes it as a second, separate site. Do not merge its data model or pages into this one; at most, link out to it once it exists.
+
+**Exception — চেতনা (decided by Mahir, 2026-09-25):** the skill-first social platform is built in this repo, self-contained under `/media/*` with its own shell (`app/media/layout.tsx`), data (`data/media/`), rules (`lib/media/`) and components (`components/media/`). Keep it isolated there so it can move to its own repo later: nothing outside `/media` imports from those folders except the header link. The core loop (post a skill → self-rate → community verifies → hire) comes first. On 2026-09-27 Mahir made the whole platform members-only: every `/media/*` page needs a signed-in Kandari Profile (no public feed browsing); see `PROTECTED_PREFIXES` in `data/auth.ts`. On 2026-09-25 Mahir reversed the earlier exclusions: jobs (free, fair-pay only), civic reports and area alerts, social-work events with sponsors, teams (productive family, university labs, travel, sports), challenges, sticky notes, certificates, a dashboard and wellbeing features (daily Learn→Connect→Create→Apply→Relax plan, break reminders) are now in scope under `/media/*`. Fees stay 5% seller / 5% buyer (confirmed over the ৳2 flat idea). Spec: `docs/superpowers/specs/2026-09-25-shikkhitoder-media-v2-design.md` (supersedes v1). The old `/jibaner-joygan`, `/profile` and `/u/*` pages redirect into it (see `next.config.ts`). Tests: `npm test`.
+
+**Exception — কাণ্ডারী HQ (decided by Mahir, 2026-10-21):** the company's own super prime admin control room and every member's TaskBook live in this repo, self-contained under `/hq` (`app/hq`, `components/hq`, `lib/hq`, `data/hq`; API under `app/api/hq`). Members sign in with username + password; the face check (face-api in the browser, only the 128-number signature reaches the server) is off until the prime admin turns on the face lock in Settings (Mahir, 2026-10-22: hide it at first). There is exactly one super prime admin, Mahir: the level is never assigned (`ASSIGNABLE_LEVELS`) and holds every permission. Each level gets its own Command Center and role brief (`data/hq/roles.ts`). While `HQ_DEMO_PASSWORD` is set, one demo sign-in per level below prime (`kandari@demo-chief` … `kandari@demo-intern`, `lib/hq/server/demo.ts`) shows on the sign-in page; unset it before the real team signs in. The super prime admin's credentials live only in `.env.local` (`HQ_PRIME_EMAIL`, `HQ_PRIME_PASSWORD_HASH` from `scripts/hq-hash.mjs`, `HQ_SESSION_SECRET`); never put them in code. Until the FastAPI + Postgres backend exists the data is one JSON document on the server's disk (`.hq-data/`, git-ignored) — fine on a dev machine or VPS, **not** on Vercel serverless. For testing on Vercel (Mahir, 2026-10-23) it falls back to `/tmp` (per instance, wiped on cold starts), and the HQ_* variables must be set in Vercel's settings; `/hq/login` names any that are missing (`lib/hq/server/setup.ts`). Every change goes through `act(domain, action)` → `lib/hq/domains/*` (validated, permission-checked); every read is the member's filtered view (`lib/hq/view.ts`). Same dress as the landing page (pitch black, navy/ink/cobalt fields, gold titles, red for urgency only). Tests: `npm test` (`lib/hq/**/*.test.ts`).
 
 ---
 
@@ -60,8 +63,9 @@ A single deliverable: the **Kandari-Lab mother-company marketing/portfolio websi
 | Role | Color | Hex | Usage |
 |---|---|---|---|
 | Primary brand | Bottle Green | `#006747` | nav, footers, section backgrounds, primary text accents — the "trust" color |
-| Action / CTA | Orange | `#FF9100` | titles (per brief), all primary buttons, links, highlighted stats — the color that must draw the eye |
+| Action / CTA | Gold | `#E4B027` | titles (per brief), all primary buttons, links, highlighted stats — the color that must draw the eye. Replaced orange `#FF9100` on 2026-09-27 (Mahir's instruction), matching the new logo's gold; the CSS token keeps its old name `signal-orange`. Dark text on it, never white (white is ~2.2:1). |
 | Alert / urgency | Red | `#DA291C` | reserved for emergency/urgency-coded UI only (e.g. "Golden Two Hours" callouts, critical stats) — **not** a general decorative color. Overusing it undercuts the "calm, trustworthy" positioning the brief also asks for. |
+| Deep navy | Navy | `#0B1849` | the third card/field colour of the Pixel-Map palette (green → gold → **navy** → ink), icon and chart fills, selected states. **The site header bar is this navy** (Mahir, 2026-10-15, after a short-lived booking.com blue — do not bring that blue back): full width, flush with the top (utility `header-bar`), contents in a `max-w-384` grid. The logo stands in its own column spanning both rows from lg (68px tall); row one = civic actions, feed, account (right-aligned); row two (lg+) = the section tabs under a hairline, every tab a bold gold icon + label with no pill or glass fill, the current one marked by a gold bar on the header's bottom edge that springs between tabs (`.nav-bar`, with a running light). The logo PNG carries a thin gold outline (`.logo-on-navy`) so its dark letters hold on the navy. Header height 64px below lg, 120px from lg (`--header-offset`, `--spacing-header-lg`). **Replaced every orange on 2026-10-14 (Mahir's instruction): there is no orange anywhere in the UI, do not reintroduce one** (no `#E65100`/`#FF9100`/Tailwind `orange-*`, no `bdorange` token). White text on it (17:1); on the pitch-black ground a faint `ring-1 ring-white/12` holds its edge, as on ink cards. Navy text or strokes vanish on black, so there use the tints `bdnavy-300` (`#8FA1E3`) / `bdnavy-400` (`#6379D1`). Tokens: `--color-bdnavy-50…900` in `app/globals.css`, with 900 = `#0B1849`; `--secondary`, `--signal` and `--signal-text` are navy too. Inside `/media` the same tokens map to that area's own blues. |
 | Neutrals | Near-black `#0A0A0A`, off-white `#FAFAF8`, gray scale | — | body text, backgrounds, borders |
 
 Rationale for capping red's role: the brief asks simultaneously for "green and red" *and* a "very professional, trusted, advanced premium" look. Three high-saturation colors fighting for attention reads as busy, not premium. Giving red a narrow, meaningful job (urgency) instead of general decoration keeps the palette disciplined while still using every color the brief named.
@@ -69,7 +73,7 @@ Rationale for capping red's role: the brief asks simultaneously for "green and r
 ### 4.2 Typography
 - Latin: a modern geometric sans (Inter or Satoshi).
 - Bengali: **Noto Sans Bengali or Hind Siliguri** — required, not optional. The brand name, motto, and product names are Bangla-first; do not let the Bangla text render in a fallback system font. Tune line-height separately for Bangla (conjuncts need more vertical room than Latin defaults).
-- Titles/headings: orange (`#FF9100`) per brief, bold weight, generous letter-spacing at large sizes.
+- Titles/headings: gold (`#E4B027`) per brief, bold weight, generous letter-spacing at large sizes.
 
 ### 4.3 Hero section — ratio **[FLAG — as specified, this breaks on mobile]**
 Brief specifies 16:6 (~2.67:1), an ultra-wide letterbox. At that ratio on a phone viewport, there isn't vertical room for headline + subhead + CTA + a legible 3D scene without severe cropping. Resolution used in this build:
@@ -96,7 +100,20 @@ Brief specifies 16:6 (~2.67:1), an ultra-wide letterbox. At that ratio on a phon
 /rnd                 R&D departments + featured early-stage projects (blind-assist, waste-to-soil)
 /impact               "One Village, One Medical Health Care Center" program, Kazaikat tie-in, stats
 /team                Leadership + department rosters
-/profile             Kandari Profile — auth-gated subscriber dashboard (see §9)
+/bangladesh          "বাংলাদেশ সমস্যা ও সমাধান" (merged 2026-09-27 from the country story page and the
+                      32-issue dossier; /amar-bangladesh and /ajker-bangladesh redirect here). Four acts:
+                      story → crisis & citizen shield → the 32 problems pixel by pixel (what to do, what to
+                      avoid) → realistic solutions → full-research placeholder. Copy: data/desh.ts; rural photos
+                      (Wikimedia Commons, credited): data/rural-life.ts; components/desh.
+/nagorik             "নাগরিক অধিকার ও দায়িত্ব" — BBS Time-Use Survey 2021 charts (real), a division table
+                      (SAMPLE data, labelled as such), constitutional rights, helplines, responsibilities by
+                      group, nightly self-check. Data: data/nagorik.ts; components/nagorik.
+/login, /signup      Kandari Profile auth — phone OTP first, email password or one-time link as fallback;
+                      3-step sign-up (details → verify phone → sectors/products/consent). Mock gateway
+                      (no backend yet): lib/auth/core.ts (pure, tested) + lib/auth/client.ts (browser
+                      storage); demo accounts in data/auth.ts. proxy.ts guards PROTECTED_PREFIXES.
+/account             Kandari Profile — auth-gated subscriber dashboard (was /profile, which now
+                      redirects to /media/me)
 /contact
 ```
 
@@ -128,7 +145,7 @@ Content (team roster, product copy, impact stats) should live in Postgres tables
 ## 8. Component conventions
 - Extend shadcn/ui primitives (`Card`, `Button`, `Dialog`, etc.) — do not fork them into bespoke components unless shadcn genuinely can't do it.
 - One `<ProductCard>` component, reused for SWASTI, Aponjon, and future sector products — don't build per-product one-offs.
-- Buttons: solid orange (`#FF9100`) = primary action (Download App, Join Kandari Profile); outline green = secondary.
+- Buttons: solid gold (`#E4B027`) = primary action (Download App, Join Kandari Profile); outline green = secondary.
 
 ---
 

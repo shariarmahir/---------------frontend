@@ -1,0 +1,472 @@
+import type { GameId } from "@/lib/media/teams";
+import type { RoomRef } from "@/lib/media/showcase";
+import type { JourneyStep, SellerStage, Tier, TradeMode } from "@/lib/media/bazaar";
+import type { PriceBand } from "@/lib/media/fair-price";
+import type { PayUnit } from "@/lib/media/fair-pay";
+
+/**
+ * Domain types for চেতনা — shaped like the API a backend would
+ * serve. Everything in data/media is mock content of these shapes.
+ */
+
+export type CategoryId =
+  | "shop"
+  | "rent"
+  | "fashion"
+  | "tech"
+  | "engineering"
+  | "design"
+  | "art"
+  | "music"
+  | "cooking"
+  | "teaching"
+  | "research"
+  | "sports"
+  | "travel"
+  | "photo"
+  | "content"
+  | "crafts"
+  | "homeservice"
+  | "finance"
+  | "beauty"
+  | "farm"
+  | "legal"
+  | "other";
+
+export interface Category {
+  id: CategoryId;
+  bn: string;
+  en: string;
+  blurb: string;
+  /** Fair range for the category's usual unit of work. */
+  band: PriceBand;
+  /** Suggested skill tags for the post composer. */
+  skills: string[];
+}
+
+/** One skill: the owner's claim and the community's verdict, never merged. */
+export interface SkillRating {
+  skill: string;
+  category: CategoryId;
+  self: number;
+  communityAvg: number;
+  raters: number;
+}
+
+export type Tone = "green" | "orange" | "emerald" | "amber" | "slate" | "teal";
+
+export interface WorkItem {
+  id: string;
+  title: string;
+  client: string;
+  amount: number;
+  date: string;
+  rating: number;
+  review: string;
+}
+
+export interface Person {
+  handle: string;
+  name: string;
+  nameBn: string;
+  initials: string;
+  headline: string;
+  district: string;
+  area: string;
+  bio: string;
+  /** One NID/passport per account, checked at onboarding. */
+  idVerified: boolean;
+  skills: SkillRating[];
+  categories: CategoryId[];
+  followers: number;
+  jobsDone: number;
+  /** Average of client reviews on completed work. */
+  clientRating: number;
+  responseTime: string;
+  rate?: { amount: number; unit: string };
+  openToWork: boolean;
+  joined: string;
+  tone: Tone;
+  workHistory: WorkItem[];
+}
+
+export type MediaKind = "image" | "video" | "project" | "audio";
+
+export interface MediaSlot {
+  kind: MediaKind;
+  label: string;
+  ratio: "16/9" | "4/3" | "1/1" | "4/5";
+  duration?: string;
+  src?: string;
+  /** A short playable copy (audio or video data URL), kept when the file is small. */
+  play?: string;
+}
+
+export interface Comment {
+  id: string;
+  author: string;
+  text: string;
+  at: string;
+  likes: number;
+  /** Set when the comment came with a rating. */
+  verdict?: { kind: "verify" | "challenge"; stars: number };
+  replies?: Comment[];
+}
+
+export type PostKind = "skill" | "project";
+
+/** A same-site page a post points to, shown as a card under the caption (e.g. a গবেষণাকোষ article). */
+export interface PostLink {
+  /** A path on this site, always starting with a single "/". */
+  href: string;
+  title: string;
+  summary?: string;
+  /** Where it lives, e.g. "গবেষণাকোষ". */
+  source: string;
+  /** What it is, e.g. "গবেষণাপত্র". */
+  label?: string;
+}
+
+/**
+ * What a post is for. Skill, education and research posts carry a
+ * self-rating the community verifies (unless they only share a page, see
+ * Post.link); the rest are for sharing, asking and speaking up, and carry none.
+ */
+export type PostTopic = "skill" | "education" | "research" | "team" | "talent" | "entertainment" | "daily" | "help" | "rights";
+
+/** How the author feels, or what they are doing — shown beside their name, as on other social apps. */
+export type FeelingId = "happy" | "grateful" | "proud" | "excited" | "celebrating" | "calm" | "learning" | "working" | "thinking" | "sad";
+
+/** A short text-only post set large on a solid colour. */
+export type PostBg = "gold" | "green" | "orange" | "white" | "ink";
+
+/** Who can see a post. Omitted means everyone. */
+export type Audience = "public" | "followers" | "private";
+
+export interface Post {
+  id: string;
+  kind: PostKind;
+  /** Defaults to "skill". */
+  topic?: PostTopic;
+  author: string;
+  category: CategoryId;
+  createdAt: string;
+  caption: string;
+  /** Present on rated posts only (see PostTopic). */
+  skill?: { name: string; self: number; communityAvg: number; raters: number };
+  media: MediaSlot[];
+  tags: string[];
+  stats: { likes: number; shares: number; views: number };
+  comments: Comment[];
+  /** Present when the work is for sale. */
+  listingId?: string;
+  /** Shared from a classroom or lab room. */
+  from?: RoomRef;
+  /** Shared from another part of the site. */
+  link?: PostLink;
+  feeling?: FeelingId;
+  bg?: PostBg;
+  audience?: Audience;
+  /** Where it happened, as the author wrote it. */
+  place?: string;
+}
+
+export interface Listing {
+  id: string;
+  seller: string;
+  category: CategoryId;
+  title: string;
+  description: string;
+  price: number;
+  unit: string;
+  negotiable: boolean;
+  /** Private minimum for offers. */
+  floor: number;
+  delivery: Delivery[];
+  media: MediaSlot;
+  /** Every photo, video and audio sample, cover first. */
+  gallery?: MediaSlot[];
+  rating: number;
+  sold: number;
+  location: string;
+  highlights: string[];
+  /** The seller skill whose community rating vouches for this listing. */
+  skill: string;
+  /** Paid placement (a revenue line): shown first and tagged “ফিচার্ড”. */
+  featured?: boolean;
+
+  /* বাজার fields — older skill listings leave them out. */
+  stage?: SellerStage;
+  /** Trade modes the seller accepts; unset means all. */
+  modes?: TradeMode[];
+  tags?: string[];
+  stock?: number;
+  minOrder?: number;
+  /** Wholesale prices by quantity. */
+  tiers?: Tier[];
+  organic?: boolean;
+  perishable?: boolean;
+  /** Weight of one unit, for delivery quotes. */
+  kg?: number;
+  /** Category- and stage-specific answers from the form, in order. */
+  specs?: { k: string; v: string }[];
+  /** The seller's own category name under “অন্যান্য”. */
+  customCategory?: string;
+  /** বাজারের উপ-বিভাগ (data/media/market-sections.ts); older items fall back by category. */
+  sub?: string;
+  /** Field to buyer, hash-linked (see lib/media/bazaar). */
+  journey?: JourneyStep[];
+}
+
+export type Delivery = "home" | "courier" | "pickup" | "digital" | "onsite" | "bus" | "cold" | "train" | "truck";
+
+/** A quick চাহিদা বোর্ড post: someone wants to buy, or has something to sell. Matched automatically. */
+export interface BoardPost {
+  id: string;
+  author: string;
+  side: "buy" | "sell";
+  /** Who is posting, in a few words: “কারওয়ান বাজারের আড়তদার”. */
+  who: string;
+  title: string;
+  category: CategoryId;
+  sub?: string;
+  tags: string[];
+  qty: number;
+  unit: string;
+  /** Buyers: the most they will pay per unit (unset = open). Sellers: the asking price. */
+  price?: number;
+  district: string;
+  /** Buyers: what the purchase is for. Sellers: who they sell to. */
+  mode: TradeMode;
+  organic?: boolean;
+  /** Sample and lab test before the bulk order (exporters). */
+  sampleTest?: boolean;
+  /** Buyers: needed by. Sellers: available from. As written. */
+  when: string;
+  note?: string;
+}
+
+/* ── Community: jobs, events, teams, civic reports, challenges ───────── */
+
+export type JobType = "full" | "part" | "gig" | "intern";
+
+/** A free job post. Every job states its pay; pay below the fair band is refused. */
+export interface Job {
+  id: string;
+  /** Who posted it on the platform. */
+  poster: string;
+  org: string;
+  title: string;
+  sector: CategoryId;
+  type: JobType;
+  location: string;
+  remote: boolean;
+  pay: { min: number; max: number; unit: PayUnit };
+  tags: string[];
+  description: string;
+  requirements: string[];
+  postedAt: string;
+  deadline: string;
+  applicants: number;
+  /** Fits around classes — shown in the students' filter. */
+  studentFriendly: boolean;
+  /** The posting's picture: the workplace or the work itself. */
+  image?: string;
+  /** Hours and days, in a line. */
+  hours?: string;
+  /** How many people they will take. */
+  openings?: number;
+  /** What comes with the pay. */
+  perks?: string[];
+  /** How the hiring goes, step by step. */
+  steps?: string[];
+  /** Academy courses that teach the work, by code. */
+  courses?: string[];
+}
+
+export type EventKind = "tree" | "cleanup" | "blood" | "relief" | "awareness" | "repair";
+
+export interface Sponsor {
+  name: string;
+  /** What they give: "লোগোসহ ১০০টি টি-শার্ট", "৳২০,০০০". */
+  offer: string;
+  initials: string;
+}
+
+/** A social-work event: someone leads, others join, companies sponsor. */
+export interface CommunityEvent {
+  id: string;
+  kind: EventKind;
+  title: string;
+  organizer: string;
+  area: string;
+  district: string;
+  date: string;
+  description: string;
+  goal: number;
+  joined: number;
+  needs: string[];
+  sponsors: Sponsor[];
+  cover?: string;
+}
+
+export type TeamKind = "family" | "lab" | "project" | "travel" | "sports" | "esports";
+
+export interface LabProfile {
+  type: "lab";
+  university: string;
+  supervisor: string;
+  focus: string[];
+  /** Positions the lab is recruiting for. */
+  roles: string[];
+  equipment: string[];
+  meets: string;
+}
+
+export interface SportsProfile {
+  type: "sports";
+  sport: string;
+  ageGroup: string;
+  record: { w: number; d: number; l: number };
+  practice: string;
+  positions: string[];
+}
+
+export interface EsportsProfile {
+  type: "esports";
+  game: GameId;
+  rank: string;
+  scrims: string;
+  wins: number;
+  /** Filled seats; substitutes after the starters. */
+  roster: { name: string; role: string; sub?: boolean }[];
+}
+
+export interface Team {
+  id: string;
+  kind: TeamKind;
+  name: string;
+  lead: string;
+  /** Known members on the platform (the lead first). */
+  members: string[];
+  memberCount: number;
+  district: string;
+  about: string;
+  tags: string[];
+  /** Taking new members? */
+  open: boolean;
+  cover?: string;
+  /** Secret key: anyone holding it joins, open or not. Older saved teams may lack one. */
+  code?: string;
+  /** Seat limit; none means no cap. */
+  limit?: number;
+  profile?: LabProfile | SportsProfile | EsportsProfile;
+}
+
+export type CivicKind = "sanitation" | "road" | "crime" | "extortion" | "harassment" | "utility" | "environment" | "help";
+export type CivicStatus = "reported" | "confirmed" | "in-progress" | "solved";
+
+/** A public problem, alert or call for help, confirmed by people nearby. */
+export interface CivicReport {
+  id: string;
+  kind: CivicKind;
+  title: string;
+  area: string;
+  district: string;
+  at: string;
+  /** Null when filed anonymously (still one verified person behind it). */
+  by: string | null;
+  description: string;
+  confirmations: number;
+  status: CivicStatus;
+  severity: "low" | "medium" | "high";
+  solutions: { id: string; by: string; text: string; votes: number }[];
+  media?: MediaSlot;
+}
+
+export type ChallengeKind = "code" | "design" | "research" | "assignment" | "lab";
+
+export interface Challenge {
+  id: string;
+  kind: ChallengeKind;
+  title: string;
+  host: string;
+  /** A member who runs it on the platform. */
+  by: string;
+  category: CategoryId;
+  prize: number;
+  deadline: string;
+  teams: boolean;
+  entries: number;
+  description: string;
+  /** How entries are judged. */
+  judging?: string;
+  tags: string[];
+}
+
+export type NoticeKind = "rating" | "hire" | "job" | "event" | "civic" | "team" | "sale" | "system";
+
+export interface Notice {
+  id: string;
+  kind: NoticeKind;
+  text: string;
+  href: string;
+  at: string;
+}
+
+export interface Message {
+  id: string;
+  from: string;
+  at: string;
+  text: string;
+}
+
+export interface Thread {
+  id: string;
+  /** The other person. */
+  with: string;
+  kind: "hire" | "offer";
+  subject: string;
+  listingId?: string;
+  ask: number;
+  floor: number;
+  unread: number;
+  messages: Message[];
+  /** Seeded negotiation rounds (buyer = the viewer). */
+  rounds: { by: "buyer" | "seller"; kind: "offer" | "counter" | "accept" | "decline" | "confirm"; amount: number; at: string }[];
+}
+
+export type TxnKind = "sale" | "purchase" | "escrow" | "release" | "withdraw" | "refund";
+
+export interface Txn {
+  id: string;
+  at: string;
+  kind: TxnKind;
+  label: string;
+  /** Price of the deal before fees (withdrawals: amount sent). */
+  gross: number;
+  /** Platform commission on this row, always shown. */
+  fee: number;
+  feeSide: "seller" | "buyer" | "none";
+  /** Effect on the wallet: + in, − out. */
+  net: number;
+  status: "done" | "pending" | "held";
+  method?: "bkash" | "nagad" | "banglaqr";
+  /**
+   * How a purchase was paid. "wallet" moves the balance (see `net`); an
+   * outside method (bKash, card…) leaves the balance alone, so `net` is 0.
+   */
+  paidVia?: PayMethod;
+  /** The conversation whose agreement this escrow row pays for. */
+  deal?: string;
+}
+
+export type PayMethod = "wallet" | "bkash" | "nagad" | "banglaqr" | "card";
+
+export interface WalletSeed {
+  available: number;
+  escrow: number;
+  lifetime: number;
+  linked: { bkash: string; nagad: string; banglaqr: string };
+  txns: Txn[];
+}

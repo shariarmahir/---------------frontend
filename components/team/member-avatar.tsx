@@ -1,28 +1,32 @@
-import { departments, type TeamMember } from "@/data/team";
+import Image from "next/image";
+import { toneOf, type TeamMember } from "@/data/team";
 import { cn } from "@/lib/utils";
 
 /**
- * Photo placeholder — a monogram on the member's department colour. No
- * team photos have been supplied yet; when they are, this is the one
- * place to swap in <Image>.
+ * A member's round face: their portrait when one is supplied, otherwise
+ * their initials on the department's solid colour (no gradients — the home
+ * page's solid Pixel-Map fields).
  */
 export function MemberAvatar({
   member,
   className,
   textClassName,
+  sizes = "96px",
 }: {
   member: TeamMember;
   className?: string;
   textClassName?: string;
+  /** `sizes` for the portrait, so a large avatar loads a sharp file. */
+  sizes?: string;
 }) {
-  const color = departments[member.depts[0]].color;
+  const dept = toneOf(member);
   return (
-    <span
-      aria-hidden
-      className={cn("relative flex shrink-0 items-center justify-center overflow-hidden rounded-full", className)}
-      style={{ background: `radial-gradient(circle at 30% 25%, ${color}, #0b1220 85%)` }}
-    >
-      <span className={cn("font-grotesk font-bold text-white", textClassName)}>{member.initials}</span>
+    <span aria-hidden className={cn("relative flex shrink-0 items-center justify-center overflow-hidden rounded-full", dept.surface, className)}>
+      {member.photo ? (
+        <Image src={member.photo} alt="" fill sizes={sizes} className="object-cover object-top" />
+      ) : (
+        <span className={cn("font-grotesk font-bold", textClassName)}>{member.initials}</span>
+      )}
     </span>
   );
 }

@@ -11,7 +11,9 @@
  * already stated on the home page's leadership section), not a personal
  * CV — nothing here claims a degree, employer or achievement we have not
  * been given. Photos are not supplied yet, so every member renders a
- * labelled placeholder.
+ * labelled placeholder. The three executives' portraits are the same
+ * files the home page uses (public/team); Sadman's and Nabeel's are stock
+ * mock-ups until real photographs arrive.
  */
 
 export type DeptId = "leadership" | "creative" | "client" | "iot" | "dev";
@@ -39,70 +41,87 @@ export interface TeamMember {
   skills: Skill[];
   /** Products and programmes the member's department works on. */
   works: string[];
+  /** Portrait under /public/team. Members without one get a monogram. */
+  photo?: string;
+  /**
+   * Card colour when it differs from the first department's: the three
+   * executives match the home page's poster cards (CEO cobalt, COO ink,
+   * CMO navy).
+   */
+  tone?: DeptId;
 }
 
 export interface Dept {
   id: DeptId;
   label: string;
   labelBn: string;
-  /** Hex, for inline glows the design tokens cannot express. */
+  /** CSS colour (a theme token) for glows, planets and beams on the dark ground. */
   color: string;
-  /** Tailwind classes for text / soft background / border. */
-  text: string;
-  soft: string;
-  border: string;
+  /** Solid colour-field classes for a card, chip or portrait in this department. */
+  surface: string;
+  /** Contrasting fill for an icon plate or pill on that surface. */
+  tile: string;
+  /** Bright fill for the monogram plate that stands in for a missing portrait. */
+  plate: string;
   icon: string;
 }
 
+/**
+ * Department colours, in the landing page's three card fields only (Mahir,
+ * 2026-10-19): cobalt, navy and ink, each with a faint ring to hold its
+ * edge on the black ground, white text, and gold for the pills, icons and
+ * monograms. `color` is the planet colour in the hero's orbit, a tint that
+ * reads on black.
+ */
 export const departments: Record<DeptId, Dept> = {
   leadership: {
     id: "leadership",
     label: "Leadership",
     labelBn: "নেতৃত্ব",
-    color: "#ff9100",
-    text: "text-bdorange-600",
-    soft: "bg-orange-50",
-    border: "border-orange-200",
+    color: "var(--color-signal-orange)",
+    surface: "bg-cobalt text-white ring-1 ring-white/12",
+    tile: "bg-signal-orange text-text-primary",
+    plate: "bg-bdnavy-900 text-signal-orange",
     icon: "workspace_premium",
   },
   creative: {
     id: "creative",
     label: "Idea & Creative",
     labelBn: "আইডিয়া ও ক্রিয়েটিভ",
-    color: "#e11d74",
-    text: "text-pink-700",
-    soft: "bg-pink-50",
-    border: "border-pink-200",
+    color: "var(--color-bdnavy-300)",
+    surface: "bg-cobalt text-white ring-1 ring-white/12",
+    tile: "bg-signal-orange text-text-primary",
+    plate: "bg-bdnavy-900 text-signal-orange",
     icon: "lightbulb",
   },
   client: {
     id: "client",
     label: "Client Relations",
     labelBn: "ক্লায়েন্ট",
-    color: "#7c3aed",
-    text: "text-violet-700",
-    soft: "bg-violet-50",
-    border: "border-violet-200",
+    color: "var(--color-link-blue)",
+    surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
+    tile: "bg-signal-orange text-text-primary",
+    plate: "bg-cobalt text-signal-orange",
     icon: "handshake",
   },
   iot: {
     id: "iot",
     label: "IoT & Hardware",
     labelBn: "আইওটি ও হার্ডওয়্যার",
-    color: "#006747",
-    text: "text-bd-green",
-    soft: "bg-bd-green-light",
-    border: "border-emerald-200",
+    color: "var(--color-bdnavy-400)",
+    surface: "bg-text-primary text-white ring-1 ring-white/12",
+    tile: "bg-signal-orange text-text-primary",
+    plate: "bg-bdnavy-900 text-signal-orange",
     icon: "sensors",
   },
   dev: {
     id: "dev",
     label: "AI & Software",
     labelBn: "এআই ও সফটওয়্যার",
-    color: "#0d9488",
-    text: "text-teal-700",
-    soft: "bg-teal-50",
-    border: "border-teal-200",
+    color: "var(--color-link-blue)",
+    surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
+    tile: "bg-signal-orange text-text-primary",
+    plate: "bg-cobalt text-signal-orange",
     icon: "neurology",
   },
 };
@@ -110,6 +129,7 @@ export const departments: Record<DeptId, Dept> = {
 export const team: TeamMember[] = [
   {
     slug: "mahir-shariar-mahin",
+    photo: "/team/mahir_shariar_mahin.png",
     name: "Mahir Shariar Mahin",
     initials: "MS",
     role: "Founder & CEO",
@@ -134,6 +154,8 @@ export const team: TeamMember[] = [
   },
   {
     slug: "sadman-bin-arif",
+    tone: "iot",
+    photo: "/team/sadman-bin-arif.jpg",
     name: "Sadman bin Arif",
     initials: "SA",
     role: "Chief Operating Officer",
@@ -157,6 +179,8 @@ export const team: TeamMember[] = [
   },
   {
     slug: "nabeel-shadad",
+    tone: "dev",
+    photo: "/team/nabeel-shadad.jpg",
     name: "Nabeel Shadad",
     initials: "NS",
     role: "Chief Marketing Officer",
@@ -343,6 +367,9 @@ export const team: TeamMember[] = [
 
 export const founder = team.find((m) => m.ring === "core")!;
 export const crew = team.filter((m) => m.ring !== "core");
+
+/** The colour field a member's card, portrait and glow use. */
+export const toneOf = (m: TeamMember): Dept => departments[m.tone ?? m.depts[0]];
 
 export function getMember(slug: string): TeamMember | undefined {
   return team.find((m) => m.slug === slug);

@@ -10,9 +10,61 @@ const nextConfig: NextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     // Next 16 only honours qualities listed here; an unlisted `quality` prop
     // silently falls back to 75. The hero photos are small and upscaled, so
-    // the extra fidelity is worth the bytes.
-    qualities: [75, 90],
+    // the extra fidelity is worth the bytes; 80 is for the platform reels'
+    // app screenshots (story-player.tsx), where small UI text must stay sharp.
+    qualities: [75, 80, 90],
     formats: ["image/avif", "image/webp"],
+  },
+  // Every page refuses to be framed by other sites (clickjacking of the
+  // sign-in, /media and /hq), never sniffs a file's type, embeds no plugins
+  // and sends only the origin to other sites. The one exception is the TV
+  // Wall's screen, /tv-wall/tv, which its share menu offers as an embed code
+  // for any site: it keeps the rest but may be framed. Scripts are left to
+  // Next's defaults: no script policy is set here.
+  async headers() {
+    const shared = [
+      { key: "X-Content-Type-Options", value: "nosniff" },
+      { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+    ];
+    return [
+      {
+        source: "/((?!tv-wall/tv$|tv-wall/tv/).*)",
+        headers: [
+          { key: "Content-Security-Policy", value: "frame-ancestors 'self'; object-src 'none'; base-uri 'self'" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          ...shared,
+        ],
+      },
+      {
+        source: "/tv-wall/tv/:path*",
+        headers: [{ key: "Content-Security-Policy", value: "object-src 'none'; base-uri 'self'" }, ...shared],
+      },
+    ];
+  },
+  // The social pages moved into চেতনা at /media. Temporary
+  // redirects keep old links working without browsers caching the move.
+  async redirects() {
+    return [
+      { source: "/jibaner-joygan", destination: "/media", permanent: false },
+      { source: "/profile", destination: "/media/me", permanent: false },
+      { source: "/u/:slug", destination: "/media/u/:slug", permanent: false },
+      // The issue dossier and the news index merged into the country page.
+      { source: "/amar-bangladesh", destination: "/bangladesh", permanent: false },
+      { source: "/ajker-bangladesh", destination: "/bangladesh", permanent: false },
+      // অপরাধ বার্তা merged into নাগরিক বার্তা.
+      { source: "/media/crime", destination: "/media/civic", permanent: false },
+      // ওয়ালেট merged into the dashboard; ?withdraw=1 passes through.
+      { source: "/media/wallet", destination: "/media/dashboard", permanent: false },
+      // The গবেষণা page made way for নাগরিক জীবন (research stays in the rooms' workspace and the feed).
+      { source: "/media/research", destination: "/media/news", permanent: false },
+      // টিম ও গ্রুপ, উদ্যোগ and চ্যালেঞ্জ merged into একসাথে; ?k= passes through.
+      { source: "/media/teams", destination: "/media/together?v=teams", permanent: false },
+      { source: "/media/events", destination: "/media/together?v=events", permanent: false },
+      { source: "/media/challenges", destination: "/media/together?v=challenges", permanent: false },
+      // Genius moved to a JSTOR-style catalogue: the contents list is now Browse by Title.
+      { source: "/research/contents", destination: "/research/titles", permanent: false },
+      { source: "/research/changes", destination: "/research", permanent: false },
+    ];
   },
 };
 

@@ -1,8 +1,12 @@
+import { services } from "./services";
+
 export interface NavLink {
   href: string;
   label: string;
   /** Condensed label for mid-width screens where the full one would wrap. */
   shortLabel: string;
+  /** A tab that opens a menu of these links instead of going anywhere itself. */
+  children?: NavLink[];
   /**
    * A substring of `label` to render in the alert colour. Used on the news
    * index, where the three categories share the word "অপরাধ" and that word
@@ -10,31 +14,34 @@ export interface NavLink {
    * adjacent nav items read as one red block.
    */
   accentWord?: string;
+  /** A tab that does something on the page instead of going anywhere: "record" opens the evidence recorder. */
+  action?: "record";
 }
 
 /**
- * Primary navigation.
+ * Primary navigation (Mahir, 2026-10-28): Home, Bangladesh, Products,
+ * Research, Mission, নাগরিক দায়িত্ব, About us, Team, Join. Bangladesh's
+ * landing page holds the National Index.
  *
- * Every `href` here must match a real `id` rendered on the page it points
- * at — three of these previously pointed at ids that did not exist
- * (`#kandari-member-portal`, `#rnd-innovations`, `#founder-vision`), so
- * the links focused nothing and scrolled nowhere. Labels are named after
- * the heading each section actually carries, so the nav and the page
- * agree.
+ * Every `href` here must match a real page, or a real `id` on the page it
+ * points at. Anchors are full root paths ("/#mission"), so the same set
+ * works from /about and every other page that falls back to it; on the
+ * home page they are in-page jumps, and the header keeps the gold bar on
+ * whichever of them is in view.
  */
 export const navLinks: NavLink[] = [
   {
-    href: "#overview-mission",
-    label: "Mission",
-    shortLabel: "Mission",
+    // "#top" scrolls to the top of the page (HTML's built-in fragment), so on
+    // the home page this glides up instead of reloading.
+    href: "/#top",
+    label: "Home",
+    shortLabel: "Home",
   },
   {
-    // A full path, not a bare "#national-index" anchor: the section now
-    // lives on the issue dossier, so the fragment alone would resolve to
-    // nothing on the home page and the link would silently do nothing.
-    href: "/amar-bangladesh#national-index",
-    label: "National Index",
-    shortLabel: "Index",
+    // The national landing page: the country, its National Index, the 32 problems and their solutions.
+    href: "/bangladesh",
+    label: "Bangladesh",
+    shortLabel: "Bangladesh",
   },
   {
     // The product overview page; each product has its own detail route.
@@ -43,10 +50,29 @@ export const navLinks: NavLink[] = [
     shortLabel: "Products",
   },
   {
-    // "Advanced R&D Cleanroom Initiatives".
-    href: "#rd-labs",
+    // গবেষণাকোষ — the open research library (its own section, /research).
+    href: "/research",
     label: "Research",
     shortLabel: "R&D",
+  },
+  {
+    // The charter's Mission card on the home page; arriving with this hash
+    // brings that card forward (see charter-reel.tsx).
+    href: "/#mission",
+    label: "Mission",
+    shortLabel: "Mission",
+  },
+  {
+    // Citizen rights and duties.
+    href: "/nagorik",
+    label: "নাগরিক দায়িত্ব",
+    shortLabel: "দায়িত্ব",
+  },
+  {
+    // Who we are and what we hold to: the About Us page.
+    href: "/about",
+    label: "About us",
+    shortLabel: "About",
   },
   {
     // The team page (orbit, founder, crew directory and profiles).
@@ -56,29 +82,51 @@ export const navLinks: NavLink[] = [
   },
   {
     // "Join Kandari Profile" — the subscriber conversion section.
-    href: "#kandari-profile",
+    href: "/#kandari-profile",
     label: "Join",
     shortLabel: "Join",
   },
 ];
 
 /**
- * Navigation for "বাংলাদেশ" — the country story page — and the news index.
- *
- * Every href is a full "/bangladesh#…" path rather than a bare anchor, so
- * the same set works from the news index as well: from there it navigates
- * to the story page, and on the story page it is an in-page jump. Each
- * fragment matches a section id in components/bangladesh.
+ * The chapter bar for Bangladesh: the landing page, its five chapters
+ * (data/bangladesh.ts, CHAPTERS) and the game, in English. The header marks
+ * the current page by the longest matching path, so /bangladesh/history
+ * lights History and /bangladesh alone lights Overview.
  */
 export const bangladeshNavLinks: NavLink[] = [
-  { href: "/bangladesh#history", label: "ইতিহাস", shortLabel: "ইতিহাস" },
-  { href: "/bangladesh#map", label: "মানচিত্র", shortLabel: "মানচিত্র" },
-  { href: "/bangladesh#nature", label: "প্রকৃতি", shortLabel: "প্রকৃতি" },
-  { href: "/bangladesh#seasons", label: "ষড়ঋতু", shortLabel: "ঋতু" },
-  { href: "/bangladesh#culture", label: "সংস্কৃতি", shortLabel: "সংস্কৃতি" },
-  { href: "/bangladesh#icons", label: "গুণীজন", shortLabel: "গুণীজন" },
-  { href: "/bangladesh#growth", label: "অগ্রযাত্রা", shortLabel: "অগ্রযাত্রা" },
-  { href: "/bangladesh#memories", label: "স্মৃতি", shortLabel: "স্মৃতি" },
+  { href: "/bangladesh", label: "Overview", shortLabel: "Overview" },
+  { href: "/bangladesh/history", label: "History", shortLabel: "History" },
+  { href: "/bangladesh/crisis", label: "Crisis", shortLabel: "Crisis" },
+  { href: "/bangladesh/shield", label: "Citizen shield", shortLabel: "Shield" },
+  { href: "/bangladesh/problems", label: "32 problems", shortLabel: "Problems" },
+  { href: "/bangladesh/solutions", label: "Solutions", shortLabel: "Solutions" },
+];
+
+/** Navigation for "Citizen Rights and Duties" (/nagorik). */
+export const nagorikNavLinks: NavLink[] = [
+  { href: "/nagorik#day", label: "The day", shortLabel: "Day" },
+  { href: "/nagorik#rights", label: "Rights", shortLabel: "Rights" },
+  { href: "/nagorik#justice", label: "Justice", shortLabel: "Justice" },
+  { href: "/nagorik#responsibility", label: "Duties", shortLabel: "Duties" },
+  { href: "/nagorik#pledge", label: "Pledge", shortLabel: "Pledge" },
+  { href: "/bangladesh", label: "Bangladesh", shortLabel: "Bangladesh" },
+];
+
+/**
+ * The প্রতিবাদ page's tabs (Mahir, 2026-10-29): its own sections, the
+ * evidence recorder (a tab that opens it rather than a link), then the two
+ * live boards it feeds: the crime and complaint dashboard and the National
+ * TV Wall.
+ */
+export const protibadNavLinks: NavLink[] = [
+  { href: "/protibad", label: "Overview", shortLabel: "Overview" },
+  { href: "/protibad#live", label: "Live crime", shortLabel: "Live" },
+  { href: "/protibad#crime-data", label: "Crime data", shortLabel: "Data" },
+  { href: "/protibad#file-complaint", label: "File a complaint", shortLabel: "Complain" },
+  { href: "#record", label: "Record", shortLabel: "Record", action: "record" },
+  { href: "/protibad/command", label: "Crime & complaint dashboard", shortLabel: "Dashboard" },
+  { href: "/tv-wall", label: "National TV wall", shortLabel: "TV wall" },
 ];
 
 /**
@@ -93,8 +141,31 @@ export const productNavLinks: NavLink[] = [
   { href: "/products/aponjon", label: "Aponjon", shortLabel: "Aponjon" },
   { href: "/products/swasti", label: "SWASTI", shortLabel: "SWASTI" },
   { href: "/products/smart-pharmacy", label: "Smart Pharmacy", shortLabel: "Pharmacy" },
-  { href: "/#rd-labs", label: "Research", shortLabel: "R&D" },
+  { href: "/media", label: "চেতনা", shortLabel: "চেতনা" },
+  {
+    href: "#services",
+    label: "Services",
+    shortLabel: "Services",
+    children: [
+      { href: "/services", label: "All services", shortLabel: "All" },
+      ...services.map((s) => ({ href: `/services/${s.id}`, label: s.name, shortLabel: s.name })),
+    ],
+  },
+  { href: "/research", label: "Research", shortLabel: "R&D" },
   { href: "/#kandari-profile", label: "Join", shortLabel: "Join" },
+];
+
+/**
+ * Navigation for Genius (/research): the library's own pages, then
+ * the company pages a researcher is most likely to want next.
+ */
+export const researchNavLinks: NavLink[] = [
+  { href: "/research", label: "Research", shortLabel: "Research" },
+  { href: "/research/subjects", label: "Subjects", shortLabel: "Subjects" },
+  { href: "/research/collections", label: "Collections", shortLabel: "Collections" },
+  { href: "/research/workspace", label: "Workspace", shortLabel: "Workspace" },
+  { href: "/research/submit", label: "Upload", shortLabel: "Upload" },
+  { href: "/products", label: "Products", shortLabel: "Products" },
 ];
 
 /**
@@ -105,7 +176,7 @@ export const teamNavLinks: NavLink[] = [
   { href: "/team", label: "All Team", shortLabel: "Team" },
   { href: "/team#founder", label: "Founder", shortLabel: "Founder" },
   { href: "/team#members", label: "Members", shortLabel: "Members" },
-  { href: "/team#fellowship", label: "R&D Fellowship", shortLabel: "R&D" },
+  { href: "/team/fellowship", label: "R&D Fellowship", shortLabel: "R&D" },
   { href: "/products", label: "Products", shortLabel: "Products" },
   { href: "/#kandari-profile", label: "Join", shortLabel: "Join" },
 ];
@@ -113,21 +184,30 @@ export const teamNavLinks: NavLink[] = [
 /**
  * The nav set for a given pathname. Home's set is the default.
  *
- * The story page and the news index share one nav, so moving between them
- * keeps the same categories in place rather than swapping the bar out
- * underneath the reader.
  */
 export function navLinksFor(pathname: string): NavLink[] {
-  if (pathname === "/products" || pathname.startsWith("/products/")) {
+  if (["/products", "/services"].some((root) => pathname === root || pathname.startsWith(`${root}/`))) {
     return productNavLinks;
   }
-  if (pathname === "/bangladesh" || pathname.startsWith("/ajker-bangladesh")) {
+  if (pathname === "/bangladesh" || pathname.startsWith("/bangladesh/")) {
     return bangladeshNavLinks;
+  }
+  if (pathname === "/nagorik") {
+    return nagorikNavLinks;
+  }
+  if (pathname === "/protibad") {
+    return protibadNavLinks;
+  }
+  if (pathname === "/research" || pathname.startsWith("/research/")) {
+    return researchNavLinks;
   }
   if (pathname === "/team" || pathname.startsWith("/team/")) {
     return teamNavLinks;
   }
   return navLinks;
 }
+
+/** চেতনা's motto (Mahir, 2026-10-29), shown under its name wherever the name stands as a brand. */
+export const CHETONA_MOTTO = "চেতনা ফিরলেই পরিবর্তন সম্ভব";
 
 export const NAZRUL_MOTTO = "‘কে আছ জোয়ান? হও আগুয়ান। হাঁকিছে ভবিষ্যৎ।’";

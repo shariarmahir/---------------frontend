@@ -1,218 +1,120 @@
 "use client";
 
 import Image from "next/image";
-import { useId, useState } from "react";
+import Link from "next/link";
+import type { CSSProperties } from "react";
 import { Icon } from "@/components/ui/icon";
-
-const TIERS = [
-  {
-    id: "citizen",
-    icon: "favorite",
-    iconClass: "text-signal-orange",
-    title: "Citizen / Patient",
-    blurb:
-      "Personalized vitals sync with Aponjon band, priority telemedicine queue, and local pharmacy digital lockers.",
-    tier: "TIER: CITIZEN NODE",
-    accent: "var(--color-signal-orange)",
-  },
-  {
-    id: "researcher",
-    icon: "memory",
-    iconClass: "text-emerald-600",
-    title: "Researcher / Engineer",
-    blurb:
-      "Hardware SDK access, RISC-V 28nm simulation specs, 10-Crore Bengali multimodal training datasets & cleanroom tokens.",
-    tier: "TIER: FAB DEV KIT ACCESS",
-    accent: "var(--color-emerald-600)",
-  },
-  {
-    id: "provider",
-    icon: "local_pharmacy",
-    iconClass: "text-teal-600",
-    title: "Healthcare Provider / Clinic",
-    blurb:
-      "Rural Pharmacy Node onboarding, certified diagnostic device whitelist, automated doctor video triage & API keys.",
-    tier: "TIER: CLINIC PARTNER",
-    accent: "var(--color-teal-600)",
-  },
-];
-
-const DISTRICTS = [
-  "Dhaka District",
-  "Chittagong",
-  "Sylhet",
-  "Rangpur",
-  "Rajshahi",
-  "Khulna",
-  "Barisal",
-  "Mymensingh",
-];
+import { btn } from "@/components/ui/section-kit";
+import { useAuth } from "@/lib/auth/client";
+import { cn } from "@/lib/utils";
+import { CardIcon } from "@/components/ui/card-icon";
 
 /**
- * Join Kandari Profile — the subscriber conversion section.
- *
- * ── Two halves, not one photographic panel ───────────────────────────
- *
- * The section is a vertical flex column of two containers:
- *
- *   Top half     the photograph, carrying only a one-line headline.
- *   Bottom half  a solid surface carrying the tiers and the sync form.
- *
- * Previously everything floated over the image in one centred column,
- * which put the email field and district select directly on a busy
- * photograph. Form controls need a stable surface to read as inputs, so
- * the lower half leaves the image behind entirely rather than dimming
- * it further — dimming would have cost the photograph without buying
- * the inputs much legibility.
- *
- * The headline is one line: the orange accent carries the emphasis, so
- * it no longer needs three lines of uppercase to land.
+ * Join Kandari Profile, laid out like shikho.com's help band: one wide
+ * panel carrying the invitation and its single action, the "Join Us!"
+ * illustration framed on its own white ground on the right, and beside it two stacked cards for the
+ * free ways in that need no profile decision first (the research library,
+ * the community). All on solid fields: the panel gold with a navy button,
+ * the cards navy and ink with gold ones. A member gets "My Profile"
+ * instead of the sign-up.
  */
+const WAYS_IN = [
+  {
+    title: "Open Research Library",
+    body: "Papers and field notes on Bangladesh’s problems, free to read.",
+    action: "Read Research",
+    href: "/research",
+    icon: "menu_book",
+    lordicon: "book-bookmark",
+    card: "bg-bdnavy-900 text-white ring-1 ring-white/12 ring-inset",
+    muted: "text-white/65",
+    glow: "var(--color-bdnavy-400)",
+  },
+  {
+    title: "চেতনা",
+    body: "Show your skills, get verified by the community, find fair-paid work.",
+    action: "Join Social",
+    href: "/media",
+    icon: "diversity_3",
+    lordicon: "media",
+    card: "bg-text-primary text-white ring-1 ring-white/12 ring-inset",
+    muted: "text-white/65",
+    glow: "var(--color-signal-orange)",
+  },
+];
+
 export function KandariProfileSection() {
-  const [tier, setTier] = useState("citizen");
-  const emailId = useId();
-  const districtId = useId();
-  const headingId = useId();
+  const { account } = useAuth();
 
   return (
-    <section
-      id="kandari-profile"
-      className="section-band relative overflow-hidden"
-    >
-      <div className="relative mx-auto max-w-7xl px-gutter-x">
-        <div className="flex flex-col overflow-hidden rounded-3xl border border-emerald-200/90 shadow-2xl">
-          {/* ── Top half — photograph + single-line headline ───────── */}
-          {/* The photograph is 720×467 (≈3:2). The container tracks that
-              ratio closely so `object-cover` has almost nothing to crop —
-              previously this was a fixed 15rem-tall band, roughly 8:1 at
-              desktop width, which cut away most of the image's height. */}
-          <div className="relative flex aspect-3/2 max-h-[35rem] w-full flex-1 items-center justify-center overflow-hidden px-6 py-10 sm:aspect-5/3 sm:px-10 lg:aspect-video lg:px-12">
-            <Image
-              src="/sections/Bangladesh.jpg"
-              alt=""
-              aria-hidden
-              fill
-              sizes="(min-width: 1280px) 1280px, 100vw"
-              quality={90}
-              className="object-cover object-center"
-            />
-            {/* Scrim. The headline is white over a bright sky, so it
-                needs a floor under its luminance. */}
-            <div aria-hidden className="absolute inset-0 bg-slate-950/55" />
+    <section id="kandari-profile" aria-labelledby="kandari-profile-title" className="section-band mx-auto max-w-384 px-gutter-x">
+      {/* From xl the invitation and the two cards stand side by side; on a small laptop (lg) the cards pair up under it. */}
+      <div className="grid gap-3 sm:gap-4 xl:grid-cols-[minmax(0,1.85fr)_minmax(0,1fr)]">
+        {/* The invitation. */}
+        <div className="story-reveal group/join relative grid overflow-hidden rounded-3xl bg-cobalt text-white sm:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
+          <div className="relative order-2 flex flex-col items-start gap-3 p-5 pt-3 sm:order-1 sm:gap-4 sm:p-8 xl:p-10">
+            <h2 id="kandari-profile-title" className="font-grotesk text-2xl leading-tight font-bold tracking-tight text-balance text-signal-orange sm:text-3xl">
+              Join Kandari Profile
+            </h2>
+            <p className="max-w-md text-sm leading-relaxed text-white/80 sm:text-base">Hear first about new research and releases.</p>
+            <p className="font-grotesk text-xl font-bold text-signal-orange">
+              Free to join, always
+            </p>
+            {/* The section's one primary action: full width on phones. */}
+            <Link href={account ? "/account" : "/signup"} className={cn(btn.gold, "mt-1 w-full sm:mt-2 sm:w-auto")}>
+              <Icon name={account ? "account_circle" : "person_add"} className="text-2xl" />
+              {account ? "My Profile" : "Join Kandari Profile"}
+            </Link>
+            <p className="text-xs font-medium text-white/80">* Sign up with a phone code or email *</p>
+          </div>
 
-            <div className="relative flex max-w-4xl flex-col items-center gap-3 text-center">
-              <h2
-                id={headingId}
-                className="font-grotesk text-2xl leading-tight font-bold tracking-tight text-balance text-white uppercase sm:text-3xl lg:text-4xl"
-              >
-                Join Kandari Profile for{" "}
-                <span className="text-signal-orange">breakthrough R&amp;D</span>
-              </h2>
-              <p className="max-w-2xl font-sans text-sm leading-relaxed text-white/85 sm:text-base">
-                Activate your Kandari Node for clinical telemetry updates,
-                hardware dev kits, and early software releases.
-              </p>
+          {/* The illustration in a white card cut to its own shape (1818 × 1109), so the whole picture
+              shows with no empty white around it; it sits centred on the cobalt beside the words. */}
+          <div className="order-1 flex items-center p-3 sm:order-2 sm:py-6 sm:pr-6 sm:pl-0">
+            <div className="relative aspect-1818/1109 w-full max-sm:aspect-2/1 overflow-hidden rounded-2xl bg-white shadow-[0_18px_36px_-18px_rgb(0_0_0/0.6)]">
+              <Image
+                src="/about/join-us.png"
+                alt="Illustration: a group of young people gathered together under the words “Join Us! Together we can make everything better.”"
+                fill
+                sizes="(min-width: 1024px) 440px, (min-width: 640px) 50vw, 100vw"
+                className="object-cover max-sm:object-[50%_15%] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/join:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover/join:scale-100"
+              />
             </div>
           </div>
-
-          {/* ── Bottom half — tiers + sync form ────────────────────── */}
-          <div className="flex flex-1 flex-col gap-6 bg-white px-6 py-8 sm:px-10 lg:px-12 lg:py-10">
-            <fieldset className="flex flex-col gap-3">
-              <legend className="sr-only">Choose your profile tier</legend>
-              <div className="flex flex-col gap-3 md:flex-row">
-                {TIERS.map((item) => {
-                  const active = tier === item.id;
-                  return (
-                    <label
-                      key={item.id}
-                      style={{ "--card-accent": item.accent } as React.CSSProperties}
-                      className={`glass-card flex flex-1 cursor-pointer flex-col justify-between gap-3 rounded-2xl border p-4 ${
-                        active
-                          ? "border-signal-orange bg-amber-50"
-                          : "border-slate-200 bg-slate-50"
-                      }`}
-                    >
-                      <div className="flex flex-col gap-2">
-                        <div className="flex items-center justify-between">
-                          <Icon
-                            name={item.icon}
-                            className={`text-2xl ${item.iconClass}`}
-                          />
-                          <input
-                            type="radio"
-                            name="profile_tier"
-                            value={item.id}
-                            checked={active}
-                            onChange={() => setTier(item.id)}
-                            className="size-4 accent-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
-                          />
-                        </div>
-                        <span className="font-grotesk text-base font-bold text-slate-900">
-                          {item.title}
-                        </span>
-                        <p className="font-sans text-xs leading-relaxed text-slate-600">
-                          {item.blurb}
-                        </p>
-                      </div>
-
-                      <span
-                        className={`border-t pt-2 font-mono text-[10px] font-semibold uppercase ${
-                          active
-                            ? "border-signal-orange/30 text-amber-700"
-                            : "border-slate-200 text-slate-500"
-                        }`}
-                      >
-                        {item.tier}
-                      </span>
-                    </label>
-                  );
-                })}
-              </div>
-            </fieldset>
-
-            {/* Sync form. */}
-            <form
-              aria-labelledby={headingId}
-              className="flex flex-col gap-2.5 sm:flex-row"
-            >
-              <div className="flex-1">
-                <label htmlFor={emailId} className="sr-only">
-                  Telemetry email address
-                </label>
-                <input
-                  id={emailId}
-                  type="email"
-                  required
-                  placeholder="> enter_telemetry_email@domain.bd"
-                  className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 font-mono text-xs text-slate-900 transition-colors placeholder:text-slate-500 focus:border-signal-orange focus:bg-white focus:ring-3 focus:ring-signal-orange/30 focus:outline-none"
-                />
-              </div>
-
-              <div className="sm:w-48">
-                <label htmlFor={districtId} className="sr-only">
-                  District
-                </label>
-                <select
-                  id={districtId}
-                  className="w-full cursor-pointer rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 font-mono text-xs text-slate-900 focus:border-signal-orange focus:ring-3 focus:ring-signal-orange/30 focus:outline-none"
-                >
-                  {DISTRICTS.map((d) => (
-                    <option key={d}>{d}</option>
-                  ))}
-                </select>
-              </div>
-
-              <button
-                type="submit"
-                className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-signal-orange px-6 py-3.5 font-grotesk text-xs font-bold text-white uppercase shadow-glow-orange transition-all hover:-translate-y-0.5 hover:bg-amber-600 focus-visible:ring-3 focus-visible:ring-signal-orange/40 focus-visible:outline-none sm:text-sm"
-              >
-                <Icon name="sync" className="text-base" />
-                Sync Profile
-              </button>
-            </form>
-
-          </div>
         </div>
+
+        {/* The free ways in. */}
+        <ul className="flex flex-col gap-3 sm:gap-4 lg:flex-row xl:flex-col">
+          {WAYS_IN.map((way) => (
+            <li key={way.href} className="story-reveal flex flex-1">
+              <Link
+                href={way.href}
+                style={{ "--glow": way.glow } as CSSProperties}
+                className={cn(
+                  "group flex w-full items-center justify-between gap-4 rounded-3xl p-5 sm:p-7",
+                  "transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-[0_24px_40px_-22px_var(--glow)]",
+                  "focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:ring-offset-2 focus-visible:ring-offset-black focus-visible:outline-none",
+                  "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+                  way.card,
+                )}
+              >
+                <span className="flex min-w-0 flex-col items-start gap-2 sm:gap-3">
+                  <span className={cn("font-grotesk text-xl leading-tight font-bold", /[ঀ-৿]/.test(way.title) && "font-bengali")}>{way.title}</span>
+                  <span className={cn("text-sm leading-snug", way.muted)}>{way.body}</span>
+                  {/* Styled as a button; the whole card is the link. */}
+                  <span className={cn(btn.gold, "mt-1")}>{way.action}</span>
+                </span>
+                {/* The icon, tilted, straightening under the pointer. */}
+                <span
+                  aria-hidden
+                  className="grid size-16 shrink-0 -rotate-8 place-items-center transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:rotate-0 motion-reduce:transition-none sm:size-24"
+                >
+                  <CardIcon name={way.lordicon} fallback={way.icon} size={72} />
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

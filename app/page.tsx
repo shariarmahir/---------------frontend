@@ -1,36 +1,76 @@
 import { SiteFooter } from "@/components/layout/site-footer";
+import { SmoothScroll } from "@/components/layout/smooth-scroll";
 import { SiteHeader } from "@/components/layout/site-header";
 import { AiWidget } from "@/components/ui/ai-widget";
-import { FlagshipsSection } from "@/components/sections/flagships-section";
+import { Cursor } from "@/components/ui/cursor";
+import { Preloader } from "@/components/ui/preloader";
+import { AboutSection } from "@/components/sections/about-section";
+import { AppsSection } from "@/components/sections/apps-section";
+import { CharterReel } from "@/components/sections/charter-reel";
+import { ProductsSection, ServicesSection } from "@/components/sections/flagships-section";
+import { DataSourcesSection } from "@/components/sections/data-sources-section";
 import { HeroSection } from "@/components/sections/hero-section";
 import { KandariProfileSection } from "@/components/sections/kandari-profile-section";
 import { LeadershipSection } from "@/components/sections/leadership-section";
-import { MetricsSection } from "@/components/sections/metrics-section";
 import { NodeTerminalSection } from "@/components/sections/node-terminal-section";
 import { PixelThesisSection } from "@/components/sections/pixel-thesis-section";
+import { PromoGallery } from "@/components/sections/promo-gallery";
 import { ResearchSection } from "@/components/sections/research-section";
+import { ReviewsSection } from "@/components/sections/reviews-section";
+import { SpotlightBand } from "@/components/sections/spotlight-band";
 
+/*
+ * THESIS: Bangladesh as a pixel map, fixed one solid pixel at a time; the
+ * page refuses the pale-card SaaS scroll and runs on whole colour fields.
+ * OWN-WORLD: the header's language on a pitch-black ground. Gold #e4b027,
+ * ink #032017 and bottle green #006747 as drenched bands and panels (ink
+ * panels carry a faint white ring so they hold an edge on the black); every
+ * surface a solid colour, no textures; white tiles for anything green or red; a gold pulse running
+ * the seam of each dark band.
+ * STORY: the photographs and the claim → the narrow spotlight band (news,
+ * protocol status, national indicators) → the four pixels → products → the
+ * apps to download → services →
+ * the labs → the open drive → the people → who we are and our values → what partners say → the six ways to act → where the data comes from → join.
+ * FIRST VIEWPORT: the header over the photo hero, its claim and gold
+ * primary action, then the narrow spotlight band closing it.
+ * FORM: extension of the established header world (no seed roll); pacing
+ * alternates black ground, ink, gold and green so no two neighbours match.
+ */
 export default function Home() {
   return (
     <>
+      <Preloader />
+      <SmoothScroll />
       <SiteHeader />
-      {/* The dot-grid starts below the hero: the hero is a full-bleed photo
-          band, so a backdrop on <main> would never show through it anyway. */}
-      <main className="relative w-full bg-[#fcfdfd] pt-header lg:pt-header-lg">
+      <main className="relative w-full bg-black pt-header lg:pt-header-lg">
         <HeroSection />
-        <div className="bg-grid-subtle">
+        {/* Announcements, the Golden 2-Hours status and the national
+            indicators: a narrow banglalink-style slider under the hero. */}
+        <SpotlightBand />
+        {/* Pitch-black ground, solid colours only (Mahir, 2026-09-30). On a touch screen the
+            sections below the first view are laid out only as they come near (globals.css, .home-flow). */}
+        <div className="home-flow relative">
+          {/* Problem, challenge, vision, mission, goal and impact: a
+              carousel of cards that glides on its own. */}
+          <CharterReel />
           <PixelThesisSection />
-          <FlagshipsSection />
-          <MetricsSection />
+          <ProductsSection />
+          <AppsSection />
+          <ServicesSection />
           <ResearchSection />
           <NodeTerminalSection />
           <LeadershipSection />
+          <AboutSection />
+          <ReviewsSection />
+          <PromoGallery />
+          <DataSourcesSection />
           <KandariProfileSection />
         </div>
       </main>
       <SiteFooter />
       {/* Floating AI assistant — home screen only. */}
       <AiWidget />
+      <Cursor />
     </>
   );
 }

@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+!.env.example
+
+# কাণ্ডারী HQ data (database, uploads, session secret)
+/.hq-data/
+
+# Master media files, too large for the repo (web encodes live in public/)
+/media-src/

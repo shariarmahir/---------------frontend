@@ -1,92 +1,92 @@
+import { Card, Section, type Surface } from "@/components/bangladesh-landing/kit";
 import { Icon } from "@/components/ui/icon";
-import { emergencyCategories } from "@/data/amar-bangladesh";
+import { emergencyCategories, type EmergencyCategory } from "@/data/amar-bangladesh";
 import { cn } from "@/lib/utils";
 
+const SURFACES: Surface[] = ["ink", "cobalt", "navy"];
+
+/** Critical marked in the flag's red (urgency), high in plain white; the word stays white so it reads on every card colour. */
+function Tone({ tone }: { tone: EmergencyCategory["tone"] }) {
+  const critical = tone === "critical";
+  return (
+    <span className="flex items-center gap-1.5 text-sm font-semibold text-white">
+      <span aria-hidden className={cn("size-2.5 rounded-full", critical ? "bg-crimson-bright ring-2 ring-crimson-bright/30" : "bg-white/65")} />
+      {critical ? "Critical" : "High"}
+    </span>
+  );
+}
+
+const points = (n: number) => `${n} source point${n === 1 ? "" : "s"}`;
+
 /**
- * Emergency categories — what the evidence says to act on first.
+ * What the evidence says to act on first: the measurement and
+ * accountability layer as the large card (every other fix needs it to be
+ * targeted and checked), the seven areas it then serves around it, and a
+ * way into the 32 problems behind them.
  */
 export function AmarEmergency() {
+  const [first, ...rest] = emergencyCategories;
   return (
-    <section
-      id="emergency"
-      className="w-full bg-surface-lowest px-margin-mobile py-space-2xl lg:px-margin"
+    <Section
+      id="measurement"
+      title="Solve the measurement layer first"
+      lede="The practical lesson of the whole dossier: build the measurement and accountability layer, then use it to target health, learning, jobs, pollution, logistics, energy, safety and innovation."
     >
-      <div className="mx-auto flex max-w-[1320px] flex-col gap-space-xl">
-        <div className="flex flex-col gap-space-xs">
-          <span className="flex items-center gap-space-xs font-code-telemetry text-label-sm font-bold uppercase text-tertiary">
-            <span className="relative flex size-2.5 items-center justify-center">
-              <span className="absolute size-2.5 animate-ping rounded-full bg-tertiary/60" />
-              <span className="relative size-1.5 rounded-full bg-tertiary" />
-            </span>
-            SECTION 05 · EMERGENCY CATEGORIES
-          </span>
-          <h2 className="max-w-3xl font-display text-headline-lg-mobile font-bold tracking-tight text-on-surface sm:text-headline-lg">
-            Solve the measurement layer first
-          </h2>
-          <p className="max-w-3xl font-body-md text-body-md text-on-surface-variant">
-            The practical implication of the whole dossier: build the
-            measurement and accountability layer, then use it to target health,
-            education, jobs, pollution, logistics, energy, safety and
-            innovation.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 gap-gutter sm:grid-cols-2 lg:grid-cols-4">
-          {emergencyCategories.map((cat) => (
-            <article
-              key={cat.id}
-              className={cn(
-                "group relative flex flex-col gap-space-sm overflow-hidden rounded-lg p-space-md shadow-xs transition-all hover:-translate-y-1 hover:shadow-md",
-                cat.tone === "critical"
-                  ? "bg-tertiary/10/50"
-                  : "bg-secondary-fixed/50",
-              )}
-            >
-              <div className="flex items-start justify-between gap-space-sm">
-                <span
-                  className={cn(
-                    "flex size-11 shrink-0 items-center justify-center rounded-lg border bg-surface-lowest shadow-xs",
-                    cat.tone === "critical" ? "text-tertiary" : "text-signal-text",
-                  )}
-                >
-                  <Icon
-                    name={cat.icon}
-                    className="text-[22px] transition-transform group-hover:scale-110"
-                  />
-                </span>
-                <span
-                  className={cn(
-                    "rounded-full px-space-sm py-0.5 font-code-telemetry text-label-xs font-bold uppercase",
-                    cat.tone === "critical"
-                      ? "bg-tertiary text-white"
-                      : "bg-signal text-white",
-                  )}
-                >
-                  {cat.tone}
-                </span>
-              </div>
-
-              <div>
-                <h3 className="font-display text-label-md font-bold text-on-surface">
-                  {cat.title}
-                </h3>
-                <span className="font-display text-body-sm text-outline">
-                  {cat.banglaTitle}
-                </span>
-              </div>
-
-              <p className="font-body-sm text-body-sm leading-relaxed text-on-surface-variant">
-                {cat.summary}
-              </p>
-
-              <span className="mt-auto flex items-center gap-space-xs pt-space-xs font-code-telemetry text-label-sm font-bold text-outline">
-                <Icon name="tag" className="text-[14px]" />
-                {cat.pointCount} source point{cat.pointCount === 1 ? "" : "s"}
+      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <li className="story-reveal flex sm:col-span-2 lg:row-span-2">
+          <Card surface="navy" className="flex w-full flex-col">
+            <div className="flex items-start justify-between gap-4">
+              <span className="flex size-14 items-center justify-center rounded-2xl bg-signal-orange text-text-primary">
+                <Icon name={first.icon} className="text-3xl" />
               </span>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
+              <Tone tone={first.tone} />
+            </div>
+            <h3 className="mt-6 font-grotesk text-2xl leading-tight font-bold text-balance text-signal-orange sm:text-3xl">{first.title}</h3>
+            <p className="mt-4 max-w-xl text-lg leading-relaxed text-white">{first.summary}</p>
+            <ul aria-label="What the layer is made of" className="mt-6 flex flex-wrap gap-2 text-sm text-white">
+              {["Denominators", "Complaint tracking", "Audit trails"].map((part) => (
+                <li key={part} className="flex items-center gap-2 rounded-full bg-black/30 px-3.5 py-2 ring-1 ring-white/12">
+                  <Icon name="check" className="text-base text-signal-orange" />
+                  {part}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-auto flex items-center gap-1.5 pt-6 text-sm text-white/80">
+              <Icon name="tag" className="text-base" />
+              {points(first.pointCount)}
+            </p>
+          </Card>
+        </li>
+
+        {rest.map((cat, i) => (
+          <li key={cat.id} className="story-reveal flex">
+            <Card surface={SURFACES[i % 3]} className="flex w-full flex-col p-6 sm:p-6">
+              <div className="flex items-start justify-between gap-3">
+                <span className="flex size-11 items-center justify-center rounded-xl bg-black/30 text-signal-orange ring-1 ring-white/12">
+                  <Icon name={cat.icon} className="text-2xl" />
+                </span>
+                <Tone tone={cat.tone} />
+              </div>
+              <h3 className="mt-5 font-grotesk text-lg leading-snug font-bold text-balance">{cat.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-white/80">{cat.summary}</p>
+              <p className="mt-auto flex items-center gap-1.5 pt-5 text-xs text-white/80">
+                <Icon name="tag" className="text-sm" />
+                {points(cat.pointCount)}
+              </p>
+            </Card>
+          </li>
+        ))}
+
+        <li className="story-reveal flex">
+          <Card href="/bangladesh/problems" surface="navy" className="group flex w-full flex-col justify-between gap-6 p-6 sm:p-6">
+            <span className="font-grotesk text-lg leading-snug font-bold text-balance">Every one of the 32 problems, with its evidence</span>
+            <span className="flex items-center gap-1.5 text-sm font-semibold text-signal-orange">
+              Open chapter 4
+              <Icon name="arrow_forward" className="text-lg transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
+            </span>
+          </Card>
+        </li>
+      </ul>
+    </Section>
   );
 }

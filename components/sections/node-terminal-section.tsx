@@ -1,124 +1,143 @@
 import { Icon } from "@/components/ui/icon";
+import { SignalSeam, btn } from "@/components/ui/section-kit";
+import { cn } from "@/lib/utils";
+import { CardIcon } from "@/components/ui/card-icon";
 
+/** How the drive works, in the order a problem travels. */
+const STEPS = [
+  { icon: "location_on", lordicon: "bangladesh", title: "Citizens register a problem", body: "A district’s pain-point, logged in the open." },
+  { icon: "terminal", lordicon: "browser-terminal", title: "Engineers build the fix", body: "University teams submit open-source firmware and data." },
+  { icon: "precision_manufacturing", lordicon: "wrench", title: "Kandari-Lab backs it", body: "Hardware grants and cleanroom manufacturing access." },
+];
+
+/**
+ * The console's entries: samples of what the stream will carry (no feed is
+ * connected yet), and the console says so. On the navy console: gold for the lead line and
+ * the figure that matters, the navy tint for a second voice, white for the
+ * rest.
+ */
 const FEED = [
   {
-    head: "> DRUG_TRACE_RANGPUR // PROPOSAL",
-    headClass: "text-signal-orange",
+    tag: "Proposal",
+    head: "Drug trace · Rangpur",
     time: "2 mins ago",
     body: "New smart-packaging barcode RFID firmware uploaded to counter spurious medicine distribution in Rangpur division.",
     meta: [
-      { text: "By: LabFellow_Tanvir", class: "" },
-      { text: "Branch: v1.0.3", class: "text-bd-green font-semibold" },
-      { text: "+148 Commits", class: "text-signal-orange" },
+      { label: "By", value: "LabFellow_Tanvir" },
+      { label: "Branch", value: "v1.0.3" },
+      { label: "Commits", value: "+148", strong: true },
     ],
   },
   {
-    head: "> VISUAL_CONSCIOUSNESS // RADAR CALIBRATION",
-    headClass: "text-teal-700",
+    tag: "Dataset",
+    head: "Visual consciousness · Dhaka",
     time: "18 mins ago",
     body: "Urban Dhaka sidewalk telemetry dataset uploaded: 120,000 labeled obstacle points for visually impaired sensory belt.",
     meta: [
-      { text: "By: Safia_Mubassara", class: "" },
-      { text: "Dataset: 8.4 GB", class: "text-bd-green font-semibold" },
-      { text: "Status: Verified", class: "text-signal-orange font-semibold" },
+      { label: "By", value: "Safia_Mubassara" },
+      { label: "Size", value: "8.4 GB" },
+      { label: "Status", value: "Verified", strong: true },
     ],
   },
   {
-    head: "> BIO_ALARM // SYLHET TEA-GARDEN PILOT",
-    headClass: "text-national-crimson",
+    tag: "Pilot",
+    head: "Bio-alarm · Sylhet tea gardens",
     time: "42 mins ago",
     body: "Aponjon Band deployed on 250 tea plantation workers; detected 4 asymptomatic heat-stroke pre-cursors within 2 hours.",
     meta: [
-      { text: "By: Lead_Mahir", class: "" },
-      { text: "Telemetry: 100% OK", class: "text-bd-green font-semibold" },
-      { text: "Alerts Saved: 4", class: "text-national-crimson font-bold" },
+      { label: "By", value: "Lead_Mahir" },
+      { label: "Telemetry", value: "100% OK" },
+      { label: "Alerts saved", value: "4", strong: true },
     ],
   },
 ];
 
+/** The innovation drive: a full-bleed ink band, how it works on the left, the stream console on the right. */
 export function NodeTerminalSection() {
   return (
-    <section
-      id="innovation"
-      className="section-band-tinted border-y border-slate-200 bg-white"
-    >
-      <div className="mx-auto max-w-7xl px-gutter-x">
-        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-12">
-          {/* Narrative. */}
-          <div className="space-y-5 lg:col-span-5">
-            <h2 className="font-grotesk text-2xl font-bold tracking-tight text-text-primary uppercase sm:text-3xl lg:text-4xl">
-              The Bangladesh Innovation Drive
+    <section id="innovation" className="section-band-tinted relative isolate overflow-hidden bg-text-primary text-white">
+      <SignalSeam className="top-0" />
+
+      <div className="mx-auto max-w-384 px-gutter-x">
+        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-14">
+          <div className="story-reveal flex flex-col gap-5 lg:col-span-5 lg:gap-6 xl:col-span-6">
+            <h2 className="font-grotesk text-2xl font-bold tracking-tight text-balance text-signal-orange max-sm:text-[1.75rem] max-sm:leading-[1.15] sm:text-3xl lg:text-4xl">
+              Innovation Drive
             </h2>
+            <p className="max-w-md font-sans text-base leading-relaxed text-white/80">Problems named in the open, solved in the lab.</p>
 
-            <p className="font-sans text-base leading-relaxed text-text-secondary">
-              GitHub meets open democracy for national problem-solving. Citizens
-              register district pain-points, university engineers submit
-              open-source firmware, and Kandari-Lab provides venture hardware
-              grants and cleanroom manufacturing access.
-            </p>
+            <ol className="flex flex-col">
+              {STEPS.map((s) => (
+                <li key={s.title} className="group/step grid grid-cols-[auto_1fr] items-start gap-3 border-t border-white/10 py-3 last:border-b lg:gap-4 lg:py-4">
+                  <span className="grid size-11 place-items-center lg:size-12 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/step:-rotate-6 motion-reduce:transition-none motion-reduce:group-hover/step:rotate-0">
+                    <CardIcon name={s.lordicon} fallback={s.icon} size={32} />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="font-grotesk text-sm font-bold">{s.title}</p>
+                    <p className="mt-0.5 text-sm leading-snug text-white/65 lg:mt-1 lg:leading-relaxed">{s.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
 
-            <div className="space-y-2.5 font-mono text-xs">
-              <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-3">
-                <span className="font-medium text-text-primary">
-                  VERIFIED INNOVATORS
-                </span>
-                <span className="font-bold text-bd-green">14,280+ MEMBERS</span>
-              </div>
-              <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-3">
-                <span className="font-medium text-text-primary">
-                  COMMERCIALIZED HARDWARE
-                </span>
-                <span className="font-bold text-signal-orange">
-                  19 PATENTS
-                </span>
-              </div>
-            </div>
-
-            <div className="pt-2">
-              <a
-                href="#kandari-profile"
-                className="inline-flex items-center gap-2 rounded-xl bg-signal-orange px-6 py-3.5 font-grotesk text-xs font-bold text-white uppercase shadow-glow-orange transition-all hover:bg-amber-600 sm:text-sm"
-              >
-                <span>Submit a National Problem</span>
+            <div>
+              {/* The section's one primary action: full width on a phone. */}
+              <a href="#kandari-profile" className={cn(btn.gold, "max-sm:w-full")}>
+                Submit a National Problem
                 <Icon name="send" className="text-base" />
               </a>
             </div>
           </div>
 
-          {/* Live feed console. */}
-          <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-elevated sm:p-6 lg:col-span-7">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3 font-mono text-xs">
-              <span className="flex items-center gap-2 font-bold text-bd-green">
-                <span className="size-2.5 animate-ping rounded-full bg-bd-green" />
-                REAL-TIME INNOVATION STREAM
-              </span>
-              <span className="text-text-muted">FEED // BD-880-STREAM</span>
+          {/* The stream console: one solid navy field. */}
+          <div className="story-reveal overflow-hidden rounded-3xl bg-bdnavy-900 shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_30px_60px_-36px_rgb(0_0_0/0.9)] ring-1 ring-white/12 lg:col-span-7 xl:col-span-6">
+            <div className="flex items-center gap-3 border-b border-white/10 px-5 py-4 sm:px-7">
+              <span aria-hidden className="size-2 rounded-full bg-signal-orange" />
+              <span className="font-sans tabular-nums text-xs font-semibold text-signal-orange">Innovation stream</span>
+              {/* Not live yet: the entries are samples, and the console says so (like the apps' "Sample screen"). */}
+              <span className="ml-auto font-sans text-xs text-white/65">Sample entries</span>
             </div>
 
-            <div className="space-y-3 divide-y divide-slate-100 font-sans text-sm">
+            {/* On a phone the entries are a swipe row inside the console, the
+                next one peeking, so it stays one compact block; from sm they stack. */}
+            <ul
+              tabIndex={0}
+              aria-label="Innovation stream, sample entries"
+              className="px-2 py-2 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-signal-orange sm:px-3 max-sm:flex max-sm:snap-x max-sm:snap-mandatory max-sm:scroll-px-4 max-sm:gap-3 max-sm:overflow-x-auto max-sm:px-4 max-sm:py-4 max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden"
+            >
               {FEED.map((item) => (
-                <div key={item.head} className="flex flex-col gap-1.5 pt-3">
-                  <div className="flex items-center justify-between gap-3 font-mono text-xs">
-                    <span className={`font-bold ${item.headClass}`}>
-                      {item.head}
-                    </span>
-                    <span className="shrink-0 text-text-muted">
-                      {item.time}
-                    </span>
-                  </div>
-
-                  <p className="font-medium text-text-primary">{item.body}</p>
-
-                  <div className="flex flex-wrap items-center gap-3 font-mono text-[11px] text-text-muted">
-                    {item.meta.map((m, i) => (
-                      <span key={m.text} className="flex items-center gap-3">
-                        {i > 0 ? <span>•</span> : null}
-                        <span className={m.class}>{m.text}</span>
+                <li
+                  key={item.head}
+                  className="rounded-2xl px-3 py-4 transition-colors duration-300 hover:bg-white/4 sm:px-4 max-sm:w-[85%] max-sm:max-w-96 max-sm:shrink-0 max-sm:snap-start max-sm:ring-1 max-sm:ring-white/12"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="flex min-w-0 items-center gap-2.5">
+                      <span className="shrink-0 rounded-md bg-signal-orange/12 px-2 py-0.5 font-sans tabular-nums text-xs font-semibold text-signal-orange ring-1 ring-signal-orange/30">
+                        {item.tag}
                       </span>
-                    ))}
+                      <span className="truncate font-sans tabular-nums text-xs font-semibold text-bdnavy-300">{item.head}</span>
+                    </span>
+                    <span className="shrink-0 font-sans tabular-nums text-xs text-white/65">{item.time}</span>
                   </div>
-                </div>
+
+                  <p className="mt-2.5 text-sm leading-snug font-medium text-white/80 sm:max-w-[68ch]">{item.body}</p>
+
+                  <dl className="mt-3 flex flex-wrap gap-x-5 gap-y-1 font-sans tabular-nums text-xs">
+                    {item.meta.map((m) => (
+                      <div key={m.label} className="flex gap-1.5">
+                        <dt className="text-white/65">{m.label}</dt>
+                        <dd className={cn(m.strong ? "font-semibold text-signal-orange" : "text-white/80")}>{m.value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </li>
               ))}
+            </ul>
+
+            {/* The prompt waiting for the next entry (decorative). */}
+            <div aria-hidden className="flex items-center gap-2 border-t border-white/10 px-5 py-4 font-sans tabular-nums text-xs text-signal-orange sm:px-7">
+              &gt;
+              <span className="caret-blink inline-block h-4 w-2 rounded-md bg-signal-orange" />
             </div>
           </div>
         </div>

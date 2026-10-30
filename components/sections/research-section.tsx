@@ -1,103 +1,133 @@
+import Link from "next/link";
+import type { CSSProperties } from "react";
+import { AccessRequestButton } from "@/components/research/access-request";
+import { TrackLink } from "@/components/showcase/showcase";
 import { Icon } from "@/components/ui/icon";
+import { SectionHeading } from "@/components/ui/section-kit";
+import { cn } from "@/lib/utils";
+import { CardIcon } from "@/components/ui/card-icon";
 
+/**
+ * Each project is a spec-sheet row rather than another card in a grid, on the
+ * same solid colour fields as the Pixel-Map cards (navy for vision, ink
+ * for the circular economy, cobalt for silicon). White text throughout,
+ * the title gold on cobalt; the icon tile takes the contrasting colour. Each row ends
+ * in its access button: request to read the research, wait for approval,
+ * then read it (`href`).
+ */
 const LABS = [
   {
+    id: "eye-agent",
+    href: "/research/blind-assist-wearable",
     icon: "blind",
-    iconClass: "text-teal-600",
-    badge: "[ PROJECT NETRO ]",
-    badgeClass: "bg-teal-50 text-teal-700 border-teal-200",
+    lordicon: "person-walking",
+    surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
+    glow: "var(--color-bdnavy-400)",
     title: "Eye-Consciousness AI Agent for Visually Impaired",
     description:
       "A wearable 2-meter real-time LiDAR and optical sensor array providing spatial audio mapping. Translates physical street obstacles, pedestrian movements, and Bengali road signage into low-latency haptic pulses.",
-    footLabel: "LATENCY PROFILE",
-    footValue: "11 MILLISECONDS",
-    footClass: "text-teal-700",
-    accent: "var(--color-teal-600)",
   },
   {
+    id: "circular",
+    href: "/research/organic-waste-to-soil",
     icon: "recycling",
-    iconClass: "text-bd-green",
-    badge: "[ PROJECT MATI ]",
-    badgeClass: "bg-emerald-50 text-bd-green border-emerald-200",
+    lordicon: "recycling",
+    surface: "bg-text-primary text-white ring-1 ring-white/12",
+    glow: "var(--color-signal-orange)",
     title: "Biochemical Circular Automation",
     description:
       "Autonomous computer vision and robotic sorting chassis that categorizes organic refuse into nitrogen-rich agricultural compost within 48 hours, while segregating valuable e-waste and industrial polymers.",
-    footLabel: "SOIL RATING",
-    footValue: "GRADE-A BIO SOIL",
-    footClass: "text-bd-green",
-    accent: "var(--color-bd-green)",
   },
   {
+    id: "silicon",
+    // No paper of its own yet: approval opens the research library.
+    href: "/research",
     icon: "developer_board",
-    iconClass: "text-signal-orange",
-    badge: "[ PROJECT SILICON ]",
-    badgeClass: "bg-orange-50 text-signal-orange border-orange-200",
+    lordicon: "server",
+    surface: "bg-cobalt text-white ring-1 ring-white/12",
+    heading: "text-signal-orange",
+    glow: "var(--color-cobalt)",
     title: "Semiconductor Fabrication & 10-Crore Data Engine",
     description:
       "Pioneering native RISC-V edge chip tape-outs tailored for localized bio-telemetry. Fed by an unprecedented 100-million Bengali multimodal corpus for sovereign AI execution without reliance on foreign LLMs.",
-    footLabel: "ARCH STACK",
-    footValue: "RISC-V NATIVE / 28NM",
-    footClass: "text-signal-orange",
-    accent: "var(--color-signal-orange)",
   },
 ];
 
 export function ResearchSection() {
   return (
-    <section
-      id="rd-labs"
-      className="section-band mx-auto max-w-7xl px-gutter-x"
-    >
-      <div className="mb-10 flex flex-col gap-2">
-        <h2 className="font-grotesk text-2xl font-bold tracking-tight text-text-primary uppercase sm:text-3xl lg:text-4xl">
-          Advanced R&amp;D Cleanroom Initiatives
-        </h2>
-        <p className="max-w-2xl font-sans text-base text-text-secondary">
-          Engineering deep-tech intellectual property at the intersection of
-          microchip silicon, sensory edge robotics, and circular biochemical
-          automation.
-        </p>
+    <section id="rd-labs" className="section-band mx-auto max-w-384 px-gutter-x">
+      {/* From sm the way to the whole library sits level with the title (under the lead on a tablet). */}
+      <div className="mb-8 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-4 sm:mb-10 sm:gap-x-12">
+        <SectionHeading
+          tone="dark"
+          className="mb-0 sm:mb-0"
+          title={<>R&amp;D Cleanroom</>}
+          lead="Silicon, sensing and circular automation, in research."
+        />
+        <div className="story-reveal">
+          <TrackLink href="/research">Research library</TrackLink>
+        </div>
       </div>
 
-      <div className="-m-3 flex flex-wrap">
+      {/* On a phone the three projects are a swipeable row bled to the screen
+          edges, the next card peeking; from sm, stacked spec-sheet rows: the
+          button under the text on a tablet, at the row's end from lg, and from
+          an 80rem row the title and paragraph in columns of their own. */}
+      <ol
+        aria-label="R&D projects"
+        className="flex flex-col gap-4 max-sm:-mx-gutter-x max-sm:snap-x max-sm:snap-mandatory max-sm:scroll-px-gutter-x max-sm:flex-row max-sm:gap-3 max-sm:overflow-x-auto max-sm:px-gutter-x max-sm:pt-2 max-sm:pb-6 max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden sm:@container"
+      >
         {LABS.map((lab) => (
-          <div key={lab.badge} className="flex w-full p-3 md:w-1/3">
-            <div
-              className={`group flex w-full flex-col justify-between glass-card rounded-2xl border border-slate-200 bg-white p-6 shadow-sm`}
-              style={{ "--card-accent": lab.accent } as React.CSSProperties}
+          <li key={lab.id} className="story-reveal max-sm:flex max-sm:w-[82%] max-sm:max-w-88 max-sm:shrink-0 max-sm:snap-start">
+            <article
+              style={{ "--glow": lab.glow } as CSSProperties}
+              className={cn(
+                // A compact card in the phone swipe; a spec-sheet row from sm.
+                "group flex w-full flex-col items-start gap-4 rounded-3xl p-5 shadow-sm",
+                "sm:grid sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-x-6 sm:p-6 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:gap-8",
+                "@min-[80rem]:grid-cols-[auto_minmax(13rem,22rem)_minmax(0,1fr)_auto] @min-[80rem]:gap-x-10",
+                "[-webkit-tap-highlight-color:transparent] touch-manipulation transition-[translate,scale,rotate,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-[0_28px_48px_-22px_var(--glow)] active:-translate-y-1.5 active:shadow-[0_28px_48px_-22px_var(--glow)] active:scale-[0.98] active:duration-150 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+                lab.surface,
+              )}
             >
-              <div>
-                <div className="mb-4 flex items-center justify-between">
-                  <Icon
-                    name={lab.icon}
-                    className={`text-3xl ${lab.iconClass}`}
-                  />
-                  <span
-                    className={`rounded border px-2 py-0.5 font-mono text-xs font-bold ${lab.badgeClass}`}
-                  >
-                    {lab.badge}
-                  </span>
-                </div>
+              {/* The project's animated icon. */}
+              <span
+                className={cn(
+                  "relative grid size-12 shrink-0 place-items-center rounded-xl sm:size-16 sm:rounded-2xl lg:size-20",
+                  "transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-rotate-6 motion-reduce:transition-none motion-reduce:group-hover:rotate-0",
+                )}
+              >
+                <CardIcon name={lab.lordicon} fallback={lab.icon} size={60} />
+              </span>
 
-                <h3 className="mb-2 font-grotesk text-lg font-bold text-text-primary uppercase">
+              <div className="min-w-0 @min-[80rem]:contents">
+                <h3 className={cn("mb-2 font-grotesk text-xl font-bold @min-[80rem]:mb-0 @min-[80rem]:text-balance", "heading" in lab && lab.heading)}>
                   {lab.title}
                 </h3>
-
-                <p className="font-sans text-sm leading-relaxed text-text-secondary">
-                  {lab.description}
-                </p>
+                <p className="max-w-[68ch] font-sans text-sm leading-relaxed max-sm:line-clamp-4">{lab.description}</p>
               </div>
 
-              <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4 font-mono text-xs">
-                <span className="text-text-muted">{lab.footLabel}</span>
-                <span className={`font-bold ${lab.footClass}`}>
-                  {lab.footValue}
-                </span>
+              <div className="mt-auto sm:col-start-2 sm:mt-0 lg:col-start-auto">
+                <AccessRequestButton
+                  project={lab.id}
+                  title={lab.title}
+                  href={lab.href}
+                  className="max-lg:min-h-11 max-lg:px-4 max-lg:whitespace-nowrap"
+                />
               </div>
-            </div>
-          </div>
+            </article>
+          </li>
         ))}
-      </div>
+      </ol>
+
+      {/* The way onward on a phone, where the rows have become a swipe (from sm it sits by the title). */}
+      <Link
+        href="/research"
+        className="mt-2 inline-flex min-h-11 items-center gap-1.5 rounded-md font-grotesk text-sm font-bold text-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none sm:hidden"
+      >
+        Explore the research library
+        <Icon name="arrow_forward" className="text-lg!" />
+      </Link>
     </section>
   );
 }
