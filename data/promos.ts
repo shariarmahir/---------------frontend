@@ -99,7 +99,7 @@ export const promos: Promo[] = [
     label: "বাংলাদেশ সমস্যা ও সমাধান",
     title: "সমস্যা চিনুন, সমাধান গড়ুন",
     body: "The country’s story, its 32 mapped problems pixel by pixel, and a realistic solution for each one.",
-    action: { label: "সমস্যা ও সমাধান দেখুন", href: "/bangladesh" },
+    action: { label: "সমস্যা ও সমাধান দেখুন", href: "/nagorik/problems" },
     field: "ink",
     photo: {
       src: "/promos/ad-bangladesh.webp",

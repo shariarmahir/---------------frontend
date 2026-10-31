@@ -38,7 +38,7 @@ export function BdPride() {
             independence in nine months of war and rose from nothing. This green country is our blessing, and making it
             more beautiful is our duty too.
           </p>
-          <Link href="/bangladesh/shield" className={cn(btn.gold, "mt-8 self-start")}>
+          <Link href="/nagorik/shield" className={cn(btn.gold, "mt-8 self-start")}>
             Find your part
             <Icon name="arrow_forward" className="text-lg!" />
           </Link>

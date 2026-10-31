@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui/icon";
 import { nationalStats, type NationalStat, type RiskTone } from "@/data/national-index";
 import { cn } from "@/lib/utils";
-import { Card, Section } from "./kit";
+import { Card, Section } from "@/components/bangladesh-landing/kit";
 
 /*
  * Each reading's state, never colour alone: an icon and a word on the pill,
@@ -16,8 +16,8 @@ const TONE: Record<RiskTone, { label: string; icon: string; text: string; fill: 
 
 const ORDER: RiskTone[] = ["critical", "watch", "stable"];
 
-/** 3 · National Index: where the country stands, one meter card per reading. Home's spotlight and the header link here: /bangladesh#national-index. */
-export function LandingNationalIndex() {
+/** National Index: where the country stands, one meter card per reading. Home's spotlight links here: /nagorik#national-index. */
+export function NationalIndex() {
   return (
     <Section
       id="national-index"

@@ -51,6 +51,8 @@ const nextConfig: NextConfig = {
       // The issue dossier and the news index merged into the country page.
       { source: "/amar-bangladesh", destination: "/bangladesh", permanent: false },
       { source: "/ajker-bangladesh", destination: "/bangladesh", permanent: false },
+      // The civic chapters moved under নাগরিক দায়িত্ব when /bangladesh became MOTHERLAND.
+      { source: "/bangladesh/:chapter(crisis|shield|problems|solutions)", destination: "/nagorik/:chapter", permanent: false },
       // অপরাধ বার্তা merged into নাগরিক বার্তা.
       { source: "/media/crime", destination: "/media/civic", permanent: false },
       // ওয়ালেট merged into the dashboard; ?withdraw=1 passes through.

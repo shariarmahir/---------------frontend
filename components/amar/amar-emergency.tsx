@@ -78,7 +78,7 @@ export function AmarEmergency() {
         ))}
 
         <li className="story-reveal flex">
-          <Card href="/bangladesh/problems" surface="navy" className="group flex w-full flex-col justify-between gap-6 p-6 sm:p-6">
+          <Card href="/nagorik/problems" surface="navy" className="group flex w-full flex-col justify-between gap-6 p-6 sm:p-6">
             <span className="font-grotesk text-lg leading-snug font-bold text-balance">Every one of the 32 problems, with its evidence</span>
             <span className="flex items-center gap-1.5 text-sm font-semibold text-signal-orange">
               Open chapter 4

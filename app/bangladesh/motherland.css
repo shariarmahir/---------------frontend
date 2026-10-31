@@ -1,0 +1,128 @@
+/*
+ * MOTHERLAND (/bangladesh): the few things Tailwind classes don't express.
+ * Tokens (colours, faces) are in globals.css under --color-ml-* and
+ * --font-ml-*.
+ */
+
+.ml {
+  /* The fixed header's height: anchors land under it and the cards stick under it. */
+  --ml-header: 4rem;
+}
+@media (min-width: 1024px) {
+  .ml {
+    --ml-header: 7.75rem;
+  }
+}
+
+/* RiseText: each word waits below its own line, then rises into place in turn. */
+.ml-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* Room for descenders and Anton's tall caps, so the clip never bites a letter. */
+  padding-block: 0.06em;
+  margin-block: -0.06em;
+}
+.ml-word > span {
+  display: inline-block;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ml-rise .ml-word > span {
+    translate: 0 110%;
+    transition: translate 0.9s cubic-bezier(0.215, 0.61, 0.355, 1) calc(var(--i) * 70ms);
+  }
+  .ml-rise[data-in] .ml-word > span {
+    translate: 0 0;
+  }
+  /* The hero's title plays as the page loads, before any script runs. */
+  .ml-rise[data-now] .ml-word > span {
+    translate: 0 0;
+    animation: ml-word-rise 1s cubic-bezier(0.215, 0.61, 0.355, 1) calc(150ms + var(--i) * 90ms) both;
+  }
+}
+@keyframes ml-word-rise {
+  from {
+    translate: 0 110%;
+  }
+}
+
+/* Rails: they scroll sideways by touch and arrows; no scrollbar, and the first card lines up with the column. */
+.ml-rail {
+  --gutter: 1.5rem;
+  padding-inline: max(var(--gutter), calc((100% - 120rem) / 2 + var(--gutter)));
+  scroll-padding-inline: max(var(--gutter), calc((100% - 120rem) / 2 + var(--gutter)));
+  scrollbar-width: none;
+}
+.ml-rail::-webkit-scrollbar {
+  display: none;
+}
+@media (min-width: 640px) {
+  .ml-rail {
+    --gutter: 2.5rem;
+  }
+}
+@media (min-width: 1280px) {
+  .ml-rail {
+    --gutter: 3rem;
+  }
+}
+
+/* Pro & Con: an opened question unfolds rather than jumping. */
+.ml-details {
+  interpolate-size: allow-keywords;
+}
+.ml-details::details-content {
+  block-size: 0;
+  overflow: clip;
+  transition:
+    block-size 0.45s cubic-bezier(0.215, 0.61, 0.355, 1),
+    content-visibility 0.45s allow-discrete;
+}
+.ml-details[open]::details-content {
+  block-size: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ml-details::details-content {
+    transition: none;
+  }
+}
+
+/* The pin map: the chosen place's card fades in. */
+@media (prefers-reduced-motion: no-preference) {
+  .ml-fade-in {
+    animation: ml-fade-in 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+  }
+}
+@keyframes ml-fade-in {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+}
+
+/* The welcome card rises into its corner. */
+@media (prefers-reduced-motion: no-preference) {
+  .ml-pop {
+    animation: ml-fade-in 0.6s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+  }
+}
+
+/* Geography & Travel: a current runs down each river of the delta; still rivers without motion. */
+.ml-current {
+  display: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ml-current {
+    display: inline;
+    stroke-dasharray: 14 86;
+    animation: ml-current 10s linear infinite;
+  }
+}
+@keyframes ml-current {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}

@@ -100,14 +100,19 @@ Brief specifies 16:6 (~2.67:1), an ultra-wide letterbox. At that ratio on a phon
 /rnd                 R&D departments + featured early-stage projects (blind-assist, waste-to-soil)
 /impact               "One Village, One Medical Health Care Center" program, Kazaikat tie-in, stats
 /team                Leadership + department rosters
-/bangladesh          "বাংলাদেশ সমস্যা ও সমাধান" (merged 2026-09-27 from the country story page and the
-                      32-issue dossier; /amar-bangladesh and /ajker-bangladesh redirect here). Four acts:
-                      story → crisis & citizen shield → the 32 problems pixel by pixel (what to do, what to
-                      avoid) → realistic solutions → full-research placeholder. Copy: data/desh.ts; rural photos
-                      (Wikimedia Commons, credited): data/rural-life.ts; components/desh.
-/nagorik             "নাগরিক অধিকার ও দায়িত্ব" — BBS Time-Use Survey 2021 charts (real), a division table
-                      (SAMPLE data, labelled as such), constitutional rights, helplines, responsibilities by
-                      group, nightly self-check. Data: data/nagorik.ts; components/nagorik.
+/bangladesh          MOTHERLAND (Mahir, 2026-11-01): Bangladesh's country profile for the world, laid out
+                      after visittheusa.com, with its own header and footer (no site header) and NO issues.
+                      Sections in Mahir's order: About (hero film) → History & Society → Science & Tech →
+                      Biographies → Animals & Nature → Geography & Travel → Arts & Culture → Pro & Con →
+                      Taka → Videos → Capability & Resources → Business & Investment (live "bright future"
+                      simulation, model in lib/motherland-future.ts, illustrative not a forecast) → Join. Copy/media: data/motherland.ts; components/motherland; photos
+                      (Unsplash, Commons) and films (Pexels) in public/motherland, credited in its footer.
+                      /bangladesh/history is the one chapter left here; category pages come later.
+/nagorik             "নাগরিক অধিকার ও দায়িত্ব" — National Index, BBS Time-Use Survey 2021 charts (real),
+                      constitutional rights, helplines, responsibilities by group, nightly self-check, and
+                      the four civic chapters moved from /bangladesh: /nagorik/crisis, shield, problems,
+                      solutions (old /bangladesh/* links redirect). Data: data/nagorik.ts, data/desh.ts;
+                      components/nagorik, components/desh.
 /login, /signup      Kandari Profile auth — phone OTP first, email password or one-time link as fallback;
                       3-step sign-up (details → verify phone → sectors/products/consent). Mock gateway
                       (no backend yet): lib/auth/core.ts (pure, tested) + lib/auth/client.ts (browser

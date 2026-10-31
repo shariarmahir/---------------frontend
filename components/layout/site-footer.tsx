@@ -68,7 +68,7 @@ const RESEARCH_COLUMNS = [
     links: [
       { label: "Get a Kandari Profile", href: "/signup" },
       { label: "Log in", href: "/login?next=/research" },
-      { label: "Bangladesh: problems and solutions", href: "/bangladesh" },
+      { label: "Bangladesh: problems and solutions", href: "/nagorik/problems" },
     ],
   },
 ];

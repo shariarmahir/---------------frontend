@@ -8,7 +8,7 @@ import { CHAPTERS, chapterById, type Chapter, type ChapterId, type Photo } from 
 import { cn } from "@/lib/utils";
 import { Card, COLUMN, LINK } from "./kit";
 
-/** Header, the pitch-black page and footer: the landing page and every chapter. */
+/** Header, the pitch-black page and footer: every chapter and the নাগরিক page. */
 export function BangladeshShell({ children }: { children: ReactNode }) {
   return (
     <>
@@ -21,8 +21,8 @@ export function BangladeshShell({ children }: { children: ReactNode }) {
 
 /**
  * A chapter page: its hero, the content, then the previous and next
- * chapters. The site header's second row is the chapter bar and marks this
- * page on its own (data/navigation.ts, bangladeshNavLinks).
+ * chapters of its series. On /nagorik the site header's second row lists
+ * the chapters and marks this one (data/navigation.ts, nagorikNavLinks).
  */
 export function ChapterShell({ chapter, children }: { chapter: ChapterId; children: ReactNode }) {
   const c = chapterById(chapter);
@@ -60,12 +60,14 @@ function ChapterHero({ chapter }: { chapter: Chapter }) {
           <Fillet corner="br" className="-top-6 right-0 size-6" />
           <Fillet corner="br" className="bottom-0 -left-6 size-6" />
           <div className="flex items-start gap-4 sm:gap-6">
-            <span aria-hidden className="hero-rise font-grotesk text-5xl leading-none font-bold text-bdnavy-300 tabular-nums lg:text-7xl">
-              {number}
-            </span>
+            {number && (
+              <span aria-hidden className="hero-rise font-grotesk text-5xl leading-none font-bold text-bdnavy-300 tabular-nums lg:text-7xl">
+                {number}
+              </span>
+            )}
             <div>
               <h1 id="chapter-title" className="hero-rise font-grotesk text-3xl leading-[1.15] font-bold tracking-tight text-balance text-signal-orange sm:text-4xl lg:text-5xl">
-                <span className="sr-only">Chapter {number}: </span>
+                {number && <span className="sr-only">Chapter {number}: </span>}
                 {title}
               </h1>
               <p className="hero-rise mt-3 max-w-xl text-base leading-relaxed text-white/80 sm:text-lg" style={{ "--d": "120ms" } as CSSProperties}>
@@ -107,26 +109,27 @@ export function PhotoCredit({ photo, className }: { photo: Photo; className?: st
 }
 
 /**
- * Previous and next chapter at the foot of every chapter, so the five read
- * as one walk; the first leads back to the overview, and so does the last.
+ * Previous and next chapter at the foot of every chapter, so a series reads
+ * as one walk; either end leads back to the page the series belongs to. A
+ * chapter alone in its series gets the one way back.
  */
 function ChapterPager({ chapter }: { chapter: Chapter }) {
-  const i = CHAPTERS.indexOf(chapter);
-  const prev = CHAPTERS[i - 1];
-  const next = CHAPTERS[i + 1];
+  const series = CHAPTERS.filter((c) => c.home.href === chapter.home.href);
+  const i = series.indexOf(chapter);
+  const prev = series[i - 1];
+  const next = series[i + 1];
+  const back = `Back to ${chapter.home.title}`;
   return (
-    <nav aria-label="Chapters" className={cn(COLUMN, "section-band grid gap-4 sm:grid-cols-2")}>
-      <PagerCard
-        href={prev?.href ?? "/bangladesh"}
-        line={prev ? `Previous: chapter ${prev.number}` : "Back to the overview"}
-        title={prev?.title ?? "Bangladesh"}
-      />
-      <PagerCard
-        next
-        href={next?.href ?? "/bangladesh"}
-        line={next ? `Next: chapter ${next.number}` : "Back to the overview"}
-        title={next?.title ?? "Bangladesh"}
-      />
+    <nav aria-label="Chapters" className={cn(COLUMN, "section-band grid gap-4", series.length > 1 && "sm:grid-cols-2")}>
+      <PagerCard href={prev?.href ?? chapter.home.href} line={prev ? `Previous: chapter ${prev.number}` : back} title={prev?.title ?? chapter.home.title} />
+      {series.length > 1 && (
+        <PagerCard
+          next
+          href={next?.href ?? chapter.home.href}
+          line={next ? `Next: chapter ${next.number}` : back}
+          title={next?.title ?? chapter.home.title}
+        />
+      )}
     </nav>
   );
 }

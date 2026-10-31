@@ -1,5 +1,5 @@
 /**
- * The problems chapter (/bangladesh/problems) in English: the ideas for each
+ * The problems chapter (/nagorik/problems) in English: the ideas for each
  * of the 32 problems (what to do, what to avoid) and the rural photo captions.
  * components/desh/problem-pixels.tsx refuses to build if a problem has none.
  */

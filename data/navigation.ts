@@ -20,8 +20,8 @@ export interface NavLink {
 
 /**
  * Primary navigation (Mahir, 2026-10-28): Home, Bangladesh, Products,
- * Research, Mission, নাগরিক দায়িত্ব, About us, Team, Join. Bangladesh's
- * landing page holds the National Index.
+ * Research, Mission, নাগরিক দায়িত্ব, About us, Team, Join. নাগরিক দায়িত্ব
+ * holds the National Index.
  *
  * Every `href` here must match a real page, or a real `id` on the page it
  * points at. Anchors are full root paths ("/#mission"), so the same set
@@ -38,7 +38,7 @@ export const navLinks: NavLink[] = [
     shortLabel: "Home",
   },
   {
-    // The national landing page: the country, its National Index, the 32 problems and their solutions.
+    // MOTHERLAND, the country profile for the world (its own header; no issues there).
     href: "/bangladesh",
     label: "Bangladesh",
     shortLabel: "Bangladesh",
@@ -63,7 +63,7 @@ export const navLinks: NavLink[] = [
     shortLabel: "Mission",
   },
   {
-    // Citizen rights and duties.
+    // Citizen rights and duties, the National Index and the four civic chapters.
     href: "/nagorik",
     label: "নাগরিক দায়িত্ব",
     shortLabel: "দায়িত্ব",
@@ -89,28 +89,20 @@ export const navLinks: NavLink[] = [
 ];
 
 /**
- * The chapter bar for Bangladesh: the landing page, its five chapters
- * (data/bangladesh.ts, CHAPTERS) and the game, in English. The header marks
- * the current page by the longest matching path, so /bangladesh/history
- * lights History and /bangladesh alone lights Overview.
+ * Navigation for "Citizen Rights and Duties" (/nagorik): its own sections,
+ * then its four chapters (Mahir, 2026-11-01: moved here from /bangladesh,
+ * which became the MOTHERLAND country profile and carries no issues).
  */
-export const bangladeshNavLinks: NavLink[] = [
-  { href: "/bangladesh", label: "Overview", shortLabel: "Overview" },
-  { href: "/bangladesh/history", label: "History", shortLabel: "History" },
-  { href: "/bangladesh/crisis", label: "Crisis", shortLabel: "Crisis" },
-  { href: "/bangladesh/shield", label: "Citizen shield", shortLabel: "Shield" },
-  { href: "/bangladesh/problems", label: "32 problems", shortLabel: "Problems" },
-  { href: "/bangladesh/solutions", label: "Solutions", shortLabel: "Solutions" },
-];
-
-/** Navigation for "Citizen Rights and Duties" (/nagorik). */
 export const nagorikNavLinks: NavLink[] = [
   { href: "/nagorik#day", label: "The day", shortLabel: "Day" },
   { href: "/nagorik#rights", label: "Rights", shortLabel: "Rights" },
   { href: "/nagorik#justice", label: "Justice", shortLabel: "Justice" },
   { href: "/nagorik#responsibility", label: "Duties", shortLabel: "Duties" },
   { href: "/nagorik#pledge", label: "Pledge", shortLabel: "Pledge" },
-  { href: "/bangladesh", label: "Bangladesh", shortLabel: "Bangladesh" },
+  { href: "/nagorik/crisis", label: "Crisis", shortLabel: "Crisis" },
+  { href: "/nagorik/shield", label: "Citizen shield", shortLabel: "Shield" },
+  { href: "/nagorik/problems", label: "32 problems", shortLabel: "Problems" },
+  { href: "/nagorik/solutions", label: "Solutions", shortLabel: "Solutions" },
 ];
 
 /**
@@ -189,10 +181,7 @@ export function navLinksFor(pathname: string): NavLink[] {
   if (["/products", "/services"].some((root) => pathname === root || pathname.startsWith(`${root}/`))) {
     return productNavLinks;
   }
-  if (pathname === "/bangladesh" || pathname.startsWith("/bangladesh/")) {
-    return bangladeshNavLinks;
-  }
-  if (pathname === "/nagorik") {
+  if (pathname === "/nagorik" || pathname.startsWith("/nagorik/")) {
     return nagorikNavLinks;
   }
   if (pathname === "/protibad") {

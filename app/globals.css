@@ -93,6 +93,19 @@
   --color-zone-1: #6b1d24;
   --color-zone-2: #a8231b;
 
+  /* MOTHERLAND (/bangladesh), the country profile: a warm paper ground,
+     delta-green ink, the flag's green and red, the brand gold for actions.
+     Anton (display) and Montserrat (body) load on that page only
+     (components/motherland/fonts.ts); Bangla falls back to Hind Siliguri. */
+  --color-ml-ground: #f4f2f0;
+  --color-ml-ink: #0f2a20;
+  --color-ml-deep: #0b3b2c;
+  --color-ml-mist: #c3ccc6;
+  --color-ml-green: #006a4e;
+  --color-ml-red: #f42a41;
+  --font-ml-display: var(--font-anton), var(--font-bengali), sans-serif;
+  --font-ml-sans: var(--font-montserrat), var(--font-bengali), sans-serif;
+
   /* Landing-page system (code.html / DESIGN.md "Clinical Cleanroom").
      Scoped to the page body; the navbar keeps its own palette above. */
   --font-grotesk: var(--font-sora), var(--font-bengali), sans-serif;

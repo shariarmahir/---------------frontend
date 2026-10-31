@@ -1,8 +1,10 @@
 /*
- * Citizen Rights and Duties, in English and in the /bangladesh dress:
- * the measured day (BBS Time-Use Survey 2021) → the rights the
- * Constitution guarantees → what to do when one is denied → the duty for
- * each role → a private pledge and nightly check. Real, sourced data only.
+ * Citizen Rights and Duties, in English, in the pitch-black chapter dress:
+ * where the country stands (National Index) → the measured day (BBS
+ * Time-Use Survey 2021) → the rights the Constitution guarantees → what to
+ * do when one is denied → the duty for each role → a private pledge and
+ * nightly check. Real, sourced data only. Its four chapters (crisis,
+ * shield, 32 problems, solutions) live under /nagorik/*.
  */
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -11,6 +13,7 @@ import { COLUMN, Section, TITLE } from "@/components/bangladesh-landing/kit";
 import { DayChart } from "@/components/nagorik/day-chart";
 import { Justice } from "@/components/nagorik/justice";
 import { NagorikHero } from "@/components/nagorik/nagorik-hero";
+import { NationalIndex } from "@/components/nagorik/national-index";
 import { Pledge } from "@/components/nagorik/pledge";
 import { Responsibilities } from "@/components/nagorik/responsibilities";
 import { Rights } from "@/components/nagorik/rights";
@@ -21,13 +24,15 @@ import { cn } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Citizen Rights and Duties | Kandari-Lab",
   description:
-    "How Bangladesh spends its day (BBS Time-Use Survey 2021), the fundamental rights in the Constitution, the path to justice when one is denied, and the duties of every citizen, from child to elder.",
+    "Where Bangladesh stands (National Index), how it spends its day (BBS Time-Use Survey 2021), the fundamental rights in the Constitution, the path to justice when one is denied, and the duties of every citizen, from child to elder.",
 };
 
 export default function NagorikPage() {
   return (
     <BangladeshShell>
       <NagorikHero />
+
+      <NationalIndex />
 
       <Section
         id="day"
@@ -70,8 +75,8 @@ export default function NagorikPage() {
             <Link href="/protibad" className={btn.gold}>
               Report a problem
             </Link>
-            <Link href="/bangladesh" className={cn(btn.goldOutline, "bg-bdnavy-900")}>
-              Bangladesh: problems and solutions
+            <Link href="/nagorik/problems" className={cn(btn.goldOutline, "bg-bdnavy-900")}>
+              The 32 problems
             </Link>
           </div>
         </div>

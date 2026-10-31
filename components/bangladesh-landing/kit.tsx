@@ -1,15 +1,12 @@
 /*
- * The Bangladesh kit, shared by the landing page (/bangladesh) and its five
- * chapters, in the main landing page's dress: a pitch-black ground, solid
+ * The chapter kit, shared by /nagorik, its four chapters and the Bangladesh
+ * history chapter, in the main landing page's dress: a pitch-black ground, solid
  * navy, ink and cobalt cards with a faint white ring, Sora titles in gold,
  * Inter body in white tiers (white, white/80, white/65) and the site's own
  * buttons. No hooks, so server and client components can both use it.
  */
 import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
-import { Icon } from "@/components/ui/icon";
-import { btn } from "@/components/ui/section-kit";
-import { chapterById, type ChapterId, type Fact } from "@/data/bangladesh";
 import { cn } from "@/lib/utils";
 
 /** The page column: the site header's grid width and gutters. */
@@ -25,7 +22,7 @@ export const LINK =
 
 /**
  * A section's heading: the gold title, an optional lede under it and an
- * optional action level with the title from lg (usually a ChapterLink).
+ * optional action level with the title from lg.
  */
 export function SectionHeading({ id, title, lede, action }: { id: string; title: ReactNode; lede?: ReactNode; action?: ReactNode }) {
   return (
@@ -42,7 +39,7 @@ export function SectionHeading({ id, title, lede, action }: { id: string; title:
 }
 
 /**
- * A section of the landing page or of a chapter: the page column, one seam
+ * A section of a chapter page: the page column, one seam
  * of rhythm above and below, its heading, and a landing spot clear of the
  * fixed header when an anchor (#national-index) points at it.
  */
@@ -66,17 +63,6 @@ export function Section({
       <SectionHeading id={`${id}-title`} title={title} lede={lede} action={action} />
       {children}
     </section>
-  );
-}
-
-/** "Explore the chapter": the kit's gold outline on navy (it stands on black), with the chapter's name for screen readers. */
-export function ChapterLink({ chapter, className }: { chapter: ChapterId; className?: string }) {
-  const c = chapterById(chapter);
-  return (
-    <Link href={c.href} className={cn(btn.goldOutline, "group shrink-0 bg-bdnavy-900", className)}>
-      Explore the chapter<span className="sr-only">: {c.title}</span>
-      <Icon name="arrow_forward" className="text-lg transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none" />
-    </Link>
   );
 }
 
@@ -108,23 +94,5 @@ export function Card({ surface = "navy", href, className, children }: { surface?
     <div style={style} className={look}>
       {children}
     </div>
-  );
-}
-
-/** One sourced fact: the figure in gold over its name, a line of context, then the source. */
-export function FactCard({ fact, surface }: { fact: Fact; surface?: Surface }) {
-  return (
-    <Card surface={surface} className="flex h-full flex-col">
-      <h3 className="font-grotesk text-lg font-bold text-white">{fact.label}</h3>
-      <p className="order-first mb-2 font-grotesk text-3xl font-bold tracking-tight text-signal-orange tabular-nums lg:text-4xl">{fact.value}</p>
-      <p className="mt-2 text-sm leading-relaxed text-white/80">{fact.detail}</p>
-      <p className="mt-auto pt-5 text-xs text-white/80">
-        Source:{" "}
-        <a href={fact.sourceUrl} target="_blank" rel="noopener noreferrer" className={LINK}>
-          {fact.source}
-          <span className="sr-only"> (opens in a new tab)</span>
-        </a>
-      </p>
-    </Card>
   );
 }

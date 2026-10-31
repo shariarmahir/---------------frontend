@@ -38,7 +38,7 @@ export function CrisisAttacks() {
                 <p className="mt-2 text-base leading-relaxed text-white">{a.shield}</p>
               </div>
               <Link
-                href={`/bangladesh/problems#p-${a.problem}`}
+                href={`/nagorik/problems#p-${a.problem}`}
                 className="group mt-5 -mb-2 inline-flex min-h-11 items-center gap-1.5 self-start rounded-md text-sm font-semibold text-white transition-colors hover:text-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
               >
                 <span>

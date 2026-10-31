@@ -67,8 +67,8 @@ export const charterSlides: CharterSlide[] = [
       { value: veryHigh, label: "Urgent", note: "rated very-high urgency" },
       { value: verified, label: "Verified", note: "backed by measured evidence" },
     ],
-    primary: { label: "Learn more", href: "/bangladesh" },
-    secondary: { label: "The 32 problems", href: "/bangladesh/problems" },
+    primary: { label: "Learn more", href: "/nagorik" },
+    secondary: { label: "The 32 problems", href: "/nagorik/problems" },
   },
   {
     id: "challenge",
@@ -83,7 +83,7 @@ export const charterSlides: CharterSlide[] = [
       { value: Number(corruption.headline), suffix: "/100", label: "Security", note: "corruption perception score" },
       { value: Number(sanitation.value), suffix: "%", label: "Livability", note: "have safe sanitation" },
     ],
-    primary: { label: "Learn more", href: "/bangladesh/solutions" },
+    primary: { label: "Learn more", href: "/nagorik/solutions" },
     secondary: { label: "Rights & duties", href: "/nagorik" },
   },
   {
@@ -139,7 +139,7 @@ export const charterSlides: CharterSlide[] = [
       { value: services.length, label: "Services", note: "open to clients" },
       { value: themes, label: "Sectors", note: "the 32 cut across" },
     ],
-    primary: { label: "Learn more", href: "/bangladesh" },
+    primary: { label: "Learn more", href: "/nagorik/solutions" },
     secondary: { label: "See the products", href: "/products" },
   },
 ];

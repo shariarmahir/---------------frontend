@@ -1,5 +1,5 @@
 /**
- * Copy for the Bangladesh chapters (/bangladesh/crisis, shield, problems,
+ * Copy for the Bangladesh chapters (/nagorik/crisis, shield, problems,
  * solutions): the attacks and the citizen shield, the 32 problems pixel
  * by pixel, and what we have, what we drop and who does what. The chapter
  * list itself is in data/bangladesh.ts.
