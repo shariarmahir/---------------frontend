@@ -28,14 +28,14 @@ export default function NationalPortalPage() {
       <TitleHero title={NP.title} hero={NP.hero} popular={NP.popular} />
       <Intro>{NP.intro}</Intro>
 
-      <section aria-labelledby="glance" className="mt-8 bg-gv-paper py-10">
+      <section aria-labelledby="glance" className="mt-8 bg-gv-gold py-10">
         <div className={CONTAINER}>
           <h2 id="glance" className="sr-only">
             {NP.glance.title}
           </h2>
           <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
             {NP.glance.stats.map((s) => (
-              <div key={s.label} className="flex flex-col gap-1.5 rounded-2xl bg-white p-5 ring-1 ring-gv-ink/10">
+              <div key={s.label} className="flex flex-col gap-1.5 p-5">
                 <dt className="text-base leading-tight">{s.label}</dt>
                 <dd className="order-first font-gv-serif text-[2.1rem] leading-none font-bold text-gv-navy">{s.value}</dd>
               </div>
