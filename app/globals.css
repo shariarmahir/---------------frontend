@@ -123,6 +123,8 @@
   --color-gv-line: #ddd8cf;
   --color-gv-cream: #fcebb0;
   --color-gv-mist: #e4eee9;
+  --color-gv-card-ground: #f7f8fb;
+  --color-gv-feature: #e4b027;
   --font-gv-serif: var(--font-merriweather), var(--font-bengali), Georgia, serif;
   --font-gv-sans: var(--font-source-sans), var(--font-bengali), sans-serif;
 

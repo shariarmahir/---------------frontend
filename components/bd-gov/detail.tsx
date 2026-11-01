@@ -52,11 +52,11 @@ export function SideNav({ title, href, items, current }: { title: string; href: 
 export function OfficialCard({ detail }: { detail: GovDetail }) {
   const { office, href, site } = detail.official;
   return (
-    <aside aria-label="Official site" className="relative isolate mt-8 overflow-hidden rounded-3xl bg-gv-navy p-6 text-white shadow-[0_30px_60px_-30px_rgb(11_24_73/0.8)] sm:p-8">
-      <span aria-hidden className="absolute -top-24 -right-20 -z-10 size-64 rounded-full border-[28px] border-white/4" />
+    <aside aria-label="Official site" className="relative isolate mt-8 overflow-hidden rounded-3xl bg-gv-navy p-6 text-white shadow-[0_30px_60px_-30px_rgb(11_24_73/0.8)] ring-1 ring-gv-navy/10 sm:p-8">
+      <span aria-hidden className="absolute top-3 right-3 -z-10 size-36 rounded-full border-[20px] border-white/5" />
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
-        <span aria-hidden className="grid size-18 shrink-0 place-items-center rounded-full bg-white ring-4 ring-white/15">
-          <CardIcon name={`gov/${detail.icon}`} fallback={detail.symbol} size={40} delay={3200} />
+        <span aria-hidden className="grid size-20 shrink-0 place-items-center sm:size-22">
+          <CardIcon name={`gov/${detail.icon}`} fallback={detail.symbol} size={64} delay={3200} />
         </span>
         <div className="min-w-0 flex-1">
           <p className="text-base text-white/70">The official source</p>
@@ -65,9 +65,12 @@ export function OfficialCard({ detail }: { detail: GovDetail }) {
         </div>
         <a
           href={href}
-          className="inline-flex min-h-13 shrink-0 items-center justify-center gap-2 rounded-full bg-gv-gold px-7 text-[1.06rem] font-bold text-gv-navy shadow-[0_12px_24px_-12px_rgb(0_0_0/0.6)] transition-colors duration-300 hover:bg-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-white"
+          className="group/site inline-flex min-h-13 shrink-0 items-center justify-center gap-3 rounded-full bg-gv-gold py-1.5 pr-2 pl-7 text-[1.06rem] font-bold text-gv-navy shadow-[0_12px_24px_-12px_rgb(0_0_0/0.6)] transition-colors duration-300 hover:bg-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-white"
         >
           Go to the official site
+          <span aria-hidden className="grid size-10 place-items-center rounded-full bg-gv-navy text-gv-gold transition-transform group-hover/site:translate-x-0.5">
+            <Icon name="north_east" className="text-[1.2rem]! font-bold" />
+          </span>
         </a>
       </div>
     </aside>

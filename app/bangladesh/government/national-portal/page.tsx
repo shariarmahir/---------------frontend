@@ -41,16 +41,15 @@ export default function NationalPortalPage() {
               </div>
             ))}
           </dl>
-          <p className="mt-3 text-base">{NP.glance.note}</p>
         </div>
       </section>
 
-      <section aria-labelledby="services" className="mt-16">
+      <section aria-labelledby="services" className="mt-16 bg-white py-10 lg:py-12">
         <div className={CONTAINER}>
-          <SectionTitle id="services">{NP.services.title}</SectionTitle>
+          <SectionTitle id="services" className="text-gv-gold">{NP.services.title}</SectionTitle>
           <p className="mt-3 max-w-[68ch]">{NP.services.lede}</p>
         </div>
-        <div className="mt-6 bg-gv-paper py-10 lg:py-12">
+        <div className="mt-6">
           <ul aria-label={NP.services.title} className={cn(CONTAINER, "grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5")}>
             {NP.services.items.map((s) => (
               <li key={s.title} className="flex">

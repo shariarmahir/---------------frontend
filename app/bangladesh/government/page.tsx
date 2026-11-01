@@ -35,18 +35,18 @@ export default function GovernmentHomePage() {
         </div>
       </section>
 
-      <section aria-labelledby="how" className="bg-gv-navy pb-6">
+      <section aria-labelledby="how" className="bg-gv-card-ground pb-6">
         <div className={CONTAINER}>
-          <div className="relative -mt-14 rounded-2xl bg-white px-6 pt-6 pb-3 shadow-[0_24px_48px_-16px_rgb(0_0_0/0.3)] sm:px-10">
-            <h2 id="how" className="text-[1.46rem] leading-tight font-bold">
+          <div className="relative -mt-14 rounded-2xl bg-white px-5 pt-5 pb-5 shadow-[0_20px_44px_-30px_rgb(11_24_73/0.35)] ring-1 ring-gv-navy/10 sm:px-10 sm:pt-6">
+            <h2 id="how" className="font-gv-sans text-[1.35rem] leading-tight font-bold text-gv-navy">
               {HOME.howTitle}
             </h2>
-            <ul className="mt-5 grid gap-x-6 gap-y-3 pb-3 sm:grid-cols-2 lg:grid-cols-4">
+            <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {HOME.how.map((l) => (
                 <li key={l.label}>
                   <a
                     href={l.href}
-                    className="flex min-h-13 items-center justify-center rounded-full bg-gv-paper px-5 py-3 text-center text-base font-bold text-gv-navy ring-1 ring-gv-ink/8 transition-colors duration-300 hover:bg-gv-navy hover:text-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-gv-navy"
+                    className="flex min-h-15 items-center justify-center rounded-md bg-gv-navy px-4 py-3 text-center text-[0.98rem] leading-snug font-bold text-gv-gold shadow-[0_6px_14px_-10px_rgb(11_24_73/0.8)] transition-colors duration-200 hover:bg-gv-green hover:text-gv-gold focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-gv-gold motion-reduce:transition-none"
                   >
                     {l.label}
                   </a>
@@ -54,30 +54,30 @@ export default function GovernmentHomePage() {
               ))}
             </ul>
           </div>
-          <a href="#all-topics" className="group mx-auto mt-5 flex w-fit flex-col items-center gap-2 text-[1.06rem] text-white underline hover:text-gv-gold focus-visible:outline-3 focus-visible:outline-gv-gold">
+          <a href="#all-topics" className="group mx-auto mt-5 flex w-fit flex-col items-center gap-2 text-[1.06rem] font-semibold text-gv-navy underline underline-offset-4 hover:text-gv-green focus-visible:outline-3 focus-visible:outline-gv-navy">
             {HOME.jump}
-            <span aria-hidden className="grid size-10 place-items-center rounded-full bg-gv-gold text-gv-navy ring-2 ring-white transition-transform group-hover:translate-y-0.5">
+            <span aria-hidden className="grid size-10 place-items-center rounded-full bg-gv-gold text-gv-navy shadow-[0_5px_12px_-5px_rgb(11_24_73/0.5)] ring-2 ring-white transition-transform group-hover:translate-y-0.5">
               <Icon name="expand_more" className="text-3xl!" />
             </span>
           </a>
         </div>
       </section>
 
-      <div className="bg-linear-to-b from-gv-navy from-50% to-white to-50%">
+      <div className="bg-gv-feature py-4 pb-8 sm:py-6">
         <section aria-labelledby="featured" className={CONTAINER}>
-          <div className="grid items-center gap-6 rounded-2xl bg-white px-6 py-7 shadow-[0_28px_56px_-28px_rgb(11_24_73/0.45)] ring-1 ring-gv-ink/10 sm:px-9 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-x-7">
-            <span aria-hidden className="grid size-20 place-items-center rounded-full bg-white shadow-[0_10px_22px_-12px_rgb(11_24_73/0.7)] ring-1 ring-gv-line">
-              <CardIcon name={`gov/${HOME.featured.icon}`} fallback={HOME.featured.symbol} size={48} delay={3200} />
+          <div className="grid items-center gap-5 px-5 py-6 sm:px-8 sm:py-7 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-x-7">
+            <span aria-hidden className="grid size-18 place-items-center sm:size-20">
+              <CardIcon name={`gov/${HOME.featured.icon}`} fallback={HOME.featured.symbol} size={64} delay={3200} />
             </span>
             <div className="lg:pr-10">
-              <h2 id="featured" className="font-gv-serif text-[1.95rem] leading-[1.17] font-bold text-gv-navy">
+              <h2 id="featured" className="font-gv-serif text-[1.65rem] leading-[1.17] font-bold text-gv-navy sm:text-[1.95rem]">
                 {HOME.featured.title}
               </h2>
-              <p className="mt-4 text-[1.13rem]">{HOME.featured.text}</p>
+              <p className="mt-4 text-[1.05rem] leading-relaxed text-gv-ink/90 sm:text-[1.13rem]">{HOME.featured.text}</p>
             </div>
             <GovAnchor
               href={HOME.featured.cta.href}
-              className="inline-flex min-h-13 items-center justify-center rounded-full bg-gv-navy px-10 text-[1.2rem] font-bold text-white shadow-[0_10px_22px_-10px_rgb(11_24_73/0.8)] transition-colors duration-300 hover:bg-gv-gold hover:text-gv-navy focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-gv-green lg:w-65"
+              className="inline-flex min-h-13 items-center justify-center rounded-md bg-gv-navy px-8 text-[1.08rem] font-bold text-white shadow-[0_12px_24px_-12px_rgb(11_24_73/0.5)] transition-colors duration-300 hover:bg-gv-green focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-gv-navy lg:w-65"
             >
               {HOME.featured.cta.label}
             </GovAnchor>
@@ -86,10 +86,10 @@ export default function GovernmentHomePage() {
       </div>
 
       <section aria-labelledby="all-topics" data-flush className="mt-16">
-        <h2 id="all-topics" className={cn(CONTAINER, "scroll-mt-4 pb-[5px] font-gv-serif text-[1.95rem] leading-[1.15] font-bold text-gv-green")}>
+        <h2 id="all-topics" className={cn(CONTAINER, "scroll-mt-4 pb-[5px] font-gv-serif text-[1.95rem] leading-[1.15] font-bold text-gv-navy")}>
           {TOPICS.title}
         </h2>
-        <CardGroup cards={TOPICS.cards} label={TOPICS.title} columns={4} className="border-t-10 border-gv-green pb-24 lg:pb-28" />
+        <CardGroup cards={TOPICS.cards} label={TOPICS.title} columns={3} className="pb-24 lg:pb-28" />
       </section>
     </>
   );

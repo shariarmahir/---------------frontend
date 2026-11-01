@@ -98,7 +98,7 @@ export function GovHeader() {
         )}
       </section>
 
-      <div className="bg-gv-cream py-2.5 text-[1.13rem]">
+      <div className="bg-gv-gold py-2.5 text-[1.13rem]">
         <p className={CONTAINER}>
           {SITE.alert.before}{" "}
           <a href={`tel:${SITE.alert.info}`} className="text-gv-navy underline">

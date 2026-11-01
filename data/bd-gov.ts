@@ -333,7 +333,7 @@ export const BENEFITS = {
     { title: "Health care", icon: "heart-beat", symbol: "health_and_safety", text: "Free community clinics, vaccines for children and mothers, and a doctor by phone.", href: guide("health") },
     { title: "Housing help", icon: "home", symbol: "home", text: "Homes for landless families, home loans and public housing.", href: guide("housing-help") },
     { title: "Allowances for older people, widows and people with disabilities", icon: "wheelchair", symbol: "accessible", text: "Monthly allowances paid straight to your mobile wallet.", href: guide("social-allowances") },
-    { title: "Universal pension", icon: "piggy-bank", symbol: "savings", text: "Save a little each month for a pension for life from age 60.", href: guide("universal-pension") },
+    { title: "Universal pension", icon: "bank", symbol: "account_balance", text: "Save a little each month for a pension for life from age 60.", href: guide("universal-pension") },
     { title: "Education stipends", icon: "school", symbol: "school", text: "Stipends that help children from poorer families stay in school.", href: guide("education-stipends") },
     { title: "Mothers and young children", icon: "baby-feeding", symbol: "family_restroom", text: "A monthly allowance for mothers on low incomes, and help lines for women and children.", href: guide("mothers-and-children") },
     { title: "Freedom fighters' honorarium", icon: "medal-first-place", symbol: "military_tech", text: "The monthly honorarium, medical care and support for families.", href: guide("freedom-fighters") },
@@ -363,7 +363,6 @@ export const NATIONAL_PORTAL = {
     "বাংলাদেশ জাতীয় তথ্য বাতায়ন (bangladesh.gov.bd) is the government's front door: every ministry, directorate, district and online service in one place. Everything below was gathered from the portal on 1 November 2026, and every link opens the service itself.",
   glance: {
     title: "The government at a glance",
-    note: "Figures as published on the national portal.",
     stats: [
       { value: "57", label: "Ministries and divisions" },
       { value: "72", label: "Directorates" },
