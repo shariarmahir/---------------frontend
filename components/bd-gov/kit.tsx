@@ -108,28 +108,37 @@ export function Intro({ children }: { children: ReactNode }) {
 const isOfficial = (href: string) => /^https?:/.test(href);
 
 /**
- * One way in, as a whole-card link, centred: an animated, colourful
- * hand-drawn icon, a serif title, a line or two of text (or the Bangla
- * name), and a navy pill that turns gold when the card is pointed at.
+ * One way in, as a whole-card link, built like a badge: a navy cap with a
+ * white medallion set into its edge, holding a small animated icon; a
+ * serif title, a line or two of text (or the Bangla name); and a navy
+ * button across the foot. Pointed at, the card lifts, the medallion takes
+ * a gold ring and the button turns gold.
  */
 export function Tile({ title, text, sub, href, icon, symbol }: { title: string; text?: string; sub?: string; href: string; icon?: string; symbol?: string }) {
   return (
     <GovAnchor
       href={href}
-      className="group flex h-full w-full flex-col items-center gap-4 rounded-2xl bg-white px-6 pt-8 pb-7 text-center ring-1 ring-gv-ink/10 shadow-[0_1px_2px_rgb(15_42_32/0.06)] transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_28px_56px_-24px_rgb(11_24_73/0.45)] hover:ring-gv-gold/70 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-gv-navy motion-reduce:transition-none"
+      className="group relative isolate flex h-full w-full flex-col items-center overflow-hidden rounded-3xl bg-white px-6 pb-6 text-center shadow-[0_1px_2px_rgb(11_24_73/0.06),0_18px_36px_-26px_rgb(11_24_73/0.45)] ring-1 ring-gv-ink/10 transition duration-300 ease-out hover:-translate-y-1.5 hover:shadow-[0_34px_64px_-30px_rgb(11_24_73/0.6)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-gv-navy motion-reduce:transition-none motion-reduce:hover:translate-y-0"
     >
-      {icon ? <CardIcon name={`gov/${icon}`} fallback={symbol ?? "circle"} size={64} delay={3200} className="shrink-0" /> : null}
-      <span className="flex flex-col gap-1.5">
-        <span className="font-gv-serif text-[1.34rem] leading-snug font-bold text-gv-navy">{title}</span>
+      <span aria-hidden className="absolute inset-x-0 top-0 -z-10 h-14 bg-gv-navy" />
+      <span aria-hidden className="mt-5 grid size-18 shrink-0 place-items-center rounded-full bg-white shadow-[0_10px_22px_-12px_rgb(11_24_73/0.7)] ring-4 ring-white">
+        <span className="grid size-full place-items-center rounded-full ring-1 ring-gv-line transition-[box-shadow,background-color] duration-300 group-hover:bg-gv-cream/60 group-hover:ring-2 group-hover:ring-gv-gold">
+          {icon ? <CardIcon name={`gov/${icon}`} fallback={symbol ?? "circle"} size={40} delay={3200} /> : null}
+        </span>
+      </span>
+      <span className="mt-4 flex flex-col gap-1">
+        <span className="font-gv-serif text-[1.22rem] leading-snug font-bold text-gv-navy text-balance">{title}</span>
         {sub ? (
-          <span lang="bn" className="font-bengali text-[1.06rem] text-gv-ink/70">
+          <span lang="bn" className="font-bengali text-[1.02rem] text-gv-ink/65">
             {sub}
           </span>
         ) : null}
       </span>
-      {text ? <span className="text-[1.13rem] leading-normal text-gv-ink">{text}</span> : null}
-      <span className="mt-auto inline-flex min-h-11 items-center rounded-full bg-gv-navy px-6 pt-0.5 text-[0.95rem] font-bold text-white shadow-[0_8px_18px_-8px_rgb(11_24_73/0.7)] transition-colors duration-300 group-hover:bg-gv-gold group-hover:text-gv-navy">
-        {isOfficial(href) ? "Visit official site" : "Explore"}
+      {text ? <span className="mt-2.5 text-[1.04rem] leading-normal text-gv-ink/85 text-pretty">{text}</span> : null}
+      <span className="mt-auto w-full pt-6">
+        <span className="flex min-h-11 w-full items-center justify-center rounded-full bg-gv-navy px-5 text-[0.95rem] font-bold text-white transition-colors duration-300 group-hover:bg-gv-gold group-hover:text-gv-navy">
+          {isOfficial(href) ? "Visit official site" : "Explore"}
+        </span>
       </span>
     </GovAnchor>
   );

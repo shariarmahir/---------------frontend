@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { CONTAINER, CardGroup, Crumbs, GovAnchor, Intro, LINK, LinkList, Looking, SectionTitle, TitleHero } from "@/components/bd-gov/kit";
-import { ABOUT, BRANCHES, FACTS, OFFICES } from "@/data/bd-gov";
+import { CONTAINER, CardGroup, Crumbs, Intro, LINK, LinkList, Looking, SectionTitle, TitleHero } from "@/components/bd-gov/kit";
+import { ABOUT, FACTS, OFFICES } from "@/data/bd-gov";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -11,8 +11,8 @@ export const metadata: Metadata = {
 
 /**
  * usa.gov's "The U.S. and its government", for Bangladesh: the title, the
- * photo band with the most-used links, the lede and nine cards; then the
- * detail the cards point at: the branches, the facts and the top offices.
+ * photo band with the most-used links, the lede and nine cards (most open
+ * their own page); then the facts and the top offices.
  */
 export default function GovernmentPage() {
   return (
@@ -22,27 +22,6 @@ export default function GovernmentPage() {
       <Intro>{ABOUT.intro}</Intro>
       <CardGroup cards={ABOUT.cards} label={ABOUT.title} className="mt-8" />
       <Looking {...ABOUT.looking} />
-
-      <section aria-labelledby="branches" className={cn(CONTAINER, "mt-20")}>
-        <SectionTitle id="branches">{BRANCHES.title}</SectionTitle>
-        <p className="mt-4 max-w-[68ch] font-gv-serif text-[1.04rem] leading-[1.6]">{BRANCHES.lede}</p>
-        <div className="mt-8 grid gap-6 lg:grid-cols-3">
-          {BRANCHES.branches.map((b) => (
-            <article key={b.name} className="flex flex-col rounded-2xl bg-gv-paper p-7 ring-1 ring-gv-ink/8">
-              <h3 className="font-gv-serif text-[1.34rem] leading-[1.3] font-bold">{b.name}</h3>
-              <p className="mt-1 font-bold">{b.body}</p>
-              <ul className="mt-4 list-disc space-y-2 pl-5">
-                {b.points.map((p) => (
-                  <li key={p}>{p}</li>
-                ))}
-              </ul>
-              <GovAnchor href={b.link.href} className={cn(LINK, "mt-auto pt-5")}>
-                {b.link.label}
-              </GovAnchor>
-            </article>
-          ))}
-        </div>
-      </section>
 
       <section aria-labelledby="facts" className={cn(CONTAINER, "mt-20")}>
         <SectionTitle id="facts">{FACTS.title}</SectionTitle>
@@ -85,7 +64,6 @@ export default function GovernmentPage() {
         <p className="mt-4 max-w-[68ch]">{OFFICES.lede}</p>
         <LinkList links={OFFICES.links} label={OFFICES.title} />
       </section>
-
     </>
   );
 }

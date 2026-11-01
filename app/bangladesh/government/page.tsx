@@ -66,7 +66,9 @@ export default function GovernmentHomePage() {
       <div className="bg-linear-to-b from-gv-navy from-50% to-white to-50%">
         <section aria-labelledby="featured" className={CONTAINER}>
           <div className="grid items-center gap-6 rounded-2xl bg-white px-6 py-7 shadow-[0_28px_56px_-28px_rgb(11_24_73/0.45)] ring-1 ring-gv-ink/10 sm:px-9 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-x-7">
-            <CardIcon name={`gov/${HOME.featured.icon}`} fallback={HOME.featured.symbol} size={72} delay={3200} />
+            <span aria-hidden className="grid size-20 place-items-center rounded-full bg-white shadow-[0_10px_22px_-12px_rgb(11_24_73/0.7)] ring-1 ring-gv-line">
+              <CardIcon name={`gov/${HOME.featured.icon}`} fallback={HOME.featured.symbol} size={48} delay={3200} />
+            </span>
             <div className="lg:pr-10">
               <h2 id="featured" className="font-gv-serif text-[1.95rem] leading-[1.17] font-bold text-gv-navy">
                 {HOME.featured.title}
