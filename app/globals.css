@@ -106,6 +106,26 @@
   --font-ml-display: var(--font-anton), var(--font-bengali), sans-serif;
   --font-ml-sans: var(--font-montserrat), var(--font-bengali), sans-serif;
 
+  /* BD Guide (/bangladesh/government): the government guide, laid out after
+     usa.gov and dressed in MOTHERLAND's and Kandari-Lab's colours: the
+     flag's green for titles and rules, Kandari navy for links, callouts and
+     the identifier, brand gold for accents, delta ink on white and paper.
+     The flag's red marks the logo's i and the emergency numbers only.
+     Merriweather (titles) and Source Sans 3 (body) load there only
+     (components/bd-gov/fonts.ts). */
+  --color-gv-ink: #0f2a20;
+  --color-gv-navy: #0b1849;
+  --color-gv-green: #006a4e;
+  --color-gv-deep: #0b3b2c;
+  --color-gv-gold: #e4b027;
+  --color-gv-sun: #f42a41;
+  --color-gv-paper: #f4f2f0;
+  --color-gv-line: #ddd8cf;
+  --color-gv-cream: #fcebb0;
+  --color-gv-mist: #e4eee9;
+  --font-gv-serif: var(--font-merriweather), var(--font-bengali), Georgia, serif;
+  --font-gv-sans: var(--font-source-sans), var(--font-bengali), sans-serif;
+
   /* Landing-page system (code.html / DESIGN.md "Clinical Cleanroom").
      Scoped to the page body; the navbar keeps its own palette above. */
   --font-grotesk: var(--font-sora), var(--font-bengali), sans-serif;

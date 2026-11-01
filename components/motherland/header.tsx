@@ -14,6 +14,9 @@ const UTILITY = [
   { label: "Research", href: "/research", icon: "local_library" },
 ];
 
+/** The way to BD Guide, the government guide: a button beside "Join with us". */
+const GOV = { label: "Gov", href: "/bangladesh/government" };
+
 /** The topic whose section crosses the middle of the screen. */
 function useCurrentTopic() {
   const [current, setCurrent] = useState<TopicId | null>(null);
@@ -142,15 +145,26 @@ export function MotherlandHeader() {
           </nav>
 
           <div className="ml-auto flex items-center gap-3">
+            <Link
+              href={GOV.href}
+              title="Government guide"
+              className={cn(
+                "hidden min-h-11 shrink-0 items-center justify-center gap-2 rounded-full px-5 font-semibold whitespace-nowrap ring-2 transition-colors duration-300 ring-inset focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current sm:inline-flex xl:max-2xl:size-11 xl:max-2xl:px-0",
+                solid ? "text-ml-green ring-ml-green hover:bg-ml-green hover:text-white" : "ring-white hover:bg-white hover:text-ml-ink",
+              )}
+            >
+              <Icon name="account_balance" className="text-lg" />
+              <span className="xl:max-2xl:sr-only">{GOV.label}</span>
+            </Link>
             <a
               href="#join"
               onClick={close}
               className={cn(
-                "hidden min-h-11 items-center gap-2 rounded-full px-6 font-semibold transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current sm:inline-flex",
+                "hidden min-h-11 shrink-0 items-center gap-2 rounded-full px-6 font-semibold whitespace-nowrap xl:max-2xl:px-5 transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current sm:inline-flex",
                 solid ? "bg-ml-ink text-white hover:bg-ml-green" : "bg-ml-ground text-ml-ink hover:bg-signal-orange",
               )}
             >
-              <Icon name="bolt" className="text-lg" />
+              <Icon name="bolt" className="text-lg xl:max-2xl:hidden!" />
               Join with us
             </a>
             <button
@@ -186,10 +200,16 @@ export function MotherlandHeader() {
               </li>
             ))}
           </ul>
-          <a href="#join" onClick={close} className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-full bg-signal-orange px-7 font-semibold text-ml-ink">
-            <Icon name="bolt" className="text-lg" />
-            Join with us
-          </a>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a href="#join" onClick={close} className="inline-flex min-h-12 items-center gap-2 rounded-full bg-signal-orange px-7 font-semibold text-ml-ink">
+              <Icon name="bolt" className="text-lg" />
+              Join with us
+            </a>
+            <Link href={GOV.href} className="inline-flex min-h-12 items-center gap-2 rounded-full px-7 font-semibold text-ml-green ring-2 ring-ml-green ring-inset">
+              <Icon name="account_balance" className="text-lg" />
+              Government guide
+            </Link>
+          </div>
           <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold lg:hidden">
             {[...UTILITY, { label: "Sign in", href: "/login?next=/bangladesh", icon: "login" }].map((l) => (
               <li key={l.href}>

@@ -108,6 +108,15 @@ Brief specifies 16:6 (~2.67:1), an ultra-wide letterbox. At that ratio on a phon
                       simulation, model in lib/motherland-future.ts, illustrative not a forecast) → Join. Copy/media: data/motherland.ts; components/motherland; photos
                       (Unsplash, Commons) and films (Pexels) in public/motherland, credited in its footer.
                       /bangladesh/history is the one chapter left here; category pages come later.
+/bangladesh/government  BD Guide (Mahir, 2026-11-01), reached from MOTHERLAND's Gov button: an independent
+                      guide to the Bangladesh government. Its home is "All topics and services" (cloned from
+                      usa.gov's home page); /about is cloned from usa.gov/about-the-us. usa.gov's layout in
+                      MOTHERLAND + Kandari colours (flag green titles and rules, Kandari navy, white; gold only for
+                      small accents, never bars), MOTHERLAND-style rounded tiles (Tile in components/bd-gov/kit.tsx),
+                      a navy footer, and a navy "guide" wordmark whose i alone is gold (components/bd-gov/mark.tsx).
+                      gv-* tokens; Merriweather + Source Sans 3. Its own header and footer. It must say it is NOT a government website (banner + footer). /national-portal carries
+                      data gathered from bangladesh.gov.bd (counts, service categories, hotlines, offices), every
+                      link to the official page. Copy: data/bd-gov.ts; components/bd-gov.
 /nagorik             "নাগরিক অধিকার ও দায়িত্ব" — National Index, BBS Time-Use Survey 2021 charts (real),
                       constitutional rights, helplines, responsibilities by group, nightly self-check, and
                       the four civic chapters moved from /bangladesh: /nagorik/crisis, shield, problems,
