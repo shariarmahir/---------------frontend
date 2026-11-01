@@ -114,6 +114,10 @@ Brief specifies 16:6 (~2.67:1), an ultra-wide letterbox. At that ratio on a phon
                       MOTHERLAND + Kandari colours (flag green titles and rules, Kandari navy, white; gold only for
                       small accents, never bars), MOTHERLAND-style rounded tiles (Tile in components/bd-gov/kit.tsx),
                       a navy footer, and a navy "guide" wordmark whose i alone is gold (components/bd-gov/mark.tsx).
+                      Cards (Tile) are navy-cap badges with a small icon medallion; "Explore" opens a detail page
+                      /bangladesh/government/<slug> (usa.gov/branches-of-government layout: side menu, official-site
+                      card with "Go to the official site", parts, "Have a question?"), copy in data/bd-gov-details.ts,
+                      checked by lib/bd-gov.test.ts. /benefits is cloned from usa.gov/benefits.
                       gv-* tokens; Merriweather + Source Sans 3. Its own header and footer. It must say it is NOT a government website (banner + footer). /national-portal carries
                       data gathered from bangladesh.gov.bd (counts, service categories, hotlines, offices), every
                       link to the official page. Copy: data/bd-gov.ts; components/bd-gov.
