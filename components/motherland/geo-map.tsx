@@ -760,26 +760,36 @@ export function CrowdBoard() {
         </div>
 
         <div className="grid gap-5 lg:grid-cols-3">
-          <div className="rounded-2xl bg-white/[.07] p-6">
+          <div className="rounded-2xl bg-white/[.06] p-7 ring-1 ring-white/10">
             <h3 className="text-xl font-bold">Filling up now</h3>
             <ul className="mt-3 flex flex-col divide-y divide-white/10">
               {busiest.map(({ place, crowd }) => (
                 <li key={place.id}>
-                  <a href={`#place=${place.id}`} className="flex items-center justify-between gap-3 rounded-sm py-3 font-semibold hover:text-signal-orange focus-visible:outline-2 focus-visible:outline-white">
-                    {place.name}
+                  <a href={`#place=${place.id}`} className="flex items-center justify-between gap-3 rounded-sm py-2.5 font-semibold hover:text-signal-orange focus-visible:outline-2 focus-visible:outline-white">
+                    <span className="flex min-w-0 items-center gap-3">
+                      <span className="relative size-11 shrink-0 overflow-hidden rounded-full bg-white/10">
+                        <Image src={place.picture.src} alt="" fill sizes="44px" className="object-cover" style={{ objectPosition: place.picture.focus }} />
+                      </span>
+                      {place.name}
+                    </span>
                     <LevelTag level={crowd.level} className="font-normal" />
                   </a>
                 </li>
               ))}
             </ul>
           </div>
-          <div className="rounded-2xl bg-white/[.07] p-6">
+          <div className="rounded-2xl bg-white/[.06] p-7 ring-1 ring-white/10">
             <h3 className="text-xl font-bold">Go here instead</h3>
             <ul className="mt-3 flex flex-col divide-y divide-white/10">
               {instead.map(({ place, crowd }) => (
                 <li key={place.id}>
-                  <a href={`#place=${place.id}`} className="flex items-center justify-between gap-3 rounded-sm py-3 font-semibold hover:text-signal-orange focus-visible:outline-2 focus-visible:outline-white">
-                    {place.name}
+                  <a href={`#place=${place.id}`} className="flex items-center justify-between gap-3 rounded-sm py-2.5 font-semibold hover:text-signal-orange focus-visible:outline-2 focus-visible:outline-white">
+                    <span className="flex min-w-0 items-center gap-3">
+                      <span className="relative size-11 shrink-0 overflow-hidden rounded-full bg-white/10">
+                        <Image src={place.picture.src} alt="" fill sizes="44px" className="object-cover" style={{ objectPosition: place.picture.focus }} />
+                      </span>
+                      {place.name}
+                    </span>
                     <LevelTag level={crowd.level} className="font-normal" />
                   </a>
                 </li>
@@ -788,7 +798,7 @@ export function CrowdBoard() {
             </ul>
             {closed.length ? <p className="mt-4 text-sm text-white/70">Closed this month: {closed.map((c) => c.place.name).join(", ")}.</p> : null}
           </div>
-          <div className="rounded-2xl bg-white/[.07] p-6">
+          <div className="rounded-2xl bg-white/[.06] p-7 ring-1 ring-white/10">
             <h3 className="text-xl font-bold">Tickets this week</h3>
             <ul className="mt-3 flex flex-col gap-4">
               {now

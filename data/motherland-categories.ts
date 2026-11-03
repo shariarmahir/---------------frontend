@@ -428,6 +428,87 @@ export const CATEGORIES: Category[] = [
     facts: [],
     quiz: [],
   },
+  {
+    slug: "resources",
+    topic: "resources",
+    name: "Capability & Resources",
+    lede: "Fertile soil, great rivers, a wide sea and a young people: what Bangladesh was born with, and what it can become.",
+    hero: photo("rice-planting"),
+    subcategories: [
+      {
+        id: "what-the-land-gives",
+        title: "What the land gives",
+        lede: "A delta feeds a nation.",
+        stories: [
+          { title: "Three rice harvests", meta: "Third-largest rice grower on Earth", text: "Aus, Aman and Boro: the delta's soil and water let farmers grow rice in three seasons. After China and India, no country grows more.", picture: photo("rice-planting") },
+          { title: "Fish in every river", meta: "Third-largest inland catch", text: "Rivers, haors and floodplains make one of the richest freshwater fisheries in the world, and the hilsa, the national fish, is its pride.", picture: photo("hilsa") },
+          { title: "The golden fibre", meta: "Second-largest jute grower", text: "The fibre that once filled the world's grain sacks is coming back as a green alternative to plastic.", picture: photo("handloom") },
+          { title: "A sea of our own", meta: "118,813 km² of water", text: "Settled at international tribunals in 2012 and 2014, the Bay of Bengal waters open a blue economy of fish, ports and energy.", picture: photo("kuakata") },
+        ],
+      },
+      {
+        id: "green-wealth",
+        title: "Green wealth",
+        lede: "Forests, tea and wetlands that the whole country leans on.",
+        layout: "grid",
+        stories: [
+          { title: "Tea gardens", meta: "Sylhet", text: "Rolling estates around Srimangal, and one of the country's oldest export crops.", picture: photo("srimangal-tea") },
+          { title: "The mangrove shield", meta: "The Sundarbans", text: "The forest breaks cyclones before they reach the villages behind it, and feeds the fisheries around it.", picture: photo("mangroves") },
+          { title: "The haors", meta: "Sunamganj", text: "Vast seasonal wetlands that grow a harvest of rice in the dry months and fish in the wet ones.", picture: photo("sunamganj-haor") },
+        ],
+      },
+      {
+        id: "a-young-people",
+        title: "A young people",
+        lede: "The greatest resource walks on two feet.",
+        layout: "grid",
+        stories: [
+          { title: "Under thirty", text: "Bangladesh's median age is under 30: a generation ready to learn, build and lead.", picture: photo("children") },
+          { title: "Hands that make", text: "Skill runs from the handloom to the garment line, and millions of workers, most of them women, dress the world.", picture: photo("garments") },
+          { title: "Money sent home", text: "The courage of millions working abroad becomes billions of dollars for their families each year.", picture: photo("taka-notes") },
+        ],
+      },
+    ],
+    facts: [
+      { label: "Rice harvests a year", value: "3" },
+      { label: "Rice grower", value: "3rd largest" },
+      { label: "Inland fish catch", value: "3rd largest" },
+      { label: "Jute grower", value: "2nd largest" },
+      { label: "Sea area", value: "118,813 km²" },
+    ],
+    quiz: [
+      { question: "Which is NOT one of Bangladesh's three rice crops?", options: ["Aus", "Aman", "Rabi"], answer: 2, why: "The three are Aus, Aman and Boro." },
+      { question: "What is jute known as?", options: ["The golden fibre", "The silver thread", "The white gold"], answer: 0, why: "Its colour and its value gave jute the name the golden fibre." },
+      { question: "How much sea does Bangladesh hold after the tribunals?", options: ["11,881 km²", "118,813 km²", "1,188,130 km²"], answer: 1, why: "Rulings in 2012 and 2014 settled 118,813 km² of the Bay of Bengal." },
+    ],
+  },
+  {
+    slug: "invest",
+    topic: "invest",
+    name: "Business & Investment",
+    lede: "A huge young market, world-scale factories and new roads to reach them. Here is where to build.",
+    hero: photo("padma-bridge"),
+    subcategories: [
+      {
+        id: "why-build-here",
+        title: "Why build here",
+        lede: "The foundations already in place.",
+        stories: [
+          { title: "We dress the world", meta: "Second in clothing exports", text: "Bangladesh's garment industry employs millions and supplies the world's best-known brands, and is moving up to higher-value fashion.", picture: photo("garments") },
+          { title: "New roads to market", meta: "The Padma Bridge, opened 2022", text: "The 6.15 km road and rail bridge ties the south-west to Dhaka and the port of Chattogram for the first time.", picture: photo("padma-bridge") },
+          { title: "A city that moves", meta: "Dhaka Metro, opened 2022", text: "The country's first metro line gives the capital's workers a fast way through its traffic.", picture: photo("metro-rail") },
+          { title: "Money on every phone", meta: "Mobile financial services", text: "Tens of millions of people already send, save and pay by phone, a ready base for digital business.", picture: photo("mobile-money") },
+        ],
+      },
+    ],
+    facts: [
+      { label: "Goods exports", value: "About $48bn" },
+      { label: "Clothing exports", value: "No. 2" },
+      { label: "Remittances, FY26", value: "$35.56bn" },
+      { label: "People", value: "169.8 million" },
+    ],
+    quiz: [],
+  },
 ];
 
 export const categoryFor = (slug: string) => CATEGORIES.find((c) => c.slug === slug);

@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import { test } from "node:test";
 import { ABOUT, BIOGRAPHIES, CULTURE, HISTORY, NATURE, PROCON, SCIENCE, TAKA, TOPIC_PAGES, TRAVEL, VIDEOS } from "../data/motherland.ts";
 import { CATEGORIES, categoryFor } from "../data/motherland-categories.ts";
+import { DEEP, deepSources } from "../data/motherland-deep.ts";
 
 const buttons = [ABOUT.cta, ...HISTORY.cards.map((c) => c.cta), SCIENCE.cta, BIOGRAPHIES.cta, NATURE.cta, TRAVEL.cta, CULTURE.cta, PROCON.cta, TAKA.cta, VIDEOS.cta];
 
@@ -40,4 +41,21 @@ test("every picture is on disk, with alt text and a credit", () => {
       assert.ok(p.alt && p.credit.sourceUrl, p.src);
     }
   }
+});
+
+test("every figure on a category page names a real source, and every timeline runs in order", () => {
+  for (const [slug, deep] of Object.entries(DEEP)) {
+    assert.ok(categoryFor(slug), `${slug} has no page`);
+    for (const f of deep.figures ?? []) assert.ok(f.value && f.label && f.source.url.startsWith("https://"), `${slug}: ${f.label}`);
+    if (deep.figures) assert.ok(deepSources(slug).length > 0, slug);
+    if (deep.film) assert.ok(existsSync(`public${deep.film.src.phone}`) && existsSync(`public${deep.film.poster}`), `${slug} film`);
+    const years = (deep.timeline ?? []).map((m) => Number(/\d{4}/.exec(m.when)?.[0])).filter(Boolean);
+    for (let i = 1; i < years.length; i++) assert.ok(years[i] > years[i - 1], `${slug}: ${years[i]} out of order`);
+  }
+  for (const c of CATEGORIES) assert.ok(c.slug === "travel" || c.slug === "procon" || DEEP[c.slug], `${c.slug} has no extra depth`);
+});
+
+test("the header's Resources and Invest tabs have their own pages", () => {
+  assert.equal(TOPIC_PAGES.resources, "/bangladesh/resources");
+  assert.equal(TOPIC_PAGES.invest, "/bangladesh/invest");
 });

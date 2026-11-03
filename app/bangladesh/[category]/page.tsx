@@ -7,6 +7,7 @@ import { MotherlandHeader } from "@/components/motherland/header";
 import { SideTab } from "@/components/motherland/side-tab";
 import { CATEGORIES, categoryCredits, categoryFor } from "@/data/motherland-categories";
 import { VIDEOS } from "@/data/motherland";
+import { DEEP, deepSources } from "@/data/motherland-deep";
 import { cn } from "@/lib/utils";
 import "../motherland.css";
 
@@ -35,7 +36,9 @@ export default async function MotherlandCategoryPage({ params }: Props) {
   const category = categoryFor((await params).category);
   if (!category) notFound();
 
-  const credits = [...categoryCredits(category), ...(category.body === "films" ? VIDEOS.films.map((f) => ({ label: f.title, credit: f.credit })) : [])];
+  const film = DEEP[category.slug]?.film;
+  const credits = [...categoryCredits(category), ...(category.body === "films" ? VIDEOS.films : film ? [film] : []).map((f) => ({ label: f.title, credit: f.credit }))];
+  const sources = deepSources(category.slug);
 
   return (
     <div className={cn(anton.variable, montserrat.variable, "ml w-full bg-ml-ground font-ml-sans text-ml-ink")}>
@@ -47,7 +50,23 @@ export default async function MotherlandCategoryPage({ params }: Props) {
         <CategoryPage category={category} />
       </main>
       <SideTab href="/bangladesh#join" />
-      <MotherlandFooter credits={credits} onLanding={false} />
+      <MotherlandFooter narrow credits={credits} onLanding={false}>
+        {sources.length ? (
+          <details className="open:order-last open:basis-full">
+            <summary className="cursor-pointer font-semibold hover:text-white focus-visible:outline-2 focus-visible:outline-white">Sources</summary>
+            <ul className="mt-3 grid gap-x-8 gap-y-1.5 sm:grid-cols-2 lg:grid-cols-3">
+              {sources.map((s) => (
+                <li key={s.url}>
+                  <a href={s.url} target="_blank" rel="noopener noreferrer" className="underline decoration-white/25 underline-offset-4 hover:text-white">
+                    {s.name}
+                    <span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        ) : null}
+      </MotherlandFooter>
     </div>
   );
 }

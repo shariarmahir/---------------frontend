@@ -92,6 +92,8 @@ export const TOPIC_PAGES: Partial<Record<TopicId, string>> = {
   procon: "/bangladesh/procon",
   taka: "/bangladesh/taka",
   videos: "/bangladesh/videos",
+  resources: "/bangladesh/resources",
+  invest: "/bangladesh/invest",
   facts: "/bangladesh/facts",
 };
 

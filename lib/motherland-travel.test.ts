@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { test } from "node:test";
 import { project } from "../data/bangladesh-map.ts";
 import { TOPICS } from "../data/motherland.ts";
-import { GUIDES, HELP, PLACES, RIVERS, SEASONS, SOURCES, STORIES, WEEK_FILMS, filmOfWeek, placeById, travelCredits } from "../data/motherland-travel.ts";
+import { GUIDES, HELP, OLD_STACK, PLACES, RIVERS, SEASONS, SOURCES, STORIES, WEEK_FILMS, filmOfWeek, placeById, topTen, travelCredits } from "../data/motherland-travel.ts";
 import { SURGES, crowdAt, daysUntil, dhakaClock, nearestPlaces, nextSurge, placesToGpx, seasonAt, ticketOutlook, weekNumber } from "./motherland-crowd.ts";
 import { BD_BOUNDS, countryBorder, divisionShapesCount, onLand, outsideMask, tilesFor } from "./motherland-geo.ts";
 import { travelMapStyle } from "./motherland-map-style.ts";
@@ -92,6 +92,7 @@ test("the contest keeps its promises", () => {
 
 test("the six seasons cover the year, and today falls in the right one", () => {
   assert.equal(SEASONS.length, 6);
+  for (const season of SEASONS) assert.ok(season.looks.length <= 36, `${season.id}: keep it to one short line`);
   const on = (iso: string) => seasonAt(at(`${iso}T06:00:00Z`), SEASONS).id;
   assert.equal(on("2026-11-04"), "hemonto");
   assert.equal(on("2027-01-01"), "sheet");
@@ -104,16 +105,22 @@ test("the six seasons cover the year, and today falls in the right one", () => {
   assert.deepEqual(SEASONS.filter((s) => s.pick).map((s) => s.id), ["hemonto", "sheet"]);
 });
 
-test("every season's places are on the map, and open in that season", () => {
-  for (const s of SEASONS) {
-    assert.equal(s.places.length, 3, s.id);
-    const middle = (s.from[0] % 12) + 1;
-    for (const id of s.places) {
-      const place = placeById(id);
-      assert.ok(place, `${s.id}: ${id}`);
-      assert.ok(!place.closed?.includes(middle), `${s.id} sends people to ${id} while it is closed`);
-    }
+test("the Top 10 is ten open places, in season first, and it moves each week", () => {
+  for (let month = 1; month <= 12; month++) {
+    const ten = topTen(month, 7);
+    assert.equal(ten.length, 10, `month ${month}`);
+    assert.equal(new Set(ten.map((p) => p.id)).size, 10);
+    assert.ok(ten.every((p) => !p.closed?.includes(month)), `month ${month} sends people somewhere closed`);
+    const firstOut = ten.findIndex((p) => !p.best.includes(month));
+    if (firstOut !== -1) assert.ok(ten.slice(firstOut).every((p) => !p.best.includes(month)), `month ${month}: in season comes first`);
   }
+  assert.notDeepEqual(topTen(11, 1).map((p) => p.id), topTen(11, 2).map((p) => p.id));
+  for (const p of PLACES) assert.ok(existsSync(`public${p.picture.src}`), p.picture.src);
+});
+
+test("the full-screen old places are on the map and very old", () => {
+  assert.equal(OLD_STACK.length, 4);
+  for (const { id } of OLD_STACK) assert.equal(placeById(id)?.kind, "antique", id);
 });
 
 test("the film of the week changes each Sunday in Dhaka, and never runs out", () => {

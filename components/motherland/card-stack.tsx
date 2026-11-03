@@ -34,7 +34,9 @@ const INSET = "px-6 sm:px-10 lg:pr-16 lg:pl-[max(3rem,calc((100vw-120rem)/2+3rem
  * foot fills as the story goes on. Below lg, and with reduced motion, the
  * cards simply follow one another.
  */
-export function CardStack({ cards }: { cards: StoryCard[] }) {
+type DealtCard = Omit<StoryCard, "cta"> & { cta?: StoryCard["cta"] };
+
+export function CardStack({ cards, tone = "forest" }: { cards: DealtCard[]; tone?: "forest" | "navy" }) {
   const deck = useRef<HTMLOListElement>(null);
   const reduced = useReducedMotion();
   const wide = useWide();
@@ -44,25 +46,31 @@ export function CardStack({ cards }: { cards: StoryCard[] }) {
   return (
     <ol ref={deck} className="flex flex-col gap-2 lg:gap-0">
       {cards.map((card, i) => (
-        <Card key={card.title} card={card} index={i} count={cards.length} progress={scrollYProgress} still={still} />
+        <Card key={card.title} card={card} index={i} count={cards.length} progress={scrollYProgress} still={still} tone={tone} />
       ))}
     </ol>
   );
 }
 
-function Card({ card, index, count, progress, still }: { card: StoryCard; index: number; count: number; progress: MotionValue<number>; still: boolean }) {
+function Card({ card, index, count, progress, still, tone }: { card: DealtCard; index: number; count: number; progress: MotionValue<number>; still: boolean; tone: "forest" | "navy" }) {
   const scale = useTransform(progress, [index / count, 1], [1, 1 - (count - 1 - index) * STEP]);
 
   return (
     <li className="lg:sticky lg:top-(--ml-header) lg:h-[calc(100svh-var(--ml-header))]">
-      <motion.article style={{ scale: still ? 1 : scale }} className="relative grid h-full origin-top overflow-hidden bg-ml-deep text-white lg:grid-cols-[53fr_47fr]">
+      <motion.article style={{ scale: still ? 1 : scale }} className={cn("relative grid h-full origin-top overflow-hidden text-white lg:grid-cols-[53fr_47fr]", tone === "navy" ? "bg-ml-navy" : "bg-ml-deep")}>
         <div className={cn("relative isolate flex min-w-0 flex-col items-start justify-center gap-7 py-14 lg:py-16", INSET)}>
           <StackArt art={card.art} className="-z-10" />
           <RiseText as="h3" text={card.title} className="font-ml-display text-[clamp(2.5rem,6.6vw,6rem)] leading-[1.02] tracking-[0.01em] uppercase" />
           <p className="max-w-2xl text-lg leading-relaxed text-white/90 sm:text-xl">{card.text}</p>
-          <Link href={card.cta.href} className={pill.onDark}>
-            {card.cta.label}
-          </Link>
+          {!card.cta ? null : card.cta.href.startsWith("#") ? (
+            <a href={card.cta.href} className={pill.onDark}>
+              {card.cta.label}
+            </a>
+          ) : (
+            <Link href={card.cta.href} className={pill.onDark}>
+              {card.cta.label}
+            </Link>
+          )}
         </div>
         <div className="relative order-first aspect-4/3 lg:order-0 lg:aspect-auto">
           <Image src={card.picture.src} alt={card.picture.alt} fill sizes="(min-width: 1024px) 47vw, 100vw" className="object-cover" style={{ objectPosition: card.picture.focus }} />

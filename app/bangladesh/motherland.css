@@ -188,3 +188,14 @@
 .ml .maplibregl-marker {
   line-height: 1;
 }
+
+/* A photograph opening drifts very slowly, so the page never feels frozen. */
+@media (prefers-reduced-motion: no-preference) {
+  .ml-drift {
+    animation: ml-drift 24s ease-out both;
+  }
+  @keyframes ml-drift {
+    from { transform: scale(1.08); }
+    to { transform: scale(1); }
+  }
+}

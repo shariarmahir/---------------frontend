@@ -108,18 +108,24 @@ Brief specifies 16:6 (~2.67:1), an ultra-wide letterbox. At that ratio on a phon
                       simulation, model in lib/motherland-future.ts, illustrative not a forecast) → Join. Copy/media: data/motherland.ts; components/motherland; photos
                       (Unsplash, Commons) and films (Pexels) in public/motherland, credited in its footer.
                       Every section's gold button opens a category page /bangladesh/<slug> (history, science-tech, people,
-                      nature, travel, culture, procon, taka, videos): Britannica's category plan (subcategories, feature
-                      blocks, quiz, other categories) in MOTHERLAND's dress, full-screen opening. Copy:
-                      data/motherland-categories.ts; components/motherland/category.tsx; checked by lib/motherland-categories.test.ts.
+                      nature, travel, culture, procon, taka, videos, resources, invest), all in the dress Geography & Travel set
+                      (Mahir, 2026-11-04): film or drifting full-size photo, one narrow line of figures, first part as the landing's
+                      CardStack, sourced figures that count up, portrait PhotoCard rails, timeline, quiz, other categories, narrow footer.
+                      Copy: data/motherland-categories.ts; figures, films and timelines: data/motherland-deep.ts (every figure names
+                      its source, reused from the Facts page where it can be); components/motherland/category.tsx; checked by
+                      lib/motherland-categories.test.ts. Photos: licensed Unsplash and Commons only, 2400px where the source has it.
 /bangladesh/facts    Facts of Bangladesh (Mahir, 2026-11-04), the "Facts" tab, laid out after Facts about Germany
                       (tatsachen-ueber-deutschland.de) in MOTHERLAND's colours and type, with its 14 topics answered for
                       Bangladesh. Its two required sections are "Why we are the best" and "Why we are not doing best":
                       the one MOTHERLAND page that shows failings, by Mahir's instruction. Every figure names its source,
                       every strength its limit, every failing the reader's part. Copy: data/motherland-facts.ts; re-check
                       the figures when they age; checked by lib/motherland-facts.test.ts.
-/bangladesh/travel   Geography & Travel (Mahir, 2026-11-04), its own page, not a [category] one. Its job is to make people want
-                      to come. Order, as Mahir set it: hero film of the week (WEEK_FILMS, changes by itself each Sunday in Dhaka) →
-                      figures → very old places → hidden gems → six-season mind map → crowd alert → know before you go → divisions →
+/bangladesh/travel   Geography & Travel (Mahir, 2026-11-04), its own page, not a [category] one, after visittheusa.com's portrait
+                      cards (PhotoCard) in MOTHERLAND's dress. Its job is to make people want to come. Order, as Mahir set it: hero film
+                      of the week with no controls or credit on it (WEEK_FILMS, changes by itself each Sunday in Dhaka; credit in the
+                      footer) → one narrow line of figures → Top 10 this week (topTen, by season, full-size photos in public/motherland/top;
+                      never from Pinterest, licensed sources only) → four old places in the landing page's CardStack, then a rail →
+                      a short "When Bangladesh looks best" band of the six seasons, no mind map → hidden gems → crowd alert → know before you go → divisions →
                       stories band → quiz → other categories → the map, directly above a narrow footer. The map is MapLibre on open
                       data (OpenFreeMap, Terrain Tiles on AWS; no key), loaded only near the viewport; satellite is Esri **[FLAG:
                       check its terms before public launch]**. public/vendor/maplibre-gl-worker.mjs must match node_modules (a test

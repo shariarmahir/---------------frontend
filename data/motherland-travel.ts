@@ -13,6 +13,8 @@ import { photo } from "./motherland-categories.ts";
 import { PLACE_CREDITS } from "./motherland-places-credits.ts";
 import type { CrowdPlace } from "../lib/motherland-crowd.ts";
 
+const FULL_SIZE_IDS = ["kantajew", "nafakhum", "nijhum-dwip", "paharpur", "panam-nagar", "puthia", "st-martin"];
+
 export const TRAVEL_CHECKED = "4 November 2026";
 
 export type Terrain = "hills" | "sylhet" | "plains" | "char" | "sea" | "rivers";
@@ -41,7 +43,7 @@ function local(file: string, alt: string, focus?: string): Picture {
 const COOL = [11, 12, 1, 2];
 const COOL_DRY = [10, 11, 12, 1, 2, 3];
 
-export const PLACES: MapPlace[] = [
+const LISTED: MapPlace[] = [
   /* ── Very old, and barely visited ──────────────────────────────────── */
   { id: "wari-bateshwar", name: "Wari-Bateshwar", district: "Narsingdi", terrain: "plains", kind: "antique", era: "About 450 BCE", fame: 1, best: COOL_DRY, lat: 24.087, lon: 90.826, text: "A fortified trading town, dated by its excavators to about 450 BCE, in the middle of today's farm fields. A schoolteacher first noticed the beads and coins that farmers kept turning up. Today a small museum stands among the villagers' homes.", picture: local("wari-bateshwar", "A thatched hut in the green grounds of the museum at Wari-Bateshwar") },
   { id: "shalban-vihara", name: "Shalban Vihara", district: "Cumilla", terrain: "plains", kind: "antique", era: "7th to 8th century", fame: 2, best: COOL_DRY, lat: 23.426, lon: 91.135, text: "A square Buddhist monastery of 115 cells on the Mainamati ridge, its central shrine still standing in brick. The museum beside it holds terracotta plaques and bronzes dug from these hills.", picture: local("shalban-vihara", "The brick walls of Shalban Vihara on a green lawn") },
@@ -78,6 +80,11 @@ export const PLACES: MapPlace[] = [
   { id: "ratargul", name: "Ratargul", district: "Sylhet", terrain: "sylhet", kind: "classic", fame: 3, best: [6, 7, 8, 9], lat: 25.006, lon: 91.934, text: "Row a small boat through a freshwater forest standing in water for months of the year.", picture: photo("ratargul") },
   { id: "tanguar", name: "Tanguar Haor", district: "Sunamganj", terrain: "sylhet", kind: "classic", fame: 2, best: [12, 1, 2, 7, 8], lat: 25.15, lon: 91.07, text: "A vast seasonal wetland under the Meghalaya hills, where winter brings flocks of migratory birds.", picture: photo("sunamganj-haor") },
 ];
+
+/** Places with a full-resolution original in public/motherland/top, for large cards. Same photograph, same credit. */
+const FULL_SIZE = new Set(FULL_SIZE_IDS);
+
+export const PLACES: MapPlace[] = LISTED.map((p) => (FULL_SIZE.has(p.id) ? { ...p, picture: { ...p.picture, src: `/motherland/top/${p.id}.jpg` } } : p));
 
 export const placeById = (id: string) => PLACES.find((p) => p.id === id);
 
@@ -221,31 +228,27 @@ export const STORIES = {
 
 /**
  * The six seasons (ritu), in the year's order, each from its first day in the
- * Bangla calendar as Bangladesh keeps it. `pick` marks the best weeks for most
- * trips. Every place named here must be on the map.
+ * Bangla calendar as Bangladesh keeps it, and how the country looks in each.
+ * `pick` marks the best weeks for most trips.
  */
 export interface Season {
   id: string;
   name: string;
-  nameBn: string;
   english: string;
   months: string;
   from: [number, number];
   pick?: boolean;
-  verdict: string;
-  see: string;
-  watch: string;
-  places: string[];
+  looks: string;
   picture: Picture;
 }
 
 export const SEASONS: Season[] = [
-  { id: "grishmo", name: "Grishmo", nameBn: "গ্রীষ্ম", english: "Summer", months: "Mid-April to mid-June", from: [4, 14], verdict: "Come for the fruit", see: "Mango orchards hang heavy in Rajshahi and Chapainawabganj, jackfruit fills every market and lychee ripens in Dinajpur. The old mosques and temples of the north-west stand among the orchards.", watch: "Hot and humid, with sudden nor'wester storms in the afternoon. Cyclones can reach the coast, so check the signals before any boat.", places: ["choto-sona", "bagha-mosque", "kantajew"], picture: photo("srimangal-tea") },
-  { id: "borsha", name: "Borsha", nameBn: "বর্ষা", english: "Monsoon", months: "Mid-June to mid-August", from: [6, 15], verdict: "Come for the water", see: "The country turns to water. Row through a flooded forest, cross a haor as wide as a sea, and watch the hills of Meghalaya pour into Sylhet.", watch: "Landslides in the hills and flooded roads. The Sundarbans and St Martin's are closed. Only board boats that aren't overloaded.", places: ["ratargul", "tanguar", "bichanakandi"], picture: photo("ratargul") },
-  { id: "sharot", name: "Sharot", nameBn: "শরৎ", english: "Autumn", months: "Mid-August to mid-October", from: [8, 16], verdict: "Come for the sky", see: "Blue sky, white cloud and white kash grass along the river banks. Guava boats crowd the floating market, and Sajek stands above its sea of cloud.", watch: "Late monsoon storms and a rough sea. Durga Puja week fills the roads.", places: ["floating-market", "sajek", "birishiri"], picture: photo("shapla") },
-  { id: "hemonto", name: "Hemonto", nameBn: "হেমন্ত", english: "Late autumn", months: "Mid-October to mid-December", from: [10, 16], pick: true, verdict: "The best weeks of the year", see: "Golden rice comes in from the fields, the air turns cool and dry, and the hills come clear. The Sundarbans is open and St Martin's opens in November, before the winter crowds arrive.", watch: "A late cyclone can still reach the coast in November. Book ahead for the Victory Day holidays.", places: ["sundarbans", "st-martin", "paharpur"], picture: photo("mangroves") },
-  { id: "sheet", name: "Sheet", nameBn: "শীত", english: "Winter", months: "Mid-December to mid-February", from: [12, 15], pick: true, verdict: "The best weather, and the biggest crowds", see: "Migratory birds on the haors, rice cakes at every roadside and long clear days on the beach. Mornings wake up in mist.", watch: "Fog halts ferries and delays trains for hours. Prices peak, so book early. Never drink raw date palm sap: it can carry the Nipah virus.", places: ["hakaluki", "coxs-bazar", "nijhum-dwip"], picture: photo("fisher-mist") },
-  { id: "boshonto", name: "Boshonto", nameBn: "বসন্ত", english: "Spring", months: "Mid-February to mid-April", from: [2, 14], verdict: "Come for the quiet", see: "Red palash and shimul flower before their leaves, yellow saris fill the streets on Pohela Falgun, and the old places are mild and almost empty.", watch: "The heat builds by April. St Martin's closes in the spring, and the Eid and Boishakh holidays fill the roads.", places: ["wari-bateshwar", "panam-nagar", "puthia"], picture: photo("falgun") },
+  { id: "grishmo", name: "Grishmo", english: "Summer", months: "Mid-Apr to mid-Jun", from: [4, 14], looks: "Ripe mangoes, greenest tea", picture: photo("srimangal-tea") },
+  { id: "borsha", name: "Borsha", english: "Monsoon", months: "Mid-Jun to mid-Aug", from: [6, 15], looks: "Flooded forests, endless water", picture: photo("ratargul") },
+  { id: "sharot", name: "Sharot", english: "Autumn", months: "Mid-Aug to mid-Oct", from: [8, 16], looks: "Blue sky, white kash, water lilies", picture: photo("shapla") },
+  { id: "hemonto", name: "Hemonto", english: "Late autumn", months: "Mid-Oct to mid-Dec", from: [10, 16], pick: true, looks: "Clear air, the Sundarbans opens", picture: photo("mangroves") },
+  { id: "sheet", name: "Sheet", english: "Winter", months: "Mid-Dec to mid-Feb", from: [12, 15], pick: true, looks: "Misty mornings, winter birds", picture: photo("fisher-mist") },
+  { id: "boshonto", name: "Boshonto", english: "Spring", months: "Mid-Feb to mid-Apr", from: [2, 14], looks: "Red palash, yellow saris", picture: photo("falgun") },
 ];
 
 /**
@@ -260,8 +263,31 @@ export const WEEK_FILMS: { film: Film; caption: string }[] = [
 
 export const filmOfWeek = (week: number) => WEEK_FILMS[((week % WEEK_FILMS.length) + WEEK_FILMS.length) % WEEK_FILMS.length];
 
+/** The four very old places dealt as full-screen cards, as the landing page deals its history. */
+export const OLD_STACK: { id: string; art: "arches" | "minar" | "peaks" | "waves" }[] = [
+  { id: "panam-nagar", art: "waves" },
+  { id: "kantajew", art: "peaks" },
+  { id: "bagha-mosque", art: "arches" },
+  { id: "puthia", art: "peaks" },
+];
+
+/** The places the Top 10 chooses from, the most striking first. */
+const TOP_POOL = ["sajek", "tanguar", "coxs-bazar", "ratargul", "bandarban", "sixty-dome", "srimangal", "sundarbans", "kuakata", "lalbagh", "panam-nagar", "nafakhum", "st-martin", "paharpur", "nijhum-dwip", "kantajew", "puthia"];
+
+/**
+ * This week's ten: places open this month, those in season first, turning by
+ * one each week so the list moves. Our own pick until the story contest opens
+ * and travellers decide it.
+ */
+export function topTen(month: number, week: number) {
+  const open = TOP_POOL.map((id) => placeById(id)!).filter((p) => !p.closed?.includes(month));
+  const season = open.filter((p) => p.best.includes(month));
+  const turn = season.length ? ((week % season.length) + season.length) % season.length : 0;
+  return [...season.slice(turn), ...season.slice(0, turn), ...open.filter((p) => !p.best.includes(month))].slice(0, 10);
+}
+
 export const MUST_SEE = {
-  antique: { id: "very-old", title: "Older than anyone told you", lede: "Temples of fired clay, a street of empty mansions and a town from about 450 BCE. Few visitors reach them, and many are slowly falling apart." },
+  antique: { id: "very-old", title: "Older than anyone told you", lede: "Temples of fired clay, a street of empty mansions and a town from about 450 BCE. Few visitors reach them." },
   gem: { id: "hidden-gems", title: "Almost no one has seen these", lede: "Pink hills, a floating guava market and a waterfall far from any road. The Bangladesh even Bangladeshis haven't met." },
 };
 
