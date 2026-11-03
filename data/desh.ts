@@ -4,8 +4,8 @@
  * by pixel, and what we have, what we drop and who does what. The chapter
  * list itself is in data/bangladesh.ts.
  *
- * Figures are only those already sourced in data/amar-bangladesh.ts or
- * data/bangladesh-history.ts; everything else here is guidance, written as such.
+ * Figures are only those already sourced in data/amar-bangladesh.ts;
+ * everything else here is guidance, written as such.
  */
 
 /* ── Chapter 2 · the attacks, chapter 3 · the citizen shield ────────── */

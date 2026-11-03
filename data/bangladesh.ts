@@ -1,10 +1,8 @@
 /**
- * The chapter pages, in English: Bangladesh's history chapter
- * (/bangladesh/history) and the four civic chapters under নাগরিক দায়িত্ব
+ * The chapter pages, in English: the four civic chapters under নাগরিক দায়িত্ব
  * (/nagorik/crisis, shield, problems, solutions). Every photograph is a
- * Wikimedia Commons file shown with its credit. The history chapter's own
- * data is in data/bangladesh-history.ts; the MOTHERLAND landing page's is
- * in data/motherland.ts.
+ * Wikimedia Commons file shown with its credit. MOTHERLAND's own data is in
+ * data/motherland.ts.
  */
 
 import { commonsPhotos } from "./bangladesh-photos";

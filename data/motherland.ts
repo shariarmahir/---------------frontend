@@ -13,8 +13,8 @@
  * moves year to year it is rounded or left out.
  */
 
-import { commonsPhotos } from "./bangladesh-photos";
-import { project } from "./bangladesh-map";
+import { commonsPhotos } from "./bangladesh-photos.ts";
+import { project } from "./bangladesh-map.ts";
 
 /* ── Pictures and their credits ──────────────────────────────────────── */
 
@@ -47,7 +47,7 @@ function unsplash(file: string, alt: string, author: string, slug: string, focus
 }
 
 /** A Commons photo already in /public/bangladesh, with its English alt text. */
-function commons(key: string, alt: string): Picture {
+export function commons(key: string, alt: string): Picture {
   const photo = commonsPhotos[key];
   if (!photo?.credit) throw new Error(`MOTHERLAND: no credited Commons photo "${key}"`);
   const { author, license, licenseUrl, sourceUrl } = photo.credit;
@@ -56,7 +56,7 @@ function commons(key: string, alt: string): Picture {
 
 /* ── Topics: the header's tabs and the page's sections, in order ─────── */
 
-export type TopicId = "history" | "science" | "biographies" | "nature" | "travel" | "culture" | "procon" | "taka" | "videos" | "resources" | "invest";
+export type TopicId = "history" | "science" | "biographies" | "nature" | "travel" | "culture" | "procon" | "taka" | "videos" | "resources" | "invest" | "facts";
 
 export interface Topic {
   id: TopicId;
@@ -71,21 +71,38 @@ export const TOPICS: Topic[] = [
   { id: "science", name: "Science & Tech", tab: "Science" },
   { id: "biographies", name: "Biographies", tab: "People" },
   { id: "nature", name: "Animals & Nature", tab: "Nature" },
-  { id: "travel", name: "Geography & Travel", tab: "Travel" },
+  { id: "travel", name: "Geography & Travel", tab: "Geography & Travel" },
   { id: "culture", name: "Arts & Culture", tab: "Culture" },
   { id: "procon", name: "Pro & Con", tab: "Pro & Con" },
   { id: "taka", name: "Taka", tab: "Taka" },
   { id: "videos", name: "Videos", tab: "Videos" },
   { id: "resources", name: "Capability & Resources", tab: "Resources" },
   { id: "invest", name: "Business & Investment", tab: "Invest" },
+  { id: "facts", name: "Facts of Bangladesh", tab: "Facts" },
 ];
+
+/** The topics that have their own page (data/motherland-categories.ts); the other two live on the landing page. */
+export const TOPIC_PAGES: Partial<Record<TopicId, string>> = {
+  history: "/bangladesh/history",
+  science: "/bangladesh/science-tech",
+  biographies: "/bangladesh/people",
+  nature: "/bangladesh/nature",
+  travel: "/bangladesh/travel",
+  culture: "/bangladesh/culture",
+  procon: "/bangladesh/procon",
+  taka: "/bangladesh/taka",
+  videos: "/bangladesh/videos",
+  facts: "/bangladesh/facts",
+};
+
+/** Where a topic link goes: its section on the landing page, or from a category page its own page. */
+export const topicHref = (id: TopicId, onLanding: boolean) => (id === "facts" ? TOPIC_PAGES.facts! : onLanding ? `#${id}` : (TOPIC_PAGES[id] ?? `/bangladesh#${id}`));
 
 export const topicName = (id: TopicId) => TOPICS.find((t) => t.id === id)!.name;
 
 /**
- * Each section's "go deeper" link. Five categories already have a chapter
- * section on /bangladesh/history; Science & Tech, Pro & Con and Videos get
- * their own pages next (Mahir, 2026-11-01: landing page first).
+ * Each section's "go deeper" link: its gold button to the category's own page
+ * (data/motherland-categories.ts), or to a part of it.
  */
 export interface Cta {
   label: string;
@@ -160,28 +177,28 @@ export const HISTORY = {
       art: "arches",
       title: "Older than memory",
       text: "Pundranagara, today's Mahasthangarh, was a walled city by the third century BCE. The Buddhist monastery of Somapura at Paharpur and the Mosque City of Bagerhat, both UNESCO World Heritage Sites, show how long this land has been a centre of learning, faith and trade.",
-      cta: { label: "Walk through 2,500 years", href: "/bangladesh/history#history" },
+      cta: { label: "Walk through 2,500 years", href: "/bangladesh/history#ancient-bengal" },
       picture: unsplash("sixty-dome-mosque", "The Sixty Dome Mosque in Bagerhat behind a field of tall grass", "Faisal Photography", "sixty-dome-mosque-with-a-grass-field-8Q5HBZsJclY"),
     },
     {
       art: "minar",
       title: "Defended with blood",
       text: "When students in Dhaka marched for Bangla to be a state language, police opened fire. Salam, Barkat, Rafiq, Jabbar and others were killed. In 1999 UNESCO declared 21 February International Mother Language Day, and the whole world now keeps it.",
-      cta: { label: "Learn why the world keeps 21 February", href: "/bangladesh/history#history" },
+      cta: { label: "Learn why the world keeps 21 February", href: "/bangladesh/history#road-to-freedom" },
       picture: unsplash("shaheed-minar", "The Central Shaheed Minar in Dhaka, its white columns framing a red sun", "John Jyotish Baroi", "a-large-red-and-white-structure-s9iievuN4W8"),
     },
     {
       art: "peaks",
       title: "Won in nine months",
       text: "Independence was declared on 26 March 1971. After nine months of the Liberation War and immense sacrifice, Bangladesh won its victory on 16 December 1971. The National Martyrs' Memorial at Savar honours the millions who gave their lives.",
-      cta: { label: "Honour the Liberation War", href: "/bangladesh/history#history" },
+      cta: { label: "Honour the Liberation War", href: "/bangladesh/history#road-to-freedom" },
       picture: unsplash("martyrs-memorial", "The National Martyrs' Memorial at Savar, its seven peaks rising over green lawns", "Md Rumon Munshi", "the-national-martyrs-memorial-of-bangladesh-tT4mUnA_M7w", "50% 40%"),
     },
     {
       art: "waves",
       title: "Young and on the move",
       text: "Bangladesh is a young country: its median age is under 30. Muslims, Hindus, Buddhists, Christians and about fifty ethnic communities share one land, and their festivals belong to everyone, from Pohela Boishakh and Eid to Durga Puja, Buddha Purnima and Christmas.",
-      cta: { label: "Meet the people of Bangladesh", href: "/bangladesh/history#people" },
+      cta: { label: "Meet the people of Bangladesh", href: "/bangladesh/history#society-today" },
       picture: unsplash("children", "Five children laughing together on a sandy riverbank", "mohammad samir", "3-boys-and-2-girls-standing-on-brown-sand-during-daytime-vaXqT9L7LwY"),
     },
   ] satisfies StoryCard[],
@@ -240,7 +257,7 @@ export interface Life {
 export const BIOGRAPHIES = {
   title: "Minds that lit the way",
   lede: "Poets, scientists, reformers and leaders whose work still shapes how Bangladesh thinks, sings and dreams.",
-  cta: { label: "Meet the people behind the nation", href: "/bangladesh/history#people" } satisfies Cta,
+  cta: { label: "Meet the people behind the nation", href: "/bangladesh/people" } satisfies Cta,
   lives: [
     {
       name: "A. K. Fazlul Huq",
@@ -304,7 +321,7 @@ export interface Wild {
 export const NATURE = {
   title: "Wild at heart",
   lede: "Mangroves, wetlands and hill forests make one of the richest living landscapes in South Asia.",
-  cta: { label: "Explore the wild side of home", href: "/bangladesh/history#nature" } satisfies Cta,
+  cta: { label: "Explore the wild side of home", href: "/bangladesh/nature" } satisfies Cta,
   wild: [
     {
       name: "Royal Bengal tiger",
@@ -364,7 +381,7 @@ const place = (p: Omit<Place, "at"> & { lat: number; lon: number }): Place => {
 export const TRAVEL = {
   title: "Your journey starts here",
   lede: "Tap a pin to see what makes each place stand out, and start mapping a trip of your own.",
-  cta: { label: "Explore all eight divisions", href: "/bangladesh/history#divisions" } satisfies Cta,
+  cta: { label: "Explore all eight divisions", href: "/bangladesh/travel#eight-divisions" } satisfies Cta,
   places: [
     place({
       id: "lalbagh",
@@ -470,7 +487,7 @@ export interface Craft {
 export const CULTURE = {
   title: "Made by hand, sung by heart",
   lede: "UNESCO lists Baul songs, Jamdani weaving, Mangal Shobhajatra, Shital Pati mats and rickshaw painting among the intangible cultural heritage of humanity.",
-  cta: { label: "Feel the culture you were born into", href: "/bangladesh/history#culture" } satisfies Cta,
+  cta: { label: "Feel the culture you were born into", href: "/bangladesh/culture" } satisfies Cta,
   crafts: [
     {
       name: "Mangal Shobhajatra",
@@ -564,7 +581,7 @@ export const TAKA = {
       picture: unsplash("taka-notes", "Hands fanning out a stack of 1000-taka banknotes", "Fayaz Ahmed Sunny", "hands-holding-a-fan-of-1000-bangladeshi-taka-banknotes-LlniHzPB1a8"),
     },
   ],
-  cta: { label: "Learn how the taka grew", href: "/bangladesh/history#growth" } satisfies Cta,
+  cta: { label: "Learn how the taka grew", href: "/bangladesh/taka#how-it-grew" } satisfies Cta,
 };
 
 /* ── Videos ─────────────────────────────────────────────────────────── */

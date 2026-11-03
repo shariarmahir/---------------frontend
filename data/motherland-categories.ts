@@ -1,0 +1,441 @@
+/**
+ * MOTHERLAND's category pages (/bangladesh/<slug>): where every section's
+ * gold button leads. The plan follows Britannica's category pages (a
+ * category, its subcategories, feature blocks of articles, a quiz, then the
+ * other categories); the dress is MOTHERLAND's own.
+ *
+ * Pictures are the ones already credited in data/motherland.ts, plus a few
+ * credited Commons photos. Facts follow that file's rule: only what a
+ * published source states plainly, rounded or left out where a figure moves.
+ */
+import { BIOGRAPHIES, CULTURE, HISTORY, JOIN, NATURE, RESOURCES, SCIENCE, TAKA, TRAVEL, commons, type Picture, type TopicId } from "./motherland.ts";
+
+export interface Story {
+  title: string;
+  /** A line above the text: a person's years, a place's district. */
+  meta?: string;
+  text: string;
+  picture: Picture;
+}
+
+export interface Subcategory {
+  id: string;
+  title: string;
+  lede: string;
+  /** "feature": one large story and the rest listed beside it. "grid": equal cards. */
+  layout?: "feature" | "grid";
+  /** Portraits stand tall in a grid; places lie wide. */
+  shape?: "wide" | "tall";
+  stories: Story[];
+}
+
+export interface QuizQuestion {
+  question: string;
+  options: string[];
+  /** The index of the right option. */
+  answer: number;
+  why: string;
+}
+
+export interface Category {
+  slug: string;
+  topic: TopicId;
+  name: string;
+  lede: string;
+  hero: Picture;
+  /** What a category shows besides its stories. */
+  body?: "debates" | "films";
+  subcategories: Subcategory[];
+  facts: { label: string; value: string }[];
+  quiz: QuizQuestion[];
+}
+
+const every: Picture[] = [
+  ...HISTORY.cards.map((c) => c.picture),
+  ...SCIENCE.articles.map((a) => a.picture),
+  ...BIOGRAPHIES.lives.map((l) => l.picture),
+  ...NATURE.wild.map((w) => w.picture),
+  ...TRAVEL.places.map((p) => p.picture),
+  ...CULTURE.crafts.map((c) => c.picture),
+  ...TAKA.facts.map((f) => f.picture),
+  RESOURCES.picture,
+  JOIN.picture,
+];
+
+/** A picture already in MOTHERLAND, by its file name. */
+export function photo(name: string): Picture {
+  const found = every.find((p) => p.src.endsWith(`/${name}.jpg`));
+  if (!found) throw new Error(`MOTHERLAND: no picture "${name}"`);
+  return found;
+}
+
+const life = (name: string): Story => {
+  const l = BIOGRAPHIES.lives.find((x) => x.name === name);
+  if (!l) throw new Error(`MOTHERLAND: no life "${name}"`);
+  return { title: l.name, meta: l.years, text: l.text, picture: { ...l.picture, focus: l.picture.focus ?? "50% 20%" } };
+};
+
+export const CATEGORIES: Category[] = [
+  {
+    slug: "history",
+    topic: "history",
+    name: "History & Society",
+    lede: "From a walled city of the third century BCE to a young republic: how this land became a nation, and who lives here now.",
+    hero: photo("martyrs-memorial"),
+    subcategories: [
+      {
+        id: "ancient-bengal",
+        title: "Ancient Bengal",
+        lede: "Walled cities, monasteries and mosques far older than the country's name.",
+        stories: [
+          { title: "The Mosque City of Bagerhat", meta: "Fifteenth century", text: "Khan Jahan Ali founded a city of mosques, tanks and roads on the edge of the Sundarbans. Its Sixty Dome Mosque still stands, and UNESCO listed the city as a World Heritage Site in 1985.", picture: photo("sixty-dome-mosque") },
+          { title: "Pundranagara", meta: "Third century BCE", text: "Today's Mahasthangarh in Bogura was already a walled city more than two thousand years ago, among the oldest cities found in Bangladesh.", picture: commons("mahasthan", "The brick ruins of Mahasthangarh in Bogura") },
+          { title: "Somapura Mahavihara", meta: "Eighth century", text: "The Pala kings raised one of the great Buddhist monasteries south of the Himalayas at Paharpur. UNESCO listed it as a World Heritage Site in 1985.", picture: photo("paharpur_b") },
+          { title: "Lalbagh Fort", meta: "1678", text: "A Mughal prince began this fort in Old Dhaka and it was never finished. Its gardens, mosque and tomb are still open to visitors.", picture: photo("lalbagh-fort") },
+        ],
+      },
+      {
+        id: "road-to-freedom",
+        title: "The road to freedom",
+        lede: "A language defended in 1952, and a country won in 1971.",
+        stories: [
+          { title: "21 February 1952", meta: "The Language Movement", text: "Students in Dhaka marched for Bangla to be a state language, and police opened fire. Salam, Barkat, Rafiq, Jabbar and others were killed. In 1999 UNESCO declared the day International Mother Language Day.", picture: photo("shaheed-minar") },
+          { title: "Nine months of war", meta: "26 March to 16 December 1971", text: "Independence was declared on 26 March 1971. The National Martyrs' Memorial at Savar honours the millions who gave their lives in the Liberation War.", picture: photo("martyrs-memorial") },
+          { title: "Victory", meta: "16 December 1971", text: "The Pakistani forces surrendered in Dhaka at the Racecourse ground, today's Suhrawardy Udyan. The day is kept every year as Victory Day.", picture: commons("surrender1971", "A depiction of the surrender of 1971") },
+        ],
+      },
+      {
+        id: "society-today",
+        title: "Society today",
+        lede: "More than 170 million people, most of them young, sharing one small and crowded land.",
+        stories: [
+          { title: "A young country", text: "The median age is under 30. Muslims, Hindus, Buddhists, Christians and about fifty ethnic communities live side by side.", picture: photo("children") },
+          { title: "Festivals for everyone", text: "Pohela Boishakh and Eid, Durga Puja, Buddha Purnima and Christmas: the country's festivals are shared well beyond the faith or the community that began them.", picture: photo("mangal-shobhajatra") },
+          { title: "Village and field", text: "About two in three people still live in rural areas, and the rice harvest still sets the rhythm of the year for millions of families.", picture: photo("rice-planting") },
+        ],
+      },
+    ],
+    facts: [
+      { label: "Language Movement", value: "1952" },
+      { label: "Independence declared", value: "26 March 1971" },
+      { label: "Victory Day", value: "16 December 1971" },
+      { label: "Constitution adopted", value: "4 November 1972" },
+    ],
+    quiz: [
+      { question: "Which day did UNESCO declare International Mother Language Day?", options: ["21 February", "26 March", "16 December"], answer: 0, why: "It marks the day in 1952 when students died defending Bangla." },
+      { question: "What is Pundranagara called today?", options: ["Paharpur", "Mahasthangarh", "Bagerhat"], answer: 1, why: "Mahasthangarh in Bogura was a walled city by the third century BCE." },
+      { question: "Where did the Pakistani forces surrender in 1971?", options: ["Savar", "Chattogram", "The Racecourse ground, Dhaka"], answer: 2, why: "The ground is now Suhrawardy Udyan." },
+    ],
+  },
+  {
+    slug: "science-tech",
+    topic: "science",
+    name: "Science & Tech",
+    lede: "Bridges over the strongest rivers, rice that survives the flood, money on every phone: the delta solves its own problems.",
+    hero: photo("padma-bridge"),
+    subcategories: [
+      {
+        id: "engineering-the-delta",
+        title: "Engineering the delta",
+        lede: "Building on soft ground, across some of the most powerful rivers on Earth.",
+        stories: [
+          { title: "The Padma Bridge", meta: "Opened June 2022", text: "A 6.15 km road and rail bridge across one of the world's most powerful rivers, paid for from the country's own budget. It ties the south-west to the capital by road.", picture: photo("padma-bridge") },
+          { title: "Dhaka Metro Rail", meta: "Opened December 2022", text: "The country's first metro line carries commuters on an elevated line above the capital's traffic.", picture: photo("metro-rail") },
+          { title: "A parliament of light", meta: "Completed 1982", text: "Louis Kahn's National Parliament House in Dhaka is counted among the landmark buildings of the twentieth century.", picture: photo("parliament") },
+        ],
+      },
+      {
+        id: "science-for-daily-life",
+        title: "Science for daily life",
+        lede: "Research and technology that reach the field and the pocket.",
+        stories: [
+          { title: "Rice science that feeds millions", text: "The Bangladesh Rice Research Institute has released more than a hundred rice varieties, including ones that survive floods, salt water and drought.", picture: photo("rice-planting") },
+          { title: "Money on every phone", text: "Mobile financial services let tens of millions of people send, save and pay with a basic phone, many of them for the first time.", picture: photo("mobile-money") },
+        ],
+      },
+      {
+        id: "minds-of-science",
+        title: "Minds of science",
+        lede: "Two Boses, born in Bengal, who changed physics.",
+        layout: "grid",
+        shape: "tall",
+        stories: [life("Satyendra Nath Bose"), life("Jagadish Chandra Bose")],
+      },
+    ],
+    facts: [
+      { label: "Padma Bridge length", value: "6.15 km" },
+      { label: "First metro line opened", value: "December 2022" },
+      { label: "Rice varieties released", value: "100+" },
+      { label: "Bose–Einstein paper", value: "1924" },
+    ],
+    quiz: [
+      { question: "Who paid for the Padma Bridge?", options: ["The country's own budget", "A single foreign bank", "A private company"], answer: 0, why: "Bangladesh built it from its own budget." },
+      { question: "Where was S. N. Bose teaching when he wrote his famous paper?", options: ["Kolkata", "The University of Dhaka", "Berlin"], answer: 1, why: "He wrote it in Dhaka in 1924, and every boson is named after him." },
+      { question: "Who designed the National Parliament House?", options: ["Le Corbusier", "Muzharul Islam", "Louis Kahn"], answer: 2, why: "Louis Kahn's building was completed in 1982." },
+    ],
+  },
+  {
+    slug: "people",
+    topic: "biographies",
+    name: "Biographies",
+    lede: "Poets, scientists, reformers and leaders whose work still shapes how Bangladesh thinks, sings and dreams.",
+    hero: photo("flag-mural"),
+    subcategories: [
+      {
+        id: "poets-and-singers",
+        title: "Poets and singers",
+        lede: "The voices the country still recites and sings.",
+        layout: "grid",
+        shape: "tall",
+        stories: [life("Kazi Nazrul Islam"), life("Jibanananda Das"), life("Jasimuddin"), life("Lalon")],
+      },
+      {
+        id: "scientists-and-reformers",
+        title: "Scientists and reformers",
+        lede: "Pioneers of physics, and the people who fought for girls' schooling and farmers' freedom.",
+        layout: "grid",
+        shape: "tall",
+        stories: [life("Jagadish Chandra Bose"), life("Satyendra Nath Bose"), life("Begum Rokeya"), life("A. K. Fazlul Huq")],
+      },
+    ],
+    facts: [
+      { label: "The national poet", value: "Kazi Nazrul Islam" },
+      { label: "The Polli Kobi", value: "Jasimuddin" },
+      { label: "“Sultana's Dream”", value: "1905" },
+      { label: "Bengal's first Prime Minister", value: "1937" },
+    ],
+    quiz: [
+      { question: "Who wrote “Bidrohi” (The Rebel)?", options: ["Kazi Nazrul Islam", "Jibanananda Das", "Jasimuddin"], answer: 0, why: "Nazrul is the national poet of Bangladesh." },
+      { question: "Who imagined a world run by women in “Sultana's Dream”?", options: ["Lalon", "Begum Rokeya", "J. C. Bose"], answer: 1, why: "Begum Rokeya wrote it in 1905 and fought for girls' schooling." },
+      { question: "What title is A. K. Fazlul Huq known by?", options: ["Polli Kobi", "Bidrohi Kobi", "Sher-e-Bangla"], answer: 2, why: "Sher-e-Bangla means the Tiger of Bengal." },
+    ],
+  },
+  {
+    slug: "nature",
+    topic: "nature",
+    name: "Animals & Nature",
+    lede: "Mangroves, wetlands and hill forests make one of the richest living landscapes in South Asia.",
+    hero: photo("mangroves"),
+    subcategories: [
+      {
+        id: "the-sundarbans",
+        title: "The Sundarbans",
+        lede: "One of the largest mangrove forests on Earth, and a World Heritage Site since 1997.",
+        stories: [
+          { title: "Royal Bengal tiger", meta: "The national animal", text: "At home in the mangroves, it swims between islands and hunts across the tidal mud.", picture: photo("tiger") },
+          { title: "Spotted deer", text: "Herds of chital graze where the forest meets the mudflats.", picture: photo("spotted-deer") },
+          { title: "The mangrove forest", text: "Rivers and tides thread through the trees, and the forest shelters the coast from cyclones.", picture: photo("mangroves") },
+        ],
+      },
+      {
+        id: "national-symbols",
+        title: "National symbols",
+        lede: "The bird, the flower and the fish that stand for the country.",
+        layout: "grid",
+        stories: [
+          { title: "Doyel", meta: "The national bird", text: "The magpie-robin, singing from every village yard.", picture: photo("doyel") },
+          { title: "Shapla", meta: "The national flower", text: "The white water lily, opening on ponds and paddy ditches.", picture: photo("shapla") },
+          { title: "Ilish", meta: "The national fish", text: "The hilsa, the silver of the Padma.", picture: photo("hilsa") },
+        ],
+      },
+      {
+        id: "wetlands-and-rivers",
+        title: "Wetlands and rivers",
+        lede: "Water makes this land, and everything that lives on it.",
+        stories: [
+          { title: "Ratargul", meta: "Sylhet", text: "A freshwater swamp forest, where trees stand in water for months of the year.", picture: photo("swamp-forest") },
+          { title: "Tanguar Haor", meta: "Sunamganj", text: "A vast seasonal wetland under the Meghalaya hills, where winter brings flocks of migratory birds.", picture: photo("sunamganj-haor") },
+          { title: "Kingfisher", text: "One of the many river birds that flash blue along the delta's canals.", picture: photo("kingfisher") },
+        ],
+      },
+    ],
+    facts: [
+      { label: "National animal", value: "Royal Bengal tiger" },
+      { label: "National bird", value: "Doyel" },
+      { label: "National flower", value: "Shapla" },
+      { label: "National fish", value: "Ilish" },
+    ],
+    quiz: [
+      { question: "What is the national fish of Bangladesh?", options: ["Ilish", "Rui", "Pangas"], answer: 0, why: "Ilish, the hilsa, is called the silver of the Padma." },
+      { question: "Which forest is home to the Royal Bengal tiger?", options: ["Ratargul", "The Sundarbans", "Lawachara"], answer: 1, why: "The tiger lives in the Sundarbans' mangroves." },
+      { question: "What kind of forest is Ratargul?", options: ["Mangrove", "Pine", "Freshwater swamp"], answer: 2, why: "Its trees stand in fresh water for months of the year." },
+    ],
+  },
+  {
+    slug: "travel",
+    topic: "travel",
+    name: "Geography & Travel",
+    lede: "Eight divisions, three great rivers, hills in the east and some 120 km of sea beach in the south. Where do you want to start?",
+    hero: photo("bandarban"),
+    subcategories: [
+      {
+        id: "eight-divisions",
+        title: "The eight divisions",
+        lede: "Each one has its own landscape, food and way of speaking.",
+        layout: "grid",
+        stories: [
+          { title: "Dhaka", text: "The capital and its crowded heart, from the Mughal fort at Lalbagh to the boats on the Buriganga.", picture: photo("lalbagh-fort") },
+          { title: "Chattogram", text: "The country's great port, the Hill Tracts, and the sea beach at Cox's Bazar.", picture: photo("coxs-bazar") },
+          { title: "Rajshahi", text: "Silk and mangoes in the north-west, and the ancient ruins of Paharpur and Mahasthangarh.", picture: photo("paharpur_b") },
+          { title: "Khulna", text: "The Sundarbans and the Mosque City of Bagerhat in the south-west.", picture: photo("mangroves") },
+          { title: "Barishal", text: "A land of rivers and canals, reaching the sea at Kuakata.", picture: photo("kuakata") },
+          { title: "Sylhet", text: "Tea gardens, haors and the flooded forest of Ratargul in the north-east.", picture: photo("srimangal-tea") },
+          { title: "Rangpur", text: "The northern plains, where mustard turns whole fields yellow in winter.", picture: commons("mustard", "A wide field of yellow mustard in flower") },
+          { title: "Mymensingh", text: "The newest division, created in 2015, on the old course of the Brahmaputra.", picture: commons("river", "A boatman sailing a small boat on a river") },
+        ],
+      },
+      {
+        id: "hills-and-tea",
+        title: "Hills and tea",
+        lede: "The country rises in the east, into cloud and forest.",
+        stories: [
+          { title: "Sajek Valley", meta: "Rangamati", text: "A ridge-top village where you wake up above a sea of clouds.", picture: photo("sajek") },
+          { title: "Bandarban", meta: "Bandarban", text: "Cloud-wrapped hills, waterfalls and the home of the Marma, Bawm and Mro peoples.", picture: photo("bandarban") },
+          { title: "Srimangal", meta: "Moulvibazar", text: "Rolling tea gardens and rainforest trails in the country's tea capital.", picture: photo("srimangal-tea") },
+        ],
+      },
+      {
+        id: "sea-and-water",
+        title: "Sea and water",
+        lede: "Long beaches in the south, and boats everywhere else.",
+        stories: [
+          { title: "Cox's Bazar", meta: "Cox's Bazar", text: "Some 120 km of unbroken natural sea beach, among the longest on Earth.", picture: photo("coxs-bazar") },
+          { title: "Kuakata", meta: "Patuakhali", text: "A rare beach where you can watch the sun both rise and set over the sea.", picture: photo("kuakata") },
+          { title: "Ratargul", meta: "Sylhet", text: "Row a small boat through a flooded forest.", picture: photo("ratargul") },
+        ],
+      },
+    ],
+    facts: [
+      { label: "Divisions", value: "8" },
+      { label: "Districts", value: "64" },
+      { label: "Area", value: "147,570 km²" },
+      { label: "Cox's Bazar beach", value: "About 120 km" },
+    ],
+    quiz: [
+      { question: "How many divisions does Bangladesh have?", options: ["8", "7", "64"], answer: 0, why: "Eight divisions, divided into 64 districts." },
+      { question: "Which beach lets you watch the sun rise and set over the sea?", options: ["Cox's Bazar", "Kuakata", "Teknaf"], answer: 1, why: "Kuakata, in Patuakhali." },
+      { question: "Which town is called the country's tea capital?", options: ["Sajek", "Bandarban", "Srimangal"], answer: 2, why: "Srimangal, in Moulvibazar." },
+    ],
+  },
+  {
+    slug: "culture",
+    topic: "culture",
+    name: "Arts & Culture",
+    lede: "UNESCO lists Baul songs, Jamdani weaving, Mangal Shobhajatra, Shital Pati mats and rickshaw painting among the intangible cultural heritage of humanity.",
+    hero: photo("rickshaw-art"),
+    subcategories: [
+      {
+        id: "living-heritage",
+        title: "Living heritage",
+        lede: "Traditions UNESCO has inscribed, and people still practise.",
+        stories: [
+          { title: "Mangal Shobhajatra", meta: "Inscribed 2016", text: "The Pohela Boishakh procession of giant masks, begun by students of the Faculty of Fine Arts at the University of Dhaka.", picture: photo("mangal-shobhajatra") },
+          { title: "Rickshaw art", meta: "Inscribed 2023", text: "Hand-painted hoods and panels turn Dhaka's rickshaws into a moving gallery.", picture: photo("rickshaw-art") },
+          { title: "The songs of the Bauls", meta: "Inscribed 2008", text: "Lalon's mystic songs set humanity above caste and creed, and are still sung across Bengal.", picture: { ...commons("lalon", "A sketch of Lalon drawn by Jyotirindranath Tagore in 1889"), focus: "50% 20%" } },
+        ],
+      },
+      {
+        id: "made-by-hand",
+        title: "Made by hand",
+        lede: "Thread, clay and brick, shaped the old way.",
+        layout: "grid",
+        stories: [
+          { title: "Handloom", text: "Hand-spun thread feeds the looms behind Jamdani, the sheer muslin weave inscribed by UNESCO in 2013.", picture: photo("handloom") },
+          { title: "Terracotta", text: "Temple walls told in fired clay, a Bengal tradition centuries old.", picture: photo("terracotta") },
+          { title: "Pottery", text: "Potters still shape river clay into pots, lamps and toys by hand.", picture: photo("pottery") },
+        ],
+      },
+      {
+        id: "festivals",
+        title: "Festivals",
+        lede: "The year turns with colour.",
+        stories: [
+          { title: "Pohela Falgun", text: "Yellow saris and flower garlands greet the first day of spring.", picture: photo("falgun") },
+          { title: "Pohela Boishakh", text: "The Bangla New Year fills streets with red and white on 14 April.", picture: commons("boishakh", "A Pohela Boishakh celebration") },
+        ],
+      },
+    ],
+    facts: [
+      { label: "Baul songs", value: "2008" },
+      { label: "Jamdani weaving", value: "2013" },
+      { label: "Mangal Shobhajatra", value: "2016" },
+      { label: "Rickshaw painting", value: "2023" },
+    ],
+    quiz: [
+      { question: "Which weave did UNESCO inscribe in 2013?", options: ["Jamdani", "Nakshi kantha", "Tangail saree"], answer: 0, why: "Jamdani is the sheer muslin weave of the Dhaka region." },
+      { question: "When is the Mangal Shobhajatra held?", options: ["Victory Day", "Pohela Boishakh", "Pohela Falgun"], answer: 1, why: "It is the New Year procession of giant masks." },
+      { question: "What was the latest of these to be inscribed by UNESCO?", options: ["Baul songs", "Jamdani", "Rickshaw painting"], answer: 2, why: "Rickshaw painting was inscribed in 2023." },
+    ],
+  },
+  {
+    slug: "procon",
+    topic: "procon",
+    name: "Pro & Con",
+    lede: "Big questions about the country's future. Choose your side on each, then answer the strongest case against it.",
+    hero: photo("parliament"),
+    body: "debates",
+    subcategories: [],
+    facts: [],
+    quiz: [],
+  },
+  {
+    slug: "taka",
+    topic: "taka",
+    name: "Taka",
+    lede: "The money of Bangladesh since 1972, and the work that gives it value: looms and loans, fields and phones.",
+    hero: photo("taka-notes"),
+    subcategories: [
+      {
+        id: "the-money",
+        title: "The money",
+        lede: "One taka is a hundred poisha, and the name comes from the Sanskrit ṭaṅka, an old silver coin.",
+        stories: [
+          { title: "Bangladesh Bank", meta: "The central bank", text: "It issues the taka (৳, BDT), keeps the country's reserves and sets its monetary policy.", picture: photo("taka-notes") },
+          { title: "Money on every phone", text: "Mobile financial services let tens of millions of people send, save and pay without a bank branch nearby.", picture: photo("mobile-money") },
+        ],
+      },
+      {
+        id: "how-it-grew",
+        title: "How it grew",
+        lede: "A country once written off now makes and exports what the world wears.",
+        stories: [
+          { title: "Dressing the world", text: "Bangladesh is one of the world's largest exporters of clothing, and the garment industry employs millions, most of them women.", picture: photo("garments") },
+          { title: "Banking for the poor", text: "Grameen Bank and its founder Muhammad Yunus shared the 2006 Nobel Peace Prize for microcredit: small loans that let people build their own businesses.", picture: photo("handloom") },
+          { title: "Feeding itself", text: "Rice science and hard work took a country that once relied on food aid close to feeding itself in its staple grain.", picture: photo("rice-planting") },
+        ],
+      },
+    ],
+    facts: [
+      { label: "Symbol and code", value: "৳, BDT" },
+      { label: "In use since", value: "1972" },
+      { label: "Banknotes", value: "৳2 to ৳1,000" },
+      { label: "One taka", value: "100 poisha" },
+    ],
+    quiz: [
+      { question: "How many poisha make one taka?", options: ["100", "50", "1,000"], answer: 0, why: "One taka is a hundred poisha." },
+      { question: "Who issues the taka?", options: ["Sonali Bank", "Bangladesh Bank", "Grameen Bank"], answer: 1, why: "Bangladesh Bank is the central bank." },
+      { question: "What did Grameen Bank's Nobel Peace Prize recognise?", options: ["Rice science", "Garment exports", "Microcredit"], answer: 2, why: "Grameen Bank and Muhammad Yunus shared it in 2006." },
+    ],
+  },
+  {
+    slug: "videos",
+    topic: "videos",
+    name: "Videos",
+    lede: "Rivers, streets and celebrations, filmed by the people who live them.",
+    hero: photo("fisher-mist"),
+    body: "films",
+    subcategories: [],
+    facts: [],
+    quiz: [],
+  },
+];
+
+export const categoryFor = (slug: string) => CATEGORIES.find((c) => c.slug === slug);
+
+/** Every picture a category shows, for its credits. */
+export function categoryCredits(c: Category) {
+  const seen = new Set<string>();
+  return [{ title: c.name, picture: c.hero }, ...c.subcategories.flatMap((s) => s.stories)]
+    .filter(({ picture }) => !seen.has(picture.src) && !!seen.add(picture.src))
+    .map(({ title, picture }) => ({ label: title, credit: picture.credit }));
+}

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
-import { CREDITS, TOPICS } from "@/data/motherland";
+import { CREDITS, TOPICS, topicHref, type Credit } from "@/data/motherland";
 import { cn } from "@/lib/utils";
 import { COLUMN, pill } from "./kit";
 import { Logo } from "./logo";
@@ -21,12 +21,44 @@ const LINK = "rounded-sm hover:text-ml-green hover:underline underline-offset-4 
  * the topics, the rest of Kandari-Lab, a standing invitation to join,
  * and every photo and film credit the licences ask for.
  */
-export function MotherlandFooter() {
+export function MotherlandFooter({ credits, onLanding = true, narrow, children }: { /** A category page credits only what it shows. */ credits?: { label: string; credit: Credit }[]; onLanding?: boolean; /** One slim dark line, for a page that ends on something full-screen. */ narrow?: boolean; /** Anything else the slim line should fold away, such as sources. */ children?: React.ReactNode }) {
+  if (narrow) {
+    return (
+      <footer className="border-t border-white/10 bg-black text-sm text-white/70">
+        <div className={cn(COLUMN, "flex flex-wrap items-center gap-x-6 gap-y-2 py-3")}>
+          <Link href="/bangladesh" className="rounded-sm text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+            <Logo className="text-[0.7rem]" />
+          </Link>
+          <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-6 gap-y-2 font-semibold">
+            <Link href="/" className="rounded-sm hover:text-white focus-visible:outline-2 focus-visible:outline-white">Kandari-Lab</Link>
+            <Link href="/signup" className="rounded-sm text-signal-orange hover:text-white focus-visible:outline-2 focus-visible:outline-white">Join Kandari Profile</Link>
+          </nav>
+          {children}
+          <details className="open:order-last open:basis-full">
+            <summary className="cursor-pointer font-semibold hover:text-white focus-visible:outline-2 focus-visible:outline-white">Photo and film credits</summary>
+            <ul className="mt-3 grid gap-x-8 gap-y-1.5 sm:grid-cols-2 lg:grid-cols-3">
+              {(credits ?? CREDITS).map(({ label, credit }) => (
+                <li key={`${label}-${credit.sourceUrl}`}>
+                  {label}:{" "}
+                  <a href={credit.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline decoration-white/25 underline-offset-4 hover:text-white">
+                    {credit.author}, {credit.source}
+                    <span className="sr-only"> (opens in a new tab)</span>
+                  </a>{" "}
+                  ({credit.licenseUrl ? <a href={credit.licenseUrl} target="_blank" rel="noopener noreferrer" className="hover:text-white">{credit.license}</a> : credit.license})
+                </li>
+              ))}
+            </ul>
+          </details>
+          <p className="sm:ml-auto">© {new Date().getFullYear()} Kandari-Lab</p>
+        </div>
+      </footer>
+    );
+  }
   return (
     <footer className="bg-white text-ml-ink">
       <div className={cn(COLUMN, "grid gap-12 py-16 sm:py-20 lg:grid-cols-[1.2fr_1fr_1fr_1.3fr]")}>
         <div className="flex flex-col gap-5">
-          <Link href="#top" className="self-start rounded-sm text-ml-green focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ml-green">
+          <Link href={onLanding ? "#top" : "/bangladesh"} className="self-start rounded-sm text-ml-green focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ml-green">
             <Logo className="text-[1.05rem]" />
           </Link>
           <p className="max-w-xs leading-relaxed text-ml-ink/75">Bangladesh&apos;s country profile for the world, made by Kandari-Lab.</p>
@@ -37,7 +69,7 @@ export function MotherlandFooter() {
           <ul className="grid grid-cols-2 gap-x-6 gap-y-2.5 font-medium lg:grid-cols-1">
             {TOPICS.map((t) => (
               <li key={t.id}>
-                <a href={`#${t.id}`} className={LINK}>
+                <a href={topicHref(t.id, onLanding)} className={LINK}>
                   {t.name}
                 </a>
               </li>
@@ -76,7 +108,7 @@ export function MotherlandFooter() {
               <Icon name="expand_more" className="text-xl transition-transform group-open:rotate-180" />
             </summary>
             <ul className="mt-4 grid gap-x-8 gap-y-1.5 sm:grid-cols-2 lg:grid-cols-3">
-              {CREDITS.map(({ label, credit }) => (
+              {(credits ?? CREDITS).map(({ label, credit }) => (
                 <li key={`${label}-${credit.sourceUrl}`}>
                   {label}:{" "}
                   <a href={credit.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline decoration-ml-ink/25 underline-offset-4 hover:text-ml-green">

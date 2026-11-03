@@ -126,3 +126,65 @@
     stroke-dashoffset: 0;
   }
 }
+
+/* The chosen pin's slow pulse on the Geography & Travel map. */
+@media (prefers-reduced-motion: no-preference) {
+  .ml-pin-pulse {
+    animation: ml-pin-pulse 2.4s ease-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  @keyframes ml-pin-pulse {
+    from { transform: scale(0.6); opacity: 0.9; }
+    to { transform: scale(2.6); opacity: 0; }
+  }
+}
+
+/* The travel map: photo pins, grown when you zoom in or choose one. */
+.ml .ml-pin-face {
+  width: 2rem;
+  height: 2rem;
+}
+.ml .ml-map-near .ml-pin-face {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+.ml .ml-pin.is-selected .ml-pin-face {
+  width: 3.5rem;
+  height: 3.5rem;
+}
+.ml .ml-pin.is-selected .ml-pin-name,
+.ml .ml-map-near .ml-pin-name {
+  opacity: 1;
+}
+.ml .ml-you {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 9999px;
+  background: var(--color-ml-river);
+  box-shadow: 0 0 0 3px #fff, 0 0 0 9px rgb(90 169 214 / 0.35);
+}
+.ml .maplibregl-ctrl.maplibregl-ctrl-attrib,
+.ml .maplibregl-ctrl.maplibregl-ctrl-attrib.maplibregl-compact-show {
+  background: rgb(0 0 0 / 0.65);
+  color: rgb(255 255 255 / 0.8);
+}
+.ml .maplibregl-ctrl-attrib a {
+  color: inherit;
+}
+.ml .maplibregl-ctrl-attrib-button {
+  filter: invert(1);
+}
+@media (min-width: 1024px) {
+  .ml .maplibregl-ctrl-bottom-left {
+    left: 25.5rem;
+  }
+}
+.ml .maplibregl-ctrl-scale {
+  background: rgb(0 0 0 / 0.5);
+  border-color: rgb(255 255 255 / 0.7);
+  color: #fff;
+}
+.ml .maplibregl-marker {
+  line-height: 1;
+}

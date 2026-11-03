@@ -107,7 +107,30 @@ Brief specifies 16:6 (~2.67:1), an ultra-wide letterbox. At that ratio on a phon
                       Taka → Videos → Capability & Resources → Business & Investment (live "bright future"
                       simulation, model in lib/motherland-future.ts, illustrative not a forecast) → Join. Copy/media: data/motherland.ts; components/motherland; photos
                       (Unsplash, Commons) and films (Pexels) in public/motherland, credited in its footer.
-                      /bangladesh/history is the one chapter left here; category pages come later.
+                      Every section's gold button opens a category page /bangladesh/<slug> (history, science-tech, people,
+                      nature, travel, culture, procon, taka, videos): Britannica's category plan (subcategories, feature
+                      blocks, quiz, other categories) in MOTHERLAND's dress, full-screen opening. Copy:
+                      data/motherland-categories.ts; components/motherland/category.tsx; checked by lib/motherland-categories.test.ts.
+/bangladesh/facts    Facts of Bangladesh (Mahir, 2026-11-04), the "Facts" tab, laid out after Facts about Germany
+                      (tatsachen-ueber-deutschland.de) in MOTHERLAND's colours and type, with its 14 topics answered for
+                      Bangladesh. Its two required sections are "Why we are the best" and "Why we are not doing best":
+                      the one MOTHERLAND page that shows failings, by Mahir's instruction. Every figure names its source,
+                      every strength its limit, every failing the reader's part. Copy: data/motherland-facts.ts; re-check
+                      the figures when they age; checked by lib/motherland-facts.test.ts.
+/bangladesh/travel   Geography & Travel (Mahir, 2026-11-04), its own page, not a [category] one. Its job is to make people want
+                      to come. Order, as Mahir set it: hero film of the week (WEEK_FILMS, changes by itself each Sunday in Dhaka) →
+                      figures → very old places → hidden gems → six-season mind map → crowd alert → know before you go → divisions →
+                      stories band → quiz → other categories → the map, directly above a narrow footer. The map is MapLibre on open
+                      data (OpenFreeMap, Terrain Tiles on AWS; no key), loaded only near the viewport; satellite is Esri **[FLAG:
+                      check its terms before public launch]**. public/vendor/maplibre-gl-worker.mjs must match node_modules (a test
+                      checks): the worker starts from a blob because Chrome won't start one from the service worker's saved copy.
+                      The plus button adds a place with Not crowded / Moderate / Crowded, and places can get crowd reports (6 hours);
+                      both stay in localStorage until auth, then move to the server (lib/motherland-reports.ts holds the shape).
+                      Crowd figures are estimates from the calendar, never live data, and the page says so. "Save for offline"
+                      (public/travel-sw.js) stores the map to zoom 10; verified with no server and no network, not just DevTools'
+                      offline switch, which gives false failures here. Copy: data/motherland-travel.ts; checked by
+                      lib/motherland-travel.test.ts. /bangladesh/travel/stories is the story contest (top 10, travel wall, XP): sections only until
+                      auth arrives, with no invented stories.
 /bangladesh/government  BD Guide (Mahir, 2026-11-01), reached from MOTHERLAND's Gov button: an independent
                       guide to the Bangladesh government. Its home is "All topics and services" (cloned from
                       usa.gov's home page); /about is cloned from usa.gov/about-the-us. usa.gov's layout in

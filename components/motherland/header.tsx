@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
-import { TOPICS, type TopicId } from "@/data/motherland";
+import { TOPICS, topicHref, type TopicId } from "@/data/motherland";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
 
@@ -43,13 +43,15 @@ function useCurrentTopic() {
  * moves. From xl the eleven topics sit in the bar and the one in view is
  * underlined; below xl they open from the menu button.
  */
-export function MotherlandHeader() {
+export function MotherlandHeader({ topic, solid: alwaysSolid }: { /** On a category page, the category: its tab is marked and the tabs go to pages. */ topic?: TopicId; /** For a page with no dark opening: white from the start. */ solid?: boolean }) {
+  const onLanding = !topic;
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const current = useCurrentTopic();
+  const inView = useCurrentTopic();
+  const current = topic ?? inView;
   const menuButton = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
-  const solid = scrolled || open;
+  const solid = alwaysSolid || scrolled || open;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -76,7 +78,7 @@ export function MotherlandHeader() {
   const close = () => setOpen(false);
 
   return (
-    <header className={cn("fixed inset-x-0 top-0 z-50 transition-colors duration-300", solid ? "text-ml-ink" : "text-white")}>
+    <header className={cn("fixed inset-x-0 top-0 z-50 transition-colors duration-300 print:hidden", solid ? "text-ml-ink" : "text-white")}>
       <a
         href="#main"
         className="sr-only rounded-full bg-signal-orange px-5 py-2 font-semibold text-ml-ink focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-10"
@@ -112,9 +114,9 @@ export function MotherlandHeader() {
           solid ? "bg-white shadow-[0_1px_0_rgb(15_42_32/0.1)]" : "bg-linear-to-b from-black/45 to-transparent",
         )}
       >
-        <div className="flex h-16 items-center gap-6 px-5 lg:h-22 lg:px-6">
+        <div className="flex h-16 items-center gap-6 px-5 lg:h-22 lg:px-6 xl:max-2xl:gap-3">
           <Link
-            href="#top"
+            href={onLanding ? "#top" : "/bangladesh"}
             onClick={close}
             className={cn("shrink-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current", solid && "text-ml-green")}
           >
@@ -126,9 +128,9 @@ export function MotherlandHeader() {
               {TOPICS.map((t) => (
                 <li key={t.id}>
                   <a
-                    href={`#${t.id}`}
+                    href={topicHref(t.id, onLanding)}
                     aria-current={current === t.id ? "true" : undefined}
-                    className="group relative block rounded-sm px-2 py-2 text-[0.88rem] font-semibold whitespace-nowrap focus-visible:outline-2 focus-visible:outline-current 2xl:px-2.5 2xl:text-[0.95rem]"
+                    className="group relative block rounded-sm px-1 py-2 text-[0.82rem] font-semibold whitespace-nowrap focus-visible:outline-2 focus-visible:outline-current 2xl:px-2.5 2xl:text-[0.95rem]"
                   >
                     {t.tab}
                     <span
@@ -157,7 +159,7 @@ export function MotherlandHeader() {
               <span className="xl:max-2xl:sr-only">{GOV.label}</span>
             </Link>
             <a
-              href="#join"
+              href={onLanding ? "#join" : "/bangladesh#join"}
               onClick={close}
               className={cn(
                 "hidden min-h-11 shrink-0 items-center gap-2 rounded-full px-6 font-semibold whitespace-nowrap xl:max-2xl:px-5 transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current sm:inline-flex",
@@ -194,14 +196,14 @@ export function MotherlandHeader() {
           <ul className="grid gap-1 sm:grid-cols-2">
             {TOPICS.map((t) => (
               <li key={t.id}>
-                <a href={`#${t.id}`} onClick={close} className="block border-b border-ml-ink/10 py-3 font-ml-display text-3xl uppercase hover:text-ml-green">
+                <a href={topicHref(t.id, onLanding)} onClick={close} className="block border-b border-ml-ink/10 py-3 font-ml-display text-3xl uppercase hover:text-ml-green">
                   {t.name}
                 </a>
               </li>
             ))}
           </ul>
           <div className="mt-8 flex flex-wrap gap-3">
-            <a href="#join" onClick={close} className="inline-flex min-h-12 items-center gap-2 rounded-full bg-signal-orange px-7 font-semibold text-ml-ink">
+            <a href={onLanding ? "#join" : "/bangladesh#join"} onClick={close} className="inline-flex min-h-12 items-center gap-2 rounded-full bg-signal-orange px-7 font-semibold text-ml-ink">
               <Icon name="bolt" className="text-lg" />
               Join with us
             </a>
