@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import type { FilmCard } from "@/data/motherland-blocks";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { cn } from "@/lib/utils";
+import { RiseText } from "./rise-text";
 
 /** A silent film that plays only while it is on screen, and stays a still for anyone who asks for less motion. */
 function Clip({ film, wide }: { film: FilmCard; wide: boolean }) {
@@ -34,7 +35,7 @@ function Clip({ film, wide }: { film: FilmCard; wide: boolean }) {
         </video>
       </div>
       <figcaption className="flex flex-1 flex-col gap-2 p-6 lg:p-8">
-        <h3 className="font-ml-display text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[1.08] tracking-[0.01em] uppercase">{film.title}</h3>
+        <RiseText as="h3" text={film.title} className="w-full font-ml-display text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[1.1] tracking-[0.01em] uppercase" />
         <p className="leading-relaxed text-pretty opacity-90">{film.text}</p>
         <p className="text-sm font-semibold text-ml-navy/70">{film.where}</p>
       </figcaption>

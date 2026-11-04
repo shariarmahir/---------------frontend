@@ -23,7 +23,7 @@ export function VideoPlayer({ films, credited = true }: { films: Film[]; /** Off
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)] lg:gap-10">
-      <figure className="flex flex-col gap-4">
+      <figure className={cn("flex flex-col gap-4", !credited && "lg:sticky lg:top-32 lg:self-start")}>
         <div className="overflow-hidden rounded-3xl bg-black ring-1 ring-white/10">
           <video
             key={film.poster}

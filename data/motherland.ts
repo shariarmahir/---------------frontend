@@ -216,7 +216,7 @@ export interface Article {
 
 export const SCIENCE = {
   title: "Built by Bangladesh",
-  lede: "Bridges over the strongest rivers, rice that survives the flood, money on every phone: the delta solves its own problems.",
+  lede: "Bridges over the strongest rivers, rice that survives floods, money on every phone.",
   cta: { label: "Discover what Bangladesh builds", href: "/bangladesh/science-tech" } satisfies Cta,
   articles: [
     {
@@ -230,7 +230,7 @@ export const SCIENCE = {
       picture: unsplash("metro-rail", "A metro train waiting at an elevated station in Dhaka", "Muhammad", "a-train-station-with-a-train-on-the-tracks-iMw_Rk64_H4"),
     },
     {
-      title: "Rice science that feeds millions",
+      title: "Rice that feeds millions",
       text: "The Bangladesh Rice Research Institute has released more than a hundred rice varieties, including ones that survive floods, salt water and drought.",
       picture: unsplash("rice-planting", "A farmer planting rice seedlings in a flooded paddy field", "Ashraful Haque Akash", "man-in-blue-t-shirt-planting-rice-on-fields-MuiC_cZL80Q"),
     },
@@ -482,7 +482,7 @@ export interface Craft {
 
 export const CULTURE = {
   title: "Made by hand, sung by heart",
-  lede: "UNESCO lists Baul songs, Jamdani weaving, Mangal Shobhajatra, Shital Pati mats and rickshaw painting among the intangible cultural heritage of humanity.",
+  lede: "Baul songs, Jamdani, Mangal Shobhajatra, Shital Pati and rickshaw art: all on UNESCO's list.",
   cta: { label: "Feel the culture you were born into", href: "/bangladesh/culture" } satisfies Cta,
   crafts: [
     {

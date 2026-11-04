@@ -108,3 +108,32 @@ test("the page copy carries none of the giveaway dashes", async () => {
     assert.ok(!prose.includes("\u2014") && !prose.includes("—"), slug);
   }
 });
+
+test("every card on the category pages has a photograph", async () => {
+  const { PAGE_BLOCKS } = await import("../data/motherland-pages.ts");
+  const bare: string[] = [];
+  for (const blocks of Object.values(PAGE_BLOCKS)) {
+    for (const b of blocks) {
+      const cards = b.kind === "chapters" ? b.chapters : b.kind === "cards" || b.kind === "people" ? b.cards : b.kind === "steps" ? b.steps : [];
+      for (const c of cards) if (!c.picture) bare.push(c.title);
+      if (b.kind === "map") for (const m of b.pins) if (!m.picture) bare.push(m.name);
+    }
+  }
+  assert.deepEqual(bare, []);
+});
+
+test("card titles and section subtitles are short enough to hold one line", async () => {
+  const { PAGE_BLOCKS } = await import("../data/motherland-pages.ts");
+  for (const blocks of Object.values(PAGE_BLOCKS)) {
+    for (const b of blocks) {
+      if ("lede" in b && b.lede) assert.ok(b.lede.length <= 100, b.lede);
+      const cards = b.kind === "chapters" ? b.chapters : b.kind === "cards" || b.kind === "people" ? b.cards : b.kind === "steps" ? b.steps : [];
+      for (const c of cards) assert.ok(c.title.length <= 33, c.title);
+    }
+  }
+});
+
+test("no photograph on a category page shows an excluded politician's file", async () => {
+  const { MORE } = await import("../data/motherland-more.ts");
+  for (const [key, m] of Object.entries(MORE)) assert.ok(!/hasina|mujib|khaleda|ziaur/i.test(m.sourceUrl), key);
+});

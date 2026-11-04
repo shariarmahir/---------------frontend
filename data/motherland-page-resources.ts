@@ -59,7 +59,7 @@ export const RESOURCES_BLOCKS: Block[] = [
     id: "capability",
     tone: "navy",
     title: "What our people can do",
-    lede: "The greatest resource walks on two feet.",
+    lede: "Skills the world already pays for, from the factory floor to the laptop.",
     columns: 3,
     cards: [
       { title: "Second in the world for clothes", text: "Generations of skill on the factory floor, now moving into green factories and higher-value goods.", picture: photo("garments") ?? photo("garments") },

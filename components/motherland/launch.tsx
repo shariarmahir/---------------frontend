@@ -17,7 +17,7 @@ export function LaunchBand() {
   return (
     <section id="first-satellite" aria-labelledby="first-satellite-title" className="scroll-mt-(--ml-header) bg-ml-navy py-12 text-white sm:py-14 lg:py-16">
       <div className={cn(COLUMN, "flex flex-col gap-8")}>
-        <SectionHead id="first-satellite-title" tone="dark" title="Our flag in orbit" lede="11 May 2018, Kennedy Space Center: the first flight of the Falcon 9 Block 5 carried Bangladesh's first satellite to space. This is SpaceX's own broadcast." />
+        <SectionHead id="first-satellite-title" tone="dark" title="Our flag in orbit" lede="11 May 2018, Kennedy Space Center: a Falcon 9 carried Bangladesh's first satellite to space." />
         <div className="relative aspect-video overflow-hidden rounded-3xl bg-ml-ink">
           {playing ? (
             <iframe sandbox="allow-scripts allow-same-origin allow-presentation allow-popups" referrerPolicy="strict-origin-when-cross-origin" src={`https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&rel=0`} title="Bangabandhu Satellite-1 Mission, by SpaceX" allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen className="absolute inset-0 size-full" />

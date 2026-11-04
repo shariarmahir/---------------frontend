@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { Debate } from "@/data/motherland";
 import { cn } from "@/lib/utils";
+import { FitLine } from "./fit-line";
 
 type Side = "pro" | "con";
 
@@ -35,7 +36,7 @@ export function TakeASide({ debates, className }: { debates: Debate[]; className
         return (
           <li key={d.question} className="grid gap-6 rounded-2xl bg-white p-6 ring-1 ring-ml-ink/10 sm:p-10 lg:grid-cols-2 lg:gap-12">
             <div className="flex flex-col items-start gap-6">
-              <h2 className="text-[clamp(1.5rem,2.4vw,2.25rem)] leading-tight font-bold text-balance">{d.question}</h2>
+              <FitLine as="h2" text={d.question} min={18} className="ml-one-line text-[clamp(1.5rem,2.4vw,2.25rem)] leading-tight font-bold text-balance" />
               <div className="flex flex-wrap gap-3">
                 {button("pro", "I'm for it")}
                 {button("con", "I'm against it")}

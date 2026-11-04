@@ -2,11 +2,12 @@
 
 import { useMemo, useState } from "react";
 import { MAP_HEIGHT, MAP_WIDTH, divisionShapes, project } from "@/data/bangladesh-map";
-import { MONTHS, REGIONS, TOUR_PLANS, TRIP_SOURCES } from "@/data/motherland-trip";
+import { MONTHS, REGIONS, TOUR_PLANS } from "@/data/motherland-trip";
 import { TAKA_PER_USD, parseAsk, pickLeg, planTrip, type Style, type TripPlan } from "@/lib/motherland-trip";
 import type { LegKind } from "@/data/motherland-trip";
 import { cn } from "@/lib/utils";
 import { COLUMN, pill } from "./kit";
+import { RiseText } from "./rise-text";
 
 const taka = (n: number) => `৳${n.toLocaleString("en-US")}`;
 const dollars = (n: number) => `$${Math.round(n / TAKA_PER_USD).toLocaleString("en-US")}`;
@@ -111,7 +112,7 @@ export function TripPlanner() {
           <h2 id="plan-title" className="font-ml-display text-[clamp(2.75rem,7vw,6.5rem)] leading-[1.02] tracking-[0.01em] uppercase">
             Plan your trip
           </h2>
-          <p className="max-w-3xl text-lg leading-relaxed sm:text-xl">Ask in your own words, or choose below. We draw the best route for the season, with the road, the price and what to watch for.</p>
+          <p className="text-lg leading-relaxed sm:text-xl">Ask in your own words, or choose below. We draw the route, the price and what to watch for.</p>
         </div>
 
         <form
@@ -167,7 +168,7 @@ export function TripPlanner() {
             <div className="grid gap-6 sm:grid-cols-2">
               <label className="flex flex-col gap-2 text-lg font-bold">
                 Month
-                <select value={month} onChange={(e) => setMonth(Number(e.target.value))} className="min-h-12 rounded-xl bg-ml-ground px-4 font-semibold ring-1 ring-ml-ink/15 focus-visible:outline-2 focus-visible:outline-ml-navy">
+                <select name="trip-month" value={month} onChange={(e) => setMonth(Number(e.target.value))} className="min-h-12 rounded-xl bg-ml-ground px-4 font-semibold ring-1 ring-ml-ink/15 focus-visible:outline-2 focus-visible:outline-ml-navy">
                   {MONTHS.map((m, i) => (
                     <option key={m} value={i + 1}>
                       {m}
@@ -177,7 +178,7 @@ export function TripPlanner() {
               </label>
               <label className="flex flex-col gap-2 text-lg font-bold">
                 {days} {days === 1 ? "day" : "days"}
-                <input type="range" min={1} max={21} value={days} onChange={(e) => setDays(Number(e.target.value))} className="mt-3 w-full accent-ml-navy" />
+                <input name="trip-days" type="range" min={1} max={21} value={days} onChange={(e) => setDays(Number(e.target.value))} className="mt-3 w-full accent-ml-navy" />
               </label>
             </div>
             <fieldset className="flex flex-col gap-3">
@@ -309,7 +310,7 @@ export function TripPlanner() {
         </div>
 
         <div className="flex flex-col gap-6">
-          <h3 className="font-ml-display text-[clamp(2rem,4vw,3.5rem)] leading-none tracking-[0.01em] uppercase">The whole road map from Dhaka</h3>
+          <RiseText as="h3" text="The whole road map from Dhaka" className="w-full font-ml-display text-[clamp(2rem,4vw,3.5rem)] leading-none tracking-[0.01em] uppercase" />
           <div className="overflow-x-auto rounded-2xl ring-1 ring-ml-ink/10" tabIndex={0} role="region" aria-label="Road map from Dhaka">
             <table className="w-full min-w-200 border-collapse text-left">
               <thead>

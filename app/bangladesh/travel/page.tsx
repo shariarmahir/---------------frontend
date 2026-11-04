@@ -10,6 +10,7 @@ import { GuideTabs } from "@/components/motherland/guide-tabs";
 import { MotherlandHeader } from "@/components/motherland/header";
 import { BAND_Y, COLUMN, SectionHead, pill } from "@/components/motherland/kit";
 import { Quiz } from "@/components/motherland/quiz";
+import { RiseText } from "@/components/motherland/rise-text";
 import { SideTab } from "@/components/motherland/side-tab";
 import { TripPlanner } from "@/components/motherland/trip-planner";
 import { WeekFilm } from "@/components/motherland/week-film";
@@ -74,7 +75,7 @@ export default function GeographyTravelPage() {
         <PageHero
           id="travel-title"
           name="Geography & Travel"
-          lede="The world's largest river delta, from cloud hills to coral sand. You have no idea how beautiful it is. Come and see."
+          lede="The world's largest river delta, from cloud hills to coral sand. Come and see how beautiful it is."
           media={<WeekFilm film={film.film} />}
           parts={[
             { id: "top-ten", title: "Top 10 this week" },
@@ -104,11 +105,11 @@ export default function GeographyTravelPage() {
 
         <section id="seasons" aria-labelledby="seasons-title" className={cn("scroll-mt-(--ml-header) bg-ml-navy text-white", BAND_Y)}>
           <div className={cn(COLUMN, "flex flex-col gap-8")}>
-            <div className="flex flex-wrap items-end justify-between gap-x-12 gap-y-3">
-              <h2 id="seasons-title" className="font-ml-display text-[clamp(2.25rem,4.4vw,4rem)] leading-[1.02] tracking-[0.01em] uppercase">
-                When Bangladesh looks best
-              </h2>
-              <p className="text-lg font-semibold text-signal-orange">Mid-October to mid-February</p>
+            <div className="flex min-w-0 flex-col gap-3 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
+              <div className="min-w-0 flex-1">
+                <RiseText id="seasons-title" text="When Bangladesh looks best" className="w-full font-ml-display text-[clamp(2.25rem,4.4vw,4rem)] leading-[1.02] tracking-[0.01em] uppercase" />
+              </div>
+              <p className="shrink-0 text-lg font-semibold text-signal-orange">Mid-October to mid-February</p>
             </div>
             <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
               {SEASONS.map((s) => (

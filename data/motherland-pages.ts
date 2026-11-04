@@ -46,7 +46,7 @@ export const INTROS: Record<string, string> = {
   taka: "You do not need to worry about money in Bangladesh. Here is what the notes look like, how to change them, which apps people use and the few rules worth knowing, so that you can spend your first day looking around instead of counting.",
   resources: "Few people look at a delta and see wealth. Bangladesh has gas under its fields, silt that feeds three harvests, a long coast on one of the busiest seas in the world and 175 million people. That last one is the resource that matters most.",
   invest: "The second-largest clothing exporter in the world has a young workforce, a growing middle class and a place between India, China and Southeast Asia. Here is where the money is going, what is still open, and who to talk to.",
-  videos: "Some of this country cannot be described, only watched. Rivers wider than cities, crowds in red and white on the first day of the year, a hand weaving jamdani one thread at a time. Press play.",
+  videos: "Some of this country cannot be described, only watched. Rivers wider than cities, boats racing to the beat of a drum, a hand weaving jamdani one thread at a time. Press play.",
 };
 
 export const TRAVEL_INTRO = "Here you can row a boat through a drowned forest in the morning and drink seven-colour tea in the afternoon. Some of the best places in Bangladesh have no queue, no ticket booth and often no other visitors. Tell us when you are coming and we will show you the way.";

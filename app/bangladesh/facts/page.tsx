@@ -93,7 +93,7 @@ export default function FactsOfBangladeshPage() {
         <style>{".ml-rise .ml-word > span { translate: none !important; }"}</style>
       </noscript>
       <MotherlandHeader topic="facts" solid />
-      <main id="main" className="pt-(--ml-header)">
+      <main id="main" className="ml-facts pt-(--ml-header)">
         <FactsBar />
         <FactsHero slides={SLIDES} />
 

@@ -81,7 +81,7 @@ export const CATEGORIES: Category[] = [
     slug: "history",
     topic: "history",
     name: "History & Society",
-    lede: "From a walled city of the third century BCE to a young republic: how this land became a nation, and who lives here now.",
+    lede: "From a walled city of the third century BCE to a young republic: how this land became a nation.",
     hero: photo("martyrs-memorial"),
     subcategories: [
       {
@@ -133,7 +133,7 @@ export const CATEGORIES: Category[] = [
     slug: "science-tech",
     topic: "science",
     name: "Science & Tech",
-    lede: "Bridges over the strongest rivers, rice that survives the flood, money on every phone: the delta solves its own problems.",
+    lede: "Bridges over the strongest rivers, rice that survives floods, money on every phone.",
     hero: photo("padma-bridge"),
     subcategories: [
       {
@@ -151,7 +151,7 @@ export const CATEGORIES: Category[] = [
         title: "Science for daily life",
         lede: "Research and technology that reach the field and the pocket.",
         stories: [
-          { title: "Rice science that feeds millions", text: "The Bangladesh Rice Research Institute has released more than a hundred rice varieties, including ones that survive floods, salt water and drought.", picture: photo("rice-planting") },
+          { title: "Rice that feeds millions", text: "The Bangladesh Rice Research Institute has released more than a hundred rice varieties, including ones that survive floods, salt water and drought.", picture: photo("rice-planting") },
           { title: "Money on every phone", text: "Mobile financial services let tens of millions of people send, save and pay with a basic phone, many of them for the first time.", picture: photo("mobile-money") },
           { title: "Solar in the village", text: "Millions of rural homes got their first electric light from small solar panels on the roof, in one of the largest home solar programmes in the world.", picture: pic("solar-bd", "Solar panels in a green field") ?? photo("rice-planting") },
           { title: "Warnings before the water", text: "The Flood Forecasting and Warning Centre in Dhaka watches the rivers and publishes forecasts, so that families and farmers can move in time.", picture: pic("flood-boat", "Wooden boats on the wide brown water at Dhaka") ?? photo("sunamganj-haor") },
@@ -187,7 +187,7 @@ export const CATEGORIES: Category[] = [
     slug: "people",
     topic: "biographies",
     name: "Biographies",
-    lede: "Poets, thinkers, painters, singers, scientists and the women who opened every door. The people who make us proud.",
+    lede: "Poets, thinkers, painters, singers, scientists and the women who opened every door.",
     hero: photo("flag-mural"),
     subcategories: [
       {
@@ -205,7 +205,7 @@ export const CATEGORIES: Category[] = [
         layout: "grid",
         shape: "tall",
         stories: [life("Jagadish Chandra Bose"), life("Satyendra Nath Bose"), life("Begum Rokeya"),
-          { title: "Prafulla Chandra Ray", meta: "1861 to 1944, chemist", text: "Born in what is now Khulna division, he founded Bengal Chemicals in 1901 and wrote the history of chemistry in India, and he taught a generation of Bengali scientists.", picture: pic("p-pcray", "A portrait of Prafulla Chandra Ray", "50% 20%") ?? photo("children") },
+          { title: "Prafulla Chandra Ray", meta: "1861 to 1944, chemist", text: "Born in what is now Khulna division, he founded Bengal Chemicals in 1901 and wrote the history of chemistry in India, and he taught a generation of Bengali scientists.", picture: pic("p-pcray", "A flower-decked memorial to Prafulla Chandra Ray") ?? photo("children") },
         ],
       },
     ],
@@ -322,7 +322,7 @@ export const CATEGORIES: Category[] = [
     slug: "culture",
     topic: "culture",
     name: "Arts & Culture",
-    lede: "UNESCO lists Baul songs, Jamdani weaving, Mangal Shobhajatra, Shital Pati mats and rickshaw painting among the intangible cultural heritage of humanity.",
+    lede: "Baul songs, Jamdani, Mangal Shobhajatra, Shital Pati and rickshaw art: all on UNESCO's list.",
     hero: photo("rickshaw-art"),
     subcategories: [
       {
@@ -389,7 +389,7 @@ export const CATEGORIES: Category[] = [
     slug: "procon",
     topic: "procon",
     name: "Pro & Con",
-    lede: "Big questions about the country's future. Choose your side on each, then answer the strongest case against it.",
+    lede: "Big questions about the country's future. Choose a side, then answer the case against it.",
     hero: photo("parliament"),
     body: "debates",
     subcategories: [],
@@ -400,7 +400,7 @@ export const CATEGORIES: Category[] = [
     slug: "taka",
     topic: "taka",
     name: "Taka",
-    lede: "Everything a visitor needs to know about money here: how to change it, how to pay, who to call, and the story behind the notes.",
+    lede: "What a visitor needs to know about money: how to change it, how to pay and who to call.",
     hero: photo("taka-notes"),
     subcategories: [],
     facts: [
@@ -431,7 +431,7 @@ export const CATEGORIES: Category[] = [
     slug: "resources",
     topic: "resources",
     name: "Capability & Resources",
-    lede: "Fertile soil, great rivers, a wide sea and a young people: what Bangladesh was born with, and what it can become.",
+    lede: "Fertile soil, great rivers, a wide sea and a young people: what Bangladesh was born with.",
     hero: photo("rice-planting"),
     subcategories: [
       {

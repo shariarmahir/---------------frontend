@@ -294,3 +294,28 @@
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
+
+/* A section's subtitle holds one line across the column from a laptop up; FitLine shrinks it if it must. */
+@media (min-width: 1024px) {
+  .ml-facts .ml-lede,
+  .ml-light .ml-lede,
+  .ml-light .ml-one-line {
+    max-width: none;
+    white-space: nowrap;
+  }
+}
+
+/* The landing page's simulator band keeps its size; on a category page it sits in the tighter rhythm. */
+.ml-light #invest {
+  padding-block: 3rem;
+}
+@media (min-width: 640px) {
+  .ml-light #invest {
+    padding-block: 3.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .ml-light #invest {
+    padding-block: 4rem;
+  }
+}

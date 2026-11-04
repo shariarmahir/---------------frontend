@@ -3,7 +3,9 @@
 import { useCallback, useState } from "react";
 import { INVEST_CONTACT, INVEST_LINKS } from "@/data/motherland-live";
 import { cn } from "@/lib/utils";
+import { RiseText } from "./rise-text";
 import { Dialog } from "./dialog";
+import { FitLine } from "./fit-line";
 import { COLUMN, pill } from "./kit";
 
 const SECTORS = ["Garments and textiles", "Healthcare and medicine", "Software and fintech", "Food and farm processing", "Blue economy", "Ports and logistics", "Clean energy", "Ship building and engineering", "Tourism", "Something else"];
@@ -20,12 +22,10 @@ export function ConnectBand() {
 
   return (
     <section id="connect" aria-labelledby="connect-title" className="scroll-mt-(--ml-header) bg-signal-orange py-12 text-ml-ink sm:py-14 lg:py-16">
-      <div className={cn(COLUMN, "flex flex-wrap items-center justify-between gap-8")}>
-        <div className="flex max-w-3xl flex-col gap-3">
-          <h2 id="connect-title" className="font-ml-display text-[clamp(2.25rem,4.8vw,4.5rem)] leading-[1.02] tracking-[0.01em] uppercase">
-            Tell us what you are looking for
-          </h2>
-          <p className="text-lg leading-relaxed sm:text-xl">Name a sector or a region. We will send you the figures we have and point you to the right people.</p>
+      <div className={cn(COLUMN, "flex flex-col items-start gap-6 lg:flex-row lg:items-center lg:justify-between lg:gap-10")}>
+        <div className="flex min-w-0 flex-1 flex-col gap-3">
+          <RiseText id="connect-title" text="Tell us what you are looking for" className="w-full font-ml-display text-[clamp(2.25rem,4.8vw,4.5rem)] leading-[1.02] tracking-[0.01em] uppercase" />
+          <FitLine text="Name a sector or a region. We will send you the figures we have and point you to the right people." className="ml-lede text-lg leading-relaxed sm:text-xl" />
         </div>
         <button type="button" onClick={() => setOpen(true)} className={cn(pill.onDark, "bg-ml-navy text-white hover:bg-white hover:text-ml-ink")}>
           Connect for details
@@ -36,15 +36,15 @@ export function ConnectBand() {
           <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
             <label className="flex flex-col gap-1.5 font-semibold">
               Your name
-              <input required autoComplete="name" value={form.name} onChange={set("name")} className={FIELD} />
+              <input required name="name" autoComplete="name" value={form.name} onChange={set("name")} className={FIELD} />
             </label>
             <label className="flex flex-col gap-1.5 font-semibold">
               Company
-              <input autoComplete="organization" value={form.company} onChange={set("company")} className={FIELD} />
+              <input name="company" autoComplete="organization" value={form.company} onChange={set("company")} className={FIELD} />
             </label>
             <label className="flex flex-col gap-1.5 font-semibold">
               Sector
-              <select value={form.sector} onChange={set("sector")} className={FIELD}>
+              <select name="sector" value={form.sector} onChange={set("sector")} className={FIELD}>
                 {SECTORS.map((s) => (
                   <option key={s}>{s}</option>
                 ))}
@@ -52,7 +52,7 @@ export function ConnectBand() {
             </label>
             <label className="flex flex-col gap-1.5 font-semibold">
               What would you like to know?
-              <textarea rows={4} value={form.message} onChange={set("message")} className={FIELD} />
+              <textarea name="message" rows={4} value={form.message} onChange={set("message")} className={FIELD} />
             </label>
             <a href={mail} className={cn(pill.onLight, "w-fit")}>
               Send by email

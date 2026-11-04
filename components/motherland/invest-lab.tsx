@@ -126,6 +126,7 @@ export function InvestLab() {
                   </span>
                 </span>
                 <input
+                  name={id}
                   type="range"
                   min={l.min}
                   max={l.max}

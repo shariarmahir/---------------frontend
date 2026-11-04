@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { MAP_HEIGHT, MAP_WIDTH, divisionShapes, project } from "@/data/bangladesh-map";
 import type { MapPin } from "@/data/motherland-blocks";
 import { cn } from "@/lib/utils";
+import { RiseText } from "./rise-text";
 
 /** The country in outline with a pin on each place; the chosen one is told beside it, and the list works without the map. */
 export function PinBoard({ pins }: { pins: MapPin[] }) {
@@ -11,7 +13,7 @@ export function PinBoard({ pins }: { pins: MapPin[] }) {
   const pin = pins.find((p) => p.id === chosen) ?? pins[0];
 
   return (
-    <div className="grid gap-8 rounded-3xl bg-white p-5 text-ml-ink ring-1 ring-ml-ink/8 sm:p-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)] lg:gap-14 lg:p-12">
+    <div className="grid items-start gap-8 rounded-[1.25rem] bg-white p-5 text-ml-ink ring-1 ring-ml-ink/8 sm:p-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)] lg:gap-12 lg:p-10">
       <div className="relative mx-auto aspect-600/842 w-full max-w-sm">
         <svg viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`} aria-hidden className="absolute inset-0 size-full">
           {divisionShapes.map((d) => (
@@ -37,17 +39,24 @@ export function PinBoard({ pins }: { pins: MapPin[] }) {
         })}
       </div>
       <div className="flex min-w-0 flex-col gap-6">
-        <article key={pin.id} aria-live="polite" className="ml-fade-in flex flex-col gap-3 rounded-2xl bg-ml-navy p-6 text-white sm:p-8">
-          {pin.tag ? <p className="font-semibold text-signal-orange">{pin.tag}</p> : null}
-          <h3 className="font-ml-display text-[clamp(1.75rem,3vw,2.75rem)] leading-[1.05] tracking-[0.01em] uppercase">{pin.name}</h3>
-          <p className="font-semibold text-white/75">{pin.place}</p>
-          <p className="text-lg leading-relaxed text-pretty text-white/90">{pin.text}</p>
-          {pin.link ? (
-            <a href={pin.link.url} target="_blank" rel="noopener noreferrer" className="w-fit underline underline-offset-4">
-              More from {pin.link.name}
-              <span className="sr-only"> (opens in a new tab)</span>
-            </a>
+        <article key={pin.id} aria-live="polite" className="ml-fade-in flex flex-col overflow-hidden rounded-2xl bg-ml-navy text-white">
+          {pin.picture ? (
+            <div className="relative aspect-16/9 w-full overflow-hidden bg-ml-mist">
+              <Image src={pin.picture.src} alt={pin.picture.alt} fill sizes="(min-width: 1024px) 46vw, 92vw" className="object-cover" style={{ objectPosition: pin.picture.focus }} />
+              {pin.tag ? <span className="absolute bottom-4 left-4 max-w-[calc(100%-2rem)] rounded-full bg-signal-orange px-4 py-1.5 text-sm font-semibold text-ml-navy">{pin.tag}</span> : null}
+            </div>
           ) : null}
+          <div className="flex flex-col gap-2 p-6 sm:p-7">
+            <RiseText as="h3" now text={pin.name} className="w-full font-ml-display text-[clamp(1.75rem,2.6vw,2.5rem)] leading-[1.1] tracking-[0.01em] uppercase" />
+            <p className="font-semibold text-white/75">{pin.place}</p>
+            <p className="leading-relaxed text-pretty text-white/90">{pin.text}</p>
+            {pin.link ? (
+              <a href={pin.link.url} target="_blank" rel="noopener noreferrer" className="w-fit font-semibold text-signal-orange underline underline-offset-4">
+                {pin.link.name}
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            ) : null}
+          </div>
         </article>
         <ul className="grid gap-1.5 sm:grid-cols-2">
           {pins.map((p) => (

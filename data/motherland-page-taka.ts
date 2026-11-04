@@ -44,7 +44,7 @@ export const TAKA_BLOCKS: Block[] = [
     picture: pic("launch-sadarghat", "River launches moored at Sadarghat in Dhaka") ?? photo("rickshaw-art"),
     tone: "paper",
     title: "What your money buys",
-    lede: "Real fares from published charts, checked November 2026, and a rough guide to everyday prices. Fares can change, so confirm before you pay.",
+    lede: "Real fares from published charts, checked November 2026. Confirm before you pay.",
     head: ["What", "Price", "Where this comes from"],
     rows: [
       ["Dhaka to Cox's Bazar by train, AC chair", "৳1,449", "Bangladesh Railway, reported fare"],

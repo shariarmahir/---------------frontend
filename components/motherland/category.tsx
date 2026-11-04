@@ -9,6 +9,7 @@ import { INTROS, PAGE_BLOCKS } from "@/data/motherland-pages";
 import { cn } from "@/lib/utils";
 import { CardStack } from "./card-stack";
 import { Figures, Timeline } from "./figures";
+import { FitLine } from "./fit-line";
 import { BlockView, IntroFill } from "./blocks";
 import { CornerEvents } from "./culture-calendar";
 import { CornerScience } from "./launch";
@@ -35,7 +36,7 @@ export function PageHero({ id, name, lede, media, parts }: { id: string; name: s
       <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-t from-ml-navy/95 via-ml-navy/35 to-ml-navy/30" />
       <div className={cn(COLUMN, "flex flex-col items-start gap-5 pt-36 pb-12 lg:pb-16")}>
         <RiseText as="h1" id={id} now text={name} className="w-full font-ml-display text-[clamp(3.5rem,11.5vw,11rem)] leading-[0.98] tracking-[0.01em] uppercase" />
-        <p className={cn(LEDE, "ml-hero-one text-white/90")}>{lede}</p>
+        <FitLine text={lede} className={cn(LEDE, "ml-lede ml-hero-one w-full text-white/90")} />
         {parts.length ? (
           <nav aria-label={`Browse ${name}`} className="ml-hero-two">
             <ul className="flex flex-wrap gap-3">

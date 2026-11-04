@@ -42,7 +42,7 @@ export interface Failing {
 export const BEST = {
   id: "why-we-are-the-best",
   title: "Why we are the best",
-  lede: "Not a boast. These are the places where Bangladesh leads the world or beat the odds, with the limit on each one, because pride that can't take a reality check isn't worth much.",
+  lede: "Not a boast: where Bangladesh leads the world or beat the odds, and the limit on each.",
   items: [
     {
       id: "language",
@@ -122,7 +122,7 @@ export const BEST = {
 export const NOT_BEST = {
   id: "why-we-are-not-doing-best",
   title: "Why we are not doing best",
-  lede: "A country that loves itself tells itself the truth. These numbers are ours too, and none of them is someone else's fault alone.",
+  lede: "A country that loves itself tells itself the truth. These numbers are ours too.",
   items: [
     {
       id: "corruption",
@@ -310,7 +310,7 @@ export const RESEARCH = {
   title: "Research and innovation",
   text: "Rice that survives the flood, money on every phone and a physics paper written in Dhaka that named the boson: this delta has always solved its own problems.",
   cards: [
-    { title: "Rice science that feeds millions", href: "/bangladesh/science-tech#science-for-daily-life", picture: photo("rice-planting") },
+    { title: "Rice that feeds millions", href: "/bangladesh/science-tech#science-for-daily-life", picture: photo("rice-planting") },
     { title: "Money on every phone", href: "/bangladesh/science-tech#science-for-daily-life", picture: photo("mobile-money") },
     { title: "Engineering the delta", href: "/bangladesh/science-tech#engineering-the-delta", picture: photo("metro-rail") },
     { title: "The minds of Bengali science", href: "/bangladesh/science-tech#minds-of-science", picture: { ...photo("snbose"), focus: "50% 20%" } },

@@ -78,3 +78,29 @@ export const INVEST_LINKS = [
   { name: "Bangladesh Economic Zones Authority", url: "https://beza.gov.bd/" },
   { name: "BEPZA, export processing zones", url: "https://www.bepza.gov.bd/" },
 ];
+
+/** The photograph on each event's card: a key in public/motherland/more, a place, or a photo the page already credits. */
+export const EVENT_PICTURES: Record<string, { key?: string; place?: string; src?: string; alt: string }> = {
+  "rash-dublar": { key: "coast-dawn", alt: "Dawn on the coast, with small boats on the water" },
+  "rash-kantajew": { place: "kantajew", alt: "The terracotta walls of Kantajew Temple in Dinajpur" },
+  "manipuri-rash": { key: "night-moon", alt: "Still water in the last of the evening light" },
+  nobanno: { key: "hemanta-harvest", alt: "Farmers harvesting golden rice" },
+  mime: { key: "natok", alt: "Performers in silhouette on a stage" },
+  victory: { key: "victory-day", alt: "The Victory Day parade in Dhaka" },
+  "poush-mela": { key: "pitha", alt: "Bhapa pitha, a steamed winter rice cake" },
+  "book-fair": { key: "dhaka-book-fair", alt: "A child choosing books at the Ekushey Book Fair" },
+  shakrain: { key: "shakrain", alt: "Kites over the rooftops of Old Dhaka" },
+  "lit-fest": { key: "old-pages", alt: "A bundle of old pages tied with string" },
+  falgun: { key: "spring-palash", alt: "Orange palash flowers in spring" },
+  ekushey: { src: "/motherland/photos/shaheed-minar.jpg", alt: "The Shaheed Minar in Dhaka" },
+  lalon: { key: "lalon-akhra", alt: "The shrine of Lalon in Kushtia" },
+  independence: { src: "/motherland/photos/martyrs-memorial.jpg", alt: "The National Martyrs' Memorial at Savar" },
+  boisabi: { key: "sajek-mist", alt: "Green hills in mist in the south-east" },
+  boishakh: { src: "/motherland/photos/mangal-shobhajatra.jpg", alt: "The Mangal Shobhajatra procession in Dhaka" },
+  boli: { key: "boli-khela", alt: "Wrestlers ringed by a huge crowd in Chattogram" },
+  "eid-adha": { key: "eid-prayer", alt: "A huge crowd at Eid prayers" },
+  rath: { key: "mela2", alt: "Bright decorations at a fair" },
+  boat: { key: "boat-race-photo", alt: "Long boats racing on a river" },
+  durga: { key: "durga-dhakeshwari", alt: "A Durga idol at Dhakeshwari Temple in Dhaka" },
+  theatre: { key: "shilpakala", alt: "The Shilpakala Academy in Dhaka" },
+};

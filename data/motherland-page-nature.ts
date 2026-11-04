@@ -24,7 +24,7 @@ export const NATURE_BLOCKS: Block[] = [
     id: "into-the-wild",
     tone: "navy",
     title: "Into the wild",
-    lede: "Cloud over the Bandarban hills and tide through the largest mangrove forest on Earth, 10,000 square kilometres of it, more than half in Bangladesh.",
+    lede: "Cloud over the Bandarban hills, and tide through the largest mangrove forest on Earth.",
     films: [
       { title: "Morning over Bandarban", text: "Sunrise at Lama in the Bandarban hills, with the valleys still full of cloud and birds crossing below the ridge. Winter mornings here are worth the early start.", file: "bandarban-sunrise", ext: "mp4", where: "Filmed in Lama, Bandarban, Bangladesh", credit: { author: "Pixabay contributor", license: "Pixabay Content License", sourceUrl: "https://pixabay.com/videos/bangladesh-lama-bandarban-mountains-294187/", source: "Pixabay" } },
       { title: "Kochikhali, the Sundarbans", text: "Filmed in the forest itself, on the wild southern shore where deer come out to graze and tigers leave their prints in the mud.", file: "sundarbans-kochikhali", where: "Filmed in the Sundarbans, Bangladesh", credit: { author: "Yahya", license: "CC BY-SA 4.0", sourceUrl: commonsFilm("Kochikhali point, Sundarbans.webm") } },
@@ -39,11 +39,11 @@ export const NATURE_BLOCKS: Block[] = [
     id: "native-animals",
     tone: "white",
     title: "Native animals",
-    lede: "A national Red List assessed 1,619 kinds of animal here. These are the ones people cross the world to see.",
+    lede: "A national Red List assessed 1,619 kinds of animal. People cross the world to see these.",
     note: "Status is the global category on the IUCN Red List. Bangla names are given where they are in common use.",
     cards: [
       { title: "Royal Bengal tiger", meta: "Bagh. National animal", text: "A census counted 125 in the Bangladesh Sundarbans in 2024, up from 106 in 2015. These are the only tigers that live in mangroves, and they swim well.", picture: photo("tiger"), source: TIGERS, facts: [{ label: "Status", value: "Endangered" }, { label: "Where to see it", value: "The Sundarbans, from a boat" }] },
-      { title: "Spotted deer", meta: "Chitra horin", text: "The tiger's main prey, and the animal you are most likely to see from a boat.", picture: photo("spotted-deer"), facts: [{ label: "Status", value: "Least concern" }, { label: "Where to see it", value: "Katka and Kochikhali" }] },
+      { title: "Spotted deer", meta: "Chitra horin", text: "The tiger's main prey, and the animal you are most likely to see from a boat.", source: RED_ANIMALS, picture: photo("spotted-deer"), facts: [{ label: "Status", value: "Least concern" }, { label: "Where to see it", value: "Katka and Kochikhali" }] },
       { title: "Hoolock gibbon", meta: "Ulluk. Our only ape", text: "Only about 200 to 300 remain, around Lawachara and the eastern forests. You hear their morning song long before you spot them.", picture: pic("hoolock-gibbon", "A western hoolock gibbon in the trees"), source: { name: "Remote Lands", url: "https://www.remotelands.com/travelogues/5-rare-animals-to-look-for-in-bangladesh/" }, facts: [{ label: "Status", value: "Endangered" }, { label: "Where to see it", value: "Lawachara National Park" }] },
       { title: "Ganges river dolphin", meta: "Shushuk", text: "Almost blind, it finds its way in muddy water by sound. Sailors have watched for it in these rivers for centuries.", picture: pic("river-dolphin", "A Ganges river dolphin"), source: WCS, facts: [{ label: "Status", value: "Endangered" }, { label: "Where to see it", value: "Sundarbans channels and the big rivers" }] },
       { title: "Irrawaddy dolphin", meta: "Irabati", text: "Researchers counted nearly 6,000 in the Sundarbans and the waters beside it, one of the largest groups anywhere.", picture: pic("irrawaddy-dolphin", "An Irrawaddy dolphin at the surface"), source: WCS, facts: [{ label: "Status", value: "Endangered" }, { label: "Where to see it", value: "Sundarbans waterways" }] },
@@ -52,7 +52,7 @@ export const NATURE_BLOCKS: Block[] = [
       { title: "Saltwater crocodile", meta: "Lona panir kumir", text: "The largest reptile on Earth patrols the Sundarbans' tidal creeks.", picture: pic("saltwater-croc", "A saltwater crocodile on a muddy bank"), facts: [{ label: "Status", value: "Least concern" }, { label: "Where to see it", value: "Karamjal, the Sundarbans" }] },
     ],
   },
-  { kind: "moment", id: "a-forest-by-boat", title: "A forest you enter by boat", text: "At Ratargul the trees stand in the water for months of the year, and the only road is the one you row.", picture: photo("swamp-forest") },
+  { kind: "moment", id: "a-forest-by-boat", title: "A forest you enter by boat", text: "At Ratargul the trees stand in water for months, and the only road is the one you row.", picture: photo("swamp-forest") },
   {
     kind: "cards",
     id: "rarest",
@@ -74,7 +74,7 @@ export const NATURE_BLOCKS: Block[] = [
     id: "six-seasons",
     tone: "navy",
     title: "Six seasons, six countries",
-    lede: "Bengali has a name for each of them. Come at a different time and you will find a different country.",
+    lede: "Bengali has a name for each. Come at a different time and find a different country.",
     layout: "sideways",
     cards: [
       { title: "Grishmo, summer", meta: "Mid-April to mid-June", text: "Hot and heavy. Flame trees flower, mangoes and jackfruit ripen, and storms called Kalboishakhi blow in during the late afternoon.", picture: pic("summer-field", "A field and trees under a clear summer sky") ?? pic("krishnachura", "Red flame trees in summer") },
@@ -90,7 +90,7 @@ export const NATURE_BLOCKS: Block[] = [
     id: "trees-and-forests",
     tone: "white",
     title: "Trees and forests",
-    lede: "Mangrove on the coast, swamp in the north-east, rain forest in the hills and old sal in the middle of the country.",
+    lede: "Mangrove on the coast, swamp in the north-east, rain forest in the hills, old sal inland.",
     columns: 3,
     cards: [
       { title: "Sundari", meta: "Mangrove", text: "The tree that gave the Sundarbans its name. Its roots push up through the mud to breathe. UNESCO counts 334 plant species in the forest.", picture: pic("sundarbans-forest", "Mangrove forest in the Sundarbans") ?? photo("mangroves"), source: UNESCO },

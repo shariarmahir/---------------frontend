@@ -287,8 +287,8 @@ export function topTen(month: number, week: number) {
 }
 
 export const MUST_SEE = {
-  antique: { id: "very-old", title: "Older than anyone told you", lede: "Temples of fired clay, a street of empty mansions and a town from about 450 BCE. Few visitors reach them." },
-  gem: { id: "hidden-gems", title: "Almost no one has seen these", lede: "Pink hills, a floating guava market and a waterfall far from any road. The Bangladesh even Bangladeshis haven't met." },
+  antique: { id: "very-old", title: "Older than anyone told you", lede: "Temples of fired clay, a street of empty mansions and a town from about 450 BCE." },
+  gem: { id: "hidden-gems", title: "Almost no one has seen these", lede: "Pink hills, a floating guava market and a waterfall far from any road." },
 };
 
 /** Every picture on the page, once, for the footer's credits. */

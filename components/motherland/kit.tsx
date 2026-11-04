@@ -7,6 +7,7 @@
 import Link from "next/link";
 import type { Cta } from "@/data/motherland";
 import { cn } from "@/lib/utils";
+import { FitLine } from "./fit-line";
 import { RiseText } from "./rise-text";
 
 /** The page column, wide like the reference site's (up to 120rem, a 3rem gutter from xl); the rails line up to it. */
@@ -56,7 +57,7 @@ export function SectionHead({ id, title, lede, cta, tone = "light", className }:
     <div className={cn("grid items-end gap-x-12 gap-y-7 lg:grid-cols-[minmax(0,1fr)_auto]", className)}>
       <div className="flex min-w-0 flex-col gap-4">
         <RiseText id={id} text={title} className={cn(DISPLAY, dark ? "text-white" : "text-ml-ink")} />
-        {lede ? <p className={cn(LEDE, dark ? "text-white/80" : "text-ml-ink/80")}>{lede}</p> : null}
+        {lede ? <FitLine text={lede} className={cn(LEDE, "ml-lede", dark ? "text-white/80" : "text-ml-ink/80")} /> : null}
       </div>
       {cta ? <NextPage cta={cta} tone={tone} className="justify-self-start lg:mb-1" /> : null}
     </div>

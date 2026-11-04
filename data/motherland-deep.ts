@@ -60,13 +60,13 @@ const commonsFilm = (title: string, file: string, author: string, license: strin
 
 const SUNDARBANS_FILM = commonsFilm("Kochikhali, the Sundarbans", "sundarbans-kochikhali", "Yahya", "CC BY-SA 4.0", "Kochikhali point, Sundarbans.webm");
 const METRO_FILM = commonsFilm("A train arriving on the Dhaka Metro", "metro-uttara", "Mehedi Abedin", "CC BY-SA 4.0", "Train arriving at Uttara Center metro station.webm");
-const NEW_YEAR_FILM = commonsFilm("New Year celebrations in Dhaka", "new-year-dhaka", "MdsShakil", "CC BY-SA 4.0", "New year celebrations in Dhaka 02.webm");
+const NEW_YEAR_FILM = commonsFilm("New Year fireworks over Dhaka", "new-year-dhaka", "MdsShakil", "CC BY-SA 4.0", "New year celebrations in Dhaka 02.webm");
 
 /** More real footage of Bangladesh for the Videos page. */
 export const MORE_FILMS: Film[] = [
   SUNDARBANS_FILM,
   commonsFilm("Cinematic Bangladesh from the air", "cinematic-bangladesh", "Nishaan Ahmed", "CC BY 3.0", "Cinematic BANGLADESH in 4K - DJI Mini 2 - Part 1.webm"),
-  commonsFilm("Weaving jamdani in Narayanganj", "jamdani-weaving", "Wasiul Bahar", "CC BY-SA 4.0", "Weaving jamdani at BSCIC Jamdani palli, Narayanganj 2.webm"),
+  commonsFilm("Weaving jamdani in Narayanganj", "jamdani-weaving", "Wasiul Bahar", "CC BY-SA 4.0", "Weaving jamdani at BSCIC Jamdani palli, Narayanganj 7.webm"),
   commonsFilm("A Baul song at Ramna Park", "baul-ramna", "Wasiul Bahar", "CC BY-SA 4.0", "Baul song at Ramna Park.webm"),
   commonsFilm("Boat race on the Kaliganga", "boat-race", "Sufe", "CC BY-SA 4.0", "Boat Race in Bangladesh at Kaliganga River.ogv"),
   commonsFilm("Kaptai Lake, Rangamati", "kaptai-lake", "Al Riaz Uddin", "CC BY-SA 4.0", "Kaptai Lake video.webm"),
@@ -141,7 +141,7 @@ export const DEEP: Record<string, Deep> = {
     ],
   },
   culture: {
-    film: NEW_YEAR_FILM,
+    film: MORE_FILMS[2],
     figuresTitle: "Heritage the world has listed",
     figures: [
       { value: "5", label: "Living traditions on UNESCO's lists by 2023", source: { name: "UNESCO Intangible Cultural Heritage", url: "https://ich.unesco.org/en/state/bangladesh-BD" } },

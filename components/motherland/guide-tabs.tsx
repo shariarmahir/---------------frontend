@@ -62,7 +62,7 @@ export function GuideTabs() {
             <p className="font-semibold text-ml-green">{guide.best}</p>
           </div>
           <div>
-            <h4 className="font-bold">Watch out for</h4>
+            <h4 className="text-base font-bold">Watch out for</h4>
             <ul className="mt-2 list-disc space-y-2 pl-5 leading-relaxed text-ml-ink/85 marker:text-ml-red">
               {guide.watch.map((w) => (
                 <li key={w}>{w}</li>
@@ -70,7 +70,7 @@ export function GuideTabs() {
             </ul>
           </div>
           <div>
-            <h4 className="font-bold">Carry</h4>
+            <h4 className="text-base font-bold">Carry</h4>
             <ul className="mt-2 list-disc space-y-2 pl-5 leading-relaxed text-ml-ink/85 marker:text-ml-green">
               {guide.carry.map((c) => (
                 <li key={c}>{c}</li>

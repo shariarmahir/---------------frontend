@@ -12,6 +12,7 @@ import { tilesFor } from "@/lib/motherland-geo";
 import { DEM_TILES, GLYPH_URLS, VECTOR_TILEJSON } from "@/lib/motherland-map-style";
 import { NAME_MAX, NOTE_MAX, REPORT_LABEL, REPORT_TO_CROWD, inBangladesh, isFresh, newPlace, timeAgo, type AddedPlace, type ReportLevel } from "@/lib/motherland-reports";
 import { cn } from "@/lib/utils";
+import { RiseText } from "./rise-text";
 import { COLUMN, DISPLAY, LEDE, pill } from "./kit";
 import type { CanvasPin } from "./map-canvas";
 import { MARK_LABEL, addedStore, choosePlace, reportsStore, setMark, useAdded, useMarks, useMinute, usePlace, useReports, type Mark } from "./travel-store";
@@ -343,13 +344,11 @@ export function GeoMap() {
   const backToList = () => openPanel("list");
 
   return (
-    <section ref={root} id="map" aria-labelledby="map-title" className="relative isolate scroll-mt-(--ml-header) bg-black pt-20 text-white sm:pt-28">
+    <section ref={root} id="map" aria-labelledby="map-title" className="relative isolate scroll-mt-(--ml-header) bg-black pt-12 text-white sm:pt-14 lg:pt-16">
       <div className={cn(COLUMN, "flex flex-wrap items-end justify-between gap-x-12 gap-y-6 pb-10 sm:pb-12")}>
-        <div className="flex max-w-4xl flex-col gap-4">
-          <h2 id="map-title" className={DISPLAY}>
-            Now choose where you&apos;ll go
-          </h2>
-          <p className={cn(LEDE, "text-white/80")}>The real Bangladesh, every river and road. Open a place, tilt the hills, mark where you want to go, and add the places we missed.</p>
+        <div className="flex w-full min-w-0 flex-col gap-4">
+          <RiseText id="map-title" text="Now choose where you'll go" className={cn(DISPLAY, "w-full")} />
+          <p className={cn(LEDE, "max-w-none text-white/80")}>Every river and road. Open a place, tilt the hills and mark where you want to go.</p>
         </div>
         <Link href={STORIES.href} className={pill.onDark}>
           Share your short tour story
@@ -552,12 +551,12 @@ export function GeoMap() {
                 </p>
                 <label className="flex flex-col gap-2">
                   <span className="text-sm font-semibold text-white/70">Name of the place</span>
-                  <input value={draft.name} maxLength={NAME_MAX} onChange={(e) => setDraft({ ...draft, name: e.target.value })} placeholder="Such as Kazaikat river ghat" className={FIELD} />
+                  <input name="place-name" value={draft.name} maxLength={NAME_MAX} onChange={(e) => setDraft({ ...draft, name: e.target.value })} placeholder="Such as Kazaikat river ghat" className={FIELD} />
                 </label>
                 <LevelPicker legend="How crowded is it now?" value={draft.level} onChoose={(level) => setDraft({ ...draft, level })} />
                 <label className="flex flex-col gap-2">
                   <span className="text-sm font-semibold text-white/70">A note for the next traveller (optional)</span>
-                  <textarea value={draft.note} maxLength={NOTE_MAX} rows={2} onChange={(e) => setDraft({ ...draft, note: e.target.value })} placeholder="Best at sunrise. Ask for the boatman at the ghat." className={cn(FIELD, "resize-none")} />
+                  <textarea name="place-note" value={draft.note} maxLength={NOTE_MAX} rows={2} onChange={(e) => setDraft({ ...draft, note: e.target.value })} placeholder="Best at sunrise. Ask for the boatman at the ghat." className={cn(FIELD, "resize-none")} />
                 </label>
                 {formError ? (
                   <p role="alert" className="text-sm font-semibold text-signal-orange">
@@ -656,7 +655,7 @@ export function GeoMap() {
                   <label className="relative block min-w-0 flex-1">
                     <span className="sr-only">Search places</span>
                     <Icon name="search" className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-xl text-white/60" />
-                    <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Place or district" className="min-h-11 w-full rounded-full bg-white/10 pr-3 pl-10 placeholder:text-white/55 focus-visible:outline-2 focus-visible:outline-white" />
+                    <input name="map-search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Place or district" className="min-h-11 w-full rounded-full bg-white/10 pr-3 pl-10 placeholder:text-white/55 focus-visible:outline-2 focus-visible:outline-white" />
                   </label>
                   <button type="button" onClick={surprise} className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full bg-signal-orange px-4 text-sm font-bold text-ml-ink transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
                     <Icon name="casino" className="text-lg" />
@@ -666,7 +665,7 @@ export function GeoMap() {
                 <div className="grid grid-cols-[auto_minmax(0,1fr)] gap-2">
                   <label className="relative block">
                     <span className="sr-only">Kind of place</span>
-                    <select value={kind} onChange={(e) => setKind(e.target.value as PlaceKind | "all")} className="min-h-10 w-full appearance-none rounded-full bg-white/10 pr-8 pl-3.5 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-white [&>option]:text-ml-ink">
+                    <select name="map-kind" value={kind} onChange={(e) => setKind(e.target.value as PlaceKind | "all")} className="min-h-10 w-full appearance-none rounded-full bg-white/10 pr-8 pl-3.5 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-white [&>option]:text-ml-ink">
                       <option value="all">All kinds</option>
                       {(Object.keys(KIND_LABEL) as PlaceKind[]).map((k) => (
                         <option key={k} value={k}>
@@ -678,7 +677,7 @@ export function GeoMap() {
                   </label>
                   <label className="relative block">
                     <span className="sr-only">Landscape</span>
-                    <select value={terrain} onChange={(e) => setTerrain(e.target.value as Terrain | "all")} className="min-h-10 w-full appearance-none truncate rounded-full bg-white/10 pr-8 pl-3.5 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-white [&>option]:text-ml-ink">
+                    <select name="map-terrain" value={terrain} onChange={(e) => setTerrain(e.target.value as Terrain | "all")} className="min-h-10 w-full appearance-none truncate rounded-full bg-white/10 pr-8 pl-3.5 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-white [&>option]:text-ml-ink">
                       <option value="all">Every landscape</option>
                       {(Object.keys(TERRAIN_NAME) as Terrain[]).map((t) => (
                         <option key={t} value={t}>
@@ -740,7 +739,12 @@ export function CrowdBoard() {
 
   const rows = useMemo(() => (now ? PLACES.map((p) => ({ place: p, crowd: crowdAt(p, now) })) : []), [minute]); // eslint-disable-line react-hooks/exhaustive-deps
   const busiest = [...rows].filter((r) => r.crowd.level !== "closed").sort((a, b) => b.crowd.score - a.crowd.score).slice(0, 5);
-  const instead = rows.filter((r) => r.crowd.level === "quiet" && r.crowd.reasons.includes("In season")).slice(0, 5);
+  /* The calmest places open now, those in season first, so this list is never empty. */
+  const inSeason = (r: (typeof rows)[number]) => (r.crowd.reasons.includes("In season") ? 0 : 1);
+  const instead = rows
+    .filter((r) => r.crowd.level !== "closed" && !busiest.includes(r))
+    .sort((a, b) => inSeason(a) - inSeason(b) || a.crowd.score - b.crowd.score)
+    .slice(0, 5);
   const closed = rows.filter((r) => r.crowd.level === "closed");
   const surge = now ? nextSurge(now) : null;
   const clock = now ? new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Dhaka", weekday: "long", day: "numeric", month: "long", hour: "numeric", minute: "2-digit", hour12: true }).format(now) : "";
@@ -794,7 +798,6 @@ export function CrowdBoard() {
                   </a>
                 </li>
               ))}
-              {now && instead.length === 0 ? <li className="py-3 text-white/75">Most quiet places are out of season this month.</li> : null}
             </ul>
             {closed.length ? <p className="mt-4 text-sm text-white/70">Closed this month: {closed.map((c) => c.place.name).join(", ")}.</p> : null}
           </div>

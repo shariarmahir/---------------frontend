@@ -4,6 +4,7 @@
  * explains, then what makes you want to come, and last what you can do next.
  */
 import type { Picture } from "./motherland.ts";
+import { EVENT_PICTURES } from "./motherland-live.ts";
 import { MORE } from "./motherland-more.ts";
 import { PLACE_CREDITS } from "./motherland-places-credits.ts";
 
@@ -43,6 +44,7 @@ export interface MapPin {
   text: string;
   tag?: string;
   link?: Src;
+  picture?: Picture;
 }
 
 export type Block =
@@ -116,6 +118,13 @@ export function blockCredits(blocks: Block[]) {
     if (b.kind === "chapters") b.chapters.forEach(add);
     if (b.kind === "cards" || b.kind === "people") b.cards.forEach(add);
     if (b.kind === "steps") b.steps.forEach(add);
+    if (b.kind === "tool" && b.tool === "calendar") {
+      for (const [id, e] of Object.entries(EVENT_PICTURES)) {
+        const p = e.key ? pic(e.key, e.alt) : e.place ? place(e.place, e.alt) : undefined;
+        if (p) out.push({ label: id, credit: p.credit });
+      }
+    }
+    if (b.kind === "map") b.pins.forEach((m) => { if (m.picture) out.push({ label: m.name, credit: m.picture.credit }); });
     if (b.kind === "moment") out.push({ label: b.title, credit: b.picture.credit });
     if (b.kind === "table" && b.picture) out.push({ label: b.title, credit: b.picture.credit });
     if (b.kind === "lines") b.lines.forEach((l) => { if (l.picture) out.push({ label: l.who, credit: l.picture.credit }); });

@@ -120,7 +120,8 @@ export default function MapCanvas({
 }) {
   const box = useRef<HTMLDivElement>(null);
   const [made, setMap] = useState<MapLibre | null>(null);
-  // A removed map has no style, and touching it throws: treat it as no map at all.
+  // A removed map has no style, and touching it throws: treat it as no map at all. Effects check again,
+  // because a hot reload removes the map between this render and the effects that follow it.
   const map = made?.style ? made : null;
   const [zoom, setZoom] = useState(6);
   const addingRef = useRef(adding);
@@ -194,25 +195,25 @@ export default function MapCanvas({
   }, [map, leftPad]);
 
   useEffect(() => {
-    if (!map) return;
+    if (!map?.style) return;
     map.setLayoutProperty("satellite", "visibility", satellite ? "visible" : "none");
     map.setLayoutProperty("hillshade", "visibility", satellite ? "none" : "visible");
   }, [map, satellite]);
 
   useEffect(() => {
-    if (!map) return;
+    if (!map?.style) return;
     map.setTerrain(tilt ? { source: "dem-3d", exaggeration: 1.8 } : null);
     map.easeTo({ pitch: tilt ? 58 : 0, bearing: tilt ? -14 : 0, duration: 900 });
   }, [map, tilt]);
 
   useEffect(() => {
-    if (!map) return;
+    if (!map?.style) return;
     if (focus) map.flyTo({ center: [focus.lon, focus.lat], zoom: 11, duration: 2400, essential: false });
     else map.fitBounds(BD_BOUNDS, { padding: { top: 30, bottom: 30, left: 30, right: 30 }, duration: 1400, essential: false });
   }, [map, focus]);
 
   useEffect(() => {
-    if (!map || !you) return;
+    if (!map?.style || !you) return;
     const dot = document.createElement("div");
     dot.className = "ml-you";
     dot.setAttribute("aria-label", "You are here");

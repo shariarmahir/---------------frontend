@@ -9,6 +9,7 @@ import { CalendarBoard } from "./culture-calendar";
 import { ConnectBand } from "./connect";
 import { TakaConverter } from "./converter";
 import { FilmWall } from "./film-wall";
+import { FitLine } from "./fit-line";
 import { ANCHOR, BAND_Y, COLUMN, LEDE, SectionHead, pill } from "./kit";
 import { LaunchBand } from "./launch";
 import { Parallax } from "./parallax";
@@ -80,7 +81,7 @@ function CardBody({ card, skin, large }: { card: Card; skin: Skin; large?: boole
   const look = SKIN[skin];
   return (
     <div className={cn("flex flex-1 flex-col gap-3 p-6", large && "lg:p-8")}>
-      <h3 className={cn("font-ml-display leading-[1.06] tracking-[0.01em] text-balance uppercase", large ? "text-[clamp(1.75rem,2.6vw,2.75rem)]" : "text-[clamp(1.5rem,2vw,2.1rem)]")}>{card.title}</h3>
+      <RiseText as="h3" text={card.title} className={cn("w-full font-ml-display tracking-[0.01em] uppercase", large ? "text-[clamp(1.75rem,2.6vw,2.75rem)]" : "text-[clamp(1.5rem,2vw,2.1rem)]", "leading-[1.1]")} />
       <span aria-hidden className={cn("ml-rule mt-0.5 h-1 w-12 shrink-0 rounded-full", look.rule)} />
       <p className={cn("max-w-[62ch] leading-relaxed text-pretty", large && "text-lg", look.soft)}>{card.text}</p>
       {card.facts?.length ? (
@@ -144,6 +145,34 @@ function Wall({ cards, columns, shape = "aspect-4/3" }: { cards: Card[]; columns
   );
 }
 
+/** How many portraits share each row, so that every row is full: 7 is 4 and 3, 9 is three threes. */
+function portraitRows(n: number): number[] {
+  if (n <= 5) return [n];
+  if (n % 4 === 0) return Array.from({ length: n / 4 }, () => 4);
+  if (n % 3 === 0) return Array.from({ length: n / 3 }, () => 3);
+  return [4, ...portraitRows(n - 4)];
+}
+
+const PORTRAIT_SPAN: Record<number, string> = { 2: "lg:col-span-30", 3: "lg:col-span-20", 4: "lg:col-span-15", 5: "lg:col-span-12", 1: "lg:col-span-60" };
+
+/** People: the whole face, in full rows of portraits. */
+function PeopleGrid({ cards }: { cards: Card[] }) {
+  const rows = portraitRows(cards.length);
+  const sizes = rows.flatMap((r) => Array.from({ length: r }, () => r));
+  return (
+    <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-[repeat(60,minmax(0,1fr))]">
+      {cards.map((c, i) => (
+        <Reveal as="li" key={c.title} order={i % sizes[i]} className={cn("flex", PORTRAIT_SPAN[sizes[i]])}>
+          <article className={cn(CARD_SHELL, SKIN.white.card)}>
+            {c.picture ? <CardPhoto picture={c.picture} sizes="(min-width: 1024px) 30vw, (min-width: 640px) 46vw, 92vw" className="aspect-4/5 shrink-0 lg:aspect-auto lg:h-[24rem]" chip={c.meta} /> : null}
+            <CardBody card={c} skin="white" />
+          </article>
+        </Reveal>
+      ))}
+    </ul>
+  );
+}
+
 /** Whatever the count, the row comes out full: walls when the cards divide evenly, the mosaic when they don't. */
 export function CardGrid({ cards, tone, columns, numbered, shape }: { cards: Card[]; tone: BandTone; columns?: 2 | 3 | 4; numbered?: boolean; shape?: string }) {
   const n = cards.length;
@@ -167,7 +196,7 @@ export function Sideways({ id, title, lede, tone, cards }: { id: string; title: 
                 </div>
               ) : null}
               <div className="flex shrink-0 flex-col gap-3 p-6">
-                <h3 className="font-ml-display text-[clamp(1.5rem,2vw,2.1rem)] leading-[1.06] tracking-[0.01em] text-balance uppercase">{c.title}</h3>
+                <RiseText as="h3" text={c.title} className="w-full font-ml-display text-[clamp(1.5rem,2vw,2.1rem)] leading-[1.1] tracking-[0.01em] uppercase" />
                 <p className="leading-relaxed text-pretty text-ml-navy/80">{c.text}</p>
               </div>
             </article>
@@ -192,7 +221,7 @@ function DataCards({ head, rows, tone, picture, hideLastColumn }: { head: string
         <Reveal className="relative hidden lg:block">
           <div className="ml-wipe absolute inset-0 overflow-hidden rounded-[1.25rem] bg-ml-mist">
             <div className="ml-settle absolute inset-0">
-              <Image src={picture.src} alt={picture.alt} fill sizes="40vw" className="object-cover" style={{ objectPosition: picture.focus }} />
+              <Image src={picture.src} alt={picture.alt} fill sizes="100vw" className="object-cover" style={{ objectPosition: picture.focus }} />
             </div>
           </div>
         </Reveal>
@@ -205,9 +234,9 @@ function DataCards({ head, rows, tone, picture, hideLastColumn }: { head: string
             <Reveal as="li" key={r.join("|")} order={i % 2} className={cn("flex", odd && i === rows.length - 1 && "sm:col-span-2")}>
               <div className={cn("ml-card flex w-full flex-col gap-1 rounded-2xl p-6", cardLook)}>
                 <p className="leading-snug font-semibold text-pretty">{r[0]}</p>
-                <p className={cn("mt-auto pt-2 font-ml-display leading-tight tracking-[0.01em] tabular-nums", figure, onNavy && "text-signal-orange")}>{r[1]}</p>
+                <p className={cn("pt-2 font-ml-display tracking-[0.01em] tabular-nums", figure, "leading-tight", onNavy && "text-signal-orange")}>{r[1]}</p>
                 {rest.map((cell, n) => (
-                  <p key={`${n}-${cell}`} className={cn("pt-1 text-sm leading-snug text-pretty", onNavy ? "text-white/70" : "text-ml-navy/65")}>
+                  <p key={`${n}-${cell}`} className={cn("pt-1 text-sm leading-snug text-pretty", n === 0 && "mt-auto", onNavy ? "text-white/70" : "text-ml-navy/65")}>
                     <span className="sr-only">{head[n + 2]}: </span>
                     {cell}
                   </p>
@@ -258,7 +287,7 @@ export function Moment({ id, title, text, picture, cta }: { id: string; title: s
       <span aria-hidden className="absolute inset-0 -z-10 bg-linear-to-t from-ml-navy via-ml-navy/35 to-ml-navy/10" />
       <div className={cn(COLUMN, "flex flex-col items-start gap-4 py-12 lg:py-16")}>
         <RiseText id={`${id}-title`} text={title} className="w-full font-ml-display text-[clamp(2.5rem,7vw,7rem)] leading-[1.02] tracking-[0.01em] uppercase" />
-        {text ? <p className={cn(LEDE, "text-white/90")}>{text}</p> : null}
+        {text ? <FitLine text={text} className={cn(LEDE, "ml-lede text-white/90")} /> : null}
         {cta ? (
           <Link href={cta.href} className={pill.onDark}>
             {cta.label}
@@ -300,7 +329,7 @@ export function BlockView({ block }: { block: Block }) {
     case "people":
       return (
         <Band id={block.id} tone={block.tone} title={block.title} lede={block.lede}>
-          <CardGrid cards={block.cards} tone={block.tone} columns={block.cards.length % 4 === 0 ? 4 : 3} shape="aspect-4/5" />
+          <PeopleGrid cards={block.cards} />
         </Band>
       );
     case "steps":

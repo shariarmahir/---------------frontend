@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { RATE_CHECKED, TAKA_PER_USD } from "@/data/motherland-live";
 import { COLUMN } from "./kit";
+import { RiseText } from "./rise-text";
 
 const NOTES = [1000, 500, 100, 50, 20, 10];
 const taka = (n: number) => `৳${Math.round(n).toLocaleString("en-US")}`;
@@ -39,20 +40,18 @@ export function TakaConverter() {
     <section id="converter" aria-labelledby="converter-title" className="scroll-mt-(--ml-header) bg-signal-orange py-12 text-ml-ink sm:py-14 lg:py-16">
       <div className={`${COLUMN} grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-16`}>
         <div className="flex flex-col gap-5">
-          <h2 id="converter-title" className="font-ml-display text-[clamp(2.5rem,5.4vw,5rem)] leading-[1.02] tracking-[0.01em] uppercase">
-            How much is that in taka?
-          </h2>
-          <p className="max-w-xl text-lg leading-relaxed sm:text-xl">
-            The rate was about ৳122 to ৳123 for a US dollar in {RATE_CHECKED}. Your bank or money changer will give you a little less, so type the rate they show you.
+          <RiseText id="converter-title" text="How much is that in taka?" className="w-full font-ml-display text-[clamp(2.5rem,5.4vw,5rem)] leading-[1.02] tracking-[0.01em] uppercase" />
+          <p className="text-lg leading-relaxed sm:text-xl">
+            ৳122 to ৳123 a dollar in {RATE_CHECKED}. Type your own rate.
           </p>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="flex flex-col gap-2 font-semibold">
               US dollars
-              <input type="number" inputMode="decimal" min={0} value={usd} onChange={(e) => setUsd(e.target.value)} className={FIELD} />
+              <input name="usd" type="number" inputMode="decimal" min={0} value={usd} onChange={(e) => setUsd(e.target.value)} className={FIELD} />
             </label>
             <label className="flex flex-col gap-2 font-semibold">
               Taka for one dollar
-              <input type="number" inputMode="decimal" min={1} step="0.1" value={rate} onChange={(e) => setRate(e.target.value)} className={FIELD} />
+              <input name="rate" type="number" inputMode="decimal" min={1} step="0.1" value={rate} onChange={(e) => setRate(e.target.value)} className={FIELD} />
             </label>
           </div>
           <a href="https://www.bb.org.bd/en/index.php/econdata/exchangerate" target="_blank" rel="noopener noreferrer" className="w-fit underline underline-offset-4">
