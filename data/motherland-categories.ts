@@ -347,11 +347,33 @@ export const CATEGORIES: Category[] = [
       },
       {
         id: "festivals",
-        title: "Festivals",
-        lede: "The year turns with colour.",
+        title: "Festivals & the calendar",
+        lede: "The year turns with colour, and every community's festival is shared beyond it.",
         stories: [
-          { title: "Pohela Falgun", text: "Yellow saris and flower garlands greet the first day of spring.", picture: photo("falgun") },
-          { title: "Pohela Boishakh", text: "The Bangla New Year fills streets with red and white on 14 April.", picture: commons("boishakh", "A Pohela Boishakh celebration") },
+          { title: "Pohela Boishakh", meta: "14 April", text: "The Bangla New Year fills the streets with red and white, the Ramna banyan with song, and the University of Dhaka with the giant masks of the Mangal Shobhajatra.", picture: commons("boishakh", "A Pohela Boishakh celebration") },
+          { title: "Eid", meta: "Twice a year", text: "Eid-ul-Fitr ends the month of fasting and Eid-ul-Adha follows; the cities empty as millions travel home, and new clothes, sweet shemai and visiting fill the days.", picture: photo("mangal-shobhajatra") },
+          { title: "Pohela Falgun", meta: "First day of spring", text: "Yellow saris and flower garlands greet Bosonto, the spring, often kept together with a city full of colour.", picture: photo("falgun") },
+          { title: "Nobanno & Pitha", meta: "Harvest and winter", text: "Nobanno welcomes the new Aman rice, and winter brings the pitha season: steamed and fried rice cakes with date-palm molasses, made at home and sold at village melas.", picture: photo("rice-planting") },
+        ],
+      },
+      {
+        id: "stage-and-screen",
+        title: "Music, film & drama",
+        lede: "From Lalon's songs to a national grief over a television character.",
+        stories: [
+          { title: "A country that loves a song", meta: "Folk to rock", text: "Rabindra Sangeet and Nazrul Geeti, the Bauls and the boatmen's bhatiali, and from the 1990s a roaring band-music scene: Ayub Bachchu, James and the rock of a young, restless Dhaka.", picture: photo("rickshaw-art") },
+          { title: "The night the country stopped", meta: "Humayun Ahmed's 'Baker Bhai'", text: "When the beloved character Baker Bhai faced hanging in Humayun Ahmed's 1990s serial Kothao Keu Nei, viewers marched in protest and, it is often told, even the prime minister was petitioned to spare him. No single writer has held the nation's heart quite like Humayun Ahmed.", picture: photo("parliament") },
+          { title: "Cinema of the delta", meta: "From Zahir Raihan on", text: "Zahir Raihan filmed the language movement; Tareque Masud's Matir Moina reached Cannes. A new wave of film and web drama now carries Bangla stories to the world.", picture: photo("lalbagh-fort") },
+        ],
+      },
+      {
+        id: "days-and-games",
+        title: "National days & games",
+        lede: "The days the whole country keeps, and the games it plays.",
+        stories: [
+          { title: "Ekushey February", meta: "21 February", text: "International Mother Language Day. At dawn, barefoot crowds lay flowers at the Shaheed Minar for those who died in 1952 so Bangla could be a state language.", picture: photo("shaheed-minar") },
+          { title: "Victory & Independence", meta: "16 December · 26 March", text: "Victory Day marks the win of 1971; Independence Day the declaration of 26 March. Parades, songs and the National Martyrs' Memorial at Savar.", picture: photo("martyrs-memorial") },
+          { title: "Kabaddi and cricket", meta: "The national sport, and the national passion", text: "Kabaddi, a game of breath and tag, is the national sport. But it is cricket that stops the country: a Bangladesh match empties the streets and fills every tea stall with a crowd around one screen.", picture: photo("children") },
         ],
       },
     ],
@@ -360,6 +382,7 @@ export const CATEGORIES: Category[] = [
       { label: "Jamdani weaving", value: "2013" },
       { label: "Mangal Shobhajatra", value: "2016" },
       { label: "Rickshaw painting", value: "2023" },
+      { label: "National sport", value: "Kabaddi" },
     ],
     quiz: [
       { question: "Which weave did UNESCO inscribe in 2013?", options: ["Jamdani", "Nakshi kantha", "Tangail saree"], answer: 0, why: "Jamdani is the sheer muslin weave of the Dhaka region." },

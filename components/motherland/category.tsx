@@ -6,6 +6,7 @@ import { DEEP } from "@/data/motherland-deep";
 import { cn } from "@/lib/utils";
 import { CardStack } from "./card-stack";
 import { Figures, Timeline } from "./figures";
+import { Events, Ghosts } from "./events";
 import { Invest } from "./invest";
 import { NatureList } from "./nature-list";
 import { ANCHOR, COLUMN, LEDE, SectionHead, pill } from "./kit";
@@ -165,6 +166,8 @@ export function CategoryPage({ category }: { category: Category }) {
       {rails.map((s, i) => (
         <RailBand key={s.id} sub={s} index={i} />
       ))}
+      {category.slug === "culture" ? <Ghosts /> : null}
+      {category.slug === "culture" ? <Events /> : null}
       {deep.timeline ? <Timeline title={deep.timelineTitle ?? "Timeline"} moments={deep.timeline} /> : null}
       {category.quiz.length ? <Quiz questions={category.quiz} name={category.name} /> : null}
       <MoreCategories current={category.slug} />
