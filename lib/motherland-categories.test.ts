@@ -59,3 +59,42 @@ test("the header's Resources and Invest tabs have their own pages", () => {
   assert.equal(TOPIC_PAGES.resources, "/bangladesh/resources");
   assert.equal(TOPIC_PAGES.invest, "/bangladesh/invest");
 });
+
+test("the native-life lists, seasons and conservation are all filled", async () => {
+  const { NATIVE_LIFE, SEASON_NATURE, WHY_CARE } = await import("../data/motherland-nature.ts");
+  assert.equal(SEASON_NATURE.length, 6, "six seasons");
+  assert.ok(WHY_CARE.length >= 3, "conservation reasons");
+  for (const g of NATIVE_LIFE) {
+    assert.ok(g.items.length > 0, `${g.id} has no items`);
+    assert.ok(existsSync(`public/motherland/photos/${g.photo}.jpg`), `${g.id} photo`);
+    for (const it of g.items) assert.ok(it.name && it.note, `${g.id}: an item is missing text`);
+  }
+});
+
+test("every culture event has a venue and either a ticket link or none (shown as at the venue)", async () => {
+  const { EVENTS, GHOSTS } = await import("../data/motherland-culture-events.ts");
+  assert.ok(EVENTS.length > 0 && GHOSTS.length > 0);
+  for (const e of EVENTS) {
+    assert.ok(e.title && e.venue && e.city && e.when, `${e.id} is missing a field`);
+    assert.ok(e.ticket === null || e.ticket.startsWith("https://"), `${e.id} ticket must be a link or null`);
+  }
+});
+
+test("the trip planner regions each have transport, sights and a photo on disk", async () => {
+  const { REGIONS } = await import("../data/motherland-trip.ts");
+  assert.ok(REGIONS.length > 0);
+  for (const r of REGIONS) {
+    assert.ok(r.transport.length > 0, `${r.id} has no transport`);
+    assert.ok(r.attractions.length > 0, `${r.id} has no sights`);
+    assert.ok(r.dailyUsd > 0, `${r.id} daily cost`);
+    assert.ok(existsSync(`public/motherland/photos/${r.photo}.jpg`), `${r.id} photo`);
+  }
+});
+
+test("the People page adds voices and women, and names no excluded politician", async () => {
+  const { MORE_VOICES, WOMEN_POWER } = await import("../data/motherland-people.ts");
+  assert.ok(MORE_VOICES.length >= 5 && WOMEN_POWER.length >= 3);
+  const banned = ["hasina", "mujib", "khaleda", "ziaur rahman", " zia"];
+  const text = JSON.stringify([...MORE_VOICES, ...WOMEN_POWER]).toLowerCase();
+  for (const name of banned) assert.ok(!text.includes(name), `People must not name "${name.trim()}"`);
+});

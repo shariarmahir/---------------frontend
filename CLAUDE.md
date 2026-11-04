@@ -114,6 +114,18 @@ Brief specifies 16:6 (~2.67:1), an ultra-wide letterbox. At that ratio on a phon
                       Copy: data/motherland-categories.ts; figures, films and timelines: data/motherland-deep.ts (every figure names
                       its source, reused from the Facts page where it can be); components/motherland/category.tsx; checked by
                       lib/motherland-categories.test.ts. Photos: licensed Unsplash and Commons only, 2400px where the source has it.
+                      Deepened and brightened (Mahir, 2026-11-04): the category pages wear a LIGHT dress — paper (ml-ground),
+                      navy (ml-navy = #0b1849) and gold, NO black/dark-green bands (CardStack passes tone="navy"); the hero's
+                      "MOTHERLAND" eyebrow is replaced by a quiet back-chip. The landing page and /bangladesh/facts keep their
+                      dark dress. Per-page depth: Taka is a foreigner money guide (changing money, bKash/Nagad/Rocket, rules;
+                      rates marked illustrative); Nature adds native-life lists, six seasons and conservation (data/
+                      motherland-nature.ts, nature-list.tsx); Culture adds the calendar, music/film/drama (Baker Bhai), national
+                      days & games, Banglar Bhoot folklore and a "What's on" events board with a ticket-link popup (data/
+                      motherland-culture-events.ts, events.tsx); People adds more voices and a women-power roll with NO
+                      politicians (data/motherland-people.ts, people-extra.tsx); Invest adds opportunity-by-sector and a
+                      "Connect for details" → /signup; Pro & Con opens with the platform's stance toward the government.
+                      Geography & Travel gains a working trip planner — planTrip in lib/motherland-trip.ts (tested), data/
+                      motherland-trip.ts, trip-planner.tsx — placed high on the page; it is a plain data tool, never called "AI".
 /bangladesh/facts    Facts of Bangladesh (Mahir, 2026-11-04), the "Facts" tab, laid out after Facts about Germany
                       (tatsachen-ueber-deutschland.de) in MOTHERLAND's colours and type, with its 14 topics answered for
                       Bangladesh. Its two required sections are "Why we are the best" and "Why we are not doing best":
