@@ -95,6 +95,16 @@ export const CATEGORIES: Category[] = [
         ],
       },
       {
+        id: "rich-then-robbed",
+        title: "Rich, then robbed, then risen",
+        lede: "Bengal was once among the richest lands on Earth. It was broken, and it has stood up again.",
+        stories: [
+          { title: "The richest province", meta: "Mughal Bengal", text: "Under the Mughals, Bengal was the empire's wealthiest province and a workshop of the world, famed for its muslin, silk and shipbuilding. By some estimates it made up a large share of the whole subcontinent's output.", picture: photo("terracotta") },
+          { title: "The fall", meta: "After Plassey, 1757", text: "When the East India Company took Bengal, the wealth was drained away, the fine muslin trade was ruined, and the famine of 1770 killed millions. A rich land was made poor.", picture: photo("lalbagh-fort") },
+          { title: "Standing up again", meta: "1947 to today", text: "Partition, then a language defended in 1952, then a nation won in 1971, then a rebuilding against flood and poverty that the world once thought hopeless — and a climb to middle income. The story of Bangladesh is a story of rising.", picture: photo("padma-bridge") },
+        ],
+      },
+      {
         id: "road-to-freedom",
         title: "The road to freedom",
         lede: "A language defended in 1952, and a country won in 1971.",
@@ -151,6 +161,17 @@ export const CATEGORIES: Category[] = [
         stories: [
           { title: "Rice science that feeds millions", text: "The Bangladesh Rice Research Institute has released more than a hundred rice varieties, including ones that survive floods, salt water and drought.", picture: photo("rice-planting") },
           { title: "Money on every phone", text: "Mobile financial services let tens of millions of people send, save and pay with a basic phone, many of them for the first time.", picture: photo("mobile-money") },
+        ],
+      },
+      {
+        id: "where-science-grows",
+        title: "Where science grows",
+        lede: "The universities and institutes that train the minds, and the work that is still ahead.",
+        stories: [
+          { title: "The universities", meta: "BUET, Dhaka, and the engineering campuses", text: "BUET and the University of Dhaka lead a wide field of public and private universities; the engineering campuses at Rajshahi, Khulna and Chattogram train the builders of the delta. Thousands graduate into IT, engineering and research every year.", picture: photo("parliament") },
+          { title: "The research institutes", meta: "icddr,b, BRRI, BCSIR", text: "icddr,b in Dhaka, where oral rehydration was proven, is known worldwide for public-health science; the rice and agricultural institutes keep the country fed; and national science bodies carry the work forward.", picture: photo("rice-planting") },
+          { title: "Olympiads and new ventures", meta: "A rising generation", text: "Bangladeshi students win medals at the international mathematics, physics and informatics olympiads, and a young start-up scene is turning that talent into companies. Science fairs and hackathons run across the country through the year — follow a university's page to find the next one and take part.", picture: photo("metro-rail") },
+          { title: "We are on the way", meta: "What comes next", text: "A satellite in orbit, a bridge over the Padma, a metro under Dhaka — each was once called impossible. The work on health AI, clean energy and home-grown chips is only beginning. The country is not finished; it is on the way.", picture: photo("padma-bridge") },
         ],
       },
       {
@@ -514,6 +535,16 @@ export const CATEGORIES: Category[] = [
           { title: "Money sent home", text: "The courage of millions working abroad becomes billions of dollars for their families each year.", picture: photo("taka-notes") },
         ],
       },
+      {
+        id: "energy-and-position",
+        title: "Energy and position",
+        lede: "Power under the ground, sun overhead, and a place on the map that matters.",
+        stories: [
+          { title: "Natural gas", meta: "The country's main fuel", text: "Domestic natural gas has long run the power plants, the fertiliser factories and the kitchens. New offshore blocks in the Bay of Bengal are being opened to exploration to keep the lights on.", picture: photo("metro-rail") },
+          { title: "Sun and new power", meta: "A climbing grid", text: "From near-darkness a generation ago, almost the whole country now has electricity, and solar power — from village home systems to large parks — is being built to meet a fast-rising demand.", picture: photo("padma-bridge") },
+          { title: "A bridge between regions", meta: "Bay of Bengal & the land routes", text: "Bangladesh sits where South and South-East Asia meet, with a coastline on a busy sea and land routes toward north-east India, Myanmar and beyond — a natural corridor for trade.", picture: photo("coxs-bazar") },
+        ],
+      },
     ],
     facts: [
       { label: "Rice harvests a year", value: "3" },
@@ -521,6 +552,7 @@ export const CATEGORIES: Category[] = [
       { label: "Inland fish catch", value: "3rd largest" },
       { label: "Jute grower", value: "2nd largest" },
       { label: "Sea area", value: "118,813 km²" },
+      { label: "Median age", value: "Under 30" },
     ],
     quiz: [
       { question: "Which is NOT one of Bangladesh's three rice crops?", options: ["Aus", "Aman", "Rabi"], answer: 2, why: "The three are Aus, Aman and Boro." },
@@ -546,6 +578,19 @@ export const CATEGORIES: Category[] = [
           { title: "Money on every phone", meta: "Mobile financial services", text: "Tens of millions of people already send, save and pay by phone, a ready base for digital business.", picture: photo("mobile-money") },
         ],
       },
+      {
+        id: "where-the-opportunity-is",
+        title: "Where the opportunity is",
+        lede: "The sectors with room to grow, and the strength of the land or the people behind each one.",
+        stories: [
+          { title: "Garments & textiles", meta: "Built on a skilled workforce", text: "The world's second-largest clothing exporter is climbing from basic wear to higher-value fashion, man-made fibres and its own fabric mills. The opportunity is in design, backward linkage and green factories — Bangladesh already has the most LEED-certified green factories in the world.", picture: photo("garments") },
+          { title: "IT & digital services", meta: "Built on a young, online people", text: "A vast population under thirty, hundreds of thousands of freelancers and growing software exports make this one of the fastest-opening sectors. The opportunity is in outsourcing, fintech on the mobile-money base, and the digital services a 170-million market will buy.", picture: photo("mobile-money") },
+          { title: "Agro-processing", meta: "Built on the delta", text: "The third-largest rice grower and a top producer of fish, jute, tea and vegetables still exports most of it raw. The opportunity is in processing, cold chains and packaged food, for the home market first and then the region.", picture: photo("srimangal-tea") },
+          { title: "Leather & light engineering", meta: "Built on raw material and labour", text: "A large livestock base feeds a leather and footwear industry moving into finished goods, while light engineering supplies parts the country once imported. Both offer room for partners with technology and buyers.", picture: photo("handloom") },
+          { title: "Energy & the blue economy", meta: "Built on gas, sun and a wide sea", text: "Power demand climbs with the economy, opening solar, LNG and grid work; and the 118,813 km² of Bay of Bengal won at tribunal in 2012 and 2014 open fisheries, ports and offshore energy.", picture: photo("kuakata") },
+          { title: "Tourism & hospitality", meta: "Built on an undiscovered country", text: "The world's longest sea beach, the only mangrove with tigers and hills few outsiders have seen are barely built for visitors yet. The opportunity is in hotels, tour operations and air links for a market just beginning.", picture: photo("coxs-bazar") },
+        ],
+      },
     ],
     facts: [
       { label: "Goods exports", value: "About $48bn" },
@@ -553,7 +598,11 @@ export const CATEGORIES: Category[] = [
       { label: "Remittances, FY26", value: "$35.56bn" },
       { label: "People", value: "169.8 million" },
     ],
-    quiz: [],
+    quiz: [
+      { question: "In which export does Bangladesh rank second in the world?", options: ["Leather", "Clothing", "Tea"], answer: 1, why: "It is the world's second-largest exporter of garments." },
+      { question: "What opened the blue economy of the Bay of Bengal to Bangladesh?", options: ["A 2022 bridge", "Maritime tribunals in 2012 and 2014", "A 2018 satellite"], answer: 1, why: "International tribunals settled 118,813 km² of sea in Bangladesh's favour." },
+      { question: "What underpins the IT and digital-services opportunity?", options: ["A young, online population", "Oil reserves", "A cold climate"], answer: 0, why: "A vast population under thirty, already using mobile money, is the base." },
+    ],
   },
 ];
 

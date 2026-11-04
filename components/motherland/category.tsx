@@ -9,6 +9,7 @@ import { Figures, Timeline } from "./figures";
 import { Events, Ghosts } from "./events";
 import { Invest } from "./invest";
 import { NatureList } from "./nature-list";
+import { PeopleExtra } from "./people-extra";
 import { ANCHOR, COLUMN, LEDE, SectionHead, pill } from "./kit";
 import { PhotoCard } from "./photo-card";
 import { Quiz } from "./quiz";
@@ -143,6 +144,14 @@ export function CategoryPage({ category }: { category: Category }) {
       {category.facts.length ? <Facts facts={category.facts} /> : null}
       {category.body === "debates" ? (
         <section aria-label={category.name} className="bg-ml-ground py-20 text-ml-ink sm:py-28">
+          <div className={cn(COLUMN, "mb-12")}>
+            <div className="rounded-2xl border-l-4 border-ml-green bg-white p-7 ring-1 ring-ml-ink/10 sm:p-9">
+              <p className="text-sm font-semibold tracking-wide text-ml-green uppercase">Our stance</p>
+              <p className="mt-3 max-w-4xl text-lg leading-relaxed text-pretty text-ml-ink/85 sm:text-xl">
+                MOTHERLAND exists to represent Bangladesh to the world and to support its development, by putting the information a visitor, a partner or an investor needs in one simple place. It is not in conflict with the government. We welcome the government to collaborate with us and be part of this work. Our only goal is to lift all of Bangladesh, and every one of its people, together.
+              </p>
+            </div>
+          </div>
           <TakeASide debates={PROCON.debates} className={COLUMN} />
           <div className={cn(COLUMN, "mt-12 flex flex-wrap items-center justify-between gap-6 rounded-2xl bg-ml-navy p-6 text-white sm:p-8")}>
             <p className="max-w-2xl text-xl leading-snug font-bold text-balance">Want the figures behind the argument? We publish the best and the worst of Bangladesh, with sources.</p>
@@ -163,11 +172,25 @@ export function CategoryPage({ category }: { category: Category }) {
       {category.slug === "nature" ? <NatureList /> : null}
       {deep.figures ? <Figures title={deep.figuresTitle ?? "In numbers"} figures={deep.figures} /> : null}
       {category.slug === "invest" ? <Invest /> : null}
+      {category.slug === "invest" ? (
+        <section aria-label="Talk to us about investing" className="bg-ml-navy py-16 text-white sm:py-20">
+          <div className={cn(COLUMN, "flex flex-wrap items-center justify-between gap-6 rounded-2xl bg-white/5 p-7 ring-1 ring-white/12 sm:p-9")}>
+            <div className="flex max-w-2xl flex-col gap-2">
+              <h2 className="font-ml-display text-[clamp(1.75rem,3.2vw,2.75rem)] leading-none tracking-[0.01em] uppercase">Want the detail behind a sector?</h2>
+              <p className="text-lg leading-snug text-pretty text-white/80">Tell us the sector and region you are looking at, and we will put you in touch with the right people and the figures that matter.</p>
+            </div>
+            <Link href="/signup" className={pill.onDark}>
+              Connect for details
+            </Link>
+          </div>
+        </section>
+      ) : null}
       {rails.map((s, i) => (
         <RailBand key={s.id} sub={s} index={i} />
       ))}
       {category.slug === "culture" ? <Ghosts /> : null}
       {category.slug === "culture" ? <Events /> : null}
+      {category.slug === "people" ? <PeopleExtra /> : null}
       {deep.timeline ? <Timeline title={deep.timelineTitle ?? "Timeline"} moments={deep.timeline} /> : null}
       {category.quiz.length ? <Quiz questions={category.quiz} name={category.name} /> : null}
       <MoreCategories current={category.slug} />
