@@ -1,95 +1,199 @@
 /**
- * The trip planner's compute: from the regions a visitor picks, a season and a
- * number of days, it works out an approximate cost, the cheapest way in, a
- * day-by-day route, warnings where a place is out of season, and nearby
- * regions to add. Pure and deterministic — no clock, no randomness — so it is
- * easy to test and gives the same answer every time. Costs are illustrative.
+ * The planner's working: reads a plain question, then builds a route, a cost
+ * and warnings from the tables in data/motherland-trip.ts. Pure, with no clock
+ * and no randomness, so the same question always gets the same answer.
  */
-import { REGIONS, type Region, type Season, type Transport } from "../data/motherland-trip.ts";
+import { MONTHS, REGIONS, linkBetween, type Leg, type LegKind, type Region, type SeasonNote } from "../data/motherland-trip.ts";
 
-export interface RouteDay {
-  day: number;
-  region: string;
-  regionName: string;
-  focus: string;
+export const TAKA_PER_USD = 122.5;
+
+export type Style = "budget" | "comfort";
+
+export interface TripRequest {
+  regions: string[];
+  /** 1 to 12. */
+  month: number;
+  days: number;
+  prefer: LegKind;
+  style: Style;
+  budgetBdt?: number | null;
+}
+
+export interface PlannedLeg {
+  from: string;
+  to: string;
+  how: string;
+  mode: string;
+  fare: number;
+  hours: number;
+  checked: boolean;
+}
+
+export interface PlannedStop {
+  region: Region;
+  days: number;
+  doing: string[];
+  note: SeasonNote | null;
 }
 
 export interface TripPlan {
-  days: number;
-  /** Lodging, food and local travel for the stay, in US dollars. */
-  lodgingFoodUsd: number;
-  /** Lodging/food plus the transport legs, in US dollars. */
+  stops: PlannedStop[];
+  legs: PlannedLeg[];
+  stayBdt: number;
+  travelBdt: number;
+  totalBdt: number;
   totalUsd: number;
-  /** The cheapest way into each chosen region. */
-  transport: Transport[];
-  route: RouteDay[];
-  seasonWarnings: string[];
-  /** Region ids worth adding, not already chosen. */
-  nearby: string[];
+  warnings: { level: "closed" | "caution"; text: string }[];
+  nearby: Region[];
+  overBudgetBy: number;
+  days: number;
 }
 
-/** Which regions sit near which, for the "you might also like" suggestions. */
-const NEIGHBOURS: Record<string, string[]> = {
-  dhaka: ["sylhet", "rajshahi", "coxs-bazar"],
-  "coxs-bazar": ["bandarban", "sundarbans"],
-  sylhet: ["dhaka"],
-  bandarban: ["coxs-bazar"],
-  sundarbans: ["kuakata", "coxs-bazar"],
-  kuakata: ["sundarbans"],
-  rajshahi: ["dhaka"],
-};
+const byId = (id: string) => REGIONS.find((r) => r.id === id);
 
-/** A taka fare turned into round US dollars, at an illustrative ৳115 to the dollar. */
-const TAKA_TO_USD = 115;
-const toUsd = (taka: number) => Math.round(taka / TAKA_TO_USD);
-
-export function cheapestTransport(region: Region): Transport | null {
-  const legs = region.transport.filter((t) => t.fare > 0);
-  if (legs.length === 0) return null;
-  return legs.reduce((best, t) => (t.fare < best.fare ? t : best));
+export function pickLeg(region: Region, prefer: LegKind): Leg {
+  const fit = region.legs.filter((l) => l.kinds.includes(prefer));
+  return (fit.length ? fit : region.legs).reduce((best, l) => (l.fare < best.fare ? l : best));
 }
 
-const byId = (id: string): Region | undefined => REGIONS.find((r) => r.id === id);
+const distance = (a: { lat: number; lon: number }, b: { lat: number; lon: number }) => Math.hypot(a.lat - b.lat, a.lon - b.lon);
 
-export function planTrip(regionIds: string[], season: Season, days: number): TripPlan {
-  const chosen = regionIds.map(byId).filter((r): r is Region => Boolean(r));
-  const empty: TripPlan = { days, lodgingFoodUsd: 0, totalUsd: 0, transport: [], route: [], seasonWarnings: [], nearby: [] };
-  if (chosen.length === 0 || days < 1) return { ...empty, days: Math.max(0, days) };
+/** Visit the nearest next place first, so the route does not zigzag across the country. */
+export function orderStops(ids: string[]) {
+  const left = [...new Set(ids)].map(byId).filter((r): r is Region => Boolean(r));
+  const home = byId("dhaka")!;
+  const order: Region[] = left.some((r) => r.id === "dhaka") ? [home] : [];
+  let rest = left.filter((r) => r.id !== "dhaka");
+  let here = home;
+  while (rest.length) {
+    const next = rest.reduce((a, b) => (distance(here, b) < distance(here, a) ? b : a));
+    order.push(next);
+    rest = rest.filter((r) => r.id !== next.id);
+    here = next;
+  }
+  return order;
+}
 
-  // Spread the days across the regions as evenly as possible, in order.
-  const route: RouteDay[] = [];
-  for (let d = 0; d < days; d++) {
-    const region = chosen[Math.floor((d * chosen.length) / days)];
-    const dayInRegion = route.filter((r) => r.region === region.id).length;
-    route.push({
-      day: d + 1,
-      region: region.id,
-      regionName: region.name,
-      focus: region.attractions[dayInRegion % region.attractions.length],
-    });
+const noteFor = (region: Region, month: number) => region.notes.find((n) => n.months.includes(month)) ?? null;
+
+export function planTrip(request: TripRequest): TripPlan {
+  const { month, prefer, style, budgetBdt } = request;
+  const days = Math.max(1, Math.round(request.days));
+  const order = orderStops(request.regions);
+  const empty: TripPlan = { stops: [], legs: [], stayBdt: 0, travelBdt: 0, totalBdt: 0, totalUsd: 0, warnings: [], nearby: [], overBudgetBy: 0, days };
+  if (!order.length) return empty;
+
+  // Days spread as evenly as possible; the earlier stops take any left over.
+  const each = Math.floor(days / order.length);
+  const extra = days % order.length;
+  const stops: PlannedStop[] = order.map((region, i) => {
+    const here = Math.max(1, each + (i < extra ? 1 : 0));
+    return { region, days: here, doing: region.sights.slice(0, Math.max(2, here + 1)), note: noteFor(region, month) };
+  });
+
+  // Dhaka to the first stop, on from stop to stop, and home.
+  const legs: PlannedLeg[] = [];
+  let at = "dhaka";
+  for (const { region } of stops) {
+    if (region.id === at) continue;
+    const link = at === "dhaka" ? undefined : linkBetween(at, region.id);
+    if (link) {
+      legs.push({ from: at, to: region.id, how: link.how, mode: "Road or boat", fare: link.fare, hours: link.hours, checked: false });
+    } else {
+      if (at !== "dhaka") {
+        const back = pickLeg(byId(at)!, prefer);
+        legs.push({ from: at, to: "dhaka", how: `Back to Dhaka: ${back.how}`, mode: back.mode, fare: back.fare, hours: back.hours, checked: Boolean(back.checked) });
+      }
+      const go = pickLeg(region, prefer);
+      legs.push({ from: "dhaka", to: region.id, how: go.how, mode: go.mode, fare: go.fare, hours: go.hours, checked: Boolean(go.checked) });
+    }
+    at = region.id;
+  }
+  if (at !== "dhaka") {
+    const home = pickLeg(byId(at)!, prefer);
+    legs.push({ from: at, to: "dhaka", how: `Home to Dhaka: ${home.how}`, mode: home.mode, fare: home.fare, hours: home.hours, checked: Boolean(home.checked) });
   }
 
-  // Lodging and food: each day costs that day's region's daily rate.
-  const lodgingFoodUsd = route.reduce((sum, d) => sum + (byId(d.region)?.dailyUsd ?? 0), 0);
+  const stayBdt = stops.reduce((sum, s) => sum + s.days * (style === "budget" ? s.region.dayBudget : s.region.dayComfort), 0);
+  const travelBdt = legs.reduce((sum, l) => sum + l.fare, 0);
+  const totalBdt = stayBdt + travelBdt;
 
-  // Transport: the cheapest leg into each chosen region.
-  const transport = chosen.map(cheapestTransport).filter((t): t is Transport => Boolean(t));
-  const transportUsd = transport.reduce((sum, t) => sum + toUsd(t.fare), 0);
+  const warnings: TripPlan["warnings"] = [];
+  for (const { region, note, days: here } of stops) {
+    if (region.usualDays && here > region.usualDays) warnings.push({ level: "caution", text: `${region.name}: most visits last about ${region.usualDays} days. Add a place close by for the rest of your time.` });
+    if (note?.level === "closed") warnings.push({ level: "closed", text: `${region.name} in ${MONTHS[month - 1]}: ${note.text}` });
+    else if (note?.level === "caution") warnings.push({ level: "caution", text: `${region.name} in ${MONTHS[month - 1]}: ${note.text}` });
+    if (region.forVisitors) warnings.push({ level: "caution", text: `${region.name}: ${region.forVisitors}` });
+  }
+  const hoursOnRoad = legs.reduce((sum, l) => sum + l.hours, 0);
+  if (hoursOnRoad / 12 > days / 2) warnings.push({ level: "caution", text: `That is about ${hoursOnRoad} hours of travel in ${days} ${days === 1 ? "day" : "days"}. Add days or drop a stop.` });
+  if (days < stops.length) warnings.push({ level: "caution", text: `${stops.length} places need at least ${stops.length} days.` });
 
-  const seasonWarnings = chosen
-    .filter((r) => !r.bestSeasons.includes(season))
-    .map((r) => `${r.name} is best in another season; ${season} is not its finest.`);
-
-  const chosenIds = new Set(chosen.map((r) => r.id));
-  const nearby = [...new Set(chosen.flatMap((r) => NEIGHBOURS[r.id] ?? []))].filter((id) => !chosenIds.has(id));
+  const chosen = new Set(order.map((r) => r.id));
+  const nearby = [...new Set(order.flatMap((r) => r.nearby))].filter((id) => !chosen.has(id)).map(byId).filter((r): r is Region => Boolean(r)).slice(0, 4);
 
   return {
-    days,
-    lodgingFoodUsd,
-    totalUsd: lodgingFoodUsd + transportUsd,
-    transport,
-    route,
-    seasonWarnings,
+    stops,
+    legs,
+    stayBdt,
+    travelBdt,
+    totalBdt,
+    totalUsd: Math.round(totalBdt / TAKA_PER_USD),
+    warnings,
     nearby,
+    overBudgetBy: budgetBdt && totalBdt > budgetBdt ? totalBdt - budgetBdt : 0,
+    days,
   };
+}
+
+const WORD_NUMBERS: Record<string, number> = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, twelve: 12, fourteen: 14 };
+
+export interface ParsedAsk {
+  regions: string[];
+  days: number | null;
+  month: number | null;
+  budgetBdt: number | null;
+  prefer: LegKind | null;
+  style: Style | null;
+}
+
+/** Read a question such as "5 days in Sylhet in July under 20000 taka, easiest road". */
+export function parseAsk(text: string): ParsedAsk {
+  const ask = ` ${text.toLowerCase().replace(/[’']/g, "'")} `;
+
+  const regions = REGIONS.filter((r) => r.names.some((n) => new RegExp(`(^|[^a-z])${n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}s?([^a-z]|$)`).test(ask))).map((r) => r.id);
+
+  let days: number | null = null;
+  const dayMatch = /(\d{1,2}|one|two|three|four|five|six|seven|eight|nine|ten|twelve|fourteen)[ -]*(day|days|night|nights)\b/.exec(ask);
+  if (dayMatch) days = WORD_NUMBERS[dayMatch[1]] ?? Number(dayMatch[1]);
+  const weekMatch = /(\d|one|two|three|a)[ -]*weeks?\b/.exec(ask);
+  if (!days && weekMatch) days = 7 * (weekMatch[1] === "a" ? 1 : (WORD_NUMBERS[weekMatch[1]] ?? Number(weekMatch[1])));
+  if (days) days = Math.min(30, Math.max(1, days));
+
+  let month: number | null = MONTHS.findIndex((m) => new RegExp(`\\b(${m.toLowerCase()}|${m.slice(0, 3).toLowerCase()})\\b`).test(ask)) + 1 || null;
+  if (!month) {
+    if (/\b(monsoon|rainy|rain|borsha)\b/.test(ask)) month = 7;
+    else if (/\b(winter|sheet|cold|cool)\b/.test(ask)) month = 1;
+    else if (/\b(spring|bosonto|falgun)\b/.test(ask)) month = 3;
+    else if (/\b(summer|grishmo|hot)\b/.test(ask)) month = 5;
+    else if (/\b(autumn|sharat|hemanta)\b/.test(ask)) month = 10;
+  }
+
+  let budgetBdt: number | null = null;
+  const usd = /(?:\$|usd\s*)([\d,]+)|([\d,]+)\s*(?:usd|dollars?)\b/.exec(ask);
+  const bdt = /(?:৳|tk\.?\s*|bdt\s*)([\d,]+)|([\d,]+)\s*(?:k\s*)?(?:taka|tk|bdt)\b/.exec(ask);
+  const toNumber = (s?: string) => (s ? Number(s.replace(/,/g, "")) : 0);
+  if (usd) budgetBdt = Math.round(toNumber(usd[1] ?? usd[2]) * TAKA_PER_USD);
+  else if (bdt) budgetBdt = toNumber(bdt[1] ?? bdt[2]) * (/\dk\s*(taka|tk|bdt)/.test(bdt[0]) ? 1000 : 1);
+
+  let prefer: LegKind | null = null;
+  if (/\b(cheap|cheapest|lowest|budget|low cost|save)\b/.test(ask)) prefer = "cheapest";
+  else if (/\b(easy|easiest|fast|fastest|quick|quickest|comfortable|simple|family|elderly|children|kids)\b/.test(ask)) prefer = "easiest";
+  else if (/\b(fun|entertaining|scenic|beautiful|adventure|exciting|most enjoyable)\b/.test(ask)) prefer = "fun";
+
+  let style: Style | null = null;
+  if (/\b(backpack|backpacker|cheap|budget|student)\b/.test(ask)) style = "budget";
+  else if (/\b(luxury|comfort|comfortable|family|honeymoon|premium)\b/.test(ask)) style = "comfort";
+
+  return { regions, days, month, budgetBdt, prefer, style };
 }

@@ -38,7 +38,42 @@ const glance = (label: string, shown: string): Figure => {
   return { value: row.value, label: shown, source: GLANCE.source };
 };
 
-const [, HAOR, BURIGANGA, EID, RICKSHAWS, FLAG] = VIDEOS.films;
+const [, , BURIGANGA, , RICKSHAWS, FLAG] = VIDEOS.films;
+
+/** A film from Wikimedia Commons, stored in public/motherland/video. */
+/** A film from Pixabay, free to use under its content licence. MP4, so it also plays on iPhones. */
+const pixabayFilm = (title: string, file: string, slug: string): Film => ({
+  title,
+  src: { phone: `/motherland/video/${file}-phone.mp4`, desktop: `/motherland/video/${file}.mp4` },
+  poster: `/motherland/video/${file}.jpg`,
+  credit: { author: "Pixabay contributor", source: "Pixabay", sourceUrl: `https://pixabay.com/videos/${slug}/`, license: "Pixabay Content License", licenseUrl: "https://pixabay.com/service/license-summary/" },
+});
+
+const BANDARBAN_FILM = pixabayFilm("The hills of Bandarban", "bandarban-hills", "bandarban-rangamati-landscape-309853");
+
+const commonsFilm = (title: string, file: string, author: string, license: string, name: string): Film => ({
+  title,
+  src: { phone: `/motherland/video/${file}.webm` },
+  poster: `/motherland/video/${file}.jpg`,
+  credit: { author, source: "Wikimedia Commons", sourceUrl: `https://commons.wikimedia.org/wiki/File:${encodeURIComponent(name.replace(/ /g, "_"))}`, license },
+});
+
+const SUNDARBANS_FILM = commonsFilm("Kochikhali, the Sundarbans", "sundarbans-kochikhali", "Yahya", "CC BY-SA 4.0", "Kochikhali point, Sundarbans.webm");
+const METRO_FILM = commonsFilm("A train arriving on the Dhaka Metro", "metro-uttara", "Mehedi Abedin", "CC BY-SA 4.0", "Train arriving at Uttara Center metro station.webm");
+const NEW_YEAR_FILM = commonsFilm("New Year celebrations in Dhaka", "new-year-dhaka", "MdsShakil", "CC BY-SA 4.0", "New year celebrations in Dhaka 02.webm");
+
+/** More real footage of Bangladesh for the Videos page. */
+export const MORE_FILMS: Film[] = [
+  SUNDARBANS_FILM,
+  commonsFilm("Cinematic Bangladesh from the air", "cinematic-bangladesh", "Nishaan Ahmed", "CC BY 3.0", "Cinematic BANGLADESH in 4K - DJI Mini 2 - Part 1.webm"),
+  commonsFilm("Weaving jamdani in Narayanganj", "jamdani-weaving", "Wasiul Bahar", "CC BY-SA 4.0", "Weaving jamdani at BSCIC Jamdani palli, Narayanganj 2.webm"),
+  commonsFilm("A Baul song at Ramna Park", "baul-ramna", "Wasiul Bahar", "CC BY-SA 4.0", "Baul song at Ramna Park.webm"),
+  commonsFilm("Boat race on the Kaliganga", "boat-race", "Sufe", "CC BY-SA 4.0", "Boat Race in Bangladesh at Kaliganga River.ogv"),
+  commonsFilm("Kaptai Lake, Rangamati", "kaptai-lake", "Al Riaz Uddin", "CC BY-SA 4.0", "Kaptai Lake video.webm"),
+  NEW_YEAR_FILM,
+  commonsFilm("By metro through Uttara", "metro-journey", "Mehedi Abedin", "CC BY-SA 4.0", "Journey by metro in Uttara.webm"),
+  commonsFilm("A crowd at Sylhet's cricket stadium", "cricket-crowd", "Rocky Masum", "CC BY-SA 4.0", "Spectator at Sylhet International Stadium on March 2023.webm"),
+];
 
 const WORLD_HERITAGE: Figure = { value: "3", label: "UNESCO World Heritage sites: Bagerhat, Paharpur and the Sundarbans", source: { name: "UNESCO World Heritage Centre", url: "https://whc.unesco.org/en/statesparties/bd" } };
 
@@ -59,16 +94,16 @@ export const DEEP: Record<string, Deep> = {
       { when: "1757", text: "The East India Company defeats the Nawab of Bengal at Plassey, and British rule begins." },
       { when: "1947", text: "Partition makes East Bengal the eastern wing of Pakistan." },
       { when: "1952", text: "On 21 February police fire on students marching for Bangla as a state language." },
-      { when: "1966", text: "The Six-Point Programme demands self-rule for East Pakistan." },
       { when: "1971", text: "Independence is declared on 26 March. Victory comes on 16 December." },
       { when: "1972", text: "Bangladesh adopts its constitution and the taka." },
       { when: "1974", text: "Bangladesh joins the United Nations." },
       { when: "1999", text: "UNESCO declares 21 February International Mother Language Day." },
       { when: "2015", text: "The World Bank moves Bangladesh up to lower-middle income." },
-      { when: "2024", text: "A student-led uprising in July and August ends the government of Sheikh Hasina." },
+      { when: "2024", text: "A student-led uprising in July and August changes the government." },
     ],
   },
   "science-tech": {
+    film: METRO_FILM,
     figuresTitle: "What we have built",
     figures: [
       best("6.15 km", "The Padma Bridge, road above and rail below"),
@@ -91,12 +126,12 @@ export const DEEP: Record<string, Deep> = {
     figures: [
       glance("People (Census", "People, in the 2022 census"),
       glance("Can read", "Can read and write"),
-      { value: "2006", label: "Muhammad Yunus and Grameen Bank win the Nobel Peace Prize", source: { name: "The Nobel Prize", url: "https://www.nobelprize.org/prizes/peace/2006/summary/" } },
+      { value: "2021", label: "Dr Firdausi Qadri receives the Ramon Magsaysay Award for her vaccine work", source: { name: "Prothom Alo", url: "https://en.prothomalo.com/bangladesh/fitting-recognition-for-a-pioneering-lifes-work" } },
       { value: "1913", label: "Tagore, who wrote our national anthem, wins the Nobel Prize in Literature", source: { name: "The Nobel Prize", url: "https://www.nobelprize.org/prizes/literature/1913/tagore/facts/" } },
     ],
   },
   nature: {
-    film: HAOR,
+    film: BANDARBAN_FILM,
     figuresTitle: "A wild country",
     figures: [
       { value: "125", label: "Royal Bengal tigers in the Bangladesh Sundarbans in the 2024 census, up from 106 in 2015", source: { name: "Forest Department census, via Dhaka Tribune", url: "https://www.dhakatribune.com/bangladesh/361154/tiger-population-in-sundarbans-rises-to-125" } },
@@ -106,7 +141,7 @@ export const DEEP: Record<string, Deep> = {
     ],
   },
   culture: {
-    film: EID,
+    film: NEW_YEAR_FILM,
     figuresTitle: "Heritage the world has listed",
     figures: [
       { value: "5", label: "Living traditions on UNESCO's lists by 2023", source: { name: "UNESCO Intangible Cultural Heritage", url: "https://ich.unesco.org/en/state/bangladesh-BD" } },
@@ -134,14 +169,15 @@ export const DEEP: Record<string, Deep> = {
     timelineTitle: "The money's story",
     timeline: [
       { when: "1971", text: "Bangladesh Bank is founded in the year of independence." },
-      { when: "1972", text: "The taka replaces the Pakistani rupee." },
+      { when: "1972", text: "The first taka notes are issued on 4 March, replacing the Pakistani rupee." },
       { when: "1983", text: "Grameen Bank becomes a bank in its own right, lending to the rural poor." },
       { when: "2006", text: "Muhammad Yunus and Grameen Bank share the Nobel Peace Prize." },
       { when: "2011", text: "bKash launches, and mobile money starts reaching people with no bank." },
       { when: "2015", text: "Bangladesh reaches lower-middle income." },
+      { when: "2025", text: "New banknotes show the country's monuments and landscapes, with no person on them." },
     ],
   },
-  videos: { film: HERO.film },
+  videos: { film: MORE_FILMS[1] },
   resources: {
     film: HERO.film,
     figuresTitle: "What we were born with",

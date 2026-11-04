@@ -114,18 +114,18 @@ Brief specifies 16:6 (~2.67:1), an ultra-wide letterbox. At that ratio on a phon
                       Copy: data/motherland-categories.ts; figures, films and timelines: data/motherland-deep.ts (every figure names
                       its source, reused from the Facts page where it can be); components/motherland/category.tsx; checked by
                       lib/motherland-categories.test.ts. Photos: licensed Unsplash and Commons only, 2400px where the source has it.
-                      Deepened and brightened (Mahir, 2026-11-04): the category pages wear a LIGHT dress — paper (ml-ground),
-                      navy (ml-navy = #0b1849) and gold, NO black/dark-green bands (CardStack passes tone="navy"); the hero's
-                      "MOTHERLAND" eyebrow is replaced by a quiet back-chip. The landing page and /bangladesh/facts keep their
-                      dark dress. Per-page depth: Taka is a foreigner money guide (changing money, bKash/Nagad/Rocket, rules;
-                      rates marked illustrative); Nature adds native-life lists, six seasons and conservation (data/
-                      motherland-nature.ts, nature-list.tsx); Culture adds the calendar, music/film/drama (Baker Bhai), national
-                      days & games, Banglar Bhoot folklore and a "What's on" events board with a ticket-link popup (data/
-                      motherland-culture-events.ts, events.tsx); People adds more voices and a women-power roll with NO
-                      politicians (data/motherland-people.ts, people-extra.tsx); Invest adds opportunity-by-sector and a
-                      "Connect for details" → /signup; Pro & Con opens with the platform's stance toward the government.
-                      Geography & Travel gains a working trip planner — planTrip in lib/motherland-trip.ts (tested), data/
-                      motherland-trip.ts, trip-planner.tsx — placed high on the page; it is a plain data tool, never called "AI".
+                      Rebuilt from research (Mahir, 2026-11-04): pages wear white, paper, navy and gold, never black or dark green (class
+                      ml-light turns shared dark parts navy); nothing sits above the hero title; each page lists its blocks in reading order,
+                      AIDA-style (data/motherland-pages.ts, data/motherland-page-*.ts, components/motherland/blocks.tsx). Every fact names a source.
+                      Taka is a visitor's money guide with a converter; History is three acts (rich, fallen, standing up); Nature has native species,
+                      the rarest things, six seasons, why and how to save it; Culture has a dated calendar, Banglar Bhoot in the middle, rock and the 90s
+                      (Baker Bhai), films, sports, a map of cultural places, and a corner "Get tickets" popup; Science has world achievements, universities,
+                      SpaceX's launch film (click to load), a corner "join now" popup, and closes on "We are on the way"; Invest has market data, sectors, a
+                      map of where to locate, and Connect for details (opens the visitor's email; no server yet); People holds NO political biography at
+                      all, by Mahir's instruction. Pro & Con opens with Mahir's policy line. Photos and films: public/motherland/more and video, licensed
+                      Commons only, credited (data/motherland-more.ts is generated; a card with no photo is set in type). Films say where they were really
+                      filmed. Rates, fares and event dates: data/motherland-live.ts, data/motherland-trip.ts, checked November 2026, re-check when they age.
+                      Card system (Mahir, 2026-11-04, after he rejected text rows): NO row sections on these pages. Every story, step and table row is a card with a photograph (blocks.tsx; lib/motherland-mosaic.ts lays them out in wide pairs and threes so rows line up), gold tag on the photo, navy, white and gold skins, a detail panel where facts exist. Under each hero the paragraph that inks itself in on scroll, after visittheusa (INTROS in data/motherland-pages.ts). Motion: card rise and photo wipe (reveal.tsx), sideways-scrolling chapters (pinned-rail.tsx), full-bleed parallax breaks (block kind moment). The colours ml-ink, ml-green, ml-deep, ml-ground and ml-mist are live variables so .ml-light can turn them navy and cool white; the landing page keeps its green.
 /bangladesh/facts    Facts of Bangladesh (Mahir, 2026-11-04), the "Facts" tab, laid out after Facts about Germany
                       (tatsachen-ueber-deutschland.de) in MOTHERLAND's colours and type, with its 14 topics answered for
                       Bangladesh. Its two required sections are "Why we are the best" and "Why we are not doing best":
@@ -138,7 +138,7 @@ Brief specifies 16:6 (~2.67:1), an ultra-wide letterbox. At that ratio on a phon
                       footer) → one narrow line of figures → Top 10 this week (topTen, by season, full-size photos in public/motherland/top;
                       never from Pinterest, licensed sources only) → four old places in the landing page's CardStack, then a rail →
                       a short "When Bangladesh looks best" band of the six seasons, no mind map → hidden gems → crowd alert → know before you go → divisions →
-                      stories band → quiz → other categories → the map, directly above a narrow footer. The map is MapLibre on open
+                      stories band → quiz → other categories → the map → Plan your trip as the last section, above a narrow footer (Mahir, 2026-11-04). The map is MapLibre on open
                       data (OpenFreeMap, Terrain Tiles on AWS; no key), loaded only near the viewport; satellite is Esri **[FLAG:
                       check its terms before public launch]**. public/vendor/maplibre-gl-worker.mjs must match node_modules (a test
                       checks): the worker starts from a blob because Chrome won't start one from the service worker's saved copy.
@@ -147,7 +147,7 @@ Brief specifies 16:6 (~2.67:1), an ultra-wide letterbox. At that ratio on a phon
                       Crowd figures are estimates from the calendar, never live data, and the page says so. "Save for offline"
                       (public/travel-sw.js) stores the map to zoom 10; verified with no server and no network, not just DevTools'
                       offline switch, which gives false failures here. Copy: data/motherland-travel.ts; checked by
-                      lib/motherland-travel.test.ts. /bangladesh/travel/stories is the story contest (top 10, travel wall, XP): sections only until
+                      lib/motherland-travel.test.ts. Plan your trip (trip-planner.tsx, lib/motherland-trip.ts, data/motherland-trip.ts; tested): ask in plain words or choose places, month, days and road (easiest, most enjoyable, cheapest), and it draws the route, adds up the cost from fare tables, warns on closures and permits, and shows ready-made tours and the road map from Dhaka. It reads the question in the browser; with ANTHROPIC_API_KEY set, app/api/motherland/plan also has Claude read it, but prices always come from the tables. /bangladesh/travel/stories is the story contest (top 10, travel wall, XP): sections only until
                       auth arrives, with no invented stories.
 /bangladesh/government  BD Guide (Mahir, 2026-11-01), reached from MOTHERLAND's Gov button: an independent
                       guide to the Bangladesh government. Its home is "All topics and services" (cloned from

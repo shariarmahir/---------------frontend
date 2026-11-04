@@ -8,7 +8,8 @@
  * credited Commons photos. Facts follow that file's rule: only what a
  * published source states plainly, rounded or left out where a figure moves.
  */
-import { BIOGRAPHIES, CULTURE, HISTORY, JOIN, NATURE, RESOURCES, SCIENCE, TAKA, TRAVEL, commons, type Picture, type TopicId } from "./motherland.ts";
+import { pic, place } from "./motherland-blocks.ts";
+import { BIOGRAPHIES, CULTURE, HISTORY, JOIN, NATURE, RESOURCES, SCIENCE, TAKA, TRAVEL, VIDEOS, commons, type Picture, type TopicId } from "./motherland.ts";
 
 export interface Story {
   title: string;
@@ -95,16 +96,6 @@ export const CATEGORIES: Category[] = [
         ],
       },
       {
-        id: "rich-then-robbed",
-        title: "Rich, then robbed, then risen",
-        lede: "Bengal was once among the richest lands on Earth. It was broken, and it has stood up again.",
-        stories: [
-          { title: "The richest province", meta: "Mughal Bengal", text: "Under the Mughals, Bengal was the empire's wealthiest province and a workshop of the world, famed for its muslin, silk and shipbuilding. By some estimates it made up a large share of the whole subcontinent's output.", picture: photo("terracotta") },
-          { title: "The fall", meta: "After Plassey, 1757", text: "When the East India Company took Bengal, the wealth was drained away, the fine muslin trade was ruined, and the famine of 1770 killed millions. A rich land was made poor.", picture: photo("lalbagh-fort") },
-          { title: "Standing up again", meta: "1947 to today", text: "Partition, then a language defended in 1952, then a nation won in 1971, then a rebuilding against flood and poverty that the world once thought hopeless — and a climb to middle income. The story of Bangladesh is a story of rising.", picture: photo("padma-bridge") },
-        ],
-      },
-      {
         id: "road-to-freedom",
         title: "The road to freedom",
         lede: "A language defended in 1952, and a country won in 1971.",
@@ -122,6 +113,7 @@ export const CATEGORIES: Category[] = [
           { title: "A young country", text: "The median age is under 30. Muslims, Hindus, Buddhists, Christians and about fifty ethnic communities live side by side.", picture: photo("children") },
           { title: "Festivals for everyone", text: "Pohela Boishakh and Eid, Durga Puja, Buddha Purnima and Christmas: the country's festivals are shared well beyond the faith or the community that began them.", picture: photo("mangal-shobhajatra") },
           { title: "Village and field", text: "About two in three people still live in rural areas, and the rice harvest still sets the rhythm of the year for millions of families.", picture: photo("rice-planting") },
+          { title: "Girls in school", text: "Bangladesh brought as many girls as boys into its schools, ahead of many richer neighbours, and that change has reshaped work and family across the country.", picture: pic("girl-books", "A girl carrying her books beside a paddy field") ?? photo("children") },
         ],
       },
     ],
@@ -161,26 +153,22 @@ export const CATEGORIES: Category[] = [
         stories: [
           { title: "Rice science that feeds millions", text: "The Bangladesh Rice Research Institute has released more than a hundred rice varieties, including ones that survive floods, salt water and drought.", picture: photo("rice-planting") },
           { title: "Money on every phone", text: "Mobile financial services let tens of millions of people send, save and pay with a basic phone, many of them for the first time.", picture: photo("mobile-money") },
-        ],
-      },
-      {
-        id: "where-science-grows",
-        title: "Where science grows",
-        lede: "The universities and institutes that train the minds, and the work that is still ahead.",
-        stories: [
-          { title: "The universities", meta: "BUET, Dhaka, and the engineering campuses", text: "BUET and the University of Dhaka lead a wide field of public and private universities; the engineering campuses at Rajshahi, Khulna and Chattogram train the builders of the delta. Thousands graduate into IT, engineering and research every year.", picture: photo("parliament") },
-          { title: "The research institutes", meta: "icddr,b, BRRI, BCSIR", text: "icddr,b in Dhaka, where oral rehydration was proven, is known worldwide for public-health science; the rice and agricultural institutes keep the country fed; and national science bodies carry the work forward.", picture: photo("rice-planting") },
-          { title: "Olympiads and new ventures", meta: "A rising generation", text: "Bangladeshi students win medals at the international mathematics, physics and informatics olympiads, and a young start-up scene is turning that talent into companies. Science fairs and hackathons run across the country through the year — follow a university's page to find the next one and take part.", picture: photo("metro-rail") },
-          { title: "We are on the way", meta: "What comes next", text: "A satellite in orbit, a bridge over the Padma, a metro under Dhaka — each was once called impossible. The work on health AI, clean energy and home-grown chips is only beginning. The country is not finished; it is on the way.", picture: photo("padma-bridge") },
+          { title: "Solar in the village", text: "Millions of rural homes got their first electric light from small solar panels on the roof, in one of the largest home solar programmes in the world.", picture: pic("solar-bd", "Solar panels in a green field") ?? photo("rice-planting") },
+          { title: "Warnings before the water", text: "The Flood Forecasting and Warning Centre in Dhaka watches the rivers and publishes forecasts, so that families and farmers can move in time.", picture: pic("flood-boat", "Wooden boats on the wide brown water at Dhaka") ?? photo("sunamganj-haor") },
         ],
       },
       {
         id: "minds-of-science",
         title: "Minds of science",
-        lede: "Two Boses, born in Bengal, who changed physics.",
+        lede: "Born in Bengal, and known wherever physics, buildings or genes are studied.",
         layout: "grid",
         shape: "tall",
-        stories: [life("Satyendra Nath Bose"), life("Jagadish Chandra Bose")],
+        stories: [
+          life("Satyendra Nath Bose"),
+          life("Jagadish Chandra Bose"),
+          { title: "Fazlur Rahman Khan", meta: "1929 to 1982, engineer", text: "Born in Dhaka, he worked out the tube structures that made modern skyscrapers possible, and engineered Chicago's Sears Tower and John Hancock Center.", picture: pic("p-fazlur", "The John Hancock Center in Chicago, one of his towers") ?? photo("metro-rail") },
+          { title: "Maqsudul Alam", meta: "1954 to 2014, genome scientist", text: "He led the Bangladeshi team that decoded the genome of jute, the country's golden fibre, in 2010.", picture: pic("jute-field", "Jute in water, the plant whose genome he decoded") ?? photo("rice-planting") },
+        ],
       },
     ],
     facts: [
@@ -199,7 +187,7 @@ export const CATEGORIES: Category[] = [
     slug: "people",
     topic: "biographies",
     name: "Biographies",
-    lede: "Poets, scientists, reformers and leaders whose work still shapes how Bangladesh thinks, sings and dreams.",
+    lede: "Poets, thinkers, painters, singers, scientists and the women who opened every door. The people who make us proud.",
     hero: photo("flag-mural"),
     subcategories: [
       {
@@ -213,22 +201,24 @@ export const CATEGORIES: Category[] = [
       {
         id: "scientists-and-reformers",
         title: "Scientists and reformers",
-        lede: "Pioneers of physics, and the people who fought for girls' schooling and farmers' freedom.",
+        lede: "Pioneers of physics and chemistry, and the woman who fought for girls' schooling.",
         layout: "grid",
         shape: "tall",
-        stories: [life("Jagadish Chandra Bose"), life("Satyendra Nath Bose"), life("Begum Rokeya"), life("A. K. Fazlul Huq")],
+        stories: [life("Jagadish Chandra Bose"), life("Satyendra Nath Bose"), life("Begum Rokeya"),
+          { title: "Prafulla Chandra Ray", meta: "1861 to 1944, chemist", text: "Born in what is now Khulna division, he founded Bengal Chemicals in 1901 and wrote the history of chemistry in India, and he taught a generation of Bengali scientists.", picture: pic("p-pcray", "A portrait of Prafulla Chandra Ray", "50% 20%") ?? photo("children") },
+        ],
       },
     ],
     facts: [
       { label: "The national poet", value: "Kazi Nazrul Islam" },
       { label: "The Polli Kobi", value: "Jasimuddin" },
       { label: "“Sultana's Dream”", value: "1905" },
-      { label: "Bengal's first Prime Minister", value: "1937" },
+      { label: "First Bangladeshi woman on Everest", value: "2012" },
     ],
     quiz: [
       { question: "Who wrote “Bidrohi” (The Rebel)?", options: ["Kazi Nazrul Islam", "Jibanananda Das", "Jasimuddin"], answer: 0, why: "Nazrul is the national poet of Bangladesh." },
       { question: "Who imagined a world run by women in “Sultana's Dream”?", options: ["Lalon", "Begum Rokeya", "J. C. Bose"], answer: 1, why: "Begum Rokeya wrote it in 1905 and fought for girls' schooling." },
-      { question: "What title is A. K. Fazlul Huq known by?", options: ["Polli Kobi", "Bidrohi Kobi", "Sher-e-Bangla"], answer: 2, why: "Sher-e-Bangla means the Tiger of Bengal." },
+      { question: "Who was the first Bangladeshi woman to climb Everest?", options: ["Sabina Khatun", "Sufia Kamal", "Nishat Majumder"], answer: 2, why: "Nishat Majumder reached the top on 19 May 2012." },
     ],
   },
   {
@@ -249,17 +239,6 @@ export const CATEGORIES: Category[] = [
         ],
       },
       {
-        id: "national-symbols",
-        title: "National symbols",
-        lede: "The bird, the flower and the fish that stand for the country.",
-        layout: "grid",
-        stories: [
-          { title: "Doyel", meta: "The national bird", text: "The magpie-robin, singing from every village yard.", picture: photo("doyel") },
-          { title: "Shapla", meta: "The national flower", text: "The white water lily, opening on ponds and paddy ditches.", picture: photo("shapla") },
-          { title: "Ilish", meta: "The national fish", text: "The hilsa, the silver of the Padma.", picture: photo("hilsa") },
-        ],
-      },
-      {
         id: "wetlands-and-rivers",
         title: "Wetlands and rivers",
         lede: "Water makes this land, and everything that lives on it.",
@@ -267,6 +246,7 @@ export const CATEGORIES: Category[] = [
           { title: "Ratargul", meta: "Sylhet", text: "A freshwater swamp forest, where trees stand in water for months of the year.", picture: photo("swamp-forest") },
           { title: "Tanguar Haor", meta: "Sunamganj", text: "A vast seasonal wetland under the Meghalaya hills, where winter brings flocks of migratory birds.", picture: photo("sunamganj-haor") },
           { title: "Kingfisher", text: "One of the many river birds that flash blue along the delta's canals.", picture: photo("kingfisher") },
+          { title: "Hakaluki Haor", meta: "Moulvibazar and Sylhet", text: "One of the largest wetlands in the country, a sea of water in the rains and a resting place for migrating ducks in winter.", picture: place("hakaluki", "Hakaluki Haor, one of the largest wetlands in the country") },
         ],
       },
     ],
@@ -364,6 +344,7 @@ export const CATEGORIES: Category[] = [
           { title: "Handloom", text: "Hand-spun thread feeds the looms behind Jamdani, the sheer muslin weave inscribed by UNESCO in 2013.", picture: photo("handloom") },
           { title: "Terracotta", text: "Temple walls told in fired clay, a Bengal tradition centuries old.", picture: photo("terracotta") },
           { title: "Pottery", text: "Potters still shape river clay into pots, lamps and toys by hand.", picture: photo("pottery") },
+          { title: "Bamboo and cane", text: "Baskets, mats, fish traps and whole houses, woven by families who have kept the craft for generations.", picture: pic("bamboo-craft", "A woman making bamboo baskets in Bangladesh") ?? photo("pottery") },
         ],
       },
       {
@@ -372,29 +353,22 @@ export const CATEGORIES: Category[] = [
         lede: "The year turns with colour, and every community's festival is shared beyond it.",
         stories: [
           { title: "Pohela Boishakh", meta: "14 April", text: "The Bangla New Year fills the streets with red and white, the Ramna banyan with song, and the University of Dhaka with the giant masks of the Mangal Shobhajatra.", picture: commons("boishakh", "A Pohela Boishakh celebration") },
-          { title: "Eid", meta: "Twice a year", text: "Eid-ul-Fitr ends the month of fasting and Eid-ul-Adha follows; the cities empty as millions travel home, and new clothes, sweet shemai and visiting fill the days.", picture: photo("mangal-shobhajatra") },
-          { title: "Pohela Falgun", meta: "First day of spring", text: "Yellow saris and flower garlands greet Bosonto, the spring, often kept together with a city full of colour.", picture: photo("falgun") },
-          { title: "Nobanno & Pitha", meta: "Harvest and winter", text: "Nobanno welcomes the new Aman rice, and winter brings the pitha season: steamed and fried rice cakes with date-palm molasses, made at home and sold at village melas.", picture: photo("rice-planting") },
-        ],
-      },
-      {
-        id: "stage-and-screen",
-        title: "Music, film & drama",
-        lede: "From Lalon's songs to a national grief over a television character.",
-        stories: [
-          { title: "A country that loves a song", meta: "Folk to rock", text: "Rabindra Sangeet and Nazrul Geeti, the Bauls and the boatmen's bhatiali, and from the 1990s a roaring band-music scene: Ayub Bachchu, James and the rock of a young, restless Dhaka.", picture: photo("rickshaw-art") },
-          { title: "The night the country stopped", meta: "Humayun Ahmed's 'Baker Bhai'", text: "When the beloved character Baker Bhai faced hanging in Humayun Ahmed's 1990s serial Kothao Keu Nei, viewers marched in protest and, it is often told, even the prime minister was petitioned to spare him. No single writer has held the nation's heart quite like Humayun Ahmed.", picture: photo("parliament") },
-          { title: "Cinema of the delta", meta: "From Zahir Raihan on", text: "Zahir Raihan filmed the language movement; Tareque Masud's Matir Moina reached Cannes. A new wave of film and web drama now carries Bangla stories to the world.", picture: photo("lalbagh-fort") },
+          { title: "Eid", meta: "Twice a year", text: "Eid-ul-Fitr ends the month of fasting and Eid-ul-Adha follows; the cities empty as millions travel home, and new clothes, sweet shemai and visiting fill the days.", picture: pic("eid-prayer", "Thousands at Eid prayers at Sholakia in Kishoreganj") ?? { src: VIDEOS.films[3].poster, alt: "Eid morning in the streets of Dhaka", credit: VIDEOS.films[3].credit } },
+          { title: "Pohela Falgun", meta: "First day of spring", text: "Yellow saris and flower garlands greet the spring, and the city fills with colour.", picture: photo("falgun") },
+          { title: "Nobanno & Pitha", meta: "Harvest and winter", text: "Nobanno welcomes the new Aman rice, and winter brings the pitha season: steamed and fried rice cakes with date-palm molasses, made at home and sold at village melas.", picture: pic("pitha", "Traditional rice cakes in Bangladesh") ?? photo("rice-planting") },
+          { title: "Durga Puja", meta: "Autumn", text: "Thousands of painted pavilions go up across the country, open to anyone who wants to look. Dhakeshwari Temple and Shankhari Bazar in Old Dhaka are among the best places to see them.", picture: pic("durga-dhakeshwari", "A Durga Puja pavilion in Dhaka") ?? photo("terracotta") },
+          { title: "Shakrain", meta: "Mid-January, Old Dhaka", text: "All of Old Dhaka climbs on to its roofs to fly kites. By evening there are fire-breathers and fireworks.", picture: pic("shakrain", "Kites over Old Dhaka on Shakrain") ?? photo("lalbagh-fort") },
         ],
       },
       {
         id: "days-and-games",
-        title: "National days & games",
-        lede: "The days the whole country keeps, and the games it plays.",
+        title: "The days the whole country keeps",
+        lede: "Each one remembers a fight, and each one ends in song.",
         stories: [
-          { title: "Ekushey February", meta: "21 February", text: "International Mother Language Day. At dawn, barefoot crowds lay flowers at the Shaheed Minar for those who died in 1952 so Bangla could be a state language.", picture: photo("shaheed-minar") },
-          { title: "Victory & Independence", meta: "16 December · 26 March", text: "Victory Day marks the win of 1971; Independence Day the declaration of 26 March. Parades, songs and the National Martyrs' Memorial at Savar.", picture: photo("martyrs-memorial") },
-          { title: "Kabaddi and cricket", meta: "The national sport, and the national passion", text: "Kabaddi, a game of breath and tag, is the national sport. But it is cricket that stops the country: a Bangladesh match empties the streets and fills every tea stall with a crowd around one screen.", picture: photo("children") },
+          { title: "Ekushey February", meta: "21 February", text: "From midnight, barefoot crowds carry flowers to the Shaheed Minar for those who died in 1952 so that Bangla could be a state language. The world keeps the day as International Mother Language Day.", picture: pic("shaheed-feb21", "People laying flowers at the Shaheed Minar on 21 February") ?? photo("shaheed-minar") },
+          { title: "Independence Day", meta: "26 March", text: "The day independence was declared in 1971. Flowers at the National Martyrs' Memorial at dawn, then a parade and a country full of flags.", picture: photo("martyrs-memorial") },
+          { title: "Victory Day", meta: "16 December", text: "The day the war was won. Parades, concerts and families in red and green, with the flag painted on children's faces.", picture: pic("victory-day", "A Victory Day parade in Bangladesh") ?? commons("surrender1971", "A depiction of the surrender of 1971") },
+          { title: "The Ekushey Book Fair", meta: "All of February", text: "For the whole month of the language martyrs, Dhaka comes out to buy books at the fair around Bangla Academy, and writers sign them on the spot.", picture: pic("dhaka-book-fair", "A child choosing books at the Ekushey Book Fair") ?? photo("shaheed-minar") },
         ],
       },
     ],
@@ -426,51 +400,9 @@ export const CATEGORIES: Category[] = [
     slug: "taka",
     topic: "taka",
     name: "Taka",
-    lede: "A visitor's guide to money in Bangladesh: what the taka is, how to change it, how to pay, and how to stay safe. Rates and prices here are illustrative and change daily.",
+    lede: "Everything a visitor needs to know about money here: how to change it, how to pay, who to call, and the story behind the notes.",
     hero: photo("taka-notes"),
-    subcategories: [
-      {
-        id: "the-money",
-        title: "The money",
-        lede: "The taka has been the country's money since 1972. One taka is a hundred poisha, and the name comes from the Sanskrit ṭaṅka, an old silver coin.",
-        stories: [
-          { title: "What the taka looks like", meta: "Symbol ৳, code BDT", text: "Banknotes run from ৳2 up to ৳1,000, with ৳500 and ৳1,000 the ones you will handle most. Coins are small change and little used. Bangladesh Bank, the central bank, issues the taka, keeps the reserves and sets monetary policy. The notes carry the Shaheed Minar, the Jatiyo Sangsad and the country's harvests.", picture: photo("taka-notes") },
-          { title: "Money on every phone", meta: "Mobile financial services", text: "Tens of millions of people send, save and pay through phone wallets such as bKash, Nagad and Rocket, without ever going into a bank. A visitor cannot open one without a local number and papers, but you will see them used everywhere, and a hotel or guide can pay one for you.", picture: photo("mobile-money") },
-          { title: "A currency built on work", meta: "What gives it value", text: "The taka is backed by what the country makes: the clothes it sews for the world, the harvests of the delta, and the money sent home by millions working abroad. A country once written off now holds steady reserves.", picture: photo("garments") },
-        ],
-      },
-      {
-        id: "changing-money",
-        title: "Changing money as a visitor",
-        lede: "Where to turn your dollars, euros or pounds into taka, and what to expect. Carry your passport; a changer records it.",
-        stories: [
-          { title: "At the airport", meta: "Your first taka", text: "Dhaka's Hazrat Shahjalal airport has bank counters past arrivals. Change a small amount here for the taxi and first day; rates are a little weaker than in the city, so don't change everything at once.", picture: photo("parliament") },
-          { title: "Banks and money changers", meta: "The best rates", text: "Licensed banks and authorised money changers in the city give the fairest rates. US dollars, euros, pounds, Indian rupees and Gulf currencies are all easy to change. Keep the receipt: you need it to change leftover taka back when you leave.", picture: photo("padma-bridge") },
-          { title: "Cards and ATMs", meta: "Visa, Mastercard", text: "ATMs are common in cities and dispense taka on foreign cards; tell your bank you are travelling first. Hotels, airlines and larger shops take cards, but a 1–2% surcharge is common and a machine can be offline, so never rely on cards alone.", picture: photo("metro-rail") },
-          { title: "A rough sense of value", meta: "Illustrative, not a quoted rate", text: "As a feel only: around ৳110–120 to a US dollar in recent years, so $100 is roughly ৳11,000–12,000. A street breakfast might be ৳60–100, a rickshaw hop ৳40–80, a good local meal ৳250–500. Check the day's real rate before you change money.", picture: photo("taka-notes") },
-        ],
-      },
-      {
-        id: "paying-day-to-day",
-        title: "Paying day to day",
-        lede: "Cash still rules the street. Carry small notes, and know which app is doing the work when a local pays by phone.",
-        stories: [
-          { title: "Cash is king", meta: "Keep small notes", text: "Rickshaws, tea stalls, buses, markets and most small shops take only cash, and rarely have change for a ৳1,000 note. Keep a stock of ৳10, ৳20, ৳50 and ৳100 notes for everyday spending, and break big notes at shops or your hotel.", picture: photo("rickshaw-art") },
-          { title: "bKash, Nagad and Rocket", meta: "The phone wallets", text: "These are mobile-money services, not cards: a local sends money by dialling a code or tapping an app, backed by a phone number. Agent booths on every street turn cash into wallet balance and back. As a visitor you will mostly pay cash, but a guide or host can receive and send through these for you.", picture: photo("mobile-money") },
-          { title: "Fares and bargaining", meta: "Agree first", text: "Rickshaws and CNG auto-rickshaws have no meters: agree the fare before you get in. Ride apps such as Uber and Pathao work in Dhaka and Chattogram and show a fixed price, which is the easiest way to avoid haggling. In markets, polite bargaining is normal; in shops with price tags, it is not.", picture: photo("metro-rail") },
-        ],
-      },
-      {
-        id: "rules-and-safety",
-        title: "Rules and staying safe",
-        lede: "A few simple habits keep your money safe and keep you on the right side of the rules.",
-        stories: [
-          { title: "Taking money in and out", meta: "Know the limits", text: "You may bring in foreign currency freely, but large sums must be declared on arrival. The taka is not meant to be taken out of the country, so change what you have left back to foreign currency before you fly, using your exchange receipts.", picture: photo("parliament") },
-          { title: "Avoiding the common traps", meta: "Simple caution", text: "Change money only at banks and authorised changers, never with a stranger on the street. Count your notes before you walk away. Check an ATM for anything odd attached to the slot. Keep cards and most of your cash in your hotel safe, and carry only what you need for the day.", picture: photo("lalbagh-fort") },
-          { title: "If something goes wrong", meta: "999 and tourist police", text: "The national emergency number is 999, answered in Bangla and English. Tourist Police look after visitors at major sites. For a lost card, call your own bank's international line, which is printed on your statement, and freeze the card from its app.", picture: photo("shaheed-minar") },
-        ],
-      },
-    ],
+    subcategories: [],
     facts: [
       { label: "Symbol and code", value: "৳, BDT" },
       { label: "In use since", value: "1972" },
@@ -522,6 +454,7 @@ export const CATEGORIES: Category[] = [
           { title: "Tea gardens", meta: "Sylhet", text: "Rolling estates around Srimangal, and one of the country's oldest export crops.", picture: photo("srimangal-tea") },
           { title: "The mangrove shield", meta: "The Sundarbans", text: "The forest breaks cyclones before they reach the villages behind it, and feeds the fisheries around it.", picture: photo("mangroves") },
           { title: "The haors", meta: "Sunamganj", text: "Vast seasonal wetlands that grow a harvest of rice in the dry months and fish in the wet ones.", picture: photo("sunamganj-haor") },
+          { title: "The hill forests", meta: "Bandarban and Rangamati", text: "Green ridges in the south-east hold the country's highest peaks, its deepest forest and much of its water.", picture: pic("hills-view", "Green hills under an evening sky in Bandarban") ?? photo("bandarban") },
         ],
       },
       {
@@ -533,16 +466,7 @@ export const CATEGORIES: Category[] = [
           { title: "Under thirty", text: "Bangladesh's median age is under 30: a generation ready to learn, build and lead.", picture: photo("children") },
           { title: "Hands that make", text: "Skill runs from the handloom to the garment line, and millions of workers, most of them women, dress the world.", picture: photo("garments") },
           { title: "Money sent home", text: "The courage of millions working abroad becomes billions of dollars for their families each year.", picture: photo("taka-notes") },
-        ],
-      },
-      {
-        id: "energy-and-position",
-        title: "Energy and position",
-        lede: "Power under the ground, sun overhead, and a place on the map that matters.",
-        stories: [
-          { title: "Natural gas", meta: "The country's main fuel", text: "Domestic natural gas has long run the power plants, the fertiliser factories and the kitchens. New offshore blocks in the Bay of Bengal are being opened to exploration to keep the lights on.", picture: photo("metro-rail") },
-          { title: "Sun and new power", meta: "A climbing grid", text: "From near-darkness a generation ago, almost the whole country now has electricity, and solar power — from village home systems to large parks — is being built to meet a fast-rising demand.", picture: photo("padma-bridge") },
-          { title: "A bridge between regions", meta: "Bay of Bengal & the land routes", text: "Bangladesh sits where South and South-East Asia meet, with a coastline on a busy sea and land routes toward north-east India, Myanmar and beyond — a natural corridor for trade.", picture: photo("coxs-bazar") },
+          { title: "Work from anywhere", text: "A young generation sells software, design and data work to clients abroad, and Bangladesh is among the larger suppliers of online freelance work in the world.", picture: pic("laptop", "Hands on a laptop keyboard") ?? photo("mobile-money") },
         ],
       },
     ],
@@ -576,19 +500,6 @@ export const CATEGORIES: Category[] = [
           { title: "New roads to market", meta: "The Padma Bridge, opened 2022", text: "The 6.15 km road and rail bridge ties the south-west to Dhaka and the port of Chattogram for the first time.", picture: photo("padma-bridge") },
           { title: "A city that moves", meta: "Dhaka Metro, opened 2022", text: "The country's first metro line gives the capital's workers a fast way through its traffic.", picture: photo("metro-rail") },
           { title: "Money on every phone", meta: "Mobile financial services", text: "Tens of millions of people already send, save and pay by phone, a ready base for digital business.", picture: photo("mobile-money") },
-        ],
-      },
-      {
-        id: "where-the-opportunity-is",
-        title: "Where the opportunity is",
-        lede: "The sectors with room to grow, and the strength of the land or the people behind each one.",
-        stories: [
-          { title: "Garments & textiles", meta: "Built on a skilled workforce", text: "The world's second-largest clothing exporter is climbing from basic wear to higher-value fashion, man-made fibres and its own fabric mills. The opportunity is in design, backward linkage and green factories — Bangladesh already has the most LEED-certified green factories in the world.", picture: photo("garments") },
-          { title: "IT & digital services", meta: "Built on a young, online people", text: "A vast population under thirty, hundreds of thousands of freelancers and growing software exports make this one of the fastest-opening sectors. The opportunity is in outsourcing, fintech on the mobile-money base, and the digital services a 170-million market will buy.", picture: photo("mobile-money") },
-          { title: "Agro-processing", meta: "Built on the delta", text: "The third-largest rice grower and a top producer of fish, jute, tea and vegetables still exports most of it raw. The opportunity is in processing, cold chains and packaged food, for the home market first and then the region.", picture: photo("srimangal-tea") },
-          { title: "Leather & light engineering", meta: "Built on raw material and labour", text: "A large livestock base feeds a leather and footwear industry moving into finished goods, while light engineering supplies parts the country once imported. Both offer room for partners with technology and buyers.", picture: photo("handloom") },
-          { title: "Energy & the blue economy", meta: "Built on gas, sun and a wide sea", text: "Power demand climbs with the economy, opening solar, LNG and grid work; and the 118,813 km² of Bay of Bengal won at tribunal in 2012 and 2014 open fisheries, ports and offshore energy.", picture: photo("kuakata") },
-          { title: "Tourism & hospitality", meta: "Built on an undiscovered country", text: "The world's longest sea beach, the only mangrove with tigers and hills few outsiders have seen are barely built for visitors yet. The opportunity is in hotels, tour operations and air links for a market just beginning.", picture: photo("coxs-bazar") },
         ],
       },
     ],

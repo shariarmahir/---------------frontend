@@ -18,6 +18,9 @@ export const ANCHOR = "scroll-mt-(--ml-header)";
 /** The big uppercase title, on one line: up to 96px, smaller when the words need it (RiseText fits it). */
 export const DISPLAY = "font-ml-display text-[clamp(2.5rem,6.6vw,6rem)] leading-[1.02] tracking-[0.01em] uppercase";
 
+/** The space above and below a band on the category pages. */
+export const BAND_Y = "py-12 sm:py-14 lg:py-16";
+
 export const LEDE = "max-w-2xl text-lg leading-relaxed text-pretty sm:text-xl";
 
 const PILL_BASE =

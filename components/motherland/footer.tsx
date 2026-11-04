@@ -21,10 +21,15 @@ const LINK = "rounded-sm hover:text-ml-green hover:underline underline-offset-4 
  * the topics, the rest of Kandari-Lab, a standing invitation to join,
  * and every photo and film credit the licences ask for.
  */
+/** A picture used twice on a page is credited once. */
+function oncePerPicture<T extends { label: string; credit: { sourceUrl: string } }>(list: T[]): T[] {
+  return [...new Map(list.map((c) => [c.credit.sourceUrl, c])).values()];
+}
+
 export function MotherlandFooter({ credits, onLanding = true, narrow, children }: { /** A category page credits only what it shows. */ credits?: { label: string; credit: Credit }[]; onLanding?: boolean; /** One slim dark line, for a page that ends on something full-screen. */ narrow?: boolean; /** Anything else the slim line should fold away, such as sources. */ children?: React.ReactNode }) {
   if (narrow) {
     return (
-      <footer className="border-t border-white/10 bg-black text-sm text-white/70">
+      <footer className="border-t border-white/10 bg-ml-navy text-sm text-white/70">
         <div className={cn(COLUMN, "flex flex-wrap items-center gap-x-6 gap-y-2 py-3")}>
           <Link href="/bangladesh" className="rounded-sm text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
             <Logo className="text-[0.7rem]" />
@@ -37,7 +42,7 @@ export function MotherlandFooter({ credits, onLanding = true, narrow, children }
           <details className="open:order-last open:basis-full">
             <summary className="cursor-pointer font-semibold hover:text-white focus-visible:outline-2 focus-visible:outline-white">Photo and film credits</summary>
             <ul className="mt-3 grid gap-x-8 gap-y-1.5 sm:grid-cols-2 lg:grid-cols-3">
-              {(credits ?? CREDITS).map(({ label, credit }) => (
+              {oncePerPicture(credits ?? CREDITS).map(({ label, credit }) => (
                 <li key={`${label}-${credit.sourceUrl}`}>
                   {label}:{" "}
                   <a href={credit.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline decoration-white/25 underline-offset-4 hover:text-white">
@@ -108,7 +113,7 @@ export function MotherlandFooter({ credits, onLanding = true, narrow, children }
               <Icon name="expand_more" className="text-xl transition-transform group-open:rotate-180" />
             </summary>
             <ul className="mt-4 grid gap-x-8 gap-y-1.5 sm:grid-cols-2 lg:grid-cols-3">
-              {(credits ?? CREDITS).map(({ label, credit }) => (
+              {oncePerPicture(credits ?? CREDITS).map(({ label, credit }) => (
                 <li key={`${label}-${credit.sourceUrl}`}>
                   {label}:{" "}
                   <a href={credit.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline decoration-ml-ink/25 underline-offset-4 hover:text-ml-green">

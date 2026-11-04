@@ -1,54 +1,45 @@
+import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { CATEGORIES, type Category, type Story, type Subcategory } from "@/data/motherland-categories";
+import { CATEGORIES, type Category, type Subcategory } from "@/data/motherland-categories";
 import { PROCON, VIDEOS } from "@/data/motherland";
-import { DEEP } from "@/data/motherland-deep";
+import type { BandTone, Block } from "@/data/motherland-blocks";
+import { DEEP, MORE_FILMS } from "@/data/motherland-deep";
+import { INTROS, PAGE_BLOCKS } from "@/data/motherland-pages";
 import { cn } from "@/lib/utils";
 import { CardStack } from "./card-stack";
 import { Figures, Timeline } from "./figures";
-import { Events, Ghosts } from "./events";
+import { BlockView, IntroFill } from "./blocks";
+import { CornerEvents } from "./culture-calendar";
+import { CornerScience } from "./launch";
 import { Invest } from "./invest";
-import { NatureList } from "./nature-list";
-import { PeopleExtra } from "./people-extra";
-import { ANCHOR, COLUMN, LEDE, SectionHead, pill } from "./kit";
-import { PhotoCard } from "./photo-card";
+import { ANCHOR, BAND_Y, COLUMN, LEDE, pill } from "./kit";
+import { Parallax } from "./parallax";
 import { Quiz } from "./quiz";
-import { Rail } from "./rail";
+import { RiseText } from "./rise-text";
 import { TakeASide } from "./take-a-side";
 import { VideoPlayer } from "./video-player";
 import { WeekFilm } from "./week-film";
 
 /*
- * A MOTHERLAND category page, in the dress Geography & Travel set: a
- * full-screen film or photograph, one narrow line of figures, the first part
- * dealt as full-screen cards, sourced figures that count up, the other parts
- * as rails of portrait photographs after visittheusa.com, a timeline, a quiz,
- * then the other categories.
+ * A MOTHERLAND category page: a full-screen film or photograph with the title,
+ * one narrow line of figures, then the page's own blocks in the order it wants
+ * them read (data/motherland-pages.ts), then its quiz and the other categories.
  */
 
-/** The full-screen opening: a film where we have one, else a photograph that drifts slowly. */
-function Opening({ category }: { category: Category }) {
-  const { hero, name, lede, subcategories } = category;
-  const film = DEEP[category.slug]?.film;
+/** The full-screen opening every category page shares: a film or a slowly drifting photograph, the title, its suggestions. */
+export function PageHero({ id, name, lede, media, parts }: { id: string; name: string; lede: string; media: ReactNode; parts: { id: string; title: string }[] }) {
   return (
-    <section aria-labelledby="category-title" className="relative isolate flex min-h-svh flex-col justify-end overflow-hidden bg-ml-navy text-white">
-      {film ? <WeekFilm film={film} /> : <Image src={hero.src} alt={hero.alt} fill priority sizes="100vw" className="ml-drift -z-20 object-cover" style={{ objectPosition: hero.focus }} />}
-      <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-t from-black/85 via-black/35 to-black/25" />
-      <Link
-        href="/bangladesh"
-        className="absolute top-[calc(var(--ml-header)+1rem)] left-6 z-10 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-ml-ink backdrop-blur-sm transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:left-10 xl:left-12"
-      >
-        <span aria-hidden>←</span> MOTHERLAND
-      </Link>
-      <div className={cn(COLUMN, "flex flex-col items-start gap-6 pt-36 pb-14 lg:pb-20")}>
-        <h1 id="category-title" className="font-ml-display text-[clamp(3.5rem,11.5vw,11rem)] leading-[0.98] tracking-[0.01em] text-balance uppercase">
-          {name}
-        </h1>
-        <p className={cn(LEDE, "text-white/90")}>{lede}</p>
-        {subcategories.length ? (
-          <nav aria-label={`Browse ${name}`}>
+    <section aria-labelledby={id} className="relative isolate flex min-h-svh flex-col justify-end overflow-hidden bg-ml-navy text-white">
+      <Parallax from="start" lift={14}>{media}</Parallax>
+      <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-t from-ml-navy/95 via-ml-navy/35 to-ml-navy/30" />
+      <div className={cn(COLUMN, "flex flex-col items-start gap-5 pt-36 pb-12 lg:pb-16")}>
+        <RiseText as="h1" id={id} now text={name} className="w-full font-ml-display text-[clamp(3.5rem,11.5vw,11rem)] leading-[0.98] tracking-[0.01em] uppercase" />
+        <p className={cn(LEDE, "ml-hero-one text-white/90")}>{lede}</p>
+        {parts.length ? (
+          <nav aria-label={`Browse ${name}`} className="ml-hero-two">
             <ul className="flex flex-wrap gap-3">
-              {subcategories.map((s, i) => (
+              {parts.slice(0, 4).map((s, i) => (
                 <li key={s.id}>
                   <a href={`#${s.id}`} className={i === 0 ? pill.onDark : pill.white}>
                     {s.title}
@@ -61,6 +52,12 @@ function Opening({ category }: { category: Category }) {
       </div>
     </section>
   );
+}
+
+function Opening({ category, parts }: { category: Category; parts: { id: string; title: string }[] }) {
+  const { hero, name, lede } = category;
+  const film = DEEP[category.slug]?.film;
+  return <PageHero id="category-title" name={name} lede={lede} parts={parts} media={film ? <WeekFilm film={film} /> : <Image src={hero.src} alt={hero.alt} fill priority sizes="100vw" className="ml-drift object-cover" style={{ objectPosition: hero.focus }} />} />;
 }
 
 const ARTS = ["arches", "peaks", "waves", "minar"] as const;
@@ -79,26 +76,11 @@ function StackBand({ sub, slug }: { sub: Subcategory; slug: string }) {
   );
 }
 
-const BAND_TONES = ["bg-ml-ground text-ml-ink", "bg-ml-navy text-white", "bg-ml-paper text-ml-ink"];
+const RAIL_TONES: BandTone[] = ["paper", "navy", "white"];
 
-function storyCard(st: Story) {
-  return <PhotoCard picture={st.picture} title={st.title} tag={st.meta} text={st.text} long />;
-}
-
-/** The rest of a page's parts: a rail of portrait photographs. */
+/** The rest of a page's parts: full rows of detailed cards. */
 function RailBand({ sub, index }: { sub: Subcategory; index: number }) {
-  const tone = BAND_TONES[index % BAND_TONES.length];
-  return (
-    <section id={sub.id} aria-labelledby={`${sub.id}-title`} className={cn(ANCHOR, "py-20 sm:py-28", tone)}>
-      <Rail label={sub.title} head={<SectionHead id={`${sub.id}-title`} title={sub.title} lede={sub.lede} tone={index % 3 === 1 ? "dark" : "light"} />}>
-        {sub.stories.map((st) => (
-          <li key={st.title} className="w-[min(82vw,26rem)] shrink-0 snap-start">
-            {storyCard(st)}
-          </li>
-        ))}
-      </Rail>
-    </section>
-  );
+  return <BlockView block={{ kind: "cards", id: sub.id, tone: RAIL_TONES[index % RAIL_TONES.length], title: sub.title, lede: sub.lede, cards: sub.stories, columns: sub.stories.length % 4 === 0 ? 4 : 3 }} />;
 }
 
 /** The figures at a glance: one narrow gold line, however many there are. */
@@ -133,67 +115,74 @@ export function MoreCategories({ current }: { current: string }) {
   );
 }
 
+/** The parts a visitor can jump to from the opening: what the page shows, in order. */
+function partsOf(category: Category, blocks: Block[]) {
+  const out: { id: string; title: string }[] = [];
+  for (const b of blocks) {
+    if (b.kind !== "moment" && "title" in b && b.title && "id" in b) out.push({ id: b.id, title: b.title });
+    if (b.kind === "part" && b.part === "stack" && category.subcategories[0]) out.push({ id: category.subcategories[0].id, title: category.subcategories[0].title });
+    if (b.kind === "tool" && b.tool === "converter") out.push({ id: "converter", title: "Convert your money" });
+    if (b.kind === "tool" && b.tool === "calendar") out.push({ id: "calendar", title: "What's on" });
+    if (b.kind === "tool" && b.tool === "connect") out.push({ id: "connect", title: "Connect for details" });
+  }
+  return out;
+}
+
 export function CategoryPage({ category }: { category: Category }) {
   const deep = DEEP[category.slug] ?? {};
+  const blocks = PAGE_BLOCKS[category.slug] ?? [];
   const [first, ...rest] = category.subcategories;
-  const stacks = first && first.shape !== "tall" && first.stories.length > 1;
-  const rails = stacks ? rest : category.subcategories;
+  const stacks = blocks.some((b) => b.kind === "part" && b.part === "stack") && first && first.stories.length > 1;
+  const blockIds = new Set(blocks.flatMap((b) => ("id" in b ? [b.id] : [])));
+  /* A story told in full by a block is not told again in a rail. */
+  const rails = (stacks ? rest : category.subcategories).filter((s) => !blockIds.has(s.id));
+
   return (
     <>
-      <Opening category={category} />
+      <Opening category={category} parts={partsOf(category, blocks)} />
       {category.facts.length ? <Facts facts={category.facts} /> : null}
-      {category.body === "debates" ? (
-        <section aria-label={category.name} className="bg-ml-ground py-20 text-ml-ink sm:py-28">
-          <div className={cn(COLUMN, "mb-12")}>
-            <div className="rounded-2xl border-l-4 border-ml-green bg-white p-7 ring-1 ring-ml-ink/10 sm:p-9">
-              <p className="text-sm font-semibold tracking-wide text-ml-green uppercase">Our stance</p>
-              <p className="mt-3 max-w-4xl text-lg leading-relaxed text-pretty text-ml-ink/85 sm:text-xl">
-                MOTHERLAND exists to represent Bangladesh to the world and to support its development, by putting the information a visitor, a partner or an investor needs in one simple place. It is not in conflict with the government. We welcome the government to collaborate with us and be part of this work. Our only goal is to lift all of Bangladesh, and every one of its people, together.
-              </p>
-            </div>
-          </div>
-          <TakeASide debates={PROCON.debates} className={COLUMN} />
-          <div className={cn(COLUMN, "mt-12 flex flex-wrap items-center justify-between gap-6 rounded-2xl bg-ml-navy p-6 text-white sm:p-8")}>
-            <p className="max-w-2xl text-xl leading-snug font-bold text-balance">Want the figures behind the argument? We publish the best and the worst of Bangladesh, with sources.</p>
-            <Link href="/bangladesh/facts#why-we-are-not-doing-best" className={pill.onDark}>
-              Read the Facts of Bangladesh
-            </Link>
-          </div>
-        </section>
-      ) : null}
-      {category.body === "films" ? (
-        <section aria-label={category.name} className="bg-ml-navy py-20 text-white sm:py-28">
-          <div className={COLUMN}>
-            <VideoPlayer films={VIDEOS.films} />
-          </div>
-        </section>
-      ) : null}
-      {stacks ? <StackBand sub={first} slug={category.slug} /> : null}
-      {category.slug === "nature" ? <NatureList /> : null}
-      {deep.figures ? <Figures title={deep.figuresTitle ?? "In numbers"} figures={deep.figures} /> : null}
-      {category.slug === "invest" ? <Invest /> : null}
-      {category.slug === "invest" ? (
-        <section aria-label="Talk to us about investing" className="bg-ml-navy py-16 text-white sm:py-20">
-          <div className={cn(COLUMN, "flex flex-wrap items-center justify-between gap-6 rounded-2xl bg-white/5 p-7 ring-1 ring-white/12 sm:p-9")}>
-            <div className="flex max-w-2xl flex-col gap-2">
-              <h2 className="font-ml-display text-[clamp(1.75rem,3.2vw,2.75rem)] leading-none tracking-[0.01em] uppercase">Want the detail behind a sector?</h2>
-              <p className="text-lg leading-snug text-pretty text-white/80">Tell us the sector and region you are looking at, and we will put you in touch with the right people and the figures that matter.</p>
-            </div>
-            <Link href="/signup" className={pill.onDark}>
-              Connect for details
-            </Link>
-          </div>
-        </section>
-      ) : null}
-      {rails.map((s, i) => (
-        <RailBand key={s.id} sub={s} index={i} />
-      ))}
-      {category.slug === "culture" ? <Ghosts /> : null}
-      {category.slug === "culture" ? <Events /> : null}
-      {category.slug === "people" ? <PeopleExtra /> : null}
-      {deep.timeline ? <Timeline title={deep.timelineTitle ?? "Timeline"} moments={deep.timeline} /> : null}
+      {INTROS[category.slug] ? <IntroFill text={INTROS[category.slug]} /> : null}
+      {blocks.map((block, i) => {
+        if (block.kind !== "part") return <BlockView key={"id" in block ? block.id : `${block.kind}-${i}`} block={block} />;
+        switch (block.part) {
+          case "stack":
+            return stacks ? <StackBand key="stack" sub={first} slug={category.slug} /> : null;
+          case "figures":
+            return deep.figures ? <Figures key="figures" title={deep.figuresTitle ?? "In numbers"} figures={deep.figures} /> : null;
+          case "timeline":
+            return deep.timeline ? <Timeline key="timeline" title={deep.timelineTitle ?? "Timeline"} moments={deep.timeline} /> : null;
+          case "rails":
+            return rails.map((s, n) => <RailBand key={s.id} sub={s} index={n} />);
+          case "simulator":
+            return <Invest key="simulator" />;
+          case "debates":
+            return (
+              <section key="debates" aria-label={category.name} className={cn(BAND_Y, "bg-ml-ground text-ml-ink")}>
+                <TakeASide debates={PROCON.debates} className={COLUMN} />
+                <div className={cn(COLUMN, "mt-8")}>
+                  <div className="flex flex-wrap items-center justify-between gap-6 rounded-2xl bg-ml-navy p-6 text-white sm:p-8">
+                    <p className="max-w-2xl text-xl leading-snug font-bold text-balance">Want the figures behind the argument? We publish the best and the worst of Bangladesh, with sources.</p>
+                    <Link href="/bangladesh/facts#why-we-are-not-doing-best" className={pill.onDark}>
+                      Read the Facts of Bangladesh
+                    </Link>
+                  </div>
+                </div>
+              </section>
+            );
+          case "videos":
+            return (
+              <section key="videos" aria-label={category.name} className={cn(BAND_Y, "bg-ml-navy text-white")}>
+                <div className={COLUMN}>
+                  <VideoPlayer films={[...MORE_FILMS, ...VIDEOS.films]} credited={false} />
+                </div>
+              </section>
+            );
+        }
+      })}
       {category.quiz.length ? <Quiz questions={category.quiz} name={category.name} /> : null}
       <MoreCategories current={category.slug} />
+      {category.slug === "culture" ? <CornerEvents /> : null}
+      {category.slug === "science-tech" ? <CornerScience /> : null}
     </>
   );
 }

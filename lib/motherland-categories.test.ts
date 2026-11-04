@@ -60,41 +60,51 @@ test("the header's Resources and Invest tabs have their own pages", () => {
   assert.equal(TOPIC_PAGES.invest, "/bangladesh/invest");
 });
 
-test("the native-life lists, seasons and conservation are all filled", async () => {
-  const { NATIVE_LIFE, SEASON_NATURE, WHY_CARE } = await import("../data/motherland-nature.ts");
-  assert.equal(SEASON_NATURE.length, 6, "six seasons");
-  assert.ok(WHY_CARE.length >= 3, "conservation reasons");
-  for (const g of NATIVE_LIFE) {
-    assert.ok(g.items.length > 0, `${g.id} has no items`);
-    assert.ok(existsSync(`public/motherland/photos/${g.photo}.jpg`), `${g.id} photo`);
-    for (const it of g.items) assert.ok(it.name && it.note, `${g.id}: an item is missing text`);
+test("every page's blocks name real pictures, sources and links", async () => {
+  const { PAGE_BLOCKS } = await import("../data/motherland-pages.ts");
+  const { blockSources, blockCredits } = await import("../data/motherland-blocks.ts");
+  for (const [slug, blocks] of Object.entries(PAGE_BLOCKS)) {
+    assert.ok(categoryFor(slug), `${slug} has no page`);
+    for (const s of blockSources(blocks)) assert.ok(s.url.startsWith("http"), `${slug}: ${s.name}`);
+    for (const c of blockCredits(blocks)) assert.ok(c.credit.sourceUrl && c.credit.license, `${slug}: ${c.label}`);
+    const ids = blocks.flatMap((b) => ("id" in b ? [b.id] : []));
+    assert.equal(new Set(ids).size, ids.length, `${slug}: two blocks share an id`);
+    for (const b of blocks) {
+      const cards = b.kind === "chapters" ? b.chapters : b.kind === "cards" || b.kind === "people" ? b.cards : b.kind === "steps" ? b.steps : [];
+      for (const c of cards) if (c.picture) assert.ok(existsSync(`public${c.picture.src}`), `${slug}: ${c.picture.src}`);
+      if (b.kind === "films") for (const f of b.films) assert.ok(existsSync(`public/motherland/video/${f.file}.${f.ext ?? "webm"}`) && existsSync(`public/motherland/video/${f.file}.jpg`), `${slug}: film ${f.file}`);
+    }
   }
 });
 
-test("every culture event has a venue and either a ticket link or none (shown as at the venue)", async () => {
-  const { EVENTS, GHOSTS } = await import("../data/motherland-culture-events.ts");
-  assert.ok(EVENTS.length > 0 && GHOSTS.length > 0);
+test("no page shows a political biography", async () => {
+  const { PAGE_BLOCKS } = await import("../data/motherland-pages.ts");
+  const people = JSON.stringify([PAGE_BLOCKS.people, categoryFor("people"), DEEP.people, BIOGRAPHIES]).toLowerCase();
+  for (const name of ["hasina", "mujib", "khaleda", "ziaur", "fazlul huq", "yunus"]) assert.ok(!people.includes(name), name);
+});
+
+test("every event has a real date and venue, and no ticket link is invented", async () => {
+  const { EVENTS, SCIENCE_EVENTS } = await import("../data/motherland-live.ts");
   for (const e of EVENTS) {
-    assert.ok(e.title && e.venue && e.city && e.when, `${e.id} is missing a field`);
-    assert.ok(e.ticket === null || e.ticket.startsWith("https://"), `${e.id} ticket must be a link or null`);
+    assert.ok(e.title && e.venue && e.about, e.id);
+    assert.ok(!Number.isNaN(Date.parse(e.start)), e.id);
+    if (e.end) assert.ok(e.end >= e.start, e.id);
+    if (e.ticket) assert.ok(e.ticket.url.startsWith("http"), e.id);
   }
+  for (const e of SCIENCE_EVENTS) assert.ok(e.url.startsWith("https://"), e.id);
 });
 
-test("the trip planner regions each have transport, sights and a photo on disk", async () => {
-  const { REGIONS } = await import("../data/motherland-trip.ts");
-  assert.ok(REGIONS.length > 0);
-  for (const r of REGIONS) {
-    assert.ok(r.transport.length > 0, `${r.id} has no transport`);
-    assert.ok(r.attractions.length > 0, `${r.id} has no sights`);
-    assert.ok(r.dailyUsd > 0, `${r.id} daily cost`);
-    assert.ok(existsSync(`public/motherland/photos/${r.photo}.jpg`), `${r.id} photo`);
-  }
+test("the Pro & Con page opens with the policy statement", async () => {
+  const { PAGE_BLOCKS } = await import("../data/motherland-pages.ts");
+  const [first] = PAGE_BLOCKS.procon;
+  assert.equal(first.kind, "statement");
+  assert.match(JSON.stringify(first), /no conflict with any government/);
 });
 
-test("the People page adds voices and women, and names no excluded politician", async () => {
-  const { MORE_VOICES, WOMEN_POWER } = await import("../data/motherland-people.ts");
-  assert.ok(MORE_VOICES.length >= 5 && WOMEN_POWER.length >= 3);
-  const banned = ["hasina", "mujib", "khaleda", "ziaur rahman", " zia"];
-  const text = JSON.stringify([...MORE_VOICES, ...WOMEN_POWER]).toLowerCase();
-  for (const name of banned) assert.ok(!text.includes(name), `People must not name "${name.trim()}"`);
+test("the page copy carries none of the giveaway dashes", async () => {
+  const { PAGE_BLOCKS } = await import("../data/motherland-pages.ts");
+  for (const [slug, blocks] of Object.entries(PAGE_BLOCKS)) {
+    const prose = JSON.stringify(blocks.map((b) => (b.kind === "lines" ? { ...b, lines: [] } : b)));
+    assert.ok(!prose.includes("\u2014") && !prose.includes("—"), slug);
+  }
 });

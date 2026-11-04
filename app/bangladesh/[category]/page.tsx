@@ -7,7 +7,10 @@ import { MotherlandHeader } from "@/components/motherland/header";
 import { SideTab } from "@/components/motherland/side-tab";
 import { CATEGORIES, categoryCredits, categoryFor } from "@/data/motherland-categories";
 import { VIDEOS } from "@/data/motherland";
-import { DEEP, deepSources } from "@/data/motherland-deep";
+import { MORE_FILMS } from "@/data/motherland-deep";
+import { blockCredits } from "@/data/motherland-blocks";
+import { DEEP } from "@/data/motherland-deep";
+import { PAGE_BLOCKS } from "@/data/motherland-pages";
 import { cn } from "@/lib/utils";
 import "../motherland.css";
 
@@ -32,41 +35,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 /** Where MOTHERLAND's gold buttons lead: one page for each category, in its own header and footer. */
+export const viewport = { themeColor: "#0b1849" };
+
 export default async function MotherlandCategoryPage({ params }: Props) {
   const category = categoryFor((await params).category);
   if (!category) notFound();
 
   const film = DEEP[category.slug]?.film;
-  const credits = [...categoryCredits(category), ...(category.body === "films" ? VIDEOS.films : film ? [film] : []).map((f) => ({ label: f.title, credit: f.credit }))];
-  const sources = deepSources(category.slug);
+  const blocks = PAGE_BLOCKS[category.slug] ?? [];
+  const credits = [...categoryCredits(category), ...blockCredits(blocks), ...(category.body === "films" ? [...VIDEOS.films, ...MORE_FILMS] : film ? [film] : []).map((f) => ({ label: f.title, credit: f.credit }))];
 
   return (
-    <div className={cn(anton.variable, montserrat.variable, "ml w-full bg-ml-ground font-ml-sans text-ml-ink")}>
+    <div className={cn(anton.variable, montserrat.variable, "ml ml-light w-full bg-ml-ground font-ml-sans text-ml-ink")}>
       <noscript>
-        <style>{".ml-rise .ml-word > span { translate: none !important; }"}</style>
+        <style>{".ml-rise .ml-word > span { translate: none !important; } .ml-reveal { opacity: 1 !important; translate: none !important; } .ml-reveal .ml-wipe { clip-path: none !important; } .ml-reveal .ml-settle { transform: none !important; }"}</style>
       </noscript>
       <MotherlandHeader topic={category.topic} />
       <main id="main">
         <CategoryPage category={category} />
       </main>
       <SideTab href="/bangladesh#join" />
-      <MotherlandFooter narrow credits={credits} onLanding={false}>
-        {sources.length ? (
-          <details className="open:order-last open:basis-full">
-            <summary className="cursor-pointer font-semibold hover:text-white focus-visible:outline-2 focus-visible:outline-white">Sources</summary>
-            <ul className="mt-3 grid gap-x-8 gap-y-1.5 sm:grid-cols-2 lg:grid-cols-3">
-              {sources.map((s) => (
-                <li key={s.url}>
-                  <a href={s.url} target="_blank" rel="noopener noreferrer" className="underline decoration-white/25 underline-offset-4 hover:text-white">
-                    {s.name}
-                    <span className="sr-only"> (opens in a new tab)</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </details>
-        ) : null}
-      </MotherlandFooter>
+      <MotherlandFooter narrow credits={credits} onLanding={false} />
     </div>
   );
 }

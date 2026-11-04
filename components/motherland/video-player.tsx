@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
  * phone). Nothing downloads until a film is chosen or played; choosing
  * another starts it straight away, with sound if the visitor turns it on.
  */
-export function VideoPlayer({ films }: { films: Film[] }) {
+export function VideoPlayer({ films, credited = true }: { films: Film[]; /** Off on the Videos page, whose credits are in its footer. */ credited?: boolean }) {
   const player = useRef<HTMLVideoElement>(null);
   const [index, setIndex] = useState(0);
   const film = films[index];
@@ -40,10 +40,12 @@ export function VideoPlayer({ films }: { films: Film[] }) {
         </div>
         <figcaption className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
           <span className="text-lg font-semibold">{film.title}</span>
-          <a href={film.credit.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-white/65 underline decoration-white/30 underline-offset-4 hover:text-signal-orange">
+          {credited ? (
+            <a href={film.credit.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-white/65 underline decoration-white/30 underline-offset-4 hover:text-signal-orange">
             Film: {film.credit.source}
             <span className="sr-only"> (opens in a new tab)</span>
           </a>
+          ) : null}
         </figcaption>
       </figure>
 

@@ -13,7 +13,7 @@ export function Quiz({ questions, name }: { questions: QuizQuestion[]; name: str
   const right = picked.filter((p, i) => p === questions[i].answer).length;
 
   return (
-    <section id="quiz" aria-labelledby="quiz-title" className={cn(ANCHOR, "bg-white py-20 text-ml-ink sm:py-28")}>
+    <section id="quiz" aria-labelledby="quiz-title" className={cn(ANCHOR, "bg-white py-12 text-ml-ink sm:py-14 lg:py-16")}>
       <div className={cn(COLUMN, "flex flex-col gap-12")}>
         <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
           <h2 id="quiz-title" className={DISPLAY}>

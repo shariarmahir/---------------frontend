@@ -38,6 +38,15 @@
   --shadow-m-ink: 0 1px 2px rgb(11 16 32 / 0.08), 0 4px 12px -6px rgb(11 16 32 / 0.2);
 }
 
+/* MOTHERLAND's colours that its light pages change (.ml-light in motherland.css), so these stay live variables. */
+@theme {
+  --color-ml-ground: #f4f2f0;
+  --color-ml-ink: #0f2a20;
+  --color-ml-deep: #0b3b2c;
+  --color-ml-green: #006a4e;
+  --color-ml-mist: #c3ccc6;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -97,14 +106,9 @@
      delta-green ink, the flag's green and red, the brand gold for actions.
      Anton (display) and Montserrat (body) load on that page only
      (components/motherland/fonts.ts); Bangla falls back to Hind Siliguri. */
-  --color-ml-ground: #f4f2f0;
-  --color-ml-ink: #0f2a20;
-  --color-ml-deep: #0b3b2c;
   --color-ml-navy: #0b1849;
   --color-ml-navy-700: #16215c;
   --color-ml-paper: #fbfaf8;
-  --color-ml-mist: #c3ccc6;
-  --color-ml-green: #006a4e;
   --color-ml-red: #f42a41;
   --color-ml-river: #5aa9d6;
   --font-ml-display: var(--font-anton), var(--font-bengali), sans-serif;

@@ -18,7 +18,7 @@ import { project } from "./bangladesh-map.ts";
 
 /* ── Pictures and their credits ──────────────────────────────────────── */
 
-export type Source = "Unsplash" | "Pexels" | "Wikimedia Commons";
+export type Source = "Unsplash" | "Pexels" | "Pixabay" | "Wikimedia Commons";
 
 export interface Credit {
   author: string;
@@ -261,12 +261,6 @@ export const BIOGRAPHIES = {
   lede: "Poets, scientists, reformers and leaders whose work still shapes how Bangladesh thinks, sings and dreams.",
   cta: { label: "Meet the people behind the nation", href: "/bangladesh/people" } satisfies Cta,
   lives: [
-    {
-      name: "A. K. Fazlul Huq",
-      years: "1873–1962",
-      text: "Sher-e-Bangla, the Tiger of Bengal. Born in Barisal, he became Bengal's first Prime Minister in 1937 and fought for farmers against the moneylenders' debts.",
-      picture: commons("fazlulhuq", "Portrait of A. K. Fazlul Huq, Sher-e-Bangla"),
-    },
     {
       name: "Kazi Nazrul Islam",
       years: "1899–1976",
@@ -583,7 +577,7 @@ export const TAKA = {
       picture: unsplash("taka-notes", "Hands fanning out a stack of 1000-taka banknotes", "Fayaz Ahmed Sunny", "hands-holding-a-fan-of-1000-bangladeshi-taka-banknotes-LlniHzPB1a8"),
     },
   ],
-  cta: { label: "A visitor's guide to money", href: "/bangladesh/taka#changing-money" } satisfies Cta,
+  cta: { label: "A visitor's guide to money", href: "/bangladesh/taka" } satisfies Cta,
 };
 
 /* ── Videos ─────────────────────────────────────────────────────────── */

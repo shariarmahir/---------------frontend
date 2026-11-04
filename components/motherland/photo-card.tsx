@@ -13,7 +13,7 @@ export function PhotoCard({ picture, title, tag, text, href, rank, long, sizes =
   const body: ReactNode = (
     <>
       <Image src={picture.src} alt={picture.alt} fill sizes={sizes} className="-z-20 object-cover transition-transform duration-1000 ease-[cubic-bezier(0.215,0.61,0.355,1)] group-hover:scale-[1.06] motion-reduce:transition-none" style={{ objectPosition: picture.focus }} />
-      <span aria-hidden className="absolute inset-0 -z-10 bg-linear-to-t from-black/90 via-black/30 to-transparent" />
+      <span aria-hidden className="absolute inset-0 -z-10 bg-linear-to-t from-[rgb(var(--ml-shade,0_0_0)/0.92)] via-[rgb(var(--ml-shade,0_0_0)/0.32)] to-transparent" />
       {rank ? (
         <span aria-label={`Number ${rank}`} className="absolute top-4 left-5 font-ml-display text-[clamp(4.5rem,8vw,7.5rem)] leading-none text-white/95 drop-shadow-[0_4px_18px_rgb(0_0_0/0.45)]">
           {rank}

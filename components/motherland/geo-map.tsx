@@ -747,7 +747,7 @@ export function CrowdBoard() {
   const days = now && surge ? daysUntil(now, surge.from) : 0;
 
   return (
-    <section id="crowd-alert" aria-labelledby="crowd-title" className="scroll-mt-(--ml-header) bg-black py-20 text-white sm:py-28">
+    <section id="crowd-alert" aria-labelledby="crowd-title" className="scroll-mt-(--ml-header) bg-black py-12 text-white sm:py-14 lg:py-16">
       <div className={cn(COLUMN, "flex flex-col gap-10")}>
         <div className="flex flex-wrap items-end justify-between gap-x-12 gap-y-4">
           <div>

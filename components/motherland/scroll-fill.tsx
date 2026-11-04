@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
  * whenever the width changes or the font arrives. With reduced motion the
  * text is simply inked.
  */
-export function ScrollFill({ text, tone = "light", className }: { text: string; tone?: "light" | "dark"; className?: string }) {
+export function ScrollFill({ text, tone = "light", className }: { text: string; tone?: "light" | "dark" | "gold"; className?: string }) {
   const box = useRef<HTMLParagraphElement>(null);
   const [lines, setLines] = useState<string[] | null>(null);
   const reduced = useReducedMotion();
@@ -50,7 +50,7 @@ export function ScrollFill({ text, tone = "light", className }: { text: string; 
     return () => ro.disconnect();
   }, []);
 
-  const colours = tone === "dark" ? { base: "text-white/25", ink: "text-white" } : { base: "text-ml-mist", ink: "text-ml-ink" };
+  const colours = tone === "dark" ? { base: "text-white/25", ink: "text-white" } : tone === "gold" ? { base: "text-ml-navy/25", ink: "text-ml-navy" } : { base: "text-ml-mist", ink: "text-ml-ink" };
 
   return (
     <p ref={box} className={cn(colours.base, className)}>
