@@ -583,7 +583,7 @@ export const TAKA = {
       picture: unsplash("taka-notes", "Hands fanning out a stack of 1000-taka banknotes", "Fayaz Ahmed Sunny", "hands-holding-a-fan-of-1000-bangladeshi-taka-banknotes-LlniHzPB1a8"),
     },
   ],
-  cta: { label: "Learn how the taka grew", href: "/bangladesh/taka#how-it-grew" } satisfies Cta,
+  cta: { label: "A visitor's guide to money", href: "/bangladesh/taka#changing-money" } satisfies Cta,
 };
 
 /* ── Videos ─────────────────────────────────────────────────────────── */

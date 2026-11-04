@@ -13,6 +13,7 @@ import { PhotoCard, firstSentence } from "@/components/motherland/photo-card";
 import { Quiz } from "@/components/motherland/quiz";
 import { Rail } from "@/components/motherland/rail";
 import { SideTab } from "@/components/motherland/side-tab";
+import { TripPlanner } from "@/components/motherland/trip-planner";
 import { WeekFilm } from "@/components/motherland/week-film";
 import { Icon } from "@/components/ui/icon";
 import { categoryFor } from "@/data/motherland-categories";
@@ -54,13 +55,13 @@ export default function GeographyTravelPage() {
   const gems = PLACES.filter((p) => p.kind === "gem");
 
   return (
-    <div className={cn(anton.variable, montserrat.variable, "ml w-full bg-black font-ml-sans text-ml-ink")}>
+    <div className={cn(anton.variable, montserrat.variable, "ml w-full bg-ml-navy font-ml-sans text-ml-ink")}>
       <noscript>
         <style>{".ml-rise .ml-word > span { translate: none !important; }"}</style>
       </noscript>
       <MotherlandHeader topic="travel" />
       <main id="main">
-        <section aria-labelledby="travel-title" className="relative isolate flex min-h-svh flex-col justify-end overflow-hidden bg-ml-ink text-white">
+        <section aria-labelledby="travel-title" className="relative isolate flex min-h-svh flex-col justify-end overflow-hidden bg-ml-navy text-white">
           <WeekFilm film={film.film} />
           <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-t from-black/85 via-black/35 to-black/25" />
           <div className={cn(COLUMN, "flex flex-col items-start gap-6 pt-36 pb-14 lg:pb-20")}>
@@ -101,7 +102,9 @@ export default function GeographyTravelPage() {
 
         <Facts facts={GEOGRAPHY} />
 
-        <section id="top-ten" aria-labelledby="top-title" className="scroll-mt-(--ml-header) bg-black py-20 text-white sm:py-28">
+        <TripPlanner />
+
+        <section id="top-ten" aria-labelledby="top-title" className="scroll-mt-(--ml-header) bg-ml-navy py-20 text-white sm:py-28">
           <Rail label="Top 10 places this week" head={<SectionHead id="top-title" tone="dark" title="Top 10 this week" lede="Ten places at their best right now, in order. Choose one and go." />}>
             {top.map((p, i) => (
               <li key={p.id} className={CARD}>
@@ -111,11 +114,11 @@ export default function GeographyTravelPage() {
           </Rail>
         </section>
 
-        <section id={MUST_SEE.antique.id} aria-labelledby="antique-title" className="scroll-mt-(--ml-header) bg-ml-ink">
+        <section id={MUST_SEE.antique.id} aria-labelledby="antique-title" className="scroll-mt-(--ml-header) bg-ml-navy">
           <h2 id="antique-title" className="sr-only">
             {MUST_SEE.antique.title}
           </h2>
-          <CardStack cards={stack} />
+          <CardStack cards={stack} tone="navy" />
         </section>
 
         <section aria-labelledby="more-old-title" className="bg-ml-ground py-20 sm:py-28">
@@ -128,7 +131,7 @@ export default function GeographyTravelPage() {
           </Rail>
         </section>
 
-        <section id="seasons" aria-labelledby="seasons-title" className="scroll-mt-(--ml-header) bg-ml-deep py-14 text-white sm:py-16">
+        <section id="seasons" aria-labelledby="seasons-title" className="scroll-mt-(--ml-header) bg-ml-navy py-14 text-white sm:py-16">
           <div className={cn(COLUMN, "flex flex-col gap-8")}>
             <div className="flex flex-wrap items-end justify-between gap-x-12 gap-y-3">
               <h2 id="seasons-title" className="font-ml-display text-[clamp(2.25rem,4.4vw,4rem)] leading-[1.02] tracking-[0.01em] uppercase">
@@ -153,7 +156,7 @@ export default function GeographyTravelPage() {
           </div>
         </section>
 
-        <section id={MUST_SEE.gem.id} aria-labelledby="gems-title" className="scroll-mt-(--ml-header) bg-ml-ink py-20 text-white sm:py-28">
+        <section id={MUST_SEE.gem.id} aria-labelledby="gems-title" className="scroll-mt-(--ml-header) bg-ml-navy py-20 text-white sm:py-28">
           <Rail label="Hidden gems of Bangladesh" head={<SectionHead id="gems-title" tone="dark" title={MUST_SEE.gem.title} lede={MUST_SEE.gem.lede} />}>
             {gems.map((p) => (
               <li key={p.id} className={CARD}>
@@ -169,7 +172,7 @@ export default function GeographyTravelPage() {
           <div className={cn(COLUMN, "flex flex-col gap-10")}>
             <SectionHead id="prepare-title" title="Know before you go" lede="Each landscape has its own way of going wrong. Here is what to watch for and what to carry." />
             <GuideTabs />
-            <div className="flex flex-wrap items-center gap-x-8 gap-y-3 rounded-2xl bg-ml-ink p-6 text-white sm:p-8">
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-3 rounded-2xl bg-ml-navy p-6 text-white sm:p-8">
               <h3 className="text-xl font-bold">If something goes wrong</h3>
               <ul className="flex flex-wrap gap-3">
                 {HELP.map((h) => (
@@ -194,7 +197,7 @@ export default function GeographyTravelPage() {
           </Rail>
         </section>
 
-        <section aria-labelledby="stories-band" className="relative isolate overflow-hidden bg-ml-ink py-24 text-white sm:py-36">
+        <section aria-labelledby="stories-band" className="relative isolate overflow-hidden bg-ml-navy py-24 text-white sm:py-36">
           <Image src="/motherland/places/birishiri.jpg" alt="" fill sizes="100vw" className="-z-20 object-cover" />
           <div aria-hidden className="absolute inset-0 -z-10 bg-black/65" />
           <div className={cn(COLUMN, "flex flex-col items-start gap-6")}>
