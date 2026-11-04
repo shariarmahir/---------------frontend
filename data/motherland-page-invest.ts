@@ -58,7 +58,7 @@ export const INVEST_BLOCKS: Block[] = [
       { title: "A market of 175 million", text: "One of the world's most crowded countries, with 136 million internet subscribers and a growing number of people able to buy more than the basics.", source: BTRC, picture: pic("dhaka-street", "Rickshaws, motorbikes and cars on a Dhaka street") },
       { title: "Skilled hands at scale", text: "Decades of export manufacturing have trained millions of workers. An Oxford study ranked Bangladesh second in the world for online workers.", source: FREELANCE, picture: photo("garments") },
       { title: "Between two giants", text: "On the Bay of Bengal between India and South-East Asia. New bridges, a tunnel and a planned deep-sea port are cutting transit times to markets.", source: MIDA, picture: pic("chattogram-port", "A straddle carrier at the Port of Chittagong") },
-      { title: "Proven at world level", text: "Second in clothing exports, 284 LEED green factories, and medicines shipped to more than 160 countries. Global buyers already trust this supply base.", source: LEED, picture: photo("padma-bridge") },
+      { title: "Proven at world level", text: "Second in clothing exports, 284 LEED green factories, and medicines shipped to more than 160 countries. Global buyers already trust this supply base.", source: LEED, picture: photo("garments")},
     ],
   },
   {
@@ -71,7 +71,7 @@ export const INVEST_BLOCKS: Block[] = [
     cards: [
       { title: "Higher-value garments", meta: "Rests on: millions of skilled workers", text: "Most exports are still cotton basics. The gap is in man-made fibres, technical textiles, design and branding.", picture: photo("garments") ?? photo("garments"), source: LEED },
       { title: "Healthcare and medicine", meta: "Rests on: a strong drug industry", text: "Bangladeshis spend about US$5 billion a year on treatment abroad, BIDA's chairman says. The gap is in good hospitals, medical devices and digital health. Pharma makes about 98 percent of local demand but still imports most raw ingredients.", picture: pic("pharma", "A scientist at work in a laboratory"), source: HEALTH },
-      { title: "Software and fintech", meta: "Rests on: a young, online workforce", text: "Hundreds of thousands of freelancers, and mobile money that already reaches most households. The gap is in companies that can turn talent into exports at scale.", picture: photo("mobile-money"), source: FREELANCE },
+      { title: "Software and fintech", meta: "Rests on: a young, online workforce", text: "Hundreds of thousands of freelancers, and mobile money that already reaches most households. The gap is in companies that can turn talent into exports at scale.", picture: pic("laptop", "Code on a laptop screen"), source: FREELANCE },
       { title: "Food and farm processing", meta: "Rests on: the delta's harvest", text: "A top producer of rice, fish, vegetables and fruit, with little cold storage and packaging. A great deal is lost or sold raw.", picture: photo("rice-planting"), source: BIDA },
       { title: "The blue economy", meta: "Rests on: 118,813 km² of sea", text: "BIDA is asking foreign partners into deep-sea fishing, because local firms do not yet have the capacity. Aquaculture and seafood processing are open too.", picture: photo("hilsa"), source: BLUE },
       { title: "Ports and logistics", meta: "Rests on: the Bay of Bengal", text: "Matarbari deep-sea port and the Bay Terminal are expected to open by about 2029 or 2030, with industry planned around them.", picture: pic("chattogram-port", "A straddle carrier at the Port of Chittagong"), source: MATAR },
@@ -83,7 +83,7 @@ export const INVEST_BLOCKS: Block[] = [
   {
     kind: "map",
     id: "where-to-locate",
-    tone: "paper",
+    tone: "sun",
     title: "Where to put it",
     lede: "Each region has its own resources. Pick a pin to see what it is good for.",
     note: "A guide to help you start looking. Check zones, land and incentives with BIDA and BEZA.",

@@ -5,7 +5,7 @@
  * so one number lives in one place. Re-check figures when they age.
  */
 import { BEST, GLANCE } from "./motherland-facts.ts";
-import { HERO, INVEST, RESOURCES, VIDEOS, type Film } from "./motherland.ts";
+import { FLAG_FILM, HERO, INVEST, RESOURCES, type Film, type HeroTitleTone } from "./motherland.ts";
 
 export interface Figure {
   value: string;
@@ -20,6 +20,8 @@ export interface Moment {
 
 export interface Deep {
   film?: Film;
+  /** The hero title's colour, when gold doesn't read on this film. */
+  titleTone?: HeroTitleTone;
   figuresTitle?: string;
   figures?: Figure[];
   timelineTitle?: string;
@@ -38,18 +40,26 @@ const glance = (label: string, shown: string): Figure => {
   return { value: row.value, label: shown, source: GLANCE.source };
 };
 
-const [, , BURIGANGA, , RICKSHAWS, FLAG] = VIDEOS.films;
 
 /** A film from Wikimedia Commons, stored in public/motherland/video. */
 /** A film from Pixabay, free to use under its content licence. MP4, so it also plays on iPhones. */
-const pixabayFilm = (title: string, file: string, slug: string): Film => ({
+const pixabayFilm = (title: string, file: string, slug: string, wide = false): Film => ({
   title,
-  src: { phone: `/motherland/video/${file}-phone.mp4`, desktop: `/motherland/video/${file}.mp4` },
+  src: { phone: `/motherland/video/${file}-phone.mp4`, desktop: `/motherland/video/${file}.mp4`, ...(wide ? { wide: `/motherland/video/${file}-4k.mp4` } : {}) },
   poster: `/motherland/video/${file}.jpg`,
   credit: { author: "Pixabay contributor", source: "Pixabay", sourceUrl: `https://pixabay.com/videos/${slug}/`, license: "Pixabay Content License", licenseUrl: "https://pixabay.com/service/license-summary/" },
 });
 
-const BANDARBAN_FILM = pixabayFilm("The hills of Bandarban", "bandarban-hills", "bandarban-rangamati-landscape-309853");
+/* Real footage only: Pixabay also carries AI-generated "Bangladesh" drone films, and those must stay out. */
+export const BANDARBAN_CLOUDS = pixabayFilm("Cloud in the valleys at Lama, Bandarban", "bandarban-sunrise", "bangladesh-lama-bandarban-mountains-294187");
+const COAST_FILM = pixabayFilm("The coastal forest at Banshkhali, Chattogram", "banshkhali-coast", "banshkhali-banshkhali-beach-372137", true);
+const COUNTRY_FILM = pixabayFilm("Forest, fields and monsoon cloud from the air", "green-country", "bangladesh-nature-sundarbans-boat-369433", true);
+const RIVER_SUNSET = pixabayFilm("Ships on the Buriganga at sunset, Dhaka", "buriganga-sunset", "dhaka-sadarghat-dhaka-aerial-303404", true);
+const RIVER_PORT = pixabayFilm("The river port on the Buriganga, Dhaka", "buriganga-port", "dhaka-sadarghat-dhaka-aerial-303403", true);
+const MARKET_FILM = pixabayFilm("The market road at Ukhiya", "ukhiya-market", "market-road-ukhiya-rohingya-124982", true);
+const TRAFFIC_FILM = pixabayFilm("Buses and traffic on a Dhaka road", "dhaka-traffic", "bangladesh-traffic-jam-road-cars-53176");
+export const FACTS_FILM = pixabayFilm("Ships on the Buriganga from the air, Dhaka", "buriganga-aerial", "dhaka-sadarghat-dhaka-aerial-303405", true);
+export const STORIES_FILM = pixabayFilm("Waves on Inani Beach, Cox's Bazar", "innani-beach", "beach-sea-ocean-innani-beach-124981", true);
 
 const commonsFilm = (title: string, file: string, author: string, license: string, name: string): Film => ({
   title,
@@ -62,11 +72,17 @@ const SUNDARBANS_FILM = commonsFilm("Kochikhali, the Sundarbans", "sundarbans-ko
 const METRO_FILM = commonsFilm("A train arriving on the Dhaka Metro", "metro-uttara", "Mehedi Abedin", "CC BY-SA 4.0", "Train arriving at Uttara Center metro station.webm");
 const NEW_YEAR_FILM = commonsFilm("New Year fireworks over Dhaka", "new-year-dhaka", "MdsShakil", "CC BY-SA 4.0", "New year celebrations in Dhaka 02.webm");
 
+const JAMDANI_FILM = commonsFilm("Weaving jamdani in Narayanganj", "jamdani-weaving", "Wasiul Bahar", "CC BY-SA 4.0", "Weaving jamdani at BSCIC Jamdani palli, Narayanganj 7.webm");
+
 /** More real footage of Bangladesh for the Videos page. */
 export const MORE_FILMS: Film[] = [
   SUNDARBANS_FILM,
-  commonsFilm("Cinematic Bangladesh from the air", "cinematic-bangladesh", "Nishaan Ahmed", "CC BY 3.0", "Cinematic BANGLADESH in 4K - DJI Mini 2 - Part 1.webm"),
-  commonsFilm("Weaving jamdani in Narayanganj", "jamdani-weaving", "Wasiul Bahar", "CC BY-SA 4.0", "Weaving jamdani at BSCIC Jamdani palli, Narayanganj 7.webm"),
+  COAST_FILM,
+  RIVER_SUNSET,
+  RIVER_PORT,
+  COUNTRY_FILM,
+  BANDARBAN_CLOUDS,
+  JAMDANI_FILM,
   commonsFilm("A Baul song at Ramna Park", "baul-ramna", "Wasiul Bahar", "CC BY-SA 4.0", "Baul song at Ramna Park.webm"),
   commonsFilm("Boat race on the Kaliganga", "boat-race", "Sufe", "CC BY-SA 4.0", "Boat Race in Bangladesh at Kaliganga River.ogv"),
   commonsFilm("Kaptai Lake, Rangamati", "kaptai-lake", "Al Riaz Uddin", "CC BY-SA 4.0", "Kaptai Lake video.webm"),
@@ -79,7 +95,8 @@ const WORLD_HERITAGE: Figure = { value: "3", label: "UNESCO World Heritage sites
 
 export const DEEP: Record<string, Deep> = {
   history: {
-    film: FLAG,
+    film: FLAG_FILM,
+    titleTone: "green",
     figuresTitle: "A long story in numbers",
     figures: [
       { value: "3rd century BCE", label: "Pundranagara, today's Mahasthangarh, was already a walled city", source: { name: "Mahasthangarh, Wikipedia", url: "https://en.wikipedia.org/wiki/Mahasthangarh" } },
@@ -121,7 +138,7 @@ export const DEEP: Record<string, Deep> = {
     ],
   },
   people: {
-    film: RICKSHAWS,
+    film: MARKET_FILM,
     figuresTitle: "A people in numbers",
     figures: [
       glance("People (Census", "People, in the 2022 census"),
@@ -131,7 +148,7 @@ export const DEEP: Record<string, Deep> = {
     ],
   },
   nature: {
-    film: BANDARBAN_FILM,
+    film: COAST_FILM,
     figuresTitle: "A wild country",
     figures: [
       { value: "125", label: "Royal Bengal tigers in the Bangladesh Sundarbans in the 2024 census, up from 106 in 2015", source: { name: "Forest Department census, via Dhaka Tribune", url: "https://www.dhakatribune.com/bangladesh/361154/tiger-population-in-sundarbans-rises-to-125" } },
@@ -141,7 +158,8 @@ export const DEEP: Record<string, Deep> = {
     ],
   },
   culture: {
-    film: MORE_FILMS[2],
+    film: JAMDANI_FILM,
+    titleTone: "navy",
     figuresTitle: "Heritage the world has listed",
     figures: [
       { value: "5", label: "Living traditions on UNESCO's lists by 2023", source: { name: "UNESCO Intangible Cultural Heritage", url: "https://ich.unesco.org/en/state/bangladesh-BD" } },
@@ -158,7 +176,7 @@ export const DEEP: Record<string, Deep> = {
     ],
   },
   taka: {
-    film: BURIGANGA,
+    film: RIVER_SUNSET,
     figuresTitle: "What gives it value",
     figures: [
       best("No. 2", "In the world's clothing exports"),
@@ -177,14 +195,15 @@ export const DEEP: Record<string, Deep> = {
       { when: "2025", text: "New banknotes show the country's monuments and landscapes, with no person on them." },
     ],
   },
-  videos: { film: MORE_FILMS[1] },
+  videos: { film: HERO.film },
+  procon: { film: TRAFFIC_FILM, titleTone: "navy" },
   resources: {
-    film: HERO.film,
+    film: COUNTRY_FILM,
     figuresTitle: "What we were born with",
     figures: RESOURCES.items.map((r) => ({ value: r.value, label: r.label, source: r.source })),
   },
   invest: {
-    film: BURIGANGA,
+    film: RIVER_PORT,
     figuresTitle: "The case in numbers",
     figures: [
       { value: `$${INVEST.exportsToday}bn`, label: "Goods exported in FY2024-25, rounded", source: { name: "Export Promotion Bureau", url: "https://epb.gov.bd/" } },

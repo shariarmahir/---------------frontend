@@ -4,6 +4,7 @@ import { test } from "node:test";
 import { ABOUT, BIOGRAPHIES, CULTURE, HISTORY, NATURE, PROCON, SCIENCE, TAKA, TOPIC_PAGES, TRAVEL, VIDEOS } from "../data/motherland.ts";
 import { CATEGORIES, categoryFor } from "../data/motherland-categories.ts";
 import { DEEP, deepSources } from "../data/motherland-deep.ts";
+import { BANKS, MOBILE_MONEY } from "../data/motherland-money.ts";
 
 const buttons = [ABOUT.cta, ...HISTORY.cards.map((c) => c.cta), SCIENCE.cta, BIOGRAPHIES.cta, NATURE.cta, TRAVEL.cta, CULTURE.cta, PROCON.cta, TAKA.cta, VIDEOS.cta];
 
@@ -136,4 +137,36 @@ test("card titles and section subtitles are short enough to hold one line", asyn
 test("no photograph on a category page shows an excluded politician's file", async () => {
   const { MORE } = await import("../data/motherland-more.ts");
   for (const [key, m] of Object.entries(MORE)) assert.ok(!/hasina|mujib|khaleda|ziaur/i.test(m.sourceUrl), key);
+});
+
+test("every category page opens on a film", () => {
+  for (const c of CATEGORIES) {
+    if (c.slug === "travel") continue; // Geography & Travel has its own page, and its own film.
+    assert.ok(DEEP[c.slug]?.film, c.slug);
+  }
+});
+
+test("the money band names real brands, with safe links and logos on disk", () => {
+  for (const b of [...MOBILE_MONEY, ...BANKS]) {
+    assert.ok(b.url.startsWith("https://"), b.name);
+    assert.ok(b.text.length > 0, b.name);
+    if (b.logo) assert.ok(existsSync(`public${b.logo}`), b.logo);
+  }
+});
+
+test("hero films stay clean: no AI-generated source and no removed film", () => {
+  for (const deep of Object.values(DEEP)) {
+    const file = deep?.film?.src.phone ?? "";
+    assert.ok(!/rickshaws-tsc|cinematic-bangladesh|chital-herd/.test(file), file);
+  }
+});
+
+test("every hero film and all its cuts are on disk", () => {
+  for (const [slug, deep] of Object.entries(DEEP)) {
+    if (!deep?.film) continue;
+    const { src, poster } = deep.film;
+    for (const file of [src.phone, src.desktop, src.wide, poster]) {
+      if (file) assert.ok(existsSync(`public${file}`), `${slug}: ${file}`);
+    }
+  }
 });

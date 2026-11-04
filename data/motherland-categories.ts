@@ -188,7 +188,7 @@ export const CATEGORIES: Category[] = [
     topic: "biographies",
     name: "Biographies",
     lede: "Poets, thinkers, painters, singers, scientists and the women who opened every door.",
-    hero: photo("flag-mural"),
+    hero: pic("dhaka-street", "People and rickshaws on a Dhaka street") ?? photo("children"),
     subcategories: [
       {
         id: "poets-and-singers",
@@ -441,7 +441,7 @@ export const CATEGORIES: Category[] = [
         stories: [
           { title: "Three rice harvests", meta: "Third-largest rice grower on Earth", text: "Aus, Aman and Boro: the delta's soil and water let farmers grow rice in three seasons. After China and India, no country grows more.", picture: photo("rice-planting") },
           { title: "Fish in every river", meta: "Third-largest inland catch", text: "Rivers, haors and floodplains make one of the richest freshwater fisheries in the world, and the hilsa, the national fish, is its pride.", picture: photo("hilsa") },
-          { title: "The golden fibre", meta: "Second-largest jute grower", text: "The fibre that once filled the world's grain sacks is coming back as a green alternative to plastic.", picture: photo("handloom") },
+          { title: "The golden fibre", meta: "Second-largest jute grower", text: "The fibre that once filled the world's grain sacks is coming back as a green alternative to plastic.", picture: pic("jute-field", "Jute drying on the water") ?? photo("rice-planting")},
           { title: "A sea of our own", meta: "118,813 km² of water", text: "Settled at international tribunals in 2012 and 2014, the Bay of Bengal waters open a blue economy of fish, ports and energy.", picture: photo("kuakata") },
         ],
       },

@@ -43,11 +43,11 @@ export const RESOURCES_BLOCKS: Block[] = [
   {
     kind: "chapters",
     id: "energy-and-position",
-    tone: "paper",
+    tone: "mint",
     title: "Power and position",
     lede: "What runs the country today, and what could run it tomorrow.",
     chapters: [
-      { title: "Gas built modern Bangladesh", meta: "23 fields", text: "Gas from the eastern fields has fuelled power stations, fertiliser factories and kitchens for decades. Output is now falling, so the country imports liquefied gas and is looking under the Bay of Bengal.", source: MINERALS, picture: pic("rooppur", "The cooling towers of the Rooppur nuclear power station at dusk") },
+      { title: "Gas built modern Bangladesh", meta: "23 fields", text: "Gas from the eastern fields has fuelled power stations, fertiliser factories and kitchens for decades. Output is now falling, so the country imports liquefied gas and is looking under the Bay of Bengal.", source: MINERALS, picture: pic("gas-pipe", "A gas pipeline running through the forest")},
       { title: "A nuclear country", meta: "Rooppur, October 2026", text: "Unit 1 at Rooppur reached first criticality in October 2026 and is in power start-up, with a second unit to follow. It is the country's first nuclear power.", source: ROOPPUR, picture: pic("rooppur", "The cooling towers of the Rooppur nuclear power station at dusk") },
       { title: "The sun on the roof", meta: "Solar", text: "Millions of small home solar systems lit up rural areas before the grid reached them. The next step is factory roofs and larger parks.", source: wiki("Solar power in Bangladesh"), picture: pic("solar-bd", "Solar panels in a green field") },
       { title: "Where two regions meet", meta: "The Bay of Bengal", text: "Bangladesh sits between South Asia and South-East Asia, with a long coast and land links to India, Bhutan, Nepal and Myanmar nearby. The deep-sea port planned at Matarbari could make that position pay.", source: { name: "PortNews", url: "https://en.portnews.ru/news/381567" }, picture: pic("chattogram-port", "A straddle carrier at the Port of Chittagong") },
@@ -64,7 +64,7 @@ export const RESOURCES_BLOCKS: Block[] = [
     cards: [
       { title: "Second in the world for clothes", text: "Generations of skill on the factory floor, now moving into green factories and higher-value goods.", picture: photo("garments") ?? photo("garments") },
       { title: "Second in online work", text: "An Oxford Internet Institute study ranked Bangladesh second among the world's sources of online workers. The data is from 2017, and the talent has only grown.", source: FREELANCE, picture: photo("mobile-money") },
-      { title: "136 million online", text: "Internet subscribers at the end of June 2026, along with 189.83 million active mobile connections.", source: BTRC, picture: photo("children") },
+      { title: "136 million online", text: "Internet subscribers at the end of June 2026, along with 189.83 million active mobile connections.", source: BTRC, picture: pic("phone-field", "A young man using his phone beside a green field")},
     ],
   },
   { kind: "part", part: "timeline" },

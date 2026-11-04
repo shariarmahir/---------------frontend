@@ -51,7 +51,7 @@ export function MotherlandHeader({ topic, solid: alwaysSolid }: { /** On a categ
   const current = topic ?? inView;
   const menuButton = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
-  const solid = alwaysSolid || scrolled || open;
+  const solid = alwaysSolid || !onLanding || scrolled || open;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);

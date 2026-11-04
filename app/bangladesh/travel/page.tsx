@@ -13,10 +13,9 @@ import { Quiz } from "@/components/motherland/quiz";
 import { RiseText } from "@/components/motherland/rise-text";
 import { SideTab } from "@/components/motherland/side-tab";
 import { TripPlanner } from "@/components/motherland/trip-planner";
-import { WeekFilm } from "@/components/motherland/week-film";
 import { TRAVEL_INTRO } from "@/data/motherland-pages";
 import { categoryFor } from "@/data/motherland-categories";
-import { GEOGRAPHY, HELP, MUST_SEE, OLD_STACK, PLACES, SEASONS, STORIES, filmOfWeek, placeById, topTen, travelCredits, type MapPlace } from "@/data/motherland-travel";
+import { GEOGRAPHY, HELP, MUST_SEE, OLD_STACK, PLACES, SEASONS, STORIES, TRAVEL_FILM, placeById, topTen, travelCredits, type MapPlace } from "@/data/motherland-travel";
 import { dhakaClock, seasonAt, weekNumber } from "@/lib/motherland-crowd";
 import { cn } from "@/lib/utils";
 import { place, type Card } from "@/data/motherland-blocks";
@@ -54,7 +53,6 @@ export default function GeographyTravelPage() {
   const divisions = category.subcategories.find((s) => s.id === "eight-divisions")!;
   const now = new Date();
   const week = weekNumber(now);
-  const film = filmOfWeek(week);
   const top = topTen(dhakaClock(now).month, week);
   const season = seasonAt(now, SEASONS);
   const stackIds = new Set(OLD_STACK.map((o) => o.id));
@@ -75,7 +73,7 @@ export default function GeographyTravelPage() {
         <PageHero
           id="travel-title"
           name="Geography & Travel"
-          media={<WeekFilm film={film.film} />}
+          film={TRAVEL_FILM}
         />
 
         <Facts facts={GEOGRAPHY} />
@@ -92,8 +90,8 @@ export default function GeographyTravelPage() {
           <CardStack cards={stack} tone="navy" />
         </section>
 
-        <Band id="more-old" tone="paper" title={MUST_SEE.antique.title} lede={MUST_SEE.antique.lede}>
-          <CardGrid cards={moreOld.map(placeCard)} tone="paper" columns={moreOld.length % 4 === 0 ? 4 : 3} />
+        <Band id="more-old" tone="sun" title={MUST_SEE.antique.title} lede={MUST_SEE.antique.lede}>
+          <CardGrid cards={moreOld.map(placeCard)} tone="sun" columns={moreOld.length % 4 === 0 ? 4 : 3} />
         </Band>
 
         <section id="seasons" aria-labelledby="seasons-title" className={cn("scroll-mt-(--ml-header) bg-ml-navy text-white", BAND_Y)}>
@@ -144,8 +142,8 @@ export default function GeographyTravelPage() {
           </div>
         </section>
 
-        <Band id={divisions.id} tone="paper" title={divisions.title} lede={divisions.lede}>
-          <CardGrid cards={divisions.stories} tone="paper" columns={4} />
+        <Band id={divisions.id} tone="mint" title={divisions.title} lede={divisions.lede}>
+          <CardGrid cards={divisions.stories} tone="mint" columns={4} />
         </Band>
 
         <Moment

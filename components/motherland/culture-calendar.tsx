@@ -5,6 +5,7 @@ import Image from "next/image";
 import { pic, place } from "@/data/motherland-blocks";
 import { EVENTS, EVENT_PICTURES, type CultureEvent } from "@/data/motherland-live";
 import { cn } from "@/lib/utils";
+import { CornerButton } from "./corner-button";
 import { Dialog } from "./dialog";
 import { FitLine } from "./fit-line";
 import { BAND_Y, COLUMN, SectionHead, pill } from "./kit";
@@ -227,9 +228,7 @@ export function CornerEvents() {
 
   return (
     <>
-      <button type="button" onClick={() => setListOpen(true)} className={cn(pill.onLight, "fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 shadow-[0_12px_28px_-8px_rgb(11_24_73/0.55)] sm:right-8 sm:bottom-8")}>
-        Get tickets
-      </button>
+      <CornerButton onClick={() => setListOpen(true)}>Get tickets</CornerButton>
       {listOpen ? (
         <Dialog title="Coming up" onClose={closeList}>
           <ul className="flex flex-col gap-2">

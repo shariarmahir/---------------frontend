@@ -49,8 +49,8 @@
 /* Rails: they scroll sideways by touch and arrows; no scrollbar, and the first card lines up with the column. */
 .ml-rail {
   --gutter: 1.5rem;
-  padding-inline: max(var(--gutter), calc((100% - 120rem) / 2 + var(--gutter)));
-  scroll-padding-inline: max(var(--gutter), calc((100% - 120rem) / 2 + var(--gutter)));
+  padding-inline: max(var(--gutter), calc((100% - var(--ml-column)) / 2 + var(--gutter)));
+  scroll-padding-inline: max(var(--gutter), calc((100% - var(--ml-column)) / 2 + var(--gutter)));
   scrollbar-width: none;
 }
 .ml-rail::-webkit-scrollbar {
@@ -189,15 +189,12 @@
   line-height: 1;
 }
 
-/* A photograph opening drifts very slowly, so the page never feels frozen. */
-@media (prefers-reduced-motion: no-preference) {
-  .ml-drift {
-    animation: ml-drift 24s ease-out both;
-  }
-  @keyframes ml-drift {
-    from { transform: scale(1.08); }
-    to { transform: scale(1); }
-  }
+/* A film sits under a tone-matched colour wash; the title also carries its own soft edge. */
+.ml-hero-title {
+  text-shadow: 0 2px 4px rgb(0 0 0 / 0.45), 0 4px 32px rgb(0 0 0 / 0.5);
+}
+.ml-hero-title-light {
+  text-shadow: 0 2px 4px rgb(0 0 0 / 0.5), 0 4px 32px rgb(0 0 0 / 0.55);
 }
 
 /* The category pages and Geography & Travel wear white, paper, navy and gold.
@@ -208,12 +205,22 @@
   background-color: var(--color-ml-navy);
 }
 
+.ml {
+  --ml-column: 120rem;
+  --ml-display: clamp(2.5rem, 6.6vw, 6rem);
+}
+
 /* On these pages ink is navy and the pale grounds are cool, so nothing reads green. */
 .ml-light {
+  /* A reading column and calm titles: on a wide screen the cards stay card-sized. */
+  --ml-column: 90rem;
+  --ml-display: clamp(2.25rem, 4.2vw, 3.75rem);
   --color-ml-ink: #0b1849;
   --color-ml-deep: #0b1849;
   --color-ml-green: #16215c;
   --color-ml-ground: #f3f5fb;
+  --color-ml-sun: #fdf4d7;
+  --color-ml-mint: #e4f2ec;
   --color-ml-mist: #cdd5ea;
 }
 
@@ -253,12 +260,6 @@
   }
   .ml-card:hover {
     translate: 0 -6px;
-  }
-  .ml-rule {
-    transition: width 0.6s cubic-bezier(0.215, 0.61, 0.355, 1);
-  }
-  .ml-card:hover .ml-rule {
-    width: 6rem;
   }
 }
 .ml-card {

@@ -104,3 +104,12 @@ export const EVENT_PICTURES: Record<string, { key?: string; place?: string; src?
   durga: { key: "durga-dhakeshwari", alt: "A Durga idol at Dhakeshwari Temple in Dhaka" },
   theatre: { key: "shilpakala", alt: "The Shilpakala Academy in Dhaka" },
 };
+
+/** Bangladesh's first satellite. The launch was 20:14 UTC on 11 May, so already 12 May in Dhaka. */
+export const LAUNCH_FACTS = [
+  { value: "11 May 2018", label: "Launched from Kennedy Space Center, Florida" },
+  { value: "119.1\u00b0 East", label: "Its fixed place above the equator" },
+  { value: "40", label: "Transponders carrying TV and data" },
+  { value: "Block 5", label: "The first payload on this version of the Falcon 9" },
+];
+export const LAUNCH_SOURCE = { name: "Wikipedia", url: "https://en.wikipedia.org/wiki/Bangabandhu-1" };

@@ -1,8 +1,7 @@
-import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { CATEGORIES, type Category, type Subcategory } from "@/data/motherland-categories";
-import { PROCON, VIDEOS } from "@/data/motherland";
+import { HERO, PROCON, VIDEOS, type Film, type HeroTitleTone } from "@/data/motherland";
 import type { BandTone } from "@/data/motherland-blocks";
 import { DEEP, MORE_FILMS } from "@/data/motherland-deep";
 import { INTROS, PAGE_BLOCKS } from "@/data/motherland-pages";
@@ -14,12 +13,11 @@ import { CornerEvents } from "./culture-calendar";
 import { CornerScience } from "./launch";
 import { Invest } from "./invest";
 import { ANCHOR, BAND_Y, COLUMN, pill } from "./kit";
-import { Parallax } from "./parallax";
 import { Quiz } from "./quiz";
 import { RiseText } from "./rise-text";
 import { TakeASide } from "./take-a-side";
 import { VideoPlayer } from "./video-player";
-import { WeekFilm } from "./week-film";
+import { HeroFilm } from "./hero-film";
 
 /*
  * A MOTHERLAND category page: a full-screen film or photograph with the title,
@@ -27,24 +25,37 @@ import { WeekFilm } from "./week-film";
  * them read (data/motherland-pages.ts), then its quiz and the other categories.
  */
 
-/** The full-screen opening every category page shares: a film or a slowly drifting photograph, and the title alone. */
-export function PageHero({ id, name, media }: { id: string; name: string; media: ReactNode }) {
+/** The full-screen opening every category page shares: a film under a tone-matched colour wash, with the title alone. */
+const HERO_TITLE: Record<HeroTitleTone, string> = {
+  gold: "ml-hero-title text-signal-orange",
+  navy: "ml-hero-title-light text-white",
+  green: "ml-hero-title-light text-white",
+};
+
+/* A colour wash over the film, so the title reads on any frame. Gold titles get a deep navy
+   vignette; navy and green titles sit over a wash in their own colour, darkened so white reads. */
+const HERO_WASH: Record<HeroTitleTone, string> = {
+  gold: "bg-gradient-to-t from-ml-navy/85 via-ml-navy/45 to-ml-navy/60",
+  navy: "bg-gradient-to-t from-ml-navy/90 via-ml-navy/50 to-ml-navy/72",
+  green: "bg-gradient-to-t from-[#05311d]/92 via-[#05311d]/55 to-[#05311d]/70",
+};
+
+/** Every hero is a film under a readability wash, with its title alone, held in the vertical middle. */
+export function PageHero({ id, name, film, titleTone = "gold" }: { id: string; name: string; film: Film; titleTone?: HeroTitleTone }) {
   return (
-    <section aria-labelledby={id} className="relative isolate flex min-h-svh flex-col justify-end overflow-hidden bg-ml-navy text-white">
-      <Parallax from="start" lift={14}>{media}</Parallax>
-      <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-t from-ml-navy/95 via-ml-navy/35 to-ml-navy/30" />
-      {/* A phone keeps room at the foot for whatever stands in the corner: Topics, Get tickets, Join now. */}
-      <div className={cn(COLUMN, "pt-36 pb-24 sm:pb-12 lg:pb-16")}>
-        <RiseText as="h1" id={id} now text={name} className="w-full font-ml-display text-[clamp(3.5rem,11.5vw,11rem)] leading-[0.98] tracking-[0.01em] uppercase" />
+    <section aria-labelledby={id} className="relative isolate flex min-h-svh flex-col justify-center overflow-hidden bg-ml-navy">
+      <HeroFilm film={film} />
+      <div aria-hidden className={cn("absolute inset-0 -z-10", HERO_WASH[titleTone])} />
+      <div className={cn(COLUMN, "pt-20")}>
+        <RiseText as="h1" id={id} now text={name} className={cn("w-full font-ml-display text-[clamp(2.75rem,7vw,7.5rem)] leading-none tracking-[0.015em] uppercase", HERO_TITLE[titleTone])} />
       </div>
     </section>
   );
 }
 
 function Opening({ category }: { category: Category }) {
-  const { hero, name } = category;
-  const film = DEEP[category.slug]?.film;
-  return <PageHero id="category-title" name={name} media={film ? <WeekFilm film={film} /> : <Image src={hero.src} alt={hero.alt} fill priority sizes="100vw" className="ml-drift object-cover" style={{ objectPosition: hero.focus }} />} />;
+  const deep = DEEP[category.slug];
+  return <PageHero id="category-title" name={category.name} film={deep?.film ?? HERO.film} titleTone={deep?.titleTone} />;
 }
 
 const ARTS = ["arches", "peaks", "waves", "minar"] as const;

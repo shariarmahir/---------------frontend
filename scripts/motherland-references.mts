@@ -9,6 +9,7 @@ import { writeFileSync } from "node:fs";
 import { CATEGORIES, categoryCredits } from "../data/motherland-categories.ts";
 import { blockCredits, blockSources, type Block, type Src } from "../data/motherland-blocks.ts";
 import { DEEP, MORE_FILMS, deepSources } from "../data/motherland-deep.ts";
+import { BANKS, MOBILE_MONEY } from "../data/motherland-money.ts";
 import { FACT_SOURCES, FACTS_NAME, factsCredits } from "../data/motherland-facts.ts";
 import { VIDEOS } from "../data/motherland.ts";
 import { CALENDAR_SOURCE } from "../data/motherland-live.ts";
@@ -77,6 +78,7 @@ for (const c of CATEGORIES.filter((x) => x.slug !== "travel")) {
 parts.push(section("Geography & Travel", [...TRAVEL_SOURCES, ...TRIP_SOURCES], travelCredits() as Credit[]));
 /* Facts about Bangladesh also names each source on its cards; the list is here so this file stays the whole picture. */
 parts.push(section(FACTS_NAME, FACT_SOURCES, factsCredits() as Credit[]));
+parts.push(["## Wallet and bank logos (Taka)", "", "Trademarks of their owners, shown only to identify each service.", "", ...[...MOBILE_MONEY, ...BANKS].map((b) => `- ${b.name}: ${b.url}${b.logo ? "" : " (name shown; no logo file yet)"}`), ""].join("\n"));
 
 writeFileSync(new URL("../reference.md", import.meta.url), parts.join("\n"));
 console.log("reference.md written");

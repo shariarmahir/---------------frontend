@@ -50,7 +50,7 @@ export function ScrollFill({ text, tone = "light", className }: { text: string; 
     return () => ro.disconnect();
   }, []);
 
-  const colours = tone === "dark" ? { base: "text-white/25", ink: "text-white" } : tone === "gold" ? { base: "text-ml-navy/25", ink: "text-ml-navy" } : { base: "text-ml-mist", ink: "text-ml-ink" };
+  const colours = tone === "dark" ? { base: "text-white/25", ink: "text-white" } : tone === "gold" ? { base: "text-ml-navy/30", ink: "text-ml-navy" } : { base: "text-ml-mist", ink: "text-ml-ink" };
 
   return (
     <p ref={box} className={cn(colours.base, className)}>

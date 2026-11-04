@@ -28,7 +28,7 @@ export const NATURE_BLOCKS: Block[] = [
     films: [
       { title: "Morning over Bandarban", text: "Sunrise at Lama in the Bandarban hills, with the valleys still full of cloud and birds crossing below the ridge. Winter mornings here are worth the early start.", file: "bandarban-sunrise", ext: "mp4", where: "Filmed in Lama, Bandarban, Bangladesh", credit: { author: "Pixabay contributor", license: "Pixabay Content License", sourceUrl: "https://pixabay.com/videos/bangladesh-lama-bandarban-mountains-294187/", source: "Pixabay" } },
       { title: "Kochikhali, the Sundarbans", text: "Filmed in the forest itself, on the wild southern shore where deer come out to graze and tigers leave their prints in the mud.", file: "sundarbans-kochikhali", where: "Filmed in the Sundarbans, Bangladesh", credit: { author: "Yahya", license: "CC BY-SA 4.0", sourceUrl: commonsFilm("Kochikhali point, Sundarbans.webm") } },
-      { title: "Spotted deer", text: "Chital are what tigers here mostly hunt. Herds feed on the leaves that monkeys drop from the keora trees, and the two warn each other of danger.", file: "chital-herd", where: "The same species, filmed in Maui, Hawaii", credit: { author: "Forest and Kim Starr", license: "CC BY 2.0", sourceUrl: commonsFilm("Axis Deer Herd - Maui.webm") } },
+      { title: "Kaptai Lake", text: "The hills of Rangamati stand in the country's largest lake, under a monsoon sky. Boats are still the way round much of it.", file: "kaptai-lake", where: "Filmed at Kaptai Lake, Rangamati, Bangladesh", credit: { author: "Al Riaz Uddin", license: "CC BY-SA 4.0", sourceUrl: commonsFilm("Kaptai Lake video.webm") } },
       { title: "Kingfisher", text: "Bangladesh has about a dozen kingfishers, and the mangrove creeks are one of the best places to see them. Boats often drift past one on a low branch.", file: "kingfisher", where: "The same species, filmed in Europe", credit: { author: "Lennart Hessel", license: "CC BY 3.0", sourceUrl: commonsFilm("Common Kingfisher eating a fish.webm") } },
     ],
   },
@@ -56,7 +56,7 @@ export const NATURE_BLOCKS: Block[] = [
   {
     kind: "cards",
     id: "rarest",
-    tone: "gold",
+    tone: "mint",
     title: "The rarest things we have",
     lede: "Some of these live almost nowhere else. Some are one bad season away from being gone.",
     columns: 3,
@@ -104,7 +104,7 @@ export const NATURE_BLOCKS: Block[] = [
   {
     kind: "cards",
     id: "flowers-and-fruits",
-    tone: "paper",
+    tone: "sun",
     title: "Flowers and fruits",
     columns: 4,
     cards: [
@@ -156,10 +156,10 @@ export const NATURE_BLOCKS: Block[] = [
     columns: 3,
     cards: [
       { title: "On a visit", text: "Book Sundarbans trips with operators licensed by the Forest Department, respect the June to August closure, and keep to the Saint Martin's rules. Take your rubbish home.", source: { name: "Sundarbans Tourism, Forest Department", url: "https://sundarbantourism.bforest.gov.bd/en/package/178" }, picture: photo("mangroves") },
-      { title: "At the market", text: "Never buy deer meat, tiger parts, turtle or wild bird. Choose jute and cloth bags over plastic, and leave jatka, the young hilsa, in the river.", picture: photo("handloom") },
+      { title: "At the market", text: "Never buy deer meat, tiger parts, turtle or wild bird. Choose jute and cloth bags over plastic, and leave jatka, the young hilsa, in the river.", picture: pic("fish-market", "A fish market at night")},
       { title: "At home", text: "Plant native trees such as mango, jackfruit, neem and kadam, not fast-growing foreign ones. Keep ponds and wetlands from being filled in.", picture: pic("sapling", "A woman tending a young tree in an orchard") ?? photo("rice-planting") },
       { title: "In your village or town", text: "Join the people who clean a canal or river near you. Report wildlife crime to the Forest Department or the national helpline, 999.", picture: pic("plastic-river", "A polluted stretch of the Buriganga river") },
-      { title: "At work", text: "Treat waste water before it reaches a river, buy from certified factories, and put your solar panels on the roof you already have.", picture: photo("garments") },
+      { title: "At work", text: "Treat waste water before it reaches a river, buy from certified factories, and put your solar panels on the roof you already have.", picture: pic("solar-bd", "A field of solar panels under a monsoon sky")},
       { title: "With your voice", text: "Ask the people who represent you what they are doing about rivers, forests and the coast. Teach your children the names of the birds near your home.", picture: photo("children") },
     ],
   },

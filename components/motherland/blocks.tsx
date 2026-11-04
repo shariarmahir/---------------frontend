@@ -12,6 +12,7 @@ import { FilmWall } from "./film-wall";
 import { FitLine } from "./fit-line";
 import { ANCHOR, BAND_Y, COLUMN, LAST_ROW_FULL, LEDE, SectionHead, pill } from "./kit";
 import { LaunchBand } from "./launch";
+import { MoneyBrands } from "./money-brands";
 import { Parallax } from "./parallax";
 import { PinBoard } from "./pin-board";
 import { PinnedRail } from "./pinned-rail";
@@ -28,22 +29,22 @@ import { ScrollFill } from "./scroll-fill";
 const GROUND: Record<BandTone, string> = {
   white: "bg-white text-ml-navy",
   paper: "bg-ml-ground text-ml-navy",
+  sun: "bg-ml-sun text-ml-navy",
+  mint: "bg-ml-mint text-ml-navy",
   navy: "bg-ml-navy text-white",
   gold: "bg-signal-orange text-ml-navy",
 };
 
-type Skin = "white" | "navy" | "gold";
+type Skin = "white" | "navy";
 
 /** What a card wears on each band: white with a shadow, and the wide card in the band's contrast. */
 function skinFor(tone: BandTone, feature: boolean): Skin {
-  if (!feature) return "white";
-  return tone === "navy" ? "gold" : "navy";
+  return feature && tone !== "navy" ? "navy" : "white";
 }
 
-const SKIN: Record<Skin, { card: string; soft: string; rule: string; panel: string; label: string }> = {
-  white: { card: "bg-white text-ml-navy ring-1 ring-ml-navy/8", soft: "text-ml-navy/80", rule: "bg-signal-orange", panel: "bg-ml-navy/5", label: "text-ml-navy/65" },
-  navy: { card: "bg-ml-navy text-white ring-1 ring-white/10", soft: "text-white/85", rule: "bg-signal-orange", panel: "bg-white/10", label: "text-white/70" },
-  gold: { card: "bg-signal-orange text-ml-navy", soft: "text-ml-navy/90", rule: "bg-ml-navy", panel: "bg-ml-navy/10", label: "text-ml-navy/70" },
+const SKIN: Record<Skin, { card: string; soft: string; panel: string; label: string }> = {
+  white: { card: "bg-white text-ml-navy ring-1 ring-ml-navy/8", soft: "text-ml-navy/80", panel: "bg-ml-navy/5", label: "text-ml-navy/65" },
+  navy: { card: "bg-ml-navy text-white ring-1 ring-white/10", soft: "text-white/85", panel: "bg-white/10", label: "text-white/70" },
 };
 
 const CARD_SHELL = "ml-card group flex w-full flex-col overflow-hidden rounded-[1.25rem]";
@@ -82,7 +83,6 @@ function CardBody({ card, skin, large }: { card: Card; skin: Skin; large?: boole
   return (
     <div className={cn("flex flex-1 flex-col gap-3 p-6", large && "lg:p-8")}>
       <RiseText as="h3" text={card.title} className={cn("w-full font-ml-display tracking-[0.01em] uppercase", large ? "text-[clamp(1.75rem,2.6vw,2.75rem)]" : "text-[clamp(1.5rem,2vw,2.1rem)]", "leading-[1.1]")} />
-      <span aria-hidden className={cn("ml-rule mt-0.5 h-1 w-12 shrink-0 rounded-full", look.rule)} />
       <p className={cn("max-w-[62ch] leading-relaxed text-pretty", large && "text-lg", look.soft)}>{card.text}</p>
       {card.facts?.length ? (
         <dl className={cn("mt-auto grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl p-4", look.panel)}>
@@ -96,7 +96,7 @@ function CardBody({ card, skin, large }: { card: Card; skin: Skin; large?: boole
       ) : null}
       {card.cta ? (
         <div className={cn("pt-1", !card.facts?.length && "mt-auto")}>
-          <a href={card.cta.href} className={cn(skin === "gold" ? "inline-flex min-h-11 items-center rounded-full bg-ml-navy px-6 font-semibold text-white transition-colors hover:bg-white hover:text-ml-navy focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ml-navy" : pill.onLight)}>
+          <a href={card.cta.href} className={pill.onLight}>
             {card.cta.label}
           </a>
         </div>
@@ -214,7 +214,7 @@ function DataCards({ head, rows, tone, picture, hideLastColumn }: { head: string
   /* One size of figure across the whole set, sized for the longest. */
   const longest = Math.max(...rows.map((r) => r[1]?.length ?? 0));
   const figure = longest > 24 ? "text-[clamp(1.35rem,1.7vw,1.6rem)]" : longest > 14 ? "text-[clamp(1.6rem,2.1vw,2.1rem)]" : "text-[clamp(2rem,2.8vw,2.75rem)]";
-  const cardLook = onNavy ? "bg-white/8 text-white ring-1 ring-white/15" : tone === "gold" ? "bg-white text-ml-navy" : "bg-white text-ml-navy ring-1 ring-ml-navy/8";
+  const cardLook = onNavy ? "bg-white/8 text-white ring-1 ring-white/15" : "bg-white text-ml-navy ring-1 ring-ml-navy/8";
   const odd = rows.length % 2 === 1;
   return (
     <div className={cn("grid grid-cols-[minmax(0,1fr)] gap-5 lg:gap-6", picture && "lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]")}>
@@ -305,7 +305,7 @@ export function IntroFill({ text, tone = "white", id, label }: { text: string; t
   return (
     <section id={id} aria-label={label ?? "Introduction"} className={cn(ANCHOR, "py-10 sm:py-12 lg:py-16", GROUND[tone])}>
       <div className={COLUMN}>
-        <ScrollFill text={text} tone={tone === "navy" ? "dark" : tone === "gold" ? "gold" : "light"} className="text-[clamp(1.5rem,3vw,3rem)] leading-[1.24] font-medium tracking-[-0.01em]" />
+        <ScrollFill text={text} tone={tone === "navy" ? "dark" : tone === "gold" ? "gold" : "light"} className="text-[clamp(1.375rem,2.2vw,2.25rem)] leading-[1.3] font-medium tracking-[-0.01em]" />
       </div>
     </section>
   );
@@ -378,7 +378,7 @@ export function BlockView({ block }: { block: Block }) {
               </p>
             ))}
             {block.cta ? (
-              <a href={block.cta.href} className={cn(block.tone === "gold" ? "inline-flex min-h-12 items-center justify-center rounded-full bg-ml-navy px-7 py-3 font-semibold text-white transition-colors hover:bg-white hover:text-ml-navy" : pill.onLight, "w-fit")}>
+              <a href={block.cta.href} className={cn(pill.onLight, "w-fit")}>
                 {block.cta.label}
               </a>
             ) : null}
@@ -390,6 +390,7 @@ export function BlockView({ block }: { block: Block }) {
       if (block.tool === "calendar") return <CalendarBoard />;
       if (block.tool === "connect") return <ConnectBand />;
       if (block.tool === "launch") return <LaunchBand />;
+      if (block.tool === "money-brands") return <MoneyBrands />;
       return null;
     case "part":
       return null;

@@ -8,8 +8,9 @@
  * were checked on 4 November 2026. Coordinates are approximate, good enough to
  * navigate to the area.
  */
-import { HERO, VIDEOS, commons, type Film, type Picture } from "./motherland.ts";
+import { commons, type Picture } from "./motherland.ts";
 import { photo } from "./motherland-categories.ts";
+import { BANDARBAN_CLOUDS, STORIES_FILM } from "./motherland-deep.ts";
 import { PLACE_CREDITS } from "./motherland-places-credits.ts";
 import type { CrowdPlace } from "../lib/motherland-crowd.ts";
 
@@ -250,17 +251,8 @@ export const SEASONS: Season[] = [
   { id: "boshonto", name: "Boshonto", english: "Spring", months: "Mid-Feb to mid-Apr", from: [2, 14], looks: "Red palash, yellow saris", picture: photo("falgun") },
 ];
 
-/**
- * The hero's film of the week. It changes by itself every Sunday, Dhaka time,
- * by going round this list. Until the contest opens these are our own picks,
- * and only films of the land itself. To crown a week's winner, add its film.
- */
-export const WEEK_FILMS: { film: Film; caption: string }[] = [
-  { film: VIDEOS.films[1], caption: "Haor wetlands and paddy fields, from the air" },
-  { film: HERO.film, caption: HERO.film.title },
-];
-
-export const filmOfWeek = (week: number) => WEEK_FILMS[((week % WEEK_FILMS.length) + WEEK_FILMS.length) % WEEK_FILMS.length];
+/** The hero: cloud lying in the valleys of Bandarban at sunrise. */
+export const TRAVEL_FILM = BANDARBAN_CLOUDS;
 
 /** The four very old places dealt as full-screen cards, as the landing page deals its history. */
 export const OLD_STACK: { id: string; art: "arches" | "minar" | "peaks" | "waves" }[] = [
@@ -296,5 +288,5 @@ export function travelCredits() {
   return [...PLACES.map((p) => ({ label: p.name, picture: p.picture })), ...GUIDES.map((g) => ({ label: g.title, picture: g.picture })), ...SEASONS.map((s) => ({ label: s.name, picture: s.picture }))]
     .filter(({ picture }) => !seen.has(picture.src) && !!seen.add(picture.src))
     .map(({ label, picture }) => ({ label, credit: picture.credit }))
-    .concat(WEEK_FILMS.map(({ film }) => ({ label: film.title, credit: film.credit })));
+    .concat([TRAVEL_FILM, STORIES_FILM].map((f) => ({ label: f.title, credit: f.credit })));
 }

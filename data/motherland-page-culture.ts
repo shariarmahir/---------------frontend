@@ -38,7 +38,7 @@ export const CULTURE_BLOCKS: Block[] = [
     columns: 3,
     cards: [
       { title: "Pitha", meta: "Winter", text: "Steamed, fried or filled rice cakes. Bhapa with date palm molasses and coconut is sold hot on winter street corners. There are dozens of kinds, and every grandmother has her own.", picture: pic("pitha", "Traditional rice cakes in Bangladesh") },
-      { title: "Nobanno", meta: "New rice, November", text: "The first rice of the Aman harvest goes into sweet dishes for the family, the neighbours and the birds. In Dhaka, artists hold their own version with songs and dance at Charukala.", picture: photo("rice-planting") },
+      { title: "Nobanno", meta: "New rice, November", text: "The first rice of the Aman harvest goes into sweet dishes for the family, the neighbours and the birds. In Dhaka, artists hold their own version with songs and dance at Charukala.", picture: pic("hemanta-harvest", "Farmers bringing in the new rice")},
       { title: "Mela", meta: "All year", text: "A fair of clay toys, bamboo flutes, sweets, circus tents and folk singers. There is one somewhere every week, and Boishakhi fairs fill April.", picture: pic("mela2", "Bright decorations at a Boishakhi mela") },
       { title: "Nakshi kantha", meta: "Embroidered quilts", text: "Women stitched old saris together and embroidered their lives on them. Jasimuddin's long poem about one such quilt is still taught in school.", picture: pic("nakshi-kantha", "A quilt embroidered in nakshi kantha style"), source: wiki("Nakshi kantha") },
       { title: "Jatra", meta: "Open-air theatre", text: "Loud, musical, all-night folk plays on a stage with the audience on every side. Troupes tour villages in the cool months, and they are still a big draw.", picture: pic("jatra", "A jatra performance in Bangladesh"), source: { name: "The Daily Star, jatra festival", url: "https://www.thedailystar.net/entertainment/theatre-arts/news/month-long-jatra-performance-festival-begins-december-4047101" } },
@@ -73,7 +73,7 @@ export const CULTURE_BLOCKS: Block[] = [
     lede: "A newborn country started a rock scene, and one television set could stop the whole nation.",
     chapters: [
       { title: "The guru", meta: "1970s", text: "Azam Khan fought in the Liberation War and then came home to start a band, Uchcharon. People called him Pop Guru. He sang about Dhaka's streets and the people on them, and young Dhaka had never heard anything like it.", source: BAND, picture: pic("p-azam", "Azam Khan, the pop guru of Bangladesh") },
-      { title: "The bands", meta: "1980 to 1991", text: "Souls released Super Souls in 1980, often called the first album by a Bangladeshi band. Miles followed in 1982 and Feedback in 1985. Warfaze formed in 1984 and brought hard rock in. Ayub Bachchu left Souls to start LRB, and his guitar became the sound of a generation. Bands were soon playing to crowds in India, the UK, the US and Canada.", source: BAND, picture: pic("ayub-bachchu-live", "Ayub Bachchu on stage") ?? photo("rickshaw-art") },
+      { title: "The bands", meta: "1980 to 1991", text: "Souls released Super Souls in 1980, often called the first album by a Bangladeshi band. Miles followed in 1982 and Feedback in 1985. Warfaze formed in 1984 and brought hard rock in. Ayub Bachchu left Souls to start LRB, and his guitar became the sound of a generation. Bands were soon playing to crowds in India, the UK, the US and Canada.", source: BAND, picture: pic("p-bachchu", "Ayub Bachchu, guitar in hand, on stage")},
       { title: "The night a nation begged", meta: "1993", text: "Humayun Ahmed's serial Kothao Keu Nei gave Bangladesh Television a lovable gangster called Baker Bhai. When the story turned to his hanging, people marched in the streets and gathered outside the writer's house. Hundreds of people made appeals to him, including the prime minister of the day. Humayun Ahmed kept his ending, and Baker Bhai was hanged on screen. No other country has quite that story to tell.", source: BAKER, picture: pic("p-humayun", "The writer Humayun Ahmed") },
       { title: "When there was one channel", meta: "The 1990s", text: "BTV was the one channel, so on drama night the country watched the same thing. Ittadi, on air since 1989, made the whole family laugh. Then came cassettes of mixed songs from the corner shop, Eid fashions copied from the screen, and tea-stall arguments about the plot.", source: { name: "Prothom Alo, BTV's old plays", url: "https://en.prothomalo.com/entertainment/BTV%E2%80%99s-popular-old-plays-on-YouTube" }, picture: pic("btv", "The Bangladesh Television building") },
       { title: "Dressing like ourselves", meta: "Fashion", text: "Aarong opened in 1978 to sell village craft, and made handloom and nakshi kantha something to want in the city. Young designers followed. By the 90s, a good panjabi or a Tangail sari was a statement of who you were.", source: wiki("Aarong"), picture: photo("falgun") },
@@ -82,7 +82,7 @@ export const CULTURE_BLOCKS: Block[] = [
   {
     kind: "cards",
     id: "cinema-and-drama",
-    tone: "paper",
+    tone: "sun",
     title: "Films and plays worth finding",
     lede: "Start with these if you want to understand us.",
     columns: 3,
@@ -108,14 +108,14 @@ export const CULTURE_BLOCKS: Block[] = [
       { title: "Nouka Baich", meta: "Boat races", text: "Long boats with dozens of oarsmen race in the monsoon and autumn while drums set the stroke.", picture: pic("boat-race-photo", "Traditional boat race in Bangladesh") },
       { title: "Lathi khela", meta: "Stick fighting", text: "A martial art that has become a dance of skill at village fairs and on Pohela Boishakh.", picture: pic("lathi-khela", "A lathi khela stick fight") },
       { title: "Gollachut and dariyabandha", meta: "Village yard games", text: "Running and tagging games played on any patch of ground, needing no equipment at all.", picture: pic("river-pyramid", "Boys making a human pyramid in a river in Bangladesh") },
-      { title: "Cricket", meta: "The national passion", text: "Test status came in 2000. The under-19 team won the World Cup in 2020. Every tea stall has an opinion, and a match can bring a city to a stop.", picture: photo("children"), source: wiki("Bangladesh national cricket team") },
+      { title: "Cricket", meta: "The national passion", text: "Test status came in 2000. The under-19 team won the World Cup in 2020. Every tea stall has an opinion, and a match can bring a city to a stop.", picture: pic("cricket-fans", "Fans with the national flag at the cricket stadium in Mirpur"), source: wiki("Bangladesh national cricket team") },
       { title: "Women's football", meta: "South Asian champions", text: "Bangladesh's women won the SAFF Championship in 2022 and defended it in 2024, and were welcomed home on an open-top bus.", source: wiki("SAFF Women's Championship"), picture: pic("women-football", "Women playing football on a green pitch") },
     ],
   },
   {
     kind: "map",
     id: "culture-map",
-    tone: "paper",
+    tone: "mint",
     title: "Where to find it",
     lede: "The academies, museums and homes of our art. Pick a pin.",
     pins: [

@@ -13,7 +13,7 @@ export interface Src {
   url: string;
 }
 
-export type BandTone = "white" | "paper" | "navy" | "gold";
+export type BandTone = "white" | "paper" | "sun" | "mint" | "navy" | "gold";
 
 export interface Card {
   title: string;
@@ -62,7 +62,7 @@ export type Block =
   /** A part the page already had: its opening stack, sourced figures, timeline, or a rail of stories. */
   | { kind: "part"; part: "stack" | "figures" | "timeline" | "rails" | "simulator" | "debates" | "videos" }
   /** A part with its own behaviour, drawn by a client component. */
-  | { kind: "tool"; tool: "converter" | "calendar" | "connect" | "launch" };
+  | { kind: "tool"; tool: "converter" | "calendar" | "connect" | "launch" | "money-brands" };
 
 export interface FilmCard {
   title: string;

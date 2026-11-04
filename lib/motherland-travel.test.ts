@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { test } from "node:test";
 import { project } from "../data/bangladesh-map.ts";
 import { TOPICS } from "../data/motherland.ts";
-import { GUIDES, HELP, OLD_STACK, PLACES, RIVERS, SEASONS, SOURCES, STORIES, WEEK_FILMS, filmOfWeek, placeById, topTen, travelCredits } from "../data/motherland-travel.ts";
+import { GUIDES, HELP, OLD_STACK, PLACES, RIVERS, SEASONS, SOURCES, STORIES, TRAVEL_FILM, placeById, topTen, travelCredits } from "../data/motherland-travel.ts";
 import { SURGES, crowdAt, daysUntil, dhakaClock, nearestPlaces, nextSurge, placesToGpx, seasonAt, ticketOutlook, weekNumber } from "./motherland-crowd.ts";
 import { BD_BOUNDS, countryBorder, divisionShapesCount, onLand, outsideMask, tilesFor } from "./motherland-geo.ts";
 import { travelMapStyle } from "./motherland-map-style.ts";
@@ -123,13 +123,11 @@ test("the full-screen old places are on the map and very old", () => {
   for (const { id } of OLD_STACK) assert.equal(placeById(id)?.kind, "antique", id);
 });
 
-test("the film of the week changes each Sunday in Dhaka, and never runs out", () => {
+test("the week turns each Sunday in Dhaka, and the hero film is on disk", () => {
   // Sunday 8 November 2026, 00:30 in Dhaka, is still Saturday in UTC.
   assert.equal(weekNumber(at("2026-11-07T18:30:00Z")), weekNumber(at("2026-11-07T17:30:00Z")) + 1);
   assert.equal(weekNumber(at("2026-11-04T06:00:00Z")), weekNumber(at("2026-11-07T17:00:00Z")));
-  for (let w = -1; w < 9; w++) assert.ok(filmOfWeek(w)?.film.src.phone, String(w));
-  for (const { film } of WEEK_FILMS) assert.ok(existsSync(`public${film.src.phone}`) && existsSync(`public${film.poster}`), film.title);
-  assert.notEqual(filmOfWeek(0), filmOfWeek(1));
+  assert.ok(existsSync(`public${TRAVEL_FILM.src.phone}`) && existsSync(`public${TRAVEL_FILM.poster}`), TRAVEL_FILM.title);
 });
 
 test("a traveller's new place is checked, and says what to fix", () => {

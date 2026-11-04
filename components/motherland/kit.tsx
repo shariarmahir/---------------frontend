@@ -10,14 +10,14 @@ import { cn } from "@/lib/utils";
 import { FitLine } from "./fit-line";
 import { RiseText } from "./rise-text";
 
-/** The page column, wide like the reference site's (up to 120rem, a 3rem gutter from xl); the rails line up to it. */
-export const COLUMN = "mx-auto w-full max-w-480 px-6 sm:px-10 xl:px-12";
+/** The page column, a 3rem gutter from xl; its width is set per page in motherland.css, and the rails line up to it. */
+export const COLUMN = "mx-auto w-full max-w-(--ml-column) px-6 sm:px-10 xl:px-12";
 
 /** A section's anchor lands clear of the fixed header. */
 export const ANCHOR = "scroll-mt-(--ml-header)";
 
-/** The big uppercase title, on one line: up to 96px, smaller when the words need it (RiseText fits it). */
-export const DISPLAY = "font-ml-display text-[clamp(2.5rem,6.6vw,6rem)] leading-[1.02] tracking-[0.01em] uppercase";
+/** The big uppercase title, on one line: its size is set per page in motherland.css, smaller when the words need it (RiseText fits it). */
+export const DISPLAY = "font-ml-display text-(length:--ml-display) leading-[1.02] tracking-[0.01em] uppercase";
 
 /** The space above and below a band on the category pages. */
 export const BAND_Y = "py-12 sm:py-14 lg:py-16";

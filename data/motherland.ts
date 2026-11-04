@@ -115,11 +115,14 @@ export interface Cta {
 
 export interface Film {
   title: string;
-  /** Phone cut (1280 wide) and desktop cut (1920 wide); one file when there is only one. */
-  src: { phone: string; desktop?: string };
+  /** Phone cut, desktop cut and a 4K cut for very wide screens; one file when there is only one. */
+  src: { phone: string; desktop?: string; wide?: string };
   poster: string;
   credit: Credit;
 }
+
+/** The hero title's colour, chosen for the film behind it. */
+export type HeroTitleTone = "gold" | "navy" | "green";
 
 function pexels(title: string, file: string, slug: string, desktop?: string): Film {
   return {
@@ -582,6 +585,8 @@ export const TAKA = {
 
 /* ── Videos ─────────────────────────────────────────────────────────── */
 
+export const FLAG_FILM = pexels("The national flag in the wind", "national-flag", "the-flag-of-bangladesh-on-a-flag-pole-3978630");
+
 export const VIDEOS = {
   title: "Bangladesh in motion",
   lede: "Rivers, streets and celebrations, filmed by the people who live them.",
@@ -591,8 +596,7 @@ export const VIDEOS = {
     pexels("Haor wetlands and paddy fields from the air", "haor-wetland", "aerial-view-of-rural-landscapes-in-bangladesh-34059329"),
     pexels("Boats and boatmen on the Buriganga, Dhaka", "buriganga-boats", "bustling-riverside-market-in-dhaka-bangladesh-37115902"),
     pexels("Eid morning in the streets of Dhaka", "eid-dhaka", "colorful-eid-celebrations-in-dhaka-streets-31409962"),
-    pexels("Rickshaws at the TSC, University of Dhaka", "rickshaws-tsc", "suhrawardy-udyan-tsc-26689635"),
-    pexels("The national flag in the wind", "national-flag", "the-flag-of-bangladesh-on-a-flag-pole-3978630"),
+    FLAG_FILM,
   ],
 };
 

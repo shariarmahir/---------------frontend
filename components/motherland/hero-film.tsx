@@ -9,7 +9,7 @@ const typeOf = (src: string) => (src.endsWith(".webm") ? "video/webm" : "video/m
  * The hero's film: it plays muted and on a loop behind the title. It stays a
  * still picture for visitors who ask for less motion or for saving data.
  */
-export function WeekFilm({ film }: { film: Film }) {
+export function HeroFilm({ film }: { film: Film }) {
   const video = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -20,6 +20,7 @@ export function WeekFilm({ film }: { film: Film }) {
 
   return (
     <video ref={video} muted loop playsInline preload="metadata" poster={film.poster} aria-hidden className="absolute inset-0 -z-20 size-full object-cover">
+      {film.src.wide ? <source media="(min-width: 2200px)" src={film.src.wide} type={typeOf(film.src.wide)} /> : null}
       {film.src.desktop ? <source media="(min-width: 1024px)" src={film.src.desktop} type={typeOf(film.src.desktop)} /> : null}
       <source src={film.src.phone} type={typeOf(film.src.phone)} />
     </video>

@@ -42,7 +42,7 @@ export const TAKA_BLOCKS: Block[] = [
     id: "what-it-buys",
     hideLastColumn: true,
     picture: pic("launch-sadarghat", "River launches moored at Sadarghat in Dhaka") ?? photo("rickshaw-art"),
-    tone: "paper",
+    tone: "sun",
     title: "What your money buys",
     lede: "Real fares from published charts, checked November 2026. Confirm before you pay.",
     head: ["What", "Price", "Where this comes from"],
@@ -61,6 +61,10 @@ export const TAKA_BLOCKS: Block[] = [
     ],
     note: "Checked November 2026. Fares rose twice in 2026 with fuel prices, so confirm before you pay.",
     sources: [TRAIN, BRTA, LAUNCH, STMARTIN, SUNDARBANS],
+  },
+  {
+    kind: "tool",
+    tool: "money-brands",
   },
   {
     kind: "cards",
@@ -93,8 +97,8 @@ export const TAKA_BLOCKS: Block[] = [
   {
     kind: "table",
     id: "stay-safe",
-    picture: photo("coxs-bazar"),
-    tone: "gold",
+    picture: pic("phone-field", "A traveller using his phone beside a green field") ?? photo("rickshaw-art"),
+    tone: "mint",
     title: "Numbers to save now",
     lede: "Put these in your phone before you land.",
     head: ["Who", "Number", "What for"],
@@ -132,7 +136,7 @@ export const TAKA_BLOCKS: Block[] = [
     lede: "From medieval silver to notes printed with the nation's monuments.",
     chapters: [
       { title: "A name older than the country", meta: "Medieval Bengal", text: "Taka comes from the Sanskrit tanka, a silver coin. Bengal's sultans struck silver tankas centuries before any modern border existed, and people across the region have called their money taka ever since.", source: wiki("Bangladeshi taka"), picture: pic("old-coin", "A silver tanka of Sikandar Shah, a sultan of Bengal") },
-      { title: "Rubber stamps and a map", meta: "1971 to 1974", text: "A new country needed money quickly. Pakistani rupee notes were first used with and without rubber stamps. On 4 March 1972 the first taka notes arrived, printed with a map of Bangladesh. These first notes stopped being legal tender on 30 March 1974.", source: wiki("Banknotes of the Bangladeshi taka"), picture: pic("money-exchange", "Bangladeshi taka banknotes") },
+      { title: "Rubber stamps and a map", meta: "1971 to 1974", text: "A new country needed money quickly. Pakistani rupee notes were first used with and without rubber stamps. On 4 March 1972 the first taka notes arrived, printed with a map of Bangladesh. These first notes stopped being legal tender on 30 March 1974.", source: wiki("Banknotes of the Bangladeshi taka"), picture: pic("bank-hq", "Bangladesh Bank, which issues the taka") ?? photo("taka-notes") },
       { title: "A currency finds its feet", meta: "1976 onward", text: "A new series in 1976 replaced almost every note. The money kept pace with the economy: the ৳500 note arrived in 1976 and the ৳1,000 in 2008, as garments and money from workers abroad grew.", source: { name: "The Business Standard", url: "https://www.tbsnews.net/node/322393" }, picture: pic("taka-small", "A fan of 1,000 taka notes") },
       { title: "Monuments on the money", meta: "June 2025", text: "From 1 June 2025 Bangladesh Bank began issuing notes that show no person at all. They carry places instead: Kantajew Temple, Paharpur, the National Martyrs' Memorial and the land itself. Older notes remain legal tender, so you will see both in your change.", source: { name: "Malay Mail", url: "https://www.malaymail.com/news/money/2025/06/01/bangladesh-drops-founding-father-mujibur-rahman-from-currency-as-daughter-hasina-faces-trial/178943" }, picture: photo("taka-notes") },
     ],

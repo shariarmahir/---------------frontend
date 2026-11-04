@@ -6,6 +6,7 @@ import { Facts, MoreCategories, PageHero } from "@/components/motherland/categor
 import { BothSides, FactsMap, FactsNav, PrintButton, ShareFact } from "@/components/motherland/facts-parts";
 import { anton, montserrat } from "@/components/motherland/fonts";
 import { MotherlandFooter } from "@/components/motherland/footer";
+import { FACTS_FILM } from "@/data/motherland-deep";
 import { MotherlandHeader } from "@/components/motherland/header";
 import { COLUMN, LAST_ROW_FULL, pill } from "@/components/motherland/kit";
 import { Quiz } from "@/components/motherland/quiz";
@@ -58,7 +59,6 @@ function FactCard({ id, figure, title, text, panel, source, picture, hard, span,
         </div>
         <div className="flex flex-1 flex-col gap-3 p-6">
           <RiseText as="h3" text={title} className={cn(CARD_TITLE, "text-[clamp(1.5rem,2vw,2.1rem)] leading-[1.1]")} />
-          <span aria-hidden className={cn("ml-rule mt-0.5 h-1 w-12 shrink-0 rounded-full", hard ? "bg-ml-red" : "bg-signal-orange")} />
           <p className="leading-relaxed text-pretty text-ml-navy/80">{text}</p>
           <div className={cn("mt-auto rounded-xl p-4", hard ? "bg-ml-navy text-white" : "bg-ml-navy/5")}>
             <h4 className={cn("font-bold", hard && "text-signal-orange")}>{panel.heading}</h4>
@@ -90,7 +90,6 @@ function LinkCards({ cards, columns }: { cards: LinkCard[]; columns: 3 | 4 }) {
               </div>
               <div className="flex flex-1 flex-col gap-2.5 p-5 lg:p-6">
                 <RiseText as="h3" text={c.title} className={cn(CARD_TITLE, "text-[clamp(1.35rem,1.75vw,1.85rem)] leading-[1.1]")} />
-                <span aria-hidden className="ml-rule h-1 w-12 shrink-0 rounded-full bg-signal-orange" />
                 <p className="leading-relaxed text-pretty text-ml-navy/80">{c.text}</p>
               </div>
             </Tag>
@@ -153,7 +152,8 @@ export default function FactsAboutBangladeshPage() {
         <PageHero
           id="facts-title"
           name={FACTS_NAME}
-          media={<Image src={FACTS_HERO.src} alt={FACTS_HERO.alt} fill priority sizes="100vw" className="ml-drift object-cover" style={{ objectPosition: FACTS_HERO.focus }} />}
+          film={FACTS_FILM}
+          titleTone="navy"
         />
 
         <section id={GLANCE.id} aria-label="Bangladesh at a glance">
@@ -170,7 +170,7 @@ export default function FactsAboutBangladeshPage() {
           </ul>
         </Band>
 
-        <Band id={NOT_BEST.id} tone="paper" title={NOT_BEST.title} lede={NOT_BEST.lede}>
+        <Band id={NOT_BEST.id} tone="sun" title={NOT_BEST.title} lede={NOT_BEST.lede}>
           <ul className={cn("grid grid-cols-[minmax(0,1fr)] gap-5 sm:grid-cols-2 lg:grid-cols-12 lg:gap-6", LAST_ROW_FULL)}>
             {NOT_BEST.items.map((f, i) => (
               <FactCard key={f.id} hard id={f.id} figure={f.figure} title={f.title} text={f.text} panel={{ heading: "Your part", text: f.yourPart }} source={f.source} picture={f.picture} span={hardCells[i].span} rowSize={hardCells[i].rowSize} order={hardCells[i].rowSize === 3 ? i % 3 : i % 2} />
@@ -185,7 +185,7 @@ export default function FactsAboutBangladeshPage() {
           <Moment id="both-true" title="Both lists are true. Which one grows is up to us." picture={BOTH_TRUE} cta={{ label: "Know your rights and duties", href: "/nagorik" }} />
         </div>
 
-        <Band id={GOVERNMENT.id} tone="paper" title={GOVERNMENT.title} lede="A parliamentary republic under the Constitution of 1972: who holds power, and how to reach them.">
+        <Band id={GOVERNMENT.id} tone="mint" title={GOVERNMENT.title} lede="A parliamentary republic under the Constitution of 1972: who holds power, and how to reach them.">
           <LinkCards cards={GOVERNMENT.cards} columns={3} />
         </Band>
 

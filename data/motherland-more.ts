@@ -1,7 +1,7 @@
 /**
  * Credits for the photos in public/motherland/more, from Wikimedia Commons and
  * Unsplash. Generated from the download manifests after each picture was looked
- * at; regenerate, don't edit.
+ * at.
  */
 export interface MoreCredit {
   author: string;
@@ -15,6 +15,20 @@ export interface MoreCredit {
 }
 
 export const MORE: Record<string, MoreCredit> = {
+  "p-alam-lab": { author: "Sunny.geb.sust", license: "CC BY-SA 4.0", licenseUrl: "", sourceUrl: "https://commons.wikimedia.org/wiki/File:Alam_in_his_BARJ_Lab.jpg" },
+  "sultan-house": { author: "Jubair1985", license: "CC BY-SA 4.0", licenseUrl: "", sourceUrl: "https://commons.wikimedia.org/wiki/File:House_of_SM_Sultan.jpg" },
+  "p-nishat": { author: "Press Information Department", license: "Public domain", licenseUrl: "", sourceUrl: "https://commons.wikimedia.org/wiki/File:Begum_Rokeya_Award_Presentation_to_Nishat_Majumder,_Dhaka,_2023-12-09_(PID-0012053)_(cropped).jpg" },
+  "jamdani-hands": { author: "Wasiul Bahar", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/", sourceUrl: "https://commons.wikimedia.org/wiki/File:Weaving_jamdani_at_BSCIC_Jamdani_palli,_Narayanganj_7.webm" },
+  "court-supreme": { author: "Basir Shikder", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/", sourceUrl: "https://commons.wikimedia.org/wiki/File:Bangladesh_Supreme_Court_Main_Building.jpg" },
+  "bangabhaban": { author: "ASaber91", license: "CC BY 2.0", licenseUrl: "https://creativecommons.org/licenses/by/2.0/", sourceUrl: "https://commons.wikimedia.org/wiki/File:Bangabhaban_(33310655331).jpg" },
+  "dc-office": { author: "Mayeenul Islam", license: "CC BY-SA 3.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/", sourceUrl: "https://commons.wikimedia.org/wiki/File:Bandarban_DC_Office_(%E0%A6%AC%E0%A6%BE%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A6%B0%E0%A6%AC%E0%A6%BE%E0%A6%A8_%E0%A6%9C%E0%A7%87%E0%A6%B2%E0%A6%BE_%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%B6%E0%A6%BE%E0%A6%B8%E0%A6%95%E0%A7%87%E0%A6%B0_%E0%A6%95%E0%A6%BE%E0%A6%B0%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%B2%E0%A6%AF%E0%A6%BC).jpg" },
+  "voters-queue": { author: "Press Information Department", license: "Public domain", licenseUrl: "", sourceUrl: "https://commons.wikimedia.org/wiki/File:2026-02-12_Long_queues_of_voters_at_polling_stations_in_capital_for_Thirteenth_National_Parliament_Election_and_2026_Referendum.jpg" },
+  "peacekeepers": { author: "MONUSCO Photos", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/", sourceUrl: "https://commons.wikimedia.org/wiki/File:Bangladeshi_peacekeepers_offer_hope_to_villagers_in_Northern_Mali.jpg" },
+  "peacekeepers-medal": { author: "MONUSCO Photos", license: "CC BY-SA 2.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/2.0/", sourceUrl: "https://commons.wikimedia.org/wiki/File:Ituri_Province,_Bunia,_Camp_Ndoromo-_Medal_Award_ceremony_for_Bangladeshi_Peacekeepers_who_served_the_peacekeeping_Mission_in_Ituri._(24458565398).jpg" },
+  "rana-aftermath": { author: "Sudipta06", license: "CC BY-SA 3.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/", sourceUrl: "https://commons.wikimedia.org/wiki/File:2013_Savar_building_collapse_aftermath.jpg" },
+  "kutupalong": { author: "John Owens (VOA)", license: "Public domain", licenseUrl: "", sourceUrl: "https://commons.wikimedia.org/wiki/File:Kutupalong_Refugee_Camp_(John_Owens-VOA).jpg" },
+  "rover-urc": { author: "Mikołaj Stasiak", license: "CC BY 3.0 pl", licenseUrl: "", sourceUrl: "https://commons.wikimedia.org/wiki/File:HAL-062_rover_KNR_Rover_Team_Warsaw_University_of_Technology_University_Rover_Challenge_2026.jpg" },
+  "cricket-fans": { author: "DeloarAkram", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/", sourceUrl: "https://commons.wikimedia.org/wiki/File:Mirpur_National_Cricket_Stadium_capture_by_DWC_photowalk_24.jpg" },
   "atm-bd": { author: "Ali Mkumbwa", license: "Unsplash License", licenseUrl: "https://unsplash.com/license", sourceUrl: "https://unsplash.com/photos/a-person-using-an-atm-machine-to-pay-money-OnRPps1wPus", file: "u-atm-bd.jpg", source: "Unsplash" },
   "autumn-kash": { author: "Md Eman", license: "Unsplash License", licenseUrl: "https://unsplash.com/license", sourceUrl: "https://unsplash.com/photos/a-field-of-grass-with-a-building-in-the-background-i-Hc0n7cVjQ", file: "u-autumn-kash.jpg", source: "Unsplash" },
   "bamboo-craft": { author: "IMG1952", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0", sourceUrl: "https://commons.wikimedia.org/wiki/File:BAMBOO_CRAFT_PURULIA_WEST_BENGAL_IMG_0256.jpg" },

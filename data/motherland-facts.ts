@@ -9,7 +9,7 @@
  * sources differ the page says which figure it uses; when a number is updated
  * here, update its source and year with it.
  */
-import { commons, type Picture } from "./motherland.ts";
+import type { Picture } from "./motherland.ts";
 import { pic } from "./motherland-blocks.ts";
 import { photo, type QuizQuestion } from "./motherland-categories.ts";
 import type { SearchEntry } from "../lib/motherland-facts-search.ts";
@@ -25,6 +25,7 @@ export const CHECKED = "4 November 2026";
 
 export const FACTS_NAME = "Facts about Bangladesh";
 export const FACTS_INTRO = "Bangladesh is easy to praise and easy to write off, and both are lazy. So here are two lists. One is what this country has done against the odds. The other is what it is still getting wrong. Every number names its source, every boast carries its limit, and every failing ends with your part in fixing it.";
+/** The picture a shared link shows; the page's own hero is a film. */
 export const FACTS_HERO: Picture = more("dhaka-air", "Dhaka from the air, a river running through the city");
 export const BOTH_TRUE: Picture = photo("flag-mural");
 
@@ -130,7 +131,7 @@ export const BEST = {
       text: "A 2026 SIPRI report names Bangladesh among the leading troop contributors to peace operations worldwide, with Uganda, Nepal and India.",
       check: "Rankings move as missions close, and deployments worldwide are at their lowest in 25 years.",
       source: { name: "SIPRI 2026, via PW Only IAS", url: "https://pwonlyias.com/current-affairs/sipri-report-2026/" },
-      picture: more("victory-day", "Bangladeshi soldiers marching on parade"),
+      picture: more("peacekeepers", "Bangladeshi UN peacekeepers helping villagers in the Congo"),
     },
     {
       id: "rohingya",
@@ -139,7 +140,7 @@ export const BEST = {
       text: "One of the most crowded countries on Earth gave shelter to about a million Rohingya refugees fleeing Myanmar.",
       check: "It cannot last as it is. They still have no safe way home, and the burden falls hardest on Cox's Bazar.",
       source: { name: "Al Jazeera", url: "https://www.aljazeera.com/news/2024/8/18/bangladeshs-yunus-promises-support-to-rohingya-in-first-policy-speech" },
-      picture: photo("coxs-bazar"),
+      picture: more("kutupalong", "Kutupalong refugee camp in Cox's Bazar"),
     },
   ] satisfies Strength[],
 };
@@ -277,11 +278,11 @@ export const GOVERNMENT = {
   text: "Bangladesh is a unitary parliamentary republic under the Constitution of 1972. Learn how Parliament, the President, the Prime Minister and the courts share power, and how to reach them.",
   cards: [
     { title: "The three branches", text: "How do Parliament, the government and the courts share power?", href: "/bangladesh/government/branches-of-government", picture: photo("parliament") },
-    { title: "President and Prime Minister", text: "What does each of them do, and who chooses them?", href: "/bangladesh/government/president-and-prime-minister", picture: photo("flag-mural") },
-    { title: "Voting and your NID", text: "How do I vote and get my national ID card?", href: "/bangladesh/government/voting-and-elections", picture: more("statue-aparajeyo", "The Aparajeyo Bangla statue at the University of Dhaka") },
-    { title: "District and union", text: "Who runs my district, my upazila and my union?", href: "/bangladesh/government/local-government", picture: commons("village", "A path winding through green paddy fields to a village") },
-    { title: "The courts", text: "How do the courts work, from the lowest to the highest?", href: "/bangladesh/government/courts", picture: photo("lalbagh-fort") },
-    { title: "Laws and legal aid", text: "Where can I read the law and get help with a case?", href: "/bangladesh/government/laws-and-legal-aid", picture: photo("shaheed-minar") },
+    { title: "President and Prime Minister", text: "What does each of them do, and who chooses them?", href: "/bangladesh/government/president-and-prime-minister", picture: more("bangabhaban", "Bangabhaban, the President's residence, among the towers of Dhaka")},
+    { title: "Voting and your NID", text: "How do I vote and get my national ID card?", href: "/bangladesh/government/voting-and-elections", picture: more("voters-queue", "Voters queuing at a polling station in Bangladesh")},
+    { title: "District and union", text: "Who runs my district, my upazila and my union?", href: "/bangladesh/government/local-government", picture: more("dc-office", "The Deputy Commissioner's office in Bandarban")},
+    { title: "The courts", text: "How do the courts work, from the lowest to the highest?", href: "/bangladesh/government/courts", picture: more("court-supreme", "The Supreme Court of Bangladesh in Dhaka")},
+    { title: "Laws and legal aid", text: "Where can I read the law and get help with a case?", href: "/bangladesh/government/laws-and-legal-aid", picture: more("old-pages", "Old papers tied in bundles")},
   ] satisfies LinkCard[],
 };
 
@@ -305,7 +306,7 @@ export const PEACE = {
   title: "Peace and security",
   text: "Bangladesh sends its soldiers to keep the peace abroad and shelters those who flee war next door. At home, its people call 999 in an emergency and 333 for help from the state.",
   href: "/bangladesh/government/disasters-and-emergencies",
-  picture: photo("martyrs-memorial"),
+  picture: more("peacekeepers-medal", "A Bangladeshi peacekeeper receiving a UN medal in Ituri, Congo"),
   links: [
     { label: "How does Bangladesh help keep world peace?", href: "#peacekeepers" },
     { label: "Why does Bangladesh shelter the Rohingya?", href: "#rohingya" },
@@ -340,14 +341,14 @@ export const FACT_TOPICS: Topic[] = [
   { title: "Bangladesh and the world", text: "Clothes, soldiers and a language day the whole world keeps.", href: "#garments", picture: photo("shaheed-minar") },
   { title: "Political system", text: "A parliamentary republic of three branches, from Parliament to the Union Parishad.", href: `#${GOVERNMENT.id}`, picture: photo("parliament") },
   { title: "Working in Bangladesh", text: "Garments, farms and small loans, and who gets left out.", href: "/bangladesh/invest#market-data", picture: photo("garments") },
-  { title: "Schools and universities", text: "Free textbooks, full classrooms and the problem of learning.", href: `#${SCHOOLS.id}`, picture: photo("handloom") },
+  { title: "Schools and universities", text: "Free textbooks, full classrooms and the problem of learning.", href: `#${SCHOOLS.id}`, picture: more("campus-green", "A green university campus in Bangladesh") },
   { title: "Research and innovation", text: "From rice varieties to the boson.", href: `#${RESEARCH.id}`, picture: photo("rice-planting") },
-  { title: "Peace and security", text: "Peacekeepers abroad, refugees sheltered and help on 999 at home.", href: `#${PEACE.id}`, picture: photo("martyrs-memorial") },
-  { title: "Climate and energy", text: "Living with cyclones and floods on a low delta.", href: "/bangladesh/government/disasters-and-emergencies", picture: photo("mangroves") },
+  { title: "Peace and security", text: "Peacekeepers abroad, refugees sheltered and help on 999 at home.", href: `#${PEACE.id}`, picture: more("peacekeepers-medal", "A Bangladeshi peacekeeper receiving a UN medal in Ituri, Congo") },
+  { title: "Climate and energy", text: "Living with cyclones and floods on a low delta.", href: "/bangladesh/government/disasters-and-emergencies", picture: more("solar-bd", "A field of solar panels under a monsoon sky") },
   { title: "Media and communication", text: "A country of phones, and a press that is not free enough.", href: "#press", picture: photo("mobile-money") },
-  { title: "Migration and remittances", text: "The workers abroad who hold the country up, and how they are supported.", href: "/bangladesh/government/migrant-workers", picture: photo("fisher-mist") },
+  { title: "Migration and remittances", text: "The workers abroad who hold the country up, and how they are supported.", href: "/bangladesh/government/migrant-workers", picture: more("plane-biman", "A Biman Bangladesh Airlines plane at Dhaka airport") },
   { title: "Environment", text: "The Sundarbans, the haors, and the air we have to clean up.", href: "/bangladesh/nature", picture: photo("sunamganj-haor") },
-  { title: "Global trade partner", text: "How to trade with and invest in Bangladesh.", href: "/bangladesh/government/business-and-trade", picture: photo("taka-notes") },
+  { title: "Global trade partner", text: "How to trade with and invest in Bangladesh.", href: "/bangladesh/government/business-and-trade", picture: more("chattogram-port", "Containers at Chattogram port") },
   { title: "Culture and art", text: "Baul songs, Jamdani and rickshaw painting, listed by UNESCO.", href: "/bangladesh/culture", picture: photo("rickshaw-art") },
   { title: "Living in Bangladesh", text: "Eight divisions, and where to go first.", href: "/bangladesh/travel", picture: photo("srimangal-tea") },
 ];

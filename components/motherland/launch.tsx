@@ -3,8 +3,10 @@
 import { useCallback, useState } from "react";
 import Image from "next/image";
 import { pic } from "@/data/motherland-blocks";
-import { SCIENCE_EVENTS } from "@/data/motherland-live";
+import { Icon } from "@/components/ui/icon";
+import { LAUNCH_FACTS, LAUNCH_SOURCE, SCIENCE_EVENTS } from "@/data/motherland-live";
 import { cn } from "@/lib/utils";
+import { CornerButton } from "./corner-button";
 import { Dialog } from "./dialog";
 import { COLUMN, SectionHead, pill } from "./kit";
 
@@ -17,19 +19,38 @@ export function LaunchBand() {
   return (
     <section id="first-satellite" aria-labelledby="first-satellite-title" className="scroll-mt-(--ml-header) bg-ml-navy py-12 text-white sm:py-14 lg:py-16">
       <div className={cn(COLUMN, "flex flex-col gap-8")}>
-        <SectionHead id="first-satellite-title" tone="dark" title="Our flag in orbit" lede="11 May 2018, Kennedy Space Center: a Falcon 9 carried Bangladesh's first satellite to space." />
-        <div className="relative aspect-video overflow-hidden rounded-3xl bg-ml-ink">
-          {playing ? (
-            <iframe sandbox="allow-scripts allow-same-origin allow-presentation allow-popups" referrerPolicy="strict-origin-when-cross-origin" src={`https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&rel=0`} title="Bangabandhu Satellite-1 Mission, by SpaceX" allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen className="absolute inset-0 size-full" />
-          ) : (
-            <button type="button" onClick={() => setPlaying(true)} aria-label="Watch the launch film" className="group absolute inset-0 grid size-full cursor-pointer place-items-center overflow-hidden focus-visible:outline-3 focus-visible:-outline-offset-4 focus-visible:outline-signal-orange">
-              {POSTER ? <Image src={POSTER.src} alt={POSTER.alt} fill sizes="(min-width: 1024px) 92vw, 100vw" className="object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.03] motion-reduce:transition-none" /> : null}
-              <span aria-hidden className="absolute inset-0 bg-ml-navy/25 transition-colors duration-500 group-hover:bg-ml-navy/10" />
-              <span className={cn(pill.onDark, "relative")}>Watch the launch</span>
-            </button>
-          )}
+        <SectionHead id="first-satellite-title" tone="dark" title="Our flag in orbit" lede="A Falcon 9 carried Bangladesh's first satellite to space from Florida." />
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(0,1fr)] lg:gap-5">
+          <div className="relative aspect-video overflow-hidden rounded-[1.25rem] bg-ml-ink shadow-[0_30px_60px_-30px_rgb(0_0_0/0.8)] ring-1 ring-white/15">
+            {playing ? (
+              <iframe sandbox="allow-scripts allow-same-origin allow-presentation allow-popups" referrerPolicy="strict-origin-when-cross-origin" src={`https://www.youtube-nocookie.com/embed/${VIDEO_ID}?autoplay=1&rel=0`} title="Bangabandhu Satellite-1 Mission, by SpaceX" allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen className="absolute inset-0 size-full" />
+            ) : (
+              <button type="button" onClick={() => setPlaying(true)} aria-label="Watch the launch film" className="group absolute inset-0 grid size-full cursor-pointer place-items-center overflow-hidden focus-visible:outline-3 focus-visible:-outline-offset-4 focus-visible:outline-signal-orange">
+                {POSTER ? <Image src={POSTER.src} alt={POSTER.alt} fill sizes="(min-width: 1024px) 70vw, 100vw" className="object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.03] motion-reduce:transition-none" /> : null}
+                <span aria-hidden className="relative grid size-20 place-items-center rounded-full bg-signal-orange text-ml-navy shadow-[0_12px_36px_-8px_rgb(0_0_0/0.7)] transition-transform duration-300 group-hover:scale-110 motion-reduce:transition-none sm:size-24">
+                  <Icon name="play_arrow" className="text-5xl! sm:text-6xl!" />
+                </span>
+                <span className="absolute bottom-4 left-4 rounded-full bg-ml-navy px-4 py-2 text-sm font-semibold text-white sm:bottom-6 sm:left-6">SpaceX&apos;s film of the launch</span>
+              </button>
+            )}
+          </div>
+          <dl className="grid grid-cols-2 gap-4 lg:grid-cols-1">
+            {LAUNCH_FACTS.map((f) => (
+              <div key={f.label} className="flex flex-col-reverse justify-end gap-1.5 rounded-[1.25rem] bg-white/8 p-5 ring-1 ring-white/12">
+                <dt className="text-sm leading-snug text-pretty text-white/80">{f.label}</dt>
+                <dd className="font-ml-display text-[clamp(1.5rem,2vw,2rem)] leading-none tracking-[0.01em] text-signal-orange">{f.value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
-        {!playing ? <p className="text-sm text-white/70">The film plays from YouTube, which may set its own cookies when you press play.</p> : null}
+        <p className="text-sm leading-relaxed text-white/70">
+          The film plays from YouTube, which may set its own cookies when you press play. Figures:{" "}
+          <a href={LAUNCH_SOURCE.url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-white">
+            {LAUNCH_SOURCE.name}
+            <span className="sr-only"> (opens in a new tab)</span>
+          </a>
+          .
+        </p>
       </div>
     </section>
   );
@@ -41,9 +62,7 @@ export function CornerScience() {
   const close = useCallback(() => setOpen(false), []);
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} className={cn(pill.onLight, "fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 shadow-[0_12px_28px_-8px_rgb(11_24_73/0.55)] sm:right-8 sm:bottom-8")}>
-        Find events, join now
-      </button>
+      <CornerButton onClick={() => setOpen(true)}>Find events, join now</CornerButton>
       {open ? (
         <Dialog title="Join in" onClose={close}>
           <p className="text-lg">Dates change each year, so every link goes to the organiser.</p>

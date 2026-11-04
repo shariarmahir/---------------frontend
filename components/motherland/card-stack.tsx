@@ -24,7 +24,7 @@ const subscribe = (onChange: () => void) => {
 const useWide = () => useSyncExternalStore(subscribe, () => window.matchMedia(WIDE).matches, () => false);
 
 /** The words' left edge, on the page column's line even past 120rem. */
-const INSET = "px-6 sm:px-10 lg:pr-16 lg:pl-[max(3rem,calc((100vw-120rem)/2+3rem))]";
+const INSET = "px-6 sm:px-10 lg:pr-16 lg:pl-[max(3rem,calc((100vw-var(--ml-column))/2+3rem))]";
 
 /**
  * The reference site's card stack, edge to edge: from lg each card fills
