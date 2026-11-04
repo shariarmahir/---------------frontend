@@ -29,7 +29,7 @@ const subscribe = () => () => undefined;
 /** Today, only on the client: the server page is built ahead of time and must not decide what has passed. */
 const useToday = () => useSyncExternalStore(subscribe, () => new Date().toISOString().slice(0, 10), () => "2026-11-04");
 
-export function isUpcoming(e: CultureEvent, today: string) {
+function isUpcoming(e: CultureEvent, today: string) {
   return (e.end ?? e.start) >= today;
 }
 
@@ -183,7 +183,7 @@ export function CalendarBoard() {
         <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-6">
           <MonthGrid first={month.first} label={month.label} marked={marked} today={today} chosen={chosenDay} onChoose={setChosenDay} />
           {shown.length ? (
-            <ul className="grid gap-5 sm:grid-cols-2">
+            <ul className="grid grid-cols-[minmax(0,1fr)] gap-5 sm:grid-cols-2 sm:[&>li:last-child:nth-child(odd)]:col-span-2">
               {shown.map((e) => {
                 const picture = pictureOf(e);
                 return (

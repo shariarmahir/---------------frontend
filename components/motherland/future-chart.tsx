@@ -141,7 +141,7 @@ export function FutureChart({
               const dy = Math.abs(y(v) - y(other)) < 18 ? (v > other ? -9 : 9) : 0;
               return (
                 <g key={key}>
-                  <circle cx={x(x1)} cy={y(v)} r="4.5" fill={SERIES[key].color} stroke="#0f2a20" strokeWidth="2" />
+                  <circle cx={x(x1)} cy={y(v)} r="4.5" fill={SERIES[key].color} stroke="var(--color-ml-ink)" strokeWidth="2" />
                   <text x={x(x1) + 10} y={y(v) + 4 + dy} className="fill-white">
                     {short(Math.round(v / 100) * 100)}
                   </text>
@@ -156,7 +156,7 @@ export function FutureChart({
             <line x1={x(hover)} x2={x(hover)} y1={PAD.top} y2={y(0)} stroke="white" strokeOpacity="0.5" />
             {(["history", "pace", "plan"] as const).map((k) => {
               const v = tip?.[k];
-              return v === undefined ? null : <circle key={k} cx={x(hover)} cy={y(v)} r="4.5" fill={SERIES[k].color} stroke="#0f2a20" strokeWidth="2" />;
+              return v === undefined ? null : <circle key={k} cx={x(hover)} cy={y(v)} r="4.5" fill={SERIES[k].color} stroke="var(--color-ml-ink)" strokeWidth="2" />;
             })}
           </g>
         )}
@@ -173,7 +173,7 @@ export function FutureChart({
             tip[k] === undefined ? null : (
               <p key={k} className="flex items-center justify-between gap-4">
                 <span className="flex items-center gap-2">
-                  <span aria-hidden className="size-2.5 rounded-full" style={{ background: k === "history" ? "#0f2a20" : SERIES[k].color }} />
+                  <span aria-hidden className="size-2.5 rounded-full" style={{ background: k === "history" ? "var(--color-ml-ink)" : SERIES[k].color }} />
                   {SERIES[k].label}
                 </span>
                 <span className="font-semibold tabular-nums">{usd(tip[k]!)}</span>

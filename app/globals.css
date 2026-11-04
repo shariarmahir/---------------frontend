@@ -110,6 +110,8 @@
   --color-ml-navy-700: #16215c;
   --color-ml-paper: #fbfaf8;
   --color-ml-red: #f42a41;
+  /* The flag's green, which .ml-light's navy never touches: the Facts mark needs the real thing. */
+  --color-ml-flag: #006a4e;
   --color-ml-river: #5aa9d6;
   --font-ml-display: var(--font-anton), var(--font-bengali), sans-serif;
   --font-ml-sans: var(--font-montserrat), var(--font-bengali), sans-serif;

@@ -75,14 +75,7 @@ export default function GeographyTravelPage() {
         <PageHero
           id="travel-title"
           name="Geography & Travel"
-          lede="The world's largest river delta, from cloud hills to coral sand. Come and see how beautiful it is."
           media={<WeekFilm film={film.film} />}
-          parts={[
-            { id: "top-ten", title: "Top 10 this week" },
-            { id: "map", title: "Open the map" },
-            { id: "plan", title: "Plan your trip" },
-            { id: MUST_SEE.gem.id, title: "Hidden gems" },
-          ]}
         />
 
         <Facts facts={GEOGRAPHY} />

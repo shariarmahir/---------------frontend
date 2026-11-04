@@ -13,7 +13,7 @@ export function PinBoard({ pins }: { pins: MapPin[] }) {
   const pin = pins.find((p) => p.id === chosen) ?? pins[0];
 
   return (
-    <div className="grid items-start gap-8 rounded-[1.25rem] bg-white p-5 text-ml-ink ring-1 ring-ml-ink/8 sm:p-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)] lg:gap-12 lg:p-10">
+    <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-8 rounded-[1.25rem] bg-white p-5 text-ml-ink ring-1 ring-ml-ink/8 sm:p-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)] lg:gap-12 lg:p-10">
       <div className="relative mx-auto aspect-600/842 w-full max-w-sm">
         <svg viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`} aria-hidden className="absolute inset-0 size-full">
           {divisionShapes.map((d) => (
@@ -58,7 +58,7 @@ export function PinBoard({ pins }: { pins: MapPin[] }) {
             ) : null}
           </div>
         </article>
-        <ul className="grid gap-1.5 sm:grid-cols-2">
+        <ul className="grid gap-1.5 sm:grid-cols-2 sm:[&>li:last-child:nth-child(odd)]:col-span-2">
           {pins.map((p) => (
             <li key={p.id}>
               <button type="button" aria-pressed={p.id === pin.id} onClick={() => setChosen(p.id)} className={cn("w-full rounded-xl px-4 py-2.5 text-left font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-ml-navy", p.id === pin.id ? "bg-signal-orange" : "bg-ml-ground hover:bg-signal-orange/40")}>

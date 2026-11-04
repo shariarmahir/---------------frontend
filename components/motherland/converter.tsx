@@ -9,7 +9,7 @@ const NOTES = [1000, 500, 100, 50, 20, 10];
 const taka = (n: number) => `৳${Math.round(n).toLocaleString("en-US")}`;
 
 /** How many of each note an amount becomes, largest first, so a visitor knows what to expect in hand. */
-export function noteMix(amount: number) {
+function noteMix(amount: number) {
   let left = Math.round(amount);
   return NOTES.map((note) => {
     const count = Math.floor(left / note);
@@ -38,7 +38,7 @@ export function TakaConverter() {
 
   return (
     <section id="converter" aria-labelledby="converter-title" className="scroll-mt-(--ml-header) bg-signal-orange py-12 text-ml-ink sm:py-14 lg:py-16">
-      <div className={`${COLUMN} grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-16`}>
+      <div className={`${COLUMN} grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-16`}>
         <div className="flex flex-col gap-5">
           <RiseText id="converter-title" text="How much is that in taka?" className="w-full font-ml-display text-[clamp(2.5rem,5.4vw,5rem)] leading-[1.02] tracking-[0.01em] uppercase" />
           <p className="text-lg leading-relaxed sm:text-xl">
@@ -74,7 +74,7 @@ export function TakaConverter() {
           </div>
           <div className="flex flex-col gap-2">
             <p className="font-semibold text-white/80">It would cover about</p>
-            <ul className="grid gap-x-6 gap-y-1.5 sm:grid-cols-2">
+            <ul className="grid grid-cols-[minmax(0,1fr)] gap-x-6 gap-y-1.5 sm:grid-cols-2">
               {BUYS.map((b) => (
                 <li key={b.label}>
                   <span className="font-bold">{Math.floor(amount / b.cost).toLocaleString("en-US")}</span> {b.label}

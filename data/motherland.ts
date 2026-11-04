@@ -78,7 +78,7 @@ export const TOPICS: Topic[] = [
   { id: "videos", name: "Videos", tab: "Videos" },
   { id: "resources", name: "Capability & Resources", tab: "Resources" },
   { id: "invest", name: "Business & Investment", tab: "Invest" },
-  { id: "facts", name: "Facts of Bangladesh", tab: "Facts" },
+  { id: "facts", name: "Facts about Bangladesh", tab: "Facts" },
 ];
 
 /** The topics that have their own page (data/motherland-categories.ts); the other two live on the landing page. */

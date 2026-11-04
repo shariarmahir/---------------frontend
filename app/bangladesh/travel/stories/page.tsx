@@ -31,25 +31,17 @@ export default function TravelStoriesPage() {
       <MotherlandHeader topic="travel" />
       <main id="main">
         <section aria-labelledby="stories-title" className="bg-black pt-[calc(var(--ml-header)+3rem)] pb-16 lg:pb-24">
-          <div className={cn(COLUMN, "flex flex-col items-start gap-6")}>
-            <Link href="/bangladesh/travel" className="rounded-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
-              Geography &amp; Travel
-            </Link>
+          <div className={COLUMN}>
             <h1 id="stories-title" className="font-ml-display text-[clamp(3.5rem,11vw,10rem)] leading-[0.98] tracking-[0.01em] uppercase">
               {STORIES.title}
             </h1>
-            <p className={cn(LEDE, "text-white/90")}>{STORIES.lede}</p>
-            <Link href={STORIES.signup} className={pill.onDark}>
-              <Icon name="edit_note" className="text-xl" />
-              Create a profile to write your story
-            </Link>
           </div>
         </section>
 
         <section aria-labelledby="top-ten" className="bg-ml-ground py-20 text-ml-ink sm:py-28">
           <div className={cn(COLUMN, "flex flex-col gap-12")}>
             <SectionHead id="top-ten" title="Top 10 this week" lede="Only ten stories are published each week, chosen for the story and the images. The first ten places are open." />
-            <ol className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+            <ol className="grid grid-cols-2 gap-4 lg:grid-cols-5">
               {Array.from({ length: 10 }, (_, i) => (
                 <li key={i} className="flex aspect-4/5 flex-col justify-between rounded-2xl bg-white p-5 ring-1 ring-ml-ink/10">
                   <span className="font-ml-display text-6xl leading-none text-ml-green">{i + 1}</span>
@@ -94,7 +86,7 @@ export default function TravelStoriesPage() {
               <h2 id="badges-title" className={DISPLAY}>
                 Badges
               </h2>
-              <ul className="grid gap-4 sm:grid-cols-2">
+              <ul className="grid gap-4 sm:grid-cols-2 sm:[&>li:last-child:nth-child(odd)]:col-span-2">
                 {STORIES.badges.map((b) => (
                   <li key={b.title} className="flex gap-4 rounded-2xl bg-white/[.07] p-5">
                     <span aria-hidden className="grid size-12 shrink-0 place-items-center rounded-full bg-signal-orange text-ml-ink">

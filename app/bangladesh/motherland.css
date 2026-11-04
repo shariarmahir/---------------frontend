@@ -215,7 +215,6 @@
   --color-ml-green: #16215c;
   --color-ml-ground: #f3f5fb;
   --color-ml-mist: #cdd5ea;
-  --ml-shade: 11 24 73;
 }
 
 /* A card rises into place and its photograph wipes open, once. */
@@ -244,21 +243,6 @@
   }
   .ml-reveal[data-in] .ml-settle {
     transform: none;
-  }
-
-  /* The words after the hero's title, in order, as the page loads. */
-  .ml-hero-one,
-  .ml-hero-two {
-    animation: ml-hero-in 1s cubic-bezier(0.215, 0.61, 0.355, 1) 550ms both;
-  }
-  .ml-hero-two {
-    animation-delay: 750ms;
-  }
-  @keyframes ml-hero-in {
-    from {
-      opacity: 0;
-      translate: 0 1.25rem;
-    }
   }
 
   /* A card answers the pointer: it lifts, and its gold rule runs out. */
@@ -297,7 +281,6 @@
 
 /* A section's subtitle holds one line across the column from a laptop up; FitLine shrinks it if it must. */
 @media (min-width: 1024px) {
-  .ml-facts .ml-lede,
   .ml-light .ml-lede,
   .ml-light .ml-one-line {
     max-width: none;
@@ -317,5 +300,38 @@
 @media (min-width: 1024px) {
   .ml-light #invest {
     padding-block: 4rem;
+  }
+}
+
+/* Facts about Bangladesh: a card may still be rising when the page lands on it, so it allows for that rise (2.25rem). */
+.ml-facts article[id] {
+  scroll-margin-top: calc(var(--ml-header) + 3.25rem);
+}
+/* The fact a link points at says so when you land on it. */
+.ml-facts article:target {
+  outline: 3px solid var(--color-signal-orange);
+  outline-offset: 3px;
+}
+@media print {
+  .ml-facts {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .ml-facts .ml-reveal {
+    opacity: 1 !important;
+    translate: none !important;
+  }
+  .ml-facts .ml-wipe {
+    clip-path: none !important;
+  }
+  .ml-facts .ml-settle {
+    transform: none !important;
+  }
+  .ml-facts .ml-rise .ml-word > span {
+    translate: none !important;
+  }
+  .ml-facts .ml-card {
+    box-shadow: none;
+    break-inside: avoid;
   }
 }

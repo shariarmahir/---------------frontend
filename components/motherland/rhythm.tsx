@@ -5,7 +5,7 @@ import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { useOnScreen } from "./use-in-view";
 
 /** Every slideshow on the page moves on this one beat, so they keep the same rhythm. */
-export const RHYTHM = 3000;
+const RHYTHM = 3000;
 
 /**
  * Moves a slideshow on by one every beat while it is on screen. It holds

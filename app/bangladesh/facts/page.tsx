@@ -1,263 +1,241 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { FactsBar, FactsHero, FactsMap, FactsStack, PrintButton } from "@/components/motherland/facts-parts";
+import { Band, IntroFill, Moment } from "@/components/motherland/blocks";
+import { Facts, MoreCategories, PageHero } from "@/components/motherland/category";
+import { BothSides, FactsMap, FactsNav, PrintButton, ShareFact } from "@/components/motherland/facts-parts";
 import { anton, montserrat } from "@/components/motherland/fonts";
 import { MotherlandFooter } from "@/components/motherland/footer";
 import { MotherlandHeader } from "@/components/motherland/header";
-import { COLUMN, DISPLAY, LEDE, SectionHead, pill } from "@/components/motherland/kit";
+import { COLUMN, LAST_ROW_FULL, pill } from "@/components/motherland/kit";
+import { Quiz } from "@/components/motherland/quiz";
+import { Reveal } from "@/components/motherland/reveal";
+import { RiseText } from "@/components/motherland/rise-text";
 import { SideTab } from "@/components/motherland/side-tab";
-import { BEST, CHECKED, DIVISIONS_TITLE, FACT_SOURCES, FACT_TOPICS, GLANCE, GOVERNMENT, NOT_BEST, PEACE, RESEARCH, SCHOOLS, SLIDES, factsCredits, type Source } from "@/data/motherland-facts";
+import { BEST, BOTH_SIDES, BOTH_TRUE, CHECKED, DIVISIONS_TITLE, FACT_SOURCES, FACT_TOPICS, FACTS_HERO, FACTS_INTRO, FACTS_NAME, FACTS_QUIZ, GLANCE, GOVERNMENT, NOT_BEST, PEACE, RESEARCH, SCHOOLS, factsCredits, type LinkCard, type Source } from "@/data/motherland-facts";
+import { mosaicCells } from "@/lib/motherland-mosaic";
 import { cn } from "@/lib/utils";
 import "../motherland.css";
 
 export const metadata: Metadata = {
-  title: "Facts of Bangladesh | MOTHERLAND",
+  title: `${FACTS_NAME} | MOTHERLAND`,
   description: "Why Bangladesh is the best and why it is not doing its best: the real numbers, each with its source, its limit and your part in changing it.",
-  openGraph: { title: "Facts of Bangladesh | MOTHERLAND", description: "The real numbers on Bangladesh, the proud ones and the hard ones.", images: ["/motherland/photos/padma-bridge.jpg"] },
+  openGraph: { title: `${FACTS_NAME} | MOTHERLAND`, description: "The real numbers on Bangladesh, the proud ones and the hard ones.", images: [FACTS_HERO.src] },
 };
 
-/** A section lands clear of the header and the facts bar. */
-const LAND = "scroll-mt-[calc(var(--ml-header)+7.5rem)] lg:scroll-mt-[calc(var(--ml-header)+5rem)]";
-const FIGURE = "font-ml-display text-[clamp(3.75rem,7vw,7.5rem)] leading-none tracking-[0.01em]";
+export const viewport = { themeColor: "#0b1849" };
 
-function Cited({ source, dark }: { source: Source; dark?: boolean }) {
+const CARD = "ml-card group flex w-full flex-col overflow-hidden rounded-[1.25rem] bg-white text-ml-navy ring-1 ring-ml-navy/8";
+const PHOTO = "ml-wipe relative shrink-0 overflow-hidden bg-ml-mist";
+const CARD_TITLE = "w-full font-ml-display tracking-[0.01em] uppercase";
+const SPAN = { 12: "lg:col-span-12", 7: "lg:col-span-7", 5: "lg:col-span-5", 4: "lg:col-span-4" } as const;
+const HEIGHT = { 1: "lg:h-[30rem]", 2: "lg:h-[24rem] 2xl:h-[28rem]", 3: "lg:h-[17rem] 2xl:h-[20rem]" } as const;
+
+/** Each list keeps the same card, in rows that come out full: three by three, or the wide pairs and threes of the mosaic. */
+function layoutOf(count: number) {
+  return count % 3 === 0 ? Array.from({ length: count }, () => ({ span: 4 as const, rowSize: 3 as const })) : mosaicCells(count);
+}
+
+function Cited({ source }: { source: Source }) {
   return (
-    <a href={source.url} target="_blank" rel="noopener noreferrer" className={cn("mt-3 inline-block rounded-sm text-sm underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2", dark ? "text-white/70 hover:text-white focus-visible:outline-white" : "text-ml-ink/70 hover:text-ml-ink focus-visible:outline-ml-green")}>
+    <a href={source.url} target="_blank" rel="noopener noreferrer" className="min-w-0 rounded-sm text-sm leading-snug text-ml-navy/70 underline underline-offset-4 hover:text-ml-navy focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-orange">
       Source: {source.name}
       <span className="sr-only"> (opens in a new tab)</span>
     </a>
   );
 }
 
-/** The section's short title and rule, centred as on Facts about Germany. */
-function Centred({ id, title, text }: { id: string; title: string; text: string }) {
+/** One fact from either list: the figure on its photograph, the story, the honest second half, and where it came from. */
+function FactCard({ id, figure, title, text, panel, source, picture, hard, span, rowSize, order }: { id: string; figure: string; title: string; text: string; panel: { heading: string; text: string }; source: Source; picture: LinkCard["picture"]; hard?: boolean; span: keyof typeof SPAN; rowSize: keyof typeof HEIGHT; order: number }) {
   return (
-    <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 px-6 text-center">
-      <h2 id={id} className={DISPLAY}>
-        {title}
-      </h2>
-      <span aria-hidden className="h-1 w-16 rounded-full bg-ml-green" />
-      <p className={cn(LEDE, "text-ml-ink/85")}>{text}</p>
-    </div>
+    <Reveal as="li" order={order} className={cn("flex", SPAN[span])}>
+      <article id={id} className={CARD}>
+        <div className={cn(PHOTO, "aspect-4/3 lg:aspect-auto", HEIGHT[rowSize])}>
+          <div className="ml-settle absolute inset-0">
+            <Image src={picture.src} alt={picture.alt} fill sizes={span === 4 ? "(min-width: 1024px) 32vw, (min-width: 640px) 46vw, 92vw" : "(min-width: 1024px) 56vw, (min-width: 640px) 46vw, 92vw"} className="object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.05] motion-reduce:transition-none" style={{ objectPosition: picture.focus }} />
+          </div>
+          <p className={cn("absolute bottom-4 left-4 rounded-xl px-4 pt-2 pb-1.5 font-ml-display text-[clamp(2.25rem,3.2vw,3.25rem)] leading-none tracking-[0.01em] tabular-nums", hard ? "bg-ml-red text-white" : "bg-signal-orange text-ml-navy")}>{figure}</p>
+        </div>
+        <div className="flex flex-1 flex-col gap-3 p-6">
+          <RiseText as="h3" text={title} className={cn(CARD_TITLE, "text-[clamp(1.5rem,2vw,2.1rem)] leading-[1.1]")} />
+          <span aria-hidden className={cn("ml-rule mt-0.5 h-1 w-12 shrink-0 rounded-full", hard ? "bg-ml-red" : "bg-signal-orange")} />
+          <p className="leading-relaxed text-pretty text-ml-navy/80">{text}</p>
+          <div className={cn("mt-auto rounded-xl p-4", hard ? "bg-ml-navy text-white" : "bg-ml-navy/5")}>
+            <h4 className={cn("font-bold", hard && "text-signal-orange")}>{panel.heading}</h4>
+            <p className={cn("mt-1 leading-relaxed text-pretty", hard ? "text-white/90" : "text-ml-navy/85")}>{panel.text}</p>
+          </div>
+          <div className="flex items-center justify-between gap-4">
+            <Cited source={source} />
+            <ShareFact id={id} title={title} />
+          </div>
+        </div>
+      </article>
+    </Reveal>
   );
 }
 
-/** Facts about Germany's split panel: photograph and paper side by side, three ways on beneath. */
+/** A card that goes somewhere, whole: a photograph, a title and one line. */
+function LinkCards({ cards, columns }: { cards: LinkCard[]; columns: 3 | 4 }) {
+  return (
+    <ul className={cn("grid grid-cols-[minmax(0,1fr)] gap-5 sm:grid-cols-2 lg:gap-6", LAST_ROW_FULL, columns === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3")}>
+      {cards.map((c, i) => {
+        const Tag = c.href.startsWith("#") ? "a" : Link;
+        return (
+          <Reveal as="li" key={c.title} order={i % columns} className="flex">
+            <Tag href={c.href} className={cn(CARD, "focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-signal-orange")}>
+              <div className={cn(PHOTO, "aspect-4/3")}>
+                <div className="ml-settle absolute inset-0">
+                  <Image src={c.picture.src} alt="" fill sizes={columns === 4 ? "(min-width: 1024px) 23vw, (min-width: 640px) 46vw, 92vw" : "(min-width: 1024px) 31vw, (min-width: 640px) 46vw, 92vw"} className="object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.05] motion-reduce:transition-none" style={{ objectPosition: c.picture.focus }} />
+                </div>
+              </div>
+              <div className="flex flex-1 flex-col gap-2.5 p-5 lg:p-6">
+                <RiseText as="h3" text={c.title} className={cn(CARD_TITLE, "text-[clamp(1.35rem,1.75vw,1.85rem)] leading-[1.1]")} />
+                <span aria-hidden className="ml-rule h-1 w-12 shrink-0 rounded-full bg-signal-orange" />
+                <p className="leading-relaxed text-pretty text-ml-navy/80">{c.text}</p>
+              </div>
+            </Tag>
+          </Reveal>
+        );
+      })}
+    </ul>
+  );
+}
+
+/** A photograph and a navy panel side by side, with the panel's three ways on. */
 function Split({ block, flip }: { block: typeof SCHOOLS | typeof PEACE; flip?: boolean }) {
   return (
-    <section id={block.id} aria-labelledby={`${block.id}-title`} className={cn(LAND, COLUMN, "py-16 lg:py-20")}>
-      <div className="grid overflow-hidden rounded-2xl lg:grid-cols-2">
-        <div className={cn("relative aspect-16/10 lg:aspect-auto lg:min-h-112", flip && "lg:order-last")}>
+    <section id={block.id} aria-labelledby={`${block.id}-title`}>
+      <Reveal className="ml-card grid overflow-hidden rounded-[1.25rem] bg-ml-navy text-white lg:grid-cols-2">
+      <div className={cn(PHOTO, "aspect-16/10 lg:aspect-auto lg:min-h-112", flip && "lg:order-last")}>
+        <div className="ml-settle absolute inset-0">
           <Image src={block.picture.src} alt={block.picture.alt} fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" style={{ objectPosition: block.picture.focus }} />
         </div>
-        <div className="flex flex-col items-start justify-center gap-5 bg-ml-ground p-8 sm:p-12 xl:p-16">
-          <h2 id={`${block.id}-title`} className="font-ml-display text-[clamp(2.25rem,4vw,4rem)] leading-tight tracking-[0.01em] uppercase">
-            {block.title}
-          </h2>
-          <p className="max-w-xl text-lg leading-relaxed text-pretty text-ml-ink/85">{block.text}</p>
-          <Link href={block.href} className={pill.onLight}>
-            Read more
-          </Link>
-        </div>
       </div>
-      <ul className="mt-8 grid gap-6 sm:grid-cols-3 sm:divide-x sm:divide-ml-ink/15">
-        {block.links.map((l) => (
-          <li key={l.label} className="sm:px-6 sm:first:pl-0">
-            {l.href.startsWith("#") ? (
-              <a href={l.href} className="rounded-sm text-lg leading-snug font-bold hover:text-ml-green hover:underline focus-visible:outline-2 focus-visible:outline-ml-green">
-                {l.label}
-              </a>
-            ) : (
-              <Link href={l.href} className="rounded-sm text-lg leading-snug font-bold hover:text-ml-green hover:underline focus-visible:outline-2 focus-visible:outline-ml-green">
-                {l.label}
-              </Link>
-            )}
-          </li>
-        ))}
-      </ul>
+      <div className="flex min-w-0 flex-col items-start justify-center gap-5 p-6 sm:p-10 xl:p-14">
+        <RiseText id={`${block.id}-title`} text={block.title} className="w-full font-ml-display text-[clamp(2rem,3.4vw,3.5rem)] leading-[1.05] tracking-[0.01em] uppercase" />
+        <p className="max-w-xl text-lg leading-relaxed text-pretty text-white/85">{block.text}</p>
+        <ul className="flex w-full max-w-xl flex-col divide-y divide-white/15 border-y border-white/15">
+          {block.links.map((l) => {
+            const Tag = l.href.startsWith("#") ? "a" : Link;
+            return (
+              <li key={l.label}>
+                <Tag href={l.href} className="flex min-h-12 items-center py-2.5 font-semibold transition-colors hover:text-signal-orange focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-orange">
+                  {l.label}
+                </Tag>
+              </li>
+            );
+          })}
+        </ul>
+        <Link href={block.href} className={pill.onDark}>
+          Read more
+        </Link>
+      </div>
+      </Reveal>
     </section>
   );
 }
 
 /**
- * Facts of Bangladesh, on the plan of Facts about Germany: the hero and its
- * stepper, the figures, government as a stack of cards, the divisions on a
- * map, the split panels, research, every topic, and a printable edition.
- * Its heart is what Germany's page doesn't have: the two honest lists.
+ * Facts about Bangladesh: Facts about Germany's topics, in the dress of every
+ * other MOTHERLAND page. Its heart is what Germany's page doesn't have: the two
+ * honest lists, and the same subject read from both of them.
  */
-export default function FactsOfBangladeshPage() {
+export default function FactsAboutBangladeshPage() {
+  const bestCells = layoutOf(BEST.items.length);
+  const hardCells = layoutOf(NOT_BEST.items.length);
   return (
-    <div className={cn(anton.variable, montserrat.variable, "ml w-full bg-white font-ml-sans text-ml-ink")}>
+    <div className={cn(anton.variable, montserrat.variable, "ml ml-light ml-facts w-full bg-ml-ground font-ml-sans text-ml-ink")}>
       <noscript>
-        <style>{".ml-rise .ml-word > span { translate: none !important; }"}</style>
+        <style>{".ml-rise .ml-word > span { translate: none !important; } .ml-reveal { opacity: 1 !important; translate: none !important; } .ml-reveal .ml-wipe { clip-path: none !important; } .ml-reveal .ml-settle { transform: none !important; }"}</style>
       </noscript>
-      <MotherlandHeader topic="facts" solid />
-      <main id="main" className="ml-facts pt-(--ml-header)">
-        <FactsBar />
-        <FactsHero slides={SLIDES} />
+      <MotherlandHeader topic="facts" />
+      <main id="main">
+        <PageHero
+          id="facts-title"
+          name={FACTS_NAME}
+          media={<Image src={FACTS_HERO.src} alt={FACTS_HERO.alt} fill priority sizes="100vw" className="ml-drift object-cover" style={{ objectPosition: FACTS_HERO.focus }} />}
+        />
 
-        <section id={GLANCE.id} aria-label="Bangladesh at a glance" className={cn(LAND, "bg-signal-orange text-ml-ink")}>
-          <dl className={cn(COLUMN, "grid grid-cols-2 gap-y-8 py-10 sm:grid-cols-3 lg:grid-cols-6 lg:divide-x lg:divide-ml-ink/15 lg:py-12")}>
-            {GLANCE.facts.map((f) => (
-              <div key={f.label} className="flex flex-col items-center gap-1 px-3 text-center">
-                <dt className="text-sm font-semibold text-ml-ink/75">{f.label}</dt>
-                <dd className="text-2xl font-bold text-balance">{f.value}</dd>
-              </div>
+        <section id={GLANCE.id} aria-label="Bangladesh at a glance">
+          <Facts facts={GLANCE.facts} />
+        </section>
+
+        <IntroFill text={FACTS_INTRO} />
+
+        <Band id={BEST.id} tone="navy" title={BEST.title} lede={BEST.lede}>
+          <ul className={cn("grid grid-cols-[minmax(0,1fr)] gap-5 sm:grid-cols-2 lg:grid-cols-12 lg:gap-6", LAST_ROW_FULL)}>
+            {BEST.items.map((f, i) => (
+              <FactCard key={f.id} id={f.id} figure={f.figure} title={f.title} text={f.text} panel={{ heading: "Reality check", text: f.check }} source={f.source} picture={f.picture} span={bestCells[i].span} rowSize={bestCells[i].rowSize} order={i % 3} />
             ))}
-          </dl>
-          <p className={cn(COLUMN, "pb-6 text-center")}>
-            <Cited source={GLANCE.source} />
-          </p>
-        </section>
+          </ul>
+        </Band>
 
-        <section id={BEST.id} aria-labelledby={`${BEST.id}-title`} className={cn(LAND, "bg-ml-deep py-20 text-white sm:py-28")}>
-          <div className={cn(COLUMN, "flex flex-col gap-12 lg:gap-16")}>
-            <SectionHead id={`${BEST.id}-title`} tone="dark" title={BEST.title} lede={BEST.lede} />
-            <ol className="flex flex-col border-t border-white/20">
-              {BEST.items.map((f) => (
-                <li key={f.id} id={f.id} className={cn(LAND, "grid gap-6 border-b border-white/20 py-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,4fr)_minmax(0,4fr)] lg:gap-12 lg:py-14")}>
-                  <p className={cn(FIGURE, "text-signal-orange")}>{f.figure}</p>
-                  <div>
-                    <h3 className="text-2xl leading-snug font-bold text-balance">{f.title}</h3>
-                    <p className="mt-3 text-lg leading-relaxed text-pretty text-white/85">{f.text}</p>
-                  </div>
-                  <div className="rounded-2xl bg-black/20 p-6">
-                    <h4 className="font-bold text-signal-orange">Reality check</h4>
-                    <p className="mt-2 leading-relaxed text-pretty">{f.check}</p>
-                    <Cited source={f.source} dark />
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
+        <Band id={NOT_BEST.id} tone="paper" title={NOT_BEST.title} lede={NOT_BEST.lede}>
+          <ul className={cn("grid grid-cols-[minmax(0,1fr)] gap-5 sm:grid-cols-2 lg:grid-cols-12 lg:gap-6", LAST_ROW_FULL)}>
+            {NOT_BEST.items.map((f, i) => (
+              <FactCard key={f.id} hard id={f.id} figure={f.figure} title={f.title} text={f.text} panel={{ heading: "Your part", text: f.yourPart }} source={f.source} picture={f.picture} span={hardCells[i].span} rowSize={hardCells[i].rowSize} order={hardCells[i].rowSize === 3 ? i % 3 : i % 2} />
+            ))}
+          </ul>
+        </Band>
 
-        <section id={NOT_BEST.id} aria-labelledby={`${NOT_BEST.id}-title`} className={cn(LAND, "bg-ml-ground py-20 sm:py-28")}>
-          <div className={cn(COLUMN, "flex flex-col gap-12 lg:gap-16")}>
-            <SectionHead id={`${NOT_BEST.id}-title`} title={NOT_BEST.title} lede={NOT_BEST.lede} />
-            <ol className="flex flex-col border-t border-ml-ink/20">
-              {NOT_BEST.items.map((f) => (
-                <li key={f.id} id={f.id} className={cn(LAND, "grid gap-6 border-b border-ml-ink/20 py-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,4fr)_minmax(0,4fr)] lg:gap-12 lg:py-14")}>
-                  <p className={cn(FIGURE, "text-ml-red")}>{f.figure}</p>
-                  <div>
-                    <h3 className="text-2xl leading-snug font-bold text-balance">{f.title}</h3>
-                    <p className="mt-3 text-lg leading-relaxed text-pretty text-ml-ink/85">{f.text}</p>
-                    <Cited source={f.source} />
-                  </div>
-                  <div className="self-start rounded-2xl bg-ml-ink p-6 text-white">
-                    <h4 className="font-bold text-signal-orange">Your part</h4>
-                    <p className="mt-2 leading-relaxed text-pretty">{f.yourPart}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
+        <div className="print:hidden">
+          <Band id={BOTH_SIDES.id} tone="white" title={BOTH_SIDES.title} lede={BOTH_SIDES.lede}>
+            <BothSides />
+          </Band>
+          <Moment id="both-true" title="Both lists are true. Which one grows is up to us." picture={BOTH_TRUE} cta={{ label: "Know your rights and duties", href: "/nagorik" }} />
+        </div>
 
-        <section aria-labelledby="both-true" className="relative isolate overflow-hidden bg-ml-ink py-24 text-center text-white sm:py-36">
-          <Image src="/motherland/photos/flag-mural.jpg" alt="" fill sizes="100vw" className="-z-20 object-cover" />
-          <div aria-hidden className="absolute inset-0 -z-10 bg-black/70" />
-          <div className={cn(COLUMN, "flex flex-col items-center gap-8")}>
-            <h2 id="both-true" className="max-w-6xl font-ml-display text-[clamp(2.75rem,7vw,7rem)] leading-[1.02] tracking-[0.01em] text-balance uppercase">
-              Both lists are true. Which one grows is up to us.
-            </h2>
-            <div className="flex flex-wrap justify-center gap-3">
-              <Link href="/nagorik" className={pill.onDark}>
-                Know your rights and duties
-              </Link>
-              <Link href="/signup" className={pill.white}>
-                Join Kandari Profile
-              </Link>
-            </div>
-          </div>
-        </section>
+        <Band id={GOVERNMENT.id} tone="paper" title={GOVERNMENT.title} lede="A parliamentary republic under the Constitution of 1972: who holds power, and how to reach them.">
+          <LinkCards cards={GOVERNMENT.cards} columns={3} />
+        </Band>
 
-        <section id={GOVERNMENT.id} aria-labelledby={`${GOVERNMENT.id}-title`} className={cn(LAND, "flex flex-col gap-12 py-20 sm:py-28")}>
-          <Centred id={`${GOVERNMENT.id}-title`} title={GOVERNMENT.title} text={GOVERNMENT.text} />
-          <FactsStack cards={GOVERNMENT.cards} label={GOVERNMENT.title} />
-        </section>
-
-        <section aria-labelledby="divisions-title" className={cn(COLUMN, "flex flex-col gap-12 py-16")}>
-          <h2 id="divisions-title" className={cn(DISPLAY, "text-center")}>
-            {DIVISIONS_TITLE}
-          </h2>
+        <Band id="divisions" tone="white" title={DIVISIONS_TITLE} lede="Point at a division on the map, or choose one, to read about it.">
           <FactsMap />
-        </section>
+        </Band>
 
-        <Split block={SCHOOLS} />
-        <Split block={PEACE} flip />
-
-        <section id={RESEARCH.id} aria-labelledby={`${RESEARCH.id}-title`} className={cn(LAND, "flex flex-col gap-12 py-20 sm:py-28")}>
-          <Centred id={`${RESEARCH.id}-title`} title={RESEARCH.title} text={RESEARCH.text} />
-          <FactsStack cards={RESEARCH.cards} label={RESEARCH.title} />
-        </section>
-
-        <section aria-labelledby="all-topics" className="bg-ml-ground py-20 sm:py-28">
-          <div className={cn(COLUMN, "flex flex-col gap-12")}>
-            <h2 id="all-topics" className={cn(DISPLAY, "text-center")}>
-              All topics at a glance
-            </h2>
-            <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {FACT_TOPICS.map((t) => {
-                const body = (
-                  <>
-                    <span className="relative block aspect-16/10 overflow-hidden bg-ml-mist">
-                      <Image src={t.picture.src} alt="" fill sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none" style={{ objectPosition: t.picture.focus }} />
-                    </span>
-                    <span className="flex flex-col gap-3 p-5">
-                      <span className="text-xl leading-snug font-bold text-balance">{t.title}</span>
-                      <span aria-hidden className="h-0.5 w-10 bg-ml-green transition-[width] duration-300 group-hover:w-20" />
-                      <span className="leading-relaxed text-pretty text-ml-ink/85">{t.text}</span>
-                    </span>
-                  </>
-                );
-                const card = "group block h-full overflow-hidden rounded-2xl bg-white ring-1 ring-ml-ink/10 transition-shadow duration-300 hover:shadow-[0_24px_48px_-24px_rgb(15_42_32/0.5)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ml-green";
-                return (
-                  <li key={t.title}>
-                    {t.href.startsWith("#") ? (
-                      <a href={t.href} className={card}>
-                        {body}
-                      </a>
-                    ) : (
-                      <Link href={t.href} className={card}>
-                        {body}
-                      </Link>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
+        <section aria-label="Schools and peace" className="bg-ml-ground py-12 sm:py-14 lg:py-16">
+          <div className={cn(COLUMN, "flex flex-col gap-6")}>
+            <Split block={SCHOOLS} />
+            <Split block={PEACE} flip />
           </div>
         </section>
 
-        <section aria-labelledby="printable" className={cn(COLUMN, "flex flex-col gap-8 py-14")}>
-          <div className="flex flex-wrap items-center justify-between gap-6">
-            <div>
-              <h2 id="printable" className="text-2xl font-bold">
-                Complete printable edition
-              </h2>
-              <p className="mt-1 text-ml-ink/85">Every fact on one page, to print or save as a PDF. Figures checked on {CHECKED}.</p>
-            </div>
+        <Band id={RESEARCH.id} tone="white" title={RESEARCH.title} lede="This delta has always solved its own problems, from the flood to the boson.">
+          <LinkCards cards={RESEARCH.cards} columns={4} />
+        </Band>
+
+        <Band id="all-topics" tone="paper" title="All topics at a glance" lede="Every subject on one wall. Choose one to go straight to it.">
+          <LinkCards cards={FACT_TOPICS} columns={4} />
+        </Band>
+
+        <Band id="printable" tone="navy" title="The complete printable edition" lede={`Every fact on one page, to print or save as a PDF. Figures checked on ${CHECKED}.`}>
+          <div className="flex flex-col items-start gap-6">
             <PrintButton />
+            <details className="group w-full border-t border-white/20 pt-5">
+              <summary className="cursor-pointer font-semibold hover:text-signal-orange focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-orange">Every source on this page</summary>
+              <ul className="mt-4 grid gap-x-8 gap-y-2 text-sm sm:grid-cols-2 lg:grid-cols-3">
+                {FACT_SOURCES.map((s) => (
+                  <li key={s.url}>
+                    <a href={s.url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-signal-orange">
+                      {s.name}
+                      <span className="sr-only"> (opens in a new tab)</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </details>
           </div>
-          <details className="group border-t border-ml-ink/15 pt-5">
-            <summary className="cursor-pointer font-semibold hover:text-ml-green focus-visible:outline-2 focus-visible:outline-ml-green">Every source on this page</summary>
-            <ul className="mt-4 grid gap-x-8 gap-y-2 text-sm sm:grid-cols-2 lg:grid-cols-3">
-              {FACT_SOURCES.map((s) => (
-                <li key={s.url}>
-                  <a href={s.url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-ml-green">
-                    {s.name}
-                    <span className="sr-only"> (opens in a new tab)</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </details>
-        </section>
+        </Band>
+
+        <div className="print:hidden">
+          <Quiz questions={FACTS_QUIZ} name={FACTS_NAME} />
+          {/* Ten categories fill the wall's two rows; Pro & Con is one tap away from the two lists above. */}
+          <MoreCategories current="procon" />
+        </div>
       </main>
+      <FactsNav />
       <SideTab href="/bangladesh#join" />
-      <MotherlandFooter credits={factsCredits()} onLanding={false} />
+      <MotherlandFooter narrow credits={factsCredits()} onLanding={false} />
     </div>
   );
 }

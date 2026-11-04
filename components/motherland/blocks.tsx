@@ -10,7 +10,7 @@ import { ConnectBand } from "./connect";
 import { TakaConverter } from "./converter";
 import { FilmWall } from "./film-wall";
 import { FitLine } from "./fit-line";
-import { ANCHOR, BAND_Y, COLUMN, LEDE, SectionHead, pill } from "./kit";
+import { ANCHOR, BAND_Y, COLUMN, LAST_ROW_FULL, LEDE, SectionHead, pill } from "./kit";
 import { LaunchBand } from "./launch";
 import { Parallax } from "./parallax";
 import { PinBoard } from "./pin-board";
@@ -121,7 +121,7 @@ function MosaicCard({ card, cell, tone, order, badge }: { card: Card; cell: Mosa
 function Mosaic({ cards, tone, numbered }: { cards: Card[]; tone: BandTone; numbered?: boolean }) {
   const cells = mosaicCells(cards.length);
   return (
-    <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-12 lg:gap-6">
+    <ul className={cn("grid grid-cols-[minmax(0,1fr)] gap-5 sm:grid-cols-2 lg:grid-cols-12 lg:gap-6", LAST_ROW_FULL)}>
       {cards.map((c, i) => (
         <MosaicCard key={c.title} card={c} cell={cells[i]} tone={tone} order={cells[i].rowSize === 3 ? i % 3 : i % 2} badge={numbered ? i + 1 : undefined} />
       ))}
@@ -132,7 +132,7 @@ function Mosaic({ cards, tone, numbered }: { cards: Card[]; tone: BandTone; numb
 /** A tighter wall for many small things: every card alike, in full rows. */
 function Wall({ cards, columns, shape = "aspect-4/3" }: { cards: Card[]; columns: 3 | 4; shape?: string }) {
   return (
-    <ul className={cn("grid gap-5 sm:grid-cols-2", columns === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3")}>
+    <ul className={cn("grid grid-cols-[minmax(0,1fr)] gap-5 sm:grid-cols-2", LAST_ROW_FULL, columns === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3")}>
       {cards.map((c, i) => (
         <Reveal as="li" key={c.title} order={i % columns} className="flex">
           <article className={cn(CARD_SHELL, SKIN.white.card)}>
@@ -153,16 +153,17 @@ function portraitRows(n: number): number[] {
   return [4, ...portraitRows(n - 4)];
 }
 
-const PORTRAIT_SPAN: Record<number, string> = { 2: "lg:col-span-30", 3: "lg:col-span-20", 4: "lg:col-span-15", 5: "lg:col-span-12", 1: "lg:col-span-60" };
+/** Each portrait's share of its row, less its share of the 1.25rem gaps. Five are too narrow for a long name until xl, so they sit as three and two, and the two grow to fill. */
+const PORTRAIT_WIDTH: Record<number, string> = { 1: "lg:w-full", 2: "lg:w-[calc((100%-1.25rem)/2)]", 3: "lg:w-[calc((100%-2.5rem)/3)]", 4: "lg:w-[calc((100%-3.75rem)/4)]", 5: "lg:w-[calc((100%-2.5rem)/3)] xl:w-[calc((100%-5rem)/5)]" };
 
 /** People: the whole face, in full rows of portraits. */
 function PeopleGrid({ cards }: { cards: Card[] }) {
   const rows = portraitRows(cards.length);
   const sizes = rows.flatMap((r) => Array.from({ length: r }, () => r));
   return (
-    <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-[repeat(60,minmax(0,1fr))]">
+    <ul className={cn("grid grid-cols-[minmax(0,1fr)] gap-5 sm:grid-cols-2 lg:flex lg:flex-wrap", LAST_ROW_FULL)}>
       {cards.map((c, i) => (
-        <Reveal as="li" key={c.title} order={i % sizes[i]} className={cn("flex", PORTRAIT_SPAN[sizes[i]])}>
+        <Reveal as="li" key={c.title} order={i % sizes[i]} className={cn("flex lg:grow", PORTRAIT_WIDTH[sizes[i]])}>
           <article className={cn(CARD_SHELL, SKIN.white.card)}>
             {c.picture ? <CardPhoto picture={c.picture} sizes="(min-width: 1024px) 30vw, (min-width: 640px) 46vw, 92vw" className="aspect-4/5 shrink-0 lg:aspect-auto lg:h-[24rem]" chip={c.meta} /> : null}
             <CardBody card={c} skin="white" />
@@ -182,7 +183,7 @@ export function CardGrid({ cards, tone, columns, numbered, shape }: { cards: Car
 }
 
 /** A chapter that slides sideways as you scroll. Its cards fill the height of the screen. */
-export function Sideways({ id, title, lede, tone, cards }: { id: string; title: string; lede?: string; tone: BandTone; cards: Card[] }) {
+function Sideways({ id, title, lede, tone, cards }: { id: string; title: string; lede?: string; tone: BandTone; cards: Card[] }) {
   return (
     <section id={id} aria-labelledby={`${id}-title`} className={cn(ANCHOR, GROUND[tone])}>
       <PinnedRail label={title} head={<SectionHead id={`${id}-title`} tone={tone === "navy" ? "dark" : "light"} title={title} lede={lede} />}>
@@ -216,17 +217,18 @@ function DataCards({ head, rows, tone, picture, hideLastColumn }: { head: string
   const cardLook = onNavy ? "bg-white/8 text-white ring-1 ring-white/15" : tone === "gold" ? "bg-white text-ml-navy" : "bg-white text-ml-navy ring-1 ring-ml-navy/8";
   const odd = rows.length % 2 === 1;
   return (
-    <div className={cn("grid gap-5 lg:gap-6", picture && "lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]")}>
+    <div className={cn("grid grid-cols-[minmax(0,1fr)] gap-5 lg:gap-6", picture && "lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]")}>
       {picture ? (
         <Reveal className="relative hidden lg:block">
           <div className="ml-wipe absolute inset-0 overflow-hidden rounded-[1.25rem] bg-ml-mist">
             <div className="ml-settle absolute inset-0">
-              <Image src={picture.src} alt={picture.alt} fill sizes="100vw" className="object-cover" style={{ objectPosition: picture.focus }} />
+              {/* A tall crop of a wide photo: it is drawn wider than its column, so it asks for more than the column's width. */}
+              <Image src={picture.src} alt={picture.alt} fill sizes="90vw" className="object-cover" style={{ objectPosition: picture.focus }} />
             </div>
           </div>
         </Reveal>
       ) : null}
-      <ul className="grid gap-4 sm:grid-cols-2">
+      <ul className="grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2">
         {rows.map((r, i) => {
           const rest = hideLastColumn ? r.slice(2, -1) : r.slice(2);
           return (
@@ -253,7 +255,7 @@ function DataCards({ head, rows, tone, picture, hideLastColumn }: { head: string
 /** The lines everyone knows, each over a photograph of where it belongs. */
 function Lines({ lines }: { lines: Line[] }) {
   return (
-    <ul className="grid gap-5 md:grid-cols-2 lg:gap-6 xl:grid-cols-3">
+    <ul className="grid grid-cols-[minmax(0,1fr)] gap-5 md:grid-cols-2 md:max-xl:[&>li:last-child:nth-child(odd)]:col-span-2 lg:gap-6 xl:grid-cols-3">
       {lines.map((l, i) => (
         <Reveal as="li" key={l.who} order={i % 3} className="flex">
           <blockquote className="ml-card group relative isolate flex min-h-[24rem] w-full flex-col justify-end gap-3 overflow-hidden rounded-[1.25rem] bg-ml-navy p-7 text-white ring-1 ring-white/12">

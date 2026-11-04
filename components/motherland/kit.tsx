@@ -24,8 +24,11 @@ export const BAND_Y = "py-12 sm:py-14 lg:py-16";
 
 export const LEDE = "max-w-2xl text-lg leading-relaxed text-pretty sm:text-xl";
 
+/** In a two-column list, a last card on its own runs the full width, so a tablet's rows come out full. */
+export const LAST_ROW_FULL = "sm:max-lg:[&>li:last-child:nth-child(odd)]:col-span-2";
+
 const PILL_BASE =
-  "inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full px-7 py-3 text-base font-semibold whitespace-nowrap transition-[background-color,color,scale] duration-300 ease-[cubic-bezier(0.215,0.61,0.355,1)] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-4 motion-reduce:transition-none";
+  "inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full px-7 py-3 text-base font-semibold whitespace-nowrap max-sm:max-w-full max-sm:text-center max-sm:whitespace-normal transition-[background-color,color,scale] duration-300 ease-[cubic-bezier(0.215,0.61,0.355,1)] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-4 motion-reduce:transition-none";
 
 /** The page's buttons: gold with ink text first; on hover ink on paper, paper on dark bands. */
 export const pill = {
@@ -54,7 +57,7 @@ export function NextPage({ cta, tone = "light", className }: { cta: Cta; tone?: 
 export function SectionHead({ id, title, lede, cta, tone = "light", className }: { id: string; title: string; lede?: string; cta?: Cta; tone?: Tone; className?: string }) {
   const dark = tone === "dark";
   return (
-    <div className={cn("grid items-end gap-x-12 gap-y-7 lg:grid-cols-[minmax(0,1fr)_auto]", className)}>
+    <div className={cn("grid grid-cols-[minmax(0,1fr)] items-end gap-x-12 gap-y-7 lg:grid-cols-[minmax(0,1fr)_auto]", className)}>
       <div className="flex min-w-0 flex-col gap-4">
         <RiseText id={id} text={title} className={cn(DISPLAY, dark ? "text-white" : "text-ml-ink")} />
         {lede ? <FitLine text={lede} className={cn(LEDE, "ml-lede", dark ? "text-white/80" : "text-ml-ink/80")} /> : null}

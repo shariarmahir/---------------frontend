@@ -3,18 +3,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { CATEGORIES, type Category, type Subcategory } from "@/data/motherland-categories";
 import { PROCON, VIDEOS } from "@/data/motherland";
-import type { BandTone, Block } from "@/data/motherland-blocks";
+import type { BandTone } from "@/data/motherland-blocks";
 import { DEEP, MORE_FILMS } from "@/data/motherland-deep";
 import { INTROS, PAGE_BLOCKS } from "@/data/motherland-pages";
 import { cn } from "@/lib/utils";
 import { CardStack } from "./card-stack";
 import { Figures, Timeline } from "./figures";
-import { FitLine } from "./fit-line";
 import { BlockView, IntroFill } from "./blocks";
 import { CornerEvents } from "./culture-calendar";
 import { CornerScience } from "./launch";
 import { Invest } from "./invest";
-import { ANCHOR, BAND_Y, COLUMN, LEDE, pill } from "./kit";
+import { ANCHOR, BAND_Y, COLUMN, pill } from "./kit";
 import { Parallax } from "./parallax";
 import { Quiz } from "./quiz";
 import { RiseText } from "./rise-text";
@@ -28,37 +27,24 @@ import { WeekFilm } from "./week-film";
  * them read (data/motherland-pages.ts), then its quiz and the other categories.
  */
 
-/** The full-screen opening every category page shares: a film or a slowly drifting photograph, the title, its suggestions. */
-export function PageHero({ id, name, lede, media, parts }: { id: string; name: string; lede: string; media: ReactNode; parts: { id: string; title: string }[] }) {
+/** The full-screen opening every category page shares: a film or a slowly drifting photograph, and the title alone. */
+export function PageHero({ id, name, media }: { id: string; name: string; media: ReactNode }) {
   return (
     <section aria-labelledby={id} className="relative isolate flex min-h-svh flex-col justify-end overflow-hidden bg-ml-navy text-white">
       <Parallax from="start" lift={14}>{media}</Parallax>
       <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-t from-ml-navy/95 via-ml-navy/35 to-ml-navy/30" />
-      <div className={cn(COLUMN, "flex flex-col items-start gap-5 pt-36 pb-12 lg:pb-16")}>
+      {/* A phone keeps room at the foot for whatever stands in the corner: Topics, Get tickets, Join now. */}
+      <div className={cn(COLUMN, "pt-36 pb-24 sm:pb-12 lg:pb-16")}>
         <RiseText as="h1" id={id} now text={name} className="w-full font-ml-display text-[clamp(3.5rem,11.5vw,11rem)] leading-[0.98] tracking-[0.01em] uppercase" />
-        <FitLine text={lede} className={cn(LEDE, "ml-lede ml-hero-one w-full text-white/90")} />
-        {parts.length ? (
-          <nav aria-label={`Browse ${name}`} className="ml-hero-two">
-            <ul className="flex flex-wrap gap-3">
-              {parts.slice(0, 4).map((s, i) => (
-                <li key={s.id}>
-                  <a href={`#${s.id}`} className={i === 0 ? pill.onDark : pill.white}>
-                    {s.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        ) : null}
       </div>
     </section>
   );
 }
 
-function Opening({ category, parts }: { category: Category; parts: { id: string; title: string }[] }) {
-  const { hero, name, lede } = category;
+function Opening({ category }: { category: Category }) {
+  const { hero, name } = category;
   const film = DEEP[category.slug]?.film;
-  return <PageHero id="category-title" name={name} lede={lede} parts={parts} media={film ? <WeekFilm film={film} /> : <Image src={hero.src} alt={hero.alt} fill priority sizes="100vw" className="ml-drift object-cover" style={{ objectPosition: hero.focus }} />} />;
+  return <PageHero id="category-title" name={name} media={film ? <WeekFilm film={film} /> : <Image src={hero.src} alt={hero.alt} fill priority sizes="100vw" className="ml-drift object-cover" style={{ objectPosition: hero.focus }} />} />;
 }
 
 const ARTS = ["arches", "peaks", "waves", "minar"] as const;
@@ -116,19 +102,6 @@ export function MoreCategories({ current }: { current: string }) {
   );
 }
 
-/** The parts a visitor can jump to from the opening: what the page shows, in order. */
-function partsOf(category: Category, blocks: Block[]) {
-  const out: { id: string; title: string }[] = [];
-  for (const b of blocks) {
-    if (b.kind !== "moment" && "title" in b && b.title && "id" in b) out.push({ id: b.id, title: b.title });
-    if (b.kind === "part" && b.part === "stack" && category.subcategories[0]) out.push({ id: category.subcategories[0].id, title: category.subcategories[0].title });
-    if (b.kind === "tool" && b.tool === "converter") out.push({ id: "converter", title: "Convert your money" });
-    if (b.kind === "tool" && b.tool === "calendar") out.push({ id: "calendar", title: "What's on" });
-    if (b.kind === "tool" && b.tool === "connect") out.push({ id: "connect", title: "Connect for details" });
-  }
-  return out;
-}
-
 export function CategoryPage({ category }: { category: Category }) {
   const deep = DEEP[category.slug] ?? {};
   const blocks = PAGE_BLOCKS[category.slug] ?? [];
@@ -140,7 +113,7 @@ export function CategoryPage({ category }: { category: Category }) {
 
   return (
     <>
-      <Opening category={category} parts={partsOf(category, blocks)} />
+      <Opening category={category} />
       {category.facts.length ? <Facts facts={category.facts} /> : null}
       {INTROS[category.slug] ? <IntroFill text={INTROS[category.slug]} /> : null}
       {blocks.map((block, i) => {
@@ -164,7 +137,7 @@ export function CategoryPage({ category }: { category: Category }) {
                   <div className="flex flex-wrap items-center justify-between gap-6 rounded-2xl bg-ml-navy p-6 text-white sm:p-8">
                     <p className="max-w-2xl text-xl leading-snug font-bold text-balance">Want the figures behind the argument? We publish the best and the worst of Bangladesh, with sources.</p>
                     <Link href="/bangladesh/facts#why-we-are-not-doing-best" className={pill.onDark}>
-                      Read the Facts of Bangladesh
+                      Read the Facts about Bangladesh
                     </Link>
                   </div>
                 </div>

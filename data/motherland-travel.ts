@@ -200,7 +200,6 @@ export const STORIES = {
   href: "/bangladesh/travel/stories",
   signup: "/signup?next=/bangladesh/travel/stories",
   title: "Travel stories",
-  lede: "A short memory from your trip, written by anyone from anywhere. Each week the ten best are chosen and shown here to represent Bangladesh, with their places pinned on the map.",
   steps: [
     { title: "Create your Kandari Profile", text: "Your profile gets a Travel ID. Stories can only be written from a profile, so every one has a real person behind it." },
     { title: "Write it short, add your photos", text: "Where you went, what you saw, what surprised you. Use only photos you took yourself." },

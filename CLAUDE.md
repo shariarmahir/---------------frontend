@@ -110,7 +110,7 @@ Brief specifies 16:6 (~2.67:1), an ultra-wide letterbox. At that ratio on a phon
                       Every section's gold button opens a category page /bangladesh/<slug> (history, science-tech, people,
                       nature, travel, culture, procon, taka, videos, resources, invest), all in the dress Geography & Travel set
                       (Mahir, 2026-11-04): film or drifting full-size photo, one narrow line of figures, first part as the landing's
-                      CardStack, sourced figures that count up, portrait PhotoCard rails, timeline, quiz, other categories, narrow footer.
+                      CardStack, sourced figures that count up, portrait photo cards, timeline, quiz, other categories, narrow footer.
                       Copy: data/motherland-categories.ts; figures, films and timelines: data/motherland-deep.ts (every figure names
                       its source, reused from the Facts page where it can be); components/motherland/category.tsx; checked by
                       lib/motherland-categories.test.ts. Photos: licensed Unsplash and Commons only, 2400px where the source has it.
@@ -126,15 +126,19 @@ Brief specifies 16:6 (~2.67:1), an ultra-wide letterbox. At that ratio on a phon
                       Commons only, credited (data/motherland-more.ts is generated; a card with no photo is set in type). Films say where they were really
                       filmed. Rates, fares and event dates: data/motherland-live.ts, data/motherland-trip.ts, checked November 2026, re-check when they age.
                       Card system (Mahir, 2026-11-04, after he rejected text rows): NO row sections on these pages. Every story, step and table row is a card with a photograph (blocks.tsx; lib/motherland-mosaic.ts lays them out in wide pairs and threes so rows line up), gold tag on the photo, navy, white and gold skins, a detail panel where facts exist. Under each hero the paragraph that inks itself in on scroll, after visittheusa (INTROS in data/motherland-pages.ts). Motion: card rise and photo wipe (reveal.tsx), sideways-scrolling chapters (pinned-rail.tsx), full-bleed parallax breaks (block kind moment). The colours ml-ink, ml-green, ml-deep, ml-ground and ml-mist are live variables so .ml-light can turn them navy and cool white; the landing page keeps its green.
-                      Later the same day Mahir tightened it: no sources or notes on the cards (data stays in the page files; reference.md, written by scripts/motherland-references.mts, lists every data source, photo and film; the footer keeps photo credits because CC licences require them). Titles and subtitles hold ONE line (RiseText, FitLine, ledes at most 100 characters; phones may wrap a subtitle), checked by lib/motherland-categories.test.ts along with a photograph on every card. Section gaps are BAND_Y in kit.tsx. People is a portrait grid so faces aren't cropped. The Year in Bangladesh is a marked month calendar (culture-calendar.tsx), with no rows. Geography & Travel uses the same hero and cards as the others. Nature's hero is a 2560x1440 Bandarban film from Pixabay. In `cn()`, put a text size BEFORE its leading: tailwind-merge drops a leading that comes before a size, which is what made two-line titles overlap.
-/bangladesh/facts    Facts of Bangladesh (Mahir, 2026-11-04), the "Facts" tab, laid out after Facts about Germany
-                      (tatsachen-ueber-deutschland.de) in MOTHERLAND's colours and type, with its 14 topics answered for
-                      Bangladesh. Its two required sections are "Why we are the best" and "Why we are not doing best":
-                      the one MOTHERLAND page that shows failings, by Mahir's instruction. Every figure names its source,
-                      every strength its limit, every failing the reader's part. Copy: data/motherland-facts.ts; re-check
-                      the figures when they age; checked by lib/motherland-facts.test.ts.
+                      Later the same day Mahir tightened it: no sources or notes on the cards (data stays in the page files; reference.md, written by scripts/motherland-references.mts, lists every data source, photo and film; the footer keeps photo credits because CC licences require them). Titles and subtitles hold ONE line (RiseText, FitLine, ledes at most 100 characters; phones may wrap a subtitle), checked by lib/motherland-categories.test.ts along with a photograph on every card. Section gaps are BAND_Y in kit.tsx. People is a portrait grid so faces aren't cropped. The Year in Bangladesh is a marked month calendar (culture-calendar.tsx), with no rows. Geography & Travel uses the same hero and cards as the others. Every hero on these pages holds the title alone, with no subtitle or buttons (Mahir, 2026-11-04); the landing page keeps its own. Nature's hero is a 2560x1440 Bandarban film from Pixabay. In `cn()`, put a text size BEFORE its leading: tailwind-merge drops a leading that comes before a size, which is what made two-line titles overlap.
+/bangladesh/facts    Facts about Bangladesh (Mahir, 2026-11-04; renamed from "Facts of"), the "Facts" tab, on the 14 topics of Facts about
+                      Germany (tatsachen-ueber-deutschland.de) answered for Bangladesh, in the same dress as every other MOTHERLAND page:
+                      ml-light, full-screen hero, gold figures line, inked-in intro, photo cards. Its two required sections are "Why we are the best"
+                      and "Why we are not doing best": the one MOTHERLAND page that shows failings, by Mahir's instruction, and the one that keeps
+                      its sources on the cards. Every figure names its source, every strength its limit, every failing the reader's part.
+                      No second navbar (Mahir removed it): a Topics tab on the right edge above "Join with us", a pill on phones (FactsNav in facts-parts.tsx),
+                      opens a side panel with the green, red, green flag mark (FactsMark, token ml-flag so .ml-light can't turn it navy), a search
+                      across all the facts (lib/motherland-facts-search.ts), the page's sections and every topic. "Both sides" shows one
+                      subject from both lists (BOTH_SIDES adds no new figures). Facts have a copy-link button, and the print button loads every photo first.
+                      Copy: data/motherland-facts.ts; re-check the figures when they age; checked by lib/motherland-facts.test.ts.
 /bangladesh/travel   Geography & Travel (Mahir, 2026-11-04), its own page, not a [category] one, after visittheusa.com's portrait
-                      cards (PhotoCard) in MOTHERLAND's dress. Its job is to make people want to come. Order, as Mahir set it: hero film
+                      cards in MOTHERLAND's dress. Its job is to make people want to come. Order, as Mahir set it: hero film
                       of the week with no controls or credit on it (WEEK_FILMS, changes by itself each Sunday in Dhaka; credit in the
                       footer) → one narrow line of figures → Top 10 this week (topTen, by season, full-size photos in public/motherland/top;
                       never from Pinterest, licensed sources only) → four old places in the landing page's CardStack, then a rail →

@@ -283,7 +283,7 @@ export function TripPlanner() {
 
         <div className="flex flex-col gap-6">
           <h3 className="font-ml-display text-[clamp(2rem,4vw,3.5rem)] leading-none tracking-[0.01em] uppercase">Ready-made tours</h3>
-          <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          <ul className="grid gap-4 sm:grid-cols-2 sm:max-xl:[&>li:last-child:nth-child(odd)]:col-span-2 xl:grid-cols-5">
             {TOUR_PLANS.map((t) => (
               <li key={t.id}>
                 <button

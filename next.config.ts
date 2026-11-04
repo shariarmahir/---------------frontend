@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
   images: {
     // The hero photographs are only 640–736px wide at source. Next's default
     // ladder tops out at 3840px, so a full-width hero requests a variant far

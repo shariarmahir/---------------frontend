@@ -79,7 +79,7 @@ function deviceStore<T>(key: string, empty: T) {
 export type Mark = "want" | "been" | "avoid";
 export const MARK_LABEL: Record<Mark, string> = { want: "Want to go", been: "Been there", avoid: "Avoid" };
 
-export const marksStore = deviceStore<Record<string, Mark>>("bd-travel-marks", {});
+const marksStore = deviceStore<Record<string, Mark>>("bd-travel-marks", {});
 export const reportsStore = deviceStore<Record<string, CrowdReport>>("bd-travel-reports", {});
 export const addedStore = deviceStore<AddedPlace[]>("bd-travel-added", []);
 

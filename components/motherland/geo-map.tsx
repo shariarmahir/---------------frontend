@@ -737,7 +737,7 @@ export function CrowdBoard() {
   const minute = useMinute();
   const now = minute === null ? null : new Date(minute * 60_000);
 
-  const rows = useMemo(() => (now ? PLACES.map((p) => ({ place: p, crowd: crowdAt(p, now) })) : []), [minute]); // eslint-disable-line react-hooks/exhaustive-deps
+  const rows = useMemo(() => (minute === null ? [] : PLACES.map((p) => ({ place: p, crowd: crowdAt(p, new Date(minute * 60_000)) }))), [minute]);
   const busiest = [...rows].filter((r) => r.crowd.level !== "closed").sort((a, b) => b.crowd.score - a.crowd.score).slice(0, 5);
   /* The calmest places open now, those in season first, so this list is never empty. */
   const inSeason = (r: (typeof rows)[number]) => (r.crowd.reasons.includes("In season") ? 0 : 1);
