@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { CardStack } from "./card-stack";
 import { Figures, Timeline } from "./figures";
 import { Invest } from "./invest";
+import { NatureList } from "./nature-list";
 import { ANCHOR, COLUMN, LEDE, SectionHead, pill } from "./kit";
 import { PhotoCard } from "./photo-card";
 import { Quiz } from "./quiz";
@@ -158,6 +159,7 @@ export function CategoryPage({ category }: { category: Category }) {
         </section>
       ) : null}
       {stacks ? <StackBand sub={first} slug={category.slug} /> : null}
+      {category.slug === "nature" ? <NatureList /> : null}
       {deep.figures ? <Figures title={deep.figuresTitle ?? "In numbers"} figures={deep.figures} /> : null}
       {category.slug === "invest" ? <Invest /> : null}
       {rails.map((s, i) => (
