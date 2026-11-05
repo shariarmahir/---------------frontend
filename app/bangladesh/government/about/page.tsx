@@ -4,6 +4,7 @@ import { ABOUT, FACTS, GOV_TODAY, LEVELS, OFFICES } from "@/data/bd-gov";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/bangladesh/government/about" },
   title: "Bangladesh and its government | BD Guide",
   description:
     "Facts about Bangladesh, its laws, history and statistics; the branches of its government; and the way to every ministry, office and public service. An independent guide by Kandari-Lab.",

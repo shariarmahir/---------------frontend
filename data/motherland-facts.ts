@@ -370,20 +370,4 @@ export const FACT_INDEX: SearchEntry<Picture>[] = [
   ...FACT_TOPICS.map((t) => ({ ...t, group: "Topics" })),
 ];
 
-/** Every source on the page, once, for its closing list. */
-export const FACT_SOURCES: Source[] = [...new Map([...BEST.items, ...NOT_BEST.items].map((f) => f.source).concat(GLANCE.source).map((s) => [s.url, s])).values()];
 
-export const factsCredits = () => {
-  const seen = new Set<string>();
-  const pictures: { label: string; picture: Picture }[] = [
-    { label: FACTS_NAME, picture: FACTS_HERO },
-    ...[...BEST.items, ...NOT_BEST.items].map((f) => ({ label: f.title, picture: f.picture })),
-    { label: "Both lists are true", picture: BOTH_TRUE },
-    { label: SCHOOLS.title, picture: SCHOOLS.picture },
-    { label: PEACE.title, picture: PEACE.picture },
-    ...FACT_TOPICS.map((t) => ({ label: t.title, picture: t.picture })),
-    ...GOVERNMENT.cards.map((c) => ({ label: c.title, picture: c.picture })),
-    ...RESEARCH.cards.map((c) => ({ label: c.title, picture: c.picture })),
-  ];
-  return pictures.filter(({ picture }) => !seen.has(picture.src) && !!seen.add(picture.src)).map(({ label, picture }) => ({ label, credit: picture.credit }));
-};

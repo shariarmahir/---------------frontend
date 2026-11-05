@@ -1,6 +1,6 @@
 import { ABOUT } from "@/data/motherland";
 import { cn } from "@/lib/utils";
-import { COLUMN, DISPLAY, NextPage } from "./kit";
+import { BAND_Y, COLUMN, DISPLAY, NextPage } from "./kit";
 import { RiseText } from "./rise-text";
 import { ScrollFill } from "./scroll-fill";
 
@@ -11,12 +11,12 @@ import { ScrollFill } from "./scroll-fill";
  */
 export function About() {
   return (
-    <section aria-labelledby="about-title" className="py-24 sm:py-32 lg:py-40">
+    <section aria-labelledby="about-title" className={BAND_Y}>
       <h2 id="about-title" className="sr-only">
         About Bangladesh
       </h2>
       <div className={COLUMN}>
-        <ScrollFill text={ABOUT.text} className="text-[clamp(1.6rem,3.4vw,3rem)] leading-[1.4] font-medium tracking-[-0.01em]" />
+        <ScrollFill text={ABOUT.text} className="font-ml-title text-[clamp(1.6rem,3.4vw,3rem)] leading-[1.35] font-bold tracking-[-0.01em]" />
       </div>
 
       <div className="mt-16 bg-signal-orange lg:mt-24">

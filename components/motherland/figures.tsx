@@ -51,7 +51,7 @@ function CountedValue({ value }: { value: string }) {
   return <span ref={el}>{value}</span>;
 }
 
-/** The sourced figures: each counts up, says what it means, and names where it comes from. */
+/** The figures: each counts up and says what it means. Their sources are on the References page. */
 export function Figures({ title, figures }: { title: string; figures: Figure[] }) {
   /* One size across the set, sized so the longest figure holds one line. */
   const longest = Math.max(...figures.map((f) => f.value.length));
@@ -80,8 +80,13 @@ export function Timeline({ title, moments }: { title: string; moments: Moment[] 
   return (
     <section aria-label={title} className={cn(BAND_Y, "bg-ml-navy text-white")}>
       <div className={cn(COLUMN, "flex flex-col gap-10 lg:gap-14")}>
-        <RiseText as="h2" text={title} className={DISPLAY} />
-        <ol className={cn("grid sm:grid-cols-2 sm:gap-y-12", moments.length === 5 ? "lg:grid-cols-5" : "lg:grid-cols-4")}>
+        <RiseText as="h2" text={title} className={cn(DISPLAY, "text-signal-orange")} />
+        <ol
+          className={cn(
+            "grid sm:grid-cols-2 sm:gap-y-12 sm:[&>li:last-child:nth-child(odd)]:col-span-2",
+            moments.length === 5 ? "lg:grid-cols-5 lg:[&>li:last-child:nth-child(odd)]:col-span-1" : "lg:grid-cols-4 lg:[&>li:last-child:nth-child(4n+1)]:col-span-4 lg:[&>li:last-child:nth-child(4n+2)]:col-span-3 lg:[&>li:last-child:nth-child(4n+3)]:col-span-2",
+          )}
+        >
           {moments.map((m) => (
             <li key={m.when} className="relative border-l-2 border-signal-orange/50 pb-10 pl-6 last:pb-0 sm:border-t-2 sm:border-l-0 sm:pt-7 sm:pr-8 sm:pb-0 sm:pl-0">
               <span aria-hidden className="absolute top-1 -left-[0.45rem] size-3 rounded-full bg-signal-orange sm:-top-[0.45rem] sm:left-0" />

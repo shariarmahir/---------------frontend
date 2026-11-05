@@ -2,9 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
-import { TOPICS, topicHref, type TopicId } from "@/data/motherland";
+import { TOPICS, TOPIC_PAGES, type TopicId } from "@/data/motherland";
 import { cn } from "@/lib/utils";
+import { useFilmInk } from "./film-ink";
 import { Logo } from "./logo";
 
 /** The utility bar's links: the rest of Kandari-Lab, one step away. */
@@ -13,6 +15,9 @@ const UTILITY = [
   { label: "নাগরিক দায়িত্ব", href: "/nagorik", icon: "verified_user" },
   { label: "Research", href: "/research", icon: "local_library" },
 ];
+
+/** How much of the film's light reaches the logo through the header's scrim. */
+const SCRIM_LIGHT = 0.7;
 
 /** The way to BD Guide, the government guide: a button beside "Join with us". */
 const GOV = { label: "Gov", href: "/bangladesh/government" };
@@ -40,11 +45,12 @@ function useCurrentTopic() {
 /**
  * MOTHERLAND's own header, in place of the site's: a slim utility bar over
  * the main bar, see-through over the film and solid white once the page
- * moves. From xl the eleven topics sit in the bar and the one in view is
- * underlined; below xl they open from the menu button.
+ * moves. From xl the topics sit in the bar, each one opening its own page, and
+ * the one in view or being read is underlined; below xl they open from the
+ * menu button.
  */
 export function MotherlandHeader({ topic, solid: alwaysSolid }: { /** On a category page, the category: its tab is marked and the tabs go to pages. */ topic?: TopicId; /** For a page with no dark opening: white from the start. */ solid?: boolean }) {
-  const onLanding = !topic;
+  const onLanding = usePathname() === "/bangladesh";
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const inView = useCurrentTopic();
@@ -52,6 +58,8 @@ export function MotherlandHeader({ topic, solid: alwaysSolid }: { /** On a categ
   const menuButton = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const solid = alwaysSolid || !onLanding || scrolled || open;
+  const logo = useRef<HTMLAnchorElement>(null);
+  useFilmInk(logo, !solid, SCRIM_LIGHT);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -116,20 +124,21 @@ export function MotherlandHeader({ topic, solid: alwaysSolid }: { /** On a categ
       >
         <div className="flex h-16 items-center gap-6 px-5 lg:h-22 lg:px-6 xl:max-2xl:gap-3">
           <Link
+            ref={logo}
             href={onLanding ? "#top" : "/bangladesh"}
             onClick={close}
-            className={cn("shrink-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current", solid && "text-ml-green")}
+            className={cn("shrink-0 rounded-sm transition-colors duration-1000 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current lg:ml-5", solid && "text-ml-green")}
           >
-            <Logo className="text-[0.85rem] lg:text-[1.05rem]" />
+            <Logo className="w-[7.75rem] lg:w-[10.4rem]" />
           </Link>
 
           <nav aria-label="Topics" className="hidden flex-1 xl:block">
             <ul className="flex items-center justify-center 2xl:gap-2">
               {TOPICS.map((t) => (
                 <li key={t.id}>
-                  <a
-                    href={topicHref(t.id, onLanding)}
-                    aria-current={current === t.id ? "true" : undefined}
+                  <Link
+                    href={TOPIC_PAGES[t.id]}
+                    aria-current={topic === t.id ? "page" : undefined}
                     className="group relative block rounded-sm px-1 py-2 text-[0.82rem] font-semibold whitespace-nowrap focus-visible:outline-2 focus-visible:outline-current 2xl:px-2.5 2xl:text-[0.95rem]"
                   >
                     {t.tab}
@@ -140,7 +149,7 @@ export function MotherlandHeader({ topic, solid: alwaysSolid }: { /** On a categ
                         current === t.id ? "scale-x-100" : "scale-x-0",
                       )}
                     />
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -163,7 +172,7 @@ export function MotherlandHeader({ topic, solid: alwaysSolid }: { /** On a categ
               onClick={close}
               className={cn(
                 "hidden min-h-11 shrink-0 items-center gap-2 rounded-full px-6 font-semibold whitespace-nowrap xl:max-2xl:px-5 transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current sm:inline-flex",
-                solid ? "bg-ml-ink text-white hover:bg-ml-green" : "bg-ml-ground text-ml-ink hover:bg-signal-orange",
+                solid ? "bg-signal-orange text-ml-ink hover:bg-ml-ink hover:text-white" : "bg-signal-orange text-ml-ink hover:bg-white",
               )}
             >
               <Icon name="bolt" className="text-lg xl:max-2xl:hidden!" />
@@ -196,9 +205,9 @@ export function MotherlandHeader({ topic, solid: alwaysSolid }: { /** On a categ
           <ul className="grid gap-1 sm:grid-cols-2">
             {TOPICS.map((t) => (
               <li key={t.id}>
-                <a href={topicHref(t.id, onLanding)} onClick={close} className="block border-b border-ml-ink/10 py-3 font-ml-display text-3xl uppercase hover:text-ml-green">
+                <Link href={TOPIC_PAGES[t.id]} onClick={close} aria-current={topic === t.id ? "page" : undefined} className="block border-b border-ml-ink/10 py-3 font-ml-display text-3xl uppercase hover:text-ml-green">
                   {t.name}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

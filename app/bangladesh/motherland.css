@@ -294,12 +294,7 @@
 
   /* A card answers the pointer: it lifts, and its gold rule runs out. */
   .ml-card {
-    transition:
-      translate 0.45s cubic-bezier(0.215, 0.61, 0.355, 1),
-      box-shadow 0.45s ease-out;
-  }
-  .ml-card:hover {
-    translate: 0 -6px;
+    transition: box-shadow 0.45s ease-out;
   }
 }
 .ml-card {

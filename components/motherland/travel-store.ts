@@ -51,7 +51,9 @@ function deviceStore<T>(key: string, empty: T) {
   const read = () => {
     if (value !== null) return value;
     try {
-      value = (JSON.parse(localStorage.getItem(key) ?? "null") as T | null) ?? empty;
+      const saved = JSON.parse(localStorage.getItem(key) ?? "null") as T | null;
+      /* Anything can be in storage: only a value of the expected kind is trusted. */
+      value = saved && typeof saved === "object" && Array.isArray(saved) === Array.isArray(empty) ? saved : empty;
     } catch {
       value = empty;
     }

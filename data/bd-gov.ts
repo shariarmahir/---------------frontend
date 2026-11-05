@@ -39,7 +39,6 @@ export const PORTAL = "https://bangladesh.gov.bd";
 const services = (filter: "service_category" | "service_sector", id: string) =>
   `${PORTAL}/pages/np-services?page=1&filters=${encodeURIComponent(JSON.stringify({ [filter]: id }))}`;
 export const category = (id: string) => services("service_category", id);
-export const sector = (id: string) => services("service_sector", id);
 
 /** The guide's home is its All topics and services page; the About page sits under it. */
 const HOME = "/bangladesh/government";

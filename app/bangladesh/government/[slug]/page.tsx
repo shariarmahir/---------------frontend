@@ -24,7 +24,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const detail = detailFor((await params).slug);
-  return detail ? { title: `${detail.title} | BD Guide`, description: detail.summary } : {};
+  return detail ? { title: `${detail.title} | BD Guide`, description: detail.summary, alternates: { canonical: `/bangladesh/government/${detail.slug}` } } : {};
 }
 
 /**

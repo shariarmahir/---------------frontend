@@ -117,6 +117,7 @@
   --color-ml-river: #5aa9d6;
   --font-ml-display: var(--font-anton), var(--font-bengali), sans-serif;
   --font-ml-sans: var(--font-montserrat), var(--font-bengali), sans-serif;
+  --font-ml-title: var(--font-ml-title-face), var(--font-bengali), sans-serif;
 
   /* BD Guide (/bangladesh/government): the government guide, laid out after
      usa.gov and dressed in MOTHERLAND's and Kandari-Lab's colours: the

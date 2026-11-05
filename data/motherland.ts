@@ -18,7 +18,7 @@ import { project } from "./bangladesh-map.ts";
 
 /* ── Pictures and their credits ──────────────────────────────────────── */
 
-export type Source = "Unsplash" | "Pexels" | "Pixabay" | "Wikimedia Commons";
+type Source = "Unsplash" | "Pexels" | "Pixabay" | "Wikimedia Commons";
 
 export interface Credit {
   author: string;
@@ -81,8 +81,8 @@ export const TOPICS: Topic[] = [
   { id: "facts", name: "Facts about Bangladesh", tab: "Facts" },
 ];
 
-/** The topics that have their own page (data/motherland-categories.ts); the other two live on the landing page. */
-export const TOPIC_PAGES: Partial<Record<TopicId, string>> = {
+/** Every topic's own page: the header and footer tabs go straight to these. */
+export const TOPIC_PAGES: Record<TopicId, string> = {
   history: "/bangladesh/history",
   science: "/bangladesh/science-tech",
   biographies: "/bangladesh/people",
@@ -97,8 +97,6 @@ export const TOPIC_PAGES: Partial<Record<TopicId, string>> = {
   facts: "/bangladesh/facts",
 };
 
-/** Where a topic link goes: its section on the landing page, or from a category page its own page. */
-export const topicHref = (id: TopicId, onLanding: boolean) => (id === "facts" ? TOPIC_PAGES.facts! : onLanding ? `#${id}` : (TOPIC_PAGES[id] ?? `/bangladesh#${id}`));
 
 export const topicName = (id: TopicId) => TOPICS.find((t) => t.id === id)!.name;
 
@@ -119,6 +117,8 @@ export interface Film {
   src: { phone: string; desktop?: string; wide?: string };
   poster: string;
   credit: Credit;
+  /** The source was shot with black bars above and below: the film is zoomed just past them. */
+  bars?: boolean;
 }
 
 /** The hero title's colour, chosen for the film behind it. */
@@ -134,15 +134,22 @@ function pexels(title: string, file: string, slug: string, desktop?: string): Fi
 }
 
 export const HERO = {
-  /** The anthem's title, in English and as Tagore wrote it. */
-  title: "My Golden Bengal",
-  titleBn: "আমার সোনার বাংলা",
-  film: pexels(
-    "Rivers, fields and villages of Kishoreganj from the air",
-    "hero-kishoreganj-720",
-    "aerial-drone-footage-of-rural-kishoreganj-bangladesh-35040969",
-    "hero-kishoreganj-1080",
-  ),
+  /** The anthem's title, as Tagore wrote it. */
+  title: "আমার সোনার বাংলা",
+  /** Clouded hills, green ridges, a Bandarban sunrise, river, sea, tea and rice, cut to 33 seconds in 4K. */
+  film: {
+    title: "Hills, rivers, sea, tea and rice across Bangladesh",
+    src: { phone: "/motherland/video/bangladesh-phone.mp4", desktop: "/motherland/video/bangladesh.mp4", wide: "/motherland/video/bangladesh-4k.mp4" },
+    poster: "/motherland/video/bangladesh.jpg",
+    bars: true,
+    credit: {
+      author: "Nishaan Ahmed",
+      source: "Wikimedia Commons",
+      sourceUrl: "https://commons.wikimedia.org/wiki/File:Cinematic_BANGLADESH_in_4K_-_DJI_Mini_2_-_Part_1.webm",
+      license: "CC BY 3.0, shortened from Cinematic Bangladesh in 4K",
+      licenseUrl: "https://creativecommons.org/licenses/by/3.0",
+    },
+  } satisfies Film as Film,
 };
 
 /* ── About: the scroll-filled introduction ──────────────────────────── */
@@ -593,6 +600,7 @@ export const VIDEOS = {
   cta: { label: "Watch more of Bangladesh", href: "/bangladesh/videos" } satisfies Cta,
   films: [
     HERO.film,
+    pexels("Rivers, fields and villages of Kishoreganj from the air", "hero-kishoreganj-720", "aerial-drone-footage-of-rural-kishoreganj-bangladesh-35040969", "hero-kishoreganj-1080"),
     pexels("Haor wetlands and paddy fields from the air", "haor-wetland", "aerial-view-of-rural-landscapes-in-bangladesh-34059329"),
     pexels("Boats and boatmen on the Buriganga, Dhaka", "buriganga-boats", "bustling-riverside-market-in-dhaka-bangladesh-37115902"),
     pexels("Eid morning in the streets of Dhaka", "eid-dhaka", "colorful-eid-celebrations-in-dhaka-streets-31409962"),
@@ -614,8 +622,8 @@ const FAOSTAT = { name: "FAO, FAOSTAT", url: "https://www.fao.org/faostat/" };
 
 export const RESOURCES = {
   title: "Born with the power to rise",
-  lede: "Fertile soil, great rivers, a wide sea and a young people: Bangladesh was born with what it needs to feed itself and build its future.",
-  cta: { label: "See where it can take us", href: "#invest" } satisfies Cta,
+  lede: "Fertile soil, great rivers, a wide sea and a young people: what it takes to build a future.",
+  cta: { label: "See all our capability", href: "/bangladesh/resources" } satisfies Cta,
   picture: unsplash("fisher-mist", "A lone fisherman in a small boat on a misty river at dawn", "Shahariar Nerov", "a-lone-fisherman-in-a-boat-on-a-misty-morning-uddk4v8xu88", "50% 75%"),
   items: [
     {
@@ -680,7 +688,8 @@ export type LeverId = "investment" | "exports" | "skills";
 
 export const INVEST = {
   title: "Build the bright future",
-  lede: "Choose the sectors to back and set the pace of investment, exports and skills. The graph redraws as you go, showing where income per person could reach by 2041.",
+  cta: { label: "See where to invest", href: "/bangladesh/invest" } satisfies Cta,
+  lede: "Choose the sectors and set the pace. The graph shows where income per person could reach by 2041.",
   sectors: [
     { id: "garments", name: "Garments", text: "One of the world's largest clothing exporters, moving up to higher-value fashion.", icon: "checkroom" },
     { id: "pharma", name: "Pharmaceuticals", text: "Local makers supply almost all of the home market and export abroad.", icon: "medication" },
@@ -713,7 +722,7 @@ export const INVEST = {
 
 export const WELCOME = {
   title: "What do you think?",
-  text: "Want to see how beautiful our Bangladesh is? Let's go find and explore the motherland.",
+  text: "Want to see how beautiful our Bangladesh is?",
   cta: { label: "Let's gooo!", href: "#history" } satisfies Cta,
 };
 
@@ -741,17 +750,3 @@ export const JOIN = {
   picture: unsplash("flag-mural", "The flag of Bangladesh painted across a schoolyard, seen from above", "Fahaduzzaman Fahad", "a-bangladeshi-flag-mural-forms-a-makeshift-soccer-field-O5rTZBjKUGk"),
 };
 
-/* ── Every credit, for the footer ───────────────────────────────────── */
-
-export const CREDITS: { label: string; credit: Credit }[] = [
-  ...HISTORY.cards.map((c) => ({ label: c.title, credit: c.picture.credit })),
-  ...SCIENCE.articles.map((a) => ({ label: a.title, credit: a.picture.credit })),
-  ...BIOGRAPHIES.lives.map((l) => ({ label: l.name, credit: l.picture.credit })),
-  ...NATURE.wild.map((w) => ({ label: w.name, credit: w.picture.credit })),
-  ...TRAVEL.places.map((p) => ({ label: p.name, credit: p.picture.credit })),
-  ...CULTURE.crafts.map((c) => ({ label: c.name, credit: c.picture.credit })),
-  ...TAKA.facts.map((f) => ({ label: f.title, credit: f.picture.credit })),
-  ...VIDEOS.films.map((f) => ({ label: f.title, credit: f.credit })),
-  { label: RESOURCES.title, credit: RESOURCES.picture.credit },
-  { label: JOIN.title, credit: JOIN.picture.credit },
-];

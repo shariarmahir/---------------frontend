@@ -7,6 +7,7 @@ import { CHECKED, IN_PERSON, SCHEMES } from "@/data/bd-gov-services";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/bangladesh/government/national-portal" },
   title: "One click to every government service | BD Guide",
   description:
     "Passport, NID, birth certificate, exam results, government jobs, bank schemes, land, tax and bills: search in English or Bangla and go straight to the official page. An independent guide, with every link checked.",

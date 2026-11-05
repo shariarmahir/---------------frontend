@@ -45,7 +45,7 @@ export function PageHero({ id, name, film, titleTone = "gold" }: { id: string; n
       <HeroFilm film={film} />
       <div aria-hidden className={cn("absolute inset-0 -z-10 bg-linear-to-t via-40%", HERO_WASH[titleTone])} />
       <div className={cn(COLUMN, "pt-36 pb-[clamp(3.5rem,9svh,6rem)]")}>
-        <RiseText as="h1" id={id} now text={name} className={cn("w-full text-center font-ml-display text-[clamp(2.75rem,7vw,7.5rem)] leading-none tracking-[0.015em] uppercase", HERO_TITLE[titleTone])} />
+        <RiseText as="h1" id={id} now text={name} className={cn("w-full text-center font-ml-title text-[clamp(2.4rem,6vw,6.5rem)] leading-[1.05] font-extrabold tracking-[-0.01em] text-balance uppercase max-sm:whitespace-normal", HERO_TITLE[titleTone])} />
       </div>
     </section>
   );
@@ -144,7 +144,7 @@ export function CategoryPage({ category }: { category: Category }) {
                 <TakeASide debates={PROCON.debates} className={COLUMN} />
                 <div className={cn(COLUMN, "mt-8")}>
                   <div className="flex flex-wrap items-center justify-between gap-6 rounded-2xl bg-ml-navy p-6 text-white sm:p-8">
-                    <p className="max-w-2xl text-xl leading-snug font-bold text-balance">Want the figures behind the argument? We publish the best and the worst of Bangladesh, with sources.</p>
+                    <p className="max-w-2xl text-xl leading-snug font-bold text-balance">Want the figures behind the argument? We publish the best and the worst of Bangladesh.</p>
                     <Link href="/bangladesh/facts#why-we-are-not-doing-best" className={pill.onDark}>
                       Read the Facts about Bangladesh
                     </Link>
@@ -156,7 +156,7 @@ export function CategoryPage({ category }: { category: Category }) {
             return (
               <section key="videos" aria-label={category.name} className={cn(BAND_Y, "bg-ml-navy text-white")}>
                 <div className={COLUMN}>
-                  <VideoPlayer films={[...MORE_FILMS, ...VIDEOS.films]} credited={false} />
+                  <VideoPlayer films={[...MORE_FILMS, ...VIDEOS.films]} />
                 </div>
               </section>
             );

@@ -36,14 +36,16 @@ export const pill = {
   onDark: cn(PILL_BASE, "bg-signal-orange text-ml-ink hover:bg-white focus-visible:outline-white"),
   /** White, for the hero's suggestions. */
   white: cn(PILL_BASE, "bg-ml-ground text-ml-ink hover:bg-signal-orange focus-visible:outline-white"),
+  /** Navy, for a gold band, where a gold button would vanish. */
+  onGold: cn(PILL_BASE, "bg-ml-navy text-white hover:bg-white hover:text-ml-navy focus-visible:outline-ml-navy"),
 };
 
-export type Tone = "light" | "dark";
+export type Tone = "light" | "dark" | "gold";
 
 /** The section's one way onward: the gold pill to the category's own page. */
 export function NextPage({ cta, tone = "light", className }: { cta: Cta; tone?: Tone; className?: string }) {
   return (
-    <Link href={cta.href} className={cn(tone === "dark" ? pill.onDark : pill.onLight, className)}>
+    <Link href={cta.href} className={cn(tone === "dark" ? pill.onDark : tone === "gold" ? pill.onGold : pill.onLight, className)}>
       {cta.label}
     </Link>
   );
@@ -59,7 +61,7 @@ export function SectionHead({ id, title, lede, cta, tone = "light", className }:
   return (
     <div className={cn("grid grid-cols-[minmax(0,1fr)] items-end gap-x-12 gap-y-7 lg:grid-cols-[minmax(0,1fr)_auto]", className)}>
       <div className="flex min-w-0 flex-col gap-4">
-        <RiseText id={id} text={title} className={cn(DISPLAY, dark ? "text-white" : "text-ml-ink")} />
+        <RiseText id={id} text={title} className={cn(DISPLAY, dark ? "text-signal-orange" : "text-ml-ink")} />
         {lede ? <FitLine text={lede} className={cn(LEDE, "ml-lede", dark ? "text-white/80" : "text-ml-ink/80")} /> : null}
       </div>
       {cta ? <NextPage cta={cta} tone={tone} className="justify-self-start lg:mb-1" /> : null}

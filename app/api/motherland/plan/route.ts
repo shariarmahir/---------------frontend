@@ -16,11 +16,18 @@ export const dynamic = "force-dynamic";
 const MODEL = "claude-opus-5-5";
 const WINDOW_MS = 60_000;
 const PER_WINDOW = 6;
+/** The whole site's ceiling. x-forwarded-for can be forged, so a per-address limit alone would not protect the key. */
+const SITE_PER_WINDOW = 60;
 const hits = new Map<string, number[]>();
+let siteHits: number[] = [];
 
 function limited(ip: string) {
   const now = Date.now();
-  const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
+  const fresh = (t: number) => now - t < WINDOW_MS;
+  siteHits = siteHits.filter(fresh);
+  if (siteHits.length >= SITE_PER_WINDOW) return true;
+  siteHits.push(now);
+  const recent = (hits.get(ip) ?? []).filter(fresh);
   recent.push(now);
   hits.set(ip, recent);
   if (hits.size > 5000) hits.clear();
@@ -83,6 +90,8 @@ Rules:
 export async function POST(request: Request) {
   /* The key costs money: only this site's own pages may spend it, with a short question. These hold with or without a key. */
   if (!fromThisSite(request)) return Response.json({ mode: "local" }, { status: 403 });
+  /* Refuse a declared giant before reading it; the length check below catches one that lied. */
+  if (Number(request.headers.get("content-length") ?? 0) > MAX_BODY) return Response.json({ mode: "local" }, { status: 413 });
   const raw = await request.text();
   if (raw.length > MAX_BODY) return Response.json({ mode: "local" }, { status: 413 });
   let json: unknown = null;

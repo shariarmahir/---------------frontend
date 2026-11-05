@@ -109,7 +109,7 @@ export function Intro({ children }: { children: ReactNode }) {
 const isOfficial = (href: string) => /^https?:/.test(href);
 
 /** A topic: its icon, its name and a line about it. The whole card is the link. */
-export function Tile({ title, text, sub, href, icon, symbol }: { title: string; text?: string; sub?: string; href: string; icon?: string; symbol?: string }) {
+function Tile({ title, text, sub, href, icon, symbol }: { title: string; text?: string; sub?: string; href: string; icon?: string; symbol?: string }) {
   return (
     <GovAnchor
       href={href}

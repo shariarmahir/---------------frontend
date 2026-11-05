@@ -3,6 +3,7 @@ import { CardGroup, Crumbs, Intro, Looking, TitleHero } from "@/components/bd-go
 import { BENEFITS } from "@/data/bd-gov";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/bangladesh/government/benefits" },
   title: "Government benefits | BD Guide",
   description:
     "Bangladesh government programmes that help with food, housing, health care and living costs: allowances, stipends, the universal pension and more. An independent guide by Kandari-Lab.",

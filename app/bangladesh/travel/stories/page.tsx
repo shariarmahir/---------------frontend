@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Band } from "@/components/motherland/blocks";
 import { PageHero } from "@/components/motherland/category";
-import { anton, montserrat } from "@/components/motherland/fonts";
+import { mlFonts } from "@/components/motherland/fonts";
 import { MotherlandFooter } from "@/components/motherland/footer";
 import { MotherlandHeader } from "@/components/motherland/header";
 import { BAND_Y, COLUMN, DISPLAY, LEDE, pill } from "@/components/motherland/kit";
@@ -11,11 +11,12 @@ import { SideTab } from "@/components/motherland/side-tab";
 import { WallExample } from "@/components/motherland/travel-wall";
 import { Icon } from "@/components/ui/icon";
 import { STORIES_FILM } from "@/data/motherland-deep";
-import { STORIES, placeById, travelCredits } from "@/data/motherland-travel";
+import { STORIES, placeById } from "@/data/motherland-travel";
 import { cn } from "@/lib/utils";
 import "../../motherland.css";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/bangladesh/travel/stories" },
   title: "Travel stories | MOTHERLAND",
   description: "Write a short memory of your trip to Bangladesh, pin it on the travel wall, earn XP and badges, and compete for the week's top ten.",
 };
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
 export default function TravelStoriesPage() {
   const first = placeById("nafakhum")!.picture;
   return (
-    <div className={cn(anton.variable, montserrat.variable, "ml ml-light w-full bg-ml-ground font-ml-sans text-ml-ink")}>
+    <div className={cn(mlFonts, "ml ml-light w-full bg-ml-ground font-ml-sans text-ml-ink")}>
       <noscript>
         <style>{".ml-rise .ml-word > span { translate: none !important; }"}</style>
       </noscript>
@@ -126,7 +127,7 @@ export default function TravelStoriesPage() {
         </Band>
       </main>
       <SideTab href="/bangladesh#join" />
-      <MotherlandFooter narrow credits={travelCredits()} onLanding={false} />
+      <MotherlandFooter />
     </div>
   );
 }

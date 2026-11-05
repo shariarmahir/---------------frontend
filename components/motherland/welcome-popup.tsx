@@ -8,19 +8,31 @@ const SEEN = "motherland-welcome-seen";
 const DELAY = 2500;
 
 /**
- * The reference site's corner card (its "Fact Check"), here an invitation:
- * a few seconds after the page opens it rises in the bottom-left corner,
- * asks what you think and offers "Let's gooo!", which glides to the first
- * story. Closing it, or taking it up, keeps it away for the rest of the
- * visit. It never takes focus from what the visitor is doing.
+ * An invitation a few seconds after the page opens: a slim bar at the foot of
+ * the hero, in the space under the title, that glides to the first story. It
+ * leaves when the hero does, so it never covers a card, and closing or taking
+ * it up keeps it away for the rest of the visit. It never takes focus.
  */
 export function WelcomePopup() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (sessionStorage.getItem(SEEN)) return;
+    const hero = document.getElementById("top");
+    if (!hero || sessionStorage.getItem(SEEN)) return;
     const timer = window.setTimeout(() => setOpen(true), DELAY);
-    return () => window.clearTimeout(timer);
+    const leaving = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) return;
+        window.clearTimeout(timer);
+        setOpen(false);
+      },
+      { threshold: 0.5 },
+    );
+    leaving.observe(hero);
+    return () => {
+      window.clearTimeout(timer);
+      leaving.disconnect();
+    };
   }, []);
 
   const close = () => {
@@ -31,30 +43,22 @@ export function WelcomePopup() {
   if (!open) return null;
 
   return (
-    <aside
-      aria-labelledby="welcome-title"
-      className="ml-pop fixed bottom-4 left-4 z-40 w-[min(calc(100vw-2rem),20rem)] rounded-2xl bg-signal-orange p-6 pt-5 text-center text-ml-ink shadow-[0_24px_48px_-16px_rgb(0_0_0/0.45)] sm:bottom-8 sm:left-8"
-    >
-      <button
-        type="button"
-        onClick={close}
-        className="absolute top-3 right-3 grid size-9 place-items-center rounded-full bg-ml-ink/10 transition-colors hover:bg-ml-ink/20 focus-visible:outline-2 focus-visible:outline-ml-ink"
-      >
-        <Icon name="close" className="text-xl" />
-        <span className="sr-only">Close</span>
-      </button>
-      <p id="welcome-title" className="px-8 font-ml-display text-3xl tracking-[0.01em] uppercase">
-        {WELCOME.title}
+    <aside aria-label={WELCOME.title} className="ml-pop fixed inset-x-3 bottom-3 z-40 mx-auto flex w-fit max-w-[calc(100vw-1.5rem)] items-center gap-3 rounded-full bg-signal-orange py-1.5 pr-1.5 pl-5 text-ml-ink shadow-[0_16px_36px_-14px_rgb(0_0_0/0.6)] sm:bottom-6 sm:gap-5 sm:pl-7">
+      <p className="text-sm font-semibold whitespace-nowrap sm:text-base">
+        <span className="sm:hidden">{WELCOME.title}</span>
+        <span className="max-sm:hidden">{WELCOME.text}</span>
       </p>
-      <p className="mt-3 leading-relaxed">{WELCOME.text}</p>
       <a
         href={WELCOME.cta.href}
         onClick={close}
-        className="mt-5 inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-ml-ink px-7 font-bold transition-colors hover:bg-ml-ink hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ml-ink"
+        className="inline-flex min-h-11 items-center gap-2 rounded-full bg-ml-ink px-5 text-sm font-bold whitespace-nowrap text-white transition-colors hover:bg-ml-green focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ml-ink sm:text-base"
       >
         {WELCOME.cta.label}
-        <Icon name="rocket_launch" className="text-xl" />
       </a>
+      <button type="button" onClick={close} className="grid size-11 shrink-0 place-items-center rounded-full transition-colors hover:bg-ml-ink/15 focus-visible:outline-2 focus-visible:outline-ml-ink">
+        <Icon name="close" className="text-xl" />
+        <span className="sr-only">Close</span>
+      </button>
     </aside>
   );
 }

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Band, IntroFill, Moment } from "@/components/motherland/blocks";
 import { Facts, MoreCategories, PageHero } from "@/components/motherland/category";
 import { BothSides, FactsMap, FactsNav, PrintButton, ShareFact } from "@/components/motherland/facts-parts";
-import { anton, montserrat } from "@/components/motherland/fonts";
+import { mlFonts } from "@/components/motherland/fonts";
 import { MotherlandFooter } from "@/components/motherland/footer";
 import { FACTS_FILM } from "@/data/motherland-deep";
 import { MotherlandHeader } from "@/components/motherland/header";
@@ -13,14 +13,15 @@ import { Quiz } from "@/components/motherland/quiz";
 import { Reveal } from "@/components/motherland/reveal";
 import { RiseText } from "@/components/motherland/rise-text";
 import { SideTab } from "@/components/motherland/side-tab";
-import { BEST, BOTH_SIDES, BOTH_TRUE, CHECKED, DIVISIONS_TITLE, FACT_SOURCES, FACT_TOPICS, FACTS_HERO, FACTS_INTRO, FACTS_NAME, FACTS_QUIZ, GLANCE, GOVERNMENT, NOT_BEST, PEACE, RESEARCH, SCHOOLS, factsCredits, type LinkCard, type Source } from "@/data/motherland-facts";
+import { BEST, BOTH_SIDES, BOTH_TRUE, CHECKED, DIVISIONS_TITLE, FACT_TOPICS, FACTS_HERO, FACTS_INTRO, FACTS_NAME, FACTS_QUIZ, GLANCE, GOVERNMENT, NOT_BEST, PEACE, RESEARCH, SCHOOLS, type LinkCard,  } from "@/data/motherland-facts";
 import { mosaicCells } from "@/lib/motherland-mosaic";
 import { cn } from "@/lib/utils";
 import "../motherland.css";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/bangladesh/facts" },
   title: `${FACTS_NAME} | MOTHERLAND`,
-  description: "Why Bangladesh is the best and why it is not doing its best: the real numbers, each with its source, its limit and your part in changing it.",
+  description: "Why Bangladesh is the best and why it is not doing its best: the real numbers, with the limit on each and your part in changing it.",
   openGraph: { title: `${FACTS_NAME} | MOTHERLAND`, description: "The real numbers on Bangladesh, the proud ones and the hard ones.", images: [FACTS_HERO.src] },
 };
 
@@ -37,17 +38,8 @@ function layoutOf(count: number) {
   return count % 3 === 0 ? Array.from({ length: count }, () => ({ span: 4 as const, rowSize: 3 as const })) : mosaicCells(count);
 }
 
-function Cited({ source }: { source: Source }) {
-  return (
-    <a href={source.url} target="_blank" rel="noopener noreferrer" className="min-w-0 rounded-sm text-sm leading-snug text-ml-navy/70 underline underline-offset-4 hover:text-ml-navy focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-orange">
-      Source: {source.name}
-      <span className="sr-only"> (opens in a new tab)</span>
-    </a>
-  );
-}
-
-/** One fact from either list: the figure on its photograph, the story, the honest second half, and where it came from. */
-function FactCard({ id, figure, title, text, panel, source, picture, hard, span, rowSize, order }: { id: string; figure: string; title: string; text: string; panel: { heading: string; text: string }; source: Source; picture: LinkCard["picture"]; hard?: boolean; span: keyof typeof SPAN; rowSize: keyof typeof HEIGHT; order: number }) {
+/** One fact from either list: the figure on its photograph, the story, the honest second half. */
+function FactCard({ id, figure, title, text, panel, picture, hard, span, rowSize, order }: { id: string; figure: string; title: string; text: string; panel: { heading: string; text: string }; picture: LinkCard["picture"]; hard?: boolean; span: keyof typeof SPAN; rowSize: keyof typeof HEIGHT; order: number }) {
   return (
     <Reveal as="li" order={order} className={cn("flex", SPAN[span])}>
       <article id={id} className={CARD}>
@@ -64,10 +56,7 @@ function FactCard({ id, figure, title, text, panel, source, picture, hard, span,
             <h4 className={cn("font-bold", hard && "text-signal-orange")}>{panel.heading}</h4>
             <p className={cn("mt-1 leading-relaxed text-pretty", hard ? "text-white/90" : "text-ml-navy/85")}>{panel.text}</p>
           </div>
-          <div className="flex items-center justify-between gap-4">
-            <Cited source={source} />
-            <ShareFact id={id} title={title} />
-          </div>
+          <ShareFact id={id} title={title} />
         </div>
       </article>
     </Reveal>
@@ -143,7 +132,7 @@ export default function FactsAboutBangladeshPage() {
   const bestCells = layoutOf(BEST.items.length);
   const hardCells = layoutOf(NOT_BEST.items.length);
   return (
-    <div className={cn(anton.variable, montserrat.variable, "ml ml-light ml-facts w-full bg-ml-ground font-ml-sans text-ml-ink")}>
+    <div className={cn(mlFonts, "ml ml-light ml-facts w-full bg-ml-ground font-ml-sans text-ml-ink")}>
       <noscript>
         <style>{".ml-rise .ml-word > span { translate: none !important; } .ml-reveal { opacity: 1 !important; translate: none !important; } .ml-reveal .ml-wipe { clip-path: none !important; } .ml-reveal .ml-settle { transform: none !important; }"}</style>
       </noscript>
@@ -165,7 +154,7 @@ export default function FactsAboutBangladeshPage() {
         <Band id={BEST.id} tone="navy" title={BEST.title} lede={BEST.lede}>
           <ul className={cn("grid grid-cols-[minmax(0,1fr)] gap-5 sm:grid-cols-2 lg:grid-cols-12 lg:gap-6", LAST_ROW_FULL)}>
             {BEST.items.map((f, i) => (
-              <FactCard key={f.id} id={f.id} figure={f.figure} title={f.title} text={f.text} panel={{ heading: "Reality check", text: f.check }} source={f.source} picture={f.picture} span={bestCells[i].span} rowSize={bestCells[i].rowSize} order={i % 3} />
+              <FactCard key={f.id} id={f.id} figure={f.figure} title={f.title} text={f.text} panel={{ heading: "Reality check", text: f.check }} picture={f.picture} span={bestCells[i].span} rowSize={bestCells[i].rowSize} order={i % 3} />
             ))}
           </ul>
         </Band>
@@ -173,7 +162,7 @@ export default function FactsAboutBangladeshPage() {
         <Band id={NOT_BEST.id} tone="sun" title={NOT_BEST.title} lede={NOT_BEST.lede}>
           <ul className={cn("grid grid-cols-[minmax(0,1fr)] gap-5 sm:grid-cols-2 lg:grid-cols-12 lg:gap-6", LAST_ROW_FULL)}>
             {NOT_BEST.items.map((f, i) => (
-              <FactCard key={f.id} hard id={f.id} figure={f.figure} title={f.title} text={f.text} panel={{ heading: "Your part", text: f.yourPart }} source={f.source} picture={f.picture} span={hardCells[i].span} rowSize={hardCells[i].rowSize} order={hardCells[i].rowSize === 3 ? i % 3 : i % 2} />
+              <FactCard key={f.id} hard id={f.id} figure={f.figure} title={f.title} text={f.text} panel={{ heading: "Your part", text: f.yourPart }} picture={f.picture} span={hardCells[i].span} rowSize={hardCells[i].rowSize} order={hardCells[i].rowSize === 3 ? i % 3 : i % 2} />
             ))}
           </ul>
         </Band>
@@ -209,22 +198,7 @@ export default function FactsAboutBangladeshPage() {
         </Band>
 
         <Band id="printable" tone="navy" title="The complete printable edition" lede={`Every fact on one page, to print or save as a PDF. Figures checked on ${CHECKED}.`}>
-          <div className="flex flex-col items-start gap-6">
-            <PrintButton />
-            <details className="group w-full border-t border-white/20 pt-5">
-              <summary className="cursor-pointer font-semibold hover:text-signal-orange focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-orange">Every source on this page</summary>
-              <ul className="mt-4 grid gap-x-8 gap-y-2 text-sm sm:grid-cols-2 lg:grid-cols-3">
-                {FACT_SOURCES.map((s) => (
-                  <li key={s.url}>
-                    <a href={s.url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-signal-orange">
-                      {s.name}
-                      <span className="sr-only"> (opens in a new tab)</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </details>
-          </div>
+          <PrintButton />
         </Band>
 
         <div className="print:hidden">
@@ -235,7 +209,7 @@ export default function FactsAboutBangladeshPage() {
       </main>
       <FactsNav />
       <SideTab href="/bangladesh#join" />
-      <MotherlandFooter narrow credits={factsCredits()} onLanding={false} />
+      <MotherlandFooter />
     </div>
   );
 }

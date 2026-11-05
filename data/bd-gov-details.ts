@@ -1086,4 +1086,3 @@ export const DETAILS: GovDetail[] = [
 export const detailFor = (slug: string) => DETAILS.find((d) => d.slug === slug);
 
 /** Card hrefs that open a detail page share this prefix. */
-export const DETAIL_BASE = "/bangladesh/government/";

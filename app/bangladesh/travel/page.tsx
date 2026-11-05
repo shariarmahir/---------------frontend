@@ -3,7 +3,7 @@ import Image from "next/image";
 import { CardStack } from "@/components/motherland/card-stack";
 import { Band, CardGrid, IntroFill, Moment } from "@/components/motherland/blocks";
 import { Facts, MoreCategories, PageHero } from "@/components/motherland/category";
-import { anton, montserrat } from "@/components/motherland/fonts";
+import { mlFonts } from "@/components/motherland/fonts";
 import { MotherlandFooter } from "@/components/motherland/footer";
 import { CrowdBoard, GeoMap } from "@/components/motherland/geo-map";
 import { GuideTabs } from "@/components/motherland/guide-tabs";
@@ -15,13 +15,14 @@ import { SideTab } from "@/components/motherland/side-tab";
 import { TripPlanner } from "@/components/motherland/trip-planner";
 import { TRAVEL_INTRO } from "@/data/motherland-pages";
 import { categoryFor } from "@/data/motherland-categories";
-import { GEOGRAPHY, HELP, MUST_SEE, OLD_STACK, PLACES, SEASONS, STORIES, TRAVEL_FILM, placeById, topTen, travelCredits, type MapPlace } from "@/data/motherland-travel";
+import { GEOGRAPHY, HELP, MUST_SEE, OLD_STACK, PLACES, SEASONS, STORIES, TRAVEL_FILM, placeById, topTen, type MapPlace } from "@/data/motherland-travel";
 import { dhakaClock, seasonAt, weekNumber } from "@/lib/motherland-crowd";
 import { cn } from "@/lib/utils";
 import { place, type Card } from "@/data/motherland-blocks";
 import "../motherland.css";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/bangladesh/travel" },
   title: "Geography & Travel | MOTHERLAND",
   description: "See how beautiful Bangladesh is: this week's film, the top ten places to go now, very old places almost no one visits, hidden gems, when the country looks its best, and a real map you can add to.",
   openGraph: { title: "Geography & Travel | MOTHERLAND", description: "How beautiful Bangladesh is, and how to see it well.", images: ["/motherland/places/puthia.jpg"] },
@@ -64,7 +65,7 @@ export default function GeographyTravelPage() {
   const gems = PLACES.filter((p) => p.kind === "gem");
 
   return (
-    <div className={cn(anton.variable, montserrat.variable, "ml ml-light w-full bg-ml-ground font-ml-sans text-ml-ink")}>
+    <div className={cn(mlFonts, "ml ml-light w-full bg-ml-ground font-ml-sans text-ml-ink")}>
       <noscript>
         <style>{".ml-rise .ml-word > span { translate: none !important; } .ml-reveal { opacity: 1 !important; translate: none !important; } .ml-reveal .ml-wipe { clip-path: none !important; } .ml-reveal .ml-settle { transform: none !important; }"}</style>
       </noscript>
@@ -163,7 +164,7 @@ export default function GeographyTravelPage() {
         <TripPlanner />
       </main>
       <SideTab href="/bangladesh#join" />
-      <MotherlandFooter narrow credits={travelCredits()} onLanding={false} />
+      <MotherlandFooter />
     </div>
   );
 }

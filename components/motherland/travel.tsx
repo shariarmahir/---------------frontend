@@ -1,6 +1,6 @@
 import { TRAVEL } from "@/data/motherland";
 import { cn } from "@/lib/utils";
-import { ANCHOR, COLUMN, SectionHead } from "./kit";
+import { ANCHOR, BAND_Y, COLUMN, SectionHead } from "./kit";
 import { PinMap } from "./pin-map";
 
 /**
@@ -43,7 +43,7 @@ function Delta({ className }: { className?: string }) {
 /** Geography & Travel: the reference site's "dream trip" map, one pin per place worth the journey. */
 export function Travel() {
   return (
-    <section id="travel" aria-labelledby="travel-title" className={cn(ANCHOR, "relative overflow-hidden py-24 sm:py-32")}>
+    <section id="travel" aria-labelledby="travel-title" className={cn(ANCHOR, BAND_Y, "relative overflow-hidden")}>
       <Delta />
       <div className={cn(COLUMN, "relative flex flex-col gap-12 lg:gap-14")}>
         <SectionHead id="travel-title" title={TRAVEL.title} lede={TRAVEL.lede} cta={TRAVEL.cta} />

@@ -1,7 +1,7 @@
 import { Icon } from "@/components/ui/icon";
 import { PROCON } from "@/data/motherland";
 import { cn } from "@/lib/utils";
-import { ANCHOR, COLUMN, SectionHead } from "./kit";
+import { ANCHOR, BAND_Y, COLUMN, SectionHead } from "./kit";
 
 /**
  * Pro & Con: the reference site's question list on its dark band, under
@@ -11,7 +11,7 @@ import { ANCHOR, COLUMN, SectionHead } from "./kit";
  */
 export function ProCon() {
   return (
-    <section id="procon" aria-labelledby="procon-title" className={cn(ANCHOR, "bg-ml-ink py-24 text-white sm:py-32")}>
+    <section id="procon" aria-labelledby="procon-title" className={cn(ANCHOR, BAND_Y, "bg-ml-ink text-white")}>
       <div className={cn(COLUMN, "flex flex-col gap-12 lg:gap-16")}>
         <SectionHead id="procon-title" tone="dark" title={PROCON.title} lede={PROCON.lede} cta={PROCON.cta} />
 

@@ -7,7 +7,7 @@
 export const TAKA_PER_USD = 122.5;
 export const RATE_CHECKED = "November 2026";
 
-export type EventKind = "Festival" | "National day" | "Theatre" | "Music" | "Books" | "Sport" | "Village";
+type EventKind = "Festival" | "National day" | "Theatre" | "Music" | "Books" | "Sport" | "Village";
 
 export interface CultureEvent {
   id: string;

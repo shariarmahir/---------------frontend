@@ -6,7 +6,7 @@
  */
 
 export type LegKind = "cheapest" | "easiest" | "fun";
-export type Mode = "Bus" | "Train" | "Launch" | "Flight" | "Ship" | "Jeep" | "Boat";
+type Mode = "Bus" | "Train" | "Launch" | "Flight" | "Ship" | "Jeep" | "Boat";
 
 export interface Leg {
   mode: Mode;

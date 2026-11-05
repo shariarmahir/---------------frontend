@@ -19,7 +19,7 @@ export interface TripRequest {
   budgetBdt?: number | null;
 }
 
-export interface PlannedLeg {
+interface PlannedLeg {
   from: string;
   to: string;
   how: string;
@@ -29,7 +29,7 @@ export interface PlannedLeg {
   checked: boolean;
 }
 
-export interface PlannedStop {
+interface PlannedStop {
   region: Region;
   days: number;
   doing: string[];

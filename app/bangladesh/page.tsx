@@ -6,13 +6,15 @@
  * নাগরিক দায়িত্ব (/nagorik). The sections follow Mahir's order: About
  * Bangladesh, History & Society, Science & Tech, Biographies, Animals &
  * Nature, Geography & Travel, Arts & Culture, Pro & Con, Taka, Videos,
- * Capability & Resources, Business & Investment, then the call to join. Copy and media: data/motherland.ts.
+ * Capability & Resources, Business & Investment, the three pages with no
+ * section of their own, then the call to join. Copy and media: data/motherland.ts.
  */
 import type { Metadata } from "next";
 import { About } from "@/components/motherland/about";
 import { Biographies } from "@/components/motherland/biographies";
 import { Culture } from "@/components/motherland/culture";
-import { anton, montserrat } from "@/components/motherland/fonts";
+import { Essentials } from "@/components/motherland/essentials";
+import { mlFonts } from "@/components/motherland/fonts";
 import { MotherlandFooter } from "@/components/motherland/footer";
 import { MotherlandHeader } from "@/components/motherland/header";
 import { Hero } from "@/components/motherland/hero";
@@ -33,6 +35,7 @@ import "./motherland.css";
 
 export const metadata: Metadata = {
   title: "MOTHERLAND | Bangladesh, the country profile",
+  alternates: { canonical: "/bangladesh" },
   description:
     "Discover Bangladesh: its history and society, science and technology, the people who shaped it, its wildlife and places, its arts and culture, its money, its films, its resources and where to invest.",
   openGraph: {
@@ -44,10 +47,10 @@ export const metadata: Metadata = {
 
 export default function BangladeshPage() {
   return (
-    <div className={cn(anton.variable, montserrat.variable, "ml w-full bg-ml-ground font-ml-sans text-ml-ink")}>
+    <div className={cn(mlFonts, "ml ml-light w-full bg-ml-ground font-ml-sans text-ml-ink")}>
       {/* Without scripts the titles never get their cue to rise, so they start in place. */}
       <noscript>
-        <style>{".ml-rise .ml-word > span { translate: none !important; }"}</style>
+        <style>{".ml-rise .ml-word > span { translate: none !important; } .ml-reveal { opacity: 1 !important; translate: none !important; } .ml-reveal .ml-wipe { clip-path: none !important; } .ml-reveal .ml-settle { transform: none !important; }"}</style>
       </noscript>
       <MotherlandHeader />
       <main id="main">
@@ -64,6 +67,7 @@ export default function BangladeshPage() {
         <Videos />
         <Resources />
         <Invest />
+        <Essentials />
         <Join />
       </main>
       <SideTab />

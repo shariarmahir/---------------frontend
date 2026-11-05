@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { test } from "node:test";
-import { ABOUT, BIOGRAPHIES, CULTURE, HISTORY, NATURE, PROCON, SCIENCE, TAKA, TOPIC_PAGES, TRAVEL, VIDEOS } from "../data/motherland.ts";
+import { ABOUT, BIOGRAPHIES, CULTURE, HERO, HISTORY, INVEST, NATURE, PROCON, RESOURCES, SCIENCE, TAKA, TOPIC_PAGES, TRAVEL, VIDEOS } from "../data/motherland.ts";
+import { ESSENTIALS } from "../data/motherland-essentials.ts";
 import { CATEGORIES, categoryFor } from "../data/motherland-categories.ts";
 import { DEEP, deepSources } from "../data/motherland-deep.ts";
 import { BANKS, MOBILE_MONEY } from "../data/motherland-money.ts";
@@ -59,6 +60,50 @@ test("every figure on a category page names a real source, and every timeline ru
 test("the header's Resources and Invest tabs have their own pages", () => {
   assert.equal(TOPIC_PAGES.resources, "/bangladesh/resources");
   assert.equal(TOPIC_PAGES.invest, "/bangladesh/invest");
+});
+
+test("the hero names the anthem in Bangla alone, and the logo is MOTHERLAND alone", () => {
+  assert.equal(HERO.title, "আমার সোনার বাংলা");
+  // The logo and title are vector art, so no font file is ever served for them.
+  const logo = readFileSync("components/motherland/logo.tsx", "utf8");
+  assert.match(logo, /LOGO_ART/);
+  assert.doesNotMatch(logo, /BANGLADESH|\bThe\b.*role/);
+  const art = readFileSync("data/motherland-art.ts", "utf8");
+  assert.match(art, /TITLE_ART/);
+  assert.match(art, /Lipighor/);
+});
+
+test("every landing section leads to a page, not a place further down", () => {
+  assert.equal(RESOURCES.cta.href, "/bangladesh/resources");
+  assert.equal(INVEST.cta.href, "/bangladesh/invest");
+  for (const href of Object.values(TOPIC_PAGES)) assert.match(href, /^\/bangladesh\//);
+  assert.deepEqual(ESSENTIALS.cards.map((c) => c.cta.href), ["/bangladesh/facts", "/bangladesh/government", "/bangladesh/travel#plan"]);
+});
+
+test("every page has references, and every source a block names is listed", async () => {
+  const { REFERENCES } = await import("../data/motherland-references.ts");
+  const { PAGE_BLOCKS } = await import("../data/motherland-pages.ts");
+  const { blockSources, blockCredits } = await import("../data/motherland-blocks.ts");
+  for (const c of CATEGORIES) assert.ok(REFERENCES.some((p) => p.href === `/bangladesh/${c.slug}`), c.slug);
+  for (const page of REFERENCES) {
+    assert.ok(page.sections.length, page.name);
+    assert.equal(new Set(page.sections.map((s) => s.title)).size, page.sections.length, `${page.name}: two sections share a title`);
+    for (const s of page.sections) for (const src of s.sources) assert.match(src.url, /^https:\/\//, `${page.name}: ${src.name}`);
+  }
+  for (const [slug, blocks] of Object.entries(PAGE_BLOCKS)) {
+    const listed = REFERENCES.find((p) => p.id === slug)?.sections ?? [];
+    const urls = new Set(listed.flatMap((s) => [...s.sources.map((x) => x.url), ...s.credits.map((x) => x.credit.sourceUrl)]));
+    for (const src of blockSources(blocks)) assert.ok(urls.has(src.url), `${slug}: ${src.url}`);
+    for (const c of blockCredits(blocks)) assert.ok(urls.has(c.credit.sourceUrl), `${slug}: ${c.label}`);
+  }
+});
+
+test("no card or section carries a reference line: they all live on the References page", async () => {
+  const { readdirSync } = await import("node:fs");
+  for (const file of readdirSync("components/motherland")) {
+    assert.doesNotMatch(readFileSync(`components/motherland/${file}`, "utf8"), />\s*(Source|Film|Figures):/, file);
+  }
+  assert.doesNotMatch(readFileSync("app/bangladesh/facts/page.tsx", "utf8"), />\s*Source:/);
 });
 
 test("every page's blocks name real pictures, sources and links", async () => {

@@ -18,7 +18,7 @@ export function Join() {
       <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-b from-ml-deep/75 via-ml-deep/92 to-ml-deep" />
 
       <div className="mx-auto flex max-w-4xl flex-col gap-8 px-6 text-lg leading-relaxed text-white/85 sm:px-10 sm:text-xl">
-        <RiseText id="join-title" text={JOIN.title} className="text-center font-ml-display text-[clamp(3.5rem,9vw,8rem)] leading-[0.9] tracking-[0.01em] text-white uppercase" />
+        <RiseText id="join-title" text={JOIN.title} className="text-center font-ml-display text-[clamp(3.5rem,9vw,7rem)] leading-[0.9] tracking-[0.01em] text-white uppercase" />
 
         <p className="mt-6">{JOIN.opening}</p>
         <blockquote className="border-l-4 border-signal-orange py-1 pl-6">

@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 /**
  * A paragraph that inks itself in as it scrolls past, one line after the
- * other, left to right: the reference site's "fill on scroll" text, here
+ * other, left to right, gold turning navy: the reference site's "fill on scroll" text, here
  * tied to the scroll position instead of a timer, so it reads at the
  * reader's pace. The lines are measured from the words as laid out, again
  * whenever the width changes or the font arrives. With reduced motion the
@@ -50,7 +50,7 @@ export function ScrollFill({ text, tone = "light", className }: { text: string; 
     return () => ro.disconnect();
   }, []);
 
-  const colours = tone === "dark" ? { base: "text-white/25", ink: "text-white" } : tone === "gold" ? { base: "text-ml-navy/30", ink: "text-ml-navy" } : { base: "text-ml-mist", ink: "text-ml-ink" };
+  const colours = tone === "dark" ? { base: "text-white/25", ink: "text-white" } : tone === "gold" ? { base: "text-ml-navy/30", ink: "text-ml-navy" } : { base: "text-signal-orange", ink: "text-ml-navy" };
 
   return (
     <p ref={box} className={cn(colours.base, className)}>

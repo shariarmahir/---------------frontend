@@ -50,12 +50,6 @@ export function PinBoard({ pins }: { pins: MapPin[] }) {
             <RiseText as="h3" now text={pin.name} className="w-full font-ml-display text-[clamp(1.75rem,2.6vw,2.5rem)] leading-[1.1] tracking-[0.01em] uppercase" />
             <p className="font-semibold text-white/75">{pin.place}</p>
             <p className="leading-relaxed text-pretty text-white/90">{pin.text}</p>
-            {pin.link ? (
-              <a href={pin.link.url} target="_blank" rel="noopener noreferrer" className="w-fit font-semibold text-signal-orange underline underline-offset-4">
-                {pin.link.name}
-                <span className="sr-only"> (opens in a new tab)</span>
-              </a>
-            ) : null}
           </div>
         </article>
         <ul className="grid gap-1.5 sm:grid-cols-2 sm:[&>li:last-child:nth-child(odd)]:col-span-2">

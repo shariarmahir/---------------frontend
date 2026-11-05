@@ -11,7 +11,7 @@
 import { pic, place } from "./motherland-blocks.ts";
 import { BIOGRAPHIES, CULTURE, HISTORY, JOIN, NATURE, RESOURCES, SCIENCE, TAKA, TRAVEL, VIDEOS, commons, type Picture, type TopicId } from "./motherland.ts";
 
-export interface Story {
+interface Story {
   title: string;
   /** A line above the text: a person's years, a place's district. */
   meta?: string;

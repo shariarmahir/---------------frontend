@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 const PORTAL_PAGE = "/bangladesh/government/national-portal";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/bangladesh/government" },
   title: "Bangladesh government guide | BD Guide",
   description:
     "Every way into the Bangladesh government's services, from passports and exam results to land, tax and emergency numbers, for people who live here, Bangladeshis abroad and visitors. An independent guide by Kandari-Lab that links to the official source.",

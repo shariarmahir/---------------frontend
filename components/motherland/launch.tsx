@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import Image from "next/image";
 import { pic } from "@/data/motherland-blocks";
 import { Icon } from "@/components/ui/icon";
-import { LAUNCH_FACTS, LAUNCH_SOURCE, SCIENCE_EVENTS } from "@/data/motherland-live";
+import { LAUNCH_FACTS, SCIENCE_EVENTS } from "@/data/motherland-live";
 import { cn } from "@/lib/utils";
 import { CornerButton } from "./corner-button";
 import { Dialog } from "./dialog";
@@ -44,12 +44,7 @@ export function LaunchBand() {
           </dl>
         </div>
         <p className="text-sm leading-relaxed text-white/70">
-          The film plays from YouTube, which may set its own cookies when you press play. Figures:{" "}
-          <a href={LAUNCH_SOURCE.url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-white">
-            {LAUNCH_SOURCE.name}
-            <span className="sr-only"> (opens in a new tab)</span>
-          </a>
-          .
+          The film plays from YouTube, which may set its own cookies when you press play.
         </p>
       </div>
     </section>

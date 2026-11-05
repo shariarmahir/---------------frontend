@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { BandTone, Block, Card } from "@/data/motherland-blocks";
-import type { Picture } from "@/data/motherland";
+import type { Cta, Picture } from "@/data/motherland";
 import { mosaicCells, type MosaicCell } from "@/lib/motherland-mosaic";
 import { cn } from "@/lib/utils";
 import { CalendarBoard } from "./culture-calendar";
@@ -50,11 +50,11 @@ const SKIN: Record<Skin, { card: string; soft: string; panel: string; label: str
 
 const CARD_SHELL = "ml-card group flex w-full flex-col overflow-hidden rounded-[1.25rem]";
 
-export function Band({ id, tone, title, lede, children }: { id: string; tone: BandTone; title?: string; lede?: string; children: ReactNode }) {
+export function Band({ id, tone, title, lede, cta, children }: { id: string; tone: BandTone; title?: string; lede?: string; cta?: Cta; children: ReactNode }) {
   return (
     <section id={id} aria-labelledby={title ? `${id}-title` : undefined} className={cn(ANCHOR, BAND_Y, GROUND[tone])}>
       <div className={cn(COLUMN, "flex flex-col gap-8 lg:gap-12")}>
-        {title ? <SectionHead id={`${id}-title`} tone={tone === "navy" ? "dark" : "light"} title={title} lede={lede} /> : null}
+        {title ? <SectionHead id={`${id}-title`} tone={tone === "navy" ? "dark" : tone === "gold" ? "gold" : "light"} title={title} lede={lede} cta={cta} /> : null}
         {children}
       </div>
     </section>
@@ -97,9 +97,9 @@ function CardBody({ card, skin, large }: { card: Card; skin: Skin; large?: boole
       ) : null}
       {card.cta ? (
         <div className={cn("pt-1", !card.facts?.length && "mt-auto")}>
-          <a href={card.cta.href} className={pill.onLight}>
+          <Link href={card.cta.href} className={pill.onLight}>
             {card.cta.label}
-          </a>
+          </Link>
         </div>
       ) : null}
     </div>
@@ -119,7 +119,7 @@ function MosaicCard({ card, cell, tone, order, badge }: { card: Card; cell: Mosa
 }
 
 /** Cards in a rhythm of wide pairs and threes, each row the same height, so nothing sits out of line. */
-function Mosaic({ cards, tone, numbered }: { cards: Card[]; tone: BandTone; numbered?: boolean }) {
+export function Mosaic({ cards, tone, numbered }: { cards: Card[]; tone: BandTone; numbered?: boolean }) {
   const cells = mosaicCells(cards.length);
   return (
     <ul className={cn("grid grid-cols-[minmax(0,1fr)] gap-5 sm:grid-cols-2 lg:grid-cols-12 lg:gap-7", LAST_ROW_FULL)}>
@@ -131,7 +131,7 @@ function Mosaic({ cards, tone, numbered }: { cards: Card[]; tone: BandTone; numb
 }
 
 /** A tighter wall for many small things: every card alike, in full rows. */
-function Wall({ cards, columns, shape = "aspect-4/3" }: { cards: Card[]; columns: 3 | 4; shape?: string }) {
+export function Wall({ cards, columns, shape = "aspect-4/3" }: { cards: Card[]; columns: 3 | 4; shape?: string }) {
   return (
     <ul className={cn("grid grid-cols-[minmax(0,1fr)] gap-5 sm:grid-cols-2", LAST_ROW_FULL, columns === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3")}>
       {cards.map((c, i) => (
@@ -158,7 +158,7 @@ function portraitRows(n: number): number[] {
 const PORTRAIT_WIDTH: Record<number, string> = { 1: "lg:w-full", 2: "lg:w-[calc((100%-1.25rem)/2)]", 3: "lg:w-[calc((100%-2.5rem)/3)]", 4: "lg:w-[calc((100%-3.75rem)/4)]", 5: "lg:w-[calc((100%-2.5rem)/3)] xl:w-[calc((100%-5rem)/5)]" };
 
 /** People: the whole face, in full rows of portraits. */
-function PeopleGrid({ cards }: { cards: Card[] }) {
+export function PeopleGrid({ cards }: { cards: Card[] }) {
   const rows = portraitRows(cards.length);
   const sizes = rows.flatMap((r) => Array.from({ length: r }, () => r));
   return (
@@ -279,7 +279,7 @@ export function IntroFill({ text, tone = "white", id, label }: { text: string; t
   return (
     <section id={id} aria-label={label ?? "Introduction"} className={cn(ANCHOR, "py-14 sm:py-20 lg:py-24", GROUND[tone])}>
       <div className={cn(COLUMN, "lg:px-[max(3rem,8vw)]")}>
-        <ScrollFill text={text} tone={tone === "navy" ? "dark" : tone === "gold" ? "gold" : "light"} className="text-[clamp(1.5rem,2.6vw,2.75rem)] leading-[1.28] font-medium tracking-[-0.01em]" />
+        <ScrollFill text={text} tone={tone === "navy" ? "dark" : tone === "gold" ? "gold" : "light"} className="font-ml-title text-[clamp(1.5rem,2.6vw,2.75rem)] leading-[1.28] font-bold tracking-[-0.01em]" />
       </div>
     </section>
   );

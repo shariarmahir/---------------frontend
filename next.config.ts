@@ -15,6 +15,9 @@ const nextConfig: NextConfig = {
     // app screenshots (story-player.tsx), where small UI text must stay sharp.
     qualities: [75, 80, 90],
     formats: ["image/avif", "image/webp"],
+    // Pictures only: otherwise a request for a film makes the optimiser read
+    // tens of megabytes before refusing it, and a few of those can stall the server.
+    localPatterns: [{ pathname: "/**/*.{jpg,jpeg,png,webp,avif,gif,svg,JPG,JPEG,PNG}" }],
   },
   // Every page refuses to be framed by other sites (clickjacking of the
   // sign-in, /media and /hq), never sniffs a file's type, embeds no plugins
@@ -39,6 +42,37 @@ const nextConfig: NextConfig = {
           ...shared,
         ],
       },
+      // MOTHERLAND and BD Guide load nothing from elsewhere but the open map data,
+      // the launch film and the icon font. Next's own inline scripts need 'unsafe-inline' here;
+      // the policy still stops a script from sending data out or loading more.
+      // Production only: the dev server needs eval.
+      ...(process.env.NODE_ENV === "production"
+        ? [
+            {
+              source: "/bangladesh/:path*",
+              headers: [
+                {
+                  key: "Content-Security-Policy",
+                  value: [
+                    "default-src 'self'",
+                    "script-src 'self' 'unsafe-inline'",
+                    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+                    "img-src 'self' data: blob: https://s3.amazonaws.com https://server.arcgisonline.com https://tiles.openfreemap.org",
+                    "connect-src 'self' https://tiles.openfreemap.org https://s3.amazonaws.com https://server.arcgisonline.com",
+                    "frame-src https://www.youtube-nocookie.com",
+                    "worker-src 'self' blob:",
+                    "font-src 'self' data: https://fonts.gstatic.com",
+                    "media-src 'self'",
+                    "object-src 'none'",
+                    "base-uri 'self'",
+                    "form-action 'self'",
+                    "frame-ancestors 'self'",
+                  ].join("; "),
+                },
+              ],
+            },
+          ]
+        : []),
       {
         source: "/tv-wall/tv/:path*",
         headers: [{ key: "Content-Security-Policy", value: "object-src 'none'; base-uri 'self'" }, ...shared],
