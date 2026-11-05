@@ -64,7 +64,7 @@ export interface VideoSlot {
   brief: string;
 }
 
-export type ProductAccent = "green" | "orange" | "teal";
+export type ProductAccent = "green" | "gold" | "teal";
 
 export interface Product {
   slug: string;
@@ -286,7 +286,7 @@ export const products: Product[] = [
     summary:
       "A voice-first health app that answers in plain Bangla, checks risk, connects to a doctor and keeps one lifelong health record — built for people who have a phone but not a nearby clinic.",
     stage: "Beta · in development",
-    accent: "orange",
+    accent: "gold",
     image: {
       src: "/sections/mobileapp.png",
       alt: "SWASTI স্বস্তি অ্যাপের হোম স্ক্রিন — হার্ট রেট, SpO₂, রক্তচাপ ও দ্রুত অ্যাকশন বোতাম",
@@ -533,13 +533,13 @@ export const productAccents: Record<
     border: "border-emerald-200",
     button: "bg-bd-green hover:bg-bd-green-dark",
   },
-  orange: {
+  gold: {
     cssVar: "var(--color-signal-orange)",
-    text: "text-bdorange-600",
+    text: "text-bdnavy-900",
     bg: "bg-signal-orange",
-    soft: "bg-orange-50",
-    border: "border-orange-200",
-    button: "bg-signal-orange hover:bg-bdorange-600",
+    soft: "bg-bdnavy-50",
+    border: "border-bdnavy-200",
+    button: "bg-signal-orange hover:brightness-95",
   },
   teal: {
     cssVar: "var(--color-teal-600)",

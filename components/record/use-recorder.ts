@@ -87,6 +87,12 @@ export function useRecorder() {
   const tickRef = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
+  /** Set by stop(): a start still waiting on the permission prompt must not go live after the panel closed. */
+  const cancelledRef = useRef(false);
+  const recordingsRef = useRef<Recording[]>([]);
+  useEffect(() => {
+    recordingsRef.current = recordings;
+  }, [recordings]);
 
   /** Release every device handle. Leaving one open keeps the OS dot lit. */
   const teardown = useCallback(() => {
@@ -102,8 +108,15 @@ export function useRecorder() {
     setLevel(0);
   }, []);
 
-  // Stop the hardware if the component goes away mid-recording.
-  useEffect(() => teardown, [teardown]);
+  // Stop the hardware if the component goes away mid-recording, and free the saved files.
+  useEffect(
+    () => () => {
+      cancelledRef.current = true;
+      teardown();
+      recordingsRef.current.forEach((r) => URL.revokeObjectURL(r.url));
+    },
+    [teardown],
+  );
 
   /** Drive the level meter from the live stream. */
   const meter = useCallback((stream: MediaStream) => {
@@ -137,6 +150,7 @@ export function useRecorder() {
       setError(null);
       setMode(nextMode);
       setState("requesting");
+      cancelledRef.current = false;
 
       if (!navigator.mediaDevices?.getUserMedia) {
         setError(
@@ -157,6 +171,11 @@ export function useRecorder() {
                 video: { facingMode: { ideal: "environment" } },
               },
         );
+        if (cancelledRef.current) {
+          stream.getTracks().forEach((t) => t.stop());
+          setState("idle");
+          return;
+        }
         streamRef.current = stream;
 
         const mimeType = pickMimeType(nextMode);
@@ -225,6 +244,10 @@ export function useRecorder() {
   );
 
   const stop = useCallback(() => {
+    cancelledRef.current = true;
+    // The clock stops now, not once the file has been hashed.
+    if (tickRef.current !== null) window.clearInterval(tickRef.current);
+    tickRef.current = null;
     const rec = recorderRef.current;
     if (rec && rec.state !== "inactive") rec.stop();
     else {

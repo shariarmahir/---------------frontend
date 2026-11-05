@@ -97,7 +97,7 @@ export function NeuralBrain({ className, id = "brain-core" }: { className?: stri
     >
       <defs>
         <radialGradient id={id} cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#ff9100" stopOpacity="0.35" />
+          <stop offset="0%" stopColor="#e4b027" stopOpacity="0.35" />
           <stop offset="60%" stopColor="#006747" stopOpacity="0.12" />
           <stop offset="100%" stopColor="#006747" stopOpacity="0" />
         </radialGradient>

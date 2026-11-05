@@ -1,74 +1,74 @@
+import Link from "next/link";
+import type { CSSProperties } from "react";
 import { Icon } from "@/components/ui/icon";
+import { SectionHeading, btn } from "@/components/ui/section-kit";
+import { CardIcon } from "@/components/ui/card-icon";
+import { cn } from "@/lib/utils";
+
+/** Each card's animated icon (public/lordicon), in the landing page's one icon look. */
+type ArtKind = "heart-beat" | "home" | "person-walking" | "plant-pot";
+
+/** What shows while each animation loads. */
+const FALLBACK: Record<ArtKind, string> = { "heart-beat": "monitor_heart", home: "home_health", "person-walking": "blind", "plant-pot": "compost" };
 
 interface Pillar {
-  badge: string;
-  badgeClass: string;
-  icon: string;
-  iconClass: string;
+  art: ArtKind;
   title: string;
   description: string;
-  footLabel: string;
-  footValue: string;
-  footClass: string;
-  /** Brand colour the glass hover is mixed from (a CSS colour value). */
-  accent: string;
-  /** Only pillar 01 carries a status dot beside its value. */
-  statusDot?: boolean;
+  /** The product or research page that tells the whole story. */
+  href: string;
+  /** Solid card fill and the ink that reads on it. */
+  surface: string;
+  /** Hover glow, a CSS colour value. */
+  glow: string;
 }
 
+/**
+ * Four pixels Kandari-Lab is repairing now, each a real problem matched to
+ * the product or research line that answers it, linked to its own page.
+ * Facts follow data/products.ts and CLAUDE.md §2; nothing here claims more
+ * than the product pages do. Fields are navy, cobalt and ink (Mahir,
+ * 2026-10-18: cobalt replaced gold), no two neighbours alike. Every card is
+ * set the same way, centred (Mahir, 2026-10-30): its icon, a gold title
+ * (large and bold, so it holds on cobalt too), the text, and the kit's gold
+ * button pinned to the foot so the four line up.
+ */
 const PILLARS: Pillar[] = [
   {
-    badge: "PIXEL 01 // BIO",
-    badgeClass: "bg-emerald-50 text-bd-green border-emerald-200",
-    icon: "monitor_heart",
-    iconClass: "text-signal-orange",
-    title: "Healthcare & Biometrics",
+    art: "heart-beat",
+    title: "Early Warning Care",
     description:
-      "Continuous vitals capture pairing SWASTI Super App with the Aponjon wearable band for early arrhythmia, diabetic spike, and pre-stroke alerts.",
-    footLabel: "SYS STATUS",
-    footValue: "OPERATIONAL",
-    footClass: "text-bd-green",
-    accent: "var(--color-bd-green)",
-    statusDot: true,
+      "SWASTI gives every family a doctor’s first opinion in Bangla, by voice, on any phone. Aponjon, a wearable band, watches heart rhythm, oxygen and stress, and raises the alarm while there is still time to act.",
+    href: "/products/swasti",
+    surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
+    glow: "var(--color-bdnavy-400)",
   },
   {
-    badge: "PIXEL 02 // NODE",
-    badgeClass: "bg-orange-50 text-signal-orange border-orange-200",
-    icon: "local_pharmacy",
-    iconClass: "text-bd-green",
-    title: "Rural Tele-Network",
+    art: "home",
+    title: "Care in Every Village",
     description:
-      "'One Village, One Smart Pharmacy' converting 12,000+ union-level medicine dispensaries into solar micro-diagnostic clinical endpoints.",
-    footLabel: "GRID REACH",
-    footValue: "64 DISTRICTS",
-    footClass: "text-signal-orange",
-    accent: "var(--color-signal-orange)",
+      "One Village, One Medical Health Care Center. The village drug shop becomes a solar-powered Smart Pharmacy with a diagnostic kiosk, verified medicine and a doctor on video.",
+    href: "/products/smart-pharmacy",
+    surface: "bg-cobalt text-white ring-1 ring-white/12",
+    glow: "var(--color-cobalt)",
   },
   {
-    badge: "PIXEL 03 // VISION",
-    badgeClass: "bg-teal-50 text-teal-700 border-teal-200",
-    icon: "visibility",
-    iconClass: "text-teal-600",
-    title: "Assistive Tech Shield",
+    art: "person-walking",
+    title: "Independent Mobility",
     description:
-      "2-Meter spatial consciousness wearable for visually impaired citizens leveraging ultrasonic LiDAR, haptic feedback, and Bengali spatial voice.",
-    footLabel: "DETECTION RAD",
-    footValue: "2.0 METERS",
-    footClass: "text-teal-700",
-    accent: "var(--color-teal-600)",
+      "A wearable for blind and visually impaired citizens that senses obstacles up to two metres away in real time and turns them into guidance, so the wearer can move without depending on a guide.",
+    href: "/research/blind-assist-wearable",
+    surface: "bg-text-primary text-white ring-1 ring-white/12",
+    glow: "var(--color-signal-orange)",
   },
   {
-    badge: "PIXEL 04 // BIO-CYCLE",
-    badgeClass: "bg-emerald-50 text-emerald-800 border-emerald-200",
-    icon: "recycling",
-    iconClass: "text-emerald-700",
-    title: "Circular Economy",
+    art: "plant-pot",
+    title: "Waste Into Soil",
     description:
-      "AI Waste-to-Soil transformation converting civic municipal refuse into organic agriculture manure and segregated industrial polymers.",
-    footLabel: "CYCLE RATE",
-    footValue: "48 HR TRANSIT",
-    footClass: "text-emerald-800",
-    accent: "var(--color-emerald-600)",
+      "AI that separates organic waste from the rest so it can return to farmland as soil nutrient, reducing what ends up in open dumps, drains and rivers.",
+    href: "/research/organic-waste-to-soil",
+    surface: "bg-bdnavy-900 text-white ring-1 ring-white/12",
+    glow: "var(--color-bdnavy-400)",
   },
 ];
 
@@ -76,71 +76,63 @@ export function PixelThesisSection() {
   return (
     <section
       id="pixel-map"
-      className="section-band-tinted relative border-y border-slate-200/80 bg-white"
+      className="section-band-tinted relative"
     >
-      <div className="mx-auto max-w-7xl px-gutter-x">
-        <div className="mb-10 flex max-w-3xl flex-col gap-2">
-          <h2 className="font-grotesk text-2xl font-bold tracking-tight text-text-primary uppercase sm:text-3xl lg:text-4xl">
-            The Pixel-Map Framework: Solving Bangladesh Pixel by Pixel
-          </h2>
+      <div className="mx-auto max-w-384 px-gutter-x">
+        <SectionHeading
+          tone="dark"
+          // From lg the lead keeps the same reading measure as the Products lead below it.
+          className="lg:[&>p]:max-w-5xl lg:[&>p]:text-pretty"
+          title="The Pixel-Map"
+          lead="Each broken pixel is a real failure. We fix them one by one."
+        />
 
-          <p className="font-sans text-base leading-relaxed text-text-secondary">
-            Bangladesh has complex systemic challenges across public health,
-            transport, and energy. Like a high-resolution image formed by
-            individual pixels, every national problem is a discrete data
-            coordinate. By engineering native silicon, sensors, and algorithms
-            for each pixel, we auto-enhance the entire digital canvas of
-            Bangladesh.
-          </p>
-        </div>
-
-        <div className="-m-3 flex flex-wrap">
+        {/*
+          * A phone swipes through the four cards (the next one peeking at the
+          * edge, the row bleeding to the screen's sides); from sm up they sit
+          * two by two, and four across only from 1180px, where each card still
+          * has about 16rem (a 4-up row at 1024 squeezed them). The scroll reveal lives on the
+          * list, not the cards, so its transform never fights the hover lift
+          * and a card waiting off to the side is never left hidden.
+          */}
+        <ul
+          aria-label="Four pixels we are repairing"
+          className={cn(
+            "story-reveal no-scrollbar -mx-gutter-x -my-3 flex snap-x snap-mandatory scroll-px-gutter-x gap-3 overflow-x-auto px-gutter-x py-3",
+            "sm:mx-0 sm:my-0 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 sm:py-0 min-[73.75rem]:grid-cols-4",
+          )}
+        >
           {PILLARS.map((pillar) => (
-            <div
-              key={pillar.badge}
-              className="flex w-full p-3 sm:w-1/2 lg:w-1/4"
-            >
-              <div
-                className={`group flex w-full flex-col justify-between glass-card rounded-2xl border border-slate-200 bg-white p-6 shadow-sm`}
-              style={{ "--card-accent": pillar.accent } as React.CSSProperties}
+            <li key={pillar.title} className="flex w-[82%] max-w-80 shrink-0 snap-start sm:w-auto sm:max-w-none">
+              <article
+                style={{ "--glow": pillar.glow } as CSSProperties}
+                className={cn(
+                  "group relative flex w-full flex-col items-center overflow-hidden rounded-2xl p-6 text-center shadow-sm sm:rounded-3xl sm:p-7",
+                  "[-webkit-tap-highlight-color:transparent] touch-manipulation transition-[translate,scale,rotate,transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                  "hover:-translate-y-2 hover:shadow-[0_28px_48px_-22px_var(--glow)] active:-translate-y-2 active:shadow-[0_28px_48px_-22px_var(--glow)] active:scale-[0.98] active:duration-150",
+                  "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+                  pillar.surface,
+                )}
               >
-                <div>
-                  <div className="mb-4 flex items-center justify-between">
-                    <span
-                      className={`rounded border px-2 py-1 font-mono text-xs font-bold ${pillar.badgeClass}`}
-                    >
-                      {pillar.badge}
-                    </span>
-                    <Icon
-                      name={pillar.icon}
-                      className={`text-2xl transition-transform group-hover:scale-110 ${pillar.iconClass}`}
-                    />
-                  </div>
+                {/* The card's animated icon, standing on the card itself. */}
+                <CardIcon name={pillar.art} fallback={FALLBACK[pillar.art]} size={76} className="mb-4" />
 
-                  <h3 className="mb-2 font-grotesk text-lg font-bold text-text-primary uppercase">
-                    {pillar.title}
-                  </h3>
+                <h3 className="mb-3 font-grotesk text-xl leading-tight font-bold text-balance text-signal-orange">{pillar.title}</h3>
 
-                  <p className="font-sans text-sm leading-relaxed text-text-secondary">
-                    {pillar.description}
-                  </p>
-                </div>
+                <p className="mb-6 line-clamp-4 max-w-[36ch] font-sans text-sm leading-relaxed text-pretty text-white/80 sm:line-clamp-none">
+                  {pillar.description}
+                </p>
 
-                <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4 font-mono text-xs">
-                  <span className="text-text-muted">{pillar.footLabel}</span>
-                  <span
-                    className={`flex items-center gap-1 font-bold ${pillar.footClass}`}
-                  >
-                    {pillar.statusDot ? (
-                      <span className="size-1.5 rounded-full bg-bd-green" />
-                    ) : null}
-                    {pillar.footValue}
-                  </span>
-                </div>
-              </div>
-            </div>
+                {/* Pinned to the foot, so the four buttons line up. */}
+                <Link href={pillar.href} className={cn(btn.gold, "group/btn mt-auto whitespace-nowrap")}>
+                  Learn more
+                  <span className="sr-only">: {pillar.title}</span>
+                  <Icon name="arrow_forward" className="text-lg transition-transform group-hover/btn:translate-x-1 motion-reduce:transition-none" />
+                </Link>
+              </article>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );
