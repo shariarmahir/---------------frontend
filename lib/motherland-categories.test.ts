@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { test } from "node:test";
 import { ABOUT, BIOGRAPHIES, CULTURE, HISTORY, NATURE, PROCON, SCIENCE, TAKA, TOPIC_PAGES, TRAVEL, VIDEOS } from "../data/motherland.ts";
 import { CATEGORIES, categoryFor } from "../data/motherland-categories.ts";
@@ -137,6 +137,11 @@ test("card titles and section subtitles are short enough to hold one line", asyn
 test("no photograph on a category page shows an excluded politician's file", async () => {
   const { MORE } = await import("../data/motherland-more.ts");
   for (const [key, m] of Object.entries(MORE)) assert.ok(!/hasina|mujib|khaleda|ziaur/i.test(m.sourceUrl), key);
+});
+
+test("every band colour is a real theme colour, so no band silently loses its ground", () => {
+  const theme = readFileSync("app/globals.css", "utf8");
+  for (const tone of ["ml-ground", "ml-sun", "ml-mint", "ml-navy"]) assert.match(theme, new RegExp(`--color-${tone}:`), tone);
 });
 
 test("every category page opens on a film", () => {

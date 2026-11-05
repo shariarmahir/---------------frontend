@@ -4,26 +4,13 @@ import { useEffect, useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import { FOOTER } from "@/data/bd-gov";
 
-const SEEN = "bd-guide-help-seen";
-
 /**
- * "Need help?" as a note in the bottom-right corner: once per visit it
- * rises open on its own, with the two numbers worth knowing (333 and 999,
- * tap to call). Closed, it folds into a small navy pill that opens it
- * again. Reduced motion keeps the note but drops the rise.
+ * "Need help?" as a small navy pill in the bottom-right corner. Pressed, it opens a
+ * note with the two numbers worth knowing (333 and 999, tap to call).
  */
 export function HelpNote() {
   const [open, setOpen] = useState(false);
   const { help } = FOOTER;
-
-  useEffect(() => {
-    if (sessionStorage.getItem(SEEN)) return;
-    const timer = window.setTimeout(() => {
-      setOpen(true);
-      sessionStorage.setItem(SEEN, "1");
-    }, 1800);
-    return () => window.clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     if (!open) return;

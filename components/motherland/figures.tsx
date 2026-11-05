@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import type { Figure, Moment } from "@/data/motherland-deep";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { cn } from "@/lib/utils";
-import { COLUMN, DISPLAY } from "./kit";
+import { BAND_Y, COLUMN, DISPLAY } from "./kit";
 import { RiseText } from "./rise-text";
 
 const NUMBER = /^(\D*)(\d[\d,]*(?:\.\d+)?)([\s\S]*)$/;
@@ -57,8 +57,8 @@ export function Figures({ title, figures }: { title: string; figures: Figure[] }
   const longest = Math.max(...figures.map((f) => f.value.length));
   const size = longest > 12 ? "text-[clamp(1.75rem,2.3vw,2.25rem)]" : longest > 7 ? "text-[clamp(2rem,2.8vw,2.75rem)]" : "text-[clamp(2.5rem,3.6vw,3.25rem)]";
   return (
-    <section aria-label={title} className="bg-signal-orange py-12 text-ml-navy sm:py-14 lg:py-16">
-      <div className={cn(COLUMN, "flex flex-col gap-8")}>
+    <section aria-label={title} className={cn(BAND_Y, "bg-signal-orange text-ml-navy")}>
+      <div className={cn(COLUMN, "flex flex-col gap-8 lg:gap-12")}>
         <RiseText as="h2" text={title} className={DISPLAY} />
         <dl className={cn("grid gap-4 sm:grid-cols-2 lg:gap-5", figures.length % 4 === 0 ? "lg:grid-cols-4" : "lg:grid-cols-3")}>
           {figures.map((f) => (
@@ -75,21 +75,22 @@ export function Figures({ title, figures }: { title: string; figures: Figure[] }
   );
 }
 
-/** Dates along one gold line, running off the right edge like the page's rails. */
+/** Dates along one gold line, every one in view. The line runs across the page, and down it on a phone. */
 export function Timeline({ title, moments }: { title: string; moments: Moment[] }) {
   return (
-    <section aria-label={title} className="bg-ml-ground py-12 text-ml-ink sm:py-14 lg:py-16">
-      <div className={COLUMN}>
+    <section aria-label={title} className={cn(BAND_Y, "bg-ml-navy text-white")}>
+      <div className={cn(COLUMN, "flex flex-col gap-10 lg:gap-14")}>
         <RiseText as="h2" text={title} className={DISPLAY} />
+        <ol className={cn("grid sm:grid-cols-2 sm:gap-y-12", moments.length === 5 ? "lg:grid-cols-5" : "lg:grid-cols-4")}>
+          {moments.map((m) => (
+            <li key={m.when} className="relative border-l-2 border-signal-orange/50 pb-10 pl-6 last:pb-0 sm:border-t-2 sm:border-l-0 sm:pt-7 sm:pr-8 sm:pb-0 sm:pl-0">
+              <span aria-hidden className="absolute top-1 -left-[0.45rem] size-3 rounded-full bg-signal-orange sm:-top-[0.45rem] sm:left-0" />
+              <p className="font-ml-display text-[clamp(1.75rem,2.5vw,2.5rem)] leading-none tracking-[0.01em] text-signal-orange">{m.when}</p>
+              <p className="mt-3 leading-relaxed text-pretty text-white/85">{m.text}</p>
+            </li>
+          ))}
+        </ol>
       </div>
-      <ol className="ml-rail mt-8 flex snap-x snap-mandatory overflow-x-auto pt-1 pb-6" tabIndex={0} aria-label={`${title}, scrollable`}>
-        {moments.map((m) => (
-          <li key={m.when} className="ml-card relative mr-5 flex w-[min(78vw,22rem)] shrink-0 snap-start flex-col rounded-[1.25rem] bg-white p-7 ring-1 ring-ml-navy/8">
-            <p className="font-ml-display text-[clamp(1.75rem,2.6vw,2.5rem)] leading-none tracking-[0.01em]">{m.when}</p>
-            <p className="mt-3 leading-relaxed text-pretty text-ml-ink/80">{m.text}</p>
-          </li>
-        ))}
-      </ol>
     </section>
   );
 }

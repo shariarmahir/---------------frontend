@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import type { BandTone, Block, Card, Line } from "@/data/motherland-blocks";
+import type { BandTone, Block, Card } from "@/data/motherland-blocks";
 import type { Picture } from "@/data/motherland";
 import { mosaicCells, type MosaicCell } from "@/lib/motherland-mosaic";
 import { cn } from "@/lib/utils";
@@ -12,6 +12,7 @@ import { FilmWall } from "./film-wall";
 import { FitLine } from "./fit-line";
 import { ANCHOR, BAND_Y, COLUMN, LAST_ROW_FULL, LEDE, SectionHead, pill } from "./kit";
 import { LaunchBand } from "./launch";
+import { LinesStage } from "./lines-stage";
 import { MoneyBrands } from "./money-brands";
 import { Parallax } from "./parallax";
 import { PinBoard } from "./pin-board";
@@ -52,7 +53,7 @@ const CARD_SHELL = "ml-card group flex w-full flex-col overflow-hidden rounded-[
 export function Band({ id, tone, title, lede, children }: { id: string; tone: BandTone; title?: string; lede?: string; children: ReactNode }) {
   return (
     <section id={id} aria-labelledby={title ? `${id}-title` : undefined} className={cn(ANCHOR, BAND_Y, GROUND[tone])}>
-      <div className={cn(COLUMN, "flex flex-col gap-8 lg:gap-10")}>
+      <div className={cn(COLUMN, "flex flex-col gap-8 lg:gap-12")}>
         {title ? <SectionHead id={`${id}-title`} tone={tone === "navy" ? "dark" : "light"} title={title} lede={lede} /> : null}
         {children}
       </div>
@@ -74,15 +75,15 @@ function CardPhoto({ picture, sizes, className, chip, badge }: { picture: Pictur
 }
 
 const SPAN: Record<MosaicCell["span"], string> = { 12: "lg:col-span-12", 7: "lg:col-span-7", 5: "lg:col-span-5", 4: "lg:col-span-4" };
-const PHOTO_HEIGHT: Record<MosaicCell["rowSize"], string> = { 1: "lg:h-[30rem]", 2: "lg:h-[24rem] 2xl:h-[28rem]", 3: "lg:h-[17rem] 2xl:h-[20rem]" };
+const PHOTO_HEIGHT: Record<MosaicCell["rowSize"], string> = { 1: "lg:h-[34rem]", 2: "lg:h-[26rem] 2xl:h-[32rem]", 3: "lg:h-[19rem] 2xl:h-[23rem]" };
 const PHOTO_SIZES: Record<MosaicCell["span"], string> = { 12: "92vw", 7: "(min-width: 1024px) 56vw, (min-width: 640px) 46vw, 92vw", 5: "(min-width: 1024px) 40vw, (min-width: 640px) 46vw, 92vw", 4: "(min-width: 1024px) 32vw, (min-width: 640px) 46vw, 92vw" };
 
 /** The page's detailed card: its title, the whole story, the plain facts, and where to go next. */
 function CardBody({ card, skin, large }: { card: Card; skin: Skin; large?: boolean }) {
   const look = SKIN[skin];
   return (
-    <div className={cn("flex flex-1 flex-col gap-3 p-6", large && "lg:p-8")}>
-      <RiseText as="h3" text={card.title} className={cn("w-full font-ml-display tracking-[0.01em] uppercase", large ? "text-[clamp(1.75rem,2.6vw,2.75rem)]" : "text-[clamp(1.5rem,2vw,2.1rem)]", "leading-[1.1]")} />
+    <div className={cn("flex flex-1 flex-col gap-3 p-6 lg:p-7", large && "lg:p-9")}>
+      <RiseText as="h3" text={card.title} className={cn("w-full font-ml-display tracking-[0.01em] uppercase", large ? "text-[clamp(1.75rem,2.7vw,3rem)]" : "text-[clamp(1.5rem,2.1vw,2.25rem)]", "leading-[1.1]")} />
       <p className={cn("max-w-[62ch] leading-relaxed text-pretty", large && "text-lg", look.soft)}>{card.text}</p>
       {card.facts?.length ? (
         <dl className={cn("mt-auto grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl p-4", look.panel)}>
@@ -121,7 +122,7 @@ function MosaicCard({ card, cell, tone, order, badge }: { card: Card; cell: Mosa
 function Mosaic({ cards, tone, numbered }: { cards: Card[]; tone: BandTone; numbered?: boolean }) {
   const cells = mosaicCells(cards.length);
   return (
-    <ul className={cn("grid grid-cols-[minmax(0,1fr)] gap-5 sm:grid-cols-2 lg:grid-cols-12 lg:gap-6", LAST_ROW_FULL)}>
+    <ul className={cn("grid grid-cols-[minmax(0,1fr)] gap-5 sm:grid-cols-2 lg:grid-cols-12 lg:gap-7", LAST_ROW_FULL)}>
       {cards.map((c, i) => (
         <MosaicCard key={c.title} card={c} cell={cells[i]} tone={tone} order={cells[i].rowSize === 3 ? i % 3 : i % 2} badge={numbered ? i + 1 : undefined} />
       ))}
@@ -252,33 +253,6 @@ function DataCards({ head, rows, tone, picture, hideLastColumn }: { head: string
   );
 }
 
-/** The lines everyone knows, each over a photograph of where it belongs. */
-function Lines({ lines }: { lines: Line[] }) {
-  return (
-    <ul className="grid grid-cols-[minmax(0,1fr)] gap-5 md:grid-cols-2 md:max-xl:[&>li:last-child:nth-child(odd)]:col-span-2 lg:gap-6 xl:grid-cols-3">
-      {lines.map((l, i) => (
-        <Reveal as="li" key={l.who} order={i % 3} className="flex">
-          <blockquote className="ml-card group relative isolate flex min-h-[24rem] w-full flex-col justify-end gap-3 overflow-hidden rounded-[1.25rem] bg-ml-navy p-7 text-white ring-1 ring-white/12">
-            {l.picture ? (
-              <div className="ml-wipe absolute inset-0 -z-20">
-                <div className="ml-settle absolute inset-0">
-                  <Image src={l.picture.src} alt={l.picture.alt} fill sizes="(min-width: 1280px) 31vw, (min-width: 768px) 46vw, 92vw" className="object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.05] motion-reduce:transition-none" style={{ objectPosition: l.picture.focus }} />
-                </div>
-              </div>
-            ) : null}
-            <span aria-hidden className="absolute inset-0 -z-10 bg-linear-to-t from-ml-navy via-ml-navy/75 to-ml-navy/10" />
-            <p lang="bn" className="font-bengali text-[clamp(1.6rem,2.4vw,2.25rem)] leading-snug font-semibold">
-              {l.bangla}
-            </p>
-            <p className="text-lg leading-relaxed text-white/90">{l.english}</p>
-            <footer className="font-semibold text-signal-orange">{l.who}</footer>
-          </blockquote>
-        </Reveal>
-      ))}
-    </ul>
-  );
-}
-
 /** A pause in the page: one photograph across the whole screen, moving slowly, with one thought on it. */
 export function Moment({ id, title, text, picture, cta }: { id: string; title: string; text?: string; picture: Picture; cta?: { label: string; href: string } }) {
   return (
@@ -303,9 +277,9 @@ export function Moment({ id, title, text, picture, cta }: { id: string; title: s
 /** The words after the hero, across the whole screen, inked in line by line as they scroll past. */
 export function IntroFill({ text, tone = "white", id, label }: { text: string; tone?: BandTone; id?: string; label?: string }) {
   return (
-    <section id={id} aria-label={label ?? "Introduction"} className={cn(ANCHOR, "py-10 sm:py-12 lg:py-16", GROUND[tone])}>
-      <div className={COLUMN}>
-        <ScrollFill text={text} tone={tone === "navy" ? "dark" : tone === "gold" ? "gold" : "light"} className="text-[clamp(1.375rem,2.2vw,2.25rem)] leading-[1.3] font-medium tracking-[-0.01em]" />
+    <section id={id} aria-label={label ?? "Introduction"} className={cn(ANCHOR, "py-14 sm:py-20 lg:py-24", GROUND[tone])}>
+      <div className={cn(COLUMN, "lg:px-[max(3rem,8vw)]")}>
+        <ScrollFill text={text} tone={tone === "navy" ? "dark" : tone === "gold" ? "gold" : "light"} className="text-[clamp(1.5rem,2.6vw,2.75rem)] leading-[1.28] font-medium tracking-[-0.01em]" />
       </div>
     </section>
   );
@@ -348,9 +322,10 @@ export function BlockView({ block }: { block: Block }) {
       );
     case "lines":
       return (
-        <Band id={block.id} tone={block.tone} title={block.title} lede={block.lede}>
-          <Lines lines={block.lines} />
-        </Band>
+        <section id={block.id} aria-labelledby={`${block.id}-title`} className={cn(ANCHOR, GROUND[block.tone])}>
+          <SectionHead id={`${block.id}-title`} tone={block.tone === "navy" ? "dark" : "light"} title={block.title} lede={block.lede} className={cn(COLUMN, "pt-14 pb-10 sm:pt-20 lg:pt-24 lg:pb-12")} />
+          <LinesStage lines={block.lines} />
+        </section>
       );
     case "map":
       return (

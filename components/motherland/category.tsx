@@ -25,29 +25,27 @@ import { HeroFilm } from "./hero-film";
  * them read (data/motherland-pages.ts), then its quiz and the other categories.
  */
 
-/** The full-screen opening every category page shares: a film under a tone-matched colour wash, with the title alone. */
 const HERO_TITLE: Record<HeroTitleTone, string> = {
-  gold: "ml-hero-title text-signal-orange",
-  navy: "ml-hero-title-light text-white",
-  green: "ml-hero-title-light text-white",
+  gold: "text-signal-orange",
+  navy: "text-white",
+  green: "text-white",
 };
 
-/* A colour wash over the film, so the title reads on any frame. Gold titles get a deep navy
-   vignette; navy and green titles sit over a wash in their own colour, darkened so white reads. */
+/* A colour wash that gathers at the foot of the film, under the title, and leaves the picture clear above it. */
 const HERO_WASH: Record<HeroTitleTone, string> = {
-  gold: "bg-gradient-to-t from-ml-navy/85 via-ml-navy/45 to-ml-navy/60",
-  navy: "bg-gradient-to-t from-ml-navy/90 via-ml-navy/50 to-ml-navy/72",
-  green: "bg-gradient-to-t from-[#05311d]/92 via-[#05311d]/55 to-[#05311d]/70",
+  gold: "from-ml-navy via-ml-navy/45 to-transparent",
+  navy: "from-ml-navy via-ml-navy/45 to-transparent",
+  green: "from-[#05311d] via-[#05311d]/50 to-transparent",
 };
 
-/** Every hero is a film under a readability wash, with its title alone, held in the vertical middle. */
+/** Every hero is a film and its title alone, centred low on the screen. */
 export function PageHero({ id, name, film, titleTone = "gold" }: { id: string; name: string; film: Film; titleTone?: HeroTitleTone }) {
   return (
-    <section aria-labelledby={id} className="relative isolate flex min-h-svh flex-col justify-center overflow-hidden bg-ml-navy">
+    <section aria-labelledby={id} className="relative isolate flex min-h-svh flex-col justify-end overflow-hidden bg-ml-navy">
       <HeroFilm film={film} />
-      <div aria-hidden className={cn("absolute inset-0 -z-10", HERO_WASH[titleTone])} />
-      <div className={cn(COLUMN, "pt-20")}>
-        <RiseText as="h1" id={id} now text={name} className={cn("w-full font-ml-display text-[clamp(2.75rem,7vw,7.5rem)] leading-none tracking-[0.015em] uppercase", HERO_TITLE[titleTone])} />
+      <div aria-hidden className={cn("absolute inset-0 -z-10 bg-linear-to-t via-40%", HERO_WASH[titleTone])} />
+      <div className={cn(COLUMN, "pt-36 pb-[clamp(3.5rem,9svh,6rem)]")}>
+        <RiseText as="h1" id={id} now text={name} className={cn("w-full text-center font-ml-display text-[clamp(2.75rem,7vw,7.5rem)] leading-none tracking-[0.015em] uppercase", HERO_TITLE[titleTone])} />
       </div>
     </section>
   );
@@ -85,7 +83,7 @@ function RailBand({ sub, index }: { sub: Subcategory; index: number }) {
 export function Facts({ facts }: { facts: Category["facts"] }) {
   return (
     <div className="bg-signal-orange text-ml-ink">
-      <dl className="ml-rail flex items-center gap-8 overflow-x-auto py-3.5 lg:justify-between lg:gap-4">
+      <dl className="ml-rail flex items-center gap-8 overflow-x-auto py-4 lg:justify-between lg:gap-4 lg:py-5">
         {facts.map((f) => (
           <div key={f.label} className="flex shrink-0 items-baseline gap-2 whitespace-nowrap">
             <dt className="text-sm font-semibold text-ml-ink/75">{f.label}</dt>
@@ -106,7 +104,7 @@ export function MoreCategories({ current }: { current: string }) {
         <Link key={c.slug} href={`/bangladesh/${c.slug}`} className="group relative isolate flex aspect-4/3 items-end overflow-hidden p-5 text-white focus-visible:outline-3 focus-visible:-outline-offset-4 focus-visible:outline-signal-orange lg:p-7">
           <Image src={c.hero.src} alt="" fill sizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw" className="-z-20 object-cover transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transition-none" style={{ objectPosition: c.hero.focus }} />
           <span aria-hidden className="absolute inset-0 -z-10 bg-linear-to-t from-black/80 to-black/10" />
-          <span className="font-ml-display text-[clamp(1.4rem,2.2vw,2.5rem)] leading-tight tracking-[0.01em] uppercase">{c.name}</span>
+          <span className="font-ml-display text-[clamp(1.4rem,1.9vw,2.25rem)] leading-tight tracking-[0.01em] uppercase">{c.name}</span>
         </Link>
       ))}
     </nav>

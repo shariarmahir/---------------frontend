@@ -70,7 +70,7 @@ export const SITE = {
   phone: { label: "Helpline 333", tel: "333" },
   /** usa.gov's Español button: here, the official portal in Bangla. */
   language: { label: "বাংলা", href: PORTAL, lang: "bn" },
-  search: { label: "Search bangladesh.gov.bd", site: "bangladesh.gov.bd" },
+  search: { label: "Search government services" },
 };
 
 /** The header's categories, as usa.gov's seven. */
@@ -245,6 +245,36 @@ export const FACTS = {
   source: { label: "Bangladesh Bureau of Statistics", href: "https://bbs.gov.bd/" },
 };
 
+/** Where things stand now. Offices and dates, not people or parties: office-holders change, and each office's own site names them. */
+export const GOV_TODAY = {
+  title: "The government today",
+  lede: "Bangladesh is a parliamentary republic under its Constitution of 1972. This is where things stood when we last checked, on 5 November 2026.",
+  points: [
+    { title: "The election", text: "A general election was held on 12 February 2026, and a new government took office on 17 February 2026." },
+    { title: "The referendum", text: "On the same day, voters were asked about the July National Charter. 68.26% voted yes, on a turnout of 60%." },
+    { title: "What the vote changed", text: "The result is described as a political mandate, not a change in the law. The Charter's 84 proposals, such as an upper house of 100 seats and limits on how long one person can be Prime Minister, take effect only when they are enacted." },
+    { title: "What we could not confirm", text: "Whether Parliament has enacted those changes yet. The Charter's process is disputed, so read the Constitution itself for what is in force today." },
+  ],
+  links: [
+    { label: "The Constitution, in the Bangladesh Code", href: "http://bdlaws.minlaw.gov.bd/" },
+    { label: "Bangladesh Election Commission", href: "https://www.ecs.gov.bd/" },
+    { label: "The referendum, on Wikipedia", href: "https://en.wikipedia.org/wiki/2026_Bangladeshi_constitutional_referendum" },
+  ] satisfies GovLink[],
+};
+
+/** Which office serves you, from the top down. Counts are the national portal's. */
+export const LEVELS = {
+  title: "From the capital to your village",
+  lede: "Most people deal with government close to home. Start at the lowest office that can help.",
+  items: [
+    { name: "Ministries and divisions", count: "57", text: "Set national policy and run the directorates and agencies." },
+    { name: "Divisions", count: "8", text: "Each led by a Divisional Commissioner, who oversees the districts in it." },
+    { name: "Districts", count: "64", text: "The Deputy Commissioner's office is the state's main office locally, including for land." },
+    { name: "Upazilas", count: "500", text: "The Upazila Nirbahi Officer runs government services for the sub-district." },
+    { name: "Unions", count: "4,568", text: "The elected Union Parishad is the closest government to most villages." },
+  ],
+};
+
 export const OFFICES = {
   title: "Offices of the President and Prime Minister",
   lede: "The offices at the head of government, as listed on the national portal. Each official site names its current office-holders.",
@@ -264,16 +294,17 @@ export const ALL_TOPICS = {
     focus: "62% 18%",
     credit: { author: "Tanvir Rahat", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0", sourceUrl: "https://commons.wikimedia.org/wiki/File:The_national_flag_of_Bangladesh_is_flying_outside_the_Ahsan_Manzil_Museum_,_Dhaka,_Bangladesh.jpg" },
   } satisfies Photo,
-  title: "Making Bangladesh's government services easier to find",
-  lede: "BD Guide brings the government's services, offices and information together in one place, and takes you straight to the official source.",
-  howTitle: "How do I ...",
-  how: [
-    { label: "Get or renew a passport", href: category("69a5597fc4774958d7c92fdc") },
-    { label: "Check exam results", href: category("69a5597fc4774958d7c92fef") },
-    { label: "Pay a utility bill", href: category("69a5597fc4774958d7c92fda") },
-    { label: "Get a trade licence", href: `${PORTAL}/pages/static-pages/69a55ba386514399668e4e5a` },
-  ] satisfies GovLink[],
-  jump: "Jump to all topics and services",
+  title: "The Bangladesh government, made easy to use",
+  lede: "Find any government service in English or Bangla, and go straight to the official page. For people who live here, Bangladeshis abroad and visitors.",
+  doorsTitle: "Who is this for?",
+  doors: [
+    { title: "I live in Bangladesh", bn: "আমি বাংলাদেশে থাকি", text: "ID, study, jobs, land, tax, bills, health and support.", symbol: "home", href: `${NP}#services` },
+    { title: "I'm Bangladeshi, living abroad", bn: "আমি প্রবাসী বাংলাদেশি", text: "Passport, missions, certificates, pension and help for migrant workers.", symbol: "public", href: `${NP}?need=abroad#services` },
+    { title: "I'm visiting or investing", bn: "আমি বিদেশি অতিথি বা বিনিয়োগকারী", text: "Visa, customs, safety, travel, and starting a business.", symbol: "flight_land", href: `${NP}?need=visitors#services` },
+  ],
+  howTitle: "Most-used services",
+  howLede: "One click to the official page.",
+  jump: "See every service",
   featured: {
     icon: "ambulance",
     symbol: "emergency",
@@ -347,26 +378,32 @@ export const BENEFITS = {
 /* ── The national portal (bangladesh.gov.bd) ─────────────────────────── */
 
 export const NATIONAL_PORTAL = {
-  title: "Bangladesh National Portal",
-  hero: {
-    src: "/motherland/photos/martyrs-memorial.jpg",
-    alt: "The National Martyrs' Memorial at Savar from the air, its seven peaks rising over green lawns",
-    focus: "50% 45%",
-    credit: { author: "Md Rumon Munshi", license: "Unsplash License", licenseUrl: "https://unsplash.com/license", sourceUrl: "https://unsplash.com/photos/the-national-martyrs-memorial-of-bangladesh-tT4mUnA_M7w" },
-  } satisfies Photo,
-  popular: [
-    { label: "Browse every e-service", href: `${PORTAL}/views/all-eservices-in-bangladesh` },
-    { label: "Find ministries and directorates", href: `${PORTAL}/views/ministry-and-directorate-list` },
-    { label: "Open your district's portal", href: `${PORTAL}/views/district-list` },
-  ] satisfies GovLink[],
-  intro:
-    "বাংলাদেশ জাতীয় তথ্য বাতায়ন (bangladesh.gov.bd) is the government's front door: every ministry, directorate, district and online service in one place. Everything below was gathered from the portal on 1 November 2026, and every link opens the service itself.",
+  title: "One click to every government service",
+  intro: "Type what you need, in English or Bangla. Each button opens the official page straight away, so you can do it from home, with no photocopy shop and no middleman.",
+  how: {
+    title: "How one click works",
+    steps: [
+      { title: "You go straight to the official form", text: "Every button opens the government's own page in a new tab, and each card shows you its address first. You don't need to buy a printed form to use it." },
+      { title: "You sign in and submit there", text: "BD Guide is not a government site. It can't file an application for you, and it never sees your details. Some services still ask you to appear in person, for example to give biometrics." },
+      { title: "Every link is opened and checked", text: "About 80 of the 283 links on the national portal's own list did not open for our checker, so only working ones are here. Admission sites open only in season, and any site can go down for a while." },
+    ],
+  },
+  help: {
+    title: "Rather have someone help?",
+    lede: "You don't have to do it alone, and you shouldn't have to pay a middleman to find the right form.",
+  },
+  schemes: {
+    title: "New government loan schemes",
+    lede: "What Bangladesh Bank has announced in 2026, as reported in the press. These are the terms reported at the time, so confirm them before you rely on them.",
+    apply: "You apply at a bank branch, not online and not through us, and not every bank takes part in every scheme. Ask your bank, and read the original notices in",
+    official: { label: "Bangladesh Bank's circulars", href: "https://www.bb.org.bd/en/index.php/mediaroom/circular" },
+  },
   glance: {
     title: "The government at a glance",
     stats: [
       { value: "57", label: "Ministries and divisions" },
       { value: "72", label: "Directorates" },
-      { value: "565", label: "Other offices" },
+      { value: "566", label: "Other offices" },
       { value: "8", label: "Divisions" },
       { value: "64", label: "Districts" },
       { value: "500", label: "Upazilas" },
@@ -374,8 +411,8 @@ export const NATIONAL_PORTAL = {
     ],
   },
   services: {
-    title: "Citizen services",
-    lede: "The portal's service categories. Each one opens its full list of services.",
+    title: "The national portal's own categories",
+    lede: "For anything we haven't listed, each of these opens the full list on bangladesh.gov.bd.",
     items: [
       { title: "Digital centre", icon: "desktop", symbol: "computer", bn: "ডিজিটাল সেন্টার", href: category("69a5597fc4774958d7c92fe8") },
       { title: "Finance and commerce", icon: "coins", symbol: "payments", bn: "অর্থ ও বাণিজ্য", href: category("69a5597fc4774958d7c92fe5") },
@@ -444,21 +481,7 @@ export const NATIONAL_PORTAL = {
       { label: "Bangladesh Code (laws)", href: "http://bdlaws.minlaw.gov.bd/" },
       { label: "National Budget", href: "https://mof.gov.bd/" },
       { label: "Bangladesh Tourism Board", href: "https://tourismboard.gov.bd/" },
-      { label: "Bangladesh Parjatan Corporation", href: "https://www.parjatan.gov.bd/" },
-    ] satisfies GovLink[],
-  },
-  business: {
-    title: "Business and investment",
-    links: [
-      { label: "Foreign investment", href: `${PORTAL}/pages/static-pages/69a55ba386514399668e4e5b` },
-      { label: "Trade licence", href: `${PORTAL}/pages/static-pages/69a55ba386514399668e4e5a` },
-      { label: "Investment services (BIDA)", href: sector("69a5597fc4774958d7c92ff5") },
-      { label: "Trading Corporation of Bangladesh", href: "https://tcb.gov.bd/" },
-      { label: "National Board of Revenue services", href: sector("69a5597fc4774958d7c9301e") },
-      { label: "Bangladesh Bank services", href: sector("69a5597fc4774958d7c9302b") },
-      { label: "Exchange rates (Bangladesh Bank)", href: "https://www.bb.org.bd/en/index.php" },
-      { label: "Job and tender announcements", href: `${PORTAL}/pages/job-tender-announcements` },
-      { label: "Weather (Bangladesh Meteorological Department)", href: "https://live6.bmd.gov.bd/" },
+      { label: "Bangladesh Parjatan Corporation", href: "https://parjatan.gov.bd/" },
     ] satisfies GovLink[],
   },
   looking: { before: "Looking for something else?", label: "Visit the national portal at bangladesh.gov.bd", href: PORTAL },

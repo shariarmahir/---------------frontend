@@ -189,14 +189,6 @@
   line-height: 1;
 }
 
-/* A film sits under a tone-matched colour wash; the title also carries its own soft edge. */
-.ml-hero-title {
-  text-shadow: 0 2px 4px rgb(0 0 0 / 0.45), 0 4px 32px rgb(0 0 0 / 0.5);
-}
-.ml-hero-title-light {
-  text-shadow: 0 2px 4px rgb(0 0 0 / 0.5), 0 4px 32px rgb(0 0 0 / 0.55);
-}
-
 /* The category pages and Geography & Travel wear white, paper, navy and gold.
    Shared parts that are dark green on the landing page turn navy under this class. */
 .ml-light .bg-ml-ink,
@@ -213,8 +205,8 @@
 /* On these pages ink is navy and the pale grounds are cool, so nothing reads green. */
 .ml-light {
   /* A reading column and calm titles: on a wide screen the cards stay card-sized. */
-  --ml-column: 90rem;
-  --ml-display: clamp(2.25rem, 4.2vw, 3.75rem);
+  --ml-column: 100rem;
+  --ml-display: clamp(2.5rem, 4.6vw, 4.5rem);
   --color-ml-ink: #0b1849;
   --color-ml-deep: #0b1849;
   --color-ml-green: #16215c;
@@ -222,6 +214,54 @@
   --color-ml-sun: #fdf4d7;
   --color-ml-mint: #e4f2ec;
   --color-ml-mist: #cdd5ea;
+}
+
+/* Lines that made us: each line follows the last down the page... */
+.ml-lines-list {
+  display: grid;
+  gap: 0.25rem;
+}
+.ml-lines-slide {
+  min-height: 34rem;
+}
+.ml-lines-names {
+  display: none;
+}
+/* ...and from a laptop up the stage holds still while the scroll carries it from line to line. */
+@media (min-width: 1024px) and (min-height: 700px) and (prefers-reduced-motion: no-preference) {
+  .ml-lines {
+    height: calc(100svh - var(--ml-header) + (var(--n) - 1) * 70svh);
+  }
+  .ml-lines-stage {
+    position: sticky;
+    top: var(--ml-header);
+    height: calc(100svh - var(--ml-header));
+    overflow: clip;
+  }
+  .ml-lines-list {
+    height: 100%;
+    gap: 0;
+  }
+  .ml-lines-slide {
+    grid-area: 1 / 1;
+    min-height: 0;
+    opacity: 0;
+    transition: opacity 0.8s ease-out;
+  }
+  .ml-lines-slide[data-on] {
+    opacity: 1;
+  }
+  .ml-lines-words {
+    padding-bottom: 6.5rem;
+    translate: 0 1.5rem;
+    transition: translate 1s cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+  [data-on] > .ml-lines-words {
+    translate: 0 0;
+  }
+  .ml-lines-names {
+    display: block;
+  }
 }
 
 /* A card rises into place and its photograph wipes open, once. */

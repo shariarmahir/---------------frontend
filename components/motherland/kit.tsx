@@ -20,7 +20,7 @@ export const ANCHOR = "scroll-mt-(--ml-header)";
 export const DISPLAY = "font-ml-display text-(length:--ml-display) leading-[1.02] tracking-[0.01em] uppercase";
 
 /** The space above and below a band on the category pages. */
-export const BAND_Y = "py-12 sm:py-14 lg:py-16";
+export const BAND_Y = "py-14 sm:py-20 lg:py-24";
 
 export const LEDE = "max-w-2xl text-lg leading-relaxed text-pretty sm:text-xl";
 

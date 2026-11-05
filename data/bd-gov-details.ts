@@ -393,7 +393,7 @@ export const DETAILS: GovDetail[] = [
       {
         title: "Land records",
         text: "Search and order certified copies of khatians (records of rights) and mouza maps online.",
-        links: [{ label: "e-Porcha land records", href: "https://eporcha.gov.bd/" }],
+        links: [{ label: "Land records and khatian", href: "https://dlrms.land.gov.bd/" }],
       },
       {
         title: "Mutation (namjari)",
@@ -442,7 +442,7 @@ export const DETAILS: GovDetail[] = [
     symbol: "storefront",
     summary: "Start a business, get a trade licence, register a company and find support for investors.",
     intro: "Starting a business in Bangladesh usually means a trade licence from your local authority, a tax number, and, for a company, registration with the Registrar of Joint Stock Companies. Investors can do much of this in one place through BIDA's One Stop Service.",
-    official: { office: "Bangladesh Investment Development Authority", href: "https://bida.gov.bd/", site: "bida.gov.bd" },
+    official: { office: "BanglaBiz business portal", href: "https://banglabiz.gov.bd/", site: "banglabiz.gov.bd" },
     parts: [
       {
         title: "Start a business",
@@ -751,7 +751,7 @@ export const DETAILS: GovDetail[] = [
       },
       {
         title: "Reforms under discussion",
-        text: "The July National Charter of 2025 proposes changes to this structure, including an upper house of Parliament. For the position in force today, read the Constitution on the official site.",
+        text: "Voters approved the July National Charter in a referendum on 12 February 2026. It proposes changes to this structure, including an upper house of Parliament of 100 seats, but the vote is described as a political mandate and the changes take effect only when enacted. For the position in force today, read the Constitution on the official site.",
       },
     ],
   },
@@ -893,11 +893,11 @@ export const DETAILS: GovDetail[] = [
     symbol: "home",
     summary: "Homes for landless and homeless families, and government home loans in Bangladesh.",
     intro: "The government gives homes with land to landless and homeless families, and offers home loans through a state finance corporation.",
-    official: { office: "Ashrayan Project", href: "https://www.ashrayan.gov.bd/", site: "ashrayan.gov.bd" },
+    official: { office: "Bangladesh House Building Finance Corporation", href: "https://bhbfc.gov.bd/", site: "bhbfc.gov.bd" },
     parts: [
       {
         title: "Homes for landless families",
-        text: "The Ashrayan project gives landless and homeless families a house and the title to its land. Families are chosen locally; ask your UNO's office.",
+        text: "The Ashrayan project has given landless and homeless families a house and the title to its land. Families are chosen locally, so ask your UNO's office whether it is still taking names.",
       },
       {
         title: "Home loans and public housing",

@@ -62,7 +62,7 @@ export const RESOURCES_BLOCKS: Block[] = [
     lede: "Skills the world already pays for, from the factory floor to the laptop.",
     columns: 3,
     cards: [
-      { title: "Second in the world for clothes", text: "Generations of skill on the factory floor, now moving into green factories and higher-value goods.", picture: photo("garments") ?? photo("garments") },
+      { title: "Second in the world for clothes", text: "Generations of skill on the factory floor, now moving into green factories and higher-value goods.", picture: pic("garment-floor", "Workers at sewing machines on a factory floor") ?? photo("garments") },
       { title: "Second in online work", text: "An Oxford Internet Institute study ranked Bangladesh second among the world's sources of online workers. The data is from 2017, and the talent has only grown.", source: FREELANCE, picture: photo("mobile-money") },
       { title: "136 million online", text: "Internet subscribers at the end of June 2026, along with 189.83 million active mobile connections.", source: BTRC, picture: pic("phone-field", "A young man using his phone beside a green field")},
     ],

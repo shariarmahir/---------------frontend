@@ -3,6 +3,8 @@ import { Icon } from "@/components/ui/icon";
 import { PORTAL, SITE, type GovLink } from "@/data/bd-gov";
 import type { DetailPart, GovDetail } from "@/data/bd-gov-details";
 import { cn } from "@/lib/utils";
+import type { Service } from "@/data/bd-gov-services";
+import { ServiceCard } from "./service-card";
 import { GovAnchor, LINK } from "./kit";
 
 /*
@@ -74,6 +76,25 @@ export function OfficialCard({ detail }: { detail: GovDetail }) {
         </a>
       </div>
     </aside>
+  );
+}
+
+/** The services this topic is about, one click from the page that explains them. */
+export function DoItNow({ services }: { services: Service[] }) {
+  if (!services.length) return null;
+  return (
+    <section aria-labelledby="do-it-now" className="mt-10">
+      <h2 id="do-it-now" className="font-gv-serif text-[1.6rem] leading-tight font-bold text-gv-navy">
+        Do it now
+      </h2>
+      <ul className="mt-4 grid gap-4 sm:grid-cols-2">
+        {services.map((s) => (
+          <li key={s.id} className="flex">
+            <ServiceCard service={s} />
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 

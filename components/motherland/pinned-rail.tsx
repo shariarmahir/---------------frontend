@@ -51,7 +51,7 @@ export function PinnedRail({ head, label, children }: { head: ReactNode; label: 
     <div ref={outer} style={pinned ? { height: `calc(100svh + ${distance}px)` } : undefined}>
       <div className={cn("flex flex-col", pinned ? "sticky top-0 h-svh gap-8 overflow-clip pt-[calc(var(--ml-header)+1.5rem)] pb-8" : "gap-10 py-20 sm:py-28")}>
         <div className={COLUMN}>{head}</div>
-        <motion.ul ref={track} aria-label={label} onFocus={bringIntoView} style={pinned ? { x } : undefined} className={cn("flex gap-6", pinned ? "min-h-0 w-max flex-1 pr-12 pl-[max(3rem,calc((100vw-120rem)/2+3rem))]" : "ml-rail snap-x snap-mandatory overflow-x-auto")}>
+        <motion.ul ref={track} aria-label={label} onFocus={bringIntoView} style={pinned ? { x } : undefined} className={cn("flex gap-6", pinned ? "min-h-0 w-max flex-1 pr-12 pl-[max(3rem,calc((100vw-var(--ml-column))/2+3rem))]" : "ml-rail snap-x snap-mandatory overflow-x-auto")}>
           {children}
         </motion.ul>
       </div>

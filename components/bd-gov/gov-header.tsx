@@ -19,8 +19,7 @@ function Flag() {
 
 function SearchForm({ id, className }: { id: string; className?: string }) {
   return (
-    <form role="search" action="https://www.google.com/search" method="get" className={cn("flex h-11", className)}>
-      <input type="hidden" name="as_sitesearch" value={SITE.search.site} />
+    <form role="search" action="/bangladesh/government/national-portal" method="get" className={cn("flex h-11", className)}>
       <label htmlFor={id} className="sr-only">
         {SITE.search.label}
       </label>

@@ -3,7 +3,6 @@ import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import { CardIcon } from "@/components/ui/card-icon";
 import { Icon } from "@/components/ui/icon";
-import { Mark } from "@/components/bd-gov/mark";
 import type { GovCard, GovLink, Photo } from "@/data/bd-gov";
 import { cn } from "@/lib/utils";
 
@@ -15,7 +14,7 @@ import { cn } from "@/lib/utils";
  * on hover. No gold bars anywhere: gold is kept for small accents.
  */
 
-export const CONTAINER = "mx-auto w-full max-w-289 px-4";
+export const CONTAINER = "mx-auto w-full max-w-340 px-4 sm:px-6";
 
 /** Site links route inside the app; everything else is an official page. */
 export function GovAnchor({ href, ...rest }: ComponentProps<"a"> & { href: string }) {
@@ -68,9 +67,9 @@ export function TitleHero({ title, hero, popular }: { title: string; hero: Photo
   return (
     <>
       <div className={CONTAINER}>
-        <h1 className="font-gv-serif text-[1.95rem] leading-[1.2] font-bold text-gv-green">{title}</h1>
+        <h1 className="font-gv-serif text-[clamp(2rem,3.4vw,3rem)] leading-[1.15] font-bold text-gv-navy">{title}</h1>
       </div>
-      <section aria-label="Most popular" className="relative isolate mt-3 overflow-hidden border-t-10 border-gv-green bg-gv-navy pt-56 pb-8 sm:pt-64 lg:py-10">
+      <section aria-label="Most popular" className="relative isolate mt-4 overflow-hidden bg-gv-navy pt-56 pb-8 sm:pt-64 lg:py-10">
         <div className="absolute inset-x-0 top-0 -z-10 h-72 sm:h-80 lg:inset-y-0 lg:left-[28%] lg:h-auto">
           <Image src={hero.src} alt={hero.alt} fill priority sizes="(min-width: 1024px) 72vw, 100vw" className="object-cover" style={{ objectPosition: hero.focus }} />
         </div>
@@ -101,7 +100,7 @@ export function TitleHero({ title, hero, popular }: { title: string; hero: Photo
 export function Intro({ children }: { children: ReactNode }) {
   return (
     <div className={CONTAINER}>
-      <p className="mt-6 font-gv-serif text-[1.04rem] leading-normal">{children}</p>
+      <p className="mt-8 max-w-[70ch] text-[1.2rem] leading-relaxed">{children}</p>
     </div>
   );
 }
@@ -109,92 +108,24 @@ export function Intro({ children }: { children: ReactNode }) {
 /** Where a tile leads: the guide's own pages and sections, or an official site. */
 const isOfficial = (href: string) => /^https?:/.test(href);
 
-const TILE_ACCENTS = [
-  { art: "text-gv-navy" },
-  { art: "text-sky-600" },
-  { art: "text-amber-500" },
-  { art: "text-gv-green" },
-  { art: "text-gv-gold" },
-  { art: "text-indigo-500" },
-];
-
-/** A light service tile with a bold navy-and-gold action and colorful artwork. */
-export function Tile({
-  title,
-  text,
-  sub,
-  href,
-  icon,
-  symbol,
-  accentIndex = 0,
-}: {
-  title: string;
-  text?: string;
-  sub?: string;
-  href: string;
-  icon?: string;
-  symbol?: string;
-  accentIndex?: number;
-}) {
-  const accent = TILE_ACCENTS[accentIndex % TILE_ACCENTS.length];
-
+/** A topic: its icon, its name and a line about it. The whole card is the link. */
+export function Tile({ title, text, sub, href, icon, symbol }: { title: string; text?: string; sub?: string; href: string; icon?: string; symbol?: string }) {
   return (
     <GovAnchor
       href={href}
-      className="group relative isolate flex min-h-72 h-full w-full flex-col overflow-hidden rounded-2xl bg-white p-5 text-left shadow-[0_2px_8px_rgb(11_24_73/0.05),0_16px_34px_-26px_rgb(11_24_73/0.28)] ring-1 ring-gv-navy/10 transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_18px_38px_-22px_rgb(11_24_73/0.25)] hover:ring-gv-gold/60 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-gv-green motion-reduce:transition-none motion-reduce:hover:translate-y-0 lg:aspect-square lg:min-h-[21rem] sm:p-6"
+      className="group flex h-full w-full flex-col rounded-xl bg-white p-5 text-left shadow-[0_1px_2px_rgb(11_24_73/0.05)] ring-1 ring-gv-navy/10 transition-shadow duration-200 hover:shadow-[0_14px_30px_-18px_rgb(11_24_73/0.4)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-gv-green"
     >
-      <span aria-hidden className="grid size-14 shrink-0 place-items-center text-gv-navy sm:size-16">
-        {icon ? (
-          <CardIcon name={`gov/${icon}`} fallback={symbol ?? "circle"} size={54} delay={3200} />
-        ) : symbol ? (
-          <Icon name={symbol} className="text-[3.25rem]!" />
-        ) : null}
+      <span aria-hidden className="grid size-12 shrink-0 place-items-center text-gv-navy">
+        {icon ? <CardIcon name={`gov/${icon}`} fallback={symbol ?? "circle"} size={44} delay={3200} /> : symbol ? <Icon name={symbol} className="text-[2.5rem]!" /> : null}
       </span>
-      {isOfficial(href) ? (
-        <span className="absolute top-6 right-5 text-[0.52rem] font-bold tracking-[0.12em] text-gv-gold">
-          OFFICIAL SERVICE
+      {sub ? (
+        <span lang="bn" className="mt-3 block font-bengali text-sm text-gv-ink/70">
+          {sub}
         </span>
-      ) : (
-        <Mark className="absolute top-6 right-5 text-[0.65rem]" />
-      )}
-      <span className="relative z-10 mt-auto max-w-[85%] pb-1">
-        {sub ? (
-          <span lang="bn" className="mb-1 block font-bengali text-sm text-gv-ink/65">
-            {sub}
-          </span>
-        ) : null}
-        <span className="font-gv-serif text-[1.16rem] leading-snug font-bold text-gv-navy text-balance">{title}</span>
-        {text ? <span className="mt-2 block text-[0.96rem] leading-snug text-gv-ink/80 text-pretty">{text}</span> : null}
-      </span>
-      <span className="relative z-10 mt-5 flex min-h-12 w-full items-center justify-between rounded-full bg-gv-navy py-1.5 pr-2 pl-5 text-[0.95rem] font-bold text-white shadow-[0_6px_14px_-8px_rgb(11_24_73/0.7)] transition-colors group-hover:bg-gv-green">
-        <span>{isOfficial(href) ? "Visit official site" : "Explore"}</span>
-        <span aria-hidden className="grid size-9 place-items-center rounded-full bg-gv-gold text-gv-navy transition-transform group-hover:translate-x-0.5">
-          <Icon name={isOfficial(href) ? "north_east" : "arrow_forward"} className="text-[1.25rem]! font-bold" />
-        </span>
-      </span>
-      <svg aria-hidden viewBox="0 0 160 120" className={cn("pointer-events-none absolute right-0 bottom-14 h-28 w-36 opacity-[0.13] transition-transform duration-500 group-hover:scale-105", accent.art)}>
-        {accentIndex % 3 === 0 ? (
-          <g fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M75 125C92 95 113 87 121 62s18-42 45-53" />
-            <path d="M90 128c16-28 37-36 45-61s18-42 44-53" />
-            <path d="M106 130c16-28 36-36 44-61s17-42 43-53" />
-            <path d="M122 132c15-28 35-36 43-61s17-42 42-53" />
-          </g>
-        ) : accentIndex % 3 === 1 ? (
-          <g fill="currentColor">
-            {Array.from({ length: 24 }, (_, i) => (
-              <circle key={i} cx={82 + (i % 6) * 14} cy={58 + Math.floor(i / 6) * 14} r={2 + ((i + 1) % 3)} />
-            ))}
-          </g>
-        ) : (
-          <g fill="none" stroke="currentColor" strokeWidth="4">
-            <path d="m60 126 78-78 78 78" />
-            <path d="m78 126 60-60 60 60" />
-            <path d="m96 126 42-42 42 42" />
-            <path d="m114 126 24-24 24 24" />
-          </g>
-        )}
-      </svg>
+      ) : null}
+      <span className={cn("font-gv-serif text-[1.16rem] leading-snug font-bold text-balance text-gv-navy", !sub && "mt-3")}>{title}</span>
+      {text ? <span className="mt-2 block text-[0.98rem] leading-snug text-pretty text-gv-ink/85">{text}</span> : null}
+      <span className="mt-auto pt-4 font-semibold text-gv-green underline-offset-4 group-hover:underline">{isOfficial(href) ? "Visit official site" : "Explore"}</span>
     </GovAnchor>
   );
 }
@@ -204,9 +135,9 @@ export function CardGroup({ cards, label, columns = 3, className }: { cards: Gov
   return (
     <div className={cn("bg-gv-card-ground py-6 sm:py-8 lg:py-10", className)}>
       <ul aria-label={label} className={cn(CONTAINER, "grid gap-4 sm:grid-cols-2 lg:gap-5", columns === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3")}>
-        {cards.map((c, index) => (
+        {cards.map((c) => (
           <li key={c.title} className="flex">
-            <Tile {...c} accentIndex={index} />
+            <Tile {...c} />
           </li>
         ))}
       </ul>

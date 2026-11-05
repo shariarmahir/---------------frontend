@@ -30,11 +30,14 @@ export function MotherlandFooter({ credits, onLanding = true, narrow, children }
   if (narrow) {
     return (
       <footer className="border-t border-white/10 bg-ml-navy text-sm text-white/70">
-        <div className={cn(COLUMN, "flex flex-wrap items-center gap-x-6 gap-y-2 py-3")}>
+        <div className={cn(COLUMN, "flex flex-wrap items-center gap-x-8 gap-y-3 py-6")}>
           <Link href="/bangladesh" className="rounded-sm text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
-            <Logo className="text-[0.7rem]" />
+            <Logo className="text-[0.85rem]" />
           </Link>
           <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-6 gap-y-2 font-semibold">
+            <Link href="/bangladesh/travel" className="rounded-sm hover:text-white focus-visible:outline-2 focus-visible:outline-white">Visit</Link>
+            <Link href="/bangladesh/invest" className="rounded-sm hover:text-white focus-visible:outline-2 focus-visible:outline-white">Invest</Link>
+            <Link href="/bangladesh/facts" className="rounded-sm hover:text-white focus-visible:outline-2 focus-visible:outline-white">Facts</Link>
             <Link href="/" className="rounded-sm hover:text-white focus-visible:outline-2 focus-visible:outline-white">Kandari-Lab</Link>
             <Link href="/signup" className="rounded-sm text-signal-orange hover:text-white focus-visible:outline-2 focus-visible:outline-white">Join Kandari Profile</Link>
           </nav>

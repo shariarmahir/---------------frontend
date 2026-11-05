@@ -167,7 +167,7 @@ export const CATEGORIES: Category[] = [
           life("Satyendra Nath Bose"),
           life("Jagadish Chandra Bose"),
           { title: "Fazlur Rahman Khan", meta: "1929 to 1982, engineer", text: "Born in Dhaka, he worked out the tube structures that made modern skyscrapers possible, and engineered Chicago's Sears Tower and John Hancock Center.", picture: pic("p-fazlur", "The John Hancock Center in Chicago, one of his towers") ?? photo("metro-rail") },
-          { title: "Maqsudul Alam", meta: "1954 to 2014, genome scientist", text: "He led the Bangladeshi team that decoded the genome of jute, the country's golden fibre, in 2010.", picture: pic("jute-field", "Jute in water, the plant whose genome he decoded") ?? photo("rice-planting") },
+          { title: "Maqsudul Alam", meta: "1954 to 2014, genome scientist", text: "He led the Bangladeshi team that decoded the genome of jute, the country's golden fibre, in 2010.", picture: pic("p-alam-lab", "Maqsudul Alam in his laboratory") ?? photo("rice-planting") },
         ],
       },
     ],

@@ -41,6 +41,8 @@
 /* MOTHERLAND's colours that its light pages change (.ml-light in motherland.css), so these stay live variables. */
 @theme {
   --color-ml-ground: #f4f2f0;
+  --color-ml-sun: #fdf4d7;
+  --color-ml-mint: #e4f2ec;
   --color-ml-ink: #0f2a20;
   --color-ml-deep: #0b3b2c;
   --color-ml-green: #006a4e;

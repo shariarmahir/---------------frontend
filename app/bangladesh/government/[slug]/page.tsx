@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { HaveAQuestion, OfficialCard, Part, SideNav } from "@/components/bd-gov/detail";
+import { HaveAQuestion, OfficialCard, Part, SideNav, DoItNow } from "@/components/bd-gov/detail";
+import { servicesFor } from "@/data/bd-gov-services";
 import { CONTAINER, Crumbs } from "@/components/bd-gov/kit";
 import { ABOUT, BENEFITS, TOPICS, type GovCard } from "@/data/bd-gov";
 import { DETAILS, UPDATED, detailFor, type DetailSection } from "@/data/bd-gov-details";
@@ -55,8 +56,9 @@ export default async function GovDetailPage({ params }: { params: Promise<{ slug
         </div>
 
         <article className="min-w-0">
-          <h1 className="font-gv-serif text-[2.1rem] leading-[1.18] font-bold text-gv-green text-balance lg:text-[2.45rem]">{detail.title}</h1>
+          <h1 className="font-gv-serif text-[2.1rem] leading-[1.18] font-bold text-gv-navy text-balance lg:text-[2.75rem]">{detail.title}</h1>
           <p className="mt-5 max-w-[62ch] font-gv-serif text-[1.13rem] leading-[1.7]">{detail.intro}</p>
+          <DoItNow services={servicesFor(detail.slug)} />
           <OfficialCard detail={detail} />
           {detail.parts.map((p) => (
             <Part key={p.title} part={p} />

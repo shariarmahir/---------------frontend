@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import type { QuizQuestion } from "@/data/motherland-categories";
 import { cn } from "@/lib/utils";
-import { ANCHOR, COLUMN, DISPLAY } from "./kit";
+import { ANCHOR, BAND_Y, COLUMN, DISPLAY } from "./kit";
 
 /** Britannica's quiz, short: each question answered once, then the score. Three share a row; any other count falls into pairs, so no row is left short. */
 export function Quiz({ questions, name }: { questions: QuizQuestion[]; name: string }) {
@@ -13,7 +13,7 @@ export function Quiz({ questions, name }: { questions: QuizQuestion[]; name: str
   const right = picked.filter((p, i) => p === questions[i].answer).length;
 
   return (
-    <section id="quiz" aria-labelledby="quiz-title" className={cn(ANCHOR, "bg-white py-12 text-ml-ink sm:py-14 lg:py-16")}>
+    <section id="quiz" aria-labelledby="quiz-title" className={cn(ANCHOR, BAND_Y, "bg-ml-sun text-ml-ink")}>
       <div className={cn(COLUMN, "flex flex-col gap-8 lg:gap-10")}>
         <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
           <h2 id="quiz-title" className={DISPLAY}>
@@ -28,7 +28,7 @@ export function Quiz({ questions, name }: { questions: QuizQuestion[]; name: str
             const choice = picked[i];
             const done = choice !== null;
             return (
-              <li key={q.question} className="flex flex-col gap-5 rounded-[1.25rem] bg-ml-ground p-6 sm:p-8">
+              <li key={q.question} className="flex flex-col gap-5 rounded-[1.25rem] bg-white p-6 shadow-[0_10px_30px_-18px_rgb(11_24_73/0.45)] sm:p-8">
                 <p className="text-xl leading-snug font-bold text-balance">{q.question}</p>
                 <ul className="flex flex-col gap-2.5">
                   {q.options.map((o, n) => {
@@ -42,7 +42,7 @@ export function Quiz({ questions, name }: { questions: QuizQuestion[]; name: str
                           onClick={() => setPicked((p) => p.map((v, k) => (k === i ? n : v)))}
                           className={cn(
                             "flex min-h-12 w-full items-center justify-between gap-3 rounded-full px-6 py-2.5 text-left font-semibold transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ml-green",
-                            !done && "bg-white ring-1 ring-ml-ink/15 hover:bg-signal-orange",
+                            !done && "bg-ml-ground ring-1 ring-ml-ink/15 hover:bg-signal-orange",
                             done && isAnswer && "bg-signal-orange text-ml-ink",
                             done && !isAnswer && isChoice && "bg-ml-ink text-white",
                             done && !isAnswer && !isChoice && "bg-white text-ml-ink/55 ring-1 ring-ml-ink/10",
