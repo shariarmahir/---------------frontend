@@ -114,10 +114,16 @@
   --color-ml-red: #f42a41;
   /* The flag's green, which .ml-light's navy never touches: the Facts mark needs the real thing. */
   --color-ml-flag: #006a4e;
+  --color-ml-genius: #0f42c0; /* Genius, the research segment's blue */
+  --color-ml-yellow: #ffc61a; /* the logo's full stop on the white header: the brand gold, brighter */
   --color-ml-river: #5aa9d6;
+  /* The night ground of the Built by Bangladesh poster cards: navy taken almost to black. */
+  --color-ml-night: #10162e;
   --font-ml-display: var(--font-anton), var(--font-bengali), sans-serif;
-  --font-ml-sans: var(--font-montserrat), var(--font-bengali), sans-serif;
+  --font-ml-sans: var(--font-ml-ui-face), var(--font-bengali), sans-serif;
   --font-ml-title: var(--font-ml-title-face), var(--font-bengali), sans-serif;
+  --font-ml-brush: var(--font-ml-brush-face), cursive;
+  --font-ml-serif: var(--font-ml-serif-face), var(--font-bengali), serif;
 
   /* BD Guide (/bangladesh/government): the government guide, laid out after
      usa.gov and dressed in MOTHERLAND's and Kandari-Lab's colours: the
@@ -138,8 +144,8 @@
   --color-gv-mist: #e4eee9;
   --color-gv-card-ground: #f7f8fb;
   --color-gv-feature: #e4b027;
-  --font-gv-serif: var(--font-merriweather), var(--font-bengali), Georgia, serif;
-  --font-gv-sans: var(--font-source-sans), var(--font-bengali), sans-serif;
+  --font-gv-serif: var(--font-ml-ui-face), var(--font-bengali), sans-serif;
+  --font-gv-sans: var(--font-ml-ui-face), var(--font-bengali), sans-serif;
 
   /* Landing-page system (code.html / DESIGN.md "Clinical Cleanroom").
      Scoped to the page body; the navbar keeps its own palette above. */

@@ -1,17 +1,17 @@
 import { ABOUT } from "@/data/motherland";
 import { cn } from "@/lib/utils";
-import { BAND_Y, COLUMN, DISPLAY, NextPage } from "./kit";
+import { COLUMN, DISPLAY, NextPage } from "./kit";
 import { RiseText } from "./rise-text";
 import { ScrollFill } from "./scroll-fill";
 
 /**
- * About Bangladesh, after the film: the country in one paragraph that inks
- * itself in as it is read, the six facts a first-time visitor asks for on a
+ * About Bangladesh, straight after the film's wave edge (so it starts close under it, just clear
+ * of the welcome bar): the country in one paragraph that inks itself in as it is read, the six facts a first-time visitor asks for on a
  * full-width gold band, then the question the whole page is for.
  */
 export function About() {
   return (
-    <section aria-labelledby="about-title" className={BAND_Y}>
+    <section aria-labelledby="about-title" className="pt-10 pb-14 sm:pt-12 sm:pb-20 lg:pt-14 lg:pb-24">
       <h2 id="about-title" className="sr-only">
         About Bangladesh
       </h2>

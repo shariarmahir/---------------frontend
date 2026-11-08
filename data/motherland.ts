@@ -18,7 +18,7 @@ import { project } from "./bangladesh-map.ts";
 
 /* ── Pictures and their credits ──────────────────────────────────────── */
 
-type Source = "Unsplash" | "Pexels" | "Pixabay" | "Wikimedia Commons";
+type Source = "Unsplash" | "Pexels" | "Pixabay" | "Wikimedia Commons" | "YouTube";
 
 export interface Credit {
   author: string;
@@ -117,8 +117,8 @@ export interface Film {
   src: { phone: string; desktop?: string; wide?: string };
   poster: string;
   credit: Credit;
-  /** The source was shot with black bars above and below: the film is zoomed just past them. */
-  bars?: boolean;
+  /** When the film carries black bars above and below: the width-to-height ratio of the whole frame and of the picture between the bars. The film is shown so that only the picture covers the screen. */
+  bars?: { frame: number; picture: number };
 }
 
 /** The hero title's colour, chosen for the film behind it. */
@@ -134,19 +134,19 @@ function pexels(title: string, file: string, slug: string, desktop?: string): Fi
 }
 
 export const HERO = {
-  /** The anthem's title, as Tagore wrote it. */
-  title: "আমার সোনার বাংলা",
-  /** Clouded hills, green ridges, a Bandarban sunrise, river, sea, tea and rice, cut to 33 seconds in 4K. */
+  /** The hero title: our Bangladesh. */
+  title: "আমাদের বাংলা",
+  /** Mahir's edit (2026-11-06): the 4K film's first 109 seconds at 2.8 times speed, 38.9 seconds, from a misty village sunrise through beach, sea, rice, forest, misty hills, river fields and palms to Dhaka at dusk. Its picture is 2880 x 1053 between black bars, served as he made it, without sound. */
   film: {
-    title: "Hills, rivers, sea, tea and rice across Bangladesh",
-    src: { phone: "/motherland/video/bangladesh-phone.mp4", desktop: "/motherland/video/bangladesh.mp4", wide: "/motherland/video/bangladesh-4k.mp4" },
+    title: "Villages, sea, rice, hills, rivers and Dhaka at dusk across Bangladesh",
+    src: { phone: "/motherland/video/bangladesh-phone.mp4", desktop: "/motherland/video/bangladesh.mp4" },
     poster: "/motherland/video/bangladesh.jpg",
-    bars: true,
+    bars: { frame: 2880 / 2160, picture: 2880 / 1053 },
     credit: {
-      author: "Nishaan Ahmed",
-      source: "Wikimedia Commons",
-      sourceUrl: "https://commons.wikimedia.org/wiki/File:Cinematic_BANGLADESH_in_4K_-_DJI_Mini_2_-_Part_1.webm",
-      license: "CC BY 3.0, shortened from Cinematic Bangladesh in 4K",
+      author: "neutrin05",
+      source: "YouTube",
+      sourceUrl: "https://www.youtube.com/watch?v=YBo4eEUfi_Y",
+      license: "CC BY 3.0, as credited in Gen Z Relaxation's Explore the Natural Beauty of Bangladesh in 4K; shortened and sped up",
       licenseUrl: "https://creativecommons.org/licenses/by/3.0",
     },
   } satisfies Film as Film,
@@ -218,9 +218,15 @@ export const HISTORY = {
 
 /* ── Science & Tech: the article slider ─────────────────────────────── */
 
+/** A Built by Bangladesh poster card: a line on the photograph, the title and one short sentence, the field and three words at its foot. */
 export interface Article {
   title: string;
   text: string;
+  /** Where and when, set on the photograph. */
+  place: string;
+  field: string;
+  words: [string, string, string];
+  href: string;
   picture: Picture;
 }
 
@@ -231,27 +237,47 @@ export const SCIENCE = {
   articles: [
     {
       title: "The Padma Bridge",
-      text: "A 6.15 km road and rail bridge across one of the world's most powerful rivers, opened in June 2022 and paid for from the country's own budget.",
+      text: "6.15 km of road and rail over one of the world's mightiest rivers, paid for by Bangladesh itself.",
+      place: "Mawa to Janjira, 2022",
+      field: "Infrastructure",
+      words: ["road", "rail", "river"],
+      href: "/bangladesh/science-tech#engineering-the-delta",
       picture: unsplash("padma-bridge", "The Padma Bridge stretching across the river on tall concrete piers", "md rifat", "a-large-bridge-spanning-over-a-body-of-water-UrvALLRrDYw"),
     },
     {
       title: "Dhaka Metro Rail",
-      text: "The country's first metro line opened in December 2022, carrying commuters on an elevated line above the capital's traffic.",
+      text: "The country's first metro line, carrying the capital's commuters above its traffic.",
+      place: "Dhaka, 2022",
+      field: "Transport",
+      words: ["rail", "city", "electric"],
+      href: "/bangladesh/science-tech#engineering-the-delta",
       picture: unsplash("metro-rail", "A metro train waiting at an elevated station in Dhaka", "Muhammad", "a-train-station-with-a-train-on-the-tracks-iMw_Rk64_H4"),
     },
     {
       title: "Rice that feeds millions",
-      text: "The Bangladesh Rice Research Institute has released more than a hundred rice varieties, including ones that survive floods, salt water and drought.",
+      text: "More than a hundred rice varieties, bred to survive flood, salt water and drought.",
+      place: "Gazipur, since 1970",
+      field: "Agriculture",
+      words: ["seed", "flood", "harvest"],
+      href: "/bangladesh/science-tech#science-for-daily-life",
       picture: unsplash("rice-planting", "A farmer planting rice seedlings in a flooded paddy field", "Ashraful Haque Akash", "man-in-blue-t-shirt-planting-rice-on-fields-MuiC_cZL80Q"),
     },
     {
       title: "Money on every phone",
-      text: "Mobile financial services let tens of millions of people send, save and pay with a basic phone, many of them for the first time.",
+      text: "Tens of millions send, save and pay with a basic phone, many for the first time.",
+      place: "Every district, since 2011",
+      field: "Finance",
+      words: ["phone", "savings", "payments"],
+      href: "/bangladesh/science-tech#science-for-daily-life",
       picture: unsplash("mobile-money", "A hand holding a mobile phone", "Sheikh Abir Ali", "a-close-up-of-a-person-holding-a-cell-phone-pL8OUVj6ZF8"),
     },
     {
       title: "A parliament of light",
-      text: "Louis Kahn's National Parliament House in Dhaka, completed in 1982, is counted among the landmark buildings of the twentieth century.",
+      text: "Louis Kahn's National Parliament House, a landmark of twentieth-century building.",
+      place: "Sher-e-Bangla Nagar, 1982",
+      field: "Architecture",
+      words: ["concrete", "light", "water"],
+      href: "/bangladesh/science-tech#engineering-the-delta",
       picture: unsplash("parliament", "The National Parliament House in Dhaka seen from directly above, ringed by its lake", "darkstar sr72", "an-aerial-view-of-a-building-with-a-circular-roof-32CxO3iQ0ME"),
     },
   ] satisfies Article[],

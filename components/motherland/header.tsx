@@ -5,21 +5,61 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
 import { TOPICS, TOPIC_PAGES, type TopicId } from "@/data/motherland";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { cn } from "@/lib/utils";
-import { useFilmInk } from "./film-ink";
+import { BrushWord } from "./brush-word";
 import { Logo } from "./logo";
 
-/** The utility bar's links: the rest of Kandari-Lab, one step away. */
+/** The utility bar's links: the rest of Kandari-Lab, one step away. নাগরিক দায়িত্ব is "Civic Duty" in English. */
 const UTILITY = [
-  { label: "Kandari-Lab", href: "/", icon: "home" },
-  { label: "নাগরিক দায়িত্ব", href: "/nagorik", icon: "verified_user" },
+  { label: "Kandari Lab", href: "/", icon: "home" },
+  { label: "Civic Duty", href: "/nagorik", icon: "verified_user" },
   { label: "Research", href: "/research", icon: "local_library" },
 ];
+const RESEARCH = UTILITY[2];
+const SIGN_IN = { label: "Sign up or log in", href: "/login?next=/bangladesh" };
 
-/** How much of the film's light reaches the logo through the header's scrim. */
-const SCRIM_LIGHT = 0.7;
+/** "Research" holds a second once its letters are in, then the Genius mark holds a second, and round again (Mahir, 2026-11-07). */
+const RESEARCH_TURN = 2000;
+const GENIUS_TURN = 1600;
 
-/** The way to BD Guide, the government guide: a button beside "Join with us". */
+/** Research, in the research segment's blue, taking turns with that segment's own mark, Genius. */
+function ResearchMark() {
+  const reduced = useReducedMotion();
+  const [genius, setGenius] = useState(false);
+  const [round, setRound] = useState(0);
+
+  useEffect(() => {
+    if (reduced) return;
+    let timer = 0;
+    const turn = (toGenius: boolean) => {
+      timer = window.setTimeout(
+        () => {
+          setGenius(toGenius);
+          if (!toGenius) setRound((r) => r + 1);
+          turn(!toGenius);
+        },
+        toGenius ? RESEARCH_TURN : GENIUS_TURN,
+      );
+    };
+    turn(true);
+    return () => window.clearTimeout(timer);
+  }, [reduced]);
+
+  return (
+    <span aria-hidden className="grid items-center">
+      <span className={cn("transition-opacity duration-200 [grid-area:1/1]", genius ? "opacity-0" : "opacity-100")}>
+        <BrushWord key={round} text={RESEARCH.label} className="text-ml-genius [--ml-brush-rim:white]" />
+      </span>
+      {genius && (
+        // eslint-disable-next-line @next/next/no-img-element -- a small still mark; the image optimiser adds nothing here
+        <img src="/research/genius-still.png" alt="" width={600} height={219} className="ml-logo-zoom ml-genius-edge h-[1.2rem] w-auto [--i:0] [--ml-zoom-length:0.55s] [--ml-zoom-start:0ms] [grid-area:1/1]" />
+      )}
+    </span>
+  );
+}
+
+/** The way to BD Guide, the government guide: a button beside the sign-in button. */
 const GOV = { label: "Gov", href: "/bangladesh/government" };
 
 /** The topic whose section crosses the middle of the screen. */
@@ -58,8 +98,6 @@ export function MotherlandHeader({ topic, solid: alwaysSolid }: { /** On a categ
   const menuButton = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const solid = alwaysSolid || !onLanding || scrolled || open;
-  const logo = useRef<HTMLAnchorElement>(null);
-  useFilmInk(logo, !solid, SCRIM_LIGHT);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -96,23 +134,15 @@ export function MotherlandHeader({ topic, solid: alwaysSolid }: { /** On a categ
 
       <div className={cn("hidden h-9 text-white transition-colors duration-300 lg:block", solid ? "bg-ml-ink" : "bg-black/30 backdrop-blur-sm")}>
         <nav aria-label="Kandari-Lab" className="flex h-full items-stretch justify-end px-6 text-sm font-semibold">
-          <ul className="flex items-center gap-6 pr-6">
+          <ul className="flex items-center gap-7 pr-2 text-[0.95rem]">
             {UTILITY.map((l) => (
               <li key={l.href}>
-                <Link href={l.href} className="flex items-center gap-1.5 rounded-sm hover:text-signal-orange focus-visible:outline-2 focus-visible:outline-white">
-                  <Icon name={l.icon} className="text-base" />
-                  {l.label}
+                <Link href={l.href} aria-label={l.label} className="block rounded-sm transition-transform duration-200 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+                  {l === RESEARCH ? <ResearchMark /> : <BrushWord text={l.label} loop className="text-ml-yellow" />}
                 </Link>
               </li>
             ))}
           </ul>
-          <Link
-            href="/login?next=/bangladesh"
-            className="flex items-center gap-1.5 border-l border-white/25 pl-5 hover:text-signal-orange focus-visible:outline-2 focus-visible:outline-white"
-          >
-            Sign in
-            <Icon name="chevron_right" className="text-lg" />
-          </Link>
         </nav>
       </div>
 
@@ -124,12 +154,12 @@ export function MotherlandHeader({ topic, solid: alwaysSolid }: { /** On a categ
       >
         <div className="flex h-16 items-center gap-6 px-5 lg:h-22 lg:px-6 xl:max-2xl:gap-3">
           <Link
-            ref={logo}
             href={onLanding ? "#top" : "/bangladesh"}
             onClick={close}
-            className={cn("shrink-0 rounded-sm transition-colors duration-1000 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current lg:ml-5", solid && "text-ml-green")}
+            aria-label="MotherLand home"
+            className={cn("shrink-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current lg:ml-5", solid ? "text-ml-navy [--ml-logo-dot:var(--color-ml-yellow)] [--ml-logo-mother:var(--color-ml-flag)] [--ml-logo-rim-width:56px] [--ml-logo-rim:var(--color-signal-orange)]" : "text-white")}
           >
-            <Logo className="w-[7.75rem] lg:w-[10.4rem]" />
+            <Logo loop className="w-[9rem] [--ml-wave-zoom:1.3] lg:w-[12rem]" />
           </Link>
 
           <nav aria-label="Topics" className="hidden flex-1 xl:block">
@@ -167,17 +197,19 @@ export function MotherlandHeader({ topic, solid: alwaysSolid }: { /** On a categ
               <Icon name="account_balance" className="text-lg" />
               <span className="xl:max-2xl:sr-only">{GOV.label}</span>
             </Link>
-            <a
-              href={onLanding ? "#join" : "/bangladesh#join"}
+            <Link
+              href={SIGN_IN.href}
               onClick={close}
-              className={cn(
-                "hidden min-h-11 shrink-0 items-center gap-2 rounded-full px-6 font-semibold whitespace-nowrap xl:max-2xl:px-5 transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current sm:inline-flex",
-                solid ? "bg-signal-orange text-ml-ink hover:bg-ml-ink hover:text-white" : "bg-signal-orange text-ml-ink hover:bg-white",
-              )}
+              title={SIGN_IN.label}
+              className="grid size-11 shrink-0 place-items-center rounded-full bg-ml-yellow text-ml-navy transition-colors duration-300 hover:bg-signal-orange focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
             >
-              <Icon name="bolt" className="text-lg xl:max-2xl:hidden!" />
-              Join with us
-            </a>
+              {/* A solid figure: the icon font is loaded outline-only. */}
+              <svg aria-hidden viewBox="0 0 24 24" className="size-6" fill="currentColor">
+                <circle cx="12" cy="7.5" r="4.5" />
+                <path d="M3.5 21c0-4.4 3.8-7.5 8.5-7.5s8.5 3.1 8.5 7.5c0 .6-.4 1-1 1h-15c-.6 0-1-.4-1-1Z" />
+              </svg>
+              <span className="sr-only">{SIGN_IN.label}</span>
+            </Link>
             <button
               ref={menuButton}
               type="button"
@@ -205,7 +237,7 @@ export function MotherlandHeader({ topic, solid: alwaysSolid }: { /** On a categ
           <ul className="grid gap-1 sm:grid-cols-2">
             {TOPICS.map((t) => (
               <li key={t.id}>
-                <Link href={TOPIC_PAGES[t.id]} onClick={close} aria-current={topic === t.id ? "page" : undefined} className="block border-b border-ml-ink/10 py-3 font-ml-display text-3xl uppercase hover:text-ml-green">
+                <Link href={TOPIC_PAGES[t.id]} onClick={close} aria-current={topic === t.id ? "page" : undefined} className="block border-b border-ml-ink/10 py-3 font-ml-sans font-extrabold text-3xl hover:text-ml-green">
                   {t.name}
                 </Link>
               </li>
@@ -222,7 +254,7 @@ export function MotherlandHeader({ topic, solid: alwaysSolid }: { /** On a categ
             </Link>
           </div>
           <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold lg:hidden">
-            {[...UTILITY, { label: "Sign in", href: "/login?next=/bangladesh", icon: "login" }].map((l) => (
+            {[...UTILITY, { label: SIGN_IN.label, href: SIGN_IN.href, icon: "login" }].map((l) => (
               <li key={l.href}>
                 <Link href={l.href} className="flex items-center gap-1.5 hover:text-ml-green">
                   <Icon name={l.icon} className="text-base" />

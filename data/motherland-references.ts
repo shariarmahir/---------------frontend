@@ -112,9 +112,9 @@ const LANDING: RefPage = {
   name: "Home page",
   href: "/bangladesh",
   sections: [
-    section("The lettering", [{ name: "Lipighor Font Foundry", url: "https://lipighor.com" }, { name: "Alfa Slab One", url: "https://fonts.google.com/specimen/Alfa+Slab+One" }], [], [
-      "আমার সোনার বাংলা is drawn with Li Sirajee Sylheti 3D, designed by Md. Sirajul Islam and developed by Niladri Shekhar Bala, © Lipighor Font Foundry.",
-      "The logo is drawn from Alfa Slab One by JM Solé, under the SIL Open Font License.",
+    section("The lettering", [{ name: "Lipighor Font Foundry", url: "https://lipighor.com" }, { name: "Knewave", url: "https://fonts.google.com/specimen/Knewave" }], [], [
+      "আমাদের বাংলা is drawn with Li Sirajee Sylheti 3D, designed by Md. Sirajul Islam and developed by Niladri Shekhar Bala, © Lipighor Font Foundry.",
+      "The logo's letters are Knewave by Tyler Finck, under the SIL Open Font License.",
     ]),
     section("The opening film", [], [
       { label: HERO.film.title, credit: HERO.film.credit },

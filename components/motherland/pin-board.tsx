@@ -47,7 +47,7 @@ export function PinBoard({ pins }: { pins: MapPin[] }) {
             </div>
           ) : null}
           <div className="flex flex-col gap-2 p-6 sm:p-7">
-            <RiseText as="h3" now text={pin.name} className="w-full font-ml-display text-[clamp(1.75rem,2.6vw,2.5rem)] leading-[1.1] tracking-[0.01em] uppercase" />
+            <RiseText as="h3" now text={pin.name} className="w-full font-ml-sans font-extrabold text-[clamp(1.75rem,2.6vw,2.5rem)] leading-[1.1] tracking-[-0.03em]" />
             <p className="font-semibold text-white/75">{pin.place}</p>
             <p className="leading-relaxed text-pretty text-white/90">{pin.text}</p>
           </div>

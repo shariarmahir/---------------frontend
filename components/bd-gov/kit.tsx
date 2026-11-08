@@ -1,17 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
-import { CardIcon } from "@/components/ui/card-icon";
-import { Icon } from "@/components/ui/icon";
+import { PosterGrid, type PosterCard } from "@/components/motherland/poster";
 import type { GovCard, GovLink, Photo } from "@/data/bd-gov";
+import { detailFor } from "@/data/bd-gov-details";
 import { cn } from "@/lib/utils";
 
 /*
  * BD Guide's building blocks: usa.gov's page plan (a 1124px column, a
- * Merriweather title over a heavy rule, a photo band with a "Most popular"
- * box, a serif lede, a band of cards) worn in MOTHERLAND's manner: white
- * rounded tiles on a paper ground, a colourful animated icon, and a lift
- * on hover. No gold bars anywhere: gold is kept for small accents.
+ * bold title, a photo band with a "Most popular" box, a lede, a band of
+ * cards) worn in MOTHERLAND's manner: the topic cards are its poster cards,
+ * a photograph melting into night navy with a serif title. No gold bars
+ * anywhere: gold is kept for small accents.
  */
 
 export const CONTAINER = "mx-auto w-full max-w-340 px-4 sm:px-6";
@@ -67,16 +67,16 @@ export function TitleHero({ title, hero, popular }: { title: string; hero: Photo
   return (
     <>
       <div className={CONTAINER}>
-        <h1 className="font-gv-serif text-[clamp(2rem,3.4vw,3rem)] leading-[1.15] font-bold text-gv-navy">{title}</h1>
+        <h1 className="font-ml-serif text-[clamp(2.4rem,4.2vw,3.6rem)] leading-[1.06] tracking-[-0.01em] font-normal text-ml-night">{title}</h1>
       </div>
-      <section aria-label="Most popular" className="relative isolate mt-4 overflow-hidden bg-gv-navy pt-56 pb-8 sm:pt-64 lg:py-10">
+      <section aria-label="Most popular" className="relative isolate mt-4 overflow-hidden bg-ml-night pt-56 pb-8 sm:pt-64 lg:py-10">
         <div className="absolute inset-x-0 top-0 -z-10 h-72 sm:h-80 lg:inset-y-0 lg:left-[28%] lg:h-auto">
           <Image src={hero.src} alt={hero.alt} fill priority sizes="(min-width: 1024px) 72vw, 100vw" className="object-cover" style={{ objectPosition: hero.focus }} />
         </div>
-        <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-t from-gv-navy from-35% to-transparent to-70% lg:bg-linear-to-r lg:from-28% lg:via-gv-navy/50 lg:via-40% lg:to-55%" />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-t from-ml-night from-35% to-transparent to-70% lg:bg-linear-to-r lg:from-28% lg:via-ml-night/50 lg:via-40% lg:to-55%" />
         <div className={CONTAINER}>
-          <div className="w-full rounded-2xl bg-gv-navy p-8 text-white shadow-[0_24px_48px_-12px_rgb(0_0_0/0.5)] ring-1 ring-white/15 sm:w-92">
-            <h2 className="font-gv-serif text-[1.34rem] leading-[1.2] font-bold text-gv-gold">Most popular</h2>
+          <div className="w-full rounded-[1.25rem] bg-ml-night p-8 text-white shadow-[0_24px_48px_-12px_rgb(0_0_0/0.5)] ring-1 ring-white/15 sm:w-92">
+            <h2 className="font-ml-serif text-[1.6rem] leading-[1.2] font-normal text-gv-gold">Most popular</h2>
             <ul className="mt-[1.13rem] list-disc space-y-3 pl-10 marker:text-gv-gold">
               {popular.map((l) => (
                 <li key={l.label}>
@@ -105,42 +105,38 @@ export function Intro({ children }: { children: ReactNode }) {
   );
 }
 
-/** Where a tile leads: the guide's own pages and sections, or an official site. */
+const HOME = "/bangladesh/government";
+
+/** Where a card leads: the guide's own pages and sections, or an official site. */
 const isOfficial = (href: string) => /^https?:/.test(href);
 
-/** A topic: its icon, its name and a line about it. The whole card is the link. */
-function Tile({ title, text, sub, href, icon, symbol }: { title: string; text?: string; sub?: string; href: string; icon?: string; symbol?: string }) {
-  return (
-    <GovAnchor
-      href={href}
-      className="group flex h-full w-full flex-col rounded-xl bg-white p-5 text-left shadow-[0_1px_2px_rgb(11_24_73/0.05)] ring-1 ring-gv-navy/10 transition-shadow duration-200 hover:shadow-[0_14px_30px_-18px_rgb(11_24_73/0.4)] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-gv-green"
-    >
-      <span aria-hidden className="grid size-12 shrink-0 place-items-center text-gv-navy">
-        {icon ? <CardIcon name={`gov/${icon}`} fallback={symbol ?? "circle"} size={44} delay={3200} /> : symbol ? <Icon name={symbol} className="text-[2.5rem]!" /> : null}
-      </span>
-      {sub ? (
-        <span lang="bn" className="mt-3 block font-bengali text-sm text-gv-ink/70">
-          {sub}
-        </span>
-      ) : null}
-      <span className={cn("font-gv-serif text-[1.16rem] leading-snug font-bold text-balance text-gv-navy", !sub && "mt-3")}>{title}</span>
-      {text ? <span className="mt-2 block text-[0.98rem] leading-snug text-pretty text-gv-ink/85">{text}</span> : null}
-      <span className="mt-auto pt-4 font-semibold text-gv-green underline-offset-4 group-hover:underline">{isOfficial(href) ? "Visit official site" : "Explore"}</span>
-    </GovAnchor>
-  );
+/**
+ * A topic as a poster card: on the photograph the office that runs it, and at the foot the
+ * official site the topic's page leads to. Cards for the guide's own pages say so.
+ */
+function toPoster(c: GovCard): PosterCard {
+  const detail = c.href.startsWith(`${HOME}/`) ? detailFor(c.href.slice(HOME.length + 1)) : undefined;
+  const official = isOfficial(c.href);
+  const here = c.href.startsWith("#");
+  return {
+    title: c.title,
+    text: c.text,
+    href: c.href,
+    picture: c.photo,
+    line: detail?.official.office ?? "BD Guide",
+    action: official ? "Visit official site" : here ? "See below" : "Explore",
+    field: detail?.official.site ?? (official ? new URL(c.href).hostname.replace(/^www\./, "") : here ? "On this page" : "An independent guide"),
+    words: official ? ["Official site"] : detail ? ["Guide", "Official link"] : ["Guide"],
+  };
 }
 
-/** A band of tiles on the paper ground, two to four across. */
-export function CardGroup({ cards, label, columns = 3, className }: { cards: GovCard[]; label: string; columns?: 3 | 4; className?: string }) {
+/** A band of topic posters: rows of two wide cards and three standing ones (components/motherland/poster.tsx). */
+export function CardGroup({ cards, label, className }: { cards: GovCard[]; label: string; className?: string }) {
   return (
-    <div className={cn("bg-gv-card-ground py-6 sm:py-8 lg:py-10", className)}>
-      <ul aria-label={label} className={cn(CONTAINER, "grid gap-4 sm:grid-cols-2 lg:gap-5", columns === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3")}>
-        {cards.map((c) => (
-          <li key={c.title} className="flex">
-            <Tile {...c} />
-          </li>
-        ))}
-      </ul>
+    <div className={cn("bg-gv-card-ground py-10 sm:py-12 lg:py-16", className)}>
+      <div className={CONTAINER}>
+        <PosterGrid label={label} cards={cards.map(toPoster)} />
+      </div>
     </div>
   );
 }
@@ -159,7 +155,7 @@ export function Looking({ before, label, href }: { before: string; label: string
 /** A content section's heading, in the system's serif. */
 export function SectionTitle({ id, children, className }: { id: string; children: ReactNode; className?: string }) {
   return (
-    <h2 id={id} className={cn("scroll-mt-6 font-gv-serif text-[1.75rem] leading-tight font-bold text-gv-ink", className)}>
+    <h2 id={id} className={cn("scroll-mt-6 font-ml-serif text-[clamp(1.9rem,3vw,2.5rem)] leading-[1.1] font-normal text-ml-night", className)}>
       {children}
     </h2>
   );

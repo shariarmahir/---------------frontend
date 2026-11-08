@@ -5,14 +5,14 @@ import { filmRegion, navyShare, nextTone, type Tone } from "@/lib/motherland-fil
 
 const COPY_WIDTH = 96;
 const READ_EVERY_MS = 600;
-const COLOUR: Record<Tone, string> = { navy: "var(--color-ml-navy)", gold: "var(--color-signal-orange)" };
+const COLOUR: Record<Tone, string> = { navy: "var(--color-ml-navy)", gold: "var(--color-signal-orange)", white: "#fff" };
 
 /**
- * Colours an element navy or gold by the hero film behind it, or the film's poster while
- * it has no frame. A class on the element sets how slowly the colour changes. `light`
- * says how much of the film's light reaches it, for an element under a dark scrim.
+ * Colours an element navy where the hero film behind it is bright, and `dark` where it isn't,
+ * reading the film or its poster while it has no frame. A class on the element sets how
+ * slowly the colour changes.
  */
-export function useFilmInk(ref: RefObject<HTMLElement | null>, active: boolean, light = 1) {
+export function useFilmInk(ref: RefObject<HTMLElement | null>, active: boolean, dark: Tone = "gold") {
   useEffect(() => {
     const el = ref.current;
     const video = document.querySelector<HTMLVideoElement>("#top video");
@@ -33,8 +33,8 @@ export function useFilmInk(ref: RefObject<HTMLElement | null>, active: boolean, 
       canvas.height = Math.round((COPY_WIDTH * source.height) / source.width);
       copy.drawImage(ready ? video : still, 0, 0, canvas.width, canvas.height);
       const area = filmRegion(el.getBoundingClientRect(), film, source, canvas);
-      tone = nextTone(tone, navyShare(copy.getImageData(area.left, area.top, area.width, area.height).data, light));
-      el.style.color = COLOUR[tone];
+      tone = nextTone(tone, navyShare(copy.getImageData(area.left, area.top, area.width, area.height).data));
+      el.style.color = COLOUR[tone === "navy" ? "navy" : dark];
     };
 
     still.onload = read;
@@ -44,5 +44,5 @@ export function useFilmInk(ref: RefObject<HTMLElement | null>, active: boolean, 
       clearInterval(timer);
       el.style.color = "";
     };
-  }, [ref, active, light]);
+  }, [ref, active, dark]);
 }

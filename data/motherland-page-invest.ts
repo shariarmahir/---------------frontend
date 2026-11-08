@@ -55,7 +55,7 @@ export const INVEST_BLOCKS: Block[] = [
     lede: "Four reasons that do not depend on anyone's promises.",
     columns: 4,
     cards: [
-      { title: "A market of 175 million", text: "One of the world's most crowded countries, with 136 million internet subscribers and a growing number of people able to buy more than the basics.", source: BTRC, picture: pic("dhaka-street", "Rickshaws, motorbikes and cars on a Dhaka street") },
+      { title: "A market of 175 million", text: "One of the world's most crowded countries, with 136 million internet subscribers and a growing number of people able to buy more than the basics.", source: BTRC, picture: pic("kiosk", "A small roadside shop") },
       { title: "Skilled hands at scale", text: "Decades of export manufacturing have trained millions of workers. An Oxford study ranked Bangladesh second in the world for online workers.", source: FREELANCE, picture: pic("garment-floor", "Workers at sewing machines on a factory floor") ?? photo("garments") },
       { title: "Between two giants", text: "On the Bay of Bengal between India and South-East Asia. New bridges, a tunnel and a planned deep-sea port are cutting transit times to markets.", source: MIDA, picture: pic("chattogram-port", "A straddle carrier at the Port of Chittagong") },
       { title: "Proven at world level", text: "Second in clothing exports, 284 LEED green factories, and medicines shipped to more than 160 countries. Global buyers already trust this supply base.", source: LEED, picture: pic("pharma", "A scientist at work in a medicines laboratory") ?? photo("garments") },
@@ -70,7 +70,7 @@ export const INVEST_BLOCKS: Block[] = [
     columns: 3,
     cards: [
       { title: "Higher-value garments", meta: "Rests on: millions of skilled workers", text: "Most exports are still cotton basics. The gap is in man-made fibres, technical textiles, design and branding.", picture: pic("jamdani-hands", "Hands weaving fine cloth at a loom") ?? photo("garments"), source: LEED },
-      { title: "Healthcare and medicine", meta: "Rests on: a strong drug industry", text: "Bangladeshis spend about US$5 billion a year on treatment abroad, BIDA's chairman says. The gap is in good hospitals, medical devices and digital health. Pharma makes about 98 percent of local demand but still imports most raw ingredients.", picture: pic("pharma", "A scientist at work in a laboratory"), source: HEALTH },
+      { title: "Healthcare and medicine", meta: "Rests on: a strong drug industry", text: "Bangladeshis spend about US$5 billion a year on treatment abroad, BIDA's chairman says. The gap is in good hospitals, medical devices and digital health. Pharma makes about 98 percent of local demand but still imports most raw ingredients.", picture: pic("vials", "A laboratory worker handling samples"), source: HEALTH },
       { title: "Software and fintech", meta: "Rests on: a young, online workforce", text: "Hundreds of thousands of freelancers, and mobile money that already reaches most households. The gap is in companies that can turn talent into exports at scale.", picture: pic("laptop", "Code on a laptop screen"), source: FREELANCE },
       { title: "Food and farm processing", meta: "Rests on: the delta's harvest", text: "A top producer of rice, fish, vegetables and fruit, with little cold storage and packaging. A great deal is lost or sold raw.", picture: photo("rice-planting"), source: BIDA },
       { title: "The blue economy", meta: "Rests on: 118,813 km² of sea", text: "BIDA is asking foreign partners into deep-sea fishing, because local firms do not yet have the capacity. Aquaculture and seafood processing are open too.", picture: photo("hilsa"), source: BLUE },
@@ -109,8 +109,8 @@ export const INVEST_BLOCKS: Block[] = [
     title: "The future market",
     columns: 3,
     cards: [
-      { title: "People with more to spend", text: "If income per person keeps rising from today's level, spending shifts toward better food, housing, health, education and travel.", source: GDP, picture: pic("shopping-mall", "The glass dome of a building in Dhaka") },
-      { title: "A digital country", text: "With 120.84 million people on mobile internet and wallets already common, a new online service can reach a mass market quickly.", source: BTRC, picture: pic("laptop", "Hands on a laptop, writing code") ?? photo("mobile-money") },
+      { title: "People with more to spend", text: "If income per person keeps rising from today's level, spending shifts toward better food, housing, health, education and travel.", source: GDP, picture: pic("shopping-mall", "Looking up through a round glass roof") },
+      { title: "A digital country", text: "With 120.84 million people on mobile internet and wallets already common, a new online service can reach a mass market quickly.", source: BTRC, picture: pic("phone-field", "A young man using his phone beside a green field") ?? photo("mobile-money") },
       { title: "After LDC status", text: "Bangladesh's graduation is now set for November 2029. Duty-free access to some markets will change, so local factories will need higher value and new trade deals.", source: { name: "Prothom Alo", url: "https://en.prothomalo.com/bangladesh/addcsizr3s" }, picture: pic("dhaka-air", "Dhaka from the air") },
     ],
   },

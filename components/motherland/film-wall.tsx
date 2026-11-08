@@ -35,7 +35,7 @@ function Clip({ film, wide }: { film: FilmCard; wide: boolean }) {
         </video>
       </div>
       <figcaption className="flex flex-1 flex-col gap-2 p-6 lg:p-8">
-        <RiseText as="h3" text={film.title} className="w-full font-ml-display text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[1.1] tracking-[0.01em] uppercase" />
+        <RiseText as="h3" text={film.title} className="w-full font-ml-sans font-extrabold text-[clamp(1.5rem,2.2vw,2.25rem)] leading-[1.1] tracking-[-0.03em]" />
         <p className="leading-relaxed text-pretty opacity-90">{film.text}</p>
         <p className="text-sm font-semibold text-ml-navy/70">{film.where}</p>
       </figcaption>

@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 /**
  * A paragraph that inks itself in as it scrolls past, one line after the
- * other, left to right, gold turning navy: the reference site's "fill on scroll" text, here
+ * other, left to right, gold turning navy: the reference site's "fill on scroll" text, its edge soft so the colour flows, here
  * tied to the scroll position instead of a timer, so it reads at the
  * reader's pace. The lines are measured from the words as laid out, again
  * whenever the width changes or the font arrives. With reduced motion the
@@ -65,12 +65,20 @@ export function ScrollFill({ text, tone = "light", className }: { text: string; 
   );
 }
 
+/** Half the width of the soft edge, in percent of the line. */
+const SOFT = 9;
+
 function Line({ text, ink, range, progress, still }: { text: string; ink: string; range: [number, number]; progress: MotionValue<number>; still: boolean }) {
-  const clipPath = useTransform(progress, range, ["inset(0 100% 0 0)", "inset(0 0% 0 0)"]);
+  // The ink comes in behind a soft edge some three words wide, so the colour flows rather than cuts.
+  const share = useTransform(progress, range, [0, 1]);
+  const mask = useTransform(share, (p) => {
+    const at = -SOFT + p * (100 + 2 * SOFT);
+    return `linear-gradient(90deg, #000 ${at - SOFT}%, transparent ${at + SOFT}%)`;
+  });
   return (
     <span className="relative block">
       {text}
-      <motion.span aria-hidden className={cn("absolute inset-0", ink)} style={{ clipPath: still ? "none" : clipPath }}>
+      <motion.span aria-hidden className={cn("absolute inset-0", ink)} style={still ? undefined : { maskImage: mask, WebkitMaskImage: mask }}>
         {text}
       </motion.span>
     </span>

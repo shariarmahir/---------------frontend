@@ -59,8 +59,8 @@ export function MotherlandFooter() {
       <div className={cn(COLUMN, "flex flex-col gap-12 py-14 lg:gap-16 lg:py-20")}>
         <div className="flex flex-col items-start justify-between gap-8 border-b border-white/15 pb-12 lg:flex-row lg:items-center lg:pb-16">
           <div className="flex flex-col gap-4">
-            <Link href="/bangladesh" className="w-fit rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
-              <Logo className="w-[13rem]" />
+            <Link href="/bangladesh" aria-label="MotherLand home" className="w-fit rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+              <Logo loop className="w-[13rem] text-white [--ml-wave-zoom:1.25]" />
             </Link>
             <p className="max-w-2xl text-lg leading-relaxed text-pretty text-white/85">Bangladesh&apos;s country profile for the world, made by Kandari-Lab.</p>
           </div>

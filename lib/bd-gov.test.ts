@@ -1,12 +1,14 @@
 import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
 import { test } from "node:test";
 import { ABOUT, BENEFITS, FOOTER, NAV, TOPICS } from "../data/bd-gov.ts";
 import { DETAILS, detailFor } from "../data/bd-gov-details.ts";
-import { NEEDS, SCHEMES, SERVICES, TOP_SERVICES } from "../data/bd-gov-services.ts";
+import { IN_PERSON, NEEDS, SCHEMES, SERVICES, TOP_SERVICES } from "../data/bd-gov-services.ts";
+import { guidePhotos } from "../data/bd-gov-credits.ts";
 import { inNeed, searchServices } from "./bd-gov-services.ts";
 
 const HOME = "/bangladesh/government";
-const PAGES = new Set([HOME, `${HOME}/about`, `${HOME}/benefits`, `${HOME}/national-portal`]);
+const PAGES = new Set([HOME, `${HOME}/about`, `${HOME}/benefits`, `${HOME}/national-portal`, `${HOME}/credits`]);
 
 const cards = [...TOPICS.cards, ...ABOUT.cards, ...BENEFITS.cards];
 const guideLinks = [
@@ -95,4 +97,21 @@ test("every loan scheme names its source and its date", () => {
     assert.ok(s.source.href.startsWith("https://"), s.title);
     assert.match(s.status, /20\d\d/, s.title);
   }
+});
+
+test("every poster card has its own photograph, on disk, never twice on one page", () => {
+  for (const [page, list] of [["topics", TOPICS.cards], ["about", ABOUT.cards], ["benefits", BENEFITS.cards], ["in person", IN_PERSON]] as const) {
+    const srcs = list.map((c) => c.photo.src);
+    assert.equal(new Set(srcs).size, srcs.length, `a photo repeats on ${page}`);
+    for (const c of list) {
+      assert.ok(existsSync(`public${c.photo.src}`), `${c.title}: no file ${c.photo.src}`);
+      assert.ok(c.photo.alt.trim().length > 8, `${c.title}: no description for its photo`);
+    }
+  }
+});
+
+test("the credits page names every photograph once", () => {
+  const photos = guidePhotos();
+  assert.equal(new Set(photos.map((p) => p.src)).size, photos.length);
+  for (const p of photos) assert.ok(p.credit.author && p.credit.license && p.credit.sourceUrl.startsWith("https://"), `${p.src}: credit incomplete`);
 });

@@ -344,7 +344,7 @@ export const CATEGORIES: Category[] = [
           { title: "Handloom", text: "Hand-spun thread feeds the looms behind Jamdani, the sheer muslin weave inscribed by UNESCO in 2013.", picture: photo("handloom") },
           { title: "Terracotta", text: "Temple walls told in fired clay, a Bengal tradition centuries old.", picture: photo("terracotta") },
           { title: "Pottery", text: "Potters still shape river clay into pots, lamps and toys by hand.", picture: photo("pottery") },
-          { title: "Bamboo and cane", text: "Baskets, mats, fish traps and whole houses, woven by families who have kept the craft for generations.", picture: pic("bamboo-craft", "A woman making bamboo baskets in Bangladesh") ?? photo("pottery") },
+          { title: "Bamboo and cane", text: "Baskets, mats, fish traps and whole houses, woven by families who have kept the craft for generations.", picture: pic("bamboo-craft", "Bamboo baskets woven by hand") ?? photo("pottery") },
         ],
       },
       {

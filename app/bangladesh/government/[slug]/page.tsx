@@ -56,7 +56,7 @@ export default async function GovDetailPage({ params }: { params: Promise<{ slug
         </div>
 
         <article className="min-w-0">
-          <h1 className="font-gv-serif text-[2.1rem] leading-[1.18] font-bold text-gv-navy text-balance lg:text-[2.75rem]">{detail.title}</h1>
+          <h1 className="font-ml-serif text-[2.1rem] leading-[1.08] font-normal text-ml-night text-balance lg:text-[3.25rem]">{detail.title}</h1>
           <p className="mt-5 max-w-[62ch] font-gv-serif text-[1.13rem] leading-[1.7]">{detail.intro}</p>
           <DoItNow services={servicesFor(detail.slug)} />
           <OfficialCard detail={detail} />

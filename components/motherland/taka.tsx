@@ -1,6 +1,6 @@
 import { TAKA } from "@/data/motherland";
 import { cn } from "@/lib/utils";
-import { Mosaic } from "./blocks";
+import { CollageGrid } from "./collage";
 import { ANCHOR, BAND_Y, COLUMN, SectionHead } from "./kit";
 
 /** Taka: the currency's sign drawn huge beside what it is and where it comes from, the notes in use, then two stories of how Bangladesh earns and lends. */
@@ -27,7 +27,7 @@ export function Taka() {
             </div>
           </div>
         </div>
-        <Mosaic tone="gold" cards={TAKA.facts} />
+        <CollageGrid ground="white" onGold cards={TAKA.facts} />
       </div>
     </section>
   );

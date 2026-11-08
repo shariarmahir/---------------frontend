@@ -57,7 +57,7 @@ export function GuideTabs() {
         </div>
         <div className="grid content-center gap-7 p-6 sm:grid-cols-2 sm:p-10 xl:p-12">
           <div className="flex flex-col gap-2 sm:col-span-2">
-            <h3 className="font-ml-display text-[clamp(2.25rem,3.4vw,3.5rem)] leading-[1.05] tracking-[0.01em] uppercase">{guide.title}</h3>
+            <h3 className="font-ml-sans font-extrabold text-[clamp(2.25rem,3.4vw,3.5rem)] leading-[1.05] tracking-[-0.03em]">{guide.title}</h3>
             <p className="max-w-3xl text-lg leading-relaxed text-ml-ink/85">{guide.lede}</p>
             <p className="font-semibold text-ml-green">{guide.best}</p>
           </div>

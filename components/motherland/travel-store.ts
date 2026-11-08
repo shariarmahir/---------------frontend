@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { placeById } from "@/data/motherland-travel";
-import type { AddedPlace, CrowdReport } from "@/lib/motherland-reports";
+import { cleanAdded, cleanReports, type AddedPlace, type CrowdReport } from "@/lib/motherland-reports";
 
 /*
  * What the travel page remembers: the minute, the chosen place (in the
@@ -45,15 +45,14 @@ export function choosePlace(id: string | null) {
   }
 }
 
-function deviceStore<T>(key: string, empty: T) {
+/** A value kept on this device. Anything can be in storage, so what is read back passes through `clean` first. */
+function deviceStore<T>(key: string, empty: T, clean: (raw: unknown) => T) {
   let value: T | null = null;
   const listeners = new Set<() => void>();
   const read = () => {
     if (value !== null) return value;
     try {
-      const saved = JSON.parse(localStorage.getItem(key) ?? "null") as T | null;
-      /* Anything can be in storage: only a value of the expected kind is trusted. */
-      value = saved && typeof saved === "object" && Array.isArray(saved) === Array.isArray(empty) ? saved : empty;
+      value = clean(JSON.parse(localStorage.getItem(key) ?? "null"));
     } catch {
       value = empty;
     }
@@ -81,9 +80,12 @@ function deviceStore<T>(key: string, empty: T) {
 export type Mark = "want" | "been" | "avoid";
 export const MARK_LABEL: Record<Mark, string> = { want: "Want to go", been: "Been there", avoid: "Avoid" };
 
-const marksStore = deviceStore<Record<string, Mark>>("bd-travel-marks", {});
-export const reportsStore = deviceStore<Record<string, CrowdReport>>("bd-travel-reports", {});
-export const addedStore = deviceStore<AddedPlace[]>("bd-travel-added", []);
+const cleanMarks = (raw: unknown): Record<string, Mark> =>
+  typeof raw === "object" && raw !== null && !Array.isArray(raw) ? Object.fromEntries(Object.entries(raw).filter((e): e is [string, Mark] => Object.hasOwn(MARK_LABEL, e[1]))) : {};
+
+const marksStore = deviceStore<Record<string, Mark>>("bd-travel-marks", {}, cleanMarks);
+export const reportsStore = deviceStore<Record<string, CrowdReport>>("bd-travel-reports", {}, cleanReports);
+export const addedStore = deviceStore<AddedPlace[]>("bd-travel-added", [], cleanAdded);
 
 export const useMarks = () => useSyncExternalStore(marksStore.subscribe, marksStore.read, marksStore.empty);
 export const useReports = () => useSyncExternalStore(reportsStore.subscribe, reportsStore.read, reportsStore.empty);

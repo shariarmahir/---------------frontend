@@ -44,7 +44,7 @@ export default function TravelStoriesPage() {
               <Image src={first.src} alt={first.alt} fill sizes="(min-width: 1024px) 45vw, 90vw" className="object-cover" style={{ objectPosition: first.focus }} />
             </div>
             <div className="flex flex-col items-start justify-center gap-4 p-6 sm:p-10">
-              <h3 className="font-ml-display text-3xl leading-tight tracking-[0.01em] uppercase">No stories yet</h3>
+              <h3 className="font-ml-sans font-extrabold text-3xl leading-tight tracking-[-0.03em]">No stories yet</h3>
               <p className="text-lg leading-relaxed text-ml-navy/80">All ten places are open. Create your Kandari Profile and yours can be the first one here.</p>
               <Link href={STORIES.signup} className={pill.onLight}>
                 Write the first story

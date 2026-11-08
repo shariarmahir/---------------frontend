@@ -8,8 +8,9 @@ import { PinMap } from "./pin-map";
  * Jamuna and the Meghna wind along the top, the Padma under the words, and
  * all three meet on the right and fan out into the channels that carry them
  * to the sea. The courses keep clear of the title, the lede and the button.
- * Each channel has a current running down it, `flow` seconds per pass,
- * `lag` seconds behind its neighbours so they never pulse together.
+ * Each is drawn as water: a soft bank, the body, a bright core, and a glint of
+ * light running down it, `flow` seconds per pass, `lag` seconds behind its
+ * neighbours so they never pulse together (.ml-water).
  */
 const CHANNELS = [
   { d: "M-40 30C120 10 200 80 330 60S520 0 640 40S820 110 960 80S1120 40 1200 110", flow: 14, lag: 0 },
@@ -28,12 +29,14 @@ function Delta({ className }: { className?: string }) {
       aria-hidden
       fill="none"
       strokeLinecap="round"
-      className={cn("pointer-events-none absolute inset-x-0 top-0 h-80 w-full mask-b-from-70% lg:h-120", className)}
+      className={cn("ml-water pointer-events-none absolute inset-x-0 top-0 h-80 w-full mask-b-from-60% lg:h-120", className)}
     >
       {CHANNELS.map(({ d, flow, lag }) => (
         <g key={d}>
-          <path d={d} className="stroke-ml-mist" strokeWidth="2" />
-          <path d={d} pathLength={100} className="ml-current stroke-ml-green/50" strokeWidth="2.5" style={{ animationDuration: `${flow}s`, animationDelay: `${lag}s` }} />
+          <path d={d} className="ml-water-bank" strokeWidth="30" />
+          <path d={d} className="ml-water-body" strokeWidth="11" />
+          <path d={d} className="ml-water-core" strokeWidth="3" />
+          <path d={d} pathLength={100} className="ml-current ml-water-glint" strokeWidth="3" style={{ animationDuration: `${flow}s`, animationDelay: `${lag}s` }} />
         </g>
       ))}
     </svg>

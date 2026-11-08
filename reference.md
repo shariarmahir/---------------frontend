@@ -7,15 +7,15 @@ Every data source, photograph and film, page by page and section by section. The
 ### The lettering
 
 - [Lipighor Font Foundry](https://lipighor.com)
-- [Alfa Slab One](https://fonts.google.com/specimen/Alfa+Slab+One)
-- আমার সোনার বাংলা is drawn with Li Sirajee Sylheti 3D, designed by Md. Sirajul Islam and developed by Niladri Shekhar Bala, © Lipighor Font Foundry.
-- The logo is drawn from Alfa Slab One by JM Solé, under the SIL Open Font License.
+- [Knewave](https://fonts.google.com/specimen/Knewave)
+- আমাদের বাংলা is drawn with Li Sirajee Sylheti 3D, designed by Md. Sirajul Islam and developed by Niladri Shekhar Bala, © Lipighor Font Foundry.
+- The logo's letters are Knewave by Tyler Finck, under the SIL Open Font License.
 
 ### The opening film
 
 | Used for | Author | Site | Licence | Link |
 | --- | --- | --- | --- | --- |
-| Hills, rivers, sea, tea and rice across Bangladesh | Nishaan Ahmed | Wikimedia Commons | CC BY 3.0, shortened from Cinematic Bangladesh in 4K | https://commons.wikimedia.org/wiki/File:Cinematic_BANGLADESH_in_4K_-_DJI_Mini_2_-_Part_1.webm |
+| Villages, sea, rice, hills, rivers and Dhaka at dusk across Bangladesh | neutrin05 | YouTube | CC BY 3.0, as credited in Gen Z Relaxation's Explore the Natural Beauty of Bangladesh in 4K; shortened and sped up | https://www.youtube.com/watch?v=YBo4eEUfi_Y |
 | The sunrise at Lama, Bandarban, in the opening film | iamyasar | Pixabay | Pixabay Content License | https://pixabay.com/videos/bangladesh-lama-bandarban-mountains-294187/ |
 
 ### A story worth knowing
@@ -98,7 +98,7 @@ Every data source, photograph and film, page by page and section by section. The
 
 | Used for | Author | Site | Licence | Link |
 | --- | --- | --- | --- | --- |
-| Hills, rivers, sea, tea and rice across Bangladesh | Nishaan Ahmed | Wikimedia Commons | CC BY 3.0, shortened from Cinematic Bangladesh in 4K | https://commons.wikimedia.org/wiki/File:Cinematic_BANGLADESH_in_4K_-_DJI_Mini_2_-_Part_1.webm |
+| Villages, sea, rice, hills, rivers and Dhaka at dusk across Bangladesh | neutrin05 | YouTube | CC BY 3.0, as credited in Gen Z Relaxation's Explore the Natural Beauty of Bangladesh in 4K; shortened and sped up | https://www.youtube.com/watch?v=YBo4eEUfi_Y |
 | Rivers, fields and villages of Kishoreganj from the air | Pexels | Pexels | Pexels License | https://www.pexels.com/video/aerial-drone-footage-of-rural-kishoreganj-bangladesh-35040969/ |
 | Haor wetlands and paddy fields from the air | Pexels | Pexels | Pexels License | https://www.pexels.com/video/aerial-view-of-rural-landscapes-in-bangladesh-34059329/ |
 | Boats and boatmen on the Buriganga, Dhaka | Pexels | Pexels | Pexels License | https://www.pexels.com/video/bustling-riverside-market-in-dhaka-bangladesh-37115902/ |
@@ -953,13 +953,13 @@ Every data source, photograph and film, page by page and section by section. The
 
 | Used for | Author | Site | Licence | Link |
 | --- | --- | --- | --- | --- |
-| Hills, rivers, sea, tea and rice across Bangladesh | Nishaan Ahmed | Wikimedia Commons | CC BY 3.0, shortened from Cinematic Bangladesh in 4K | https://commons.wikimedia.org/wiki/File:Cinematic_BANGLADESH_in_4K_-_DJI_Mini_2_-_Part_1.webm |
+| Villages, sea, rice, hills, rivers and Dhaka at dusk across Bangladesh | neutrin05 | YouTube | CC BY 3.0, as credited in Gen Z Relaxation's Explore the Natural Beauty of Bangladesh in 4K; shortened and sped up | https://www.youtube.com/watch?v=YBo4eEUfi_Y |
 
 ### Films
 
 | Used for | Author | Site | Licence | Link |
 | --- | --- | --- | --- | --- |
-| Hills, rivers, sea, tea and rice across Bangladesh | Nishaan Ahmed | Wikimedia Commons | CC BY 3.0, shortened from Cinematic Bangladesh in 4K | https://commons.wikimedia.org/wiki/File:Cinematic_BANGLADESH_in_4K_-_DJI_Mini_2_-_Part_1.webm |
+| Villages, sea, rice, hills, rivers and Dhaka at dusk across Bangladesh | neutrin05 | YouTube | CC BY 3.0, as credited in Gen Z Relaxation's Explore the Natural Beauty of Bangladesh in 4K; shortened and sped up | https://www.youtube.com/watch?v=YBo4eEUfi_Y |
 | Rivers, fields and villages of Kishoreganj from the air | Pexels | Pexels | Pexels License | https://www.pexels.com/video/aerial-drone-footage-of-rural-kishoreganj-bangladesh-35040969/ |
 | Haor wetlands and paddy fields from the air | Pexels | Pexels | Pexels License | https://www.pexels.com/video/aerial-view-of-rural-landscapes-in-bangladesh-34059329/ |
 | Boats and boatmen on the Buriganga, Dhaka | Pexels | Pexels | Pexels License | https://www.pexels.com/video/bustling-riverside-market-in-dhaka-bangladesh-37115902/ |

@@ -63,7 +63,7 @@ test("the header's Resources and Invest tabs have their own pages", () => {
 });
 
 test("the hero names the anthem in Bangla alone, and the logo is MOTHERLAND alone", () => {
-  assert.equal(HERO.title, "আমার সোনার বাংলা");
+  assert.equal(HERO.title, "আমাদের বাংলা");
   // The logo and title are vector art, so no font file is ever served for them.
   const logo = readFileSync("components/motherland/logo.tsx", "utf8");
   assert.match(logo, /LOGO_ART/);

@@ -29,7 +29,7 @@ export const viewport = { themeColor: "#0b1849" };
 
 const CARD = "ml-card group flex w-full flex-col overflow-hidden rounded-[1.25rem] bg-white text-ml-navy ring-1 ring-ml-navy/8";
 const PHOTO = "ml-wipe relative shrink-0 overflow-hidden bg-ml-mist";
-const CARD_TITLE = "w-full font-ml-display tracking-[0.01em] uppercase";
+const CARD_TITLE = "w-full font-ml-sans font-extrabold tracking-[-0.03em]";
 const SPAN = { 12: "lg:col-span-12", 7: "lg:col-span-7", 5: "lg:col-span-5", 4: "lg:col-span-4" } as const;
 const HEIGHT = { 1: "lg:h-[30rem]", 2: "lg:h-[24rem] 2xl:h-[28rem]", 3: "lg:h-[17rem] 2xl:h-[20rem]" } as const;
 
@@ -100,7 +100,7 @@ function Split({ block, flip }: { block: typeof SCHOOLS | typeof PEACE; flip?: b
         </div>
       </div>
       <div className="flex min-w-0 flex-col items-start justify-center gap-5 p-6 sm:p-10 xl:p-14">
-        <RiseText id={`${block.id}-title`} text={block.title} className="w-full font-ml-display text-[clamp(2rem,3.4vw,3.5rem)] leading-[1.05] tracking-[0.01em] uppercase" />
+        <RiseText id={`${block.id}-title`} text={block.title} className="w-full font-ml-sans font-extrabold text-[clamp(2rem,3.4vw,3.5rem)] leading-[1.05] tracking-[-0.03em]" />
         <p className="max-w-xl text-lg leading-relaxed text-pretty text-white/85">{block.text}</p>
         <ul className="flex w-full max-w-xl flex-col divide-y divide-white/15 border-y border-white/15">
           {block.links.map((l) => {

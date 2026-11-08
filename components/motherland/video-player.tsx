@@ -7,61 +7,76 @@ import type { Film } from "@/data/motherland";
 import { cn } from "@/lib/utils";
 
 /**
- * Videos: one large player and the playlist beside it (under it on a
- * phone). Nothing downloads until a film is chosen or played; choosing
- * another starts it straight away, with sound if the visitor turns it on.
+ * Videos: one large stage and, under it, a row of poster cards. The stage shows the chosen
+ * film's poster and title with a big play button; nothing downloads until a film is played.
+ * Choosing a card plays it on the stage straight away, with sound if the visitor turns it on.
+ * The cards scroll sideways on a phone and sit in one row from lg.
  */
 export function VideoPlayer({ films }: { films: Film[] }) {
   const player = useRef<HTMLVideoElement>(null);
   const [index, setIndex] = useState(0);
+  const [playing, setPlaying] = useState(false);
   const film = films[index];
 
-  const choose = (i: number) => {
+  const play = (i: number) => {
     setIndex(i);
+    setPlaying(true);
     requestAnimationFrame(() => void player.current?.play().catch(() => undefined));
   };
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)] lg:gap-10">
-      <figure className="flex flex-col gap-4 lg:sticky lg:top-32 lg:self-start">
-        <div className="overflow-hidden rounded-3xl bg-black ring-1 ring-white/10">
-          <video
-            key={film.poster}
-            ref={player}
-            controls
-            playsInline
-            preload="none"
-            poster={film.poster}
-            src={film.src.desktop ?? film.src.phone}
-            className="aspect-video w-full object-cover"
-          >
-            {film.title}
-          </video>
-        </div>
-        <figcaption className="text-lg font-semibold">{film.title}</figcaption>
+    <div className="flex flex-col gap-6 lg:gap-8">
+      <figure className="relative overflow-hidden rounded-[1.75rem] bg-black shadow-[0_40px_80px_-40px_rgb(0_0_0/0.8)] ring-1 ring-white/10">
+        <video
+          key={film.poster}
+          ref={player}
+          controls={playing}
+          playsInline
+          preload="none"
+          poster={film.poster}
+          src={film.src.desktop ?? film.src.phone}
+          className="aspect-video w-full object-cover"
+        >
+          {film.title}
+        </video>
+        {!playing && (
+          <div className="absolute inset-0 flex flex-col justify-end bg-linear-to-t from-black/75 via-black/15 to-transparent p-6 sm:p-10">
+            <button
+              type="button"
+              onClick={() => play(index)}
+              className="group absolute top-1/2 left-1/2 grid size-20 -translate-1/2 place-items-center rounded-full bg-signal-orange text-ml-navy shadow-[0_0_0_10px_rgb(228_176_39/0.25)] transition-transform duration-300 hover:scale-110 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:size-24"
+            >
+              <Icon name="play_arrow" className="text-5xl!" />
+              <span className="sr-only">Play {film.title}</span>
+            </button>
+            <figcaption className="max-w-2xl text-xl leading-snug font-bold text-balance text-white sm:text-3xl">{film.title}</figcaption>
+          </div>
+        )}
       </figure>
 
-      <ol aria-label="Playlist" className="flex flex-col gap-3">
+      <ol aria-label="Films" className="-mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-2 [scrollbar-width:none] lg:mx-0 lg:grid lg:grid-cols-6 lg:overflow-visible lg:px-0 lg:pb-0">
         {films.map((f, i) => {
           const chosen = i === index;
           return (
-            <li key={f.poster}>
+            <li key={f.poster} className="w-40 shrink-0 snap-start sm:w-48 lg:w-auto">
               <button
                 type="button"
                 aria-current={chosen ? "true" : undefined}
-                onClick={() => choose(i)}
+                onClick={() => play(i)}
                 className={cn(
-                  "group flex w-full items-center gap-4 rounded-2xl p-2.5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-white",
-                  chosen ? "bg-white/12" : "hover:bg-white/6",
+                  "group relative block aspect-[4/5] w-full overflow-hidden rounded-2xl text-left ring-2 transition-[box-shadow] duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white",
+                  chosen ? "ring-signal-orange" : "ring-transparent",
                 )}
               >
-                <span className="relative aspect-video w-32 shrink-0 overflow-hidden rounded-xl bg-black sm:w-36">
-                  <Image src={f.poster} alt="" fill sizes="9rem" className={cn("object-cover", f.bars && "scale-120")} />
-                  <span className={cn("absolute inset-0 grid place-items-center bg-black/30 transition-opacity", chosen ? "opacity-100" : "opacity-0 group-hover:opacity-100")}>
-                    <Icon name={chosen ? "equalizer" : "play_arrow"} className="text-3xl text-white" />
+                <Image src={f.poster} alt="" fill sizes="(min-width: 1024px) 12rem, 12rem" className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06] motion-reduce:transition-none" />
+                <span aria-hidden className="absolute inset-0 bg-linear-to-t from-ml-navy via-ml-navy/30 to-transparent" />
+                <span className="absolute inset-x-0 bottom-0 flex flex-col gap-1.5 p-3.5">
+                  <span className={cn("flex items-center gap-1 text-xs font-bold", chosen ? "text-signal-orange" : "text-white/70")}>
+                    <Icon name={chosen && playing ? "equalizer" : "play_circle"} className="text-base" />
+                    {chosen ? (playing ? "Playing" : "On screen") : "Play"}
                   </span>
+                  <span className="line-clamp-3 text-sm leading-snug font-semibold text-white">{f.title}</span>
                 </span>
-                <span className={cn("text-[0.95rem] leading-snug font-semibold", chosen ? "text-signal-orange" : "text-white/85")}>{f.title}</span>
               </button>
             </li>
           );

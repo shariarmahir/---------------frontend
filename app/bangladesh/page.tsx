@@ -50,11 +50,15 @@ export default function BangladeshPage() {
     <div className={cn(mlFonts, "ml ml-light w-full bg-ml-ground font-ml-sans text-ml-ink")}>
       {/* Without scripts the titles never get their cue to rise, so they start in place. */}
       <noscript>
-        <style>{".ml-rise .ml-word > span { translate: none !important; } .ml-reveal { opacity: 1 !important; translate: none !important; } .ml-reveal .ml-wipe { clip-path: none !important; } .ml-reveal .ml-settle { transform: none !important; }"}</style>
+        <style>{".ml-rise .ml-word > span { translate: none !important; } .ml-reveal { opacity: 1 !important; translate: none !important; } .ml-reveal .ml-wipe { clip-path: none !important; } .ml-reveal .ml-settle { transform: none !important; } .ml-film-title { opacity: 1 !important; translate: none !important; filter: none !important; } .ml-collage .ml-shape { opacity: 1 !important; transform: none !important; } .ml-collage .ml-collage-photo, .ml-collage .ml-credit { clip-path: none !important; } .ml-collage .ml-collage-photo img { filter: none !important; }"}</style>
       </noscript>
       <MotherlandHeader />
       <main id="main">
-        <Hero />
+        {/* The welcome bar sits on the hero's bottom edge, so the two share a box. */}
+        <div className="relative">
+          <Hero />
+          <WelcomePopup />
+        </div>
         <About />
         <History />
         <Science />
@@ -71,7 +75,6 @@ export default function BangladeshPage() {
         <Join />
       </main>
       <SideTab />
-      <WelcomePopup />
       <MotherlandFooter />
     </div>
   );

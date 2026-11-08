@@ -1,3 +1,4 @@
+import { Sparkle } from "@/components/motherland/poster";
 import { Icon } from "@/components/ui/icon";
 import type { Service } from "@/data/bd-gov-services";
 import { hostOf } from "@/lib/bd-gov-services";
@@ -9,8 +10,8 @@ const SMALL_LINK = "font-semibold text-gv-navy underline underline-offset-2 hove
 export function ServiceCard({ service: s, as: Title = "h3" }: { service: Service; as?: "h2" | "h3" | "h4" }) {
   const hasDetails = Boolean(s.ready?.length || s.note || s.more?.length || s.call);
   return (
-    <article id={`service-${s.id}`} className="flex h-full w-full scroll-mt-6 flex-col rounded-xl bg-white p-5 shadow-[0_1px_2px_rgb(11_24_73/0.05)] ring-1 ring-gv-navy/10 transition-shadow duration-200 hover:shadow-[0_14px_30px_-18px_rgb(11_24_73/0.4)]">
-      <Title className="text-[1.13rem] leading-snug font-bold text-balance text-gv-navy">{s.name}</Title>
+    <article id={`service-${s.id}`} className="flex h-full w-full scroll-mt-6 flex-col rounded-[1.25rem] bg-white p-6 ring-1 ring-gv-navy/8 transition-shadow duration-300 hover:shadow-[0_24px_48px_-28px_rgb(11_24_73/0.5)]">
+      <Title className="text-[1.15rem] leading-snug font-bold text-balance text-ml-night">{s.name}</Title>
       <p lang="bn" className="mt-1 font-bengali text-[0.95rem] leading-snug text-gv-ink/70">
         {s.bn}
       </p>
@@ -56,11 +57,14 @@ export function ServiceCard({ service: s, as: Title = "h3" }: { service: Service
       ) : null}
 
       <div className="mt-auto flex flex-wrap items-center justify-between gap-x-3 gap-y-2 pt-4">
-        <span className="min-w-0 text-sm break-all text-gv-ink/65">{hostOf(s.href)}</span>
+        <span className="flex min-w-0 items-center gap-2 text-sm break-all text-gv-ink/65">
+          <Sparkle />
+          {hostOf(s.href)}
+        </span>
         <a
           href={s.href}
           {...EXTERNAL}
-          className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-lg bg-gv-gold px-4 font-bold text-gv-navy transition-colors duration-200 hover:bg-gv-navy hover:text-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-gv-green"
+          className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full bg-signal-orange px-5 font-semibold text-ml-night transition-colors duration-300 hover:bg-ml-night hover:text-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-gv-green"
         >
           {s.verb}
           <Icon name="open_in_new" className="text-lg!" />

@@ -84,7 +84,7 @@ export default function GovernmentPage() {
             </tbody>
           </table>
           <div>
-            <h3 className="font-gv-serif text-[1.34rem] font-bold">{FACTS.holidays.title}</h3>
+            <h3 className="font-ml-serif text-[1.6rem] font-normal">{FACTS.holidays.title}</h3>
             <dl className="mt-4 divide-y divide-gv-line border-y border-gv-line">
               {FACTS.holidays.items.map(([date, name]) => (
                 <div key={date} className="py-3">

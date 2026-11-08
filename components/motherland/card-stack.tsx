@@ -60,7 +60,7 @@ function Card({ card, index, count, progress, still, tone }: { card: DealtCard; 
       <motion.article style={{ scale: still ? 1 : scale }} className={cn("relative grid h-full origin-top overflow-hidden text-white lg:grid-cols-[53fr_47fr]", tone === "navy" ? "bg-ml-navy" : "bg-ml-deep")}>
         <div className={cn("relative isolate flex min-w-0 flex-col items-start justify-center gap-7 py-14 lg:py-16", INSET)}>
           <StackArt art={card.art} className="-z-10" />
-          <RiseText as="h3" text={card.title} className="font-ml-display text-[clamp(2.5rem,6.6vw,6rem)] leading-[1.02] tracking-[0.01em] uppercase" />
+          <RiseText as="h3" text={card.title} className="text-[clamp(2.25rem,4.6vw,4.5rem)] leading-[1.12] font-extrabold tracking-[-0.035em]" />
           <p className="max-w-2xl text-lg leading-relaxed text-white/90 sm:text-xl">{card.text}</p>
           {!card.cta ? null : card.cta.href.startsWith("#") ? (
             <a href={card.cta.href} className={pill.onDark}>

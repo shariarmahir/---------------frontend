@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { CATEGORIES, type Category, type Subcategory } from "@/data/motherland-categories";
 import { HERO, PROCON, VIDEOS, type Film, type HeroTitleTone } from "@/data/motherland";
-import type { BandTone } from "@/data/motherland-blocks";
+import type { BandTone, Block } from "@/data/motherland-blocks";
 import { DEEP, MORE_FILMS } from "@/data/motherland-deep";
 import { INTROS, PAGE_BLOCKS } from "@/data/motherland-pages";
 import { cn } from "@/lib/utils";
@@ -104,11 +104,30 @@ export function MoreCategories({ current }: { current: string }) {
         <Link key={c.slug} href={`/bangladesh/${c.slug}`} className="group relative isolate flex aspect-4/3 items-end overflow-hidden p-5 text-white focus-visible:outline-3 focus-visible:-outline-offset-4 focus-visible:outline-signal-orange lg:p-7">
           <Image src={c.hero.src} alt="" fill sizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw" className="-z-20 object-cover transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transition-none" style={{ objectPosition: c.hero.focus }} />
           <span aria-hidden className="absolute inset-0 -z-10 bg-linear-to-t from-black/80 to-black/10" />
-          <span className="font-ml-display text-[clamp(1.4rem,1.9vw,2.25rem)] leading-tight tracking-[0.01em] uppercase">{c.name}</span>
+          <span className="font-ml-sans font-extrabold text-[clamp(1.4rem,1.9vw,2.25rem)] leading-tight tracking-[-0.03em]">{c.name}</span>
         </Link>
       ))}
     </nav>
   );
+}
+
+/** The photographs a block puts on the page. */
+function blockPictures(block: Block): string[] {
+  switch (block.kind) {
+    case "cards":
+    case "people":
+      return block.cards.flatMap((c) => (c.picture ? [c.picture.src] : []));
+    case "chapters":
+      return block.chapters.flatMap((c) => (c.picture ? [c.picture.src] : []));
+    case "steps":
+      return block.steps.flatMap((c) => (c.picture ? [c.picture.src] : []));
+    case "moment":
+      return [block.picture.src];
+    case "table":
+      return block.picture ? [block.picture.src] : [];
+    default:
+      return [];
+  }
 }
 
 export function CategoryPage({ category }: { category: Category }) {
@@ -117,8 +136,17 @@ export function CategoryPage({ category }: { category: Category }) {
   const [first, ...rest] = category.subcategories;
   const stacks = blocks.some((b) => b.kind === "part" && b.part === "stack") && first && first.stories.length > 1;
   const blockIds = new Set(blocks.flatMap((b) => ("id" in b ? [b.id] : [])));
-  /* A story told in full by a block is not told again in a rail. */
-  const rails = (stacks ? rest : category.subcategories).filter((s) => !blockIds.has(s.id));
+  /* A story told in full by a block is not told again in a rail, and a rail never repeats a photograph the page has already shown. */
+  const shown = new Set(blocks.flatMap(blockPictures));
+  if (stacks) for (const st of first.stories) if (st.picture) shown.add(st.picture.src);
+  const rails = (stacks ? rest : category.subcategories)
+    .filter((s) => !blockIds.has(s.id))
+    .map((s) => {
+      const stories = s.stories.filter((st) => !st.picture || !shown.has(st.picture.src));
+      for (const st of stories) if (st.picture) shown.add(st.picture.src);
+      return { ...s, stories };
+    })
+    .filter((s) => s.stories.length > 1);
 
   return (
     <>

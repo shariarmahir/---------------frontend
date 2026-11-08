@@ -40,7 +40,7 @@ export function TakaConverter() {
     <section id="converter" aria-labelledby="converter-title" className="scroll-mt-(--ml-header) bg-signal-orange py-12 text-ml-ink sm:py-14 lg:py-16">
       <div className={`${COLUMN} grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-16`}>
         <div className="flex flex-col gap-5">
-          <RiseText id="converter-title" text="How much is that in taka?" className="w-full font-ml-display text-[clamp(2.5rem,5.4vw,5rem)] leading-[1.02] tracking-[0.01em] uppercase" />
+          <RiseText id="converter-title" text="How much is that in taka?" className="w-full font-ml-sans font-extrabold text-[clamp(2.5rem,5.4vw,5rem)] leading-[1.08] tracking-[-0.03em]" />
           <p className="text-lg leading-relaxed sm:text-xl">
             ৳122 to ৳123 a dollar in {RATE_CHECKED}. Type your own rate.
           </p>

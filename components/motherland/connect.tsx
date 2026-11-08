@@ -24,7 +24,7 @@ export function ConnectBand() {
     <section id="connect" aria-labelledby="connect-title" className="scroll-mt-(--ml-header) bg-signal-orange py-12 text-ml-ink sm:py-14 lg:py-16">
       <div className={cn(COLUMN, "flex flex-col items-start gap-6 lg:flex-row lg:items-center lg:justify-between lg:gap-10")}>
         <div className="flex w-full min-w-0 flex-col gap-3 lg:w-auto lg:flex-1">
-          <RiseText id="connect-title" text="Tell us what you are looking for" className="w-full font-ml-display text-[clamp(2.25rem,4.8vw,4.5rem)] leading-[1.02] tracking-[0.01em] uppercase" />
+          <RiseText id="connect-title" text="Tell us what you are looking for" className="w-full font-ml-sans font-extrabold text-[clamp(2.25rem,4.8vw,4.5rem)] leading-[1.08] tracking-[-0.03em]" />
           <FitLine text="Name a sector or a region. We will send you the figures we have and point you to the right people." className="ml-lede text-lg leading-relaxed sm:text-xl" />
         </div>
         <button type="button" onClick={() => setOpen(true)} className={cn(pill.onDark, "bg-ml-navy text-white hover:bg-white hover:text-ml-ink")}>

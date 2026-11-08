@@ -49,6 +49,35 @@ export function newPlace(draft: Draft, nowMs: number): { ok: true; place: AddedP
   return { ok: true, place: { id: `added-${nowMs.toString(36)}`, name, note: draft.note.trim().slice(0, NOTE_MAX), level: draft.level, at: nowMs, lat, lon } };
 }
 
+const LEVELS = new Set<unknown>(Object.keys(REPORT_LABEL));
+const record = (x: unknown): x is Record<string, unknown> => typeof x === "object" && x !== null && !Array.isArray(x);
+const isReport = (x: Record<string, unknown>) => LEVELS.has(x.level) && typeof x.at === "number" && Number.isFinite(x.at);
+
+/** Saved crowd reports, as read back from the device: anything can be in storage, so only well-formed reports are kept. */
+export function cleanReports(raw: unknown): Record<string, CrowdReport> {
+  if (!record(raw)) return {};
+  return Object.fromEntries(Object.entries(raw).flatMap(([id, r]) => (record(r) && isReport(r) ? [[id, { level: r.level as ReportLevel, at: r.at as number }]] : [])));
+}
+
+/** Saved places, as read back from the device: a place is kept only if it would pass newPlace again. */
+export function cleanAdded(raw: unknown): AddedPlace[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.filter(
+    (p): p is AddedPlace =>
+      record(p) &&
+      isReport(p) &&
+      typeof p.id === "string" &&
+      typeof p.name === "string" &&
+      p.name.length > 0 &&
+      p.name.length <= NAME_MAX &&
+      typeof p.note === "string" &&
+      p.note.length <= NOTE_MAX &&
+      typeof p.lat === "number" &&
+      typeof p.lon === "number" &&
+      inBangladesh(p.lat, p.lon),
+  );
+}
+
 export function timeAgo(at: number, nowMs: number) {
   const minutes = Math.floor((nowMs - at) / 60_000);
   if (minutes < 1) return "just now";

@@ -12,6 +12,8 @@
  * offices' own sites stay current.
  */
 
+import { own, shot } from "./bd-gov-photos.ts";
+
 export interface GovLink {
   label: string;
   href: string;
@@ -25,6 +27,8 @@ export interface GovCard {
   icon?: string;
   /** The Material Symbol shown until the animation arrives. */
   symbol?: string;
+  /** The poster card's photograph (data/bd-gov-photos.ts). */
+  photo: Photo;
 }
 
 export interface Photo {
@@ -127,6 +131,7 @@ export const FOOTER = {
   legal: [
     { label: "Bangladesh National Portal", href: PORTAL },
     { label: "Portal site map", href: `${PORTAL}/pages/site-map` },
+    { label: "Photo credits", href: "/bangladesh/government/credits" },
     { label: "Join Kandari Profile", href: "/signup" },
   ] satisfies GovLink[],
 };
@@ -155,6 +160,7 @@ export const ABOUT = {
       symbol: "shopping_bag",
       text: "Browse tenders, procurement notices and job circulars published by ministries and offices.",
       href: guide("government-tenders"),
+      photo: shot("rooppur", "The Rooppur Nuclear Power Plant under construction"),
     },
     {
       title: "Facts and figures",
@@ -162,6 +168,7 @@ export const ABOUT = {
       symbol: "insights",
       text: "Independence, the Constitution, national symbols, public holidays and official statistics.",
       href: "#facts",
+      photo: shot("national-museum", "The Bangladesh National Museum in Dhaka"),
     },
     {
       title: "Ministries and divisions, A to Z",
@@ -169,6 +176,7 @@ export const ABOUT = {
       symbol: "account_tree",
       text: "Contact details for 57 ministries and divisions, 72 directorates and hundreds of other offices.",
       href: guide("ministries-and-divisions"),
+      photo: shot("dhaka-air", "Dhaka from the air"),
     },
     {
       title: "Divisions, districts and local government",
@@ -176,6 +184,7 @@ export const ABOUT = {
       symbol: "map",
       text: "Portals for all 8 divisions and 64 districts, and the offices that serve every upazila and union.",
       href: guide("local-government"),
+      photo: shot("dc-office", "The Deputy Commissioner's office in Bandarban"),
     },
     {
       title: "Branches of government",
@@ -183,6 +192,7 @@ export const ABOUT = {
       symbol: "account_balance",
       text: "How the legislative, executive and judicial branches share power under the Constitution.",
       href: guide("branches-of-government"),
+      photo: own("parliament"),
     },
     {
       title: "The President and Prime Minister",
@@ -190,6 +200,7 @@ export const ABOUT = {
       symbol: "domain",
       text: "Reach Bangabhaban, the Prime Minister's Office, the Cabinet Division and the National Parliament.",
       href: guide("president-and-prime-minister"),
+      photo: shot("bangabhaban", "Bangabhaban, the President's residence, among the towers of Dhaka"),
     },
     {
       title: "Laws of Bangladesh",
@@ -197,6 +208,7 @@ export const ABOUT = {
       symbol: "menu_book",
       text: "The Bangladesh Code: every act in force, in Bangla and English, and free legal aid.",
       href: guide("laws-and-legal-aid"),
+      photo: shot("old-pages", "A bundle of old pages tied with string"),
     },
     {
       title: "Elections and national ID",
@@ -204,6 +216,7 @@ export const ABOUT = {
       symbol: "how_to_vote",
       text: "Register to vote, get or correct your national ID card, and find Election Commission services.",
       href: guide("voting-and-elections"),
+      photo: shot("voters-queue", "Voters queuing at a polling station in Bangladesh"),
     },
     {
       title: "Courts and legal aid",
@@ -211,6 +224,7 @@ export const ABOUT = {
       symbol: "gavel",
       text: "The Supreme Court, the courts beneath it, and village courts for local disputes.",
       href: guide("courts"),
+      photo: shot("court-supreme", "The Supreme Court of Bangladesh in Dhaka"),
     },
   ] satisfies GovCard[],
   looking: { before: "Looking for something else?", label: "Browse all topics and services", href: HOME },
@@ -293,6 +307,8 @@ export const ALL_TOPICS = {
     focus: "62% 18%",
     credit: { author: "Tanvir Rahat", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0", sourceUrl: "https://commons.wikimedia.org/wiki/File:The_national_flag_of_Bangladesh_is_flying_outside_the_Ahsan_Manzil_Museum_,_Dhaka,_Bangladesh.jpg" },
   } satisfies Photo,
+  /** The serif line over the welcome. */
+  line: "An independent guide by Kandari-Lab",
   title: "The Bangladesh government, made easy to use",
   lede: "Find any government service in English or Bangla, and go straight to the official page. For people who live here, Bangladeshis abroad and visitors.",
   doorsTitle: "Who is this for?",
@@ -317,26 +333,26 @@ export const ALL_TOPICS = {
 export const TOPICS = {
   title: "All topics and services",
   cards: [
-    { title: "Voting and elections", icon: "hand-voting", symbol: "how_to_vote", text: "Election Commission services, from national ID cards to voter registration.", href: guide("voting-and-elections") },
-    { title: "Bangladesh and its government", icon: "city-hall", symbol: "account_balance", text: "Its laws, history and institutions, and how to reach every ministry and office.", href: ABOUT_PAGE },
-    { title: "Disasters and emergencies", icon: "ambulance", symbol: "emergency", text: "Call 999 for police, fire and ambulance, or 102 for the fire service and disaster warnings.", href: guide("disasters-and-emergencies") },
-    { title: "Education", icon: "school", symbol: "school", text: "Admissions, scholarships and education services, from school to university.", href: guide("education") },
-    { title: "Exam results", icon: "file-pencil", symbol: "grading", text: "Public examination results from every education board.", href: guide("exam-results") },
-    { title: "Health", icon: "heart-beat", symbol: "health_and_safety", text: "Government hospitals, health services and trusted health information.", href: guide("health") },
-    { title: "Agriculture", icon: "growing-plant", symbol: "agriculture", text: "Farming advice, market prices and agricultural services.", href: guide("agriculture") },
-    { title: "Fisheries and livestock", icon: "paper-boat", symbol: "set_meal", text: "Services for fish farmers and livestock keepers.", href: guide("fisheries-and-livestock") },
-    { title: "Jobs and recruitment", icon: "briefcase", symbol: "work", text: "Government job circulars and recruitment exams.", href: guide("jobs-and-recruitment") },
-    { title: "Passport, visa and immigration", icon: "globe", symbol: "flight_takeoff", text: "Apply for or renew a passport, and find visa and immigration services.", href: guide("passports-and-immigration") },
-    { title: "Income tax", icon: "coins", symbol: "receipt_long", text: "Register for a tax number, file your return and pay income tax.", href: guide("income-tax") },
-    { title: "Utility bills", icon: "outlet-type-g", symbol: "bolt", text: "Pay electricity, gas and water bills online.", href: guide("utility-bills") },
-    { title: "Land services", icon: "image-mountain", symbol: "landscape", text: "Land records, e-mutation and the smart land service.", href: guide("land-services") },
-    { title: "Transport and vehicles", icon: "road", symbol: "directions_car", text: "Driving licences, vehicle registration and other transport services.", href: guide("transport-and-vehicles") },
-    { title: "Business and trade", icon: "stock-market", symbol: "storefront", text: "Start a business, get a trade licence and find support for foreign investment.", href: guide("business-and-trade") },
-    { title: "Laws and legal aid", icon: "scale-retro", symbol: "gavel", text: "Read the laws of Bangladesh and get free legal aid from the government.", href: guide("laws-and-legal-aid") },
-    { title: "Online applications", icon: "file-text", symbol: "edit_document", text: "Apply online for certificates, permits and other government services.", href: guide("online-applications") },
-    { title: "Tickets and travel", icon: "car-ferry", symbol: "confirmation_number", text: "Book train, bus and launch tickets online.", href: guide("tickets-and-travel") },
-    { title: "Digital centres", icon: "desktop", symbol: "computer", text: "Find a digital centre near you for help with any online service.", href: guide("digital-centres") },
-    { title: "Bangla AI tools", icon: "magic-wand", symbol: "smart_toy", text: "The government's Bangla language and AI tools.", href: guide("bangla-ai-tools") },
+    { title: "Voting and elections", icon: "hand-voting", symbol: "how_to_vote", text: "Election Commission services, from national ID cards to voter registration.", href: guide("voting-and-elections"), photo: shot("voters-queue", "Voters queuing at a polling station in Bangladesh") },
+    { title: "Bangladesh and its government", icon: "city-hall", symbol: "account_balance", text: "Its laws, history and institutions, and how to reach every ministry and office.", href: ABOUT_PAGE, photo: own("parliament") },
+    { title: "Disasters and emergencies", icon: "ambulance", symbol: "emergency", text: "Call 999 for police, fire and ambulance, or 102 for the fire service and disaster warnings.", href: guide("disasters-and-emergencies"), photo: shot("flood-boat", "Wooden boats on the wide brown water at Dhaka") },
+    { title: "Education", icon: "school", symbol: "school", text: "Admissions, scholarships and education services, from school to university.", href: guide("education"), photo: shot("campus-green", "A university campus in Dhaka from above") },
+    { title: "Exam results", icon: "file-pencil", symbol: "grading", text: "Public examination results from every education board.", href: guide("exam-results"), photo: shot("girl-books", "A schoolgirl holding her books in a green field") },
+    { title: "Health", icon: "heart-beat", symbol: "health_and_safety", text: "Government hospitals, health services and trusted health information.", href: guide("health"), photo: shot("dhaka-medical", "Mugda Medical College Hospital, Dhaka") },
+    { title: "Agriculture", icon: "growing-plant", symbol: "agriculture", text: "Farming advice, market prices and agricultural services.", href: guide("agriculture"), photo: own("rice-planting") },
+    { title: "Fisheries and livestock", icon: "paper-boat", symbol: "set_meal", text: "Services for fish farmers and livestock keepers.", href: guide("fisheries-and-livestock"), photo: shot("fish-market", "A fish seller's stall in Dhaka at night") },
+    { title: "Jobs and recruitment", icon: "briefcase", symbol: "work", text: "Government job circulars and recruitment exams.", href: guide("jobs-and-recruitment"), photo: shot("garment-floor", "Workers at sewing machines on a factory floor") },
+    { title: "Passport, visa and immigration", icon: "globe", symbol: "flight_takeoff", text: "Apply for or renew a passport, and find visa and immigration services.", href: guide("passports-and-immigration"), photo: shot("plane-biman", "A Biman Bangladesh plane on the runway at Dhaka") },
+    { title: "Income tax", icon: "coins", symbol: "receipt_long", text: "Register for a tax number, file your return and pay income tax.", href: guide("income-tax"), photo: own("taka-notes") },
+    { title: "Utility bills", icon: "outlet-type-g", symbol: "bolt", text: "Pay electricity, gas and water bills online.", href: guide("utility-bills"), photo: shot("gas-pipe", "A gas pipeline running through the forest") },
+    { title: "Land services", icon: "image-mountain", symbol: "landscape", text: "Land records, e-mutation and the smart land service.", href: guide("land-services"), photo: shot("summer-field", "A field and trees under a clear summer sky") },
+    { title: "Transport and vehicles", icon: "road", symbol: "directions_car", text: "Driving licences, vehicle registration and other transport services.", href: guide("transport-and-vehicles"), photo: shot("dhaka-street", "Rickshaws, motorbikes and cars on a Dhaka street") },
+    { title: "Business and trade", icon: "stock-market", symbol: "storefront", text: "Start a business, get a trade licence and find support for foreign investment.", href: guide("business-and-trade"), photo: shot("chattogram-port", "A straddle carrier at the Port of Chittagong") },
+    { title: "Laws and legal aid", icon: "scale-retro", symbol: "gavel", text: "Read the laws of Bangladesh and get free legal aid from the government.", href: guide("laws-and-legal-aid"), photo: shot("court-supreme", "The Supreme Court of Bangladesh in Dhaka") },
+    { title: "Online applications", icon: "file-text", symbol: "edit_document", text: "Apply online for certificates, permits and other government services.", href: guide("online-applications"), photo: shot("laptop", "Hands on a laptop keyboard") },
+    { title: "Tickets and travel", icon: "car-ferry", symbol: "confirmation_number", text: "Book train, bus and launch tickets online.", href: guide("tickets-and-travel"), photo: shot("launch-sadarghat", "River launches moored at Sadarghat in Dhaka") },
+    { title: "Digital centres", icon: "desktop", symbol: "computer", text: "Find a digital centre near you for help with any online service.", href: guide("digital-centres"), photo: shot("phone-field", "A young man using his phone beside a green field") },
+    { title: "Bangla AI tools", icon: "magic-wand", symbol: "smart_toy", text: "The government's Bangla language and AI tools.", href: guide("bangla-ai-tools"), photo: shot("bangla-academy", "The old mansion of Bangla Academy in Dhaka") },
   ] satisfies GovCard[],
 };
 
@@ -358,18 +374,18 @@ export const BENEFITS = {
   intro:
     "Find government programmes that help with food, housing, health care and other living costs, and learn about allowances, stipends and the universal pension. Every benefit is free to apply for.",
   cards: [
-    { title: "Find government benefits", icon: "magnifier-heart", symbol: "volunteer_activism", text: "How the social safety net works, who it is for and how to apply.", href: guide("find-benefits") },
-    { title: "Food assistance", icon: "shopping-basket", symbol: "rice_bowl", text: "Low-price rice, family cards, open market sales and food aid.", href: guide("food-assistance") },
-    { title: "Health care", icon: "heart-beat", symbol: "health_and_safety", text: "Free community clinics, vaccines for children and mothers, and a doctor by phone.", href: guide("health") },
-    { title: "Housing help", icon: "home", symbol: "home", text: "Homes for landless families, home loans and public housing.", href: guide("housing-help") },
-    { title: "Allowances for older people, widows and people with disabilities", icon: "wheelchair", symbol: "accessible", text: "Monthly allowances paid straight to your mobile wallet.", href: guide("social-allowances") },
-    { title: "Universal pension", icon: "bank", symbol: "account_balance", text: "Save a little each month for a pension for life from age 60.", href: guide("universal-pension") },
-    { title: "Education stipends", icon: "school", symbol: "school", text: "Stipends that help children from poorer families stay in school.", href: guide("education-stipends") },
-    { title: "Mothers and young children", icon: "baby-feeding", symbol: "family_restroom", text: "A monthly allowance for mothers on low incomes, and help lines for women and children.", href: guide("mothers-and-children") },
-    { title: "Freedom fighters' honorarium", icon: "medal-first-place", symbol: "military_tech", text: "The monthly honorarium, medical care and support for families.", href: guide("freedom-fighters") },
-    { title: "Migrant workers and their families", icon: "globe", symbol: "public", text: "Welfare, loans and help for Bangladeshis working abroad.", href: guide("migrant-workers") },
-    { title: "Workers' and employees' welfare", icon: "briefcase", symbol: "work", text: "Grants for treatment, education and families after a death.", href: guide("employee-welfare") },
-    { title: "Disaster relief", icon: "ambulance", symbol: "emergency", text: "Warnings, shelters and relief for families hit by cyclones and floods.", href: guide("disasters-and-emergencies") },
+    { title: "Find government benefits", icon: "magnifier-heart", symbol: "volunteer_activism", text: "How the social safety net works, who it is for and how to apply.", href: guide("find-benefits"), photo: shot("phone-field", "A young man using his phone beside a green field") },
+    { title: "Food assistance", icon: "shopping-basket", symbol: "rice_bowl", text: "Low-price rice, family cards, open market sales and food aid.", href: guide("food-assistance"), photo: shot("hemanta-harvest", "Farmers harvesting golden rice") },
+    { title: "Health care", icon: "heart-beat", symbol: "health_and_safety", text: "Free community clinics, vaccines for children and mothers, and a doctor by phone.", href: guide("health"), photo: shot("dhaka-medical", "Mugda Medical College Hospital, Dhaka") },
+    { title: "Housing help", icon: "home", symbol: "home", text: "Homes for landless families, home loans and public housing.", href: guide("housing-help"), photo: shot("fog-village", "A village in winter fog") },
+    { title: "Allowances for older people, widows and people with disabilities", icon: "wheelchair", symbol: "accessible", text: "Monthly allowances paid straight to your mobile wallet.", href: guide("social-allowances"), photo: shot("banyan", "An old banyan tree with its hanging roots") },
+    { title: "Universal pension", icon: "bank", symbol: "account_balance", text: "Save a little each month for a pension for life from age 60.", href: guide("universal-pension"), photo: shot("bank-hq", "A bank head office in Dhaka") },
+    { title: "Education stipends", icon: "school", symbol: "school", text: "Stipends that help children from poorer families stay in school.", href: guide("education-stipends"), photo: shot("girl-books", "A schoolgirl holding her books in a green field") },
+    { title: "Mothers and young children", icon: "baby-feeding", symbol: "family_restroom", text: "A monthly allowance for mothers on low incomes, and help lines for women and children.", href: guide("mothers-and-children"), photo: shot("nakshi-kantha", "A quilt embroidered in nakshi kantha style") },
+    { title: "Freedom fighters' honorarium", icon: "medal-first-place", symbol: "military_tech", text: "The monthly honorarium, medical care and support for families.", href: guide("freedom-fighters"), photo: shot("victory-day", "Soldiers on parade in Dhaka on Victory Day") },
+    { title: "Migrant workers and their families", icon: "globe", symbol: "public", text: "Welfare, loans and help for Bangladeshis working abroad.", href: guide("migrant-workers"), photo: shot("plane-dhaka", "A passenger plane on the runway at Dhaka airport") },
+    { title: "Workers' and employees' welfare", icon: "briefcase", symbol: "work", text: "Grants for treatment, education and families after a death.", href: guide("employee-welfare"), photo: shot("garment-floor", "Workers at sewing machines on a factory floor") },
+    { title: "Disaster relief", icon: "ambulance", symbol: "emergency", text: "Warnings, shelters and relief for families hit by cyclones and floods.", href: guide("disasters-and-emergencies"), photo: shot("flood-boat", "Wooden boats on the wide brown water at Dhaka") },
   ] satisfies GovCard[],
   looking: { before: "Looking for something else?", label: "Explore all topics and services", href: HOME },
 };
@@ -378,6 +394,9 @@ export const BENEFITS = {
 
 export const NATIONAL_PORTAL = {
   title: "One click to every government service",
+  /** The serif line over the title: what this page is, and that it is not the portal itself. */
+  line: "An independent guide to bangladesh.gov.bd",
+  photo: shot("dhaka-air", "Dhaka from the air"),
   intro: "Type what you need, in English or Bangla. Each button opens the official page straight away, so you can do it from home, with no photocopy shop and no middleman.",
   how: {
     title: "How one click works",

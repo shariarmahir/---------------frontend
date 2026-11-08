@@ -54,7 +54,7 @@ export function SideNav({ title, href, items, current }: { title: string; href: 
 export function OfficialCard({ detail }: { detail: GovDetail }) {
   const { office, href, site } = detail.official;
   return (
-    <aside aria-label="Official site" className="relative isolate mt-8 overflow-hidden rounded-3xl bg-gv-navy p-6 text-white shadow-[0_30px_60px_-30px_rgb(11_24_73/0.8)] ring-1 ring-gv-navy/10 sm:p-8">
+    <aside aria-label="Official site" className="relative isolate mt-8 overflow-hidden rounded-[1.25rem] bg-ml-night p-6 text-white shadow-[0_30px_60px_-30px_rgb(11_24_73/0.8)] ring-1 ring-gv-navy/10 sm:p-8">
       <span aria-hidden className="absolute top-3 right-3 -z-10 size-36 rounded-full border-[20px] border-white/5" />
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
         <span aria-hidden className="grid size-20 shrink-0 place-items-center sm:size-22">
@@ -84,7 +84,7 @@ export function DoItNow({ services }: { services: Service[] }) {
   if (!services.length) return null;
   return (
     <section aria-labelledby="do-it-now" className="mt-10">
-      <h2 id="do-it-now" className="font-gv-serif text-[1.6rem] leading-tight font-bold text-gv-navy">
+      <h2 id="do-it-now" className="font-ml-serif text-[1.9rem] leading-tight font-normal text-ml-night">
         Do it now
       </h2>
       <ul className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -103,7 +103,7 @@ export function Part({ part }: { part: DetailPart }) {
   const List = part.numbered ? "ol" : "ul";
   return (
     <section aria-labelledby={anchor(part.title)} className="mt-12">
-      <h2 id={anchor(part.title)} className="scroll-mt-6 font-gv-serif text-[1.6rem] leading-tight font-bold text-gv-ink">
+      <h2 id={anchor(part.title)} className="scroll-mt-6 font-ml-serif text-[1.9rem] leading-tight font-normal text-ml-night">
         {part.title}
       </h2>
       {part.text ? <p className="mt-4 max-w-[68ch] leading-[1.65]">{part.text}</p> : null}
@@ -136,7 +136,7 @@ export function HaveAQuestion({ call }: { call?: GovDetail["call"] }) {
   const pill = "inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 font-bold transition-colors duration-300 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-gv-navy";
   return (
     <section aria-labelledby="question" className="mt-14 rounded-3xl bg-gv-paper p-6 ring-1 ring-gv-ink/8 sm:p-8">
-      <h2 id="question" className="font-gv-serif text-[1.46rem] leading-tight font-bold text-gv-navy">
+      <h2 id="question" className="font-ml-serif text-[1.75rem] leading-tight font-normal text-ml-night">
         Have a question?
       </h2>
       <p className="mt-3 max-w-[60ch]">

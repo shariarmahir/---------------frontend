@@ -10,7 +10,8 @@
  * `ready` holds only what the official page itself asks for. Fees are left to the
  * official fee page: reports of them disagree and they change with each budget.
  */
-import type { GovLink } from "./bd-gov.ts";
+import type { GovLink, Photo } from "./bd-gov.ts";
+import { shot } from "./bd-gov-photos.ts";
 
 export const CHECKED = "5 November 2026";
 
@@ -1164,13 +1165,14 @@ export const SCHEMES: Scheme[] = [
 ];
 
 /** The helpers for anyone who would rather not do it alone. */
-export const IN_PERSON: { title: string; bn: string; text: string; href?: string; tel?: string; action: string }[] = [
+export const IN_PERSON: { title: string; bn: string; text: string; href?: string; tel?: string; action: string; photo: Photo }[] = [
   {
     title: "Call 333",
     bn: "৩৩৩-এ কল করুন",
     text: "The government's information line tells you which office and which form you need.",
     tel: "333",
     action: "Call 333",
+    photo: shot("phone-field", "A young man using his phone beside a green field"),
   },
   {
     title: "Digital Centre",
@@ -1178,6 +1180,7 @@ export const IN_PERSON: { title: string; bn: string; text: string; href?: string
     text: "Local entrepreneurs at union and town centres can do online government applications with you.",
     href: "https://digitalcentre.gov.bd/",
     action: "Open Digital Center",
+    photo: shot("laptop", "Hands on a laptop keyboard"),
   },
   {
     title: "Nagorik Sheba",
@@ -1185,6 +1188,7 @@ export const IN_PERSON: { title: string; bn: string; text: string; href?: string
     text: "The government's new single window, launched in 2025. It was still a pilot in six Dhaka centres in January 2026, with few services.",
     href: "https://nagoriksheba.gov.bd/",
     action: "Open Nagorik Sheba",
+    photo: shot("dhaka-street", "Rickshaws, motorbikes and cars on a Dhaka street"),
   },
 ];
 

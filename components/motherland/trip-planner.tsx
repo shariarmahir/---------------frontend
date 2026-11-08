@@ -109,7 +109,7 @@ export function TripPlanner() {
     <section id="plan" aria-labelledby="plan-title" className="scroll-mt-(--ml-header) bg-white py-12 text-ml-ink sm:py-14 lg:py-16">
       <div className={cn(COLUMN, "flex flex-col gap-12")}>
         <div className="flex flex-col gap-4">
-          <h2 id="plan-title" className="font-ml-display text-[clamp(2.75rem,7vw,6.5rem)] leading-[1.02] tracking-[0.01em] uppercase">
+          <h2 id="plan-title" className="font-ml-sans font-extrabold text-[clamp(2.75rem,7vw,6.5rem)] leading-[1.08] tracking-[-0.03em]">
             Plan your trip
           </h2>
           <p className="text-lg leading-relaxed sm:text-xl">Ask in your own words, or choose below. We draw the route, the price and what to watch for.</p>
@@ -225,7 +225,7 @@ export function TripPlanner() {
                 ) : null}
 
                 <div className="flex flex-col gap-3">
-                  <h3 className="font-ml-display text-3xl tracking-[0.01em] uppercase">Your days</h3>
+                  <h3 className="font-ml-sans font-extrabold text-3xl tracking-[-0.03em]">Your days</h3>
                   <ol className="flex flex-col gap-3">
                     {plan.stops.map((s) => (
                       <li key={s.region.id} className="rounded-2xl bg-ml-ground p-5">
@@ -240,7 +240,7 @@ export function TripPlanner() {
                 </div>
 
                 <div className="flex flex-col gap-3">
-                  <h3 className="font-ml-display text-3xl tracking-[0.01em] uppercase">Getting there</h3>
+                  <h3 className="font-ml-sans font-extrabold text-3xl tracking-[-0.03em]">Getting there</h3>
                   <ol className="flex flex-col divide-y divide-ml-ink/10 rounded-2xl bg-ml-ground">
                     {plan.legs.map((l, i) => (
                       <li key={`${l.from}-${l.to}-${i}`} className="flex flex-wrap items-baseline justify-between gap-x-5 gap-y-1 p-4">
@@ -261,7 +261,7 @@ export function TripPlanner() {
 
                 {plan.nearby.length ? (
                   <div className="flex flex-col gap-3">
-                    <h3 className="font-ml-display text-3xl tracking-[0.01em] uppercase">Close by</h3>
+                    <h3 className="font-ml-sans font-extrabold text-3xl tracking-[-0.03em]">Close by</h3>
                     <ul className="flex flex-col gap-2">
                       {plan.nearby.map((r) => (
                         <li key={r.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-ml-ground p-4">
@@ -282,7 +282,7 @@ export function TripPlanner() {
         </div>
 
         <div className="flex flex-col gap-6">
-          <h3 className="font-ml-display text-[clamp(2rem,4vw,3.5rem)] leading-none tracking-[0.01em] uppercase">Ready-made tours</h3>
+          <h3 className="font-ml-sans font-extrabold text-[clamp(2rem,4vw,3.5rem)] leading-[1.08] tracking-[-0.03em]">Ready-made tours</h3>
           <ul className="grid gap-4 sm:grid-cols-2 sm:max-xl:[&>li:last-child:nth-child(odd)]:col-span-2 xl:grid-cols-5">
             {TOUR_PLANS.map((t) => (
               <li key={t.id}>
@@ -310,7 +310,7 @@ export function TripPlanner() {
         </div>
 
         <div className="flex flex-col gap-6">
-          <RiseText as="h3" text="The whole road map from Dhaka" className="w-full font-ml-display text-[clamp(2rem,4vw,3.5rem)] leading-none tracking-[0.01em] uppercase" />
+          <RiseText as="h3" text="The whole road map from Dhaka" className="w-full font-ml-sans font-extrabold text-[clamp(2rem,4vw,3.5rem)] leading-[1.08] tracking-[-0.03em]" />
           <div className="overflow-x-auto rounded-2xl ring-1 ring-ml-ink/10" tabIndex={0} role="region" aria-label="Road map from Dhaka">
             <table className="w-full min-w-200 border-collapse text-left">
               <thead>

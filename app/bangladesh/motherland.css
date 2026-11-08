@@ -19,9 +19,9 @@
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
-  /* Room for descenders and Anton's tall caps, so the clip never bites a letter. */
-  padding-block: 0.06em;
-  margin-block: -0.06em;
+  /* Room for descenders and tall caps, so the clip never bites a letter. */
+  padding-block: 0.1em;
+  margin-block: -0.1em;
 }
 .ml-word > span {
   display: inline-block;
@@ -43,6 +43,106 @@
 @keyframes ml-word-rise {
   from {
     translate: 0 110%;
+  }
+}
+
+/* The logo (logo.tsx), a motion graphic. As it appears, each letter zooms in from small after the
+   one before, 110ms apart, M to the full stop, with a soft overshoot. With data-loop (the hero) a
+   gentle zoom then runs through the letters one by one, every five seconds; elsewhere it rests.
+   Each letter scales about its own centre, in a layer of its own. Less motion: all still. */
+[data-paused] .ml-logo * {
+  animation-play-state: paused !important;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ml-logo-zoom,
+  .ml-logo-wave {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+  }
+  .ml-logo-zoom {
+    animation: ml-logo-zoom var(--ml-zoom-length, 0.8s) cubic-bezier(0.34, 1.5, 0.64, 1) calc(var(--i) * var(--ml-zoom-step, 110ms) + var(--ml-zoom-start, 150ms)) both;
+  }
+  .ml-logo[data-loop] .ml-logo-wave {
+    animation: ml-logo-wave 5s ease-in-out calc(var(--i) * 140ms + 2s) infinite;
+  }
+}
+@keyframes ml-logo-zoom {
+  from {
+    opacity: 0;
+    transform: scale(0.15);
+  }
+  40% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* One letter's turn: a soft swell and back, then it waits while the zoom passes along the word. */
+@keyframes ml-logo-wave {
+  0%,
+  16%,
+  100% {
+    transform: none;
+  }
+  8% {
+    transform: scale(var(--ml-wave-zoom, 1.16));
+  }
+}
+
+/* Words dressed like the logo (brush-word.tsx): its brush face, a thin rim drawn under the fill,
+   and the logo's zoom, quicker, letter by letter. */
+.ml-brush {
+  letter-spacing: 0.02em;
+  -webkit-text-stroke: var(--ml-brush-rim-width, 3px) var(--ml-brush-rim, var(--color-ml-navy));
+  paint-order: stroke fill;
+  --ml-zoom-step: 55ms;
+  --ml-zoom-length: 0.55s;
+  --ml-zoom-start: 80ms;
+}
+/* The Genius mark beside it, its blue held off the dark bar by a thin white edge. */
+.ml-genius-edge {
+  filter: drop-shadow(0 0 0.6px #fff) drop-shadow(0 0 0.6px #fff) drop-shadow(0 0 0.6px #fff);
+}
+
+/* The hero's title (film-mark.tsx), dressed like the film's own burned-in title: warm off-white,
+   flat, solid, kept off the picture by a soft shadow only. It comes into focus as it rises a
+   little, and leaves out of focus. The filter's list keeps one shape so it blends smoothly. */
+.ml-film-title {
+  color: #f4f2ea;
+  opacity: 0;
+  translate: 0 0.6rem;
+  filter: blur(12px) drop-shadow(0 1px 1px rgb(0 0 0 / 0)) drop-shadow(0 0.4rem 1.6rem rgb(0 0 0 / 0));
+  transition:
+    opacity 0.8s ease-in,
+    translate 0.8s ease-in,
+    filter 0.8s ease-in;
+}
+.ml-film-title[data-shown="true"] {
+  opacity: 1;
+  translate: none;
+  filter: blur(0) drop-shadow(0 1px 1px rgb(0 0 0 / 0.3)) drop-shadow(0 0.4rem 1.6rem rgb(0 0 0 / 0.4));
+  transition:
+    opacity 1.4s cubic-bezier(0.22, 1, 0.36, 1),
+    translate 1.8s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ml-film-title {
+    transition: none;
+  }
+}
+
+/* The hero's foot: the faint back wave drifts slowly sideways, half its width a cycle, so it joins up. */
+@media (prefers-reduced-motion: no-preference) {
+  .ml-wave-drift {
+    animation: ml-wave-drift 26s linear infinite;
+  }
+}
+@keyframes ml-wave-drift {
+  to {
+    transform: translateX(-50%);
   }
 }
 
@@ -127,6 +227,68 @@
   }
 }
 
+/* Water for Geography & Travel (travel.tsx, pin-map.tsx): river blue, with banks, a bright core
+   and a glint of light that runs downstream (.ml-current). */
+.ml {
+  --ml-river: #2b86cf;
+  --ml-river-light: #9fd0f2;
+  --ml-sea: #bfe1f5;
+}
+.ml-water-bank {
+  stroke: var(--ml-river-light);
+  stroke-opacity: 0.16;
+}
+.ml-water-body {
+  stroke: var(--ml-river-light);
+  stroke-opacity: 0.4;
+}
+.ml-water-core {
+  stroke: var(--ml-river);
+  stroke-opacity: 0.45;
+}
+.ml-water-glint,
+.ml-atlas-glint {
+  stroke: #fff;
+  stroke-opacity: 0.9;
+}
+/* The atlas: eight divisions in soft greens, the rivers in blue, the bay along the foot. */
+.ml-atlas-sea-stop {
+  stop-color: var(--ml-sea);
+}
+.ml-atlas-land {
+  filter: drop-shadow(0 8px 14px rgb(11 24 73 / 0.14));
+}
+.ml-atlas-division {
+  stroke: #fff;
+}
+.ml-atlas-division:nth-child(4n + 1) {
+  fill: #cfe7c8;
+}
+.ml-atlas-division:nth-child(4n + 2) {
+  fill: #bfdfc6;
+}
+.ml-atlas-division:nth-child(4n + 3) {
+  fill: #d6eac2;
+}
+.ml-atlas-division:nth-child(4n + 4) {
+  fill: #c3e2d2;
+}
+.ml-atlas-river-bank {
+  stroke: var(--ml-river-light);
+  stroke-opacity: 0.7;
+}
+.ml-atlas-river {
+  stroke: var(--ml-river);
+}
+.ml-atlas-label {
+  fill: rgb(11 24 73 / 0.55);
+  font-size: 13px;
+  font-weight: 700;
+  paint-order: stroke;
+  stroke: rgb(255 255 255 / 0.85);
+  stroke-width: 3px;
+}
+
 /* The chosen pin's slow pulse on the Geography & Travel map. */
 @media (prefers-reduced-motion: no-preference) {
   .ml-pin-pulse {
@@ -199,14 +361,14 @@
 
 .ml {
   --ml-column: 120rem;
-  --ml-display: clamp(2.5rem, 6.6vw, 6rem);
+  --ml-display: clamp(2.1rem, 4.4vw, 4.25rem);
 }
 
 /* On these pages ink is navy and the pale grounds are cool, so nothing reads green. */
 .ml-light {
   /* A reading column and calm titles: on a wide screen the cards stay card-sized. */
   --ml-column: 100rem;
-  --ml-display: clamp(2.5rem, 4.6vw, 4.5rem);
+  --ml-display: clamp(2rem, 3.4vw, 3.5rem);
   --color-ml-ink: #0b1849;
   --color-ml-deep: #0b1849;
   --color-ml-green: #16215c;
@@ -261,6 +423,204 @@
   }
   .ml-lines-names {
     display: block;
+  }
+}
+
+/* The future graph (future-chart.tsx): the World Bank line draws itself and the grid fades up
+   the first time it is seen; the plan's end point breathes. Less motion: all simply there. */
+@media (prefers-reduced-motion: no-preference) {
+  .ml-chart .ml-chart-draw {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition: stroke-dashoffset 1.4s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  .ml-chart[data-drawn="true"] .ml-chart-draw {
+    stroke-dashoffset: 0;
+  }
+  .ml-chart .ml-chart-grid {
+    opacity: 0;
+    transition: opacity 0.9s ease-out;
+  }
+  .ml-chart[data-drawn="true"] .ml-chart-grid {
+    opacity: 1;
+  }
+  .ml-chart-pulse {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: ml-chart-pulse 2.2s ease-out infinite;
+  }
+}
+@keyframes ml-chart-pulse {
+  from {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(3.6);
+  }
+}
+
+/* The closing promise's light (join.tsx): two soft glows, gold and flag green, drifting slowly. */
+.ml-aurora::before,
+.ml-aurora::after {
+  content: "";
+  position: absolute;
+  width: min(60rem, 70vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  filter: blur(110px);
+}
+.ml-aurora::before {
+  top: -25%;
+  left: -15%;
+  background: var(--color-signal-orange);
+  opacity: 0.22;
+}
+.ml-aurora::after {
+  right: -20%;
+  bottom: -30%;
+  background: var(--color-ml-flag);
+  opacity: 0.35;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ml-aurora::before {
+    animation: ml-aurora 22s ease-in-out infinite alternate;
+  }
+  .ml-aurora::after {
+    animation: ml-aurora 28s ease-in-out -9s infinite alternate-reverse;
+  }
+}
+@keyframes ml-aurora {
+  to {
+    translate: 18% 14%;
+    scale: 1.15;
+  }
+}
+
+/* Pro & Con's wall of notes (procon.tsx): paper notes at a hand-pinned tilt on a faint dot grid,
+   each turning over in 3D to show both sides. Less motion: the sides simply swap. */
+.ml-dot-grid {
+  background-image: radial-gradient(rgb(255 255 255 / 0.07) 1.5px, transparent 1.6px);
+  background-size: 28px 28px;
+}
+.ml-note-tilt {
+  rotate: var(--tilt);
+  perspective: 1400px;
+}
+.ml-note-card {
+  transform-style: preserve-3d;
+}
+.ml-note-face {
+  backface-visibility: hidden;
+  border-radius: 0.375rem 0.375rem 1.25rem 0.375rem;
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.4) inset,
+    0 18px 30px -16px rgb(0 0 0 / 0.55),
+    0 4px 8px -4px rgb(0 0 0 / 0.35);
+}
+.ml-note-back {
+  transform: rotateY(180deg);
+}
+.ml-note-card[data-turned="true"] {
+  transform: rotateY(180deg);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ml-note-card {
+    transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .ml-note.ml-reveal {
+    translate: 0 -2.5rem;
+    rotate: -4deg;
+    transition:
+      opacity 0.6s ease-out var(--d, 0ms),
+      translate 0.9s cubic-bezier(0.34, 1.4, 0.64, 1) var(--d, 0ms),
+      rotate 0.9s cubic-bezier(0.34, 1.4, 0.64, 1) var(--d, 0ms);
+  }
+  .ml-note.ml-reveal[data-in] {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+}
+
+/* The landing page's collage cards (collage.tsx). As a card arrives its shapes grow in one
+   after another (--s), its photograph opens in its own shape and then blooms from black and white
+   into colour; under the pointer the shapes drift a little (--drift) and the photograph leans in.
+   Without motion, or without a script, everything simply stands in colour. */
+@media (prefers-reduced-motion: no-preference) {
+  .ml-collage .ml-shape {
+    opacity: 0;
+    transition:
+      transform 1.2s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--d, 0ms) + 150ms + var(--s, 0ms)),
+      opacity 0.5s ease-out calc(var(--d, 0ms) + 150ms + var(--s, 0ms)),
+      translate 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .ml-collage .ml-shape[data-from="middle"] {
+    transform: scale(0.35) rotate(-12deg);
+  }
+  .ml-collage .ml-shape[data-from="top"] {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  .ml-collage .ml-shape[data-from="right"] {
+    transform: scaleX(0);
+    transform-origin: right;
+  }
+  .ml-collage .ml-shape[data-from="foot"] {
+    transform: scale(0);
+    transform-origin: 50% 100%;
+  }
+  .ml-collage .ml-shape[data-from="left"] {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .ml-collage[data-in] .ml-shape {
+    opacity: 1;
+    transform: none;
+  }
+  .ml-collage .group:hover .ml-shape {
+    translate: var(--drift);
+  }
+  .ml-collage .ml-collage-photo {
+    transition: clip-path 1.3s cubic-bezier(0.65, 0, 0.35, 1) calc(var(--d, 0ms) + 350ms);
+  }
+  .ml-collage .ml-collage-photo[data-cut="slab"] {
+    clip-path: inset(0 100% 0 0);
+  }
+  .ml-collage .ml-collage-photo[data-cut="circle"] {
+    clip-path: circle(0% at 50% 50%);
+  }
+  .ml-collage .ml-collage-photo[data-cut="arch"],
+  .ml-collage .ml-collage-photo[data-cut="stand"] {
+    clip-path: inset(100% 0 0 0);
+  }
+  .ml-collage[data-in] .ml-collage-photo[data-cut="slab"],
+  .ml-collage[data-in] .ml-collage-photo[data-cut="arch"],
+  .ml-collage[data-in] .ml-collage-photo[data-cut="stand"] {
+    clip-path: inset(0);
+  }
+  /* The credits wipe in last, the gold tag first, as a film's titles do. */
+  .ml-collage .ml-credit {
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 0.8s cubic-bezier(0.65, 0, 0.35, 1) calc(var(--d, 0ms) + 1.1s + var(--c, 0) * 160ms);
+  }
+  .ml-collage[data-in] .ml-credit {
+    clip-path: inset(-0.5rem);
+  }
+  .ml-collage[data-in] .ml-collage-photo[data-cut="circle"] {
+    clip-path: circle(71% at 50% 50%);
+  }
+  .ml-collage .ml-collage-photo img {
+    filter: grayscale(1) contrast(1.05);
+    transition:
+      filter 1.8s ease calc(var(--d, 0ms) + 1s),
+      scale 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .ml-collage[data-in] .ml-collage-photo img {
+    filter: none;
+  }
+  .ml-collage .group:hover .ml-collage-photo img {
+    scale: 1.05;
   }
 }
 

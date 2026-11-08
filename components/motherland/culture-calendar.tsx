@@ -93,7 +93,7 @@ function MonthGrid({ first, label, marked, today, chosen, onChoose }: { first: n
   const count = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)).getUTCDate();
   return (
     <div className="rounded-[1.25rem] bg-ml-navy p-5 text-white sm:p-7 lg:sticky lg:top-[calc(var(--ml-header)+1rem)]">
-      <h3 className="font-ml-display text-[clamp(1.75rem,2.6vw,2.75rem)] leading-[1.1] tracking-[0.01em] uppercase">{label}</h3>
+      <h3 className="font-ml-sans font-extrabold text-[clamp(1.75rem,2.6vw,2.75rem)] leading-[1.1] tracking-[-0.03em]">{label}</h3>
       <div role="group" aria-label={label} className="mt-5 grid grid-cols-7 gap-1 sm:gap-1.5">
         {WEEKDAYS.map((d) => (
           <span key={d} aria-hidden className="py-1 text-center text-sm font-semibold text-white/70">

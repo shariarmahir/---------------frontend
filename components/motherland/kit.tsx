@@ -1,6 +1,6 @@
 /*
  * MOTHERLAND's kit: the column, the type scale and the pill buttons every
- * section shares. Titles are Anton in uppercase on one line, with a line of
+ * section shares. Titles are Inter ExtraBold in sentence case on one line, with a line of
  * text under them; each section's gold pill to its next page stands beside
  * its title. No hooks, so server components can use it.
  */
@@ -16,8 +16,8 @@ export const COLUMN = "mx-auto w-full max-w-(--ml-column) px-6 sm:px-10 xl:px-12
 /** A section's anchor lands clear of the fixed header. */
 export const ANCHOR = "scroll-mt-(--ml-header)";
 
-/** The big uppercase title, on one line: its size is set per page in motherland.css, smaller when the words need it (RiseText fits it). */
-export const DISPLAY = "font-ml-display text-(length:--ml-display) leading-[1.02] tracking-[0.01em] uppercase";
+/** Section titles, after booking.com's: Inter ExtraBold in sentence case, set tight, sized to hold one line. */
+export const DISPLAY = "font-ml-sans text-(length:--ml-display) leading-[1.12] font-extrabold tracking-[-0.035em]";
 
 /** The space above and below a band on the category pages. */
 export const BAND_Y = "py-14 sm:py-20 lg:py-24";

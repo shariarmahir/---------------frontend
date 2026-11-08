@@ -1,7 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useSyncExternalStore } from "react";
+import { Sparkle } from "@/components/motherland/poster";
 import { Icon } from "@/components/ui/icon";
+import type { Photo } from "@/data/bd-gov";
 import { CHECKED, NEEDS, SERVICES, type NeedId } from "@/data/bd-gov-services";
 import { inNeed, searchServices } from "@/lib/bd-gov-services";
 import { cn } from "@/lib/utils";
@@ -23,10 +26,12 @@ function useAddress() {
 
 /**
  * The national portal's one-click directory: type what you need, or choose a part of
- * life, and each service is one button away from its official page. Every card is in
+ * life, and each service is one button away from its official page. It opens on a
+ * night-navy band in the poster cards' dress: a photograph melting in from the right,
+ * a serif title, the search, and a foot line with the government's numbers. Every card is in
  * the first page the server sends; typing only filters them.
  */
-export function OneClick({ title, lede }: { title: string; lede: string }) {
+export function OneClick({ title, lede, line, photo, stats }: { title: string; lede: string; line: string; photo: Photo; stats: { value: string; label: string }[] }) {
   const address = useAddress();
   const [typed, setTyped] = useState<string | null>(null);
   const [chosen, setChosen] = useState<NeedId | "all" | null>(null);
@@ -45,14 +50,22 @@ export function OneClick({ title, lede }: { title: string; lede: string }) {
 
   return (
     <>
-      <section aria-labelledby="one-click-title" className="bg-gv-navy text-white">
-        <div className={cn(CONTAINER, "py-12 lg:py-20")}>
-          <h1 id="one-click-title" className="max-w-[20ch] font-gv-serif text-[clamp(2.25rem,4.4vw,3.75rem)] leading-[1.12] font-bold text-balance">
+      <section aria-labelledby="one-click-title" className="relative isolate overflow-hidden bg-ml-night text-white">
+        <div className="absolute inset-0 -z-10 lg:left-[38%]">
+          <Image src={photo.src} alt={photo.alt} fill priority sizes="(min-width: 1024px) 62vw, 100vw" className="object-cover opacity-60 lg:opacity-100" style={{ objectPosition: photo.focus }} />
+          <span aria-hidden className="absolute inset-0 bg-linear-to-t from-ml-night via-ml-night/70 to-ml-night/40 lg:bg-linear-to-r lg:from-ml-night lg:via-ml-night/55 lg:via-35% lg:to-ml-night/10" />
+          <span aria-hidden className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-b from-transparent to-ml-night" />
+        </div>
+
+        <div className={cn(CONTAINER, "flex min-h-[40rem] flex-col pt-14 pb-8 lg:min-h-[44rem] lg:pt-20")}>
+          <p className="font-ml-serif text-base text-white/90">{line}</p>
+          <h1 id="one-click-title" className="mt-5 max-w-[15ch] font-ml-serif text-[clamp(2.6rem,5.4vw,4.9rem)] leading-[1.04] font-normal tracking-[-0.015em] text-balance text-ml-paper">
             {title}
           </h1>
-          <p className="mt-5 max-w-[60ch] text-[1.13rem] leading-relaxed text-white/90 lg:text-xl">{lede}</p>
-          <div className="relative mt-8 max-w-3xl">
-            <Icon name="search" className="pointer-events-none absolute top-1/2 left-5 -translate-y-1/2 text-2xl! text-gv-navy" />
+          <p className="mt-5 max-w-[54ch] text-[1.13rem] leading-relaxed text-white/75 lg:text-xl">{lede}</p>
+
+          <div className="relative mt-9 max-w-2xl">
+            <Icon name="search" className="pointer-events-none absolute top-1/2 left-6 -translate-y-1/2 text-2xl! text-ml-night" />
             <label htmlFor="service-search" className="sr-only">
               Search government services, in English or Bangla
             </label>
@@ -66,11 +79,11 @@ export function OneClick({ title, lede }: { title: string; lede: string }) {
               }}
               placeholder="What do you need? Passport, পাসপোর্ট, land tax…"
               autoComplete="off"
-              className="h-16 w-full rounded-xl bg-white pr-5 pl-14 text-lg text-gv-navy shadow-[0_18px_40px_-22px_rgb(0_0_0/0.7)] placeholder:text-gv-ink/60 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-gv-gold"
+              className="h-16 w-full rounded-full bg-white pr-6 pl-15 text-lg text-ml-night shadow-[0_24px_50px_-24px_rgb(0_0_0/0.8)] placeholder:text-gv-ink/55 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-signal-orange"
             />
           </div>
           <div className="mt-4 flex flex-wrap items-center gap-2">
-            <span className="mr-1 text-white/85">Try:</span>
+            <span className="mr-1 text-[15px] text-white/70">Try</span>
             {SUGGESTIONS.map((s) => (
               <button
                 key={s}
@@ -78,12 +91,28 @@ export function OneClick({ title, lede }: { title: string; lede: string }) {
                 onClick={() => {
                   setTyped(s);
                   setChosen("all");
+                  document.getElementById("services")?.scrollIntoView({ block: "start" });
                 }}
-                className="min-h-10 cursor-pointer rounded-full px-4 font-semibold text-white ring-1 ring-white/35 transition-colors duration-200 hover:bg-white hover:text-gv-navy focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-gv-gold"
+                className="h-9 cursor-pointer rounded-full px-4 text-sm font-medium text-white/90 ring-1 ring-white/35 transition-colors duration-300 hover:bg-white hover:text-ml-night hover:ring-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-orange"
               >
                 {s}
               </button>
             ))}
+          </div>
+
+          <div className="mt-auto flex flex-col gap-3 border-t border-white/15 pt-6 text-[15px] text-white/70">
+            <dl aria-label="The government at a glance" className="flex flex-wrap items-center gap-x-3 gap-y-2">
+              {stats.map((st, i) => (
+                <div key={st.label} className="flex items-center gap-3">
+                  {i ? <Sparkle /> : null}
+                  <div className="flex items-baseline gap-1.5">
+                    <dt className="order-last">{st.label.toLowerCase()}</dt>
+                    <dd className="font-semibold text-white tabular-nums">{st.value}</dd>
+                  </div>
+                </div>
+              ))}
+            </dl>
+            <p className="text-white/60">Every link opened and checked on {CHECKED}</p>
           </div>
         </div>
       </section>
@@ -149,7 +178,7 @@ export function OneClick({ title, lede }: { title: string; lede: string }) {
                 if (!group.length) return null;
                 return (
                   <section key={n.id} aria-labelledby={`need-${n.id}`} className="mt-10 first-of-type:mt-6">
-                    <h2 id={`need-${n.id}`} className="flex flex-wrap items-baseline gap-x-3 font-gv-serif text-[1.6rem] leading-tight font-bold text-gv-navy">
+                    <h2 id={`need-${n.id}`} className="flex flex-wrap items-baseline gap-x-3 font-ml-serif text-[1.85rem] leading-tight font-normal text-gv-navy">
                       {n.name}
                       <span lang="bn" className="font-bengali text-[1.05rem] font-medium text-gv-ink/70">
                         {n.bn}

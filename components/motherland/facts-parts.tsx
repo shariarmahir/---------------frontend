@@ -93,7 +93,7 @@ export function FactsNav() {
           <div className="flex h-full flex-col">
             <div className="flex items-center gap-3 border-b border-ml-navy/10 py-3 pr-3 pl-5">
               <FactsMark />
-              <p className="min-w-0 flex-1 truncate font-ml-display text-xl tracking-[0.03em] uppercase">{FACTS_NAME}</p>
+              <p className="min-w-0 flex-1 truncate font-ml-sans font-extrabold text-xl tracking-[-0.03em]">{FACTS_NAME}</p>
               <button type="button" onClick={close} aria-label="Close" className="grid size-11 shrink-0 place-items-center rounded-full transition-colors hover:bg-ml-ground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-orange">
                 <Icon name="close" className="text-2xl" />
               </button>
@@ -281,7 +281,7 @@ export function FactsMap() {
             <Image key={here.title} src={here.picture.src} alt={here.picture.alt} fill sizes="(min-width: 1024px) 55vw, 92vw" className="object-cover animate-in fade-in-0 duration-500 motion-reduce:animate-none" style={{ objectPosition: here.picture.focus }} />
           </div>
           <div aria-live="polite" className="flex flex-col gap-2 p-6 lg:min-h-44 lg:p-8">
-            <h3 className="font-ml-display text-[clamp(1.75rem,2.6vw,2.75rem)] leading-[1.1] tracking-[0.01em] uppercase">{here.title}</h3>
+            <h3 className="font-ml-sans font-extrabold text-[clamp(1.75rem,2.6vw,2.75rem)] leading-[1.1] tracking-[-0.03em]">{here.title}</h3>
             <p className="max-w-[62ch] text-lg leading-relaxed text-pretty text-white/85">{here.text}</p>
           </div>
         </article>

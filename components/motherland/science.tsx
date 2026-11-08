@@ -1,11 +1,12 @@
 import { SCIENCE } from "@/data/motherland";
-import { Band, Mosaic } from "./blocks";
+import { Band } from "./blocks";
+import { PosterGrid } from "./poster";
 
-/** Science & Tech: one card for each thing Bangladesh built. */
+/** Science & Tech, Built by Bangladesh: a poster card for each thing Bangladesh built (poster.tsx). */
 export function Science() {
   return (
     <Band id="science" tone="white" title={SCIENCE.title} lede={SCIENCE.lede} cta={SCIENCE.cta}>
-      <Mosaic tone="white" cards={SCIENCE.articles} />
+      <PosterGrid cards={SCIENCE.articles.map((a) => ({ ...a, line: a.place, action: "Read the story" }))} />
     </Band>
   );
 }

@@ -8,10 +8,12 @@ const SEEN = "motherland-welcome-seen";
 const DELAY = 2500;
 
 /**
- * An invitation a few seconds after the page opens: a slim bar at the foot of
- * the hero, in the space under the title, that glides to the first story. It
- * leaves when the hero does, so it never covers a card, and closing or taking
- * it up keeps it away for the rest of the visit. It never takes focus.
+ * An invitation a few seconds after the page opens: a slim bar that glides to
+ * the first story. From sm it sits on the hero's bottom edge, half over the
+ * film, so it never covers the text below; on phones, where the hero fills the
+ * screen, it rests at the screen's foot. It leaves when the hero does, and
+ * closing or taking it up keeps it away for the rest of the visit. It never
+ * takes focus.
  */
 export function WelcomePopup() {
   const [open, setOpen] = useState(false);
@@ -43,7 +45,7 @@ export function WelcomePopup() {
   if (!open) return null;
 
   return (
-    <aside aria-label={WELCOME.title} className="ml-pop fixed inset-x-3 bottom-3 z-40 mx-auto flex w-fit max-w-[calc(100vw-1.5rem)] items-center gap-3 rounded-full bg-signal-orange py-1.5 pr-1.5 pl-5 text-ml-ink shadow-[0_16px_36px_-14px_rgb(0_0_0/0.6)] sm:bottom-6 sm:gap-5 sm:pl-7">
+    <aside aria-label={WELCOME.title} className="ml-pop fixed inset-x-3 bottom-3 z-40 mx-auto flex w-fit max-w-[calc(100vw-1.5rem)] items-center gap-3 rounded-full bg-signal-orange py-1.5 pr-1.5 pl-5 text-ml-ink shadow-[0_16px_36px_-14px_rgb(0_0_0/0.6)] sm:absolute sm:bottom-0 sm:translate-y-1/2 sm:gap-5 sm:pl-7">
       <p className="text-sm font-semibold whitespace-nowrap sm:text-base">
         <span className="sm:hidden">{WELCOME.title}</span>
         <span className="max-sm:hidden">{WELCOME.text}</span>

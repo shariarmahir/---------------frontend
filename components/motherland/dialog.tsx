@@ -46,7 +46,7 @@ export function Dialog({ title, onClose, children }: { title: string; onClose: (
         className="ml-pop flex max-h-[88svh] w-full max-w-2xl flex-col gap-5 overflow-y-auto rounded-3xl bg-white p-6 text-ml-ink shadow-[0_32px_64px_-20px_rgb(11_24_73/0.6)] outline-none sm:p-9"
       >
         <div className="flex items-start justify-between gap-4">
-          <h2 className="font-ml-display text-[clamp(1.9rem,4vw,3rem)] leading-[1.05] tracking-[0.01em] uppercase">{title}</h2>
+          <h2 className="font-ml-sans font-extrabold text-[clamp(1.9rem,4vw,3rem)] leading-[1.05] tracking-[-0.03em]">{title}</h2>
           <button type="button" onClick={onClose} aria-label="Close" className="grid size-11 shrink-0 place-items-center rounded-full bg-ml-ground transition-colors hover:bg-signal-orange focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ml-navy">
             <Icon name="close" className="text-2xl" />
           </button>

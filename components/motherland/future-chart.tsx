@@ -10,7 +10,8 @@ import { cn } from "@/lib/utils";
  * to the horizon: today's pace (blue, dashed) and the visitor's plan (gold,
  * with a soft fill). The World Bank's income lines are drawn for scale.
  * Hovering shows every value for the year under the pointer; `reveal`
- * (0–1) draws the projections out year by year when the simulation plays.
+ * (0–1) draws the projections out year by year when the simulation plays; `drawn` draws the
+ * World Bank line in and fades the grid up the first time the graph is seen (.ml-chart).
  * Palette checked with the dataviz validator on the ink surface.
  */
 
@@ -38,12 +39,14 @@ export function FutureChart({
   plan,
   thresholds,
   reveal,
+  drawn = true,
 }: {
   history: Point[];
   pace: Point[];
   plan: Point[];
   thresholds: { value: number; label: string }[];
   reveal: number;
+  drawn?: boolean;
 }) {
   const box = useRef<HTMLDivElement>(null);
   const [hover, setHover] = useState<number | null>(null);
@@ -88,7 +91,7 @@ export function FutureChart({
   const end = { plan: plan.at(-1)![1], pace: pace.at(-1)![1] };
 
   return (
-    <div ref={box} className="relative min-h-72 flex-1" onPointerMove={onMove} onPointerLeave={() => setHover(null)}>
+    <div ref={box} data-drawn={drawn} className="ml-chart relative min-h-72 flex-1 lg:min-h-80" onPointerMove={onMove} onPointerLeave={() => setHover(null)}>
       <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Income per person: World Bank data to ${today}, then today's pace reaching ${usd(end.pace)} and your plan reaching ${usd(end.plan)} by ${x1}.`} className="absolute inset-0 size-full touch-none overflow-visible">
         <defs>
           <clipPath id="future-reveal">
@@ -97,7 +100,7 @@ export function FutureChart({
         </defs>
 
         {ticks.map((t) => (
-          <g key={t}>
+          <g key={t} className="ml-chart-grid">
             <line x1={PAD.left} x2={W - PAD.right} y1={y(t)} y2={y(t)} stroke="white" strokeOpacity={t ? 0.08 : 0.25} />
             <text x={PAD.left - 10} y={y(t) + 4} textAnchor="end" className="fill-white/60 text-[12px]">
               {short(t)}
@@ -123,7 +126,7 @@ export function FutureChart({
 
         <line x1={x(today)} x2={x(today)} y1={PAD.top} y2={y(0)} stroke="white" strokeOpacity="0.2" />
 
-        <path d={line(history)} fill="none" stroke={SERIES.history.color} strokeWidth="2" strokeLinejoin="round" />
+        <path d={line(history)} pathLength={1} className="ml-chart-draw" fill="none" stroke={SERIES.history.color} strokeWidth="2" strokeLinejoin="round" />
         <g clipPath="url(#future-reveal)">
           <path d={area(plan)} fill={SERIES.plan.color} fillOpacity="0.16" />
           <path d={line(pace)} fill="none" stroke={SERIES.pace.color} strokeWidth="2" strokeDasharray="6 5" />
@@ -141,6 +144,7 @@ export function FutureChart({
               const dy = Math.abs(y(v) - y(other)) < 18 ? (v > other ? -9 : 9) : 0;
               return (
                 <g key={key}>
+                  {key === "plan" && <circle cx={x(x1)} cy={y(v)} r="4.5" fill={SERIES.plan.color} className="ml-chart-pulse" />}
                   <circle cx={x(x1)} cy={y(v)} r="4.5" fill={SERIES[key].color} stroke="var(--color-ml-ink)" strokeWidth="2" />
                   <text x={x(x1) + 10} y={y(v) + 4 + dy} className="fill-white">
                     {short(Math.round(v / 100) * 100)}

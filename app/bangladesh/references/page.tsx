@@ -72,7 +72,7 @@ export default function ReferencesPage() {
       <main id="main" className="pt-16 lg:pt-31">
         <div className="bg-ml-navy py-14 text-white lg:py-20">
           <div className={cn(COLUMN, "flex flex-col gap-4")}>
-            <h1 className="font-ml-display text-[clamp(3rem,7vw,5.5rem)] leading-none tracking-[0.01em] uppercase">References</h1>
+            <h1 className="font-ml-sans font-extrabold text-[clamp(3rem,7vw,5.5rem)] leading-[1.08] tracking-[-0.03em]">References</h1>
             <p className="max-w-3xl text-lg leading-relaxed text-white/85">Every source, photograph and film behind this site, page by page and section by section.</p>
           </div>
         </div>
@@ -91,7 +91,7 @@ export default function ReferencesPage() {
           <div className="flex min-w-0 flex-col gap-14">
             {REFERENCES.map((page) => (
               <section key={page.id} id={page.id} aria-labelledby={`${page.id}-title`} className="flex scroll-mt-36 flex-col gap-6">
-                <h2 id={`${page.id}-title`} className="font-ml-display text-[clamp(2rem,3.4vw,3rem)] leading-[1.1] tracking-[0.01em] uppercase">
+                <h2 id={`${page.id}-title`} className="font-ml-sans font-extrabold text-[clamp(2rem,3.4vw,3rem)] leading-[1.1] tracking-[-0.03em]">
                   <Link href={page.href} className="rounded-sm hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ml-navy">
                     {page.name}
                   </Link>

@@ -99,7 +99,7 @@ export default function GeographyTravelPage() {
           <div className={cn(COLUMN, "flex flex-col gap-8")}>
             <div className="flex min-w-0 flex-col gap-3 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
               <div className="min-w-0 flex-1">
-                <RiseText id="seasons-title" text="When Bangladesh looks best" className="w-full font-ml-display text-[clamp(2.25rem,4.4vw,4rem)] leading-[1.02] tracking-[0.01em] uppercase" />
+                <RiseText id="seasons-title" text="When Bangladesh looks best" className="w-full font-ml-sans font-extrabold text-[clamp(2.25rem,4.4vw,4rem)] leading-[1.08] tracking-[-0.03em]" />
               </div>
               <p className="shrink-0 text-lg font-semibold text-signal-orange">Mid-October to mid-February</p>
             </div>
@@ -109,7 +109,7 @@ export default function GeographyTravelPage() {
                   <Image src={s.picture.src} alt={s.picture.alt} fill sizes="(min-width: 1024px) 16vw, (min-width: 640px) 33vw, 50vw" className="-z-20 object-cover" style={{ objectPosition: s.picture.focus }} />
                   <span aria-hidden className="absolute inset-0 -z-10 bg-linear-to-t from-ml-navy via-ml-navy/40 to-transparent" />
                   {s.pick || s.id === season.id ? <span className={cn("absolute top-3 left-3 rounded-full px-2.5 py-1 text-xs font-bold", s.pick ? "bg-signal-orange text-ml-navy" : "bg-white text-ml-navy")}>{s.pick ? "Best time" : "Right now"}</span> : null}
-                  <h3 className="font-ml-display text-[clamp(1.6rem,2.1vw,2.25rem)] leading-none tracking-[0.01em] uppercase">{s.name}</h3>
+                  <h3 className="font-ml-sans font-extrabold text-[clamp(1.6rem,2.1vw,2.25rem)] leading-[1.08] tracking-[-0.03em]">{s.name}</h3>
                   <p className="mt-1.5 text-sm font-semibold">{s.months}</p>
                   <p className="mt-1 text-sm leading-snug text-white/85">{s.looks}</p>
                 </li>
