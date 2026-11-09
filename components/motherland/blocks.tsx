@@ -6,6 +6,7 @@ import type { Cta, Picture } from "@/data/motherland";
 import { cn } from "@/lib/utils";
 import { CollageGrid, Credit } from "./collage";
 import { CalendarBoard } from "./culture-calendar";
+import { CardTabs } from "./card-tabs";
 import { ConnectBand } from "./connect";
 import { TakaConverter } from "./converter";
 import { FilmWall } from "./film-wall";
@@ -181,6 +182,14 @@ export function BlockView({ block }: { block: Block }) {
       );
     case "cards":
       if (block.layout === "sideways") return <Sideways id={block.id} title={block.title} lede={block.lede} tone={block.tone} cards={block.cards} />;
+      if (block.tabs) {
+        const groups = block.tabs.map((name) => ({ name, cards: block.cards.filter((c) => c.group === name) }));
+        return (
+          <Band id={block.id} tone={block.tone} title={block.title} lede={block.lede}>
+            <CardTabs id={block.id} label={block.title} tabs={groups.map((g) => ({ name: g.name, count: g.cards.length, panel: <Mosaic cards={g.cards} tone={block.tone} /> }))} />
+          </Band>
+        );
+      }
       return (
         <Band id={block.id} tone={block.tone} title={block.title} lede={block.lede}>
           <CardGrid cards={block.cards} tone={block.tone} columns={block.columns} />

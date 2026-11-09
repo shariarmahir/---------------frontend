@@ -15,6 +15,9 @@ export interface MoreCredit {
 }
 
 export const MORE: Record<string, MoreCredit> = {
+  "opp-cobbler": { author: "A S M Jobaer", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0/", sourceUrl: "https://commons.wikimedia.org/wiki/File:Street_cobbler_working_on_a_sidewalk_in_Dhaka.jpg" },
+  "opp-blacksmith": { author: "Balaram Mahalder", license: "CC BY-SA 3.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/", sourceUrl: "https://commons.wikimedia.org/wiki/File:A_blacksmith_in_Bangladesh.jpg" },
+  "opp-wind-feni": { author: "MI Javed", license: "CC BY 2.0", licenseUrl: "https://creativecommons.org/licenses/by/2.0/", sourceUrl: "https://commons.wikimedia.org/wiki/File:Wind_turbines_near_Feni_River.jpg" },
   "p-alam-lab": { author: "Sunny.geb.sust", license: "CC BY-SA 4.0", licenseUrl: "", sourceUrl: "https://commons.wikimedia.org/wiki/File:Alam_in_his_BARJ_Lab.jpg" },
   "sultan-house": { author: "Jubair1985", license: "CC BY-SA 4.0", licenseUrl: "", sourceUrl: "https://commons.wikimedia.org/wiki/File:House_of_SM_Sultan.jpg" },
   "p-nishat": { author: "Press Information Department", license: "Public domain", licenseUrl: "", sourceUrl: "https://commons.wikimedia.org/wiki/File:Begum_Rokeya_Award_Presentation_to_Nishat_Majumder,_Dhaka,_2023-12-09_(PID-0012053)_(cropped).jpg" },

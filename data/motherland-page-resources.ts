@@ -5,6 +5,7 @@
  */
 import { bangla, pic, wiki, type Block, type Src } from "./motherland-blocks.ts";
 import { photo } from "./motherland-categories.ts";
+import { OPPORTUNITIES } from "./motherland-page-opportunities.ts";
 
 const MINERALS: Src = bangla("Mineral Resources");
 const HARD: Src = { name: "Banglapedia, Hardrock", url: "https://en.banglapedia.org/index.php?title=Hardrock" };
@@ -68,4 +69,5 @@ export const RESOURCES_BLOCKS: Block[] = [
     ],
   },
   { kind: "part", part: "timeline" },
+  OPPORTUNITIES,
 ];

@@ -155,7 +155,7 @@ Every data source, photograph and film, page by page and section by section. The
 | Where monks came to study | Sakib Ahmed Nasim | Wikimedia Commons | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Shalbon-vihara-05-by-Sakib-Ahmed-Nasim.jpg |
 | The sultans and the traveller | Faisal Photography | Unsplash | Unsplash License | https://unsplash.com/photos/sixty-dome-mosque-with-a-grass-field-8Q5HBZsJclY |
 | The chiefs who said no | ArifHossain.ED | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Panam_Nagar_4k.jpg |
-| Woven air | Wasiul Bahar | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Weaving_jamdani_at_BSCIC_Jamdani_palli,_Narayanganj_7.webm |
+| Woven air | Francisco Anzola from United States | Wikimedia Commons | CC BY 2.0 | https://commons.wikimedia.org/wiki/File:Sonargaon_Folk_Art_and_Craft_Museum_(31000427270).jpg |
 
 ### Act two: the fall
 
@@ -197,14 +197,14 @@ Every data source, photograph and film, page by page and section by section. The
 | Used for | Author | Site | Licence | Link |
 | --- | --- | --- | --- | --- |
 | Dying for an alphabet | John Jyotish Baroi | Unsplash | Unsplash License | https://unsplash.com/photos/a-large-red-and-white-structure-s9iievuN4W8 |
-| Nine months | Md Rumon Munshi | Unsplash | Unsplash License | https://unsplash.com/photos/the-national-martyrs-memorial-of-bangladesh-tT4mUnA_M7w |
+| Nine months | Jubair Bin Iqbal | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Victory_Day_Parade,_Dhaka,_Bangladesh_2011.jpg |
 | Written off | Syed Moula | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Aparajeyo_Bangla,_The_University_of_Dhaka_-_%E0%A6%85%E0%A6%AA%E0%A6%B0%E0%A6%BE%E0%A6%9C%E0%A7%87%E0%A6%AF%E0%A6%BC_%E0%A6%AC%E0%A6%BE%E0%A6%82%E0%A6%B2%E0%A6%BE,_%E0%A6%A2%E0%A6%BE%E0%A6%95%E0%A6%BE_%E0%A6%AC%E0%A6%BF%E0%A6%B6%E0%A7%8D%E0%A6%AC%E0%A6%AC%E0%A6%BF%E0%A6%A6%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%B2%E0%A6%AF%E0%A6%BC.jpg |
 | A hundred and thirty workers | EqualStock | Unsplash | Unsplash License | https://unsplash.com/photos/workers-sew-textiles-in-a-large-factory-setting-dh1EDCiQ6lg |
 | From 139,000 deaths to 26 | Unsplash contributor | Unsplash | Unsplash License | https://unsplash.com/photos/people-standing-on-sea-shore-during-daytime-jQetJK7FiHI |
 | Winning the sea, in court | Tanvir Hassan | Unsplash | Unsplash License | https://unsplash.com/photos/a-boat-sitting-on-top-of-a-sandy-beach-8fT8zBQ2kaw |
 | The worst day in the factories | Sudipta06 | Wikimedia Commons | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:2013_Savar_building_collapse_aftermath.jpg |
 | Built with our own money | Rezuanur Rahman Mubin | Unsplash | Unsplash License | https://unsplash.com/photos/a-bridge-with-lights-on-it-CZcCNSQ2wpM |
-| Bringing back woven air | Michael Gluzman | Unsplash | Unsplash License | https://unsplash.com/photos/woman-spinning-thread-on-a-traditional-wooden-wheel-qDiOe4sIAho |
+| Bringing back woven air | Wasiul Bahar | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Weaving_jamdani_at_BSCIC_Jamdani_palli,_Narayanganj_7.webm |
 | Where the story stands | Fahaduzzaman Fahad | Unsplash | Unsplash License | https://unsplash.com/photos/a-bangladeshi-flag-mural-forms-a-makeshift-soccer-field-O5rTZBjKUGk |
 
 ### A long story in numbers
@@ -282,7 +282,7 @@ Every data source, photograph and film, page by page and section by section. The
 | On the world coding stage | Unsplash contributor | Unsplash | Unsplash License | https://unsplash.com/photos/a-man-using-a-laptop-computer-on-a-wooden-table-14JOIxmsOqA |
 | Vaccines the poor can afford | Unsplash contributor | Unsplash | Unsplash License | https://unsplash.com/photos/a-person-in-a-lab-coat-and-gloves-working-on-a-machine-y6zGvWKU6sE |
 | The genome of the golden fibre | Masum-al-hasan | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Jute_field,_Halti_Beel,_Natore.jpg |
-| The physics of every boson | Md Arafat Ul Alam | Unsplash | Unsplash License | https://unsplash.com/photos/a-large-red-brick-building-with-lots-of-windows-Xx2BrFj8IOQ |
+| The physics of every boson | Unknown author | Wikimedia Commons | Public domain | https://commons.wikimedia.org/wiki/File:SatyenBose1925.jpg |
 | The skyscraper's tube | Nicolas G. Mertens | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Chicago,_IL%E2%80%94The_John_Hancock_(Fazlur_Khan_of_Skidmore,_Owings,_and_Merrill,_archs).jpg |
 
 ### What we have built at home
@@ -298,7 +298,7 @@ Every data source, photograph and film, page by page and section by section. The
 
 | Used for | Author | Site | Licence | Link |
 | --- | --- | --- | --- | --- |
-| Padma Bridge | md rifat | Unsplash | Unsplash License | https://unsplash.com/photos/a-large-bridge-spanning-over-a-body-of-water-UrvALLRrDYw |
+| Padma Bridge | Rezuanur Rahman Mubin | Unsplash | Unsplash License | https://unsplash.com/photos/a-bridge-with-lights-on-it-CZcCNSQ2wpM |
 | Dhaka Metro | Muhammad | Unsplash | Unsplash License | https://unsplash.com/photos/a-train-station-with-a-train-on-the-tracks-iMw_Rk64_H4 |
 | Our own satellite | Official SpaceX Photos | Wikimedia Commons | CC0 | https://commons.wikimedia.org/wiki/File:Bangabandhu_Satellite-1_Mission_(42025498972).jpg |
 | Rooppur nuclear plant | Iqbal Habib Khondker / ইকবাল হাবীব খন্দকার | Wikimedia Commons | CC BY-SA 2.0 | https://commons.wikimedia.org/wiki/File:%E0%A6%AA%E0%A6%A6%E0%A7%8D%E0%A6%AE%E0%A6%BE_%E0%A6%A8%E0%A6%A6%E0%A7%80_%E0%A6%A5%E0%A7%87%E0%A6%95%E0%A7%87_%E0%A6%B0%E0%A7%82%E0%A6%AA%E0%A6%AA%E0%A7%81%E0%A6%B0_%E0%A6%AA%E0%A6%BE%E0%A6%B0%E0%A6%AE%E0%A6%BE%E0%A6%A3%E0%A6%AC%E0%A6%BF%E0%A6%95_%E0%A6%AC%E0%A6%BF%E0%A6%A6%E0%A7%8D%E0%A6%AF%E0%A7%81%E0%A7%8E_%E0%A6%95%E0%A7%87%E0%A6%A8%E0%A7%8D%E0%A6%A6%E0%A7%8D%E0%A6%B0%E0%A7%87%E0%A6%B0_%E0%A6%A6%E0%A7%83%E0%A6%B6%E0%A7%8D%E0%A6%AF.jpg |
@@ -426,7 +426,7 @@ Every data source, photograph and film, page by page and section by section. The
 | --- | --- | --- | --- | --- |
 | Fazlur Rahman Khan | Nicolas G. Mertens | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Chicago,_IL%E2%80%94The_John_Hancock_(Fazlur_Khan_of_Skidmore,_Owings,_and_Merrill,_archs).jpg |
 | Fazle Hasan Abed | BRAC | Wikimedia Commons | CC BY 2.5 | https://commons.wikimedia.org/wiki/File:Sir_Fazle_Hasan_Abed_receives_Thomas_Francis,_Jr._Medal.jpg |
-| Muhammad Qudrat-i-Khuda | Unsplash contributor | Unsplash | Unsplash License | https://unsplash.com/photos/a-person-in-a-lab-coat-and-gloves-working-on-a-machine-y6zGvWKU6sE |
+| Muhammad Qudrat-i-Khuda | National Cancer Institute | Unsplash | Unsplash License | https://unsplash.com/photos/scientist-using-microscope-in-laboratory-JxoWb7wHqnA |
 | Maqsudul Alam | Sunny.geb.sust | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Alam_in_his_BARJ_Lab.jpg |
 | Humayun Ahmed | Mahrumoon nayeem | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Humayun_Ahmed_01.jpg |
 
@@ -561,7 +561,7 @@ Every data source, photograph and film, page by page and section by section. The
 | Mango | Yoel Winkler | Unsplash | Unsplash License | https://unsplash.com/photos/a-bunch-of-fruit-hanging-from-a-tree-MVyCwVoJR5Y |
 | Krishnachura | Uddinkabir | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Dhaka_Krishnachura_Blossoms.jpg |
 | Shimul | Saad Faruque from Bangalore, India | Wikimedia Commons | CC BY-SA 2.0 | https://commons.wikimedia.org/wiki/File:Bombax_ceiba_-_Shimul_Flower.jpg |
-| Ratargul | Nowshad Arefin | Unsplash | Unsplash License | https://unsplash.com/photos/a-tree-that-has-grown-out-of-the-water-SfBZbmyG79c |
+| Ratargul | Miraz Khan Salman | Unsplash | Unsplash License | https://unsplash.com/photos/a-person-in-a-boat-on-a-body-of-water-hykhZSM3S0g |
 | Lawachara | Abdulmominbd | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Lawachara_Forest.jpg |
 
 ### Flowers and fruits
@@ -613,10 +613,10 @@ Every data source, photograph and film, page by page and section by section. The
 
 | Used for | Author | Site | Licence | Link |
 | --- | --- | --- | --- | --- |
-| On a visit | Mamun Srizon | Unsplash | Unsplash License | https://unsplash.com/photos/lake-surrounded-with-tall-green-trees-qay3lNDSHzc |
+| On a visit | Imran Molla | Unsplash | Unsplash License | https://unsplash.com/photos/a-couple-of-boats-that-are-in-the-water-YfqcrHgK3rE |
 | At the market | Ashraful Islam | Unsplash | Unsplash License | https://unsplash.com/photos/a-man-sitting-in-front-of-a-display-of-fish-uINBTHLWS9s |
 | At home | EqualStock | Unsplash | Unsplash License | https://unsplash.com/photos/a-couple-of-women-standing-next-to-a-tree-oYzSyollYfg |
-| In your village or town | Kritzolina | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Pollution_by_a_factory_on_the_bank_of_the_Buriganga_near_Dhaka_04.jpg |
+| In your village or town | MSI Sakib | Unsplash | Unsplash License | https://unsplash.com/photos/an-aerial-view-of-a-river-running-through-a-city-sJ4VPkOJKHk |
 | At work | American Public Power Association | Unsplash | Unsplash License | https://unsplash.com/photos/solar-panels-on-green-field-513dBrMJ_5w |
 | With your voice | mohammad samir | Unsplash | Unsplash License | https://unsplash.com/photos/3-boys-and-2-girls-standing-on-brown-sand-during-daytime-vaXqT9L7LwY |
 
@@ -1054,6 +1054,60 @@ Every data source, photograph and film, page by page and section by section. The
 | Second in online work | Sheikh Abir Ali | Unsplash | Unsplash License | https://unsplash.com/photos/a-close-up-of-a-person-holding-a-cell-phone-pL8OUVj6ZF8 |
 | 136 million online | Marwan Ahmed | Unsplash | Unsplash License | https://unsplash.com/photos/man-in-gray-shirt-holding-black-smartphone-uur8WascC1o |
 
+### Opportunities
+
+- [Dhaka Tribune on the World Bank, November 2026](https://www.dhakatribune.com/business/423621/world-bank-bangladesh-has-two-more-decades-to)
+- [Prothom Alo, October 2026](https://en.prothomalo.com/bangladesh/addcsizr3s)
+- [BSS, February 2026](https://www.bssnews.net/news-flash/358293)
+- [The Financial Express, non-cotton apparel study](https://thefinancialexpress.com.bd/trade/with-a-full-value-chain-non-cotton-apparel-exports-can-hit-42b-by-2032)
+- [bdnews24, October 2026](https://bdnews24.com/business/515zckldx9)
+- [bdnews24 on Export Promotion Bureau data](https://bdnews24.com/business/55a1465ad4a3)
+- [LightCastle Partners, April 2025](https://lightcastlepartners.com/insights/2025/04/export-diversification-light-engineering/)
+- [Hellenic Shipping News, May 2026](https://www.hellenicshippingnews.com/?p=1134050)
+- [The Financial Express, July 2025](https://thefinancialexpress.com.bd/trade/semiconductor-push-bd-outlines-vision-to-join-global-tech-value-chain)
+- [Dhaka Tribune, October 2026](https://www.dhakatribune.com/bangladesh/power-energy/423304/bangladesh%E2%80%99s-renewable-energy-ambition-faces-a)
+- [The Financial Express, May 2026](https://today.thefinancialexpress.com.bd/print/bidding-for-offshore-hydrocarbon-exploration-launched-1779643903)
+- [Mongabay, June 2026](https://news.mongabay.com/2026/06/bangladesh-unveils-sweeping-ev-incentives-to-cut-emissions-and-pollution/)
+- [The Business Standard, November 2025](https://www.tbsnews.net/economy/5b-ict-export-target-missed-huge-margin-heres-why-1281591)
+- [Dhaka Tribune on LightCastle, 2026](https://www.dhakatribune.com/business/416169/report-bangladesh-startup-funding-craters-95%25-to)
+- [UNB on the DCCI seminar](https://unb.com.bd/category/Bangladesh/usd-5-billion-spent-abroad-annually-due-to-healthcare-gaps-in-bangladesh-dcci/175121)
+- [Bonik Barta, September 2026](https://en.bonikbarta.com/bangladesh/lGiJEN7oLhqpm991)
+- [The Financial Express, April 2026](https://today.thefinancialexpress.com.bd/print/deep-sea-port-to-increase-container-handling-of-ctg-port-to-6m-teus-1775319018)
+- [eFeedLink on Export Promotion Bureau data, October 2025](https://www.efeedlink.com/contents/10-22-2025/38e5fa1e-5ede-4bda-85f9-2c3a20e30119-1202.html)
+- [BSS, 180-day joint investment plan, March 2026](https://www.bssnews.net/news/369319)
+- [Dhaka Tribune, May 2025](https://www.dhakatribune.com/bangladesh/foreign-affairs/382562/dhaka-tokyo-ink-mous-to-develop-bangladeshi)
+- [Prothom Alo on Bangladesh Bank](https://en.prothomalo.com/business/local/2m49au9o3r)
+- [International Growth Centre](https://www.theigc.org/blogs/gender-equality/progressing-female-labour-force-participation-bangladesh)
+- [Prothom Alo](https://en.prothomalo.com/bangladesh/gg11vmpobv)
+- Figures are as reported on the dates shown. Estimates and targets are the named source's, not forecasts by this site.
+
+| Used for | Author | Site | Licence | Link |
+| --- | --- | --- | --- | --- |
+| Two decades of young workers | Unsplash contributor | Unsplash | Unsplash License | https://unsplash.com/photos/young-girl-in-traditional-clothing-holds-a-book-outdoors-U4bISHxD4TA |
+| Three more years to prepare | Moheen Reeyad | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Karnaphuli_River_at_night_(02).jpg |
+| Japan's market, duty-free | Md Shafinur Rahman | Unsplash | Unsplash License | https://unsplash.com/photos/a-large-jetliner-sitting-on-top-of-an-airport-runway-JUIiUSIOZcw |
+| Clothes beyond cotton | Wasiul Bahar | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Weaving_jamdani_at_BSCIC_Jamdani_palli,_Narayanganj_7.webm |
+| Medicines for the world | CDC | Unsplash | Unsplash License | https://unsplash.com/photos/man-in-white-dress-shirt-wearing-black-sunglasses-FcIrL0o71Dk |
+| Shoes and leather | A S M Jobaer | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Street_cobbler_working_on_a_sidewalk_in_Dhaka.jpg |
+| Parts and machines | Balaram Mahalder | Wikimedia Commons | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:A_blacksmith_in_Bangladesh.jpg |
+| Ship recycling, done cleanly | Austin Curtis | Unsplash | Unsplash License | https://unsplash.com/photos/a-group-of-people-standing-next-to-a-large-boat-q-2Bws5X31s |
+| Chips, starting with design | National Cancer Institute | Unsplash | Unsplash License | https://unsplash.com/photos/scientist-using-microscope-in-laboratory-JxoWb7wHqnA |
+| Clean power by 2030 | MI Javed | Wikimedia Commons | CC BY 2.0 | https://commons.wikimedia.org/wiki/File:Wind_turbines_near_Feni_River.jpg |
+| Gas under the Bay | Unsplash contributor | Unsplash | Unsplash License | https://unsplash.com/photos/people-standing-on-sea-shore-during-daytime-jQetJK7FiHI |
+| Electric buses and trucks | Tatiana Mokhova | Unsplash | Unsplash License | https://unsplash.com/photos/a-group-of-green-trucks-parked-next-to-each-other-qzLahhx2tQg |
+| Software for export | Md. Redwan Hossain6333 | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:West_Palashy_Campus,_BUET.jpg |
+| Capital for new companies | Bornil Amin | Unsplash | Unsplash License | https://unsplash.com/photos/a-man-riding-a-red-motorcycle-down-a-street-1JFYtV_gXi4 |
+| Hospitals at home | MdAbeerHussain | Wikimedia Commons | CC0 | https://commons.wikimedia.org/wiki/File:Mugda_Medical_College_Hospital_Building.jpg |
+| Visitors still to come | Niaz morshed Shovon | Wikimedia Commons | Public domain | https://commons.wikimedia.org/wiki/File:Saint_Martin%27s_Island.JPG |
+| The deep-sea port | Borhan | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Sea_shore_in_National_Special_Economic_Zone,_Mirsarai,_Chittagong.jpg |
+| Fish and shrimp for export | Ashraful Islam | Unsplash | Unsplash License | https://unsplash.com/photos/a-man-sitting-in-front-of-a-display-of-fish-uINBTHLWS9s |
+| Food from three harvests | A S M Jobaer | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Rice_harvesting_by_farmers_in_a_wetland_field,_Bangladesh_2026_06.jpg |
+| A route to Japan | Md. Shaifuzzaman Ayon | Unsplash | Unsplash License | https://unsplash.com/photos/white-and-red-passenger-plane-on-airport-during-daytime--YfMW8DWRDE |
+| Money that could build | Jason Leung | Unsplash | Unsplash License | https://unsplash.com/photos/international-banknotes-scattered-on-surface-SAYzxuS1O3M |
+| Businesses women lead | Michael Gluzman | Unsplash | Unsplash License | https://unsplash.com/photos/woman-spinning-thread-on-a-traditional-wooden-wheel-qDiOe4sIAho |
+| 176 million customers | Nishaan ahmed | Unsplash | Unsplash License | https://unsplash.com/photos/a-group-of-people-riding-bikes-down-a-street-tQe8aNjBIM8 |
+| Where investors are wanted | MSI Sakib | Unsplash | Unsplash License | https://unsplash.com/photos/an-aerial-view-of-a-river-running-through-a-city-sJ4VPkOJKHk |
+
 ## Business & Investment
 
 ### The hero
@@ -1103,7 +1157,7 @@ Every data source, photograph and film, page by page and section by section. The
 
 | Used for | Author | Site | Licence | Link |
 | --- | --- | --- | --- | --- |
-| A market of 175 million | Nishaan ahmed | Unsplash | Unsplash License | https://unsplash.com/photos/a-group-of-people-riding-bikes-down-a-street-tQe8aNjBIM8 |
+| A market of 175 million | Abdullah AL IMRAN | Unsplash | Unsplash License | https://unsplash.com/photos/a-small-shop-with-a-blue-awning-and-a-blue-awning-TDHW5kAmoj0 |
 | Skilled hands at scale | EqualStock | Unsplash | Unsplash License | https://unsplash.com/photos/workers-sew-textiles-in-a-large-factory-setting-dh1EDCiQ6lg |
 | Between two giants | Moheen Reeyad | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Straddle_carrier_from_Port_of_Chittagong_(05).JPG |
 | Proven at world level | CDC | Unsplash | Unsplash License | https://unsplash.com/photos/man-in-white-dress-shirt-wearing-black-sunglasses-FcIrL0o71Dk |
@@ -1120,7 +1174,7 @@ Every data source, photograph and film, page by page and section by section. The
 | Used for | Author | Site | Licence | Link |
 | --- | --- | --- | --- | --- |
 | Higher-value garments | Wasiul Bahar | Wikimedia Commons | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Weaving_jamdani_at_BSCIC_Jamdani_palli,_Narayanganj_7.webm |
-| Healthcare and medicine | CDC | Unsplash | Unsplash License | https://unsplash.com/photos/man-in-white-dress-shirt-wearing-black-sunglasses-FcIrL0o71Dk |
+| Healthcare and medicine | Unsplash contributor | Unsplash | Unsplash License | https://unsplash.com/photos/a-person-in-a-lab-coat-and-gloves-working-on-a-machine-y6zGvWKU6sE |
 | Software and fintech | Unsplash contributor | Unsplash | Unsplash License | https://unsplash.com/photos/a-man-using-a-laptop-computer-on-a-wooden-table-14JOIxmsOqA |
 | Food and farm processing | Ashraful Haque Akash | Unsplash | Unsplash License | https://unsplash.com/photos/man-in-blue-t-shirt-planting-rice-on-fields-MuiC_cZL80Q |
 | The blue economy | Tarikul Raana | Unsplash | Unsplash License | https://unsplash.com/photos/a-group-of-fish-mSF6ikPWFrA |
@@ -1169,7 +1223,7 @@ Every data source, photograph and film, page by page and section by section. The
 | Used for | Author | Site | Licence | Link |
 | --- | --- | --- | --- | --- |
 | People with more to spend | Nasim Uddin | Unsplash | Unsplash License | https://unsplash.com/photos/a-circular-glass-ceiling-in-a-building-5eG7W4UsAas |
-| A digital country | Unsplash contributor | Unsplash | Unsplash License | https://unsplash.com/photos/a-man-using-a-laptop-computer-on-a-wooden-table-14JOIxmsOqA |
+| A digital country | Marwan Ahmed | Unsplash | Unsplash License | https://unsplash.com/photos/man-in-gray-shirt-holding-black-smartphone-uur8WascC1o |
 | After LDC status | MSI Sakib | Unsplash | Unsplash License | https://unsplash.com/photos/an-aerial-view-of-a-river-running-through-a-city-sJ4VPkOJKHk |
 
 ### Official bodies for investors

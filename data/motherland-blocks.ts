@@ -26,6 +26,8 @@ export interface Card {
   facts?: { label: string; value: string }[];
   /** A way onward from the card. */
   cta?: { label: string; href: string };
+  /** The tab it sits under, when its block has tabs. */
+  group?: string;
 }
 
 export interface Line {
@@ -49,7 +51,7 @@ export interface MapPin {
 
 export type Block =
   | { kind: "chapters"; id: string; title: string; lede?: string; tone: BandTone; chapters: Card[]; layout?: "sideways" }
-  | { kind: "cards"; id: string; title: string; lede?: string; tone: BandTone; cards: Card[]; columns?: 2 | 3 | 4; note?: string; layout?: "sideways" }
+  | { kind: "cards"; id: string; title: string; lede?: string; tone: BandTone; cards: Card[]; columns?: 2 | 3 | 4; note?: string; layout?: "sideways"; /** Shows the cards one group at a time, by each card's `group`. */ tabs?: string[] }
   | { kind: "people"; id: string; title: string; lede?: string; tone: BandTone; cards: Card[] }
   | { kind: "steps"; id: string; title: string; lede?: string; tone: BandTone; steps: Card[] }
   | { kind: "table"; id: string; title: string; lede?: string; tone: BandTone; head: string[]; rows: string[][]; note?: string; sources?: Src[]; picture?: Picture; /** The last column is a source, kept for reference.md and not shown. */ hideLastColumn?: boolean }

@@ -138,7 +138,7 @@ export function SiteFooter({ research = false }: { research?: boolean }) {
               <p lang="bn" className="font-bengali text-xl leading-snug font-bold text-signal-orange sm:text-2xl">
                 {NAZRUL_MOTTO}
               </p>
-              <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+              <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap">
                 <Link href="/#kandari-profile" className={btn.gold}>
                   <Icon name="person_add" className="text-xl!" />
                   Join Kandari Profile
@@ -146,6 +146,10 @@ export function SiteFooter({ research = false }: { research?: boolean }) {
                 <Link href="/about" className={btn.goldOutline}>
                   <Icon name="auto_stories" className="text-xl!" />
                   Read our story
+                </Link>
+                <Link href="/hq" className={btn.goldOutline}>
+                  <Icon name="domain" className="text-xl!" />
+                  Office Environment
                 </Link>
               </div>
             </div>

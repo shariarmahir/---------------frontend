@@ -147,6 +147,25 @@ test("the Pro & Con page opens with the policy statement", async () => {
   assert.match(JSON.stringify(first), /no conflict with any government/);
 });
 
+test("Opportunities: every card sits under a tab, each tab has cards, and no photograph repeats one on its page", async () => {
+  const { OPPORTUNITIES, OPPORTUNITY_TABS } = await import("../data/motherland-page-opportunities.ts");
+  const { PAGE_BLOCKS } = await import("../data/motherland-pages.ts");
+  assert.ok(OPPORTUNITIES.kind === "cards");
+  for (const tab of OPPORTUNITY_TABS) assert.ok(OPPORTUNITIES.cards.filter((c) => c.group === tab).length >= 3, tab);
+  for (const c of OPPORTUNITIES.cards) {
+    assert.ok((OPPORTUNITY_TABS as readonly string[]).includes(c.group ?? ""), c.title);
+    assert.ok(c.source?.url.startsWith("https://"), `${c.title} names no source`);
+  }
+  const mine = OPPORTUNITIES.cards.map((c) => c.picture?.src ?? "");
+  assert.equal(new Set(mine).size, mine.length, "a photograph repeats within Opportunities");
+  const category = categoryFor("resources");
+  const others = [
+    ...(category?.subcategories.flatMap((s) => s.stories.map((st) => st.picture?.src)) ?? []),
+    ...PAGE_BLOCKS.resources.filter((b) => b !== OPPORTUNITIES).flatMap((b) => (b.kind === "chapters" ? b.chapters.map((c) => c.picture?.src) : b.kind === "cards" ? b.cards.map((c) => c.picture?.src) : b.kind === "table" ? [b.picture?.src] : [])),
+  ];
+  for (const src of mine) assert.ok(!others.includes(src), `${src} already shows on the Resources page`);
+});
+
 test("the page copy carries none of the giveaway dashes", async () => {
   const { PAGE_BLOCKS } = await import("../data/motherland-pages.ts");
   for (const [slug, blocks] of Object.entries(PAGE_BLOCKS)) {
