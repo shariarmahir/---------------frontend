@@ -1,0 +1,368 @@
+import type { Article } from "@/lib/research/core";
+
+/**
+ * Sample entries for Genius, so the library has a shape before
+ * real submissions arrive. Every one is marked `sample` and shows a
+ * "Sample" notice: the people are fictional, institutions are described
+ * rather than named, and the numbers are illustrative. References point
+ * only to real public bodies' home pages. The two Kandari-Lab entries are
+ * the company's own R&D pipeline and are shown as ongoing research
+ * (CLAUDE.md). Their reaction, share and citation counts are sample
+ * numbers too.
+ */
+const cc = (author: string, licence: string) => `Photo: ${author}, ${licence}, via Wikimedia Commons`;
+
+export const sampleArticles: Article[] = [
+  {
+    slug: "flood-early-warning-sensor",
+    problems: [16, 18],
+    title: "A Flood Early-Warning Sensor for Under Tk 1,000",
+    kind: "innovation",
+    field: "engineering",
+    level: "undergrad",
+    status: "published",
+    authors: [{ name: "Anik Hasan" }, { name: "Nusrat Jahan" }, { name: "Sajib Roy" }],
+    institution: "An engineering university in Dhaka, Department of EEE",
+    supervisor: "Faculty adviser (EEE)",
+    year: 2026,
+    district: "Jamalpur",
+    published: "2026-09-12",
+    summary:
+      "If riverside schools know when flood water will rise, they have time to move books, benches and people. This innovation uses an ultrasonic sensor, an ESP32 microcontroller and a small solar panel to measure the water level and send an SMS to the head teacher's phone once it crosses a set threshold. Each unit cost about Tk 900.",
+    keywords: ["Floods", "IoT", "Sensors", "ESP32", "Early warning"],
+    image: { src: "/media/circuit.webp", caption: "The first sensor prototype on a breadboard, with the water temperature on its display" },
+    facts: [
+      { label: "Cost per unit", value: "About Tk 900" },
+      { label: "Test sites", value: "3 riverside schools" },
+      { label: "Power", value: "6-watt solar panel" },
+    ],
+    dyk: "a plain ultrasonic sensor and a solar panel can send a school an early flood warning for less than a thousand taka?",
+    sections: [
+      {
+        id: "background",
+        heading: "Background",
+        body: "Bangladesh's Flood Forecasting and Warning Centre issues flood forecasts[1], but the message often does not reach a particular village school or neighbourhood. Riverside schools need news about the water in their own grounds.\n\nOur question was whether a low-cost device, needing no mains power, could measure the water itself and tell people.",
+      },
+      {
+        id: "method",
+        heading: "Method",
+        body: "A waterproof ultrasonic sensor measures the distance down to the water from a bridge or post. The ESP32 takes a reading every 15 minutes and sends an SMS through a GSM module after three readings in a row cross the threshold, so a single wave does not trigger a false alarm.\n\nThe device ran for two months at three schools and was checked each day against marks read by hand from a gauge post.",
+      },
+      {
+        id: "results",
+        heading: "Results",
+        body: "Over two months the device and the hand readings mostly agreed within a few centimetres (sample data). On one night of rising water, the school moved its books and benches upstairs in time.\n\nTwo problems came up: the battery ran low on cloudy days, and insects built nests that covered the sensor's face.",
+      },
+      {
+        id: "next",
+        heading: "Next Steps",
+        body: "We plan to add a larger battery and a mesh cover and install units at five schools. The design and code are open source, so students in other districts can build their own.",
+      },
+    ],
+    references: [{ text: "Flood Forecasting and Warning Centre (FFWC), Bangladesh Water Development Board", url: "https://www.ffwc.gov.bd" }],
+    engagement: { reactions: { insight: 41, method: 18, useful: 63, inspire: 29 }, shares: 22, cites: 6 },
+    sample: true,
+    revisions: [
+      { at: "2026-09-12T08:00:00Z", by: "Anik Hasan", note: "First published" },
+      { at: "2026-09-18T07:30:00Z", by: "Nusrat Jahan", note: "Added two months of readings to the results" },
+    ],
+    talk: [
+      { id: "t1", by: "Reviewer, water resources engineering", role: "Peer reviewer", at: "2026-09-15T10:00:00Z", text: "The three-reading rule against false alarms is good. Showing the sensor's accuracy in muddy water separately would make the paper stronger." },
+    ],
+  },
+  {
+    slug: "salt-tolerant-rice-satkhira",
+    problems: [17, 10],
+    title: "Salt-Tolerant Rice in Satkhira: Why Farmers Adopt It and Why They Drop It",
+    kind: "thesis",
+    field: "agriculture",
+    level: "masters",
+    status: "published",
+    authors: [{ name: "Taslima Khatun" }],
+    institution: "An agricultural university in Mymensingh, Department of Agricultural Economics",
+    supervisor: "Professor, Agricultural Economics",
+    year: 2025,
+    district: "Satkhira",
+    published: "2025-11-20",
+    summary:
+      "As salinity rises on the coast, salt-tolerant rice varieties are available[1], but not every farmer keeps growing them. Using interviews and a survey of farmers in four unions of Satkhira, this thesis looks at who takes up the new varieties and why many return to their old ones after one or two seasons.",
+    keywords: ["Salinity", "Rice", "Coastal Bangladesh", "Agricultural extension", "Survey"],
+    image: { src: "/bangladesh/rural/paddy-bales.jpg", caption: "Farmers carrying paddy bales home after the harvest", credit: cc("Zaheed Sarwer Khan", "CC BY 4.0") },
+    facts: [
+      { label: "Sample", value: "210 farming households" },
+      { label: "Method", value: "Survey and in-depth interviews" },
+    ],
+    dyk: "many coastal farmers give up salt-tolerant rice not because of the yield, but because the seed does not arrive in time?",
+    sections: [
+      {
+        id: "question",
+        heading: "Research Question",
+        body: "Salt-tolerant varieties work in the field, so why do farmers not keep them? The thesis tests three possible reasons: yield, access to seed, and the market price.",
+      },
+      {
+        id: "method",
+        heading: "Method",
+        body: "A questionnaire survey covered 210 households in four unions, alongside in-depth interviews with 24 farmers. Population figures come from the BBS census[2].",
+      },
+      {
+        id: "findings",
+        heading: "Findings",
+        body: "Most farmers who dropped the new variety said the seed was not available at sowing time; complaints about yield were comparatively rare (sample data).\n\nFarmers who received seed through a cooperative or farmer group were more likely to keep the variety into a second season.",
+      },
+      {
+        id: "policy",
+        heading: "Policy Recommendations",
+        body: "Seed should reach the union level at least three weeks before sowing, and farmer groups should be trained to store seed.",
+      },
+    ],
+    references: [
+      { text: "Bangladesh Rice Research Institute (BRRI)", url: "https://www.brri.gov.bd" },
+      { text: "Bangladesh Bureau of Statistics (BBS), Population and Housing Census 2022", url: "https://bbs.gov.bd" },
+    ],
+    engagement: { reactions: { insight: 37, method: 26, useful: 31, inspire: 12 }, shares: 14, cites: 9 },
+    sample: true,
+    revisions: [{ at: "2025-11-20T05:00:00Z", by: "Taslima Khatun", note: "First published" }],
+  },
+  {
+    slug: "brick-kilns-dhaka-winter-air",
+    problems: [16, 13],
+    title: "Brick Kilns Around Dhaka and the City's Winter Air",
+    kind: "paper",
+    field: "climate",
+    level: "undergrad",
+    status: "published",
+    authors: [{ name: "Rafid Islam" }, { name: "Mehjabin Akter" }],
+    institution: "A private university in Dhaka, Department of Environmental Science",
+    year: 2026,
+    district: "Dhaka",
+    published: "2026-02-08",
+    summary:
+      "Dhaka's air quality is often unhealthy in winter. This paper sets the brick-kiln season around the city beside the movement of the air quality index, to see how far fine-particle levels rise in the months the kilns are running.",
+    keywords: ["Air pollution", "Brick kilns", "PM2.5", "Dhaka", "Winter"],
+    image: { src: "/bangladesh/rural/brick-kiln-family.jpg", caption: "Workers shaping raw bricks at a kiln", credit: cc("Frameofashik", "CC BY-SA 4.0") },
+    facts: [{ label: "Period", value: "Two winter seasons" }],
+    dyk: "the brick-kiln season and the worst months of Dhaka's air fall in almost the same months?",
+    sections: [
+      {
+        id: "intro",
+        heading: "Introduction",
+        body: "The Department of Environment publishes an air quality index[1]. In winter the air is still, so pollution stays close to the ground, and this is exactly when the kilns around the city run at full capacity.",
+      },
+      {
+        id: "data",
+        heading: "Data and Method",
+        body: "The published daily air quality index was averaged by month and compared across the kiln season (usually November to April). Rainy days were removed to separate out the effect of the weather.",
+      },
+      {
+        id: "results",
+        heading: "Results",
+        body: "The average index was clearly higher in kiln-season months than in other months (sample analysis). But dust from traffic and construction rises at the same time, so the kilns alone cannot be blamed.",
+      },
+      {
+        id: "limits",
+        heading: "Limitations",
+        body: "This shows an association, not a cause. Separating the sources needs field samples with chemical analysis.",
+      },
+    ],
+    references: [{ text: "Department of Environment, Bangladesh: air quality monitoring", url: "https://doe.gov.bd" }],
+    engagement: { reactions: { insight: 52, method: 21, useful: 24, inspire: 18 }, shares: 31, cites: 7 },
+    sample: true,
+    revisions: [
+      { at: "2026-02-08T09:00:00Z", by: "Rafid Islam", note: "First published" },
+      { at: "2026-03-01T12:00:00Z", by: "Mehjabin Akter", note: "Added the limitations section" },
+    ],
+    talk: [
+      { id: "t2", by: "Reviewer, environmental science", role: "Peer reviewer", at: "2026-02-20T09:00:00Z", text: "Thank you for stating the limitations plainly. Adding wind-direction data would make the kilns' effect much clearer." },
+    ],
+  },
+  {
+    slug: "bangla-voice-health-hotline",
+    problems: [1],
+    title: "Bangla Speech Recognition for a Rural Health Hotline",
+    kind: "thesis",
+    field: "computing",
+    level: "undergrad",
+    status: "published",
+    authors: [{ name: "Tanvir Rahman" }, { name: "Sumaiya Islam" }],
+    institution: "An engineering university in Chattogram, Department of CSE",
+    supervisor: "Assistant Professor, CSE",
+    year: 2026,
+    district: "Chattogram",
+    published: "2026-06-30",
+    summary:
+      "Many people ask for help by speaking rather than writing, and they speak in their own regional dialect. This thesis builds a small Bangla speech-recognition model for a health hotline and examines which kinds of words are most often misheard in regional accents.",
+    keywords: ["Bangla NLP", "Speech recognition", "Regional dialects", "Health"],
+    image: { src: "/media/dsa-code.webp", caption: "Training code for the model" },
+    dyk: "a Bangla speech-recognition model makes most of its mistakes on medicine names and numbers, not on everyday speech?",
+    sections: [
+      {
+        id: "problem",
+        heading: "The Problem",
+        body: "People calling a health hotline usually give their symptoms, the names of medicines and their age. Mishearing any of these risks the wrong advice, so it matters to know where the errors happen.",
+      },
+      {
+        id: "approach",
+        heading: "Approach",
+        body: "An open model was fine-tuned on short conversations recorded with volunteers' consent. Each recording was labelled with its regional accent.",
+      },
+      {
+        id: "results",
+        heading: "Results",
+        body: "Error rates were higher for medicine names and numbers than for ordinary sentences (sample data). The thesis therefore recommends making one step mandatory: the system reads back what it heard to the caller.",
+      },
+    ],
+    references: [],
+    engagement: { reactions: { insight: 33, method: 12, useful: 44, inspire: 27 }, shares: 19, cites: 3 },
+    sample: true,
+    revisions: [{ at: "2026-06-30T10:00:00Z", by: "Tanvir Rahman", note: "First published" }],
+  },
+  {
+    slug: "organic-waste-to-soil",
+    problems: [13, 17],
+    title: "Organic Waste to Soil: Classification and Recycling",
+    kind: "project",
+    field: "climate",
+    level: "independent",
+    status: "published",
+    authors: [{ name: "Kandari-Lab R&D Team" }],
+    institution: "Kandari-Lab R&D",
+    year: 2026,
+    published: "2026-08-15",
+    ongoing: true,
+    summary:
+      "Much of a city's rubbish is organic kitchen waste, which can become good soil if it is separated properly. In this ongoing Kandari-Lab project, cameras and sensors are being tested to sort waste and to guide the steps of composting. It is still at the research stage, not a finished product.",
+    keywords: ["Waste management", "Compost", "Computer vision", "Soil"],
+    image: { src: "/media/civic-waste.webp", caption: "A neighbourhood rubbish heap, much of it organic waste" },
+    facts: [{ label: "Status", value: "Ongoing research" }],
+    dyk: "properly separated kitchen waste can turn into farm soil in a few weeks?",
+    sections: [
+      {
+        id: "why",
+        heading: "Why This Project",
+        body: "Mixed rubbish rots, smells and pollutes water. Compost made from separated organic waste could lower farmers' spending on fertiliser.",
+      },
+      {
+        id: "status",
+        heading: "Where It Stands",
+        body: "The project is in its first stage: collecting images of waste and settling the rules for sorting it. This page will be updated once field results are in.",
+      },
+    ],
+    references: [],
+    engagement: { reactions: { insight: 14, method: 6, useful: 19, inspire: 11 }, shares: 6, cites: 1 },
+    sample: true,
+    revisions: [{ at: "2026-08-15T06:00:00Z", by: "Kandari-Lab", note: "Project page opened" }],
+  },
+  {
+    slug: "blind-assist-wearable",
+    problems: [1],
+    title: "A Two-Metre Sensing Wearable for Blind People",
+    kind: "innovation",
+    field: "health",
+    level: "independent",
+    status: "published",
+    authors: [{ name: "Kandari-Lab R&D Team" }],
+    institution: "Kandari-Lab R&D",
+    year: 2026,
+    published: "2026-07-20",
+    ongoing: true,
+    summary:
+      "Kandari-Lab is working on a wearable device that warns a blind person, by vibration and sound, of any obstacle within two metres. The goal is to use AI to say what lies ahead. This is ongoing research and not yet ready for use.",
+    keywords: ["Assistive technology", "Visual impairment", "Wearables", "AI"],
+    facts: [
+      { label: "Status", value: "Ongoing research" },
+      { label: "Sensing range", value: "2 metres (target)" },
+    ],
+    sections: [
+      {
+        id: "goal",
+        heading: "Goal",
+        body: "A white cane finds obstacles on the ground but not hanging obstacles at head height. The wearable aims to close that gap at a price ordinary people can afford.",
+      },
+      {
+        id: "status",
+        heading: "Where It Stands",
+        body: "In the first prototype, distance sensing and vibration feedback work. The next step is to sit with visually impaired users and test which signals they understand most easily.",
+      },
+    ],
+    references: [],
+    engagement: { reactions: { insight: 29, method: 8, useful: 22, inspire: 46 }, shares: 17, cites: 2 },
+    sample: true,
+    revisions: [{ at: "2026-07-20T06:00:00Z", by: "Kandari-Lab", note: "Project page opened" }],
+  },
+  {
+    slug: "char-flood-household-coping",
+    problems: [10, 16],
+    title: "How Char Households on the Jamuna Cope with Floods",
+    kind: "paper",
+    field: "society",
+    level: "masters",
+    status: "published",
+    authors: [{ name: "Nabila Chowdhury" }],
+    institution: "A public university in Rajshahi, Department of Sociology",
+    year: 2025,
+    district: "Bogura",
+    published: "2025-08-04",
+    summary:
+      "Families living on chars face floods almost every year. In their own words, this paper sets out what households on the chars of Sariakandi do before, during and after a flood: raising their belongings, moving their cattle and borrowing money.",
+    keywords: ["Chars", "Floods", "Adaptation", "Livelihoods", "Qualitative research"],
+    image: { src: "/bangladesh/rural/char-flood.jpg", caption: "A flooded settlement on a char in Sariakandi", credit: cc("TausifAlHossain", "CC BY-SA 4.0") },
+    dyk: "many char families raise the platforms inside their homes before a flood, and move their cattle first of all?",
+    sections: [
+      {
+        id: "context",
+        heading: "Context",
+        body: "The chars in the middle of the river shift, break apart and rise again. Living here means accepting floods as part of life.",
+      },
+      {
+        id: "voices",
+        heading: "In the Households' Own Words",
+        body: "In interviews most households said their biggest loss in a flood is their cattle, because cattle are their savings. So as soon as the water starts to rise, they move the animals to a high embankment or a shelter.",
+      },
+      {
+        id: "implications",
+        heading: "What It Teaches",
+        body: "If a shelter has no room for cattle, people do not want to leave their homes. Planning high ground for animals is part of keeping people safe.",
+      },
+    ],
+    references: [],
+    engagement: { reactions: { insight: 24, method: 19, useful: 15, inspire: 9 }, shares: 8, cites: 5 },
+    sample: true,
+    revisions: [{ at: "2025-08-04T07:00:00Z", by: "Nabila Chowdhury", note: "First published" }],
+  },
+  {
+    slug: "game-based-math-lessons",
+    problems: [11],
+    title: "Learning Maths Through Games: Easing the Fear of Algebra in Class Eight",
+    kind: "project",
+    field: "education",
+    level: "school",
+    status: "published",
+    authors: [{ name: "Mahmuda Akter" }, { name: "Rakib Hossain" }],
+    institution: "A secondary school in Sherpur",
+    supervisor: "Mathematics teacher",
+    year: 2026,
+    district: "Sherpur",
+    published: "2026-04-18",
+    summary:
+      "Many students are afraid of algebra on sight. With their teacher's help, two students taught algebra for a month through card and board games, and looked at what changed in their classmates' interest and in the marks of short tests.",
+    keywords: ["Mathematics education", "Game-based learning", "Secondary school", "Algebra"],
+    image: { src: "/media/calculus.webp", caption: "Maths practice in an exercise book" },
+    dyk: "class-eight students ask more questions in algebra lessons when the lessons are taught with card games?",
+    sections: [
+      {
+        id: "idea",
+        heading: "The Idea",
+        body: "Less fear means more attention. So instead of starting with formulas to memorise, the lessons began with matching equations in a game.",
+      },
+      {
+        id: "what-happened",
+        heading: "What We Saw",
+        body: "After a month, the average mark of students who took the short test had risen, and so had the number of questions asked in class (sample data). But this is one class in one school; it needs more trials before any broader claim.",
+      },
+    ],
+    references: [],
+    engagement: { reactions: { insight: 21, method: 9, useful: 34, inspire: 16 }, shares: 12, cites: 2 },
+    sample: true,
+    revisions: [{ at: "2026-04-18T04:00:00Z", by: "Mahmuda Akter", note: "First published" }],
+  },
+];

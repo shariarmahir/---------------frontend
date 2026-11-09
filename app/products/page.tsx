@@ -1,155 +1,172 @@
+/*
+ * The products page: a short navy band, one line of proof, the cobalt strip
+ * of promises, the products, the SWASTI app, the services and a request
+ * strip, closed by the landing page's Kandari Profile invitation.
+ * OWN-WORLD: the home page's: pitch-black ground, navy, ink and cobalt as
+ * the only card fields, gold for titles, buttons and figures. No gradients.
+ * HONESTY: no reviews, ratings or press logos. The proof row quotes a
+ * published finding and names the publishers our figures come from.
+ */
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
+import { FeatureStrip, PageHero } from "@/components/catalog/catalog-blocks";
+import { productItems, serviceItems } from "@/components/catalog/catalog-card";
+import { AppDownload, CatalogShelf, ServiceRequest } from "@/components/catalog/catalog-shelf";
+import { SourceLink } from "@/components/catalog/source-link";
+import { SourceMarks } from "@/components/catalog/source-marks";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
-import { ProductCard } from "@/components/products/product-card";
-import { SectionHeading } from "@/components/products/section-heading";
-import { SourceLink } from "@/components/products/source-link";
-import { Icon } from "@/components/ui/icon";
+import { KandariProfileSection } from "@/components/sections/kandari-profile-section";
+import { apps } from "@/data/apps";
 import { getProduct, products } from "@/data/products";
 
 export const metadata: Metadata = {
   title: "Products | কাণ্ডারী-ল্যাব",
   description:
-    "Aponjon, SWASTI and the Smart Pharmacy — three connected products for Bangladesh's Golden Two Hours: detect early, triage fast, treat in the village.",
+    "Aponjon, SWASTI and the Smart Pharmacy for Bangladesh's Golden Two Hours, চেতনা for skills and work, and the services behind them.",
 };
 
-/** How the three products hand a patient to one another. */
-const CHAIN = [
-  { slug: "aponjon", verb: "Detect", verbBn: "শনাক্ত", body: "The band spots a risky trend and raises the alarm early." },
-  { slug: "swasti", verb: "Triage", verbBn: "যাচাই", body: "The app checks urgency in Bangla and connects a doctor." },
-  { slug: "smart-pharmacy", verb: "Treat", verbBn: "চিকিৎসা", body: "The village pharmacy measures, consults and dispenses." },
+const PROMISES = [
+  { icon: "translate", label: "Bangla first" },
+  { icon: "smartphone", label: "Works on any phone" },
+  { icon: "memory", label: "AI on the device" },
+  { icon: "stethoscope", label: "A doctor in the loop" },
+  { icon: "solar_power", label: "Solar-ready pharmacies" },
+  { icon: "timer", label: "Built for the Golden Two Hours" },
+  { icon: "flag", label: "Made in Bangladesh" },
 ];
 
+/** The quoted finding: Saver's "Time is brain", as cited on Aponjon's page. */
+const QUOTE = getProduct("aponjon")!.research.findings.find((f) => f.source.url.includes("ahajournals"))!;
+
 /**
- * One national figure per theme — hidden risk, doctor shortage, cost, and
- * the drug-shop front line — drawn from the products' own sourced stats
- * so the overview can never quote a number a detail page does not.
+ * The speech balloon around the quote, in a 600 × 220 box stretched to fit:
+ * a soft, slightly uneven body from y 40 down, and a tail rising from the
+ * top right to a point at the box's corner.
  */
-const nationalStats = [
-  { slug: "aponjon", index: 0 },
-  { slug: "swasti", index: 0 },
-  { slug: "swasti", index: 1 },
-  { slug: "smart-pharmacy", index: 0 },
-].flatMap(({ slug, index }) => {
-  const stat = getProduct(slug)?.stats[index];
-  return stat ? [stat] : [];
-});
+const BALLOON =
+  "M60 48 C140 30 300 42 470 40 C500 30 515 12 560 2 C540 22 535 40 530 48 C575 55 596 90 590 130 C586 185 540 208 450 210 C330 214 180 206 90 210 C30 212 6 175 10 130 C12 80 22 55 60 48 Z";
+
+/** Every publisher behind the products' figures and findings, once each. */
+const PUBLISHERS = [
+  ...new Set(products.flatMap((p) => [...p.stats, ...p.research.findings].map((s) => s.source.publisher))),
+];
 
 export default function ProductsPage() {
   return (
     <>
       <SiteHeader />
-      <main className="relative w-full bg-[#fcfdfd] pt-header lg:pt-header-lg">
-        {/* Hero band. */}
-        <section className="hero-band relative flex items-center overflow-hidden">
-          <div className="absolute inset-0">
-            <Image
-              src="/sections/Bangladesh.jpg"
-              alt=""
-              aria-hidden
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-linear-to-r from-slate-950/85 via-slate-950/65 to-slate-950/30" />
-          </div>
-          <div className="relative mx-auto w-full max-w-7xl px-gutter-x py-16">
-            <span className="font-bengali text-sm font-bold text-signal-orange">আমাদের পণ্য</span>
-            <h1 className="mt-3 max-w-3xl font-grotesk text-4xl leading-[1.05] font-bold tracking-tight text-white uppercase sm:text-5xl lg:text-6xl">
-              Three products. <span className="text-signal-orange">One Golden Two Hours.</span>
-            </h1>
-            <p className="mt-5 max-w-2xl font-sans text-lg leading-relaxed text-white/85">
-              Built in Bangladesh for the moment that decides survival — from
-              the first warning sign, to a doctor&apos;s opinion, to care in
-              the village.
-            </p>
+      <main className="relative w-full bg-black pt-header lg:pt-header-lg">
+        <PageHero
+          art={productItems.flatMap((item) => (item.image ? [item.image] : []))}
+          title={
+            <>
+              Four products. <span className="text-signal-orange">Four services.</span>
+            </>
+          }
+          lead="One team, built in Bangladesh: healthcare for the Golden Two Hours, a platform for skills and work, and the AI, automation, IoT and software behind them."
+        />
+
+        {/* Proof: a published finding, the publishers, and the window it is about. */}
+        <section className="section-band mx-auto grid max-w-7xl items-center gap-10 px-gutter-x lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-16">
+          <figure className="story-reveal flex flex-col items-center gap-6 text-center">
+            {/* The finding as a hand-drawn speech balloon, its tail curling up
+                from the top right (`alert-bubble` in globals.css). */}
+            <div className="alert-quote relative w-full max-w-2xl px-12 pt-14 pb-10 text-left sm:px-14">
+              <svg aria-hidden viewBox="0 0 600 220" preserveAspectRatio="none" className="absolute inset-0 size-full overflow-visible">
+                <path d={BALLOON} transform="translate(9 9)" fill="none" strokeWidth={2} vectorEffect="non-scaling-stroke" className="stroke-signal-orange/40" />
+                <path d={BALLOON} strokeWidth={3} strokeLinejoin="round" vectorEffect="non-scaling-stroke" className="alert-bubble stroke-signal-orange" />
+              </svg>
+              <blockquote className="alert-bubble-text relative font-grotesk text-xl leading-snug font-bold text-balance sm:text-2xl">
+                “{QUOTE.text}”
+              </blockquote>
+            </div>
+            <figcaption className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 font-sans text-sm text-white/65">
+              Source:
+              <SourceLink source={QUOTE.source} full className="text-sm" />
+            </figcaption>
+            <div className="flex w-full flex-col items-center gap-4 pt-2">
+              <p className="flex w-full max-w-2xl items-center gap-4 font-sans text-sm text-white/65">
+                <span aria-hidden className="h-px flex-1 bg-white/15" />
+                Publishers cited across our product pages
+                <span aria-hidden className="h-px flex-1 bg-white/15" />
+              </p>
+              <SourceMarks publishers={PUBLISHERS} />
+            </div>
+          </figure>
+
+          {/* The Golden Two Hours as a square note: centred title, a hand-drawn
+              clock peeking in at the bottom left, and "2 Hours" running off the
+              bottom right. It tilts gently to and fro (`golden-note`). */}
+          <div className="story-reveal flex justify-center">
+            <div className="golden-note relative aspect-square w-full max-w-88 overflow-hidden rounded-3xl bg-cobalt text-white shadow-[0_18px_36px_-14px_rgb(0_0_0/0.8)]">
+              <div className="relative flex flex-col items-center gap-3 px-8 pt-10 text-center">
+                <p className="font-grotesk text-lg leading-snug text-white/80">
+                  Every product is built for
+                  <span className="block text-2xl font-bold text-signal-orange">The Golden Two Hours</span>
+                </p>
+                <p className="font-sans text-sm leading-relaxed text-white/80">The window in which first treatment most changes the odds.</p>
+                <Link
+                  href="/about#problem"
+                  className="rounded-md font-grotesk text-sm font-bold text-signal-orange underline decoration-signal-orange/40 underline-offset-4 hover:decoration-signal-orange focus-visible:ring-2 focus-visible:ring-signal-orange focus-visible:outline-none"
+                >
+                  Read why it matters
+                </Link>
+              </div>
+              <svg
+                aria-hidden
+                viewBox="0 0 140 140"
+                fill="none"
+                strokeWidth={4}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="absolute -bottom-6 -left-5 size-36 -rotate-12 stroke-white"
+              >
+                <path d="M70 18 C100 16 124 40 122 72 C120 104 96 124 66 122 C36 120 16 96 18 66 C20 38 42 20 70 18 Z" />
+                <path d="M70 70 L69 42 M70 70 L91 58" />
+                <path d="M70 26 v6 M114 70 h-6 M70 114 v-6 M26 70 h6" />
+                <path d="M126 28 l10 -9 M131 47 l12 -3 M20 20 l-8 -8" />
+                <circle cx="70" cy="70" r="4" className="fill-white" />
+              </svg>
+              <p aria-hidden className="absolute -right-6 bottom-4 font-grotesk text-6xl leading-none font-bold whitespace-nowrap">
+                <span className="text-signal-orange">2</span> <span className="text-white/25">Hours</span>
+              </p>
+            </div>
           </div>
         </section>
 
-        <div className="bg-grid-subtle">
-          {/* Product cards. */}
-          <section className="section-band mx-auto max-w-7xl px-gutter-x">
-            <SectionHeading
-              kicker="পণ্যসমূহ"
-              title="Explore the products"
-              lede="Each page covers the research, the core problem, how the product solves it, and what it means for Bangladesh."
-            />
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {products.map((p) => (
-                <ProductCard key={p.slug} product={p} />
-              ))}
-            </div>
-          </section>
+        <FeatureStrip items={PROMISES} label="What every product promises" />
 
-          {/* How they connect. */}
-          <section className="section-band-tinted border-y border-slate-200 bg-mint-subtle/70">
-            <div className="mx-auto max-w-7xl px-gutter-x">
-              <SectionHeading
-                kicker="একসাথে কাজ করে"
-                title="One patient journey"
-                lede="The products are designed to hand a patient from one to the next, so no hour is lost between them."
-              />
-              <ol className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                {CHAIN.map((step, i) => {
-                  const product = getProduct(step.slug);
-                  if (!product) return null;
-                  return (
-                    <li
-                      key={step.slug}
-                      className="glass-card relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
-                      style={{ "--card-accent": "var(--color-signal-orange)" } as React.CSSProperties}
-                    >
-                      <div className="mb-4 flex items-center gap-3">
-                        <span className="inline-flex size-10 items-center justify-center rounded-full bg-signal-orange font-grotesk font-bold text-white">
-                          {i + 1}
-                        </span>
-                        <span className="font-grotesk text-xl font-bold text-text-primary uppercase">
-                          {step.verb}{" "}
-                          <span className="font-bengali text-base normal-case text-bd-green">· {step.verbBn}</span>
-                        </span>
-                      </div>
-                      <p className="font-sans text-sm leading-relaxed text-text-secondary">{step.body}</p>
-                      <Link
-                        href={`/products/${product.slug}`}
-                        className="mt-4 inline-flex items-center gap-1 font-mono text-xs font-bold text-bd-green uppercase hover:underline"
-                      >
-                        {product.name} <Icon name="arrow_forward" className="text-[14px]!" />
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ol>
-            </div>
-          </section>
+        <CatalogShelf
+          id="catalog"
+          title="Our products"
+          intro={{
+            title: "Care first, then work.",
+            body: "Three products for the Golden Two Hours, and one for skills and fair-paid work.",
+            href: "/products/swasti",
+            cta: "Start with SWASTI",
+          }}
+          items={productItems}
+        />
 
-          {/* The national picture. */}
-          <section className="section-band mx-auto max-w-7xl px-gutter-x">
-            <SectionHeading
-              kicker="কেন এখনই"
-              title="Why Bangladesh needs this now"
-              lede="Published national data. Every figure links to its source."
-            />
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {nationalStats.map((stat) => (
-                <div
-                  key={stat.label}
-                  className="glass-card flex flex-col justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
-                >
-                  <div>
-                    <span className="block font-grotesk text-4xl font-bold tracking-tight text-bd-green tabular-nums">
-                      {stat.value}
-                    </span>
-                    <p className="mt-2 font-sans text-sm leading-snug text-text-secondary">{stat.label}</p>
-                  </div>
-                  <SourceLink source={stat.source} />
-                </div>
-              ))}
-            </div>
-          </section>
-        </div>
+        <AppDownload apps={apps} />
+
+        <CatalogShelf
+          id="services"
+          title="Our services"
+          link={{ label: "All services", href: "/services" }}
+          intro={{
+            title: "The engineering behind them, built for you.",
+            body: "AI, automation, IoT and software from the team that builds Aponjon and SWASTI.",
+            href: "/services#process",
+            cta: "How a project runs",
+          }}
+          items={serviceItems}
+        />
+
+        <ServiceRequest href="#kandari-profile" />
+
+        <KandariProfileSection />
       </main>
       <SiteFooter />
     </>

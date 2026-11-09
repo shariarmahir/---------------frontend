@@ -1,0 +1,267 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Icon } from "@/components/ui/icon";
+import { cn } from "@/lib/utils";
+import { MotionIcon } from "./motion-icon";
+import { MotionScene, type SceneKind } from "./motion-scene";
+
+/*
+ * The one showcase card, for products and services alike (CLAUDE.md §8):
+ * a photograph that stays fully visible, a motion-graphic layer drawn over
+ * its corners, an animated icon, and the copy on a solid colour field. A
+ * gold beam runs the card's edge on hover or focus. Off screen, every
+ * animation in it pauses; under reduced motion nothing moves.
+ */
+
+export type CardTone = "ink" | "green" | "gold" | "white";
+
+const TONE: Record<CardTone, { card: string; sub: string; item: string; icon: string; link: string; glow: string; beam: string; fade: string; pill: string; btn: string }> = {
+  ink: {
+    card: "bg-text-primary text-white ring-1 ring-white/12",
+    sub: "text-white/65",
+    item: "bg-white/6 ring-1 ring-white/10",
+    icon: "bg-signal-orange",
+    link: "text-signal-orange",
+    glow: "var(--color-signal-orange)",
+    beam: "stroke-signal-orange",
+    fade: "to-text-primary",
+    pill: "bg-signal-orange text-text-primary",
+    btn: "bg-signal-orange text-text-primary",
+  },
+  green: {
+    card: "bg-bd-green text-white",
+    sub: "text-white/80",
+    item: "bg-black/15",
+    icon: "bg-signal-orange",
+    link: "text-signal-orange",
+    glow: "var(--color-bdgreen-500)",
+    beam: "stroke-signal-orange",
+    fade: "to-bd-green",
+    pill: "bg-signal-orange text-text-primary",
+    btn: "bg-white text-text-primary",
+  },
+  gold: {
+    card: "bg-signal-orange text-text-primary",
+    sub: "text-text-primary/80",
+    item: "bg-text-primary/10",
+    icon: "bg-white",
+    link: "text-text-primary",
+    glow: "var(--color-signal-orange)",
+    beam: "stroke-text-primary",
+    fade: "to-signal-orange",
+    pill: "bg-text-primary text-signal-orange",
+    btn: "bg-text-primary text-white",
+  },
+  white: {
+    card: "bg-white text-text-primary",
+    sub: "text-text-secondary",
+    item: "bg-mint-subtle ring-1 ring-card-border",
+    icon: "bg-signal-orange",
+    link: "text-bd-green",
+    glow: "white",
+    beam: "stroke-signal-orange",
+    fade: "to-white",
+    pill: "bg-text-primary text-signal-orange",
+    btn: "bg-bd-green text-white",
+  },
+};
+
+export interface ShowcaseCardProps {
+  href: string;
+  image: { src: string; alt: string; credit?: string };
+  scene: SceneKind;
+  /** Small line above the title: category, stage. */
+  eyebrow: string;
+  title: string;
+  titleBn?: string;
+  body: string;
+  bodyBn?: string;
+  items?: { title: string; body: string }[];
+  /** A line of proof under the list, e.g. where the skill is already used. */
+  proof?: string;
+  cta: string;
+  tone: CardTone;
+  /** "wide" puts the photo beside the copy on large screens; "stack" puts it on top. */
+  layout?: "stack" | "wide";
+  /** Extra block under the body (e.g. the Golden Two Hours alert). */
+  extra?: ReactNode;
+  priority?: boolean;
+  /** Which side the photo sits on in the wide layout. */
+  flip?: boolean;
+  /** The home page's poster card, shaped like the team cards: picture, name, a short line and "Learn more". */
+  poster?: boolean;
+}
+
+/** Pause a card's animations while it is off screen. */
+function useOnScreen<T extends Element>() {
+  const ref = useRef<T>(null);
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setOn(e.isIntersecting), { rootMargin: "120px 0px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return [ref, on] as const;
+}
+
+export function ShowcaseCard(p: ShowcaseCardProps) {
+  const [ref, on] = useOnScreen<HTMLElement>();
+  const tone = TONE[p.tone];
+  const wide = p.layout === "wide";
+
+  if (p.poster) {
+    return (
+      <article
+        ref={ref}
+        data-paused={!on}
+        style={{ "--glow": tone.glow } as React.CSSProperties}
+        className={cn(
+          "ms-root group relative isolate flex h-full flex-col overflow-hidden rounded-3xl shadow-sm",
+          "transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:shadow-[0_28px_48px_-22px_var(--glow)] motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+          tone.card,
+        )}
+      >
+        {/* The picture, square like the team portraits, fading into the card colour at its foot. */}
+        <div className="relative aspect-square w-full overflow-hidden">
+          <Image
+            src={p.image.src}
+            alt={p.image.alt}
+            fill
+            priority={p.priority}
+            sizes="(min-width: 1280px) 400px, (min-width: 640px) 50vw, 100vw"
+            className="ms-zoom object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 motion-reduce:transition-none"
+          />
+          <MotionScene kind={p.scene} />
+          <div aria-hidden className={cn("absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-b from-transparent", tone.fade)} />
+        </div>
+
+        <div className="relative -mt-8 flex flex-1 flex-col px-5 pb-5 sm:px-6 sm:pb-6">
+          <span className={cn("mb-3 w-fit rounded-full px-3 py-1 font-sans tabular-nums text-xs leading-tight font-bold sm:text-xs", tone.pill)}>{p.eyebrow}</span>
+          <h3 className="font-grotesk text-xl leading-tight font-bold sm:text-2xl">
+            <Link
+              href={p.href}
+              className="after:absolute after:inset-0 after:z-10 after:rounded-3xl focus-visible:outline-none after:focus-visible:ring-3 after:focus-visible:ring-white after:focus-visible:ring-inset"
+            >
+              {p.title}
+            </Link>
+          </h3>
+          {p.titleBn && <p className={cn("mt-0.5 font-bengali text-sm font-semibold", tone.sub)}>{p.titleBn}</p>}
+          <p className="mt-3 line-clamp-3 font-sans text-sm leading-relaxed">{p.body}</p>
+          <span className="mt-auto pt-5">
+            <span className={cn("inline-flex h-10 items-center gap-1.5 rounded-full px-4 font-grotesk text-sm font-bold transition-[gap] duration-300 group-hover:gap-2.5", tone.btn)}>
+              Learn more <Icon name="arrow_forward" className="text-lg" />
+            </span>
+          </span>
+        </div>
+
+        <svg aria-hidden className="ms-beam pointer-events-none absolute inset-0 z-20 h-full w-full overflow-visible">
+          <rect
+            x="1.5"
+            y="1.5"
+            width="100%"
+            height="100%"
+            rx="22"
+            pathLength={100}
+            className={cn("fill-none", tone.beam)}
+            strokeWidth="3"
+            style={{ width: "calc(100% - 3px)", height: "calc(100% - 3px)" }}
+          />
+        </svg>
+      </article>
+    );
+  }
+
+  return (
+    <article
+      ref={ref}
+      data-paused={!on}
+      style={{ "--glow": tone.glow } as React.CSSProperties}
+      className={cn(
+        "ms-root group relative isolate flex h-full flex-col overflow-hidden rounded-3xl",
+        "transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:shadow-[0_30px_60px_-30px_var(--glow)] motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+        wide && "lg:grid lg:grid-cols-2",
+        tone.card,
+      )}
+    >
+      {/* The photograph, uncovered: only the motion layer's thin lines and chips sit on it. */}
+      <div className={cn("relative overflow-hidden", wide ? "aspect-16/10 lg:aspect-auto lg:min-h-[30rem]" : "aspect-4/3", wide && p.flip && "lg:order-2")}>
+        <Image
+          src={p.image.src}
+          alt={p.image.alt}
+          fill
+          priority={p.priority}
+          sizes={wide ? "(min-width: 1024px) 640px, 100vw" : "(min-width: 1024px) 620px, 100vw"}
+          className="ms-zoom object-cover"
+        />
+        <MotionScene kind={p.scene} />
+      </div>
+
+      <div className="relative flex flex-1 flex-col gap-4 p-5 sm:p-6">
+        <div className="flex items-start gap-4">
+          <MotionIcon kind={p.scene} className={cn("grid size-14 shrink-0 place-items-center rounded-2xl shadow-tile", tone.icon)} />
+          <div className="min-w-0">
+            <p className={cn("font-sans tabular-nums text-xs font-bold tracking-wider", tone.sub)}>{p.eyebrow}</p>
+            <h3 className="mt-1 font-grotesk text-xl leading-tight font-bold sm:text-2xl">
+              <Link
+                href={p.href}
+                className="after:absolute after:inset-0 after:z-10 after:rounded-3xl focus-visible:outline-none after:focus-visible:ring-3 after:focus-visible:ring-white after:focus-visible:ring-inset"
+              >
+                {p.title}
+              </Link>
+            </h3>
+            {p.titleBn && <p className={cn("mt-0.5 font-bengali text-sm font-semibold", tone.sub)}>{p.titleBn}</p>}
+          </div>
+        </div>
+
+        <p className="font-sans text-sm leading-relaxed">{p.body}</p>
+        {p.bodyBn && <p className={cn("font-bengali text-sm leading-relaxed", tone.sub)}>{p.bodyBn}</p>}
+        {p.extra}
+
+        {p.items && p.items.length > 0 && (
+          <ul className="grid grid-cols-1 gap-2">
+            {p.items.map((it) => (
+              <li key={it.title} className={cn("rounded-2xl px-3.5 py-3", tone.item)}>
+                <span className="block font-grotesk text-sm font-bold">{it.title}</span>
+                <span className={cn("mt-0.5 block text-sm leading-snug", tone.sub)}>{it.body}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {p.proof && (
+          <p className={cn("flex items-start gap-2 text-sm leading-snug", tone.sub)}>
+            <Icon name="verified" className="mt-px text-base" /> {p.proof}
+          </p>
+        )}
+
+        <div className="mt-auto flex flex-wrap items-end justify-between gap-3 pt-2">
+          <span className={cn("inline-flex items-center gap-1.5 font-grotesk text-sm font-bold", tone.link)}>
+            {p.cta}
+            <Icon name="arrow_forward" className="transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" />
+          </span>
+          {p.image.credit && <span className={cn("relative z-20 text-xs", tone.sub)}>{p.image.credit}</span>}
+        </div>
+      </div>
+
+      {/* The beam: a short gold dash running the rounded-md edge on hover and focus. */}
+      <svg aria-hidden className="ms-beam pointer-events-none absolute inset-0 z-20 h-full w-full overflow-visible">
+        <rect
+          x="1.5"
+          y="1.5"
+          width="100%"
+          height="100%"
+          rx="30"
+          pathLength={100}
+          className={cn("fill-none", tone.beam)}
+          strokeWidth="3"
+          style={{ width: "calc(100% - 3px)", height: "calc(100% - 3px)" }}
+        />
+      </svg>
+    </article>
+  );
+}

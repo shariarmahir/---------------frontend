@@ -14,6 +14,8 @@
  * page.
  */
 
+import type { SectorId } from "@/data/auth";
+
 export type AnnouncementKind = "job" | "event" | "news" | "release" | "program";
 
 export interface Announcement {
@@ -25,6 +27,9 @@ export interface Announcement {
   href: string;
   /** Flags a time-sensitive item with a red "নতুন" chip. */
   isNew?: boolean;
+  /** Who it is for — the account page shows matching items first. Untagged = everyone. */
+  sectors?: SectorId[];
+  products?: string[];
 }
 
 /** Chip label and colour per kind. Classes are literal so Tailwind keeps them. */
@@ -40,7 +45,7 @@ export const announcementKinds: Record<
   event: {
     label: "ইভেন্ট",
     icon: "event",
-    chip: "border-orange-200 bg-orange-50 text-bdorange-600",
+    chip: "border-bdnavy-200 bg-bdnavy-50 text-bdnavy-900",
   },
   news: {
     label: "আজকের খবর",
@@ -62,6 +67,8 @@ export const announcementKinds: Record<
 export const announcements: Announcement[] = [
   {
     id: "job-embedded",
+    sectors: ["iot", "health"],
+    products: ["aponjon"],
     kind: "job",
     text: "নতুন চাকরির সুযোগ: এমবেডেড ফার্মওয়্যার ইঞ্জিনিয়ার (আপনজন ওয়্যারেবল টিম)",
     cta: "আবেদন করুন",
@@ -77,14 +84,8 @@ export const announcements: Announcement[] = [
     isNew: true,
   },
   {
-    id: "news-today",
-    kind: "news",
-    text: "আজকের শীর্ষ খবর: দেশের স্বাস্থ্য, প্রযুক্তি ও জনসেবার সর্বশেষ আপডেট",
-    cta: "পড়ুন",
-    href: "/ajker-bangladesh",
-  },
-  {
     id: "program-intern",
+    sectors: ["semiconductor", "iot", "ai", "robotics"],
     kind: "program",
     text: "R&D ইন্টার্নশিপ — আড়াই মাসের নতুন ব্যাচে আবেদন শুরু",
     cta: "আবেদন করুন",
@@ -92,6 +93,8 @@ export const announcements: Announcement[] = [
   },
   {
     id: "release-swasti",
+    sectors: ["health", "ai"],
+    products: ["swasti"],
     kind: "release",
     text: "স্বস্তি (SWASTI) অ্যাপের বেটা সংস্করণ — আর্লি অ্যাক্সেসের জন্য নাম লেখান",
     cta: "যোগ দিন",
@@ -99,6 +102,8 @@ export const announcements: Announcement[] = [
   },
   {
     id: "job-ml",
+    sectors: ["ai"],
+    products: ["swasti"],
     kind: "job",
     text: "নিয়োগ চলছে: বাংলা NLP / মেশিন লার্নিং ইঞ্জিনিয়ার",
     cta: "আবেদন করুন",
@@ -106,6 +111,7 @@ export const announcements: Announcement[] = [
   },
   {
     id: "event-hackathon",
+    sectors: ["health"],
     kind: "event",
     text: "হেলথটেক হ্যাকাথন — ‘সোনালি দুই ঘণ্টা’ সমস্যার সমাধানে দল গঠন করুন",
     cta: "টিম রেজিস্টার",
@@ -113,9 +119,11 @@ export const announcements: Announcement[] = [
   },
   {
     id: "news-village",
+    sectors: ["health", "civic"],
+    products: ["smart-pharmacy"],
     kind: "news",
     text: "‘এক গ্রাম, এক স্বাস্থ্যকেন্দ্র’ — গ্রামীণ স্মার্ট ফার্মেসি পাইলটের অগ্রগতি",
     cta: "বিস্তারিত",
-    href: "/#rural-network",
+    href: "/products/smart-pharmacy",
   },
 ];

@@ -1,0 +1,276 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowUpRight, BookOpenCheck, ImagePlus, Lightbulb, Microscope, Newspaper, Rocket, Send, Share2, X } from "lucide-react";
+import { toast } from "sonner";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import type { Post } from "@/data/media/types";
+import { currentUser } from "@/data/media/users";
+import type { NoteFile } from "@/lib/media/classroom";
+import {
+  SHARE_KINDS, shareCaption, shareProblems, shareTags, type RoomRef, type ShareKind, type SharedRef,
+} from "@/lib/media/showcase";
+import { newId, updateMedia } from "@/lib/media/store";
+import { cn } from "@/lib/utils";
+import { mediaButton } from "../ui/button-styles";
+import { choiceClass } from "../ui/field-styles";
+import { Ago, Num } from "../ui/numerals";
+import { toNoteFile } from "./note-files";
+
+export const SHARE_ICONS: Record<ShareKind, typeof Lightbulb> = { solution: BookOpenCheck, innovation: Lightbulb, research: Microscope };
+
+export interface SharePreset {
+  kind?: ShareKind;
+  title?: string;
+  question?: string;
+  finding?: string;
+  /** Member ids credited. */
+  team?: string[];
+}
+
+/** Share what the room solved or found to the feed, credited to the room. */
+export function ShareDialog({ open, onOpenChange, from, members, meId, preset, onShared }: {
+  open: boolean;
+  onOpenChange: (o: boolean) => void;
+  from: RoomRef;
+  members: { id: string; name: string }[];
+  meId?: string;
+  preset?: SharePreset;
+  onShared: (ref: SharedRef) => boolean;
+}) {
+  const router = useRouter();
+  const start = () => ({
+    kind: preset?.kind ?? ("innovation" as ShareKind),
+    title: preset?.title ?? "",
+    question: preset?.question ?? "",
+    finding: preset?.finding ?? "",
+    method: "",
+    team: preset?.team ?? (meId ? [meId] : []),
+  });
+  const [v, setV] = useState(start);
+  const [photo, setPhoto] = useState<NoteFile>();
+  const [busy, setBusy] = useState(false);
+  const [tried, setTried] = useState(false);
+  const pick = useRef<HTMLInputElement>(null);
+  const research = v.kind === "research";
+  const problems = shareProblems({ title: v.title, finding: v.finding, toFeed: true, toResearch: false });
+
+  function reset(o: boolean) {
+    if (o) {
+      setV(start());
+      setPhoto(undefined);
+      setTried(false);
+    }
+    onOpenChange(o);
+  }
+
+  function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setTried(true);
+    if (Object.values(problems).some(Boolean)) return;
+    const team = members.filter((m) => v.team.includes(m.id)).map((m) => m.name);
+    const input = { kind: v.kind, title: v.title.trim(), question: v.question.trim(), finding: v.finding.trim(), method: research ? v.method.trim() : undefined, team, from };
+    const at = new Date().toISOString();
+    const tags = shareTags(input);
+    const kind = SHARE_KINDS[v.kind];
+    const post: Post = {
+      id: newId("p"),
+      kind: "project",
+      topic: kind.topic,
+      author: currentUser.handle,
+      category: kind.category,
+      createdAt: at,
+      caption: shareCaption(input),
+      media: photo ? [{ kind: "image", label: input.title, ratio: "4/3", src: photo.data }] : [],
+      tags,
+      stats: { likes: 0, shares: 0, views: 0 },
+      comments: [],
+      from,
+    };
+    const saved = updateMedia((s) => ({ ...s, posts: [post, ...s.posts] }));
+    if (!saved || !onShared({ id: newId("sh"), kind: v.kind, title: input.title, team, at, postId: post.id })) {
+      toast.error("এই ব্রাউজারে আর জায়গা নেই", { description: "ছবি ছাড়া আবার চেষ্টা করুন, বা পুরোনো ফাইল সরান।" });
+      return;
+    }
+    reset(false);
+    toast.success("ফিডে শেয়ার হলো", {
+      description: "সবাই দেখবে, মন্তব্য করবে, আর কেউ হয়তো যোগ দিতে চাইবে।",
+      action: { label: "দেখুন", onClick: () => router.push(`/media/post/${post.id}`) },
+    });
+  }
+
+  const label = "mb-1.5 block text-sm font-semibold text-m-ink";
+  const err = (m?: string) => tried && m && <span className="mt-1 block text-xs font-semibold text-m-red">{m}</span>;
+  return (
+    <Dialog open={open} onOpenChange={reset}>
+      <DialogContent className="max-h-[92dvh] overflow-y-auto rounded-3xl font-sans sm:max-w-xl">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-xl font-bold text-m-ink"><Share2 className="size-5 text-m-blue" aria-hidden /> দলের কাজ শেয়ার করুন</DialogTitle>
+          <DialogDescription>যে সমস্যা মিলে সমাধান করলেন, যা নতুন বানালেন বা খুঁজে পেলেন — ফিডে দিন, সবাই শিখুক।</DialogDescription>
+        </DialogHeader>
+        <form onSubmit={submit} noValidate className="space-y-5">
+          <fieldset>
+            <legend className={label}>কী ধরনের কাজ?</legend>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+              {(Object.keys(SHARE_KINDS) as ShareKind[]).map((k) => {
+                const Icon = SHARE_ICONS[k];
+                return (
+                  <label key={k} className={cn(choiceClass(v.kind === k), "flex-col items-start gap-0.5 py-2")}>
+                    <input type="radio" name="share-kind" className="sr-only" checked={v.kind === k} onChange={() => setV((x) => ({ ...x, kind: k }))} />
+                    <span className="flex items-center gap-1.5"><Icon className="size-4" aria-hidden /> {SHARE_KINDS[k].bn}</span>
+                    <span className="text-[11px] leading-snug font-normal opacity-75">{SHARE_KINDS[k].hint}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </fieldset>
+
+          <label className="block">
+            <span className={label}>শিরোনাম *</span>
+            <Input value={v.title} onChange={(e) => setV((x) => ({ ...x, title: e.target.value }))} placeholder="যেমন: কম খরচে পানির ফিল্টার" aria-invalid={tried && Boolean(problems.title)} />
+            {err(problems.title)}
+          </label>
+          <label className="block">
+            <span className={label}>{research ? "গবেষণার প্রশ্ন" : "কোন সমস্যা থেকে শুরু"}</span>
+            <Textarea rows={2} value={v.question} onChange={(e) => setV((x) => ({ ...x, question: e.target.value }))} placeholder="এক-দুই লাইনে" />
+          </label>
+          {research && (
+            <label className="block">
+              <span className={label}>পদ্ধতি</span>
+              <Textarea rows={2} value={v.method} onChange={(e) => setV((x) => ({ ...x, method: e.target.value }))} placeholder="কী দিয়ে, কীভাবে মাপলেন বা যাচাই করলেন" />
+            </label>
+          )}
+          <label className="block">
+            <span className={label}>{research ? "ফলাফল *" : v.kind === "solution" ? "সমাধান *" : "যা বানালেন *"}</span>
+            <Textarea rows={3} value={v.finding} onChange={(e) => setV((x) => ({ ...x, finding: e.target.value }))} placeholder="কী পেলেন, কতটা কাজ করল, এরপর কী" aria-invalid={tried && Boolean(problems.finding)} />
+            {err(problems.finding)}
+          </label>
+
+          <fieldset>
+            <legend className={label}>দলে কারা ছিলেন</legend>
+            <div className="flex flex-wrap gap-2">
+              {members.map((m) => {
+                const on = v.team.includes(m.id);
+                return (
+                  <button key={m.id} type="button" aria-pressed={on} onClick={() => setV((x) => ({ ...x, team: on ? x.team.filter((t) => t !== m.id) : [...x.team, m.id] }))} className={cn("min-h-9 rounded-full px-3 text-sm font-semibold transition-colors", on ? "bg-m-yellow text-m-ink" : "bg-m-ink/4 text-m-ink/75 ring-1 ring-m-ink/10 hover:text-m-ink")}>
+                    {m.id === meId ? "আমি" : m.name}
+                  </button>
+                );
+              })}
+            </div>
+          </fieldset>
+
+          <div>
+            <span className={label}>ছবি (ঐচ্ছিক)</span>
+            {photo ? (
+              <div className="relative w-fit">
+                <Image src={photo.data} alt="" width={240} height={180} unoptimized className="h-36 w-auto rounded-xl object-cover ring-1 ring-m-ink/10" />
+                <button type="button" onClick={() => setPhoto(undefined)} className="absolute top-2 right-2 flex size-8 items-center justify-center rounded-full bg-white/90 text-m-ink" aria-label="ছবি সরান"><X className="size-4" aria-hidden /></button>
+              </div>
+            ) : (
+              <button type="button" disabled={busy} onClick={() => pick.current?.click()} className={mediaButton({ variant: "quiet", size: "sm" })}>
+                <ImagePlus aria-hidden /> {busy ? "প্রস্তুত হচ্ছে…" : "প্রজেক্ট, সেটআপ বা ফলাফলের ছবি"}
+              </button>
+            )}
+            <input
+              ref={pick}
+              type="file"
+              accept="image/*"
+              className="sr-only"
+              tabIndex={-1}
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                e.target.value = "";
+                if (!file) return;
+                setBusy(true);
+                try {
+                  setPhoto(await toNoteFile(file, false));
+                } catch (x) {
+                  toast.error(x instanceof Error ? x.message : "ছবিটি নেওয়া গেল না");
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            />
+          </div>
+
+          <p className="flex items-center gap-2 text-xs text-m-ink/60"><Newspaper className="size-4 shrink-0 text-m-blue" aria-hidden /> ফিডে যাবে, ক্লাস বা ল্যাবের নামসহ — সবাই দেখবে, মন্তব্য করবে।</p>
+          <button type="submit" disabled={busy} className={mediaButton({ variant: "primary", size: "lg", className: "w-full" })}><Send aria-hidden /> ফিডে শেয়ার করুন</button>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/** What the room shared out, with ways to start research and share the next thing. */
+export function ShowcasePanel({ shares, canShare, onShare, onStart, research }: { shares: SharedRef[]; canShare: boolean; onShare: () => void; onStart?: () => void; research?: React.ReactNode }) {
+  const steps = [
+    { n: 1, t: "সমস্যা বাছুন", d: "বই, ক্লাস বা এলাকার — যেটা সত্যিই কষ্ট দেয়" },
+    { n: 2, t: "দল মিলে সমাধান", d: "দায়িত্ব ভাগ করে মাপুন, বানান, যাচাই করুন" },
+    { n: 3, t: "সবার সাথে শেয়ার", d: "ফিডে সবাই শিখবে, মন্তব্য করবে" },
+  ];
+  return (
+    <section aria-labelledby="show-title" className="space-y-4">
+      <div className="story-reveal overflow-hidden rounded-3xl bg-m-yellow p-5 text-m-ink sm:p-7">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="max-w-xl">
+            <h2 id="show-title" className="text-2xl font-bold tracking-tight">উদ্ভাবন ও গবেষণা</h2>
+            <p className="mt-1 text-sm font-medium text-m-ink/80">যা শিখলেন, তা দিয়ে কিছু সমাধান করুন — তারপর সবাইকে দেখান। ভালো কাজ ফিড থেকে চাকরি আর গবেষণার সুযোগে পৌঁছায়।</p>
+          </div>
+          {(onStart || canShare) && (
+            <div className="flex flex-wrap gap-2">
+              {onStart && (
+                <button type="button" onClick={onStart} className={mediaButton({ variant: "green", size: "lg" })}>
+                  <Rocket aria-hidden /> গবেষণা শুরু করুন
+                </button>
+              )}
+              {canShare && (
+                <button type="button" onClick={onShare} className={mediaButton({ variant: "tile", size: "lg" })}>
+                  <Share2 aria-hidden /> দলের কাজ শেয়ার করুন
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+        <ol className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-3">
+          {steps.map((s) => (
+            <li key={s.n} className="flex gap-3 rounded-2xl bg-m-card/8 p-3 ring-1 ring-m-ink/15">
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-m-card text-sm font-bold text-m-blue"><Num value={s.n} /></span>
+              <span><span className="block text-sm font-bold">{s.t}</span><span className="block text-xs text-m-ink/75">{s.d}</span></span>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      {research}
+
+      {shares.length === 0 ? (
+        <p className="rounded-2xl bg-m-card p-5 text-center text-sm text-m-ink/65 ring-1 ring-m-ink/10 shadow-m-tile">এখনো কিছু শেয়ার হয়নি। প্রথম সমাধানটা আপনার দলেরই হোক।</p>
+      ) : (
+        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {[...shares].sort((a, b) => b.at.localeCompare(a.at)).map((s) => {
+            const Icon = SHARE_ICONS[s.kind];
+            return (
+              <li key={s.id} className="story-reveal flex flex-col gap-3 rounded-2xl bg-m-card p-4 ring-1 ring-m-ink/10 shadow-m-tile">
+                <span className="flex items-center gap-2 text-xs font-bold">
+                  <span className={cn("inline-flex items-center gap-1 rounded-full px-2.5 py-0.5", s.kind === "research" ? "bg-m-blue-soft text-m-ink" : "bg-m-yellow text-m-ink")}><Icon className="size-3.5" aria-hidden /> {SHARE_KINDS[s.kind].bn}</span>
+                  <span className="ml-auto font-medium text-m-ink/55"><Ago iso={s.at} live /></span>
+                </span>
+                <span className="font-bold text-m-ink">{s.title}</span>
+                {s.team.length > 0 && <span className="text-xs text-m-ink/65">দল: {s.team.join(", ")}</span>}
+                <span className="mt-auto flex flex-wrap gap-3 text-sm font-bold">
+                  {s.postId && <Link href={`/media/post/${s.postId}`} className="inline-flex items-center gap-1 text-m-blue hover:underline">ফিডে দেখুন <ArrowUpRight className="size-4" aria-hidden /></Link>}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </section>
+  );
+}

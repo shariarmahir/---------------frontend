@@ -148,11 +148,11 @@ export const commonsPhotos: Partial<Record<string, Photo>> = {
     alt: "১৯৭১ সালের আত্মসমর্পণের দৃশ্য নিয়ে নির্মিত ভাস্কর্য",
     credit: { author: "Shsourav", license: "CC BY-SA 4.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0", sourceUrl: "https://commons.wikimedia.org/wiki/File:Statue_representing_the_signing_of_the_Pakistani_Instrument_of_Surrender_at_the_Mujibnagar_Memorial_Monument_and_Complex.jpg" },
   },
-  tagore: {
-    src: "/bangladesh/tagore.jpg",
-    alt: "রবীন্দ্রনাথ ঠাকুরের প্রতিকৃতি",
-    focus: "50% 25%",
-    credit: { author: "Unknown author", license: "Public domain", licenseUrl: "", sourceUrl: "https://commons.wikimedia.org/wiki/File:Rabindranath_Tagore.jpg" },
+  fazlulhuq: {
+    src: "/bangladesh/fazlul-huq.jpg",
+    alt: "শেরে বাংলা এ. কে. ফজলুল হকের প্রতিকৃতি",
+    focus: "50% 30%",
+    credit: { author: "Unknown author", license: "Public domain", licenseUrl: "", sourceUrl: "https://commons.wikimedia.org/w/index.php?curid=27432003" },
   },
   nazrul: {
     src: "/bangladesh/nazrul.jpg",
